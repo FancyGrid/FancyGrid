@@ -1,0 +1,25 @@
+{
+  "name": "fancygrid",
+  "description": "Repo to allow easy downloading of FancyGrid via Bower.",
+  "main": "client/fancy.min.js",
+  "keywords": [
+    "fancygrid",
+    "grid",
+    "table",
+    "javascript",
+    "grid",
+    "jquery",
+    "grid"
+  ],  
+  "homepage": "http://fancygrid.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "private": false
+}
