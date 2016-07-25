@@ -31,7 +31,7 @@ The `FancyGrid` object is now accessible. Happy griding!
 window.onload = function() {
 
 new FancyGrid({
-  renderTo: 'container',
+  renderTo: 'grid',
   width: 300,
   height: 200,
   data: [
