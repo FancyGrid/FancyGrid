@@ -1,6 +1,6 @@
 # FancyGrid
 
-Build v1.2.8
+Build v1.2.9
 
 FancyGrid JavaScript grid library with charts integration and server communication.
 
