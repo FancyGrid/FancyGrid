@@ -11,6 +11,11 @@ FancyGrid - JavaScript grid library with charts integration and server communica
 bower install fancygrid
 ```
 
+#### *npm*
+```
+npm install fancygrid
+```
+
 #### *code.fancygrid.com*
 ```
 http://code.fancygrid.com/fancy.min.js
