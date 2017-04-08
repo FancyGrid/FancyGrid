@@ -1,6 +1,6 @@
 {
   "name": "fancygrid",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "description": "JavaScript grid library with charts integration and server communication",
   "repository": {
     "type": "git",
