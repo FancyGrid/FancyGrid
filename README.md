@@ -133,11 +133,11 @@ Fancy.DEBUG = true;
 ```
 
 ## Custom build
-###Debug build
+### Debug build
 ```
 grunt debug
 ```
-###Release build
+### Release build
 ```
 grunt release
 ```
