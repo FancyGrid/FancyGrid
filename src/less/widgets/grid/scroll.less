@@ -1,0 +1,76 @@
+/*
+ scroll.less
+*/
+
+.fancy-scroll-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: rgba(235, 235, 245, 0.5);
+  width: 12px;
+  height: 100%;
+  .transition(width 0.2s linear);
+  z-index: 2;
+}
+
+.fancy-scroll-right-hover, .fancy-scroll-right-active {
+  width: 16px;
+  .fancy-scroll-right-inner {
+    width: 12px;
+    .opacity(1);
+  }
+}
+
+.fancy-scroll-right-inner {
+  margin-left: 2px;
+  margin-top: 1px;
+  height: 40px;
+  background: #DAE1E8;
+  .opacity(0.8);
+  width: 8px;
+  cursor: pointer;
+  .transition(width 0.2s ease-out);
+}
+
+.fancy-touch .fancy-scroll-right-inner {
+  //.transition(none);
+}
+
+.fancy-scroll-bottom {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: rgba(235, 235, 245, 0.5);
+  width: 100%;
+  height: 12px;
+  .transition(all 0.2s linear);
+  z-index: 2;
+}
+
+
+.fancy-scroll-bottom-hover, .fancy-scroll-bottom-active {
+  height: 16px;
+  .fancy-scroll-bottom-inner {
+    height: 12px;
+    .opacity(1);
+  }
+}
+
+.fancy-scroll-bottom-inner {
+  margin-left: 1px;
+  margin-top: 2px;
+  width: 40px;
+  background: #DAE1E8;
+  .opacity(0.8);
+  height: 8px;
+  cursor: pointer;
+  .transition(height 0.2s ease-out);
+}
+
+.fancy-panel .fancy-scroll-bottom-inner {
+  margin-top: 2px;
+}
+
+.fancy-grid-native-scroller .fancy-grid-cell:last-child {
+  //border-bottom: 0;
+}

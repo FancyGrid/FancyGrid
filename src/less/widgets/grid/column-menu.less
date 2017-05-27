@@ -1,0 +1,63 @@
+/*
+ column-menu.less
+*/
+
+.fancy-grid-header-column-triggered {
+  background-color: #eff2f5;
+  .fancy-grid-header-cell-trigger {
+    display: block;
+  }
+}
+
+
+.fancy-grid-header-cell-trigger-disabled .fancy-grid-header-cell-trigger {
+  display: none !important;
+}
+
+.fancy-grid-header-cell-trigger {
+  border-left: 1px solid #d3dbe1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 25px;
+  background-color: #eff2f5;
+  display: none;
+  cursor: pointer;
+}
+
+.fancy-grid-header-cell-trigger-image {
+  width: 15px;
+  height: 15px;
+  margin-top: 8px;
+  margin-left: 5px;
+  background: url(images/default/sort-arrows.png) no-repeat scroll 0 1px transparent;
+}
+
+.fancy-grid-header-cell:hover .fancy-grid-header-cell-trigger {
+  display: block;
+}
+
+.fancy-grid-header-cell-trigger-up {
+  background: url(images/default/sort.png) no-repeat scroll 0 1px transparent;
+  background-position-x: 5px;
+  background-position-y: 7px;
+}
+
+.fancy-grid-header-cell-trigger-down {
+  background: url(images/default/sort.png) no-repeat scroll 0 1px transparent;
+  background-position-x: 5px;
+  background-position-y: -49px;
+}
+
+.fancy-menu-item-active .fancy-grid-header-cell-trigger-down {
+  background-image: url(images/default/sort-over.png);
+}
+
+.fancy-menu-item-active .fancy-grid-header-cell-trigger-up {
+  background-image: url(images/default/sort-over.png);
+}
+
+.fancy-grid-header-cell-trigger.fancy-grid-column-resizer {
+  cursor: col-resize;
+}

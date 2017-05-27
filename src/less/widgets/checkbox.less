@@ -1,0 +1,36 @@
+/*
+ checkbox.less
+*/
+
+.fancy-field-checkbox-input {
+    float: left;
+    width: 15px;
+    height: 14px !important;
+    margin: 7px 0 0 0;
+    margin-right: 5px;
+    margin-bottom: 2px;
+    background: url(images/default/check.png) 0 0 no-repeat;
+    cursor: pointer;
+    &:hover {
+        background-position: 0px -28px; 
+    }
+}
+
+.fancy-checkbox-on {
+  .fancy-field-checkbox-input {
+     background-position: 0px -14px;
+     &:hover {
+        background-position: 0px -42px;
+     }
+  }
+}
+
+.fancy-grid-cell .fancy-field-checkbox {
+  height: 14px;
+  width: 17px;
+  overflow: hidden;
+}
+
+.fancy-grid-cell .fancy-field-checkbox-input {
+  margin-top: 0;
+}

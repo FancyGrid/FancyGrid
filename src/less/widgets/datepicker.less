@@ -1,0 +1,84 @@
+/*
+ datepicker.less
+*/
+
+.fancy-date-picker .fancy-grid-cell {
+  cursor: pointer;
+  .fancy-grid-cell-inner {
+    cursor: pointer;
+  }
+}
+
+.fancy-field-picker-button {
+  background: url(images/default/calendar.png) right center no-repeat transparent;
+  width: 20px;
+  height: 33px;
+  position: absolute;
+  top: -1px;
+  right: 3px;
+  cursor: pointer;
+}
+
+.fancy-date-picker-cell-out-range {
+  color: #d0d0d0;
+}
+
+.fancy-date-picker-cell-today {
+  .fancy-grid-cell-inner {
+    font-weight: bold;
+  }
+}
+
+.fancy-grid-column .fancy-date-picker-cell-active {
+  color: white;
+  background-color: #1E8FC6;
+  .fancy-grid-cell-inner {
+    font-weight: bold;
+  }
+}
+
+.fancy-picker-button-back {
+  position: relative;
+  //left: 5px;
+  margin-right: 0 !important;
+  .fancy-button-image {
+    background: url(images/default/back.png) no-repeat center -1px;
+    display: block;
+  }
+}
+
+.fancy-picker-button-next {
+  margin-right: 2px !important;
+  .fancy-button-image {
+    background: url(images/default/next.png) no-repeat -1px -2px;
+    display: block;
+  }
+}
+
+.fancy-picker-button-date {
+  margin: 4px auto !important;
+  float: none !important;
+}
+
+.fancy-picker-button-date-wrapper {
+  width: 231px;
+  height: 38px;
+  float: left;
+}
+
+.fancy-picker-button-today-wrapper {
+  width: 296px;
+  height: 38px;
+  float: left;
+}
+
+.fancy-picker-button-today {
+  margin: 3px auto !important;
+  float: none !important;
+}
+
+.fancy-picker-button-date .fancy-button-text {
+  padding-right: 19px;
+  padding-left: 19px;
+  background: url(images/default/bottom.png) right 2px no-repeat;
+}

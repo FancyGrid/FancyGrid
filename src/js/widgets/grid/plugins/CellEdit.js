@@ -1,0 +1,636 @@
+/*
+ * @class Fancy.grid.plugin.CellEdit
+ * @extends Fancy.Plugin
+ */
+Fancy.define('Fancy.grid.plugin.CellEdit', {
+  extend: Fancy.Plugin,
+  ptype: 'grid.celledit',
+  inWidgetName: 'celledit',
+  /*
+   * @constructor
+   * @param config
+   */
+  constructor: function(config){
+    var me = this;
+
+    me.Super('const', arguments);
+  },
+  /*
+   *
+   */
+  init: function(){
+    var me = this;
+
+    me.Super('init', arguments);
+
+    me.ons();
+  },
+  /*
+   *
+   */
+  ons: function(){
+    var me = this,
+      w = me.widget,
+      s = w.store;
+
+    w.once('render', function(){
+      me.initEditorContainer();
+      w.on('scroll', me.onScroll, me);
+      w.on('docclick', me.onDocClick, me);
+      w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
+    });
+  },
+  /*
+   * @param {Object} grid
+   * @param {Object} e
+   */
+  onDocClick: function(grid, e){
+    var me = this,
+      o = me.activeCellEditParams,
+      editor = me.activeEditor,
+      inCombo = true;
+
+    if(editor === undefined || o.column.type !== 'combo'){
+      return;
+    }
+
+    var target = e.target;
+
+    if(editor.el.within(target) === false && editor.list.within(target) === false && me.comboClick !== true){
+      inCombo = false;
+    }
+
+    if(inCombo === false){
+      editor.hide();
+    }
+
+    me.comboClick = false;
+  },
+  /*
+   *
+   */
+  initEditorContainer: function(){
+    var me = this,
+      w = me.widget;
+
+    me.editorsContainer = w.el.select('.fancy-grid-editors');
+  },
+  /*
+   * @param {Object} o
+   */
+  edit: function(o){
+    var me = this,
+      w = me.widget,
+      column = o.column,
+      columnType = column.type;
+
+    if(column.index === '$selected'){
+      return;
+    }
+
+    me.activeCellEditParams = o;
+    w.edit.activeCellEditParams = o;
+
+    column.editor = me.generateEditor(column);
+
+    //me.hideEditor();
+    w.scroller.scrollToCell(o.cell);
+    me.showEditor(o);
+  },
+  /*
+   * @param {Object} column
+   */
+  generateEditor: function(column){
+    var me = this,
+      w = me.widget,
+      style = {
+        position: 'absolute',
+        left: '0px',
+        top: '0px',
+        display: 'none',
+        padding: '0px'
+      },
+      type = column.type,
+      editor,
+      vtype = column.vtype,
+      renderTo,
+      theme = w.theme;
+
+    if(column.editor){
+      return column.editor;
+    }
+
+    renderTo = me.editorsContainer.dom;
+
+    var itemConfig = {
+      renderTo: renderTo,
+      label: false,
+      style: style
+    };
+
+    switch(type){
+      case 'combo':
+        var displayKey = 'valueText';
+        var valueKey = 'valueText';
+        var data;
+
+        if(column.displayKey !== undefined){
+          displayKey = column.displayKey;
+          valueKey = displayKey;
+        }
+
+        if(Fancy.isObject(column.data) || Fancy.isObject(column.data[0])) {
+          data = column.data;
+        }
+        else{
+          data = me.configComboData(column.data);
+        }
+
+        if(theme === 'default'){
+          theme = undefined;
+        }
+
+        editor = new Fancy.Combo({
+          theme: theme,
+          renderTo: renderTo,
+          label: false,
+          style: style,
+          data: data,
+          displayKey: displayKey,
+          valueKey: valueKey,
+          value: 0,
+          padding: false,
+          vtype: vtype,
+          events: [{
+            change: me.onComboChange,
+            scope: me
+          }]
+        });
+        break;
+      case 'text':
+        editor = new Fancy.TextArea({
+          renderTo: renderTo,
+          label: false,
+          style: style,
+          vtype: vtype,
+          events: [{
+            enter: me.onEditorEnter,
+            scope: me
+          },{
+            beforehide: me.onEditorBeforeHide,
+            scope: me
+          },{
+            blur: me.onBlur,
+            scope: me
+          }]
+        });
+        break;
+      case 'image':
+      case 'string':
+        editor = new Fancy.StringField({
+          renderTo: renderTo,
+          label: false,
+          style: style,
+          vtype: vtype,
+          format: column.format,
+          events: [{
+            enter: me.onEditorEnter,
+            scope: me
+          },{
+            beforehide: me.onEditorBeforeHide,
+            scope: me
+          },{
+            blur: me.onBlur,
+            scope: me
+          }]
+        });
+        break;
+      case 'number':
+      case 'currency':
+        Fancy.apply(itemConfig, {
+          vtype: vtype,
+          format: column.format,
+          events: [{
+            enter: me.onEditorEnter,
+            scope: me
+          },{
+            beforehide: me.onEditorBeforeHide,
+            scope: me
+          },{
+            blur: me.onBlur,
+            scope: me
+          }]
+        });
+
+        if(column.spin !== undefined){
+          itemConfig.spin = column.spin;
+        }
+
+        if(column.step !== undefined){
+          itemConfig.step = column.step;
+        }
+
+        if(column.min !== undefined){
+          itemConfig.min = column.min;
+        }
+
+        if(column.max !== undefined ){
+          itemConfig.max = column.max;
+        }
+
+        editor = new Fancy.NumberField(itemConfig);
+        break;
+      case 'date':
+        editor = new Fancy.DateField({
+          renderTo: renderTo,
+          label: false,
+          style: style,
+          format: column.format,
+          lang: w.lang,
+          vtype: vtype,
+          theme: theme,
+          events: [{
+            enter: me.onEditorEnter,
+            scope: me
+          },{
+            beforehide: me.onEditorBeforeHide,
+            scope: me
+          },{
+            blur: me.onBlur,
+            scope: me
+          }]
+        });
+
+        break;
+      default:
+        throw new Error('[FancyGrid error] - type ' + type + ' editor does not exit');
+    }
+
+    return editor;
+  },
+  /*
+   * @param {Array} data
+   * @return {Array}
+   */
+  configComboData: function(data){
+    var i = 0,
+      iL = data.length,
+      _data = [];
+
+    if(Fancy.isObject(data)){
+      return data;
+    }
+
+    for(;i<iL;i++){
+      _data.push({
+        index: i,
+        valueText: data[i]
+      });
+    }
+
+    return _data;
+  },
+  /*
+   * @param {Object} o
+   */
+  showEditor: function(o){
+    var me = this,
+      w = me.widget,
+      column = o.column,
+      type = column.type,
+      //editor = me[type + 'Editor'],
+      editor = column.editor,
+      cell = o.cell,
+      cellXY = me.getCellPosition(cell),
+      cellSize = me.getCellSize(cell);
+
+    if(type === 'combo'){
+      me.comboClick = true;
+    }
+
+    me.activeEditor = editor;
+    me.setEditorValue(o);
+    me.setEditorSize(cellSize);
+    editor.show();
+    editor.el.css(cellXY);
+
+    //if(type !== 'combo'){
+    editor.focus();
+    //}
+
+    w.fire('startedit', o);
+  },
+  /*
+   * @param {Number} side
+   */
+  setEditorSize: function(size){
+    var me = this;
+
+    if(me.activeEditor.wtype === 'field.combo'){
+      me.activeEditor.size(size);
+    }
+    else {
+      me.activeEditor.setInputSize({
+        width: size.width,
+        height: size.height
+      });
+    }
+  },
+  /*
+   *
+   */
+  hideEditor: function(){
+    var me = this,
+      w = me.widget,
+      s = w.store,
+      key,
+      value,
+      o = me.activeCellEditParams,
+      editor = me.activeEditor,
+      column;
+
+    if(editor){
+      column = o.column;
+      value = editor.get();
+
+      if(s.proxyType === 'server' && column.type !== 'combo'){
+        key = me.getActiveColumnKey();
+        value = me.prepareValue(value);
+
+        s.set(o.rowIndex, key, value);
+      }
+
+      editor.hide();
+      editor.hideErrorTip();
+    }
+
+    delete me.activeEditor;
+  },
+  /*
+   * @param {Fancy.Element} cell
+   * @return {Object}
+   */
+  getCellPosition: function(cell){
+    var me = this,
+      w = me.widget,
+      gridBorders = w.gridBorders,
+      cellEl = Fancy.get(cell),
+      cellOffset = cellEl.offset(),
+      gridOffset = w.el.offset(),
+      offset = {
+        left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 2 + 'px',
+        top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - (gridBorders[0] + gridBorders[2]) + 'px'
+      };
+
+    return offset;
+  },
+  /*
+   * @param {Fancy.Element} cell
+   * @return {Object}
+   */
+  getCellSize: function(cell){
+    var me = this,
+      w = me.widget,
+      cellEl = Fancy.get(cell),
+      width = cellEl.width(),
+      height = cellEl.height(),
+      coeficient = 2;
+
+    if(Fancy.nojQuery && w.panelBorderWidth === 2){
+      coeficient = 1;
+    }
+
+    width += parseInt( cellEl.css('border-right-width') ) * coeficient;
+    height += parseInt( cellEl.css('border-bottom-width') ) * coeficient;
+
+    return {
+      width: width,
+      height: height
+    };
+  },
+  /*
+   * @param {Object} o
+   */
+  setEditorValue: function(o){
+    var me = this,
+      w = me.widget,
+      lang = w.lang,
+      editor = me.activeEditor;
+
+    switch(o.column.type){
+      case 'combo':
+        if(editor.valueIndex !== - 1){
+          editor.set(editor.getValueKey(o.value), false);
+        }
+        break;
+      case 'date':
+        var format = o.column.format,
+          date = Fancy.Date.parse(o.value, format.read, format.mode);
+
+        editor.set(date);
+        break;
+      default:
+        editor.set(o.value);
+    }
+  },
+  /*
+   * @param {Object} editor
+   * @param {String} value
+   */
+  onEditorEnter: function(editor, value){
+    var me = this;
+
+    me.hideEditor();
+  },
+  /*
+   *
+   */
+  onHeaderCellMouseDown: function(){
+    var me = this;
+
+    me.hideEditor();
+  },
+  /*
+   * @param {Object} editor
+   * @param {String} value
+   */
+  onKey: function(editor, value){
+    var me = this;
+
+  },
+  /*
+   * @param {String} value
+   */
+  setValue: function(value){
+    var me = this,
+      w = me.widget,
+      s = w.store,
+      key,
+      o = me.activeCellEditParams,
+      editor = me.activeEditor;
+
+    if(editor === undefined){
+      return;
+    }
+
+    if(editor.isValid() === false){
+      return;
+    }
+
+    if(s.proxyType === 'server'){
+      return;
+    }
+
+    key = me.getActiveColumnKey();
+
+    value = me.prepareValue(value);
+
+    if(editor.type === 'field.date' && editor.isEqual(s.get(o.rowIndex, key))){
+      return;
+    }
+
+    s.set(o.rowIndex, key, value);
+  },
+  /*
+   * @param {Object} editor
+   */
+  onEditorBeforeHide: function(editor){
+    var me = this;
+
+    me.setValue(editor.getValue());
+  },
+  /*
+   *
+   */
+  onScroll: function(){
+    var me = this;
+
+    me.hideEditor();
+  },
+  /*
+   * @param {Object} field
+   */
+  onBlur: function(field){
+    var me = this;
+
+    if(!me.activeEditor || field.id === me.activeEditor.id) {
+      if(field.mouseDownSpinUp === true || field.mouseDownSpinDown){
+        return;
+      }
+
+      me.hideEditor();
+    }
+  },
+  /*
+   * @param {*} value
+   * @return {*}
+   */
+  prepareValue: function(value){
+    var me = this,
+      type = me.getActiveColumnType(),
+      o = me.activeCellEditParams,
+      column = o.column,
+      format = column.format;
+
+    switch(type){
+      case 'number':
+      case 'currency':
+        if(format && format.inputFn){
+          var _value = '',
+            i = 0,
+            iL = value.length;
+
+          if(Fancy.isNumber(value)){
+            return value;
+          }
+
+          for(;i<iL;i++){
+            if(!isNaN(Number(value[i]))){
+              _value += value[i];
+            }
+          }
+
+          value = _value;
+        }
+        else if( value !== ''){
+          value = Number(value);
+        }
+        break;
+      case 'date':
+        if(column.format && column.format.read){
+          var date = column.editor.getDate();
+          value = Fancy.Date.format(date, column.format.read, undefined, column.format.mode);
+        }
+        break;
+    }
+
+    return value;
+  },
+  /*
+   * @return {String}
+   */
+  getActiveColumnType: function(){
+    var me = this,
+      o = me.activeCellEditParams,
+      column = o.column;
+
+    return column.type;
+  },
+  /*
+   * @return {String}
+   */
+  getActiveColumnKey: function(){
+    var me = this,
+      o = me.activeCellEditParams,
+      column = o.column,
+      key = column.key ||column.index;
+
+    return key;
+  },
+  /*
+   * @param {Object} o
+   */
+  onCheckBoxChange: function(o){
+    var me = this,
+      w = me.widget,
+      column = o.column,
+      key = column.key ||column.index,
+      s = w.store,
+      value = me.checkBoxChangedValue;
+
+    if(me.activeEditor){
+      me.hideEditor();
+    }
+
+    if(me.checkBoxChangedValue === undefined){
+      return
+    }
+
+    delete me.checkBoxChangedValue;
+
+    me.activeCellEditParams = o;
+    w.edit.activeCellEditParams = o;
+
+    s.set(o.rowIndex, key, value);
+  },
+  /*
+   * @param {Object} combo
+   * @param {*} value
+   */
+  onComboChange: function(combo, value){
+    var me = this,
+      w = me.widget,
+      s = w.store,
+      editor = me.activeEditor,
+      o = me.activeCellEditParams,
+      key = me.getActiveColumnKey(),
+      newValue = editor.getDisplayValue(value);
+
+    if(combo.valueIndex !== -1){
+      value = newValue;
+    }
+
+    s.set(o.rowIndex, key, value);
+    me.hideEditor();
+  }
+});

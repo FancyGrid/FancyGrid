@@ -1,0 +1,64 @@
+/*
+ menu.less
+*/
+
+.fancy-menu {
+  border: 1px solid #c0cad5;
+  background-color: white;
+  z-index: 3;
+  .fancy-menu-item-disabled {
+    opacity: 0.3;
+  }
+}
+
+.fancy-menu-item {
+  position: relative;
+  width: 100%;
+  font: normal 11px/16px tahoma, arial, sans-serif;
+  color: #2B587A;
+  &:hover {
+    background: #048DC8;
+    color: #FFFFFF;
+    opacity: 0.8;
+    cursor: pointer;
+  }
+}
+
+.fancy-menu-item-image {
+  float: left;
+  height: 100%;
+  width: 30px;
+}
+
+.fancy-menu-item-text {
+  height: 100%;
+  float: left;
+  padding: 7px 0 5px 0;
+}
+
+.fancy-menu-item-no-image .fancy-menu-item-text {
+  padding-left: 10px;
+}
+
+.fancy-menu-item-active {
+  background: #048DC8;
+  color: #FFFFFF;
+  opacity: 0.8;
+}
+
+
+.fancy-menu-item-right-image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.fancy-menu-item-expand {
+  background: url(images/default/menu-expand.png) no-repeat scroll 11px 5px transparent
+}
+
+.fancy-menu-item-active .fancy-menu-item-expand {
+  background-position-y: -26px;
+}

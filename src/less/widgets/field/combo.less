@@ -1,0 +1,76 @@
+/*
+ combo.less
+*/
+.fancy-combo {
+  position: relative;
+
+  .fancy-combo-input-container {
+    background: #FFF;
+    border: 1px solid #C3CBD4;
+    overflow: hidden;
+  }
+
+  input {
+    padding: 7px;
+    margin: 0;
+    height: 13px;
+    color: #2B587A;
+    float: left;
+    outline: 0;
+    font: normal 11px/16px tahoma, arial, sans-serif;
+    border: none;
+  }
+
+  .fancy-field-text-input {
+    border: none;
+  }
+
+  .fancy-combo-dropdown-button {
+    z-index: 0;
+    width: 27px;
+    background: url(images/default/wide_dd.gif) transparent no-repeat center center;
+    border: none;
+    padding: 0;
+    position: absolute;
+    right: 0px;
+    top: -1px;
+    height: 30px;
+    cursor: pointer;
+  }
+
+  .fancy-field-text {
+    position: relative;
+  }
+}
+
+.fancy-combo-result-list {
+  position: absolute;
+  right: 0;
+  border: 1px solid #c0cad5;
+  background-color: white;
+  margin-top: -1px;
+  z-index: 1;
+  li {
+    list-style-type: none;
+    padding: 7px 0 5px 10px;
+    font: normal 11px/16px tahoma, arial, sans-serif;
+    color: #2B587A;
+    cursor: pointer;
+  }
+
+  //li.fancy-combo-list-active {
+  li:hover {
+    background: #048DC8;
+    color: #FFFFFF;
+    .opacity(0.8);
+  }
+
+  li.fancy-combo-item-selected {
+    background: #048DC8;
+    color: #FFFFFF;
+  }
+
+  ul {
+    margin-bottom: 0;
+  }
+}

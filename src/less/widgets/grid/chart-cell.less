@@ -1,0 +1,140 @@
+/*
+ chart-cell.less
+*/
+
+.fancy-grid-column-chart-circle svg {
+  position: relative;
+  top: -7px;
+}
+
+.fancy-grid-column-spark-progress-donut svg {
+  position: relative;
+  top: -7px;
+}
+
+.fancy-grid-grossloss-loss {
+  position: absolute;
+  right: 50%;
+  background-color: #EA7369;
+  cursor: default;
+}
+
+.fancy-grid-grossloss-gross {
+  position: absolute;
+  left: 50%;
+  background-color: #60B3E2;
+  cursor: default;
+}
+
+.fancy-grid-column-progress-bar {
+  float: left;
+  background-color: #60B3E2;
+  transition: all .2s linear;
+}
+
+.fancy-grid-column-progress-bar:hover {
+  opacity: 0.7;
+}
+
+
+.fancy-grid-column-h-bar .fancy-grid-cell-inner {
+  margin-top: 7px;
+}
+
+.fancy-grid-cell-inner .fancy-grid-column-h-bar-node:first-child {
+  border-left: 0;
+}
+
+.fancy-grid-column-h-bar-node {
+  background: #60B3E2;
+  line-height: 19px;
+  float: left;
+  border-left: 1px solid white;
+  transition: all .2s linear;
+}
+
+.fancy-grid-column-h-bar-node:hover {
+  opacity: 0.7;
+}
+
+.fancy-grid-legend-marker {
+  width: 17px;
+  height: 17px;
+  border: 1px solid #dbdbdb;
+  cursor: pointer;
+  float: left;
+  position: relative;
+  top: -1px;
+  left: 4px;
+}
+
+.fancy-legend-item-disabled {
+  opacity: 0.3;
+}
+
+.fancy-spark-hbar {
+  display: flex;
+}
+
+// ---------
+
+.fancy-grid-column-h-bar .fancy-grid-cell-inner {
+  margin-top: 0;
+}
+
+.fancy-grid-column-h-bar-node {
+  border-left-width: 0;
+}
+
+.fancy-spark-hbar {
+  display: block;
+}
+
+.fancy-grid-column-h-bar-node {
+  float: none;
+}
+
+// stacked
+.fancy-spark-hbar.fancy-spark-stacked {
+  margin-top: 6px;
+  display: flex;
+
+  .fancy-grid-column-h-bar-node {
+    border-left-width: 1px;
+    float: left;
+  }
+}
+
+.fancy-grid-column-h-bar-stacked .fancy-grid-cell-inner {
+  margin-top: 0;
+}
+
+.fancy-spark-hbar-stacked .fancy-grid-column-h-bar-node:first-child {
+  border-left: 0;
+}
+
+
+.fancy-grid-bar-label {
+  color: white;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.fancy-grid-bar-label-out {
+  color: #1E8FC6;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-weight: bold;
+  float: left;
+  margin-top: 3px;
+}
+
+.fancy-grid-bar-label-out-left {
+  color: #1E8FC6;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-weight: bold;
+  float: right;
+  margin-top: 3px;
+}

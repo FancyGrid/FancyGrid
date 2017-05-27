@@ -1,9 +1,9 @@
 # FancyGrid
 
-Build v1.5.12
+Build v1.6.0
 
 FancyGrid - JavaScript grid library with charts integration and server communication.
-
+  
 ## Install
 
 #### *bower*
@@ -92,10 +92,54 @@ The package includes the following:
 ```
 |   README.md
 ├── client
+│   ├── fancy.full.min.js
 │   ├── fancy.min.js
 │   ├── fancy.min.css
 │   ├── modules
+├── src
+│   ├── js
+|   ├── |...
+│   ├── less
+|   ├── |...
 |   ...
+```
+
+## Debug
+In case you want to debug FancyGrid there are several approaches.  
+
+### Debug files
+Include css file ```/client/fancy.css```.
+Include js file ```/src/js/load-all.js```.
+After that set
+```
+Fancy.MODULESLOAD = false;
+```
+
+### Debug full build
+Include css file ```/client/fancy.css```.
+Include js file ```/src/js/fancy.full.js```.
+After that set
+```
+Fancy.MODULESLOAD = false;
+```
+
+### Debug with auto-loading modules
+Include css file ```/client/fancy.css```.
+Include js file ```/src/js/fancy.js```.
+Set modules path
+```
+Fancy.MODULESDIR = '/client/modules/';
+Fancy.DEBUG = true;
+```
+
+## Custom build
+###Debug build
+```
+grunt debug
+```
+###Release build
+```
+grunt release
 ```
 
 ## Support

@@ -1,0 +1,65 @@
+/*
+ mixins.less
+*/
+
+// Sizing shortcuts
+.size(@width; @height) {
+  width: @width;
+  height: @height;
+}
+
+.square(@size) {
+  .size(@size; @size);
+}
+
+// Opacity
+.opacity(@opacity){
+  @_opacity: @opacity * 100;
+  opacity: @opacity;
+}
+
+.border-radius(@radius) {
+    -webkit-border-radius: @radius ;
+        -moz-border-radius: @radius;
+         -ms-border-radius: @radius;
+          -o-border-radius: @radius;
+             border-radius: @radius;
+}
+
+.border-radius(@radius1, @radius2, @radius3, @radius4){
+    -webkit-border-radius: @radius1 @radius2 @radius3 @radius4;
+       -moz-border-radius: @radius1 @radius2 @radius3 @radius4;
+        -ms-border-radius: @radius1 @radius2 @radius3 @radius4;
+         -o-border-radius: @radius1 @radius2 @radius3 @radius4;
+            border-radius: @radius1 @radius2 @radius3 @radius4;
+}
+
+.user-select(@select){
+    -webkit-user-select: @select;
+       -moz-user-select: @select;
+        -ms-user-select: @select; // IE10+
+         -o-user-select: @select;
+            user-select: @select;
+}
+
+// Drop shadows
+.box-shadow(@shadow){
+    -webkit-box-shadow: @shadow;// iOS <4.3 & Android <4.1
+      -moz-box-shadow: @shadow;
+            box-shadow: @shadow;
+}
+
+.box-sizing(@value){
+    -webkit-box-sizing: @value;
+    -moz-box-sizing: @value;
+    box-sizing: @value;
+}
+
+// Transitions
+.transition(@transition){
+    -webkit-transition: @transition;
+     -moz-transition: @transition;
+    -ms-transition: @transition;
+     -o-transition: @transition;
+        transition: @transition;
+}

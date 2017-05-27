@@ -1,0 +1,55 @@
+/*
+ switcher.less
+*/
+
+.fancy-field-switcher {
+  .fancy-field-text {
+    border-radius: 45px;
+    background-color: #d1d9e0;
+    width: 28px;
+    height: 9px;
+    margin-top: 10px;
+    cursor: pointer;
+    &:after{
+      content: '';
+      float: left;
+      position: relative;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 1px solid #b2bcc5;
+      background-color: #fff;
+      top: -3px;
+      left: 0;
+      -o-transition: left 0.1s ease;
+      transition: left 0.1s ease;
+    }
+  }
+}
+
+.fancy-field-switcher.fancy-switcher-on {
+  .fancy-field-text {
+    background-color: #c4d2e1;
+    &:after {
+      background-color: #6287ae;
+      border-color: #6287ae;
+      left: 13px;
+    }
+  }
+}
+
+.fancy-field-switcher {
+  .fancy-field-text {
+    background-color: #d1d9e0;
+  }
+}
+
+.fancy-switcher-on.fancy-field-switcher {
+  .fancy-field-text {
+    background-color: #c4d2e1;
+    &:after {
+      background-color: #048DC8;
+      border-color: #048DC8;
+    }
+  }
+}

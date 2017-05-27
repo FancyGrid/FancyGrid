@@ -1,0 +1,44 @@
+/*
+ drag.less
+*/
+
+.fancy-drop-not-ok {
+  background-repeat: no-repeat;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAKElEQVR42u3NsQ0AMAjAMB5H4tceUo6AgcGWMicCgIlX+bcyNgaAOxrGlBDRu5xvVQAAAABJRU5ErkJggg==);
+  .fancy-tooltip-inner {
+    margin-left: 23px;
+  }
+}
+
+.fancy-drop-ok{
+  &:before {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    left: -1px;
+    top: -5px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAALUlEQVR42u3NsQkAMAgAQZeO22W2pLcVC+EOvv4IgAnn5qsZGxvvH3cyNgZ2+dLJc2T0JIDAAAAAAElFTkSuQmCC);
+  }
+
+  .fancy-tooltip-inner {
+    margin-left: 23px;
+  }
+}
+
+.fancy-drop-zone-active {}
+
+.fancy-drop-cell-mask {
+  border-bottom: 1px solid #a4cf6d;
+}
+
+.fancy-drop-header-mask .fancy-grid-header {
+  border-bottom-color: #a4cf6d;
+}
