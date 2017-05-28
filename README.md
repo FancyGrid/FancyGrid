@@ -49,7 +49,7 @@ new FancyGrid({
     title: 'Name',    
     type: 'string'
   },{
-	type: 'number',
+    type: 'number',
     index: 'age',
     title: 'Age'
   }]
@@ -118,10 +118,6 @@ Fancy.MODULESLOAD = false;
 ### Debug full build
 Include css file ```/client/fancy.css```.
 Include js file ```/src/js/fancy.full.js```.
-After that set
-```
-Fancy.MODULESLOAD = false;
-```
 
 ### Debug with auto-loading modules
 Include css file ```/client/fancy.css```.
