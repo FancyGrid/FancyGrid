@@ -106,20 +106,20 @@ The package includes the following:
 In case you want to debug FancyGrid there are several approaches.  
 
 ### Debug files
-Include css file ```/client/fancy.css```.
-Include js file ```/src/js/load-all.js```.
+Include css file ```/client/fancy.css```  
+Include js file ```/src/js/load-all.js```  
 After that set
 ```
 Fancy.MODULESLOAD = false;
 ```
 
 ### Debug full build
-Include css file ```/client/fancy.css```.  
-Include js file ```/src/js/fancy.full.js```.  
+Include css file ```/client/fancy.css```  
+Include js file ```/src/js/fancy.full.js```  
 
 ### Debug with auto-loading modules
-Include css file ```/client/fancy.css```.  
-Include js file ```/src/js/fancy.js```.  
+Include css file ```/client/fancy.css```  
+Include js file ```/src/js/fancy.js```  
 Set modules path
 ```
 Fancy.MODULESDIR = '/client/modules/';
