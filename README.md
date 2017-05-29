@@ -40,9 +40,9 @@ new FancyGrid({
   width: 300,
   height: 200,
   data: [
-	{name: 'Nick', age: 30},
-	{name: 'Fred', age: 25},
-	{name: 'Mike', age: 35}
+    {name: 'Nick', age: 30},
+    {name: 'Fred', age: 25},
+    {name: 'Mike', age: 35}
   ],  
   columns: [{
     index: 'name',
@@ -98,10 +98,8 @@ The package includes the following:
 │   ├── modules
 ├── src
 │   ├── js
-|   ├── |...
 │   ├── less
-|   ├── |...
-|   ...
+│   ...
 ```
 
 ## Debug
@@ -116,12 +114,12 @@ Fancy.MODULESLOAD = false;
 ```
 
 ### Debug full build
-Include css file ```/client/fancy.css```.
-Include js file ```/src/js/fancy.full.js```.
+Include css file ```/client/fancy.css```.  
+Include js file ```/src/js/fancy.full.js```.  
 
 ### Debug with auto-loading modules
-Include css file ```/client/fancy.css```.
-Include js file ```/src/js/fancy.js```.
+Include css file ```/client/fancy.css```.  
+Include js file ```/src/js/fancy.js```.  
 Set modules path
 ```
 Fancy.MODULESDIR = '/client/modules/';
