@@ -1,6 +1,6 @@
 {
   "name": "fancygrid",
-  "version": "1.5.12",
+  "version": "1.6.1",
   "description": "Repo to allow easy downloading of FancyGrid via Bower.",
   "main": "client/fancy.min.js",
   "keywords": [
