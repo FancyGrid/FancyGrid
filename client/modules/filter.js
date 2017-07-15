@@ -626,6 +626,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
 
     s.filters = me.filters;
 
+    console.log(s.filters);
+
     s.changeDataView();
     w.update();
 

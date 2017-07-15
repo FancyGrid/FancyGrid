@@ -366,19 +366,25 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
 
     iL = columns.length;
     for(;i<iL;i++){
-      width += columns[i].width;
+      if(!columns[i].hidden){
+        width += columns[i].width;
+      }
     }
 
     i = 0;
     iL = leftColumns.length;
     for(;i<iL;i++){
-      leftWidth += leftColumns[i].width;
+      if(!leftColumns[i].hidden){
+        leftWidth += leftColumns[i].width;
+      }
     }
 
     i = 0;
     iL = rightColumns.length;
     for(;i<iL;i++){
-      rightWidth += rightColumns[i].width;
+      if(!rightColumns[i].hidden){
+        rightWidth += rightColumns[i].width;
+      }
     }
 
     i = 0;
@@ -549,7 +555,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
 
       if(rows.length) {
-        //console.log(top);
         rows.item(i).css('top', top + 'px');
       }
 

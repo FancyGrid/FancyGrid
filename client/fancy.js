@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.0',
+  version: '1.6.1',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -8687,7 +8687,11 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
   init: function(){
     var me = this;
 
-    me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key', 'enter', 'up', 'down', 'esc');
+    me.addEvents(
+      'focus', 'blur', 'input',
+      'up', 'down', 'change', 'key', 'enter', 'esc',
+      'load'
+    );
     me.Super('init', arguments);
 
     me.loadListData();
@@ -8725,6 +8729,8 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
         me.data = me.configData(o.data);
         me.renderList();
         me.onsList();
+
+        me.fire('load');
       }
     });
   },
@@ -9076,6 +9082,10 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
    */
   selectItem: function(index){
     var me = this;
+
+    if(!me.list){
+      return;
+    }
 
     me.clearListActive();
     me.list.select('li').item(index).addClass(me.selectedItemCls);
@@ -10459,6 +10469,7 @@ Fancy.define('Fancy.Grid', {
   cellOverCls: 'fancy-grid-cell-over',
   cellSelectedCls: 'fancy-grid-cell-selected',
   expandRowSelectedCls: 'fancy-grid-expand-row-selected',
+  columnCls: 'fancy-grid-column',
   columnOverCls: 'fancy-grid-column-over',
   columnSelectedCls: 'fancy-grid-column-selected',
   filterHeaderCellCls: 'fancy-grid-header-filter-cell',

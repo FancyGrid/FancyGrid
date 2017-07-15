@@ -447,6 +447,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
 
     w.once('render', function(){
       me.initEditorContainer();
+      me.checkAutoInitEditors();
       w.on('scroll', me.onScroll, me);
       w.on('docclick', me.onDocClick, me);
       w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
@@ -545,10 +546,27 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
         var displayKey = 'valueText';
         var valueKey = 'valueText';
         var data;
+        var events = [{
+          change: me.onComboChange,
+          scope: me
+        }];
+
+        if(column.editorEvents){
+          var i = 0,
+            iL = column.editorEvents.length;
+
+          for(;i<iL;i++){
+            events.push(column.editorEvents[i]);
+          }
+        }
 
         if(column.displayKey !== undefined){
           displayKey = column.displayKey;
           valueKey = displayKey;
+        }
+
+        if(column.valueKey !== undefined){
+          valueKey = column.valueKey;
         }
 
         if(Fancy.isObject(column.data) || Fancy.isObject(column.data[0])) {
@@ -573,10 +591,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
           value: 0,
           padding: false,
           vtype: vtype,
-          events: [{
-            change: me.onComboChange,
-            scope: me
-          }]
+          events: events
         });
         break;
       case 'text':
@@ -726,9 +741,13 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
     editor.show();
     editor.el.css(cellXY);
 
-    //if(type !== 'combo'){
     editor.focus();
-    //}
+
+    if(type === 'combo') {
+      if (o.value !== undefined) {
+        editor.set(o.value, false);
+      }
+    }
 
     w.fire('startedit', o);
   },
@@ -1035,15 +1054,30 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
       s = w.store,
       editor = me.activeEditor,
       o = me.activeCellEditParams,
-      key = me.getActiveColumnKey(),
-      newValue = editor.getDisplayValue(value);
+      key = me.getActiveColumnKey();
+      //newValue = editor.getDisplayValue(value);
 
     if(combo.valueIndex !== -1){
-      value = newValue;
+      //value = newValue;
     }
 
     s.set(o.rowIndex, key, value);
     me.hideEditor();
+  },
+  checkAutoInitEditors: function(){
+    var me = this,
+      w = me.widget,
+      columns = w.columns,
+      i = 0,
+      iL = columns.length;
+
+    for(;i<iL;i++){
+      var column = columns[i];
+
+      if(column.editorAutoInit){
+        column.editor = me.generateEditor(column);
+      }
+    }
   }
 });/*
  * @class Fancy.grid.plugin.RowEdit

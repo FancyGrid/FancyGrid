@@ -1830,7 +1830,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     for(;i<iL;i++){
-      leftWidth += leftColumns[i].width;
+      if(!leftColumns[i].hidden){
+        leftWidth += leftColumns[i].width;
+      }
     }
 
     i = 0;
@@ -1842,7 +1844,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     i = 0;
     iL = rightColumns.length;
     for(;i<iL;i++){
-      rightWidth += rightColumns[i].width;
+      if(!rightColumns[i].hidden){
+        rightWidth += rightColumns[i].width;
+      }
     }
 
     if(me.wrapped){
@@ -3232,6 +3236,12 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     if(filter === undefined){
       filter = {};
+    }
+
+    if(Fancy.isDate(value)){
+      filter['type'] = 'date';
+      filter['format'] = this.lang.date;
+      value = Number(value);
     }
 
     if(value === ''){
@@ -5465,7 +5475,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
   checkDomColumns: function(){
     var me = this,
       w = me.widget,
-      numExistedColumn = me.el.select('.fancy-grid-column').length,
+      columnCls = w.columnCls,
+      numExistedColumn = me.el.select('.' + columnCls).length,
       columns = me.getColumns(),
       i = 0,
       iL = columns.length;
@@ -5479,7 +5490,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
         width = column.width,
         el = Fancy.get(document.createElement('div'));
 
-      el.addClass('fancy-grid-column');
+      if(column.hidden){
+        el.css('display', 'none');
+      }
+
+      el.addClass(columnCls);
       el.attr('grid', w.id);
 
       if(column.index === '$selected'){
@@ -7223,7 +7238,9 @@ Fancy.define('Fancy.grid.Body', {
         left: columnsWidth + 'px'
       });
 
-      columnsWidth += column.width;
+      if(!column.hidden){
+        columnsWidth += column.width;
+      }
     }
   },
   /*
@@ -7660,8 +7677,9 @@ Fancy.define('Fancy.grid.Body', {
   insertColumn: function(index, column){
     var me = this,
       w = me.widget,
+      columnCls = w.columnCls,
       _columns = me.getColumns(),
-      columns = me.el.select('.fancy-grid-column'),
+      columns = me.el.select('.' + columnCls),
       width = column.width,
       el = Fancy.get(document.createElement('div')),
       i = index,
@@ -7676,14 +7694,14 @@ Fancy.define('Fancy.grid.Body', {
     }
 
     for(;i<iL;i++){
-      var _column = columns.item(i);
+      var _column = columns.item(i),
+        left = parseInt(_column.css('left')) + column.width;
 
-      _column.css('left', parseInt(_column.css('left')) + column.width);
+      _column.css('left', left);
       _column.attr('index', i + 1);
     }
 
-
-    el.addClass('fancy-grid-column');
+    el.addClass(columnCls);
     el.attr('grid', w.id);
 
     if(column.index === '$selected'){
@@ -7747,13 +7765,13 @@ Fancy.define('Fancy.grid.Header', {
     'Fancy.grid.header.mixin.Menu'
   ],
   cellTpl: [
-    '<div class="fancy-grid-header-cell {cls}" style="width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
-    '<div class="fancy-grid-header-cell-container" style="height: {height};">',
-    '<span class="fancy-grid-header-cell-text">{columnName}</span>',
-    '<span class="fancy-grid-header-cell-trigger">',
-      '<div class="fancy-grid-header-cell-trigger-image"></div>',
-    '</span>',
-    '</div>',
+    '<div class="fancy-grid-header-cell {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+      '<div class="fancy-grid-header-cell-container" style="height: {height};">',
+        '<span class="fancy-grid-header-cell-text">{columnName}</span>',
+        '<span class="fancy-grid-header-cell-trigger">',
+          '<div class="fancy-grid-header-cell-trigger-image"></div>',
+        '</span>',
+      '</div>',
     '</div>'
   ],
   constructor: function(config){
@@ -7817,7 +7835,6 @@ Fancy.define('Fancy.grid.Header', {
       var column = columns[i],
         key = column.key || column.index,
         title = column.title || column.header,
-        //height = 'initial',
         height = w.cellHeaderHeight,
         cls = '',
         groupIndex = '';
@@ -7837,7 +7854,10 @@ Fancy.define('Fancy.grid.Header', {
 
           height = w.cellHeaderHeight + 'px';
 
-          groups[column.grouping].width += column.width;
+          if(!column.hidden){
+            groups[column.grouping].width += column.width;
+          }
+
           groupIndex = 'group-index="' + column.grouping + '"';
 
           cls = 'fancy-grid-header-cell-group-level-1'
@@ -7861,7 +7881,8 @@ Fancy.define('Fancy.grid.Header', {
         index: i,
         height: height,
         left: 'initial',
-        groupIndex: groupIndex
+        groupIndex: groupIndex,
+        display: column.hidden? 'none': ''
       });
 
       html += cellHTML;
@@ -7915,9 +7936,10 @@ Fancy.define('Fancy.grid.Header', {
       iL = columns.length;
 
     for(;i<iL;i++){
-      var _cell = cells.item(i);
+      var _cell = cells.item(i),
+        left = parseInt(_cell.css('left')) + column.width;
 
-      _cell.css('left', parseInt(_cell.css('left')) + column.width);
+      _cell.css('left', left);
     }
 
     var cellHTML = me.cellTpl.getHTML({
@@ -7985,7 +8007,9 @@ Fancy.define('Fancy.grid.Header', {
         left: cellsWidth + 'px'
       });
 
-      cellsWidth += column.width;
+      if(!column.hidden){
+        cellsWidth += column.width;
+      }
     }
 
     if(w.groupheader){
