@@ -1044,6 +1044,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       value = '';
     }
 
+    if(/NaN/.test(value)){
+      value = '';
+    }
+
     me.input.dom.value = value;
   },
   fieldCls: 'fancy fancy-field',

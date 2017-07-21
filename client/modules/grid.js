@@ -2010,7 +2010,6 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
         barScrollEnabled: me.barScrollEnabled
       },
       panelBodyBorders = me.panelBodyBorders;
-    //console.log(me.height, me.titleHeight, panelBodyBorders[0] + panelBodyBorders[2], me.barHeight, me.barHeight);
 
     if(me.bbar){
       panelConfig.bbar = me.bbar;
@@ -2065,7 +2064,6 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
-    //console.log(me.height);
   },
   /*
    *
@@ -2089,11 +2087,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       height -= me.cellHeaderHeight * rows;
     }
 
-    //console.log(me.cellHeaderHeight);
-
     if(me.panel){
       height -= gridBorders[0] + gridBorders[2];
-      //console.log(gridBorders[0], gridBorders[2]);
     }
     else{
       height -= gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2];
@@ -3239,8 +3234,10 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     if(Fancy.isDate(value)){
+      var format = this.getColumnByIndex('birthday').format;
+
       filter['type'] = 'date';
-      filter['format'] = this.lang.date;
+      filter['format'] = format;
       value = Number(value);
     }
 
@@ -3253,6 +3250,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     me.filter.filters[index] = filter;
     me.filter.updateStoreFilters();
+
+    me.filter.addValuesInColumnFields(index, value, sign);
   },
   clearFilter: function(index, sign){
     var me = this,
@@ -3275,6 +3274,10 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     s.changeDataView();
     me.update();
+
+    if(me.filter){
+      me.filter.clearColumnsFields(index, sign);
+    }
   },
   showLoadMask: function(text){
     this.loadmask.showLoadMask(text);
@@ -3308,6 +3311,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
   getPage: function(){
     return this.store.showPage + 1;
   },
+  getPages: function(){
+    return this.store.pages;
+  },
   getPageSize: function(){
     return this.store.pageSize;
   },
@@ -3322,6 +3328,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     scroller.scrollBottomKnob();
     scroller.scrollRightKnob();
+  },
+  getDataFiltered: function(){
+    return this.store.filteredData;
   }
 });/*
  * @class Fancy.grid.plugin.Updater
@@ -3538,8 +3547,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     if(w.nativeScroller){}
     else{
-      e.preventDefault();
-      me.scrollDelta(delta);
+      if(me.scrollDelta(delta)){
+        e.preventDefault();
+      }
       me.scrollRightKnob();
     }
   },
@@ -3990,7 +4000,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
   scrollDelta: function(value){
     var me = this,
       w = me.widget,
-      scrollInfo;
+      scrollInfo,
+      scrolled = true;
 
     w.leftBody.wheelScroll(value);
     scrollInfo = w.body.wheelScroll(value);
@@ -4000,6 +4011,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
 
     w.fire('scroll');
+
+    return scrollInfo.scrolled;
   },
   /*
    *
@@ -7257,7 +7270,8 @@ Fancy.define('Fancy.grid.Body', {
       return;
     }
 
-    var i = 0,
+    var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
+      i = 0,
       iL = columnsDom.length,
       bodyViewHeight = w.getBodyHeight(),
       cellsViewHeight = w.getCellsViewHeight(),
@@ -7284,6 +7298,8 @@ Fancy.define('Fancy.grid.Body', {
 
       columnEl.css('top', topValue + 'px');
     }
+
+    o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
 
     return o;
   },
@@ -7469,8 +7485,6 @@ Fancy.define('Fancy.grid.Body', {
       params = me.getEventParams(e),
       prevCellOver = me.prevCellOver;
 
-    //console.log(params);
-
     if(Fancy.nojQuery && prevCellOver){
       if(me.fixZeptoBug){
         if(params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
@@ -7533,9 +7547,7 @@ Fancy.define('Fancy.grid.Body', {
       if(prevCellOver === undefined){
         return;
       }
-      //console.log('[' + prevCellOver.rowIndex + ',' + prevCellOver.columnIndex + ']');
-      //console.log('[' + params.rowIndex + ',' + params.columnIndex + ']');
-      //console.log('[----------------------]');
+
       me.fixZeptoBug = params;
       return;
     }

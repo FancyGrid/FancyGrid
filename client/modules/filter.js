@@ -272,6 +272,138 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       }
     }
   },
+  _clearColumnsFields: function(columns, header, index, sign){
+    var i = 0,
+      iL = columns.length,
+      column;
+
+    for(;i<iL;i++){
+      column = columns[i];
+      if(column.filter && column.filter.header){
+        if(index && column.index !== index){
+          continue;
+        }
+
+        switch(column.type){
+          case 'date':
+            var els = header.getCell(i).select('.fancy-field'),
+              fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
+              fieldTo = Fancy.getWidget(els.item(1).attr('id'));
+
+            fieldFrom.clear();
+            fieldTo.clear();
+            break;
+          default:
+            var id = header.getCell(i).select('.fancy-field').attr('id'),
+              field = Fancy.getWidget(id);
+
+            if(sign){
+              var splitted = field.get().split(',');
+
+              if(splitted.length < 2 && !sign){
+                field.clear();
+              }
+              else{
+                var j = 0,
+                  jL = splitted.length,
+                  value = '';
+
+                for(;j<jL;j++){
+                  var splitItem = splitted[j];
+
+                  if( !new RegExp(sign).test(splitItem) ){
+                    value += splitItem;
+                  }
+                }
+
+                field.set(value);
+              }
+            }
+            else {
+              field.clear();
+            }
+        }
+      }
+    }
+  },
+  clearColumnsFields: function(index, sign){
+    var me = this,
+      w = me.widget;
+
+    this._clearColumnsFields(w.columns, w.header, index, sign);
+    this._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
+    this._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
+  },
+  _addValuesInColumnFields: function(columns, header, index, value, sign){
+    var i = 0,
+      iL = columns.length,
+      column;
+
+    for(;i<iL;i++){
+      column = columns[i];
+      if(column.index === index && column.filter && column.filter.header){
+        switch(column.type){
+          case 'date':
+            var els = header.getCell(i).select('.fancy-field'),
+              fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
+              fieldTo = Fancy.getWidget(els.item(1).attr('id'));
+
+            fieldFrom.clear();
+            fieldTo.clear();
+            break;
+          default:
+            var id = header.getCell(i).select('.fancy-field').attr('id'),
+              field = Fancy.getWidget(id),
+              fieldValue = field.get(),
+              splitted = field.get().split(',');
+
+            if(splitted.length === 1 && splitted[0] === ''){
+              field.set((sign || '') + value);
+            }
+            else if(splitted.length === 1){
+              if(new RegExp(sign).test(fieldValue)){
+                field.set((sign || '') + value);
+              }
+              else{
+                field.set(fieldValue + ',' + (sign || '') + value);
+              }
+            }
+            else{
+              var j = 0,
+                jL = splitted.length,
+                newValue = '';
+
+              for(;j<jL;j++){
+                var splittedItem = splitted[j];
+
+                if(!new RegExp(sign).test(splittedItem)){
+                  if(newValue.length !== 0){
+                    newValue += ',';
+                  }
+                  newValue += splittedItem;
+                }
+                else{
+                  if(newValue.length !== 0){
+                    newValue += ',';
+                  }
+                  newValue += (sign || '') + value;
+                }
+              }
+
+              field.set(newValue);
+            }
+        }
+      }
+    }
+  },
+  addValuesInColumnFields: function(index, value, sign){
+    var  me = this,
+      w = me.widget;
+
+    this._addValuesInColumnFields(w.columns, w.header, index, value, sign);
+    this._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
+    this._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
+  },
   /*
    * @param {String} type
    * @param {Object} column
@@ -522,6 +654,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
           width: column.width - 8
         });
     }
+
+    column.filterField = field;
   },
   /*
    * @param {Object} field
@@ -625,8 +759,6 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       s = w.store;
 
     s.filters = me.filters;
-
-    console.log(s.filters);
 
     s.changeDataView();
     w.update();

@@ -355,23 +355,16 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       var sortedSubValues;
 
       if(sorter.type === 'number'){
-        //console.log('number', sorter.dir);
         switch(sorter.dir){
           case 'ASC':
-            //console.log(keyValues[j]);
             sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function (a, b) {
               return a - b;
             });
-            //console.log(sortedSubValues);
-            //console.log('--------------');
             break;
           case 'DESC':
-            //console.log(keyValues[j]);
             sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function (a, b) {
               return b - a;
             });
-            //console.log(sortedSubValues);
-            //console.log('--------------');
             break;
         }
       }

@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.1',
+  version: '1.6.2',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -300,8 +300,6 @@ Fancy.Mixin = function(name, config){
 
   var waiters = Fancy.ClassManager.waitMixins[name];
 
-  //console.log(waiters);
-
   if(waiters){
     waiters = waiters.waiters;
 
@@ -309,7 +307,6 @@ Fancy.Mixin = function(name, config){
         iL = waiters.length;
 
     for(;i<iL;i++){
-      //console.log(name, waiters[i]);
       Fancy.apply(waiters[i], config);
     }
   }
@@ -1261,22 +1258,19 @@ Fancy.define = function(name, config){
     
     $classes[name].prototype.Super = function(method, args){
       var me = this;
-      //console.log(me.$Super.prototype.$name);
       if( me.$Iam ){
         me.$Iam = Fancy.ClassManager.get( me.$Iam.prototype.$Super.prototype.$name );
       }
       else{
         me.$Iam = Fancy.ClassManager.get( me.$Super.prototype.$name );
       }
-      //console.log(config);
+
       switch(method){
         case 'const':
         case 'constructor':
           me.$Iam.apply(me, args);
         break;
         default:
-          //console.log(me.$Iam, method, name, config);
-          //console.log(me.$Iam);
           me.$Iam.prototype[method].apply(me, args);
       }
       
@@ -1762,12 +1756,6 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     fns[seedFn] = fn;
     seedFn++;
 
-    /*
-    if(eventName === 'rowenter'){
-      console.log('on rowenter', fn.$fancyFnSeed);
-    }
-    */
-
     this.$events[eventName].push({
       fn:fn,
       scope: scope,
@@ -1792,14 +1780,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     for(;i<iL;i++){
       var lis = $events[i];
       if(lis.fn.$fancyFnSeed === fn.$fancyFnSeed){
-        /*
-        if(eventName === 'rowenter'){
-          console.log('un rowenter', fn.$fancyFnSeed);
-        }
-        */
-
         lis.toRemove = true;
-        //$events.splice(i, 1);
         return true;
       }
     }
@@ -2067,7 +2048,6 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if(me.getById(o.id)){
       me.remove(o.id);
-      //console.log(me.map);
     }
 
     if(me.proxyType === 'server' && me.autoSave){
@@ -5953,6 +5933,20 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
   }
 });
+
+FancyTab.get = function(id){
+  var tabId = Fancy.get(id).select('.fancy-panel-tab').dom.id;
+
+  return Fancy.getWidget(tabId);
+};
+
+if(!Fancy.nojQuery && Fancy.$){
+  Fancy.$.fn.FancyTab = function(o){
+    o.renderTo = $(this.selector)[0].id;
+
+    return new FancyTab(o);
+  };
+}
 /*
  * @class Fancy.Bar
  * @extends Fancy.Widget
@@ -6193,6 +6187,10 @@ Fancy.define('Fancy.Bar', {
       case 'segbutton':
         item.extraCls = 'fancy-bar-seg-button';
 
+        Fancy.applyIf(item.style, {
+          'margin-right': '6px'
+        });
+
         field = new Fancy.SegButton(item);
         break;
       case 'tab':
@@ -6259,6 +6257,20 @@ Fancy.define('Fancy.Bar', {
         });
 
         field = new Fancy.NumberField(item);
+
+        break;
+      case 'switcher':
+        Fancy.applyIf(item.style, {
+          'padding-left': '0px',
+          'margin-right': '8px',
+          'margin-top': '4px'
+        });
+
+        Fancy.applyIf(item, {
+          width: 35
+        });
+
+        field = new Fancy.Switcher(item);
 
         break;
       case 'string':
@@ -10426,7 +10438,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
  * @class Fancy.Grid
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Grid', {
+Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   extend: Fancy.Widget,
   mixins: [
     'Fancy.grid.mixin.Grid',
@@ -10747,7 +10759,6 @@ Fancy.define('Fancy.Grid', {
 
     if(me.neededModules.length === 0){
       me.neededModules = true;
-      //console.log('no neededModules');
       me.init();
       return;
     }
@@ -10758,7 +10769,6 @@ Fancy.define('Fancy.Grid', {
 
       if(me.neededModules.length === 0){
         me.neededModules = true;
-        //console.log('onLoad');
         me.init();
       }
     };
@@ -10800,7 +10810,6 @@ Fancy.define('Fancy.Grid', {
   }
 });
 
-var FancyGrid = Fancy.Grid;
 FancyGrid.get = function(id){
   var gridId = Fancy.get(id).select('.fancy-grid').dom.id;
 
@@ -10973,8 +10982,6 @@ Fancy.define('Fancy.ToolTip', {
     var me = this,
       renderTo = Fancy.get(me.renderTo || document.body).dom,
       el = Fancy.get(document.createElement('div'));
-
-    //console.log('render');
 
     el.addClass(Fancy.cls);
     el.addClass(me.widgetCls);

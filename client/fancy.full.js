@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.1',
+  version: '1.6.2',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -300,8 +300,6 @@ Fancy.Mixin = function(name, config){
 
   var waiters = Fancy.ClassManager.waitMixins[name];
 
-  //console.log(waiters);
-
   if(waiters){
     waiters = waiters.waiters;
 
@@ -309,7 +307,6 @@ Fancy.Mixin = function(name, config){
         iL = waiters.length;
 
     for(;i<iL;i++){
-      //console.log(name, waiters[i]);
       Fancy.apply(waiters[i], config);
     }
   }
@@ -2131,22 +2128,19 @@ Fancy.define = function(name, config){
     
     $classes[name].prototype.Super = function(method, args){
       var me = this;
-      //console.log(me.$Super.prototype.$name);
       if( me.$Iam ){
         me.$Iam = Fancy.ClassManager.get( me.$Iam.prototype.$Super.prototype.$name );
       }
       else{
         me.$Iam = Fancy.ClassManager.get( me.$Super.prototype.$name );
       }
-      //console.log(config);
+
       switch(method){
         case 'const':
         case 'constructor':
           me.$Iam.apply(me, args);
         break;
         default:
-          //console.log(me.$Iam, method, name, config);
-          //console.log(me.$Iam);
           me.$Iam.prototype[method].apply(me, args);
       }
       
@@ -2632,12 +2626,6 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     fns[seedFn] = fn;
     seedFn++;
 
-    /*
-    if(eventName === 'rowenter'){
-      console.log('on rowenter', fn.$fancyFnSeed);
-    }
-    */
-
     this.$events[eventName].push({
       fn:fn,
       scope: scope,
@@ -2662,14 +2650,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     for(;i<iL;i++){
       var lis = $events[i];
       if(lis.fn.$fancyFnSeed === fn.$fancyFnSeed){
-        /*
-        if(eventName === 'rowenter'){
-          console.log('un rowenter', fn.$fancyFnSeed);
-        }
-        */
-
         lis.toRemove = true;
-        //$events.splice(i, 1);
         return true;
       }
     }
@@ -4175,23 +4156,16 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       var sortedSubValues;
 
       if(sorter.type === 'number'){
-        //console.log('number', sorter.dir);
         switch(sorter.dir){
           case 'ASC':
-            //console.log(keyValues[j]);
             sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function (a, b) {
               return a - b;
             });
-            //console.log(sortedSubValues);
-            //console.log('--------------');
             break;
           case 'DESC':
-            //console.log(keyValues[j]);
             sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function (a, b) {
               return b - a;
             });
-            //console.log(sortedSubValues);
-            //console.log('--------------');
             break;
         }
       }
@@ -4344,7 +4318,6 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if(me.getById(o.id)){
       me.remove(o.id);
-      //console.log(me.map);
     }
 
     if(me.proxyType === 'server' && me.autoSave){
@@ -10749,6 +10722,20 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
   }
 });
+
+FancyTab.get = function(id){
+  var tabId = Fancy.get(id).select('.fancy-panel-tab').dom.id;
+
+  return Fancy.getWidget(tabId);
+};
+
+if(!Fancy.nojQuery && Fancy.$){
+  Fancy.$.fn.FancyTab = function(o){
+    o.renderTo = $(this.selector)[0].id;
+
+    return new FancyTab(o);
+  };
+}
 /**
  * @class Fancy.toolbar.Tab
  * @extends Fancy.Button
@@ -11023,6 +11010,10 @@ Fancy.define('Fancy.Bar', {
       case 'segbutton':
         item.extraCls = 'fancy-bar-seg-button';
 
+        Fancy.applyIf(item.style, {
+          'margin-right': '6px'
+        });
+
         field = new Fancy.SegButton(item);
         break;
       case 'tab':
@@ -11089,6 +11080,20 @@ Fancy.define('Fancy.Bar', {
         });
 
         field = new Fancy.NumberField(item);
+
+        break;
+      case 'switcher':
+        Fancy.applyIf(item.style, {
+          'padding-left': '0px',
+          'margin-right': '8px',
+          'margin-top': '4px'
+        });
+
+        Fancy.applyIf(item, {
+          width: 35
+        });
+
+        field = new Fancy.Switcher(item);
 
         break;
       case 'string':
@@ -13978,6 +13983,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     }
 
     if(value === undefined){
+      value = '';
+    }
+
+    if(/NaN/.test(value)){
       value = '';
     }
 
@@ -19236,7 +19245,6 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
         barScrollEnabled: me.barScrollEnabled
       },
       panelBodyBorders = me.panelBodyBorders;
-    //console.log(me.height, me.titleHeight, panelBodyBorders[0] + panelBodyBorders[2], me.barHeight, me.barHeight);
 
     if(me.bbar){
       panelConfig.bbar = me.bbar;
@@ -19291,7 +19299,6 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
-    //console.log(me.height);
   },
   /*
    *
@@ -19315,11 +19322,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       height -= me.cellHeaderHeight * rows;
     }
 
-    //console.log(me.cellHeaderHeight);
-
     if(me.panel){
       height -= gridBorders[0] + gridBorders[2];
-      //console.log(gridBorders[0], gridBorders[2]);
     }
     else{
       height -= gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2];
@@ -20465,8 +20469,10 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     if(Fancy.isDate(value)){
+      var format = this.getColumnByIndex('birthday').format;
+
       filter['type'] = 'date';
-      filter['format'] = this.lang.date;
+      filter['format'] = format;
       value = Number(value);
     }
 
@@ -20479,6 +20485,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     me.filter.filters[index] = filter;
     me.filter.updateStoreFilters();
+
+    me.filter.addValuesInColumnFields(index, value, sign);
   },
   clearFilter: function(index, sign){
     var me = this,
@@ -20501,6 +20509,10 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     s.changeDataView();
     me.update();
+
+    if(me.filter){
+      me.filter.clearColumnsFields(index, sign);
+    }
   },
   showLoadMask: function(text){
     this.loadmask.showLoadMask(text);
@@ -20534,6 +20546,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
   getPage: function(){
     return this.store.showPage + 1;
   },
+  getPages: function(){
+    return this.store.pages;
+  },
   getPageSize: function(){
     return this.store.pageSize;
   },
@@ -20548,13 +20563,16 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     scroller.scrollBottomKnob();
     scroller.scrollRightKnob();
+  },
+  getDataFiltered: function(){
+    return this.store.filteredData;
   }
 });
 /**
  * @class Fancy.Grid
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Grid', {
+Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   extend: Fancy.Widget,
   mixins: [
     'Fancy.grid.mixin.Grid',
@@ -20875,7 +20893,6 @@ Fancy.define('Fancy.Grid', {
 
     if(me.neededModules.length === 0){
       me.neededModules = true;
-      //console.log('no neededModules');
       me.init();
       return;
     }
@@ -20886,7 +20903,6 @@ Fancy.define('Fancy.Grid', {
 
       if(me.neededModules.length === 0){
         me.neededModules = true;
-        //console.log('onLoad');
         me.init();
       }
     };
@@ -20928,7 +20944,6 @@ Fancy.define('Fancy.Grid', {
   }
 });
 
-var FancyGrid = Fancy.Grid;
 FancyGrid.get = function(id){
   var gridId = Fancy.get(id).select('.fancy-grid').dom.id;
 
@@ -21161,8 +21176,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     if(w.nativeScroller){}
     else{
-      e.preventDefault();
-      me.scrollDelta(delta);
+      if(me.scrollDelta(delta)){
+        e.preventDefault();
+      }
       me.scrollRightKnob();
     }
   },
@@ -21613,7 +21629,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
   scrollDelta: function(value){
     var me = this,
       w = me.widget,
-      scrollInfo;
+      scrollInfo,
+      scrolled = true;
 
     w.leftBody.wheelScroll(value);
     scrollInfo = w.body.wheelScroll(value);
@@ -21623,6 +21640,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
 
     w.fire('scroll');
+
+    return scrollInfo.scrolled;
   },
   /*
    *
@@ -22282,8 +22301,6 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       infoEnd = infoStart + pageSize,
       infoTotal = s.getTotal() || 0,
       lang = w.lang;
-
-    //console.log(infoTotal, infoEnd);
 
     if(infoEnd > infoTotal){
       infoEnd = infoTotal;
@@ -27892,8 +27909,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
     }
 
-    //console.log(groups);
-
     me.groups = groups;
     s.changeOrderByGroups(groups, me.by);
   },
@@ -28349,28 +28364,12 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       return;
     }
 
-    //var date1 = new Date();
     me.setPositions();
-    //var date2 = new Date();
-    //console.log('in 1', date2 - date1);
-    //maybe not needed
     w.update();
-    //var date3 = new Date();
-    //console.log('in 2', date3 - date2);
     w.scroller.update();
-    //var date4 = new Date();
-    //console.log('in 3', date4 - date3);
     me.setCellsPosition();
-    //var date5 = new Date();
-    //console.log('in 4', date5 - date4);
     w.setSidesHeight();
-    //var date6 = new Date();
-    //console.log('in 5', date6 - date5);
     s.changeDataView();
-    var date7 = new Date();
-    //console.log('in 6', date7 - date6);
-
-    //console.log('total:', date7 - date1);
   },
   /*
    * @param {Number} rowIndex
@@ -28642,6 +28641,138 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       }
     }
   },
+  _clearColumnsFields: function(columns, header, index, sign){
+    var i = 0,
+      iL = columns.length,
+      column;
+
+    for(;i<iL;i++){
+      column = columns[i];
+      if(column.filter && column.filter.header){
+        if(index && column.index !== index){
+          continue;
+        }
+
+        switch(column.type){
+          case 'date':
+            var els = header.getCell(i).select('.fancy-field'),
+              fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
+              fieldTo = Fancy.getWidget(els.item(1).attr('id'));
+
+            fieldFrom.clear();
+            fieldTo.clear();
+            break;
+          default:
+            var id = header.getCell(i).select('.fancy-field').attr('id'),
+              field = Fancy.getWidget(id);
+
+            if(sign){
+              var splitted = field.get().split(',');
+
+              if(splitted.length < 2 && !sign){
+                field.clear();
+              }
+              else{
+                var j = 0,
+                  jL = splitted.length,
+                  value = '';
+
+                for(;j<jL;j++){
+                  var splitItem = splitted[j];
+
+                  if( !new RegExp(sign).test(splitItem) ){
+                    value += splitItem;
+                  }
+                }
+
+                field.set(value);
+              }
+            }
+            else {
+              field.clear();
+            }
+        }
+      }
+    }
+  },
+  clearColumnsFields: function(index, sign){
+    var me = this,
+      w = me.widget;
+
+    this._clearColumnsFields(w.columns, w.header, index, sign);
+    this._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
+    this._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
+  },
+  _addValuesInColumnFields: function(columns, header, index, value, sign){
+    var i = 0,
+      iL = columns.length,
+      column;
+
+    for(;i<iL;i++){
+      column = columns[i];
+      if(column.index === index && column.filter && column.filter.header){
+        switch(column.type){
+          case 'date':
+            var els = header.getCell(i).select('.fancy-field'),
+              fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
+              fieldTo = Fancy.getWidget(els.item(1).attr('id'));
+
+            fieldFrom.clear();
+            fieldTo.clear();
+            break;
+          default:
+            var id = header.getCell(i).select('.fancy-field').attr('id'),
+              field = Fancy.getWidget(id),
+              fieldValue = field.get(),
+              splitted = field.get().split(',');
+
+            if(splitted.length === 1 && splitted[0] === ''){
+              field.set((sign || '') + value);
+            }
+            else if(splitted.length === 1){
+              if(new RegExp(sign).test(fieldValue)){
+                field.set((sign || '') + value);
+              }
+              else{
+                field.set(fieldValue + ',' + (sign || '') + value);
+              }
+            }
+            else{
+              var j = 0,
+                jL = splitted.length,
+                newValue = '';
+
+              for(;j<jL;j++){
+                var splittedItem = splitted[j];
+
+                if(!new RegExp(sign).test(splittedItem)){
+                  if(newValue.length !== 0){
+                    newValue += ',';
+                  }
+                  newValue += splittedItem;
+                }
+                else{
+                  if(newValue.length !== 0){
+                    newValue += ',';
+                  }
+                  newValue += (sign || '') + value;
+                }
+              }
+
+              field.set(newValue);
+            }
+        }
+      }
+    }
+  },
+  addValuesInColumnFields: function(index, value, sign){
+    var  me = this,
+      w = me.widget;
+
+    this._addValuesInColumnFields(w.columns, w.header, index, value, sign);
+    this._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
+    this._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
+  },
   /*
    * @param {String} type
    * @param {Object} column
@@ -28892,6 +29023,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
           width: column.width - 8
         });
     }
+
+    column.filterField = field;
   },
   /*
    * @param {Object} field
@@ -28995,8 +29128,6 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       s = w.store;
 
     s.filters = me.filters;
-
-    console.log(s.filters);
 
     s.changeDataView();
     w.update();
@@ -32092,7 +32223,8 @@ Fancy.define('Fancy.grid.Body', {
       return;
     }
 
-    var i = 0,
+    var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
+      i = 0,
       iL = columnsDom.length,
       bodyViewHeight = w.getBodyHeight(),
       cellsViewHeight = w.getCellsViewHeight(),
@@ -32119,6 +32251,8 @@ Fancy.define('Fancy.grid.Body', {
 
       columnEl.css('top', topValue + 'px');
     }
+
+    o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
 
     return o;
   },
@@ -32304,8 +32438,6 @@ Fancy.define('Fancy.grid.Body', {
       params = me.getEventParams(e),
       prevCellOver = me.prevCellOver;
 
-    //console.log(params);
-
     if(Fancy.nojQuery && prevCellOver){
       if(me.fixZeptoBug){
         if(params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
@@ -32368,9 +32500,7 @@ Fancy.define('Fancy.grid.Body', {
       if(prevCellOver === undefined){
         return;
       }
-      //console.log('[' + prevCellOver.rowIndex + ',' + prevCellOver.columnIndex + ']');
-      //console.log('[' + params.rowIndex + ',' + params.columnIndex + ']');
-      //console.log('[----------------------]');
+
       me.fixZeptoBug = params;
       return;
     }
@@ -35545,8 +35675,6 @@ Fancy.define('Fancy.ToolTip', {
     var me = this,
       renderTo = Fancy.get(me.renderTo || document.body).dom,
       el = Fancy.get(document.createElement('div'));
-
-    //console.log('render');
 
     el.addClass(Fancy.cls);
     el.addClass(me.widgetCls);

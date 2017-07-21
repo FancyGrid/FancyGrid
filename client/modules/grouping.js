@@ -301,8 +301,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
     }
 
-    //console.log(groups);
-
     me.groups = groups;
     s.changeOrderByGroups(groups, me.by);
   },
@@ -758,28 +756,12 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       return;
     }
 
-    //var date1 = new Date();
     me.setPositions();
-    //var date2 = new Date();
-    //console.log('in 1', date2 - date1);
-    //maybe not needed
     w.update();
-    //var date3 = new Date();
-    //console.log('in 2', date3 - date2);
     w.scroller.update();
-    //var date4 = new Date();
-    //console.log('in 3', date4 - date3);
     me.setCellsPosition();
-    //var date5 = new Date();
-    //console.log('in 4', date5 - date4);
     w.setSidesHeight();
-    //var date6 = new Date();
-    //console.log('in 5', date6 - date5);
     s.changeDataView();
-    var date7 = new Date();
-    //console.log('in 6', date7 - date6);
-
-    //console.log('total:', date7 - date1);
   },
   /*
    * @param {Number} rowIndex

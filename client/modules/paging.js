@@ -409,8 +409,6 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       infoTotal = s.getTotal() || 0,
       lang = w.lang;
 
-    //console.log(infoTotal, infoEnd);
-
     if(infoEnd > infoTotal){
       infoEnd = infoTotal;
     }
