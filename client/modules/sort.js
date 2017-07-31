@@ -313,10 +313,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     var me = this,
       w = me.widget,
       s = w.store,
-      //sorter = me.sorters[i + 1],
       sorter = me.sorters[i],
       prevKey = me.sorters[i + 1].key,
-      //prevKey = me.sorters[i].key,
       key = sorter.key,
       j = 0,
       jL = me.getTotal(),
@@ -452,7 +450,6 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
   onHeaderCellClick: function(grid, o){
     var me = this,
       w = me.widget,
-      s = w.store,
       cellEl = Fancy.get(o.cell),
       side = o.side,
       index = o.index,
@@ -462,7 +459,6 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       columns,
       column,
       key,
-      type,
       e = o.e,
       target = e.target;
 
@@ -559,6 +555,15 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       }
     }
 
+    if(w.grouping){
+      if(s.remoteSort){
+        s.once('load', function(){
+          w.grouping.reGroup();
+          //Write code instead of reGroup
+        });
+      }
+    }
+
     s.sort(dir, type, index, {
       smartIndexFn: column.smartIndexFn,
       format: format
@@ -619,10 +624,7 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       columns = w.getColumns(side);
       key = columns[index].index;
 
-      var j = 0,
-        jL = s.sorters.length,
-        passed = false,
-        firstSorter = s.sorters[0];
+      var firstSorter = s.sorters[0];
 
       if(firstSorter.key === key){
         cellToRemoveCls = cell;
@@ -653,10 +655,7 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       columns = w.getColumns(side);
       key = columns[index].index;
 
-      var j = 0,
-        jL = s.sorters.length,
-        passed = false,
-        firstSorter = s.sorters[0];
+      var firstSorter = s.sorters[0];
 
       if(firstSorter.key === key){
         cellToRemoveCls = cell;

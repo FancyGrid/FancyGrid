@@ -254,7 +254,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this,
       pi = Math.PI,
       sum = me.sum,   
-      radians = value / sum * pi * 2 - pi / 2
+      radians = value / sum * pi * 2 - pi / 2;
 
     return [
       radius * Math.cos(radians) + me.cx,
@@ -397,11 +397,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  preRender: function(){
-    var me = this;
-
-
-  },
+  preRender: function(){},
   /*
    *
    */
@@ -775,8 +771,6 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    var me = this;
-
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*

@@ -15,6 +15,11 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       dataViewMap = {},
       dataViewIndexes = {};
 
+    if(me.filteredData){
+      data = me.filteredData;
+      iL = data.length;
+    }
+
     me.expanded = me.expanded || {};
     me.expanded[value] = true;
 
@@ -140,12 +145,14 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
 });/*
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
+ *
  */
 Fancy.define('Fancy.grid.plugin.Grouping', {
   extend: Fancy.Plugin,
   ptype: 'grid.grouping',
   inWidgetName: 'grouping',
   tpl: '{text}:{number}',
+  _renderFirstTime: true,
   /*
    * @constructor
    * @param {Object} config
@@ -164,7 +171,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     me.Super('init', arguments);
 
     me._expanded = {};
-    me.groupRows = [];
 
     me.initTpl();
     me.initGroups();
@@ -208,16 +214,19 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  initGroups: function(){
+  initGroups: function(dataProperty){
     var me = this,
       w = me.widget,
-      s = w.store;
+      s = w.store,
+      dataProperty = dataProperty || 'data';
 
     if(!me.by){
       throw new Error('[FancyGrid Error] - not set by param in grouping');
     }
 
-    var values = s.getColumnOriginalValues(me.by),
+    var values = s.getColumnOriginalValues(me.by, {
+        dataProperty: dataProperty
+      }),
       _groups = {},
       i = 0,
       iL = values.length;
@@ -273,8 +282,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
           }
 
           upperGroups = upperGroups.sort();
-
-
 
           i = me.order.length - 1;
           iL = groups.length;
@@ -416,8 +423,58 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       if(me.collapsed){
         passedTop += w.groupRowHeight;
       }
+    }
+  },
+  /*
+   *
+   */
+  removeGroupRows: function(){
+    var me = this,
+      w = me.widget,
+      columns = w.columns,
+      leftColumns = w.leftColumns,
+      rightColumns = w.rightColumns,
+      s = w.store,
+      body = w.body,
+      leftBody = w.leftBody,
+      rightBody = w.rightBody;
 
-      me.groupRows.push(el);
+    if(columns.length){
+      body.el.select('.fancy-grid-group-row').remove();
+    }
+
+    if(leftColumns.length){
+      leftBody.el.select('.fancy-grid-group-row').remove();
+    }
+
+    if(rightColumns.length){
+      rightBody.el.select('.fancy-grid-group-row').remove();
+    }
+  },
+  /*
+   *
+   */
+  removeCells: function(){
+    var me = this,
+      w = me.widget,
+      columns = w.columns,
+      leftColumns = w.leftColumns,
+      rightColumns = w.rightColumns,
+      s = w.store,
+      body = w.body,
+      leftBody = w.leftBody,
+      rightBody = w.rightBody;
+
+    if(columns.length){
+      body.el.select('.fancy-grid-cell').remove();
+    }
+
+    if(leftColumns.length){
+      leftBody.el.select('.fancy-grid-cell').remove();
+    }
+
+    if(rightColumns.length){
+      rightBody.el.select('.fancy-grid-cell').remove();
     }
   },
   /*
@@ -570,7 +627,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  setCellsPosition: function(){
+  setCellsPosition: function() {
     var me = this,
       w = me.widget,
       i = 0,
@@ -585,18 +642,20 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       rows = [],
       cell;
 
-    me.clearMargins();
+    var marginedRows = {};
 
     for(;i<iL;i++){
       var groupName = me.groups[i];
 
       if(me._expanded[groupName] === true){
         rows.push(row);
+        marginedRows[row] = true;
 
         j = 0;
         jL = w.columns.length;
         for(;j<jL;j++){
           cell = body.getCell(row, j);
+
           cell.css('margin-top', top + 'px');
         }
 
@@ -624,15 +683,35 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
     }
 
+    if(me._renderFirstTime){
+      me._renderFirstTime = false;
+    }
+    else {
+      var i = 0,
+        iL = me.prevRows.length,
+        toClearMargins = [];
+
+      for(;i<iL;i++){
+        var rowIndex = me.prevRows[i];
+
+        if( marginedRows[rowIndex] !== true ){
+          toClearMargins.push(rowIndex);
+        }
+      }
+
+      me.clearMargins(toClearMargins);
+    }
+
     me.prevRows = rows;
   },
   /*
    *
    */
-  clearMargins: function(){
-    var me = this;
+  clearMargins: function(rows){
+    var me = this,
+      rows = rows || me.prevRows;
 
-    if(me.prevRows === undefined){
+    if(rows === undefined){
       return;
     }
 
@@ -642,19 +721,18 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       rightBody = w.rightBody,
       i = 0,
       j = 0,
-      iL = me.prevRows.length,
+      iL = rows.length,
       jL,
       row,
       cell;
 
     for(;i<iL;i++){
-      row = me.prevRows[i];
+      row = rows[i];
       j = 0;
       jL = w.columns.length;
       for(;j<jL;j++){
         cell = body.getCell(row, j);
-
-        if(cell.css === undefined){
+        if(cell.dom === undefined){
           break;
         }
 
@@ -666,7 +744,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       for(;j<jL;j++){
         cell = leftBody.getCell(row, j);
 
-        if(cell.css === undefined){
+        if(cell.dom === undefined){
           break;
         }
 
@@ -678,7 +756,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       for(;j<jL;j++){
         cell = rightBody.getCell(row, j);
 
-        if(cell.css === undefined){
+        if(cell.dom === undefined){
           break;
         }
 
@@ -734,24 +812,23 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  update: function(){
+  update: function(loaded){
     var me = this,
       w = me.widget,
       s = w.store;
 
-    if(s.loading === true || s.autoLoad === false){
+    if(!loaded && (s.loading === true || s.autoLoad === false)){
       s.once('load', function(){
         me.initGroups();
         me.initOrder();
         me.calcPlusScroll();
         me.configParams();
-        s.changeDataView();
+        s.changeDataView({
+          doNotFired: true
+        });
 
         me.renderGroupedRows();
-        me.setCellsPosition();
-        w.setSidesHeight();
-        me.update();
-
+        me.update(true);
       }, me);
       return;
     }
@@ -761,7 +838,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     w.scroller.update();
     me.setCellsPosition();
     w.setSidesHeight();
-    s.changeDataView();
   },
   /*
    * @param {Number} rowIndex
@@ -817,5 +893,41 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     }
 
     return rowsAfter;
+  },
+  //TODO: write function
+  reGroup: function(){
+    var me = this,
+      w = me.widget,
+      s = w.store,
+      dataProperty = 'data';
+
+    me.expanded = {};
+    me._expanded = {};
+    w.store.expanded = {};
+    w.store.dataView = [];
+
+    me.collapsed = true;
+
+    if(w.store.filteredData){
+      dataProperty = 'filteredData';
+    }
+
+    me.removeGroupRows();
+    me.removeCells();
+    me.initGroups(dataProperty);
+    if(s.remoteFilter){
+      me.initOrder();
+    }
+    me.calcPlusScroll();
+    me.configParams();
+    me.renderGroupedRows();
+    w.setSidesHeight();
+  },
+  scrollLeft: function(value){
+    var me = this,
+      w = me.widget,
+      body = w.body;
+
+    body.el.select('.' + w.clsGroupRow).css('left', value);
   }
 });

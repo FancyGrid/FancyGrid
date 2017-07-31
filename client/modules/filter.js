@@ -218,57 +218,45 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    */
   render: function(){
     var me = this,
+      w = me.widget;
+
+    me._renderSideFields(w.header, w.columns);
+    me._renderSideFields(w.leftHeader, w.leftColumns);
+    me._renderSideFields(w.rightHeader, w.rightColumns);
+  },
+  _renderSideFields: function(header, columns){
+    var me = this,
       w = me.widget,
-      header = w.header,
-      leftHeader = w.leftHeader,
-      rightHeader = w.rightHeader,
-      columns = w.columns,
-      leftColumns = w.leftColumns,
-      rightColumns = w.rightColumns,
       i = 0,
       iL = columns.length,
+      cell,
       column,
-      cell;
+      cellHeaderTripleCls = w.cellHeaderTripleCls,
+      cellHeaderDoubleCls = w.cellHeaderDoubleCls;
 
     for(;i<iL;i++){
       column = columns[i];
       cell = header.getCell(i);
       if(column.filter && column.filter.header){
         me.renderFilter(column.type, column, cell);
+        if(me.groupHeader && !column.grouping){
+          cell.addClass(cellHeaderTripleCls);
+        }
+
         cell.addClass(w.filterHeaderCellCls);
       }
       else if(me.header){
-        cell.addClass(w.cellHeaderDoubleSize);
-      }
-    }
-
-    i = 0;
-    iL = leftColumns.length;
-
-    for(;i<iL;i++){
-      column = leftColumns[i];
-      cell = leftHeader.getCell(i);
-      if(column.filter && column.filter.header){
-        me.renderFilter(column.type, column, cell);
-        cell.addClass(w.filterHeaderCellCls);
-      }
-      else if(me.header){
-        cell.addClass(w.cellHeaderDoubleSize);
-      }
-    }
-
-    i = 0;
-    iL = rightColumns.length;
-
-    for(;i<iL;i++){
-      column = rightColumns[i];
-      cell = rightHeader.getCell(i);
-      if(column.filter && column.filter.header){
-        me.renderFilter(column.type, column, cell);
-        cell.addClass(w.filterHeaderCellCls);
-      }
-      else if(me.header){
-        cell.addClass(w.cellHeaderDoubleSize);
+        if(me.groupHeader && !column.grouping){
+          cell.addClass(cellHeaderTripleCls);
+        }
+        else{
+          if(column.grouping && me.groupHeader){
+            cell.addClass(cellHeaderDoubleCls);
+          }
+          else if(!column.grouping){
+            cell.addClass(cellHeaderDoubleCls);
+          }
+        }
       }
     }
   },
@@ -503,41 +491,6 @@ Fancy.define('Fancy.grid.plugin.Filter', {
           tip: tip
         });
         break;
-      case 'combo1':
-        var data = [],
-          i = 0,
-          iL = column.data.length;
-
-        for(;i<iL;i++){
-          var value = column.data[i];
-
-          data.push({
-            index: value,
-            valueText: value
-          });
-        }
-
-        field = new Fancy.TagField({
-          renderTo: dom.dom,
-          label: false,
-          style: style,
-          displayKey: 'valueText',
-          valueKey: 'index',
-          value: '',
-          itemCheckBox: true,
-          theme: theme,
-          events: [{
-            change: me.onEnter,
-            scope: me
-          }],
-          data: data
-        });
-
-        field.size({
-          width: column.width - 26,
-          height: 26
-        });
-        break;
       case 'combo':
         var displayKey = 'valueText';
         var valueKey = 'valueText';
@@ -573,6 +526,10 @@ Fancy.define('Fancy.grid.plugin.Filter', {
           events: [{
             change: me.onEnter,
             scope: me
+          },{
+            empty: function(){
+              this.set(-1);
+            }
           }],
           data: data
         });
@@ -664,6 +621,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    */
   onEnter: function(field, value, options){
     var me = this,
+      w = me.widget,
+      s = w.store,
       filterIndex = field.filterIndex,
       signs = {
         '<': true,
@@ -683,6 +642,11 @@ Fancy.define('Fancy.grid.plugin.Filter', {
     if(value.length === 0){
       me.filters[field.filterIndex] = {};
       me.updateStoreFilters();
+
+      if(w.grouping){
+        w.grouping.reGroup();
+      }
+
       return;
     }
 
@@ -699,7 +663,25 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       Fancy.apply(me.filters[filterIndex], options);
     }
 
-    me.updateStoreFilters();
+    if(s.remoteFilter){
+      s.filters = me.filters;
+      s.serverFilter();
+    }
+    else {
+      me.updateStoreFilters();
+    }
+
+    if(w.grouping){
+      if(s.remoteSort){
+        s.once('load', function(){
+          w.grouping.reGroup();
+          w.fire('filter', me.filters);
+        });
+      }
+      else {
+        w.grouping.reGroup();
+      }
+    }
   },
   /*
    * @param {String|Number} value
@@ -738,8 +720,13 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         continue;
       }
 
-      if(type === 'number'){
-        _value = Number(_value);
+      switch(type){
+        case 'number':
+            _value = Number(_value);
+          break;
+        case 'combo':
+            operator = '=';
+          break;
       }
 
       filters.push({
@@ -1002,13 +989,20 @@ Fancy.define('Fancy.grid.plugin.Search', {
    * @param {*} values
    */
   search: function(keys, values){
-    var me = this;
+    var me = this,
+      w = me.widget,
+      s = w.store;
 
     me.searches = {};
 
     if(!keys && !values ){
       me.clear();
       me.updateStoreSearches();
+
+      if(w.grouping){
+        w.grouping.reGroup();
+      }
+
       return;
     }
 
@@ -1017,7 +1011,24 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
 
     me.setFilters();
-    me.updateStoreSearches();
+
+    if(s.remoteSort){
+      s.serverFilter();
+    }
+    else {
+      me.updateStoreSearches();
+    }
+
+    if(w.grouping){
+      if(s.remoteSort){
+        s.once('load', function(){
+          w.grouping.reGroup();
+        });
+      }
+      else {
+        w.grouping.reGroup();
+      }
+    }
   },
   /*
    *

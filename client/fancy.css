@@ -327,6 +327,7 @@
 .fancy-field-search-list {
   background: white;
   display: none;
+  z-index: 1;
 }
 .fancy-field-search-list .fancy-field {
   padding-top: 5px !important;
@@ -820,6 +821,9 @@
   background: #FFF;
   border: 1px solid #C3CBD4;
   overflow: hidden;
+}
+.fancy-combo .fancy-combo-input-container .fancy-field-text-input {
+  padding-right: 27px;
 }
 .fancy-combo input {
   padding: 7px;
@@ -1704,6 +1708,42 @@ vml {
 .fancy-grid-header-grouped .fancy-grid-header-cell-group-level-2 .fancy-grid-header-cell-trigger {
   display: none;
 }
+.fancy-grid-header-filter-cell-small .fancy-grid-header-cell-container {
+  padding-top: 9px;
+}
+.fancy-grid-header-filter-cell-small .fancy-grid-header-cell-trigger-image {
+  margin-top: 8px;
+}
+.fancy-grid-header-filter-cell-small .fancy-grid-header-cell-trigger {
+  height: 50%;
+}
+.fancy-grid-header-filter-cell-full .fancy-grid-header-cell-container {
+  padding-top: 9px;
+}
+.fancy-grid-header-cell-triple .fancy-grid-header-cell-container {
+  padding-top: 40px;
+}
+.fancy-grid-header-cell-triple .fancy-grid-header-cell-trigger-image {
+  margin-top: 40px;
+}
+.fancy-grid-header-cell-group-level-1.fancy-grid-header-cell-double .fancy-grid-header-cell-container {
+  padding-top: 21px;
+}
+.fancy-grid-header-cell-group-level-1.fancy-grid-header-cell-double .fancy-grid-header-cell-trigger-image {
+  margin-top: 21px;
+}
+.fancy-grid-header-cell-group-level-1.fancy-grid-header-filter-cell .fancy-grid-header-cell-trigger {
+  height: 50%;
+}
+.fancy-grid-header-cell-triple.fancy-grid-header-filter-cell .fancy-grid-header-cell-container {
+  padding-top: 25px;
+}
+.fancy-grid-header-cell-triple.fancy-grid-header-filter-cell .fancy-grid-header-cell-trigger-image {
+  margin-top: 25px;
+}
+.fancy-grid-header-cell-triple.fancy-grid-header-filter-cell .fancy-grid-header-cell-trigger {
+  height: 64%;
+}
 /*
  group-row.less
 */
@@ -1733,10 +1773,9 @@ vml {
 /*
  filter.less
 */
-.fancy-grid-header-cell-double-size .fancy-grid-header-cell-container {
+.fancy-grid-header-cell-double .fancy-grid-header-cell-container {
   padding-top: 24px;
   padding-bottom: 24px;
-  height: 60px;
 }
 .fancy-grid-header-filter-cell .fancy-grid-header-cell-container {
   height: 60px;

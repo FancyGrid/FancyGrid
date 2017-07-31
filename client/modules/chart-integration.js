@@ -89,8 +89,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
 
     for(;i<iL;i++){
       var _chart = chart[i],
-        type = _chart.type,
-        chartType;
+        type = _chart.type;
 
       switch(type){
         case 'highchart':
@@ -163,12 +162,13 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
       s = w.store,
       chart = me.chart,
       _chart = chart[0],
-      type = _chart.type;
+      type = _chart.type,
+      data;
 
     switch(type){
       case 'highchart':
       case 'highcharts':
-        var data = w.highchart.getData(_chart);
+        data = w.highchart.getData(_chart);
         break;
     }
 

@@ -851,7 +851,7 @@ Fancy.Date = {
   },
   /**
    * @param {Date} date
-   * @return {Number}
+   * @return {Boolean}
    */
   isLeapYear: function(date){
     var year = date.getFullYear();
@@ -861,7 +861,7 @@ Fancy.Date = {
   /**
    * @param {String|Number} year
    * @param {String|Number} month
-   * @return {Date}
+   * @return {Number}
    */
   getMonthNumber: function(year, month){
     return new Date(year, month + 1, 0).getDate();
@@ -1109,8 +1109,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
    *
    */
   onInputClick: function(e){
-    var me = this,
-      el = me.el;
+    var me = this;
 
     e.preventDefault();
 
@@ -1120,8 +1119,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
    * @param {Object} e
    */
   onPickerButtonMouseDown: function(e){
-    var me = this,
-      el = me.el;
+    var me = this;
 
     e.preventDefault();
 
@@ -1166,8 +1164,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     var me = this,
       datePicker = me.picker,
       monthPicker = datePicker.monthPicker,
-      target = e.target,
-      dateImageButton = me.el.select('.fancy-field-picker-button').item(0);
+      target = e.target;
 
     if(target.tagName.toLocaleLowerCase() === 'input'){}
     else if(Fancy.get(target).hasClass('fancy-field-picker-button')){}
@@ -1217,7 +1214,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
   renderPicker: function() {
     var me = this;
 
-    if (!Fancy.fullBuilt && !Fancy.modules['grid'] && Fancy.MODULELOAD !== false) {
+    if (!Fancy.fullBuilt && !Fancy.modules['grid'] && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false) {
       return;
     }
 
@@ -1624,7 +1621,7 @@ Fancy.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
   initMonthPicker: function(){
     var me = this;
 
-    if( !Fancy.fullBuilt && Fancy.MODULELOAD !== false && ( me.monthPicker || !Fancy.modules['grid'] ) ){
+    if( !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULELOAD !== false && ( me.monthPicker || !Fancy.modules['grid'] ) ){
       return;
     }
 
@@ -2158,8 +2155,6 @@ Fancy.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
    *
    */
   onMouseDown: function(e){
-    var me = this;
-
     e.preventDefault();
   },
   /*
@@ -2267,24 +2262,13 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       return;
     }
 
-    var i18n = me.i18n,
-      lang = Fancy.Object.copy(Fancy.i18n[i18n]);
-
-    me.lang = lang;
+    me.lang = Fancy.Object.copy(Fancy.i18n[me.i18n]);
   },
   /*
    *
    */
   initColumns: function(){
     var me = this,
-      date = me.lang.date,
-      days = date.days,
-      startDay = date.startDay,
-      i = startDay,
-      iL = days.length,
-      dayIndexes = Fancy.Date.dayIndexes,
-      columns = [],
-      today = new Date(),
       activeCellCls = me.activeCellCls;
 
     var renderMonth = function(o){
@@ -2309,7 +2293,7 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       return o;
     };
 
-    columns = [{
+    me.columns = [{
       index: 'month1',
       render: renderMonth,
       locked: true
@@ -2327,8 +2311,6 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       render: renderYear,
       width: 77
     }];
-
-    me.columns = columns;
   },
   /*
    * @return {Object}

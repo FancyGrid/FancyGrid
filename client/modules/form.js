@@ -40,7 +40,7 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     me.addEvents('init', 'set');
     
-    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
+    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       me.loadModules();
       return;
     }
@@ -1242,7 +1242,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
     var me = this;
 
     return me.el.firstChild().dom.innerHTML;
-  },
+  }
 });/**
  * @class Fancy.ReCaptcha
  * @extends Fancy.Widget

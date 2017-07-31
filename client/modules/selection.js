@@ -203,8 +203,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onChangePage: function(){
-    var me = this;
-
     this.clearSelection();
   },
   /*
@@ -256,9 +254,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       isCTRL = e.ctrlKey;
 
     var rowIndex = params.rowIndex,
-      rowCells = w.getDomRow(rowIndex),
-      i = 0,
-      iL = rowCells.length;
+      rowCells = w.getDomRow(rowIndex);
 
     if(isCTRL && w.multiSelect){
       if( Fancy.get(rowCells[0]).hasClass(w.cellSelectedCls) ){
@@ -327,27 +323,18 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     }
 
     var e = params.e,
-      isCTRL = e.ctrlKey;
+      isCTRL = e.ctrlKey,
+      rowIndex = params.rowIndex;
 
-    var rowIndex = params.rowIndex,
-      rowCells = w.getDomRow(rowIndex),
-      i = 0,
-      iL = rowCells.length;
-
-    if(isCTRL && w.multiSelect){
-
-    }
-    else{
-      if(params.column.index === '$selected'){
-        var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
-        if(checkbox.get() === true){
-          me.selectCheckBox(rowIndex);
-        }
-        else{
-          me.deSelectCheckBox(rowIndex);
-        }
+    if(isCTRL && w.multiSelect){}
+    else if(params.column.index === '$selected'){
+      var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
+      if(checkbox.get() === true){
+        me.selectCheckBox(rowIndex);
       }
-      else{}
+      else{
+        me.deSelectCheckBox(rowIndex);
+      }
     }
   },
   /*
@@ -499,10 +486,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var rowCells = w.getDomRow(params.rowIndex),
-      i = 0,
-      iL = rowCells.length,
-      rowStart = me.startRowSelection,
+    var rowStart = me.startRowSelection,
       rowEnd = params.rowIndex,
       newSelectedRows = {};
 
@@ -511,11 +495,11 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       rowEnd = me.startRowSelection;
     }
 
-    var j = rowStart,
-      jL = rowEnd + 1;
+    var i = rowStart,
+      iL = rowEnd + 1;
 
-    for(;j<jL;j++){
-      newSelectedRows[j] = true;
+    for(;i<iL;i++){
+      newSelectedRows[i] = true;
     }
 
     var currentSelected = me.getSelectedRowByColumn(params.columnIndex, params.side),
@@ -787,10 +771,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onSort: function(){
-    var me = this,
-      w = me.widget;
-
-    me.clearSelection();
+    this.clearSelection();
   },
   /*
    * @param {Fancy.Grid} grid
@@ -1036,7 +1017,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       b,
       j,
       jL,
-      numOfSelecedCells = 0,
       selectedCells = me.getSelectedCells(side || 'center'),
       needToSelect = {},
       toSelect = {},
@@ -1171,7 +1151,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    */
   selectColumns: function(start, end, side){
     var me = this,
-      w = me.widget,
       selectedColumns = me.getSelectedColumns(side || 'center'),
       needToSelect = {},
       toSelect = {},
@@ -1365,7 +1344,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     var me = this,
       w = me.widget,
       checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-field-checkbox'),
-      headerCheckBoxEls = w.el.select('.fancy-grid-header-cell-select .fancy-field-checkbox'),
       i = 0,
       iL = checkBoxEls.length;
 
