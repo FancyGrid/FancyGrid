@@ -1,12 +1,15 @@
 /*
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
+ *
  */
 Fancy.define('Fancy.grid.plugin.Grouping', {
   extend: Fancy.Plugin,
   ptype: 'grid.grouping',
   inWidgetName: 'grouping',
   tpl: '{text}:{number}',
+  _renderFirstTime: true,
+  groupRowInnerCls: 'fancy-grid-group-row-inner',
   /*
    * @constructor
    * @param {Object} config
@@ -25,7 +28,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     me.Super('init', arguments);
 
     me._expanded = {};
-    me.groupRows = [];
 
     me.initTpl();
     me.initGroups();
@@ -69,16 +71,19 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  initGroups: function(){
+  initGroups: function(dataProperty){
     var me = this,
       w = me.widget,
-      s = w.store;
+      s = w.store,
+      dataProperty = dataProperty || 'data';
 
     if(!me.by){
       throw new Error('[FancyGrid Error] - not set by param in grouping');
     }
 
-    var values = s.getColumnOriginalValues(me.by),
+    var values = s.getColumnOriginalValues(me.by, {
+        dataProperty: dataProperty
+      }),
       _groups = {},
       i = 0,
       iL = values.length;
@@ -135,8 +140,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
 
           upperGroups = upperGroups.sort();
 
-
-
           i = me.order.length - 1;
           iL = groups.length;
           */
@@ -161,8 +164,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
         groups[i] = groupNameUpperCase[ upperGroups[i] ];
       }
     }
-
-    //console.log(groups);
 
     me.groups = groups;
     s.changeOrderByGroups(groups, me.by);
@@ -227,19 +228,25 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
 
     iL = columns.length;
     for(;i<iL;i++){
-      width += columns[i].width;
+      if(!columns[i].hidden){
+        width += columns[i].width;
+      }
     }
 
     i = 0;
     iL = leftColumns.length;
     for(;i<iL;i++){
-      leftWidth += leftColumns[i].width;
+      if(!leftColumns[i].hidden){
+        leftWidth += leftColumns[i].width;
+      }
     }
 
     i = 0;
     iL = rightColumns.length;
     for(;i<iL;i++){
-      rightWidth += rightColumns[i].width;
+      if(!rightColumns[i].hidden){
+        rightWidth += rightColumns[i].width;
+      }
     }
 
     i = 0;
@@ -273,8 +280,58 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       if(me.collapsed){
         passedTop += w.groupRowHeight;
       }
+    }
+  },
+  /*
+   *
+   */
+  removeGroupRows: function(){
+    var me = this,
+      w = me.widget,
+      columns = w.columns,
+      leftColumns = w.leftColumns,
+      rightColumns = w.rightColumns,
+      s = w.store,
+      body = w.body,
+      leftBody = w.leftBody,
+      rightBody = w.rightBody;
 
-      me.groupRows.push(el);
+    if(columns.length){
+      body.el.select('.fancy-grid-group-row').remove();
+    }
+
+    if(leftColumns.length){
+      leftBody.el.select('.fancy-grid-group-row').remove();
+    }
+
+    if(rightColumns.length){
+      rightBody.el.select('.fancy-grid-group-row').remove();
+    }
+  },
+  /*
+   *
+   */
+  removeCells: function(){
+    var me = this,
+      w = me.widget,
+      columns = w.columns,
+      leftColumns = w.leftColumns,
+      rightColumns = w.rightColumns,
+      s = w.store,
+      body = w.body,
+      leftBody = w.leftBody,
+      rightBody = w.rightBody;
+
+    if(columns.length){
+      body.el.select('.fancy-grid-cell').remove();
+    }
+
+    if(leftColumns.length){
+      leftBody.el.select('.fancy-grid-cell').remove();
+    }
+
+    if(rightColumns.length){
+      rightBody.el.select('.fancy-grid-cell').remove();
     }
   },
   /*
@@ -287,7 +344,8 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     var me = this,
       w = me.widget,
       clsGroupRow = w.clsGroupRow,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.get(document.createElement('div')),
+      groupRowInnerCls = me.groupRowInnerCls;
 
     el.addClass(clsGroupRow);
     el.attr('group', groupText);
@@ -296,7 +354,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
         text: groupText,
         number: groupCount
       });
-      el.update('<div class="fancy-grid-group-row-inner"> ' + text + '</div>');
+      el.update('<div class="' + groupRowInnerCls + '"> ' + text + '</div>');
     }
 
     if(me.collapsed){
@@ -308,6 +366,33 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     }
 
     return el;
+  },
+  insertGroupEls: function(){
+    var me = this,
+      w = me.widget,
+      leftBody = w.leftBody,
+      body = w.body,
+      groupRowInnerCls = me.groupRowInnerCls;
+
+    if(w.leftColumns.length){
+      leftBody.el.select('.fancy-grid-group-row').each(function(el) {
+        var groupText = me.groups[i];
+
+        el.update('<div class="' + groupRowInnerCls + '">' + groupText + '</div>');
+      });
+    }
+    else{
+      body.el.select('.fancy-grid-group-row').each(function(el, i){
+        var groupText = me.groups[i],
+          groupCount = me.groupsCounts[groupText],
+          text = me.tpl.getHTML({
+            text: groupText,
+            number: groupCount
+          });
+
+        el.update('<div class="' + groupRowInnerCls + '">' + text + '</div>');
+      });
+    }
   },
   /*
    * @param {Object} e
@@ -410,7 +495,6 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
 
       if(rows.length) {
-        //console.log(top);
         rows.item(i).css('top', top + 'px');
       }
 
@@ -428,7 +512,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  setCellsPosition: function(){
+  setCellsPosition: function(index, side) {
     var me = this,
       w = me.widget,
       i = 0,
@@ -441,37 +525,62 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       row = 0,
       top = w.groupRowHeight,
       rows = [],
-      cell;
-
-    me.clearMargins();
+      cell,
+      marginedRows = {};
 
     for(;i<iL;i++){
       var groupName = me.groups[i];
 
       if(me._expanded[groupName] === true){
         rows.push(row);
+        marginedRows[row] = true;
 
-        j = 0;
-        jL = w.columns.length;
-        for(;j<jL;j++){
-          cell = body.getCell(row, j);
-          cell.css('margin-top', top + 'px');
+        if(side === undefined || side === 'center'){
+          j = 0;
+          jL = w.columns.length;
+
+          if(index !== undefined){
+            j = index;
+            jL = index + 1;
+          }
+
+          for(;j<jL;j++){
+            cell = body.getCell(row, j);
+
+            cell.css('margin-top', top + 'px');
+          }
         }
 
-        j = 0;
-        jL = w.leftColumns.length;
-        for(;j<jL;j++){
-          cell = leftBody.getCell(row, j);
+        if(side === undefined || side === 'left') {
+          j = 0;
+          jL = w.leftColumns.length;
 
-          cell.css('margin-top', top + 'px');
+          if(index !== undefined){
+            j = index;
+            jL = index + 1;
+          }
+
+          for (; j < jL; j++) {
+            cell = leftBody.getCell(row, j);
+
+            cell.css('margin-top', top + 'px');
+          }
         }
 
-        j = 0;
-        jL = w.rightColumns.length;
-        for(;j<jL;j++){
-          cell = rightBody.getCell(row, j);
+        if(side === undefined || side === 'left') {
+          j = 0;
+          jL = w.rightColumns.length;
 
-          cell.css('margin-top', top + 'px');
+          if(index !== undefined){
+            j = index;
+            jL = index + 1;
+          }
+
+          for (; j < jL; j++) {
+            cell = rightBody.getCell(row, j);
+
+            cell.css('margin-top', top + 'px');
+          }
         }
 
         row += me.groupsCounts[groupName];
@@ -482,15 +591,35 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
     }
 
+    if(me._renderFirstTime){
+      me._renderFirstTime = false;
+    }
+    else {
+      var i = 0,
+        iL = me.prevRows.length,
+        toClearMargins = [];
+
+      for(;i<iL;i++){
+        var rowIndex = me.prevRows[i];
+
+        if( marginedRows[rowIndex] !== true ){
+          toClearMargins.push(rowIndex);
+        }
+      }
+
+      me.clearMargins(toClearMargins);
+    }
+
     me.prevRows = rows;
   },
   /*
    *
    */
-  clearMargins: function(){
-    var me = this;
+  clearMargins: function(rows){
+    var me = this,
+      rows = rows || me.prevRows;
 
-    if(me.prevRows === undefined){
+    if(rows === undefined){
       return;
     }
 
@@ -500,19 +629,18 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       rightBody = w.rightBody,
       i = 0,
       j = 0,
-      iL = me.prevRows.length,
+      iL = rows.length,
       jL,
       row,
       cell;
 
     for(;i<iL;i++){
-      row = me.prevRows[i];
+      row = rows[i];
       j = 0;
       jL = w.columns.length;
       for(;j<jL;j++){
         cell = body.getCell(row, j);
-
-        if(cell.css === undefined){
+        if(cell.dom === undefined){
           break;
         }
 
@@ -524,7 +652,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       for(;j<jL;j++){
         cell = leftBody.getCell(row, j);
 
-        if(cell.css === undefined){
+        if(cell.dom === undefined){
           break;
         }
 
@@ -536,7 +664,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       for(;j<jL;j++){
         cell = rightBody.getCell(row, j);
 
-        if(cell.css === undefined){
+        if(cell.dom === undefined){
           break;
         }
 
@@ -548,6 +676,9 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
    *
    */
   onColumnResize: function(){
+    this.updateGroupRows();
+  },
+  updateGroupRows: function () {
     var me = this,
       w = me.widget,
       leftColumns = w.leftColumns,
@@ -592,50 +723,32 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  update: function(){
+  update: function(loaded){
     var me = this,
       w = me.widget,
       s = w.store;
 
-    if(s.loading === true || s.autoLoad === false){
+    if(!loaded && (s.loading === true || s.autoLoad === false)){
       s.once('load', function(){
         me.initGroups();
         me.initOrder();
         me.calcPlusScroll();
         me.configParams();
-        s.changeDataView();
+        s.changeDataView({
+          doNotFired: true
+        });
 
         me.renderGroupedRows();
-        me.setCellsPosition();
-        w.setSidesHeight();
-        me.update();
-
+        me.update(true);
       }, me);
       return;
     }
 
-    //var date1 = new Date();
     me.setPositions();
-    //var date2 = new Date();
-    //console.log('in 1', date2 - date1);
-    //maybe not needed
     w.update();
-    //var date3 = new Date();
-    //console.log('in 2', date3 - date2);
     w.scroller.update();
-    //var date4 = new Date();
-    //console.log('in 3', date4 - date3);
     me.setCellsPosition();
-    //var date5 = new Date();
-    //console.log('in 4', date5 - date4);
     w.setSidesHeight();
-    //var date6 = new Date();
-    //console.log('in 5', date6 - date5);
-    s.changeDataView();
-    var date7 = new Date();
-    //console.log('in 6', date7 - date6);
-
-    //console.log('total:', date7 - date1);
   },
   /*
    * @param {Number} rowIndex
@@ -691,5 +804,41 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     }
 
     return rowsAfter;
+  },
+  //TODO: write function
+  reGroup: function(){
+    var me = this,
+      w = me.widget,
+      s = w.store,
+      dataProperty = 'data';
+
+    me.expanded = {};
+    me._expanded = {};
+    w.store.expanded = {};
+    w.store.dataView = [];
+
+    me.collapsed = true;
+
+    if(w.store.filteredData){
+      dataProperty = 'filteredData';
+    }
+
+    me.removeGroupRows();
+    me.removeCells();
+    me.initGroups(dataProperty);
+    if(s.remoteFilter){
+      me.initOrder();
+    }
+    me.calcPlusScroll();
+    me.configParams();
+    me.renderGroupedRows();
+    w.setSidesHeight();
+  },
+  scrollLeft: function(value){
+    var me = this,
+      w = me.widget,
+      body = w.body;
+
+    body.el.select('.' + w.clsGroupRow).css('left', value);
   }
 });

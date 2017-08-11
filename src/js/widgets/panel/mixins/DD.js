@@ -7,8 +7,7 @@ Fancy.Mixin('Fancy.panel.mixin.DD', {
    *
    */
   initDD: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     me.addDDCls();
     me.addDD();

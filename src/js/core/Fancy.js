@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.0',
+  version: '1.6.4',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -300,8 +300,6 @@ Fancy.Mixin = function(name, config){
 
   var waiters = Fancy.ClassManager.waitMixins[name];
 
-  //console.log(waiters);
-
   if(waiters){
     waiters = waiters.waiters;
 
@@ -309,7 +307,6 @@ Fancy.Mixin = function(name, config){
         iL = waiters.length;
 
     for(;i<iL;i++){
-      //console.log(name, waiters[i]);
       Fancy.apply(waiters[i], config);
     }
   }
@@ -439,7 +436,7 @@ Fancy.getMouseWheelEventName = function(){
 
 /**
  * @param {Object} e
- * @return {String}
+ * @return {Number}
  */
 Fancy.getWheelDelta = function(e) {
   var delta = 0;
@@ -510,8 +507,7 @@ var FancyForm = function(){
    * @param {Function} fn
    */
   Fancy.loadModule = function (name, fn) {
-    var me = this,
-      body = document.getElementsByTagName('body')[0],
+    var body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
@@ -566,8 +562,6 @@ var FancyForm = function(){
    * @param {Function} fn
    */
   Fancy.loadLang = function(i18n, fn){
-    var me = this;
-
     if(Fancy.i18n[i18n] !== undefined) {
       return true;
     }

@@ -1,8 +1,10 @@
 Fancy.Mixin('Fancy.store.mixin.Search', {
+  /*
+   * TODO: Clean function. Needs to find out code after 'return' is still needed.
+   */
   searchCheckItem: function(item){
     var me = this,
-      searches = me.searches,
-      founded = false;
+      searches = me.searches;
 
     if(!Fancy.isObject(searches)){
       searches = String(searches).toLocaleLowerCase();

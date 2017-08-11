@@ -51,7 +51,7 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
       itemsHTML += [
         '<div class="'+itemCls+'" value='+item.value+'>',
           '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
-          '<div style="float:left;margin:7px 0px 0px 0px;">'+item.text+'</div>',
+          '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
         '</div>'
       ].join("");
     }

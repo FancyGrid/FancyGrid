@@ -96,9 +96,6 @@ Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
         }
       }
 
-      //_newValue = Number(_newValue);
-      _newValue = _newValue;
-
       if(!isNaN(Number(_newValue))){
         me.value = _newValue;
         value = _newValue;

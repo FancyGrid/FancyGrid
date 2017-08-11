@@ -83,11 +83,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  preRender: function(){
-    var me = this;
-
-
-  },
+  preRender: function(){},
   /*
    *
    */

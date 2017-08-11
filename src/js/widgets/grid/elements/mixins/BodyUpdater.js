@@ -31,7 +31,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
   checkDomColumns: function(){
     var me = this,
       w = me.widget,
-      numExistedColumn = me.el.select('.fancy-grid-column').length,
+      columnCls = w.columnCls,
+      numExistedColumn = me.el.select('.' + columnCls).length,
       columns = me.getColumns(),
       i = 0,
       iL = columns.length;
@@ -45,7 +46,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
         width = column.width,
         el = Fancy.get(document.createElement('div'));
 
-      el.addClass('fancy-grid-column');
+      if(column.hidden){
+        el.css('display', 'none');
+      }
+
+      el.addClass(columnCls);
       el.attr('grid', w.id);
 
       if(column.index === '$selected'){
@@ -180,7 +185,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
   updateRows: function(rowIndex, columnIndex) {
     var me = this,
       w = me.widget,
-      s = w.store,
       i = 0,
       columns,
       iL;
@@ -403,8 +407,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
   renderOrder: function(i, rowIndex){
     var me = this,
       w = me.widget,
-      lang = w.lang,
-      emptyValue = w.emptyValue,
       s = w.store,
       columns = me.getColumns(),
       column = columns[i],
@@ -414,7 +416,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j = 0,
       jL = s.getLength(),
-      currencySign = lang.currencySign,
       plusValue = 0;
 
     if(w.paging){
@@ -464,10 +465,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
       s = w.store,
       columns = me.getColumns(),
       column = columns[i],
-      key = column.key || column.index,
       columsDom = me.el.select('.fancy-grid-column'),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
@@ -482,20 +481,10 @@ Fancy.grid.body.mixin.Updater.prototype = {
     }
 
     for(;j<jL;j++) {
-      var data = s.get(j),
-        cellInnerEl = cellsDomInner.item(j),
+      var cellInnerEl = cellsDomInner.item(j),
         checkBox = cellInnerEl.select('.fancy-field-checkbox'),
         checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0,
-        id = s.getId(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j)
-        };
+        isCheckBoxInside = checkBox.length !== 0;
 
       if(isCheckBoxInside === false){
         new Fancy.CheckBox({
@@ -509,10 +498,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
             display: 'inline-block'
           },
           events: [{
-            beforechange: function(checkbox){
-
-            }
-          },{
             change: function(checkbox, value){
               rowIndex = checkbox.el.parent().parent().attr('index');
 
@@ -561,7 +546,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columsDom = me.el.select('.fancy-grid-column'),
       columnDom = columsDom.item(i),
       cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
 
@@ -599,9 +583,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
       o.value = value;
 
       cellsDom.item(j).css(o.style);
-      //cellsDomInner.item(j).update(value);
-
-      var innerDom = cellsDomInner.item(j).update('<div style="background-color:'+value+';" class="fancy-grid-color-cell"></div>');
     }
   },
   /*
@@ -780,7 +761,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
       key = column.key || column.index,
       columsDom = me.el.select('.fancy-grid-column'),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
@@ -795,21 +775,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
     }
 
     for(;j<jL;j++){
-      var data = s.get(j),
-        value = s.get(j, key),
+      var value = s.get(j, key),
         cellInnerEl = cellsDomInner.item(j),
         checkBox = cellInnerEl.select('.fancy-field-checkbox'),
         checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0,
-        id = s.getId(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j)
-        };
+        isCheckBoxInside = checkBox.length !== 0;
 
       if(isCheckBoxInside === false){
         new Fancy.CheckBox({
@@ -988,14 +958,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
 
       sparkConfig[widthName] = sparkWidth;
 
-      if(Fancy.nojQuery){
-        //throw new Error('SparkLine is 3-rd party jQuery based library. Include jQuery.');
-        Fancy.$(innerDom).sparkline(value, sparkConfig);
-      }
-      else {
-        var $ = window.jQuery || window.$;
-        Fancy.$(innerDom).sparkline(value, sparkConfig);
-      }
+      Fancy.$(innerDom).sparkline(value, sparkConfig);
     }
   },
   /*
@@ -1103,8 +1066,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL = s.getLength();
     }
 
-    var sparkConfig = column.sparkConfig || {},
-      maxValue;
+    var sparkConfig = column.sparkConfig || {};
 
     if(sparkConfig.showOnMax){
       sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
@@ -1416,12 +1378,10 @@ Fancy.grid.body.mixin.Updater.prototype = {
       key = column.key || column.index,
       columsDom = me.el.select('.fancy-grid-column'),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
       jL,
-      cellHeight = w.cellHeight - 4,
-      columnWidth = column.width;
+      cellHeight = w.cellHeight - 4;
 
     columnDom.addClass(w.clsSparkColumnCircle);
 
@@ -1552,8 +1512,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
   getFormat: function(format){
     var me = this,
       w = me.widget,
-      lang = w.lang,
-      rules = [format];
+      lang = w.lang;
 
     switch(format){
       case 'number':
@@ -1620,8 +1579,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
    * @param {Fancy.Element} cell
    */
   enableCellDirty: function(cell){
-    var me = this;
-
     if(cell.hasClass('fancy-grid-cell-dirty')){
       return;
     }

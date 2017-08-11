@@ -29,18 +29,23 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
           eventName = null,
           handler = null,
           scope = null,
+          delay = 0,
           params = [];
 
         for(var p in lis){
-          if(p === 'scope'){
-            scope = lis[p];
-          }
-          else if(p === 'params'){
-            params = lis[p];
-          }
-          else{
-            eventName = p;
-            handler = lis[p];
+          switch(p){
+            case 'scope':
+              scope = lis[p];
+              break;
+            case 'params':
+              params = lis[p];
+              break;
+            case 'delay':
+              delay = lis[p];
+              break;
+            default:
+              eventName = p;
+              handler = lis[p];
           }
         }
 
@@ -69,7 +74,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
         }
 
         me.addEvent(eventName);
-        me.on(eventName, handler, scope, params);
+        me.on(eventName, handler, scope, params, delay);
       }
     }
   },
@@ -79,8 +84,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {Object} scope
    * @param {Object} params
    */
-  on: function(eventName, fn, scope, params){
-
+  on: function(eventName, fn, scope, params, delay){
     if( this.$events[eventName] === undefined ){
       throw new Error('Event name is not set: ' + eventName);
     }
@@ -93,16 +97,11 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     fns[seedFn] = fn;
     seedFn++;
 
-    /*
-    if(eventName === 'rowenter'){
-      console.log('on rowenter', fn.$fancyFnSeed);
-    }
-    */
-
     this.$events[eventName].push({
       fn:fn,
       scope: scope,
-      params: params || []
+      params: params || [],
+      delay: delay
     });
   },
   /*
@@ -123,14 +122,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     for(;i<iL;i++){
       var lis = $events[i];
       if(lis.fn.$fancyFnSeed === fn.$fancyFnSeed){
-        /*
-        if(eventName === 'rowenter'){
-          console.log('un rowenter', fn.$fancyFnSeed);
-        }
-        */
-
         lis.toRemove = true;
-        //$events.splice(i, 1);
         return true;
       }
     }
@@ -200,7 +192,14 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
         _args = _args.concat(lis.params);
       }
 
-      lis.fn.apply(lis.scope || me, _args);
+      if(lis.delay){
+        setTimeout(function () {
+          lis.fn.apply(lis.scope || me, _args);
+        }, lis.delay);
+      }
+      else{
+        lis.fn.apply(lis.scope || me, _args);
+      }
     }
   },
   /*

@@ -9,9 +9,6 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    */
   remove: function(o){
     var me = this,
-      i = 0,
-      iL = me.getTotal(),
-      //id = o.id || o.data.id,
       id = o.id,
       index,
       orderIndex,
@@ -87,9 +84,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @return {Fancy.Model}
    */
   add: function(o){
-    var me = this,
-      model = me.model,
-      item;
+    var me = this;
 
     return me.insert(me.getTotal(), o);
   },
@@ -99,8 +94,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @return {Fancy.Model}
    */
   insert: function(index, o){
-    var me = this,
-      model = me.model;
+    var me = this;
 
     me.addIndex = index;
 
@@ -116,7 +110,6 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if(me.getById(o.id)){
       me.remove(o.id);
-      //console.log(me.map);
     }
 
     if(me.proxyType === 'server' && me.autoSave){

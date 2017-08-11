@@ -76,11 +76,7 @@ Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
   /*
    *
    */
-  ons: function(){
-    var me = this;
-
-    //me.el.select('.fancy-button').item(0).on('click', me.onClick, me);
-  },
+  ons: function(){},
   /*
    *
    */

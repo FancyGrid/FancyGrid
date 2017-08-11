@@ -15,6 +15,11 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       dataViewMap = {},
       dataViewIndexes = {};
 
+    if(me.filteredData){
+      data = me.filteredData;
+      iL = data.length;
+    }
+
     me.expanded = me.expanded || {};
     me.expanded[value] = true;
 

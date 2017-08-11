@@ -235,3 +235,17 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
   }
 });
+
+FancyTab.get = function(id){
+  var tabId = Fancy.get(id).select('.fancy-panel-tab').dom.id;
+
+  return Fancy.getWidget(tabId);
+};
+
+if(!Fancy.nojQuery && Fancy.$){
+  Fancy.$.fn.FancyTab = function(o){
+    o.renderTo = $(this.selector)[0].id;
+
+    return new FancyTab(o);
+  };
+}

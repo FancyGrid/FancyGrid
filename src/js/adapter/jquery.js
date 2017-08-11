@@ -1,11 +1,5 @@
 Fancy.$ = window.$ || window.jQuery;
-
-if(Fancy.$ === undefined){
-  Fancy.nojQuery = true;
-}
-else{
-  Fancy.nojQuery = false;
-}
+Fancy.nojQuery = Fancy.$ === undefined;
 
 /*
  * @param {String|Number} id
@@ -63,7 +57,7 @@ Fancy.Element.prototype = {
    *
    */
   prev: function(){
-    return this.$dom.prev();
+    return Fancy.get(this.$dom.prev()[0]);
   },
   /*
    * @return {Fancy.Element}
@@ -91,7 +85,7 @@ Fancy.Element.prototype = {
       me.$dom.on(eventName, fn);
     }
 
-    //bad bug fixies
+    //bad bug fixes
     switch(eventName){
       case 'mouseenter':
         if(me.onTouchEnterEvent){
@@ -245,7 +239,9 @@ Fancy.Element.prototype = {
         addClass: function(){},
         removeClass: function(){},
         destroy: function(){},
-        css: function(){}
+        remove: function(){},
+        css: function(){},
+        each: function(){}
       };
     }
 
@@ -280,12 +276,24 @@ Fancy.Element.prototype = {
   append: function(html){
     return Fancy.get(this.$dom.append(html)[0]);
   },
+  after: function(html){
+    return Fancy.get(this.$dom.after(html)[0]);
+  },
+  next: function(){
+    return Fancy.get(this.$dom.next()[0]);
+  },
+  /*
+   *
+   */
+  insertAfter: function(html){
+    return Fancy.get(this.$dom.insertAfter(html)[0]);
+  },
   /*
    * @param {String} html
    * @return {Fancy.Element}
    */
   before: function(html){
-    return this.$dom.before(html)[0];
+    return Fancy.get(this.$dom.before(html)[0]);
   },
   /*
    * @param {String|Number} value
@@ -677,6 +685,9 @@ Fancy.Element.prototype = {
     };
 
     docEl.on('touchmove', wrappedFn);
+  },
+  each: function (fn) {
+    fn(this, 0);
   }
 };
 
@@ -780,6 +791,12 @@ Fancy.Elements.prototype = {
   /*
    *
    */
+  remove: function(){
+    this.destroy();
+  },
+  /*
+   *
+   */
   hide: function(){
     var me = this,
       i = 0,
@@ -806,6 +823,21 @@ Fancy.Elements.prototype = {
    */
   index: function(){
     return this.$dom[0].index();
+  },
+  /*
+   * @param {Function} fn
+   */
+  each: function(fn){
+    var me = this,
+      i = 0,
+      iL = me.length,
+      el;
+
+    for(;i<iL;i++){
+      el = new Fancy.Element(me.$dom[i]);
+
+      fn(el, i);
+    }
   }
 };
 

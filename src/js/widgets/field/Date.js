@@ -176,6 +176,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       value = '';
     }
 
+    if(/NaN/.test(value)){
+      value = '';
+    }
+
     me.input.dom.value = value;
   },
   fieldCls: 'fancy fancy-field',
@@ -237,8 +241,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
    *
    */
   onInputClick: function(e){
-    var me = this,
-      el = me.el;
+    var me = this;
 
     e.preventDefault();
 
@@ -248,8 +251,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
    * @param {Object} e
    */
   onPickerButtonMouseDown: function(e){
-    var me = this,
-      el = me.el;
+    var me = this;
 
     e.preventDefault();
 
@@ -294,8 +296,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     var me = this,
       datePicker = me.picker,
       monthPicker = datePicker.monthPicker,
-      target = e.target,
-      dateImageButton = me.el.select('.fancy-field-picker-button').item(0);
+      target = e.target;
 
     if(target.tagName.toLocaleLowerCase() === 'input'){}
     else if(Fancy.get(target).hasClass('fancy-field-picker-button')){}
@@ -345,7 +346,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
   renderPicker: function() {
     var me = this;
 
-    if (!Fancy.fullBuilt && !Fancy.modules['grid'] && Fancy.MODULELOAD !== false) {
+    if (!Fancy.fullBuilt && !Fancy.modules['grid'] && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false) {
       return;
     }
 

@@ -2,6 +2,7 @@
  * @class Fancy.bar.Text
  */
 Fancy.define('Fancy.bar.Text', {
+  extend: Fancy.Widget,
   widgetCls: 'fancy-bar-text',
   cls: '',
   text: '',
@@ -15,13 +16,15 @@ Fancy.define('Fancy.bar.Text', {
 
     Fancy.apply(me, config);
 
-    me.init();
+    me.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
     var me = this;
+
+    me.Super('init', arguments);
 
     me.render();
   },
@@ -40,6 +43,10 @@ Fancy.define('Fancy.bar.Text', {
 
     if(me.style){
       me.el.css(me.style);
+    }
+
+    if(me.hidden){
+      me.el.css('display', 'none');
     }
   }
 });

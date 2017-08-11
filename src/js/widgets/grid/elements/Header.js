@@ -9,18 +9,17 @@ Fancy.define('Fancy.grid.Header', {
     'Fancy.grid.header.mixin.Menu'
   ],
   cellTpl: [
-    '<div class="fancy-grid-header-cell {cls}" style="width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
-    '<div class="fancy-grid-header-cell-container" style="height: {height};">',
-    '<span class="fancy-grid-header-cell-text">{columnName}</span>',
-    '<span class="fancy-grid-header-cell-trigger">',
-      '<div class="fancy-grid-header-cell-trigger-image"></div>',
-    '</span>',
-    '</div>',
+    '<div class="fancy-grid-header-cell {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+      '<div class="fancy-grid-header-cell-container" style="height: {height};">',
+        '<span class="fancy-grid-header-cell-text">{columnName}</span>',
+        '<span class="fancy-grid-header-cell-trigger">',
+          '<div class="fancy-grid-header-cell-trigger-image"></div>',
+        '</span>',
+      '</div>',
     '</div>'
   ],
   constructor: function(config){
-    var me = this,
-      config = config || {};
+    var me = this;
 
     me.Super('const', arguments);
   },
@@ -65,41 +64,55 @@ Fancy.define('Fancy.grid.Header', {
       iL = columns.length,
       numRows = 1,
       groups = {},
-      passedWidth = 0;
+      passedWidth = 0,
+      isFilterHeader = w.filter && w.filter.header,
+      cellFilterGroupType = 'full',
+      cellHeight = w.cellHeaderHeight;
 
     if(w.groupheader){
-      numRows = 2;
+      if(isFilterHeader && !w.filter.groupHeader){
+        cellFilterGroupType = 'small';
+      }
+      else {
+        numRows = 2;
+      }
     }
 
-    if(w.filter && w.filter.header){
+    if(isFilterHeader){
       numRows++;
     }
 
     for(;i<iL;i++){
       var column = columns[i],
-        key = column.key || column.index,
         title = column.title || column.header,
-        //height = 'initial',
-        height = w.cellHeaderHeight,
+        height = cellHeight,
         cls = '',
         groupIndex = '';
 
       if(numRows !== 1){
         if(!column.grouping){
-          height = (numRows * w.cellHeaderHeight) + 'px';
+          height = (numRows * cellHeight) + 'px';
         }
         else{
           if(!groups[column.grouping]){
             groups[column.grouping] = {
               width: 0,
-              text: column.grouping,
+              title: column.grouping,
               left: passedWidth
             };
           }
 
-          height = w.cellHeaderHeight + 'px';
+          if(isFilterHeader && w.filter.groupHeader){
+            height = (2 * cellHeight) + 'px';
+          }
+          else {
+            height = cellHeight + 'px';
+          }
 
-          groups[column.grouping].width += column.width;
+          if(!column.hidden){
+            groups[column.grouping].width += column.width;
+          }
+
           groupIndex = 'group-index="' + column.grouping + '"';
 
           cls = 'fancy-grid-header-cell-group-level-1'
@@ -116,21 +129,31 @@ Fancy.define('Fancy.grid.Header', {
         cls += ' fancy-grid-header-cell-trigger-disabled';
       }
 
-      var cellHTML = me.cellTpl.getHTML({
+      if(column.filter && column.filter.header){
+        switch(cellFilterGroupType){
+          case 'small':
+            cls += ' fancy-grid-header-filter-cell-small';
+            break;
+          case 'full':
+            cls += ' fancy-grid-header-filter-cell-full';
+            break;
+        }
+      }
+
+      html += me.cellTpl.getHTML({
         cls: cls,
         columnName: title,
         columnWidth: column.width,
         index: i,
         height: height,
         left: 'initial',
-        groupIndex: groupIndex
+        groupIndex: groupIndex,
+        display: column.hidden? 'none': ''
       });
-
-      html += cellHTML;
     }
 
     el.css({
-      height: w.cellHeaderHeight * numRows + 'px',
+      height: cellHeight * numRows + 'px',
       width: me.getColumnsWidth()
     });
 
@@ -153,9 +176,8 @@ Fancy.define('Fancy.grid.Header', {
       columns = me.getColumns(),
       cls = '',
       title = column.title || column.header,
-      height = w.cellHeaderHeight,
+      cellHeight = parseInt(cells.item(0).css('height')),
       groupIndex = '',
-      cell,
       left = 0;
 
     if(column.index === '$selected'){
@@ -174,12 +196,13 @@ Fancy.define('Fancy.grid.Header', {
     }
 
     var i = index,
-      iL = columns.length;
+      iL = columns.length - 1;
 
     for(;i<iL;i++){
-      var _cell = cells.item(i);
+      var _cell = cells.item(i),
+        _left = parseInt(_cell.css('left') || 0) + column.width;
 
-      _cell.css('left', parseInt(_cell.css('left')) + column.width);
+      _cell.css('left', _left);
     }
 
     var cellHTML = me.cellTpl.getHTML({
@@ -187,23 +210,22 @@ Fancy.define('Fancy.grid.Header', {
       columnName: title,
       columnWidth: column.width,
       index: index,
-      height: height,
+      height: cellHeight,
       left: String(left) + 'px',
       groupIndex: groupIndex
     });
 
     if(index === 0 && cells.length){
-      cell = Fancy.get(cells.item(0).before(cellHTML));
+      Fancy.get(cells.item(0).before(cellHTML));
     }
     else if(index !== 0 && cells.length){
-      cell = me.el.append(cellHTML);
+      me.el.append(cellHTML);
     }
 
     me.css('width', parseInt(me.css('width')) + column.width);
   },
   setAlign: function(){
     var me = this,
-      w = me.widget,
       columns = me.getColumns(),
       i = 0,
       iL = columns.length;
@@ -216,10 +238,7 @@ Fancy.define('Fancy.grid.Header', {
       }
     }
   },
-  onAfterRender: function(){
-    var me = this;
-
-  },
+  onAfterRender: function(){},
   setCellsPosition: function(){
     var me = this,
       w = me.widget,
@@ -227,12 +246,10 @@ Fancy.define('Fancy.grid.Header', {
       cellsWidth = 0,
       i = 0,
       iL = columns.length,
-      cellsDom = me.el.select('.fancy-grid-header-cell'),
-      numRows = 1;
+      cellsDom = me.el.select('.fancy-grid-header-cell');
 
     cellsWidth += me.scrollLeft || 0;
 
-    i = 0;
     for(;i<iL;i++){
       var column = columns[i],
         cellEl = cellsDom.item(i),
@@ -247,11 +264,12 @@ Fancy.define('Fancy.grid.Header', {
         left: cellsWidth + 'px'
       });
 
-      cellsWidth += column.width;
+      if(!column.hidden){
+        cellsWidth += column.width;
+      }
     }
 
     if(w.groupheader){
-      numRows = 2;
       var groupCells = me.el.select('.fancy-grid-header-cell-group-level-2'),
         j = 0,
         jL = groupCells.length;
@@ -270,7 +288,6 @@ Fancy.define('Fancy.grid.Header', {
   },
   getColumnsWidth: function(){
     var me = this,
-      w = me.widget,
       columns = me.getColumns(),
       cellsWidth = 0,
       i = 0,
@@ -390,7 +407,7 @@ Fancy.define('Fancy.grid.Header', {
 
       html += me.cellTpl.getHTML({
         cls: 'fancy-grid-header-cell-group-level-2',
-        columnName: group.text,
+        columnName: group.title,
         columnWidth: group.width,
         index: p,
         height: w.cellHeaderHeight + 'px',
@@ -509,11 +526,19 @@ Fancy.define('Fancy.grid.Header', {
   },
   removeCell: function(orderIndex){
     var me = this,
+      w = me.widget,
       cells = me.el.select('.fancy-grid-header-cell:not(.fancy-grid-header-cell-group-level-2)'),
       cell = cells.item(orderIndex),
       cellWidth = parseInt(cell.css('width')),
       i = orderIndex + 1,
-      iL = cells.length;
+      iL = cells.length,
+      groupCells = {},
+      isGroupCell = false;
+
+    if(cell.attr('group-index')){
+      isGroupCell = cell.attr('group-index');
+      groupCells[isGroupCell] = true;
+    }
 
     cell.destroy();
 
@@ -521,9 +546,38 @@ Fancy.define('Fancy.grid.Header', {
       var _cell = cells.item(i),
         left = parseInt(_cell.css('left')) - cellWidth;
 
+      if(_cell.attr('group-index')){
+        groupCells[_cell.attr('group-index')] = true;
+      }
+
       _cell.attr('index', i - 1);
 
       _cell.css('left', left);
+    }
+
+    for(var p in groupCells){
+      var groupCell = me.el.select('[index="'+p+'"]'),
+        newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
+        newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
+
+      if(isGroupCell){
+        groupCell.css('width', newCellWidth);
+
+        if(groupCell.attr('index') !== isGroupCell){
+          groupCell.css('left', newCellLeft);
+        }
+      }
+      else{
+        groupCell.css('left', newCellLeft);
+      }
+    }
+
+    if(isGroupCell){
+      if( me.el.select('[group-index="'+isGroupCell+'"]').length === 0 ){
+        var groupCell = me.el.select('[index="'+isGroupCell+'"]');
+
+        groupCell.destroy();
+      }
     }
 
     if(me.side !== 'center'){
@@ -573,8 +627,6 @@ Fancy.define('Fancy.grid.Header', {
                 iL = w.getViewTotal();
 
               for(;i<iL;i++){
-                var oldValue = w.get(i, column.index);
-
                 w.set(i, column.index, value);
               }
             }
@@ -582,5 +634,13 @@ Fancy.define('Fancy.grid.Header', {
         });
       }
     }
+  },
+  reSetIndexes: function(){
+    var me = this,
+      cells = me.el.select('.fancy-grid-header-cell:not(.fancy-grid-header-cell-group-level-2)');
+
+    cells.each(function(cell, i) {
+      cell.attr('index', i);
+    })
   }
 });

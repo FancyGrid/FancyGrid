@@ -165,8 +165,6 @@
     },
     onItemClick: function (e) {
       var me = this,
-        i = 0,
-        iL = me.items.length,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
         item = me.items[index],
@@ -215,13 +213,7 @@
         me.shownSubMenu = item.menu;
       }
     },
-    onItemLeave: function (e) {
-      var me = this,
-        target = Fancy.get(e.currentTarget),
-        index = target.attr('index'),
-        item = me.items[index];
-
-    },
+    onItemLeave: function (e) {},
     showAt: function(x, y){
       var me = this;
 
@@ -275,9 +267,7 @@
       me.activeItem.el.removeClass(me.activeItemCls);
       delete me.activeItem;
     },
-    onItemMouseDown: function (e) {
-      var me = this;
-
+    onItemMouseDown: function(e) {
       e.preventDefault();
     }
   });
@@ -285,11 +275,7 @@
   Fancy.define('Fancy.MenuManager', {
     singleton: true,
     inited: false,
-    constructor: function(config){
-      var me = this;
-
-
-    },
+    constructor: function(){},
     init: function(){
       var me = this,
         docEl = Fancy.get(document);
@@ -308,7 +294,6 @@
     onDocClick: function(e){
       var me = this,
         target = Fancy.get(e.target),
-        isWithin = false,
         maxDepth = 10,
         parentEl = target;
 
@@ -330,7 +315,6 @@
       }
 
       me.activeMenu.hide();
-      //me.activeMenu.hideAll();
       delete me.activeMenu;
     }
   })

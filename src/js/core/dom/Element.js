@@ -1,3 +1,7 @@
+/*
+ * file is not used, but could be used in future
+ */
+
 (function(){
 
 var opacityRe = /alpha\(opacity=(.*)\)/gi,
@@ -87,7 +91,8 @@ within in FancyGrid self
 */
 
 var each = function(fn){
-  var i = 0,
+  var me = this,
+    i = 0,
     els = me.els,
     iL = els.length;
   
@@ -213,7 +218,7 @@ El.prototype = {
     var me = this,
       dom = me[0];
     
-    if( ZG.isArray(className) ){
+    if( Fancy.isArray(className) ){
       var i = 0, 
         iL = className.length;
       
@@ -265,7 +270,7 @@ El.prototype = {
   css: function(property, value){
     var me = this;
     
-    if(ZG.isObject(property)){
+    if(Fancy.isObject(property)){
       for(var p in property){
         me.setStyle(p, value);
       }
@@ -406,9 +411,9 @@ El.prototype = {
     
     // Make sure element is not hidden (display: none)
 		if( rect.width || rect.height ){
-			doc = dom.ownerDocument;
-			win = getWindow( doc );
-			docElem = doc.documentElement;
+			var doc = dom.ownerDocument,
+			  win = getWindow( doc ),
+			  docElem = doc.documentElement;
 
 			return {
 				top: rect.top + win.pageYOffset - docElem.clientTop,

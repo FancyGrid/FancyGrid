@@ -27,17 +27,10 @@ Fancy.define('Fancy.SegButton', {
     me.style = me.style || {};
 
     me.render();
-    me.setOns();
   },
   /*
    *
    */
-  setOns: function(){
-    var me = this,
-      el = me.el;
-
-
-  },
   widgetCls: 'fancy-seg-button',
   cls: '',
   extraCls: '',
@@ -48,8 +41,7 @@ Fancy.define('Fancy.SegButton', {
   render: function(){
     var me = this,
       renderTo,
-      el = Fancy.get(document.createElement('div')),
-      width = 0;
+      el = Fancy.get(document.createElement('div'));
 
     me.fire('beforerender');
 
@@ -59,6 +51,10 @@ Fancy.define('Fancy.SegButton', {
     el.addClass(me.widgetCls);
     el.addClass(me.cls);
     el.addClass(me.extraCls);
+
+    if(me.hidden){
+      el.css('display', 'none');
+    }
 
     me.el = Fancy.get(renderTo.appendChild(el.dom));
 

@@ -45,13 +45,20 @@ Fancy.define('Fancy.grid.plugin.Search', {
    * @param {*} values
    */
   search: function(keys, values){
-    var me = this;
+    var me = this,
+      w = me.widget,
+      s = w.store;
 
     me.searches = {};
 
     if(!keys && !values ){
       me.clear();
       me.updateStoreSearches();
+
+      if(w.grouping){
+        w.grouping.reGroup();
+      }
+
       return;
     }
 
@@ -60,7 +67,24 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
 
     me.setFilters();
-    me.updateStoreSearches();
+
+    if(s.remoteSort){
+      s.serverFilter();
+    }
+    else {
+      me.updateStoreSearches();
+    }
+
+    if(w.grouping){
+      if(s.remoteSort){
+        s.once('load', function(){
+          w.grouping.reGroup();
+        });
+      }
+      else {
+        w.grouping.reGroup();
+      }
+    }
   },
   /*
    *

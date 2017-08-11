@@ -175,7 +175,7 @@ Fancy.define('Fancy.Widget', {
     this.el.removeClass(value);
   },
   hasClass: function(value){
-    this.el.hasClass(value);
+    return this.el.hasClass(value);
   },
   toggleClass: function(value){
     this.el.toggleClass(value);
@@ -186,5 +186,11 @@ Fancy.define('Fancy.Widget', {
     if(me.el){
       me.el.destroy();
     }
+  },
+  show: function() {
+    this.el.show();
+  },
+  hide: function() {
+    this.el.hide();
   }
 });

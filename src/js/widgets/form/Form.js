@@ -46,13 +46,108 @@ Fancy.define('Fancy.Form', {
       }
     };
 
-    if(!Fancy.modules['form'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false){
-      Fancy.loadModule('form', function(){
-        preInit();
-      });
+    if(!Fancy.modules['form'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
+      if(Fancy.modules['grid']){
+        Fancy.loadModule('form', function(){
+          preInit();
+        });
+      }
+      else{
+        me.loadModules(preInit, config);
+      }
     }
     else{
       preInit();
+    }
+  },
+  loadModules: function(preInit, config){
+    var me = this,
+      requiredModules = {
+        form: true
+      };
+
+    Fancy.modules = Fancy.modules || {};
+
+    if(Fancy.nojQuery){
+      requiredModules.dom = true;
+    }
+
+    if(Fancy.isTouch){
+      requiredModules.touch = true;
+    }
+
+    if(config.url){
+      requiredModules.ajax = true;
+    }
+
+    var items = config.items || [],
+      i = 0,
+      iL = items.length,
+      item;
+
+    for(;i<iL;i++){
+      item = items[i];
+
+      if(item.type === 'combo' && item.data && item.data.proxy){
+        requiredModules.ajax = true;
+      }
+
+      if(item.type === 'date'){
+        requiredModules.grid = true;
+        requiredModules.date = true;
+        requiredModules.selection = true;
+      }
+    }
+
+    me.neededModules = {
+      length: 0
+    };
+
+    for(var p in requiredModules){
+      if(Fancy.modules[p] === undefined) {
+        me.neededModules[p] = true;
+        me.neededModules.length++;
+      }
+    }
+
+    if(me.neededModules.length === 0){
+      me.neededModules = true;
+      preInit();
+      return;
+    }
+
+    var onLoad = function(name){
+      delete me.neededModules[name];
+      me.neededModules.length--;
+
+      if(me.neededModules.length === 0){
+        me.neededModules = true;
+        preInit();
+      }
+    };
+
+    if(me.neededModules.dom){
+      Fancy.loadModule('dom', function(){
+        delete me.neededModules.dom;
+        me.neededModules.length--;
+
+        for(var p in me.neededModules){
+          if(p === 'length'){
+            continue;
+          }
+
+          Fancy.loadModule(p, onLoad);
+        }
+      });
+    }
+    else {
+      for (var p in me.neededModules) {
+        if (p === 'length') {
+          continue;
+        }
+
+        Fancy.loadModule(p, onLoad);
+      }
     }
   }
 });

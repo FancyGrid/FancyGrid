@@ -153,6 +153,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   inWidgetName: 'grouping',
   tpl: '{text}:{number}',
   _renderFirstTime: true,
+  groupRowInnerCls: 'fancy-grid-group-row-inner',
   /*
    * @constructor
    * @param {Object} config
@@ -487,7 +488,8 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     var me = this,
       w = me.widget,
       clsGroupRow = w.clsGroupRow,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.get(document.createElement('div')),
+      groupRowInnerCls = me.groupRowInnerCls;
 
     el.addClass(clsGroupRow);
     el.attr('group', groupText);
@@ -496,7 +498,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
         text: groupText,
         number: groupCount
       });
-      el.update('<div class="fancy-grid-group-row-inner"> ' + text + '</div>');
+      el.update('<div class="' + groupRowInnerCls + '"> ' + text + '</div>');
     }
 
     if(me.collapsed){
@@ -508,6 +510,33 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     }
 
     return el;
+  },
+  insertGroupEls: function(){
+    var me = this,
+      w = me.widget,
+      leftBody = w.leftBody,
+      body = w.body,
+      groupRowInnerCls = me.groupRowInnerCls;
+
+    if(w.leftColumns.length){
+      leftBody.el.select('.fancy-grid-group-row').each(function(el) {
+        var groupText = me.groups[i];
+
+        el.update('<div class="' + groupRowInnerCls + '">' + groupText + '</div>');
+      });
+    }
+    else{
+      body.el.select('.fancy-grid-group-row').each(function(el, i){
+        var groupText = me.groups[i],
+          groupCount = me.groupsCounts[groupText],
+          text = me.tpl.getHTML({
+            text: groupText,
+            number: groupCount
+          });
+
+        el.update('<div class="' + groupRowInnerCls + '">' + text + '</div>');
+      });
+    }
   },
   /*
    * @param {Object} e
@@ -627,7 +656,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  setCellsPosition: function() {
+  setCellsPosition: function(index, side) {
     var me = this,
       w = me.widget,
       i = 0,
@@ -640,9 +669,8 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       row = 0,
       top = w.groupRowHeight,
       rows = [],
-      cell;
-
-    var marginedRows = {};
+      cell,
+      marginedRows = {};
 
     for(;i<iL;i++){
       var groupName = me.groups[i];
@@ -651,28 +679,52 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
         rows.push(row);
         marginedRows[row] = true;
 
-        j = 0;
-        jL = w.columns.length;
-        for(;j<jL;j++){
-          cell = body.getCell(row, j);
+        if(side === undefined || side === 'center'){
+          j = 0;
+          jL = w.columns.length;
 
-          cell.css('margin-top', top + 'px');
+          if(index !== undefined){
+            j = index;
+            jL = index + 1;
+          }
+
+          for(;j<jL;j++){
+            cell = body.getCell(row, j);
+
+            cell.css('margin-top', top + 'px');
+          }
         }
 
-        j = 0;
-        jL = w.leftColumns.length;
-        for(;j<jL;j++){
-          cell = leftBody.getCell(row, j);
+        if(side === undefined || side === 'left') {
+          j = 0;
+          jL = w.leftColumns.length;
 
-          cell.css('margin-top', top + 'px');
+          if(index !== undefined){
+            j = index;
+            jL = index + 1;
+          }
+
+          for (; j < jL; j++) {
+            cell = leftBody.getCell(row, j);
+
+            cell.css('margin-top', top + 'px');
+          }
         }
 
-        j = 0;
-        jL = w.rightColumns.length;
-        for(;j<jL;j++){
-          cell = rightBody.getCell(row, j);
+        if(side === undefined || side === 'left') {
+          j = 0;
+          jL = w.rightColumns.length;
 
-          cell.css('margin-top', top + 'px');
+          if(index !== undefined){
+            j = index;
+            jL = index + 1;
+          }
+
+          for (; j < jL; j++) {
+            cell = rightBody.getCell(row, j);
+
+            cell.css('margin-top', top + 'px');
+          }
         }
 
         row += me.groupsCounts[groupName];
@@ -768,6 +820,9 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
    *
    */
   onColumnResize: function(){
+    this.updateGroupRows();
+  },
+  updateGroupRows: function () {
     var me = this,
       w = me.widget,
       leftColumns = w.leftColumns,

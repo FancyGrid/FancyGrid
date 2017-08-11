@@ -33,16 +33,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSorting(config);
     config = me.prepareConfigEdit(config);
     config = me.prepareConfigSelection(config);
-    //config = me.prepareConfigData(config);
     config = me.prepareConfigLoadMask(config, originalConfig);
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigFilter(config);
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
-    //config = me.prepareConfigDateColumn(config);
     config = me.prepareConfigChart(config, originalConfig);
-    //config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
     config = me.prepareConfigSize(config, originalConfig);
@@ -317,25 +314,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @returns {Object}
    */
-  prepareConfigDateColumn: function(config){
-    var columns = config.columns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.type === 'date' && column.format === undefined){
-        column.format = 'date';
-      }
-    }
-
-    return config;
-  },
-  /*
-   * @param {Object} config
-   * @returns {Object}
-   */
   prepareConfigColumns: function(config){
     var columns = config.columns,
       leftColumns = [],
@@ -538,6 +516,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
 
+    //debugger;
+
     return config;
   },
   /*
@@ -580,8 +560,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var column = columns[i];
 
       if(/\+|\-|\/|\*|\[|\./.test(column.index)){
-        var isSmartIndex = true;
         var smartIndex = column.index;
+
+        switch(smartIndex){
+          case 'xAxis.categories':
+          case 'yAxis.categories':
+          case 'zAxis.categories':
+            continue;
+            break;
+        }
 
         smartIndex = smartIndex.replace(/(\w+)/g, function(found, found, index, str){
           if(str[index - 1] === '.'){
@@ -769,6 +756,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.selModel){
       initSelection = true;
 
+      if(config.selModel === 'rows'){
+        config.multiSelect = true;
+      }
+
       config.selection = config.selection || {};
       config.selection.selModel = config.selModel;
       config.selection[config.selModel] = true;
@@ -798,18 +789,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       editPluginConfig = {
         type: 'grid.edit'
       },
-      included = false;
+      included = false,
+      editable = defaults.editable;
 
     if(config.clicksToEdit){
       editPluginConfig.clicksToEdit = config.clicksToEdit;
     }
 
-    if(defaults.editable || config.clicksToEdit || (config.data && config.data.proxy)){
-      included = true;
-      config._plugins.push(editPluginConfig);
-    }
-
-    if(defaults.editable ){
+    if(editable){
       if(!included){
         config._plugins.push(editPluginConfig);
       }
@@ -819,7 +806,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       included = true;
-      //return config;
     }
 
     if(config.rowEdit){
@@ -913,6 +899,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       iL = columns.length,
       isFilterable = false,
       isHeaderFilter = false,
+      /*
+       * Detects if at least one header cell with filter under group header cell
+       */
+      isInGroupHeader = false,
       filterConfig = {
         type: 'grid.filter'
       };
@@ -932,11 +922,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         isFilterable = true;
         if(column.filter.header){
           isHeaderFilter = true;
+
+          if(column.grouping){
+            isInGroupHeader = true;
+          }
         }
       }
     }
 
     filterConfig.header = isHeaderFilter;
+    filterConfig.groupHeader = isInGroupHeader;
 
     if(isFilterable){
       config._plugins.push(filterConfig);
@@ -994,7 +989,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         if(column.columns){
           var j = 0,
             jL = column.columns.length,
-            groupName = column.text || '  ';
+            groupName = column.text || column.title || '  ';
 
           for(;j<jL;j++){
             if(column.locked){

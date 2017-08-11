@@ -30,8 +30,7 @@ Fancy.Template.prototype = {
    * @returns {Fancy.Template}
    */
   compile: function(){
-    var me = this,
-      sep = "+";
+    var me = this;
 
       function fn(m, name){
         name = "values['" + name + "']";

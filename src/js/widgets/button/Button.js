@@ -7,7 +7,6 @@
    */
   Fancy.define('Fancy.Button', {
     extend: Fancy.Widget,
-    //minWidth: 43,
     minWidth: 30,
     /*
      * @constructor
@@ -141,6 +140,10 @@
         height: me.height + 'px'
       });
 
+      if(me.hidden){
+        el.css('display', 'none');
+      }
+
       el.css(me.style || {});
 
       el.update(me.tpl.getHTML({
@@ -203,7 +206,7 @@
       var me = this;
 
       if (!me.enableToggle) {
-        return;
+        return false;
       }
     },
     /*

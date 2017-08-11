@@ -588,7 +588,7 @@ Fancy.define('Fancy.grid.plugin.Expander', {
       w = me.widget,
       selection = w.selection;
 
-    if(!selection.row && !selection.rows){
+    if(!selection || (!selection.row && !selection.rows)){
       return;
     }
 

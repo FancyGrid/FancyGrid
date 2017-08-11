@@ -87,8 +87,7 @@ Fancy.define('Fancy.grid.Body', {
    */
 	onAfterRender: function(){
 		var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     me.update();
     me.setHeight();
@@ -116,7 +115,9 @@ Fancy.define('Fancy.grid.Body', {
         left: columnsWidth + 'px'
       });
 
-      columnsWidth += column.width;
+      if(!column.hidden){
+        columnsWidth += column.width;
+      }
     }
   },
   /*
@@ -133,7 +134,8 @@ Fancy.define('Fancy.grid.Body', {
       return;
     }
 
-    var i = 0,
+    var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
+      i = 0,
       iL = columnsDom.length,
       bodyViewHeight = w.getBodyHeight(),
       cellsViewHeight = w.getCellsViewHeight(),
@@ -161,6 +163,8 @@ Fancy.define('Fancy.grid.Body', {
       columnEl.css('top', topValue + 'px');
     }
 
+    o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
+
     return o;
   },
   /*
@@ -176,7 +180,7 @@ Fancy.define('Fancy.grid.Body', {
       iL = columnsDom.length,
       o = {};
 
-    if(y !== false){
+    if(y !== false && y !== null && y !== undefined){
       o.scrollTop = y;
       for(;i<iL;i++){
         var columnEl = columnsDom.item(i);
@@ -184,13 +188,17 @@ Fancy.define('Fancy.grid.Body', {
       }
     }
 
-    if(x !== undefined){
+    if(x !== false && x !== null && x !== undefined){
       o.scrollLeft = x;
       if(w.header) {
         w.header.scroll(x);
       }
       me.scrollLeft = x;
       w.body.setColumnsPosition(x);
+
+      if(me.side === 'center' && w.grouping){
+        w.grouping.scrollLeft(x);
+      }
     }
 
     return o;
@@ -286,7 +294,6 @@ Fancy.define('Fancy.grid.Body', {
     var me = this,
       w = me.widget,
       s = w.store,
-      cell = e.currentTarget,
       cellEl = Fancy.get(e.currentTarget),
       columnEl = cellEl.parent(),
       columnIndex = parseInt(columnEl.attr('index')),
@@ -313,7 +320,6 @@ Fancy.define('Fancy.grid.Body', {
   getColumnHoverEventParams: function(e){
     var me = this,
       w = me.widget,
-      s = w.store,
       columnEl = Fancy.get(e.currentTarget),
       columnIndex = parseInt(columnEl.attr('index')),
       columns = me.getColumns(),
@@ -344,8 +350,6 @@ Fancy.define('Fancy.grid.Body', {
       w = me.widget,
       params = me.getEventParams(e),
       prevCellOver = me.prevCellOver;
-
-    //console.log(params);
 
     if(Fancy.nojQuery && prevCellOver){
       if(me.fixZeptoBug){
@@ -409,9 +413,7 @@ Fancy.define('Fancy.grid.Body', {
       if(prevCellOver === undefined){
         return;
       }
-      //console.log('[' + prevCellOver.rowIndex + ',' + prevCellOver.columnIndex + ']');
-      //console.log('[' + params.rowIndex + ',' + params.columnIndex + ']');
-      //console.log('[----------------------]');
+
       me.fixZeptoBug = params;
       return;
     }
@@ -553,8 +555,9 @@ Fancy.define('Fancy.grid.Body', {
   insertColumn: function(index, column){
     var me = this,
       w = me.widget,
+      columnCls = w.columnCls,
       _columns = me.getColumns(),
-      columns = me.el.select('.fancy-grid-column'),
+      columns = me.el.select('.' + columnCls),
       width = column.width,
       el = Fancy.get(document.createElement('div')),
       i = index,
@@ -569,14 +572,14 @@ Fancy.define('Fancy.grid.Body', {
     }
 
     for(;i<iL;i++){
-      var _column = columns.item(i);
+      var _column = columns.item(i),
+        left = parseInt(_column.css('left')) + column.width;
 
-      _column.css('left', parseInt(_column.css('left')) + column.width);
+      _column.css('left', left);
       _column.attr('index', i + 1);
     }
 
-
-    el.addClass('fancy-grid-column');
+    el.addClass(columnCls);
     el.attr('grid', w.id);
 
     if(column.index === '$selected'){
@@ -616,6 +619,9 @@ Fancy.define('Fancy.grid.Body', {
           break;
       }
     }
+
+    var scrolled = w.scroller.getScroll();
+    el.css('top', -scrolled);
 
     if(index === 0 && columns.length){
       el.css('left', '0px');

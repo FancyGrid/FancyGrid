@@ -19,10 +19,5 @@ Fancy.define('Fancy.grid.plugin.State', {
   /*
    *
    */
-  init: function(){
-    var me = this,
-      s = me.store;
-
-
-  }
+  init: function(){}
 });

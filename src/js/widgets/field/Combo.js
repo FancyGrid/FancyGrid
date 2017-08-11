@@ -16,6 +16,9 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
   emptyText: '',
   editable: true,
   typeAhead: true, // not right name
+  readerRootProperty: 'data',
+  valueKey: 'value',
+  displayKey: 'text',
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
@@ -43,19 +46,32 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
   init: function(){
     var me = this;
 
-    me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key', 'enter', 'up', 'down', 'esc');
+    me.addEvents(
+      'focus', 'blur', 'input',
+      'up', 'down', 'change', 'key', 'enter', 'esc',
+      'empty',
+      'load'
+    );
     me.Super('init', arguments);
 
-    me.loadListData();
+    if( !me.loadListData() ){
+      me.data = me.configData(me.data);
+    }
 
     me.preRender();
     me.render();
 
     me.ons();
 
-    //me.applySize();
     me.applyStyle();
     me.applyTheme();
+
+    /*
+     * Bug fix: #1074
+     */
+    setTimeout(function(){
+      me.applyTheme();
+    }, 1)
   },
   /*
    *
@@ -64,12 +80,18 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     var me = this;
 
     if(!Fancy.isObject(me.data)){
-      return;
+      return false;
     }
 
-    var proxy = me.data.proxy;
+    var proxy = me.data.proxy,
+      readerRootProperty = me.readerRootProperty;
+
     if(!proxy || !proxy.url){
       throw new Error('[FancyGrid Error]: combo data url is not defined');
+    }
+
+    if(proxy.reader && proxy.reader.root){
+      readerRootProperty = proxy.reader.root;
     }
 
     Fancy.Ajax({
@@ -78,17 +100,48 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       method: proxy.method || 'GET',
       getJSON: true,
       success: function(o){
-        me.data = me.configData(o.data);
+        me.data = me.configData(o[readerRootProperty]);
         me.renderList();
         me.onsList();
+
+        if(me.value){
+          var displayValue = me.getDisplayValue(me.value);
+
+          if(displayValue){
+            me.input.dom.value = displayValue;
+          }
+        }
+
+        me.fire('load');
       }
     });
+
+    return true;
   },
   /*
    * @param {Array} data
    * @return {Array}
    */
   configData: function(data){
+    if(Fancy.isObject(data) || data.length === 0){
+      return data;
+    }
+
+    if(!Fancy.isObject(data[0])){
+      var _data = [],
+        i = 0,
+        iL = data.length;
+
+      for(;i<iL;i++){
+        _data.push({
+          text: data[i],
+          value: i
+        });
+      }
+
+      return _data;
+    }
+
     return data;
   },
   /*
@@ -166,6 +219,26 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
         me.fire('down', e);
         break;
       case key.TAB:
+        break;
+      case key.BACKSPACE:
+        setTimeout(function(){
+          if(me.input.dom.value.length === 0){
+            me.fire('empty');
+            me.value = -1;
+            me.valueIndex = -1;
+            //me.set(-1);
+            me.hideAheadList();
+          }
+          else{
+            if(me.generateAheadData().length === 0){
+              me.hideAheadList();
+              return;
+            }
+
+            me.renderAheadList();
+            me.showAheadList();
+          }
+        }, 100);
         break;
       default:
         setTimeout(function() {
@@ -251,8 +324,7 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       index = list.select('.' + selectedItemCls).item(0).index();
     }
 
-    //TODO
-    //me.scrollToListItem(index);
+    me.scrollToListItem(index);
 
     if(!me.docSpy){
       me.docSpy = true;
@@ -385,7 +457,12 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     me.set(value);
     me.hideList();
 
-    me.onBlur();
+    if(me.editable){
+      me.input.focus();
+    }
+    else{
+      me.onBlur();
+    }
   },
   /*
    * @param {*} value
@@ -398,7 +475,7 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       iL = me.data.length,
       found = false;
 
-    for (; i < iL; i++) {
+    for(;i<iL;i++){
       if (me.data[i][me.valueKey] == value) {
         me.valueIndex = i;
         valueStr = me.data[i][me.displayKey];
@@ -423,7 +500,7 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     me.input.dom.value = valueStr;
     me.value = value;
 
-    if (onInput !== false) {
+    if(onInput !== false){
       me.onInput();
     }
   },
@@ -432,6 +509,10 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
    */
   selectItem: function(index){
     var me = this;
+
+    if(!me.list){
+      return;
+    }
 
     me.clearListActive();
     me.list.select('li').item(index).addClass(me.selectedItemCls);
@@ -473,8 +554,7 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     el.addClass( me.cls );
     el.addClass( me.fieldCls );
 
-    var labelWidth = '',
-      inputHeight = '';
+    var labelWidth = '';
 
     if (me.labelWidth) {
       labelWidth = 'width:' + me.labelWidth + 'px;';
@@ -508,8 +588,7 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       label: label === false ? '' : label,
       emptyText: me.emptyText,
       inputHeight: 'height:' + me.inputHeight + 'px;',
-      value: value//,
-      //height: me.height
+      value: value
     }) );
 
     me.el = el;
@@ -599,6 +678,8 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
   },
   /*
    *
+   * @return {Array}
+   *
    */
   generateAheadData: function(){
     var me = this,
@@ -668,12 +749,12 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       width: me.inputWidth + 14
     });
 
-    if (me.aheadData.length > 9) {
+    //if (me.aheadData.length > 9) {
       list.css({
-        height: me.listRowHeight * 9 + 'px',
+        'max-height': me.listRowHeight * 9 + 'px',
         overflow: 'auto'
       });
-    }
+    //}
 
     if(presented === false){
       list.addClass('fancy fancy-combo-result-list');
@@ -894,13 +975,13 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       }
 
       var nextActiveLi = lis.item(index),
-        top = nextActiveLi.offset().top;
+        top = nextActiveLi.position().top;
 
-      if(index === lis.length - 1){
+      if(top - list.dom.scrollTop > height){
         list.dom.scrollTop = 10000;
       }
-      else if(top - parseInt( nextActiveLi.css('height') ) <  parseInt( nextActiveLi.css('height') ) ){
-        list.dom.scrollTop = list.dom.scrollTop - parseInt(activeLi.css('height'));
+      else if(top - list.dom.scrollTop <  0 ){
+        list.dom.scrollTop = top;
       }
 
       activeLi.removeClass(selectedItemCls);
@@ -919,9 +1000,9 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     if(list){
       e.preventDefault();
       var activeLi = list.select('.' + selectedItemCls),
+        activeLiHeight = parseInt(activeLi.css('height')),
         index = activeLi.index(),
         lis = list.select('li'),
-        top = activeLi.offset().top,
         height = parseInt(list.css('height'));
 
       if(index !== lis.length - 1){
@@ -931,13 +1012,15 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
         index = 0;
       }
 
-      var nextActiveLi = lis.item(index);
+      var nextActiveLi = lis.item(index),
+        top = nextActiveLi.position().top,
+        nextActiveLiHeight = parseInt(nextActiveLi.css('height'));
 
-      if(top - height > 0){
+      if(top - list.dom.scrollTop < 0){
         list.dom.scrollTop = 0;
       }
-      else if(top - height > -parseInt( activeLi.css('height') ) ) {
-        list.dom.scrollTop = list.dom.scrollTop + (top - height) + parseInt(activeLi.css('height'));
+      else if(top + nextActiveLiHeight + 3 - list.dom.scrollTop > height ) {
+        list.dom.scrollTop = top - height + activeLiHeight + nextActiveLiHeight;
       }
 
       activeLi.removeClass(selectedItemCls);
@@ -947,7 +1030,6 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       me.showList();
     }
   },
-  //TODO
   /*
    * @param {Number} index
    */
@@ -956,9 +1038,8 @@ Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
       list = me.getActiveList(),
       lis = list.select('li'),
       item = lis.item(index),
-      top = item.offset().top,
-      height = parseInt(list.css('height')),
-      scrollTop = list.dom.scrollTop;
+      top = item.position().top,
+      height = parseInt(list.css('height'));
 
     if(index === 0){
       list.dom.scrollTop = 0;

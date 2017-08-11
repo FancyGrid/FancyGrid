@@ -492,8 +492,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         });
         break;
       case 'combo':
-        var displayKey = 'valueText';
-        var valueKey = 'valueText';
+        var displayKey = 'text';
+        var valueKey = 'text';
 
         var data;
 
@@ -541,8 +541,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
           label: false,
           padding: false,
           style: style,
-          displayKey: 'valueText',
-          valueKey: 'index',
+          displayKey: 'text',
+          valueKey: 'value',
           width: column.width - 8,
           emptyText: filter.emptyText,
           value: '',
@@ -552,14 +552,14 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             scope: me
           }],
           data: [{
-            index: '',
-            valueText: ''
+            value: '',
+            text: ''
           }, {
-            index: 'false',
-            valueText: w.lang.no
+            value: 'false',
+            text: w.lang.no
           }, {
-            index: 'true',
-            valueText: w.lang.yes
+            value: 'true',
+            text: w.lang.yes
           }]
         });
 
@@ -918,7 +918,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
     var me = this,
       w = me.widget;
 
-    w.scroll(0, 0);
+    w.scroll(0);
   },
   /*
    * @param {Array} data
@@ -935,8 +935,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
 
     for(;i<iL;i++){
       _data.push({
-        index: i,
-        valueText: data[i]
+        value: i,
+        text: data[i]
       });
     }
 

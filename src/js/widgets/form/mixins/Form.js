@@ -7,7 +7,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.addEvents('init', 'set');
     
-    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
+    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       me.loadModules();
       return;
     }

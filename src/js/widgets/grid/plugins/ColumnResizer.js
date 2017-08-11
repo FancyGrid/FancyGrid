@@ -163,6 +163,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
 
     if(isInTriggerImage){
       _width = triggerImageWidth;
+      return;
     }
 
     if(field.length > 0 && field.item(0).within(target.dom)){
@@ -415,7 +416,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       display: 'none'
     });
 
-    me.resizeColumn();
+    //me.resizeColumn();
+    me.fixSidesWidth();
     w.startResizing = false;
     me.moveLeftResizer = false;
     delete me.cellWidth;
@@ -423,7 +425,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   /*
    *
    */
-  resizeColumn: function(){
+  fixSidesWidth: function(){
     var me = this,
       w = me.widget,
       cellWidth = me.cellWidth,
@@ -440,7 +442,9 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       centerBodyEl = w.body.el,
       groupMove = {},
       ignoreGroupIndexes = {},
-      column;
+      column,
+      newCenterWidth,
+      minCenterWidth = me.minCenterWidth;
 
     if(cellWidth === undefined){
       return;
@@ -453,9 +457,9 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
 
     switch(me.activeSide){
       case 'left':
-        var newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+        newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
 
-        if(newCenterWidth < w.minCenterWidth){
+        if(newCenterWidth < minCenterWidth){
           return;
         }
 
@@ -543,9 +547,9 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
 
         break;
       case 'right':
-        var newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+        vnewCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
 
-        if(newCenterWidth < w.minCenterWidth){
+        if(newCenterWidth < minCenterWidth){
           return;
         }
 

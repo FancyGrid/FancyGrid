@@ -91,8 +91,6 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    var me = this;
-
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*

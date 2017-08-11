@@ -99,7 +99,6 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
     var me = this,
       w = me.widget,
       lang = w.lang,
-      theme = w.theme,
       menu = [],
       cls = '',
       indexOrder,
@@ -117,25 +116,27 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       cls = 'fancy-menu-item-disabled';
     }
 
-    menu.push({
-      text: lang.sortAsc,
-      cls: cls,
-      imageCls: 'fancy-grid-header-cell-trigger-up',
-      handler: function(){
-        w.sorter.sort('asc', column.index, me.side);
-        column.menu.hide();
-      }
-    });
+    if(column.sortable){
+      menu.push({
+        text: lang.sortAsc,
+        cls: cls,
+        imageCls: 'fancy-grid-header-cell-trigger-up',
+        handler: function () {
+          w.sorter.sort('asc', column.index, me.side);
+          column.menu.hide();
+        }
+      });
 
-    menu.push({
-      text: lang.sortDesc,
-      cls: cls,
-      imageCls: 'fancy-grid-header-cell-trigger-down',
-      handler: function(){
-        w.sorter.sort('desc', column.index, me.side);
-        column.menu.hide();
-      }
-    });
+      menu.push({
+        text: lang.sortDesc,
+        cls: cls,
+        imageCls: 'fancy-grid-header-cell-trigger-down',
+        handler: function () {
+          w.sorter.sort('desc', column.index, me.side);
+          column.menu.hide();
+        }
+      });
+    }
 
     menu.push({
       text: lang.columns,
@@ -146,16 +147,18 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
     switch(me.side){
       case 'left':
       case 'right':
-        menu.push({
-          text: 'Unlock',
-          handler: function(){
-            column.menu.hide();
-            w.unLockColumn(indexOrder, me.side);
-          }
-        });
+        if(column.lockable !== false) {
+          menu.push({
+            text: 'Unlock',
+            handler: function () {
+              column.menu.hide();
+              w.unLockColumn(indexOrder, me.side);
+            }
+          });
+        }
         break;
       case 'center':
-        if((w.leftColumns.length) && column.lockable !== false){
+        if(columns.length > 1 && (w.leftColumns.length) && column.lockable !== false){
           menu.push({
             text: 'Lock',
             handler: function(){
@@ -165,7 +168,7 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
           });
         }
 
-        if(w.rightColumns.length && column.lockable !== false){
+        if(columns.length > 1 && w.rightColumns.length && column.lockable !== false){
           menu.push({
             text: 'Right Lock',
             handler: function(){
@@ -201,15 +204,11 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
         checked: value,
         index: column.index,
         handler: function(menu, item){
-          var newValue = !item.checked;
-
           if(item.checked === true && !item.checkbox.get()){
-            newValue = true;
             item.checkbox.set(true);
           }
 
           if(item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
-            newValue = true;
             item.checkbox.set(true);
             return;
           }
@@ -233,15 +232,22 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
         continue;
       }
       else if(group.length){
-        groupName = undefined;
         _columns.push({
-          text: column.title,
+          text: groupName,
           items: group
         });
+        groupName = undefined;
         group = [];
       }
 
       _columns.push(columnConfig);
+    }
+
+    if(group.length){
+      _columns.push({
+        text: groupName,
+        items: group
+      });
     }
 
     return _columns;
@@ -285,6 +291,22 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
 
     if(!rendered && !hard){
       columnsMenu.items = me.prepareColumns(columns);
+    }
+  },
+  destroyMenus: function(){
+    var me = this,
+      w = me.widget,
+      columns = w.getColumns(me.side),
+      i = 0,
+      iL = columns.length,
+      column;
+
+    for(;i<iL;i++){
+      column = columns[i];
+
+      if(Fancy.isObject(column.menu)){
+        column.menu.destroy();
+      }
     }
   }
 });

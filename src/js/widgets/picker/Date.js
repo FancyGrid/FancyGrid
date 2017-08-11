@@ -86,7 +86,7 @@ Fancy.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
   initMonthPicker: function(){
     var me = this;
 
-    if( !Fancy.fullBuilt && Fancy.MODULELOAD !== false && ( me.monthPicker || !Fancy.modules['grid'] ) ){
+    if( !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULELOAD !== false && ( me.monthPicker || !Fancy.modules['grid'] ) ){
       return;
     }
 
@@ -620,8 +620,6 @@ Fancy.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
    *
    */
   onMouseDown: function(e){
-    var me = this;
-
     e.preventDefault();
   },
   /*

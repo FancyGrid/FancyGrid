@@ -19,7 +19,13 @@ Fancy.define('Fancy.Model', {
         row[p] = data[j];
       }
 
+      if(row.id === undefined){
+        Fancy.idSeed++;
+        row.id = Fancy.idSeed + 1000;
+      }
+
       me.data = row;
+      me.id = me.data.id;
       //TODO - id
     }
     else{

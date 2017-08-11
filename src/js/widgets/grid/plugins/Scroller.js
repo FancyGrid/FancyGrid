@@ -165,8 +165,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     if(w.nativeScroller){}
     else{
-      e.preventDefault();
-      me.scrollDelta(delta);
+      if(me.scrollDelta(delta)){
+        e.preventDefault();
+      }
       me.scrollRightKnob();
     }
   },
@@ -583,10 +584,11 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       scrollInfo;
 
     if(w.nativeScroller){
-      if(y !== null) {
+      if(y !== null && y !== undefined) {
         w.body.el.dom.scrollTop = y;
       }
-      if(x !== undefined){
+
+      if(x!== null && x !== undefined){
         w.body.el.dom.scrollLeft = x;
         if(w.header) {
           w.header.scroll(x);
@@ -617,7 +619,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
   scrollDelta: function(value){
     var me = this,
       w = me.widget,
-      scrollInfo;
+      scrollInfo,
+      scrolled = true;
 
     w.leftBody.wheelScroll(value);
     scrollInfo = w.body.wheelScroll(value);
@@ -627,6 +630,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
 
     w.fire('scroll');
+
+    return scrollInfo.scrolled;
   },
   /*
    *

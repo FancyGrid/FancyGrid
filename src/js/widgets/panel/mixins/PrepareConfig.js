@@ -24,8 +24,7 @@ Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigFooter: function(config){
-    var me = this,
-      footer = config.footer,
+    var footer = config.footer,
       lang = config.lang;
 
     if(footer){

@@ -44,8 +44,6 @@ Fancy.define('Fancy.ToolTip', {
       renderTo = Fancy.get(me.renderTo || document.body).dom,
       el = Fancy.get(document.createElement('div'));
 
-    //console.log('render');
-
     el.addClass(Fancy.cls);
     el.addClass(me.widgetCls);
     el.addClass(me.cls);

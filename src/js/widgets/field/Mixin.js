@@ -110,8 +110,9 @@ Fancy.form.field.Mixin.prototype = {
   render: function(){
     var me = this,
       renderTo = me.renderTo || document.body,
-      el = Fancy.get(document.createElement('div')),
-      style = me.style;
+      renderAfter = me.renderAfter,
+      renderBefore = me.renderBefore,
+      el = Fancy.get(document.createElement('div'));
 
     if(Fancy.isString(renderTo)){
       renderTo = document.getElementById(renderTo);
@@ -203,7 +204,15 @@ Fancy.form.field.Mixin.prototype = {
       el.attr('id', me.id);
     }
 
-    renderTo.appendChild(el.dom);
+    if(renderAfter){
+      el = renderAfter.after(el.dom.outerHTML).next();
+    }
+    else if(renderBefore){
+      el = renderBefore.before(el.dom.outerHTML).prev();
+    }
+    else {
+      renderTo.appendChild(el.dom);
+    }
     me.el = el;
 
     if(me.type === 'textarea'){
@@ -250,7 +259,7 @@ Fancy.form.field.Mixin.prototype = {
               me.prevColor = me.input.css('color');
             }
 
-            me.input.css('color', 'grey');
+            //me.input.css('color', 'grey');
           }
         }
       }, 1);
@@ -627,7 +636,6 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     if(me.labelAlign === 'top'){
-      //me.css('height', height + me.labelHeight);
       me.css('height', height * 1.5);
     }
     else{
@@ -659,6 +667,10 @@ Fancy.form.field.Mixin.prototype = {
     }
     else{
       style.padding = '0px';
+    }
+
+    if(me.hidden){
+      me.css('display', 'none')
     }
 
     me.css(style);

@@ -168,15 +168,75 @@ Fancy.define('Fancy.spark.ProgressBar', {
     var me = this,
       column = me.column,
       width = column.width - 18,
+      charLength = 10,
       percent = width / me.maxValue,
-      barWidth = me.value * percent,
-      spark = column.sparkConfig;
+      value = me.value,
+      barWidth = value * percent,
+      spark = column.sparkConfig,
+      cellInnerEl = me.el.parent();
 
     me.el.css('width', barWidth);
-    me.el.attr('value', me.value);
+    me.el.attr('value', value);
 
     if(spark.label){
+      if(spark.label.type === 'right'){
+        var labelBar = cellInnerEl.select('.fancy-grid-column-progress-bar'),
+          labelEl = cellInnerEl.select('.fancy-grid-bar-label'),
+          labelOutEl = cellInnerEl.select('.fancy-grid-bar-label-out');
 
+        if(String(value).length * charLength + 5*2 > barWidth){
+          if(labelEl.dom){
+            labelBar.update('&nbsp;');
+            labelEl.destroy();
+          }
+          if(!labelOutEl.dom){
+            cellInnerEl.append('<div class="fancy-grid-bar-label-out">' + value + '</div>');
+          }
+          else {
+            labelOutEl.update(value);
+          }
+        }
+        else{
+          if(!labelEl.dom){
+            labelBar.append('<div class="fancy-grid-bar-label" style="float: right;"></div>');
+            labelEl = cellInnerEl.select('.fancy-grid-bar-label');
+          }
+
+          labelEl.update(value);
+          if(labelOutEl.dom){
+            labelOutEl.destroy();
+          }
+        }
+      }
+      else{
+        var labelBar = cellInnerEl.select('.fancy-grid-column-progress-bar'),
+          labelEl = cellInnerEl.select('.fancy-grid-bar-label'),
+          labelOutLeftEl = cellInnerEl.select('.fancy-grid-bar-label-out-left');
+
+        if(String(value).length * charLength + 5*2 > barWidth){
+          if(labelEl.dom){
+            labelBar.update('&nbsp;');
+            labelEl.destroy();
+          }
+          if(!labelOutLeftEl.dom){
+            cellInnerEl.append('<div class="fancy-grid-bar-label-out-left">' + value + '</div>');
+          }
+          else {
+            labelOutLeftEl.update(value);
+          }
+        }
+        else{
+          if(!labelEl.dom){
+            labelBar.append('<div class="fancy-grid-bar-label" style="float: left;"></div>');
+            labelEl = cellInnerEl.select('.fancy-grid-bar-label');
+          }
+
+          labelEl.update(value);
+          if(labelOutLeftEl.dom){
+            labelOutLeftEl.destroy();
+          }
+        }
+      }
     }
   }
 });

@@ -32,9 +32,6 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
     var me = this,
       w = me.widget,
       s = w.store;
-    
-    w.once('render', function(){
-      
-    });
+
   }
 });

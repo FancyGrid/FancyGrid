@@ -11,14 +11,14 @@ if( Fancy.nojQuery ) {
       jsonType = 'application/json',
       htmlType = 'text/html',
       blankRE = /^\s*$/,
-      originAnchor = document.createElement('a')
+      originAnchor = document.createElement('a');
 
-    originAnchor.href = window.location.href
+    originAnchor.href = window.location.href;
 
     // trigger a custom event and return false if it was cancelled
     function triggerAndReturn(context, eventName, data) {
-      var event = $.Event(eventName)
-      $(context).trigger(event, data)
+      var event = $.Event(eventName);
+      $(context).trigger(event, data);
       return !event.isDefaultPrevented()
     }
 

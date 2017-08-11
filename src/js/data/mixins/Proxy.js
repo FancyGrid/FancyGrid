@@ -196,6 +196,10 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       proxy = me.proxy,
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
+    if(!proxy.api.update){
+      return;
+    }
+
     if(sendJSON){
       if(Fancy.isArray(id) && key === undefined && value === undefined){
         params = id;

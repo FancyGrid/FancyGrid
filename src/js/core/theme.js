@@ -21,7 +21,7 @@ Fancy.defineTheme = function(name, o){
 };
 
 /**
- * @param {String} name
+ * @param {Object|String} name
  * @return {Object} o
  */
 Fancy.getTheme = function(name){

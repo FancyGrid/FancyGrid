@@ -158,22 +158,19 @@ Fancy.define = function(name, config){
     
     $classes[name].prototype.Super = function(method, args){
       var me = this;
-      //console.log(me.$Super.prototype.$name);
       if( me.$Iam ){
         me.$Iam = Fancy.ClassManager.get( me.$Iam.prototype.$Super.prototype.$name );
       }
       else{
         me.$Iam = Fancy.ClassManager.get( me.$Super.prototype.$name );
       }
-      //console.log(config);
+
       switch(method){
         case 'const':
         case 'constructor':
           me.$Iam.apply(me, args);
         break;
         default:
-          //console.log(me.$Iam, method, name, config);
-          //console.log(me.$Iam);
           me.$Iam.prototype[method].apply(me, args);
       }
       

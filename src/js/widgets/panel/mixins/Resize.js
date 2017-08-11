@@ -8,8 +8,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
    *
    */
   initResize: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     me.addEvents('resize');
     me.activeResizeEl = undefined;
@@ -110,8 +109,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     var me = this,
       el = me.el,
       maskWidth = 2,
-      panelWidth = parseInt(el.css('width')) - maskWidth * 2,
-      panelHeight = parseInt(el.css('height')) - maskWidth * 2,
       clientX = e.clientX,
       clientY = e.clientY,
       deltaX = me.startClientX - clientX,

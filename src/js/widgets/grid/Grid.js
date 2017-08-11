@@ -2,7 +2,7 @@
  * @class Fancy.Grid
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Grid', {
+Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   extend: Fancy.Widget,
   mixins: [
     'Fancy.grid.mixin.Grid',
@@ -45,10 +45,12 @@ Fancy.define('Fancy.Grid', {
   cellOverCls: 'fancy-grid-cell-over',
   cellSelectedCls: 'fancy-grid-cell-selected',
   expandRowSelectedCls: 'fancy-grid-expand-row-selected',
+  columnCls: 'fancy-grid-column',
   columnOverCls: 'fancy-grid-column-over',
   columnSelectedCls: 'fancy-grid-column-selected',
   filterHeaderCellCls: 'fancy-grid-header-filter-cell',
-  cellHeaderDoubleSize: 'fancy-grid-header-cell-double-size',
+  cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
+  cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
   rowEditCls: 'fancy-grid-row-edit',
   rowEditButtonCls: 'fancy-grid-row-edit-buttons',
   clsSparkColumnHBar: 'fancy-grid-column-h-bar',
@@ -93,6 +95,7 @@ Fancy.define('Fancy.Grid', {
       var i18n = config.i18n || me.i18n;
 
       if( Fancy.loadLang(i18n, fn) === true ){
+        // TODO: Find out is lang required ot not.
         var lang = config.lang;
 
         fn({
@@ -101,7 +104,7 @@ Fancy.define('Fancy.Grid', {
       }
     };
 
-    if(!Fancy.modules['grid'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false ){
+    if(!Fancy.modules['grid'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false){
       Fancy.loadModule('grid', function(){
         preInit();
       });
@@ -142,7 +145,7 @@ Fancy.define('Fancy.Grid', {
       'filter'
     );
 
-    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
+    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker') {
         me.loadModules();
         return;
@@ -322,7 +325,6 @@ Fancy.define('Fancy.Grid', {
 
     if(me.neededModules.length === 0){
       me.neededModules = true;
-      //console.log('no neededModules');
       me.init();
       return;
     }
@@ -333,7 +335,6 @@ Fancy.define('Fancy.Grid', {
 
       if(me.neededModules.length === 0){
         me.neededModules = true;
-        //console.log('onLoad');
         me.init();
       }
     };
@@ -347,14 +348,24 @@ Fancy.define('Fancy.Grid', {
     }
   },
   lockColumn: function(indexOrder, side){
-    var me = this,
-      removedColumn = me.removeColumn(indexOrder, side);
+    var me = this;
+
+    if(me.columns.length === 1){
+      return false;
+    }
+
+    var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
   },
   rightLockColumn: function(indexOrder, side){
-    var me = this,
-      removedColumn = me.removeColumn(indexOrder, side);
+    var me = this;
+
+    if(me.columns.length === 1){
+      return false;
+    }
+
+    var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
   },
@@ -365,17 +376,20 @@ Fancy.define('Fancy.Grid', {
     switch(side){
       case 'left':
         removedColumn = me.removeColumn(indexOrder, side);
-        me.insertColumn(removedColumn, 0, 'center');
+        me.insertColumn(removedColumn, 0, 'center', 'left');
         break;
       case 'right':
         removedColumn = me.removeColumn(indexOrder, side);
-        me.insertColumn(removedColumn, me.columns.length, 'center');
+        me.insertColumn(removedColumn, me.columns.length, 'center', 'right');
         break;
+    }
+
+    if(side === 'left' && me.grouping && me.leftColumns.length === 0){
+      me.grouping.insertGroupEls();
     }
   }
 });
 
-var FancyGrid = Fancy.Grid;
 FancyGrid.get = function(id){
   var gridId = Fancy.get(id).select('.fancy-grid').dom.id;
 

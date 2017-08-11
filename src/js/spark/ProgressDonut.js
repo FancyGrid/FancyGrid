@@ -254,7 +254,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this,
       pi = Math.PI,
       sum = me.sum,   
-      radians = value / sum * pi * 2 - pi / 2
+      radians = value / sum * pi * 2 - pi / 2;
 
     return [
       radius * Math.cos(radians) + me.cx,

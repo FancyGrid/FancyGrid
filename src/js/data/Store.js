@@ -110,7 +110,6 @@ Fancy.define('Fancy.Store', {
     me.dataViewMap = {};
     me.dataViewIndexes = {};
 
-
     if(me.collapsed) {
       for (; i < iL; i++) {
         item = new model(data[i]);
@@ -354,11 +353,12 @@ Fancy.define('Fancy.Store', {
    */
   getColumnOriginalValues: function(key, options){
     var me = this,
-      data = me.data,
       i = 0,
-      iL = data.length,
       values = [],
-      options = options || {};
+      options = options || {},
+      dataProperty = options.dataProperty || 'data',
+      data = me[dataProperty],
+      iL = data.length;
 
     if(options.smartIndexFn){
       for(;i<iL;i++){
@@ -511,7 +511,10 @@ Fancy.define('Fancy.Store', {
 
     me.dataView = dataView;
     me.dataViewMap = dataViewMap;
-    me.fire('change');
+
+    if(!o.doNotFired){
+      me.fire('change');
+    }
   },
   /*
    * @param {String|Number} key

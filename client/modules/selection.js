@@ -93,9 +93,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var cellEl = Fancy.get(params.cell);
-
-    cellEl.addClass(w.cellOverCls);
+    Fancy.get(params.cell).addClass(w.cellOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -109,9 +107,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var cellEl = Fancy.get(params.cell);
-
-    cellEl.removeClass(w.cellOverCls);
+    Fancy.get(params.cell).removeClass(w.cellOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -126,9 +122,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var columnEl = Fancy.get(params.columnDom);
-
-    columnEl.addClass(w.columnOverCls);
+    Fancy.get(params.columnDom).addClass(w.columnOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -142,9 +136,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var columnEl = Fancy.get(params.columnDom);
-
-    columnEl.removeClass(w.columnOverCls);
+    Fancy.get(params.columnDom).removeClass(w.columnOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -227,8 +219,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     if(w.checkboxRowSelection){
       me.checkboxRow = true;
       setTimeout(function(){
-        me.renderHeaderCheckBox();
-      });
+        if(me.selModel === 'rows') {
+          me.renderHeaderCheckBox();
+        }
+      }, 1);
     }
 
     w.on('rowclick', me.onRowClick, me);
@@ -311,33 +305,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     w.fire('select');
   },
   /*
-   * @param {Object} grid
-   * @param {Object} params
-   */
-  onCellClickRows: function(grid, params){
-    var me = this,
-      w = me.widget;
-
-    if(!me.rows || !me.enabled){
-      return;
-    }
-
-    var e = params.e,
-      isCTRL = e.ctrlKey,
-      rowIndex = params.rowIndex;
-
-    if(isCTRL && w.multiSelect){}
-    else if(params.column.index === '$selected'){
-      var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
-      if(checkbox.get() === true){
-        me.selectCheckBox(rowIndex);
-      }
-      else{
-        me.deSelectCheckBox(rowIndex);
-      }
-    }
-  },
-  /*
    * @param {Number} rowIndex
    */
   selectCheckBox: function(rowIndex){
@@ -352,7 +319,9 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       checkBox.set(true);
     }
 
-    me.clearHeaderCheckBox();
+    if(w.selModel === 'rows'){
+      me.clearHeaderCheckBox();
+    }
     //w.set(rowIndex, '$selected', true);
   },
   /*
@@ -644,9 +613,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    * @param {Fancy.Grid} grid
    * @param {Object} params
    */
-  onRowClick: function(grid, params) {
+  onRowClick: function(grid, params){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      rowIndex = params.rowIndex;
 
     if(!me.row || params === false){
       return;
@@ -666,18 +636,60 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       }
     }
 
-    var rowCells = w.getDomRow(params.rowIndex),
+    var rowCells = w.getDomRow(rowIndex),
       i = 0,
-      iL = rowCells.length;
+      iL = rowCells.length,
+      selected = w.get(rowIndex);
 
     me.clearSelection();
 
-    if(select) {
+    if(params.column.index === '$selected'){
+      var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
+
+      if(checkbox.get() === true){
+        me.selectCheckBox(rowIndex);
+        for (; i < iL; i++) {
+          Fancy.get(rowCells[i]).addClass(w.cellSelectedCls);
+        }
+      }
+      else{
+        me.deSelectCheckBox(rowIndex);
+      }
+    }
+    else if(select){
       for (; i < iL; i++) {
         Fancy.get(rowCells[i]).addClass(w.cellSelectedCls);
       }
 
+      me.selectCheckBox(rowIndex);
       w.fire('select');
+    }
+  },
+  /*
+ * @param {Object} grid
+ * @param {Object} params
+ */
+  onCellClickRows: function(grid, params){
+    var me = this,
+      w = me.widget;
+
+    if(!me.rows || !me.enabled){
+      return;
+    }
+
+    var e = params.e,
+      isCTRL = e.ctrlKey,
+      rowIndex = params.rowIndex;
+
+    if(isCTRL && w.multiSelect){}
+    else if(params.column.index === '$selected'){
+      var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
+      if(checkbox.get() === true){
+        me.selectCheckBox(rowIndex);
+      }
+      else{
+        me.deSelectCheckBox(rowIndex);
+      }
     }
   },
   /*

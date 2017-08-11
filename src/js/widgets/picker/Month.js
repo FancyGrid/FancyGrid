@@ -92,24 +92,13 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       return;
     }
 
-    var i18n = me.i18n,
-      lang = Fancy.Object.copy(Fancy.i18n[i18n]);
-
-    me.lang = lang;
+    me.lang = Fancy.Object.copy(Fancy.i18n[me.i18n]);
   },
   /*
    *
    */
   initColumns: function(){
     var me = this,
-      date = me.lang.date,
-      days = date.days,
-      startDay = date.startDay,
-      i = startDay,
-      iL = days.length,
-      dayIndexes = Fancy.Date.dayIndexes,
-      columns = [],
-      today = new Date(),
       activeCellCls = me.activeCellCls;
 
     var renderMonth = function(o){
@@ -134,7 +123,7 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       return o;
     };
 
-    columns = [{
+    me.columns = [{
       index: 'month1',
       render: renderMonth,
       locked: true
@@ -152,8 +141,6 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       render: renderYear,
       width: 77
     }];
-
-    me.columns = columns;
   },
   /*
    * @return {Object}

@@ -2,7 +2,6 @@ Fancy.enableCompo = function(){
   var doc = document,
     componentsLength = 0,
     components = {},
-    compMap = {},
     interval;
 
   Fancy.Component = function (selector, o) {
@@ -99,7 +98,7 @@ Fancy.enableCompo = function(){
 
   findComponent();
 
-  doc.addEventListener("DOMContentLoaded", function (event) {
+  doc.addEventListener("DOMContentLoaded", function() {
     findComponent();
   });
 

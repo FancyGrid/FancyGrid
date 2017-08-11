@@ -81,7 +81,6 @@ Fancy.define('Fancy.Bar', {
    */
   renderItems: function(){
     var me = this,
-      el = me.el,
       containerEl = me.containerEl,
       items = me.items || [],
       i = 0,
@@ -158,7 +157,6 @@ Fancy.define('Fancy.Bar', {
   renderItem: function(item){
     var me = this,
       field,
-      el = me.el,
       containerEl = me.containerEl,
       theme = me.theme;
 
@@ -238,11 +236,13 @@ Fancy.define('Fancy.Bar', {
       case 'segbutton':
         item.extraCls = 'fancy-bar-seg-button';
 
+        Fancy.applyIf(item.style, {
+          'margin-right': '6px'
+        });
+
         field = new Fancy.SegButton(item);
         break;
       case 'tab':
-        isTab = true;
-
         field = new Fancy.toolbar.Tab(item);
         break;
       case 'text':
@@ -304,6 +304,20 @@ Fancy.define('Fancy.Bar', {
         });
 
         field = new Fancy.NumberField(item);
+
+        break;
+      case 'switcher':
+        Fancy.applyIf(item.style, {
+          'padding-left': '0px',
+          'margin-right': '8px',
+          'margin-top': '4px'
+        });
+
+        Fancy.applyIf(item, {
+          width: 35
+        });
+
+        field = new Fancy.Switcher(item);
 
         break;
       case 'string':
@@ -434,7 +448,7 @@ Fancy.define('Fancy.Bar', {
                   items: items,
                   cls: 'fancy-field-search-list',
                   events: [{
-                    set: function (field, o) {
+                    set: function () {
                       grid.searching.setKeys(me.list.get());
                     }
                   },{
@@ -576,8 +590,7 @@ Fancy.define('Fancy.Bar', {
    *
    */
   initScroll: function(){
-    var me = this,
-      panelBodyBorders = Fancy.getTheme(me.theme).config.panelBodyBorders;
+    var me = this;
 
     me.leftScroller = new Fancy.Button({
       imageCls: true,
@@ -592,8 +605,6 @@ Fancy.define('Fancy.Bar', {
       id: 'my',
       style: {
         position: 'absolute',
-        //left: -panelBodyBorders[3],
-        //left: -2,
         left: -1,
         top: -1,
         display: 'none'
@@ -616,7 +627,6 @@ Fancy.define('Fancy.Bar', {
       text: false,
       style: {
         position: 'absolute',
-        //right: -2,
         right: -1,
         top: -1,
         display: 'none'

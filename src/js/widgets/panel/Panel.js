@@ -262,8 +262,6 @@ Fancy.define('Fancy.Panel', {
    */
   renderBars: function(){
     var me = this,
-      barEl,
-      barItems,
       containsGrid = false,
       theme = me.theme,
       scope = this;
@@ -451,10 +449,9 @@ Fancy.define('Fancy.Panel', {
     me.el.select('.fancy-panel-header-text').update(value);
   },
   /*
-   * @param {String} value
    * @return {String}
    */
-  getTitle: function(value){
+  getTitle: function(){
     var me = this;
 
     return me.el.select('.fancy-panel-header-text').dom.innerHTML;
@@ -468,10 +465,9 @@ Fancy.define('Fancy.Panel', {
     me.el.select('.' + me.panelSubHeaderCls ).update(value);
   },
   /*
-   * @param {String} value
    * @return {String}
    */
-  getSubTitle: function(value){
+  getSubTitle: function(){
     var me = this;
 
     return me.el.select('.' + me.panelSubHeaderCls).dom.innerHTML;

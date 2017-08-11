@@ -851,7 +851,7 @@ Fancy.Date = {
   },
   /**
    * @param {Date} date
-   * @return {Number}
+   * @return {Boolean}
    */
   isLeapYear: function(date){
     var year = date.getFullYear();
@@ -861,7 +861,7 @@ Fancy.Date = {
   /**
    * @param {String|Number} year
    * @param {String|Number} month
-   * @return {Date}
+   * @return {Number}
    */
   getMonthNumber: function(year, month){
     return new Date(year, month + 1, 0).getDate();

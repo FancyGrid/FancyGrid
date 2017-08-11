@@ -124,7 +124,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    * @param {Array} columns
    * @return {Fancy.Element}
    */
-  renderTo: function(renderTo, columns){
+  renderTo: function(renderTo, columns, order, side, fromSide){
     var me = this,
       w = me.widget,
       container = Fancy.get(document.createElement('div')),
@@ -135,15 +135,42 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       column,
       style = {
         'float': 'left',
-        //'margin-top': '2px',
-        //'margin-left': '2px',
         margin: '0px',
         padding: '0px'
-      };
+      },
+      renderAfter,
+      renderBefore;
 
-    container.addClass(w.rowEditCls);
+    if(!side){
+      container.addClass(w.rowEditCls);
+      el = Fancy.get(renderTo.dom.appendChild(container.dom));
+    }
+    else{
+      var body = w.getBody(side),
+        fieldEls = renderTo.select('.fancy-field');
 
-    el = Fancy.get(renderTo.dom.appendChild(container.dom));
+      i = order;
+      iL = order + 1;
+
+      switch(side){
+        case 'right':
+          renderBefore = fieldEls.item(order);
+          break;
+        case 'left':
+          renderAfter = fieldEls.item(order);
+          break;
+        case 'center':
+          switch(fromSide){
+            case 'left':
+              renderBefore = fieldEls.item(0);
+              break;
+            case 'right':
+              renderAfter = fieldEls.item(fieldEls.length - 1);
+              break;
+          }
+          break;
+      }
+    }
 
     for(;i<iL;i++){
       column = columns[i];
@@ -151,7 +178,6 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       var itemConfig = {
         index: column.index,
-        renderTo: el.dom,
         label: false,
         style: style,
         width: columnWidth,
@@ -161,6 +187,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         theme: theme,
         events: [{
           change: me.onFieldChange,
+          delay: 100,
           scope: me
         },{
           enter: me.onFieldEnter,
@@ -168,14 +195,31 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         }]
       };
 
+      switch(side){
+        case 'left':
+          itemConfig.renderAfter = renderAfter;
+          break;
+        case 'right':
+          itemConfig.renderBefore = renderBefore;
+          break;
+        case 'center':
+          switch(fromSide){
+            case 'left':
+              itemConfig.renderBefore = fieldEls.item(0);
+              break;
+            case 'right':
+              itemConfig.renderAfter = fieldEls.item(fieldEls.length - 1);
+              break;
+          }
+          break;
+        default:
+          itemConfig.renderTo = el.dom;
+      }
+
       var editor;
 
       if(column.editable === false){
-        Fancy.apply(itemConfig, {
-
-        });
-
-        switch(column.type){
+         switch(column.type){
           case 'string':
           case 'number':
             editor = new Fancy.TextField(itemConfig);
@@ -187,10 +231,6 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       else{
         switch(column.type){
           case 'date':
-            Fancy.apply(itemConfig, {
-
-            });
-
             if(column.format){
               itemConfig.format = column.format;
             }
@@ -200,17 +240,9 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
           case 'image':
           case 'string':
           case 'color':
-            Fancy.apply(itemConfig, {
-
-            });
-
             editor = new Fancy.StringField(itemConfig);
             break;
           case 'number':
-            Fancy.apply(itemConfig, {
-
-            });
-
             if(column.spin){
               itemConfig.spin = column.spin;
             }
@@ -231,12 +263,19 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
             break;
           case 'combo':
             Fancy.apply(itemConfig, {
-              data: me.configComboData(column.data),
-              displayKey: 'valueText',
-              valueKey: 'index',
-              value: 0,
+              data: column.data,
+              value: -1,
               padding: false
             });
+
+            if(column.displayKey){
+              itemConfig.displayKey = column.displayKey;
+              itemConfig.valueKey = column.displayKey;
+            }
+            else{
+              itemConfig.displayKey = 'text';
+              itemConfig.valueKey = 'text';
+            }
 
             editor = new Fancy.Combo(itemConfig);
             break;
@@ -272,6 +311,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
             editor = new Fancy.EmptyField(itemConfig);
         }
       }
+
       column.rowEditor = editor;
     }
 
@@ -392,7 +432,6 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       cellSize.width -= borderWidth * 2;
       cellSize.width -= offset * 2;
 
-      //cellSize.height -= borderWidth * 2;
       cellSize.height -= offset * 2;
 
       me.setEditorSize(editor, cellSize);
@@ -568,6 +607,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     }
 
     me.activeId = o.id;
+    me.activeRowIndex = o.rowIndex;
   },
   /*
    * @param {Array} data
@@ -631,10 +671,9 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     var me = this,
       w = me.widget,
       s = w.store,
-      data = me.prepareChanged();
+      data = me.prepareChanged(),
+      rowIndex = s.getRow(me.activeId);
 
-    var rowIndex = s.getRow(me.activeId);
-    //s.setItemData(rowIndex, me.changed);
     s.setItemData(rowIndex, data);
     w.update();
 
@@ -719,31 +758,12 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
   onFieldChange: function(field, newValue, oldValue){
     var me = this;
 
-    me.changed[field.index] = newValue;
-  },
-  //Duplication code from Fancy.grid.plugin.CellEdit
-  /*
-   * @param {Array} data
-   * @return {Array}
-   */
-  configComboData: function(data){
-    var i = 0,
-      iL = data.length,
-      _data = [];
-
-    if(Fancy.isObject(data)){
-      return data;
+    if(!field.isValid()){
+      delete me.changed[field.index];
     }
-
-    for(;i<iL;i++){
-      _data.push({
-        //index: i,
-        index: data[i],
-        valueText: data[i]
-      });
+    else {
+      me.changed[field.index] = newValue;
     }
-
-    return _data;
   },
   /*
    *
@@ -751,12 +771,110 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
   onFieldEnter: function(){
     var me = this,
       w = me.widget,
-      s = w.store;
+      s = w.store,
+      rowIndex = s.getRow(me.activeId);
 
-    var rowIndex = s.getRow(me.activeId);
     s.setItemData(rowIndex, me.changed);
     w.update();
 
     me.hide();
+  },
+  hideField: function(index, side){
+    var me = this,
+      w = me.widget,
+      columns = w.getColumns(side),
+      column = columns[index];
+
+    if(column.rowEditor){
+      column.rowEditor.hide();
+    }
+  },
+  showField: function(index, side){
+    var me = this,
+      w = me.widget,
+      columns = w.getColumns(side),
+      column = columns[index];
+
+    if(column.rowEditor){
+      column.rowEditor.show();
+    }
+  },
+  moveEditor: function(column, index, side, fromSide){
+    var me = this,
+      w = me.widget,
+      s = w.store,
+      columns = w.getColumns(side),
+      editor = column.rowEditor,
+      body = w.getBody(side),
+      rowEditRowEl = body.el.select('.' + w.rowEditCls),
+      item = s.getById(me.activeId),
+      value = item.get(column.index),
+      field;
+
+    if(me.activeId === undefined){
+      value = s.get(me.activeRowIndex)[column.index];
+    }
+
+    editor.destroy();
+    me.renderTo(rowEditRowEl, columns, index, side, fromSide);
+
+    field = me.getField(index, side);
+    column.rowEditor = field;
+
+    field.set(value);
+    me.setSizes();
+
+    me.changeButtonsLeftPos();
+    me.reSetColumnsEditorsLinks();
+  },
+  getField: function(index, side){
+    var me = this,
+      w = me.widget,
+      body = w.getBody(side),
+      field;
+
+    switch(side){
+      case 'left':
+        index++;
+        break;
+    }
+
+    field = Fancy.getWidget(body.el.select('.fancy-field').item(index).attr('id'));
+
+    return field;
+  },
+  reSetColumnsEditorsLinks: function () {
+    var me = this,
+      w = me.widget,
+      columns = w.columns,
+      leftColumns = w.leftColumns,
+      rightColumns = w.rightColumns,
+      i,
+      iL,
+      cells;
+
+    i = 0;
+    iL = columns.length;
+    cells = w.body.el.select('.fancy-field');
+
+    for(;i<iL;i++){
+      columns[i].rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
+    }
+
+    i = 0;
+    iL = leftColumns.length;
+    cells = w.leftBody.el.select('.fancy-field');
+
+    for(;i<iL;i++){
+      leftColumns[i].rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
+    }
+
+    i = 0;
+    iL = rightColumns.length;
+    cells = w.rightBody.el.select('.fancy-field');
+
+    for(;i<iL;i++){
+      rightColumns[i].rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
+    }
   }
 });

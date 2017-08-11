@@ -97,5 +97,5 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
     var me = this;
 
     return me.el.firstChild().dom.innerHTML;
-  },
+  }
 });

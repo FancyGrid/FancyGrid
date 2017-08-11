@@ -19,11 +19,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
   /*
    *
    */
-  init: function(){
-    var me = this;
-
-    //me.update();
-  },
+  init: function(){},
   /*
    *
    */

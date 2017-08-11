@@ -17,8 +17,6 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   onCellClickColumnAction: function(grid, o){
     var me = this,
       column = o.column,
-      cell = Fancy.get(o.cell),
-      target = o.e.target,
       activeItem,
       columnItems = column.items,
       item;

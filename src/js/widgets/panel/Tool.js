@@ -49,8 +49,7 @@ Fancy.define('Fancy.Tool', {
   render: function(){
     var me = this,
       renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = document.createElement('div'),
-      width = 0;
+      el = document.createElement('div');
 
     me.fire('beforerender');
 

@@ -93,9 +93,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var cellEl = Fancy.get(params.cell);
-
-    cellEl.addClass(w.cellOverCls);
+    Fancy.get(params.cell).addClass(w.cellOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -109,9 +107,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var cellEl = Fancy.get(params.cell);
-
-    cellEl.removeClass(w.cellOverCls);
+    Fancy.get(params.cell).removeClass(w.cellOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -126,9 +122,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var columnEl = Fancy.get(params.columnDom);
-
-    columnEl.addClass(w.columnOverCls);
+    Fancy.get(params.columnDom).addClass(w.columnOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -142,9 +136,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var columnEl = Fancy.get(params.columnDom);
-
-    columnEl.removeClass(w.columnOverCls);
+    Fancy.get(params.columnDom).removeClass(w.columnOverCls);
   },
   /*
    * @param {Fancy.Grid} grid
@@ -203,8 +195,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onChangePage: function(){
-    var me = this;
-
     this.clearSelection();
   },
   /*
@@ -229,8 +219,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     if(w.checkboxRowSelection){
       me.checkboxRow = true;
       setTimeout(function(){
-        me.renderHeaderCheckBox();
-      });
+        if(me.selModel === 'rows') {
+          me.renderHeaderCheckBox();
+        }
+      }, 1);
     }
 
     w.on('rowclick', me.onRowClick, me);
@@ -256,9 +248,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       isCTRL = e.ctrlKey;
 
     var rowIndex = params.rowIndex,
-      rowCells = w.getDomRow(rowIndex),
-      i = 0,
-      iL = rowCells.length;
+      rowCells = w.getDomRow(rowIndex);
 
     if(isCTRL && w.multiSelect){
       if( Fancy.get(rowCells[0]).hasClass(w.cellSelectedCls) ){
@@ -315,42 +305,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     w.fire('select');
   },
   /*
-   * @param {Object} grid
-   * @param {Object} params
-   */
-  onCellClickRows: function(grid, params){
-    var me = this,
-      w = me.widget;
-
-    if(!me.rows || !me.enabled){
-      return;
-    }
-
-    var e = params.e,
-      isCTRL = e.ctrlKey;
-
-    var rowIndex = params.rowIndex,
-      rowCells = w.getDomRow(rowIndex),
-      i = 0,
-      iL = rowCells.length;
-
-    if(isCTRL && w.multiSelect){
-
-    }
-    else{
-      if(params.column.index === '$selected'){
-        var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
-        if(checkbox.get() === true){
-          me.selectCheckBox(rowIndex);
-        }
-        else{
-          me.deSelectCheckBox(rowIndex);
-        }
-      }
-      else{}
-    }
-  },
-  /*
    * @param {Number} rowIndex
    */
   selectCheckBox: function(rowIndex){
@@ -365,7 +319,9 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       checkBox.set(true);
     }
 
-    me.clearHeaderCheckBox();
+    if(w.selModel === 'rows'){
+      me.clearHeaderCheckBox();
+    }
     //w.set(rowIndex, '$selected', true);
   },
   /*
@@ -499,10 +455,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
-    var rowCells = w.getDomRow(params.rowIndex),
-      i = 0,
-      iL = rowCells.length,
-      rowStart = me.startRowSelection,
+    var rowStart = me.startRowSelection,
       rowEnd = params.rowIndex,
       newSelectedRows = {};
 
@@ -511,11 +464,11 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       rowEnd = me.startRowSelection;
     }
 
-    var j = rowStart,
-      jL = rowEnd + 1;
+    var i = rowStart,
+      iL = rowEnd + 1;
 
-    for(;j<jL;j++){
-      newSelectedRows[j] = true;
+    for(;i<iL;i++){
+      newSelectedRows[i] = true;
     }
 
     var currentSelected = me.getSelectedRowByColumn(params.columnIndex, params.side),
@@ -660,9 +613,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    * @param {Fancy.Grid} grid
    * @param {Object} params
    */
-  onRowClick: function(grid, params) {
+  onRowClick: function(grid, params){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      rowIndex = params.rowIndex;
 
     if(!me.row || params === false){
       return;
@@ -682,18 +636,60 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       }
     }
 
-    var rowCells = w.getDomRow(params.rowIndex),
+    var rowCells = w.getDomRow(rowIndex),
       i = 0,
-      iL = rowCells.length;
+      iL = rowCells.length,
+      selected = w.get(rowIndex);
 
     me.clearSelection();
 
-    if(select) {
+    if(params.column.index === '$selected'){
+      var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
+
+      if(checkbox.get() === true){
+        me.selectCheckBox(rowIndex);
+        for (; i < iL; i++) {
+          Fancy.get(rowCells[i]).addClass(w.cellSelectedCls);
+        }
+      }
+      else{
+        me.deSelectCheckBox(rowIndex);
+      }
+    }
+    else if(select){
       for (; i < iL; i++) {
         Fancy.get(rowCells[i]).addClass(w.cellSelectedCls);
       }
 
+      me.selectCheckBox(rowIndex);
       w.fire('select');
+    }
+  },
+  /*
+ * @param {Object} grid
+ * @param {Object} params
+ */
+  onCellClickRows: function(grid, params){
+    var me = this,
+      w = me.widget;
+
+    if(!me.rows || !me.enabled){
+      return;
+    }
+
+    var e = params.e,
+      isCTRL = e.ctrlKey,
+      rowIndex = params.rowIndex;
+
+    if(isCTRL && w.multiSelect){}
+    else if(params.column.index === '$selected'){
+      var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.fancy-field-checkbox').attr('id'));
+      if(checkbox.get() === true){
+        me.selectCheckBox(rowIndex);
+      }
+      else{
+        me.deSelectCheckBox(rowIndex);
+      }
     }
   },
   /*
@@ -787,10 +783,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onSort: function(){
-    var me = this,
-      w = me.widget;
-
-    me.clearSelection();
+    this.clearSelection();
   },
   /*
    * @param {Fancy.Grid} grid
@@ -1036,7 +1029,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       b,
       j,
       jL,
-      numOfSelecedCells = 0,
       selectedCells = me.getSelectedCells(side || 'center'),
       needToSelect = {},
       toSelect = {},
@@ -1171,7 +1163,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    */
   selectColumns: function(start, end, side){
     var me = this,
-      w = me.widget,
       selectedColumns = me.getSelectedColumns(side || 'center'),
       needToSelect = {},
       toSelect = {},
@@ -1365,7 +1356,6 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     var me = this,
       w = me.widget,
       checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-field-checkbox'),
-      headerCheckBoxEls = w.el.select('.fancy-grid-header-cell-select .fancy-field-checkbox'),
       i = 0,
       iL = checkBoxEls.length;
 
