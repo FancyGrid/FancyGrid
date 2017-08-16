@@ -692,8 +692,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       switch(column.type){
         case 'date':
-          var date = Fancy.Date.parse(data[p], column.format.edit),
-            formattedValue = Fancy.Date.format(date, column.format.read);
+          var date = Fancy.Date.parse(data[p], column.format.edit, column.format.mode),
+            formattedValue = Fancy.Date.format(date, column.format.read, column.format.mode);
 
           data[p] = formattedValue;
           break;

@@ -459,15 +459,28 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    */
   onDocClick: function(grid, e){
     var me = this,
+      w = me.widget,
       o = me.activeCellEditParams,
       editor = me.activeEditor,
-      inCombo = true;
+      inCombo = true,
+      target = e.target,
+      targetEl = Fancy.get(target);
 
-    if(editor === undefined || o.column.type !== 'combo'){
+    if(editor === undefined){
       return;
     }
+    else if(o.column.type === 'date'){
+      return;
+    }
+    else if(o.column.type === 'combo'){}
+    else{
+      var cellEl = targetEl.closest('.' + w.cellCls);
 
-    var target = e.target;
+      if(!cellEl.dom && !editor.el.within(target)){
+        editor.hide();
+      }
+      return;
+    }
 
     if(editor.el.within(target) === false && editor.list.within(target) === false && me.comboClick !== true){
       inCombo = false;
@@ -1741,8 +1754,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       switch(column.type){
         case 'date':
-          var date = Fancy.Date.parse(data[p], column.format.edit),
-            formattedValue = Fancy.Date.format(date, column.format.read);
+          var date = Fancy.Date.parse(data[p], column.format.edit, column.format.mode),
+            formattedValue = Fancy.Date.format(date, column.format.read, column.format.mode);
 
           data[p] = formattedValue;
           break;

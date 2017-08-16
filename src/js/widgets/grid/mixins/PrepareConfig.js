@@ -516,8 +516,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
 
-    //debugger;
-
     return config;
   },
   /*

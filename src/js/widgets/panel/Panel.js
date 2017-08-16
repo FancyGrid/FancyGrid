@@ -61,6 +61,7 @@ Fancy.define('Fancy.Panel', {
   theme: 'default',
   tpl: [
     '<div style="height:{titleHeight}px;" class="fancy-panel-header fancy-display-none">',
+      '{titleImg}',
       '<div class="fancy-panel-header-text">{title}</div>',
       '<div class="fancy-panel-header-tools"></div>',
     '</div>',
@@ -134,7 +135,14 @@ Fancy.define('Fancy.Panel', {
       subTitleText = me.subTitle
     }
 
+    var imgCls = '';
+
+    if(Fancy.isObject(me.title) && me.title.imgCls){
+      imgCls = '<div class="fancy-panel-header-img ' + me.title.imgCls + '"></div>';
+    }
+
     el.update(me.tpl.getHTML({
+      titleImg: imgCls,
       barHeight: me.barHeight,
       titleHeight: titleHeight,
       subTitleHeight: subTitleHeight,

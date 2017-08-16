@@ -23,7 +23,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
         id = o.id || o.data.id;
     }
 
-    if(me.proxyType === 'server' && me.autoSave){
+    if(me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
       me.proxyCRUD('DESTROY', id);
       return;
     }
@@ -112,7 +112,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       me.remove(o.id);
     }
 
-    if(me.proxyType === 'server' && me.autoSave){
+    if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
       me.once('create', me.onCreate, me);
       me.proxyCRUD('CREATE', o);
     }

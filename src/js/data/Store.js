@@ -369,7 +369,7 @@ Fancy.define('Fancy.Store', {
       if(options.format){
         if(options.type === 'date'){
           for (; i < iL; i++) {
-            values.push(Fancy.Date.parse(data[i].data[key], options.format));
+            values.push(Fancy.Date.parse(data[i].data[key], options.format, options.mode));
           }
         }
         else{

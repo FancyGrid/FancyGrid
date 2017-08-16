@@ -48,5 +48,11 @@ Fancy.define('Fancy.bar.Text', {
     if(me.hidden){
       me.el.css('display', 'none');
     }
+  },
+  get: function() {
+    return this.el.dom.innerHTML;
+  },
+  getValue: function () {
+    return this.get();
   }
 });

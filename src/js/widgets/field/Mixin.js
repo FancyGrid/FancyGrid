@@ -368,6 +368,10 @@ Fancy.form.field.Mixin.prototype = {
     var me = this;
 
     me.fire('blur');
+
+    if(me.input){
+      return me.validate(me.input.dom.value);
+    }
   },
   /*
    * @param {*} value
@@ -376,15 +380,20 @@ Fancy.form.field.Mixin.prototype = {
     var me = this,
       vtype = me.vtype;
 
-    if(vtype === undefined){}
+    if(vtype === undefined){
+      return true;
+    }
     else{
       var valid = Fancy.isValid(vtype, value);
       if( valid !== true ){
         me.errorText = new Fancy.Template(valid.text).getHTML(valid);
         me.failedValid();
+
+        return false;
       }
       else{
         me.successValid();
+        return true;
       }
     }
   },
@@ -403,6 +412,10 @@ Fancy.form.field.Mixin.prototype = {
     var me = this;
 
     me.fire('focus');
+
+    if(Fancy.datepicker){
+      //Fancy.datepicker.Manager.hide();
+    }
   },
   /*
    *

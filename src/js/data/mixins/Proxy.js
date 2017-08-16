@@ -25,7 +25,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     '!=': 'noteq',
     '!==': 'notstricteq',
     '': 'like',
-    '*': 'likeor'
+    '*': 'likeor',
+    '|': 'or'
   },
   /*
    *
@@ -527,7 +528,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         else {
           for (var q in action.data) {
 
-            itemData[q] = action[q];
+            itemData[q] = action.data[q];
           }
         }
 

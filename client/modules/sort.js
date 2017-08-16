@@ -536,13 +536,17 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
 
     type = column.type;
 
-    var format;
+    var format,
+      mode;
 
     if(column.format){
       if(Fancy.isString(column.format)){
         switch (column.format) {
           case 'date':
             format = w.lang.date.read;
+            if(column.format.mode){
+              mode = column.format.mode;
+            }
             break;
         }
       }
@@ -550,6 +554,9 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
         switch(column.type){
           case 'date':
             format = column.format.read;
+            if(column.format.mode){
+              mode = column.format.mode;
+            }
             break;
         }
       }
@@ -566,7 +573,8 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
 
     s.sort(dir, type, index, {
       smartIndexFn: column.smartIndexFn,
-      format: format
+      format: format,
+      mode: mode
     });
   },
   /*

@@ -23,5 +23,13 @@ Fancy.Array = {
     }
 
     return newArray;
+  },
+  each: function(arr, fn){
+    var i = 0,
+      iL = arr.length;
+
+    for(;i<iL;i++){
+      fn(arr[i], i);
+    }
   }
 };

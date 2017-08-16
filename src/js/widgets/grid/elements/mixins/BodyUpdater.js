@@ -1522,8 +1522,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
         break;
       case 'date':
         return function (value) {
-          var date = Fancy.Date.parse(value, lang.date.read);
-          value = Fancy.Date.format(date, lang.date.write);
+          var date = Fancy.Date.parse(value, lang.date.read, format.mode);
+          value = Fancy.Date.format(date, lang.date.write, format.mode);
 
           return value;
         };

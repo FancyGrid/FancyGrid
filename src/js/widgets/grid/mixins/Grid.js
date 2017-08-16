@@ -387,8 +387,13 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
         }
       }
 
-      if(me.groupheader && !(me.filter && me.filter.header)){
-        height += cellHeaderHeight;
+      if(me.groupheader){
+        if(!(me.filter && me.filter.header)){
+          height += cellHeaderHeight;
+        }
+        else{
+          height += cellHeaderHeight;
+        }
       }
     }
 

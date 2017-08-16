@@ -23,7 +23,7 @@ Fancy.Mixin('Fancy.store.mixin.Search', {
         indexValue = item.data[p];
 
 	    if(indexSearches.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit));
+		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
 	    }
 	  
       for(var q in indexFilters){

@@ -282,6 +282,8 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     me.picker.setDate(date);
     me.picker.showAt(x, y);
 
+    Fancy.datepicker.Manager.add(me.picker);
+
     me.fire('showpicker');
 
     if(!me.docSpy){

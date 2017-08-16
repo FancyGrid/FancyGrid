@@ -73,7 +73,29 @@
     color: #FFFFFF;
   }
 
+  li.fancy-combo-item-focused {
+    background: #048DC8;
+    color: #FFFFFF;
+    .opacity(0.8);
+  }
+
   ul {
     margin-bottom: 0;
+  }
+
+  .fancy-field-checkbox-input {
+    margin-top: 1px;
+    &:hover{
+      background-position: 0px -28px;
+    }
+  }
+
+  .fancy-combo-item-selected {
+    .fancy-field-checkbox-input {
+      background-position: 0px -14px;
+      &:hover {
+        background-position: 0px -42px;
+      }
+    }
   }
 }

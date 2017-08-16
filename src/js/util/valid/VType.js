@@ -22,7 +22,7 @@
     if (Fancy.isString(type)) {
       vtype = Fancy.vtypes[type];
     }
-    else if (Fancy.isObject(type)) {
+    else if(Fancy.isObject(type)) {
       if(type.type){
         vtype = Fancy.vtypes[type.type];
         Fancy.applyIf(type, vtype);
@@ -68,13 +68,13 @@
         }
       }
     }
-    else {
+    else{
       if (vtype.re) {
         if(vtype.re.test(value) === false){
           return vtype;
         }
       }
-      if (vtype.fn.apply(vtype, [value]) === false) {
+      else if (vtype.fn.apply(vtype, [value]) === false) {
         return vtype;
       }
     }

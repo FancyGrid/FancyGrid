@@ -33,6 +33,9 @@ Fancy.Element = function(dom){
 };
 
 Fancy.Element.prototype = {
+  last: function () {
+    return Fancy.get(this.$dom);
+  },
   /*
    * @param {String} selector
    * @return {Fancy.Element}
@@ -58,6 +61,14 @@ Fancy.Element.prototype = {
    */
   prev: function(){
     return Fancy.get(this.$dom.prev()[0]);
+  },
+  /*
+   * @return {Fancy.Element}
+   */
+  lastChild: function(){
+    var childs = this.$dom.children();
+
+    return Fancy.get(childs[childs.length - 1]);
   },
   /*
    * @return {Fancy.Element}
@@ -241,7 +252,8 @@ Fancy.Element.prototype = {
         destroy: function(){},
         remove: function(){},
         css: function(){},
-        each: function(){}
+        each: function(){},
+        last: function(){}
       };
     }
 
@@ -705,6 +717,20 @@ Fancy.Elements = function(dom){
 };
 
 Fancy.Elements.prototype = {
+  attr: function(o1, o2){
+    var me = this,
+      dom = me.$dom;
+
+    if(me.length > 1){
+      dom = me.$dom[0]
+    }
+
+    if( o2 === undefined ){
+      return dom.attr(o1);
+    }
+
+    return dom.attr(o1, o2);
+  },
   /*
    * @param {String} cls
    */
@@ -838,6 +864,11 @@ Fancy.Elements.prototype = {
 
       fn(el, i);
     }
+  },
+  last: function(){
+    var me = this;
+
+    return new Fancy.Element(me.$dom[me.length - 1]);
   }
 };
 

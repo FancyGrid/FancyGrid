@@ -516,8 +516,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
 
-    //debugger;
-
     return config;
   },
   /*
@@ -1936,8 +1934,13 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
         }
       }
 
-      if(me.groupheader && !(me.filter && me.filter.header)){
-        height += cellHeaderHeight;
+      if(me.groupheader){
+        if(!(me.filter && me.filter.header)){
+          height += cellHeaderHeight;
+        }
+        else{
+          height += cellHeaderHeight;
+        }
       }
     }
 
@@ -7007,8 +7010,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
         break;
       case 'date':
         return function (value) {
-          var date = Fancy.Date.parse(value, lang.date.read);
-          value = Fancy.Date.format(date, lang.date.write);
+          var date = Fancy.Date.parse(value, lang.date.read, format.mode);
+          value = Fancy.Date.format(date, lang.date.write, format.mode);
 
           return value;
         };

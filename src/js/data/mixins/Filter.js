@@ -17,7 +17,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         indexValue = item.data[p];
 
 	    if(indexFilters.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit));
+		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
 	    }
 	  
       for(var q in indexFilters){
@@ -74,6 +74,11 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
             wait = true;
             break;
+          case '|':
+            passed = value[String(indexValue).toLocaleLowerCase()] === true;
+            break;
+          default:
+            throw new Error('FancyGrid Error 5: Unknown filter ' + q);
         }
 
         if(wait === true){
@@ -149,7 +154,21 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             continue;
         }
         var operator = me.filterOperators[q];
-        value += '{"operator":"' + operator + '","value":"' + filterItem[q] + '","property":"' + p + '"},';
+
+        if(operator === 'or'){
+          var values = [];
+
+          for(var pp in filterItem[q]){
+            values.push(pp);
+          }
+
+          var filterValue = values.join(', ');
+
+          value += '{"operator":"' + operator + '","value":"' + filterValue + '","property":"' + p + '"},';
+        }
+        else{
+          value += '{"operator":"' + operator + '","value":"' + filterItem[q] + '","property":"' + p + '"},';
+        }
       }
     }
 

@@ -161,7 +161,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
    */
   onChangeDate1: function(field, date){
     var me = this,
-      date = Fancy.Date.parse(date, field.format.edit);
+      date = Fancy.Date.parse(date, field.format.edit, field.format.mode);
 
     me.fire('changedatefrom', date);
     me.fire('change');
@@ -172,7 +172,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
    */
   onChangeDate2: function(field, date){
     var me = this,
-      date = Fancy.Date.parse(date, field.format.edit);
+      date = Fancy.Date.parse(date, field.format.edit, field.format.mode);
 
     me.fire('changedateto', date);
     me.fire('change');

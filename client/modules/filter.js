@@ -17,7 +17,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         indexValue = item.data[p];
 
 	    if(indexFilters.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit));
+		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
 	    }
 	  
       for(var q in indexFilters){
@@ -74,6 +74,11 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
             wait = true;
             break;
+          case '|':
+            passed = value[String(indexValue).toLocaleLowerCase()] === true;
+            break;
+          default:
+            throw new Error('FancyGrid Error 5: Unknown filter ' + q);
         }
 
         if(wait === true){
@@ -149,7 +154,21 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             continue;
         }
         var operator = me.filterOperators[q];
-        value += '{"operator":"' + operator + '","value":"' + filterItem[q] + '","property":"' + p + '"},';
+
+        if(operator === 'or'){
+          var values = [];
+
+          for(var pp in filterItem[q]){
+            values.push(pp);
+          }
+
+          var filterValue = values.join(', ');
+
+          value += '{"operator":"' + operator + '","value":"' + filterValue + '","property":"' + p + '"},';
+        }
+        else{
+          value += '{"operator":"' + operator + '","value":"' + filterItem[q] + '","property":"' + p + '"},';
+        }
       }
     }
 
@@ -492,10 +511,9 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         });
         break;
       case 'combo':
-        var displayKey = 'text';
-        var valueKey = 'text';
-
-        var data;
+        var displayKey = 'text',
+          valueKey = 'text',
+          data;
 
         if(column.displayKey !== undefined){
           displayKey = column.displayKey;
@@ -518,11 +536,13 @@ Fancy.define('Fancy.grid.plugin.Filter', {
           displayKey: displayKey,
           valueKey: valueKey,
           value: '',
-          itemCheckBox: true,
           height: 28,
           emptyText: filter.emptyText,
           theme: theme,
           tip: tip,
+          multiSelect: column.multiSelect,
+          itemCheckBox: column.itemCheckBox,
+          minListWidth: column.minListWidth,
           events: [{
             change: me.onEnter,
             scope: me
@@ -660,7 +680,13 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       var filter = filters[i];
 
       me.filters[filterIndex][filter.operator] = filter.value;
-      Fancy.apply(me.filters[filterIndex], options);
+      if(filter.operator !== '|'){
+        //Fancy.apply(me.filters[filterIndex], options);
+      }
+
+      if(field.column.type === 'date'){
+        Fancy.apply(me.filters[filterIndex], options);
+      }
     }
 
     if(s.remoteFilter){
@@ -692,16 +718,36 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         '<': true,
         '>': true,
         '!': true,
-        '=': true
+        '=': true,
+        '|': true
       },
       operator,
       _value,
       i = 0,
       iL = 3,
       filters = [],
-      splitted = value.split(','),
-      j = 0,
-      jL = splitted.length;
+      splitted,
+      j,
+      jL;
+
+    if(Fancy.isArray(value)){
+      _value = {};
+
+      Fancy.Array.each(value, function (v, i) {
+        _value[String(v).toLocaleLowerCase()] = true;
+      });
+
+      filters.push({
+        operator: '|',
+        value: _value
+      });
+
+      return filters;
+    }
+
+    splitted = value.split(',');
+    j = 0;
+    jL = splitted.length;
 
     for(;j<jL;j++){
       i = 0;
@@ -856,8 +902,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         value2 = Number(dateTo);
       }
       else{
-        value1 = Fancy.Date.format(dateFrom, format.edit);
-        value2 = Fancy.Date.format(dateTo, format.edit);
+        value1 = Fancy.Date.format(dateFrom, format.edit, format.mode);
+        value2 = Fancy.Date.format(dateTo, format.edit, format.mode);
       }
 
       value = '>=' + value1 + ',<=' + value2;
@@ -867,7 +913,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         value = '>=' + Number(dateFrom);
       }
       else{
-        value = '>=' + Fancy.Date.format(dateFrom, format.edit);
+        value = '>=' + Fancy.Date.format(dateFrom, format.edit, format.mode);
       }
 
       me.clearFilter(field.filterIndex, '<=', false);
@@ -877,7 +923,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         value = '<=' + Number(dateTo);
       }
       else{
-        value = '<=' + Fancy.Date.format(dateFrom, format.edit);
+        value = '<=' + Fancy.Date.format(dateFrom, format.edit, format.mode);
       }
 
       me.clearFilter(field.filterIndex, '>=', false);

@@ -230,7 +230,8 @@
 .fancy-field-not-valid .fancy-field-error {
   display: block;
 }
-.fancy-field-not-valid input {
+.fancy-field-not-valid input,
+.fancy-field-not-valid textarea {
   background: #ffe9e9 !important;
   border: 1px solid #f9d3d5 !important;
 }
@@ -877,8 +878,25 @@
   background: #048DC8;
   color: #FFFFFF;
 }
+.fancy-combo-result-list li.fancy-combo-item-focused {
+  background: #048DC8;
+  color: #FFFFFF;
+  opacity: 0.8;
+}
 .fancy-combo-result-list ul {
   margin-bottom: 0;
+}
+.fancy-combo-result-list .fancy-field-checkbox-input {
+  margin-top: 1px;
+}
+.fancy-combo-result-list .fancy-field-checkbox-input:hover {
+  background-position: 0px -28px;
+}
+.fancy-combo-result-list .fancy-combo-item-selected .fancy-field-checkbox-input {
+  background-position: 0px -14px;
+}
+.fancy-combo-result-list .fancy-combo-item-selected .fancy-field-checkbox-input:hover {
+  background-position: 0px -42px;
 }
 /*
  tag.less
@@ -2149,6 +2167,10 @@ vml {
   background: #587DA1;
   color: white;
 }
+.fancy-theme-blue li.fancy-combo-item-focused {
+  background: #587DA1;
+  color: white;
+}
 .fancy-theme-blue .fancy-month-picker-cell-active {
   background-color: #E0E5E9;
 }
@@ -2282,6 +2304,10 @@ vml {
   opacity: 0.8;
 }
 .fancy-theme-gray li.fancy-combo-item-selected {
+  background: #626262;
+  color: white;
+}
+.fancy-theme-gray li.fancy-combo-item-focused {
   background: #626262;
   color: white;
 }
@@ -2995,6 +3021,10 @@ vml {
   background: #6A6758;
   color: white;
 }
+.fancy-theme-sand li.fancy-combo-item-focused {
+  background: #6A6758;
+  color: white;
+}
 .fancy-theme-sand .fancy-grid-header-cell-container {
   border-left-color: transparent;
 }
@@ -3436,6 +3466,12 @@ vml {
   background-color: #428bca;
 }
 .fancy-theme-bootstrap li.fancy-combo-item-selected .fancy-combo-list-value {
+  color: #fff;
+}
+.fancy-theme-bootstrap li.fancy-combo-item-focused {
+  background-color: #428bca;
+}
+.fancy-theme-bootstrap li.fancy-combo-item-focused .fancy-combo-list-value {
   color: #fff;
 }
 .fancy-theme-bootstrap.fancy-panel-tab .fancy-grid {

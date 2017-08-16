@@ -110,7 +110,8 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.height += me.panelBodyBorders[2];
     }
 
-    me.height -= me.panelBorderWidth;
+    //me.height -= me.panelBorderWidth;
+    me.height -= me.panelBodyBorders[0];
 
     me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
   },
@@ -516,7 +517,6 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     Fancy.each(me.items, function(item){
       if( valid === true ){
-
         valid = item.onBlur();
       }
       else{
