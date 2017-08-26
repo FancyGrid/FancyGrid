@@ -185,6 +185,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         format: column.format,
         stopPropagation: true,
         theme: theme,
+        checkValidOnTyping: true,
         events: [{
           change: me.onFieldChange,
           delay: 100,

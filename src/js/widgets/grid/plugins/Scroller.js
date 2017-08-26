@@ -490,8 +490,13 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    */
   setRightKnobSize: function(){
     var me = this,
-      w = me.widget,
-      bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0) - 2,
+      w = me.widget;
+
+    if(w.nativeScroller){
+      return;
+    }
+
+    var bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0) - 2,
       cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
       scrollRightPath = cellsViewHeight - bodyViewHeight,
       percents = 100 - scrollRightPath/(bodyViewHeight/100),
@@ -549,7 +554,12 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   checkCorner: function(){
-    var me = this;
+    var me = this,
+      w = me.widget;
+
+    if(w.nativeScroller){
+      return;
+    }
 
     me.corner = !me.scrollRightEl.hasClass('fancy-display-none') && !me.scrollBottomEl.hasClass('fancy-display-none');
   },
@@ -558,8 +568,13 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    */
   setBottomKnobSize: function(){
     var me = this,
-      w = me.widget,
-      centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
+      w = me.widget;
+
+    if(w.nativeScroller) {
+      return;
+    }
+
+    var centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
       centerFullWidth = w.getCenterFullWidth() - (me.corner ? me.cornerSize : 0),
       scrollBottomPath = centerFullWidth - centerViewWidth,
       percents = 100 - scrollBottomPath/(centerFullWidth/100),

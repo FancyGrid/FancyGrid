@@ -62,7 +62,8 @@ Fancy.define('Fancy.Store', {
       'sort',
       'beforeload', 'load',
       'filter',
-      'insert'
+      'insert',
+      'servererror'
     );
     me.initId();
     me.initPlugins();
@@ -293,6 +294,13 @@ Fancy.define('Fancy.Store', {
 
     if(me.filteredData){
       return me.filteredData.length;
+    }
+
+    if(me.data === undefined){
+      return 0;
+    }
+    else if(Fancy.isObject(me.data)){
+      return 0;
     }
 
     return me.data.length;

@@ -55,6 +55,19 @@ Fancy.Collection.prototype = {
     delete me.indexMap[index];
     delete me.map[key];
     me.length--;
+
+    me.updateIndexMap();
+  },
+  updateIndexMap: function () {
+    var me = this,
+      i = 0,
+      iL = me.keys.length;
+
+    me.indexMap = {};
+
+    for(;i<iL;i++){
+      me.indexMap[me.keys[i]] = i;
+    }
   },
   /*
    *

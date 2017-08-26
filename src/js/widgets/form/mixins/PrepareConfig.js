@@ -40,24 +40,29 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigItems: function(config){
-    var me = this;
+    var me = this,
+      fn = function(item){
+        item.theme = me.theme || '';
 
-    Fancy.each(config.items, function(item){
-      item.theme = me.theme || '';
+        if( item.labelWidth === undefined ){
+          item.labelWidth = me.labelWidth;
+        }
 
-      if( item.labelWidth === undefined ){
-        item.labelWidth = me.labelWidth;
-      }
+        if( item.inputWidth === undefined ){
+          item.inputWidth = me.inputWidth;
+        }
 
-      if( item.inputWidth === undefined ){
-        item.inputWidth = me.inputWidth;
-      }
+        if( item.type === 'pass' || item.type === 'password' ){
+          item.type = 'string';
+          item.isPassword = true;
+        }
 
-      if( item.type === 'pass' || item.type === 'password' ){
-        item.type = 'string';
-        item.isPassword = true;
-      }
-    });
+        if(item.items){
+          Fancy.each(item.items, fn);
+        }
+      };
+
+    Fancy.each(config.items, fn);
 
     return config;
   }

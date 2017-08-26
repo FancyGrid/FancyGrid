@@ -737,7 +737,7 @@ Fancy.define('Fancy.spark.HBar', {
     var me = this,
       el = Fancy.get(e.target),
       key = el.attr('key'),
-      title = el.attr('title'),
+      title = el.attr('data-title'),
       value = Number(el.attr('value')),
       percents = Number(el.attr('percents'));
 
@@ -874,14 +874,14 @@ Fancy.define('Fancy.spark.HBar', {
       var color = 'background: '+Fancy.COLORS[i] + ';',
         _width = 'width:'+(columnWidth)+';',
         display = '',
-        title = 'title=""';
+        title = 'data-title=""';
 
       if(columnWidth === 0){
         display = 'display: none;';
       }
 
       if(me.title){
-        title = 'title="'+me.title[i]+'" ';
+        title = 'data-title="'+me.title[i]+'" ';
       }
 
       var _key = 'key="' + key + '" ';

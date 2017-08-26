@@ -39,6 +39,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
+    config = me.prepareConfigWidgetColumn(config);
     config = me.prepareConfigChart(config, originalConfig);
     config = me.prepareConfigCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
@@ -702,6 +703,128 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             }
           }
         }
+      }
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @returns {Object}
+   */
+  prepareConfigWidgetColumn: function(config){
+    var me = this,
+      columns = config.columns,
+      i = 0,
+      iL = columns.length;
+
+    for(;i<iL;i++) {
+      var column = columns[i];
+
+      if(column.widget){
+        column.render = function(o){
+          var fieldEl = o.cell.select('.fancy-field'),
+            field,
+            renderTo = o.cell.dom,
+            column = o.column;
+
+          var itemComfig = {
+            vtype: column.vtype,
+            style: {
+              'padding': '0px',
+              'margin-top': '-10px',
+              'margin-left': '-1px'
+            },
+            label: false,
+            renderTo: renderTo,
+            value: o.value,
+            emptyText: column.emptyText
+          };
+
+          if(fieldEl.length){
+            field = Fancy.getWidget(fieldEl.dom.id);
+
+            if(field.get() != o.value){
+              field.set(o.value);
+            }
+          }
+          else {
+            var width = o.column.width,
+              column = o.column,
+              index = column.index;
+
+            switch(o.column.type){
+              case 'number':
+              case 'currency':
+                Fancy.apply(itemComfig, {
+                  spin: column.spin,
+                  min: column.min,
+                  max: column.max,
+                  events: [{
+                    change: function(field, value){
+                      grid.set(o.rowIndex, index, value);
+                      grid.updater.updateRow();
+                    }
+                  }]
+                });
+
+                field = new Fancy.NumberField(itemComfig);
+                break;
+              case 'string':
+              case 'image':
+                Fancy.apply(itemComfig, {
+                  events: [{
+                    change: function(field, value){
+                      grid.set(o.rowIndex, index, value);
+                      grid.updater.updateRow();
+                    }
+                  }]
+                });
+
+                field = new Fancy.StringField(itemComfig);
+                break;
+              case 'combo':
+                Fancy.apply(itemComfig, {
+                  displayKey: o.column.displayKey,
+                  valueKey: o.column.displayKey,
+                  padding: false,
+                  checkValidOnTyping: true,
+                  data: o.column.data,
+                  events: [{
+                    change: function(field, value){
+                      grid.set(o.rowIndex, index, value);
+                      grid.updater.updateRow();
+                    }
+                  }]
+                });
+
+                field = new Fancy.Combo(itemComfig);
+                break;
+            }
+
+            switch(o.column.type){
+              case 'number':
+              case 'string':
+              case 'currency':
+              case 'image':
+                field.setInputSize({
+                  width: width + 1,
+                  height: 33
+                });
+                break;
+              case 'combo':
+                field.size({
+                  width: width + 1,
+                  height: 33
+                });
+                break;
+            }
+
+
+          }
+
+          return o;
+        };
       }
     }
 
@@ -2116,6 +2239,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     docEl.on('mouseup', me.onDocMouseUp, me);
     docEl.on('click', me.onDocClick, me);
     docEl.on('mousemove', me.onDocMove, me);
+    store.on('servererror', me.onServerError, me);
 
     if(me.responsive){
       Fancy.$(window).bind('resize', function(){
@@ -2125,6 +2249,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     me.on('activate', me.onActivate, me);
     me.on('deactivate', me.onDeActivate, me);
+  },
+  onServerError: function (request, errorTitle, errorText) {
+    this.fire('servererror', request, errorTitle, errorText);
   },
   /*
    *
@@ -2784,10 +2911,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       });
     }
     else{
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
+      newCenterWidth = width - leftColumnWidth - rightColumnWidth - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
 
-      newCenterWidth -= me.panelBorderWidth * 2;
-      el.width(width);
+      el.css('width', width);
     }
 
     if(newCenterWidth < 100){
@@ -2800,6 +2926,32 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     body.css('width', newCenterWidth);
 
     me.scroller.setScrollBars();
+  },
+  getWidth: function () {
+    var me = this,
+      value;
+
+    if(me.panel){
+      value = parseInt( me.panel.css('width') );
+    }
+    else{
+      value = parseInt( me.css('width') );
+    }
+
+    return value;
+  },
+  getHeight: function () {
+    var me = this,
+      value;
+
+    if(me.panel){
+      value = parseInt( me.panel.css('height') );
+    }
+    else{
+      value = parseInt( me.css('height') );
+    }
+
+    return value;
   },
   /*
    * @param {Number} value
@@ -3898,8 +4050,13 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    */
   setRightKnobSize: function(){
     var me = this,
-      w = me.widget,
-      bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0) - 2,
+      w = me.widget;
+
+    if(w.nativeScroller){
+      return;
+    }
+
+    var bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0) - 2,
       cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
       scrollRightPath = cellsViewHeight - bodyViewHeight,
       percents = 100 - scrollRightPath/(bodyViewHeight/100),
@@ -3957,7 +4114,12 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   checkCorner: function(){
-    var me = this;
+    var me = this,
+      w = me.widget;
+
+    if(w.nativeScroller){
+      return;
+    }
 
     me.corner = !me.scrollRightEl.hasClass('fancy-display-none') && !me.scrollBottomEl.hasClass('fancy-display-none');
   },
@@ -3966,8 +4128,13 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    */
   setBottomKnobSize: function(){
     var me = this,
-      w = me.widget,
-      centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
+      w = me.widget;
+
+    if(w.nativeScroller) {
+      return;
+    }
+
+    var centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
       centerFullWidth = w.getCenterFullWidth() - (me.corner ? me.cornerSize : 0),
       scrollBottomPath = centerFullWidth - centerViewWidth,
       percents = 100 - scrollBottomPath/(centerFullWidth/100),
@@ -5821,13 +5988,17 @@ Fancy.grid.body.mixin.Updater.prototype = {
     for(;j<jL;j++){
       var data = s.get(j),
         id = s.getId(j),
+        inner = cellsDomInner.item(j),
+        cell = cellsDom.item(j),
         o = {
           rowIndex: j,
           data: data,
           style: {},
           column: column,
           id: id,
-          item: s.getItem(j)
+          item: s.getItem(j),
+          inner: inner,
+          cell: cell
         },
         value,
         dirty = false;
@@ -5871,7 +6042,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
           break;
       }
 
-      var cell = cellsDom.item(j);
       if(w.cellStylingCls){
         me.clearCls(cell);
       }
@@ -5885,7 +6055,10 @@ Fancy.grid.body.mixin.Updater.prototype = {
       }
 
       cell.css(o.style);
-      cellsDomInner.item(j).update(value);
+
+      if(!o.column.widget){
+        inner.update(value);
+      }
     }
   },
   /*

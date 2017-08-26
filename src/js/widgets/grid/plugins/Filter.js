@@ -518,6 +518,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         w.grouping.reGroup();
       }
     }
+
+    w.setSidesHeight();
   },
   /*
    * @param {String|Number} value

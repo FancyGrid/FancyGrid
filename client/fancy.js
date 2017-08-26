@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.5',
+  version: '1.6.6',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -876,6 +876,19 @@ Fancy.Collection.prototype = {
     delete me.indexMap[index];
     delete me.map[key];
     me.length--;
+
+    me.updateIndexMap();
+  },
+  updateIndexMap: function () {
+    var me = this,
+      i = 0,
+      iL = me.keys.length;
+
+    me.indexMap = {};
+
+    for(;i<iL;i++){
+      me.indexMap[me.keys[i]] = i;
+    }
   },
   /*
    *
@@ -2254,7 +2267,8 @@ Fancy.define('Fancy.Store', {
       'sort',
       'beforeload', 'load',
       'filter',
-      'insert'
+      'insert',
+      'servererror'
     );
     me.initId();
     me.initPlugins();
@@ -2485,6 +2499,13 @@ Fancy.define('Fancy.Store', {
 
     if(me.filteredData){
       return me.filteredData.length;
+    }
+
+    if(me.data === undefined){
+      return 0;
+    }
+    else if(Fancy.isObject(me.data)){
+      return 0;
     }
 
     return me.data.length;
@@ -6961,6 +6982,7 @@ Fancy.define('Fancy.Form', {
   type: 'form',
   theme: 'default',
   i18n: 'en',
+  //labelWidth: 100,
   maxLabelNumber: 11,
   minWidth: 200,
   minHeight: 200,
@@ -7133,6 +7155,7 @@ Fancy.form.field.Mixin.prototype = {
   labelHeight: 18,
   failedValidCls: 'fancy-field-not-valid',
   cls: '',
+  checkValidOnTyping: false,
   /*
    *
    */
@@ -7257,7 +7280,7 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     if (me.labelAlign === 'top' && me.label) {
-      //auto fixing of wrang labelWidth.
+      //auto fixing of wrong labelWidth.
       //will not fix right if user change color of label font-size to bigger
       if (me.labelWidth < me.label.length * 7) {
         me.labelWidth = (me.label.length + 2) * 7;
@@ -7481,7 +7504,9 @@ Fancy.form.field.Mixin.prototype = {
    * @param {*} value
    */
   onKey: function(me, value){
-    me.validate(value);
+    if(!me.isValid() || me.checkValidOnTyping){
+      me.validate(value);
+    }
   },
   /*
    *
@@ -7494,6 +7519,8 @@ Fancy.form.field.Mixin.prototype = {
     if(me.input){
       return me.validate(me.input.dom.value);
     }
+
+    return true;
   },
   /*
    * @param {*} value
@@ -7534,10 +7561,6 @@ Fancy.form.field.Mixin.prototype = {
     var me = this;
 
     me.fire('focus');
-
-    if(Fancy.datepicker){
-      //Fancy.datepicker.Manager.hide();
-    }
   },
   /*
    *
@@ -7618,7 +7641,10 @@ Fancy.form.field.Mixin.prototype = {
    *
    */
   clear: function(){
-    this.set('');
+    var me = this;
+
+    me.set('');
+    me.clearValid();
   },
   /*
    *
@@ -7648,6 +7674,11 @@ Fancy.form.field.Mixin.prototype = {
 
       me.addClass(me.failedValidCls);
     }
+  },
+  clearValid: function () {
+    var me = this;
+
+    me.removeClass(me.failedValidCls);
   },
   /*
    *
@@ -7732,8 +7763,11 @@ Fancy.form.field.Mixin.prototype = {
   setSize: function(width, height){
     var me = this;
 
-    if(me.type === 'set'){
-      return;
+    switch(me.type){
+      case 'set':
+      case 'line':
+        return;
+        break;
     }
 
     if(width === undefined && height === undefined){
@@ -7939,6 +7973,59 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     me.tooltip.show(e.pageX + 15, e.pageY - 25);
+  },
+  getInputSelection: function(){
+    var me = this,
+      start = 0,
+      end = 0,
+      normalizedValue,
+      range,
+      textInputRange,
+      len,
+      endRange,
+      el = me.input.dom;
+
+    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+      start = el.selectionStart;
+      end = el.selectionEnd;
+    }
+    else {
+      range = document.selection.createRange();
+
+      if (range && range.parentElement() == el) {
+        len = el.value.length;
+        normalizedValue = el.value.replace(/\r\n/g, "\n");
+
+        // Create a working TextRange that lives only in the input
+        textInputRange = el.createTextRange();
+        textInputRange.moveToBookmark(range.getBookmark());
+
+        // Check if the start and end of the selection are at the very end
+        // of the input, since moveStart/moveEnd doesn't return what we want
+        // in those cases
+        endRange = el.createTextRange();
+        endRange.collapse(false);
+
+        if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+          start = end = len;
+        } else {
+          start = -textInputRange.moveStart("character", -len);
+          start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+          if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+            end = len;
+          } else {
+            end = -textInputRange.moveEnd("character", -len);
+            end += normalizedValue.slice(0, end).split("\n").length - 1;
+          }
+        }
+      }
+    }
+
+    return {
+      start: start,
+      end: end
+    };
   }
 };
 /*
@@ -8438,7 +8525,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
   init: function(){
     var me = this;
 
-    me.addEvents('change');
+    me.addEvents('change', 'key');
     me.Super('init', arguments);
 
     me.preRender();
@@ -8479,6 +8566,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
     input.on('focus', me.onFocus, me);
     input.on('input', me.onInput, me);
     input.on('keydown', me.onKeyDown, me);
+    me.on('key', me.onKey, me);
 
     if( me.autoHeight ){
       input.on('input', me.onChange, me);
@@ -8864,6 +8952,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 /**
  * @class Fancy.Combo
  * @extends Fancy.Widget
+ *
+ * Note: because multiselection code became overcomplex
  */
 (function(){
   Fancy.define('Fancy.combo.Manager', {
@@ -8910,12 +9000,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     itemCheckBox: false,
     tpl: [
       '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-      '{label}',
+        '{label}',
       '</div>',
       '<div class="fancy-field-text">',
-      '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-      '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
-      '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
+        '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
+          '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
+        '</div>',
       '</div>',
       '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
       '<div class="fancy-clearfix"></div>'
@@ -8947,6 +9038,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.data = me.configData(me.data);
       }
 
+      if(me.multiSelect && me.data.length){
+        me.initMultiSelect();
+      }
+
       me.preRender();
       me.render();
 
@@ -8961,8 +9056,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       setTimeout(function () {
         me.applyTheme();
       }, 1);
-
-      me.initMultiSelect();
     },
     /*
      *
@@ -8995,7 +9088,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.renderList();
           me.onsList();
 
-          if (me.value) {
+          if(me.multiSelect){
+            me.initMultiSelect();
+
+            if(me.value){
+              me.updateInput();
+            }
+          }
+          else if (me.value) {
             var displayValue = me.getDisplayValue(me.value);
 
             if (displayValue) {
@@ -9114,10 +9214,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         case key.BACKSPACE:
           setTimeout(function () {
             if (me.input.dom.value.length === 0) {
-              //me.fire('empty');
               me.value = -1;
               me.valueIndex = -1;
-              //me.set(-1);
               me.hideAheadList();
 
               if (me.multiSelect) {
@@ -9128,6 +9226,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               me.fire('empty');
             }
             else {
+              if(me.multiSelect){
+                if(me.input.dom.value.split(',').length !== me.valuesIndex.length){
+                  var newValues = me.getFromInput();
+
+                  me.set(newValues);
+                }
+              }
+
               if (me.generateAheadData().length === 0) {
                 me.hideAheadList();
                 return;
@@ -9211,7 +9317,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         display: '',
         left: xy[0] + 'px',
         top: xy[1] + 'px',
-        //width: el.width(),
         width: me.getListWidth(),
         "z-index": 2000 + Fancy.zIndex++
       });
@@ -9220,15 +9325,42 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.clearFocused();
 
-      if (list.select('.' + selectedItemCls).length === 0) {
-        list.select('li').item(0).addClass(focusedItemCls);
-        index = 0;
+      var selected = list.select('.' + selectedItemCls);
+
+      if (selected.length === 0) {
+        if(me.multiSelect && me.values.length){
+          me.valuesIndex.each(function (i, value, length) {
+            if(index === undefined){
+              index = i;
+            }
+
+            list.select('li').item(i).addClass(selectedItemCls);
+          });
+        }
+        else {
+          index = 0;
+        }
       }
       else {
-        index = list.select('.' + selectedItemCls).item(0).index();
-        list.select('li').item(index).addClass(focusedItemCls);
+        if(me.multiSelect && selected.length !== me.valuesIndex.length){
+          list.select('.' + selectedItemCls).removeClass(selectedItemCls);
+
+          me.valuesIndex.each(function (i, value, length) {
+            if(index === undefined){
+              index = i;
+            }
+            list.select('li').item(i).addClass(selectedItemCls);
+          });
+        }
+
+        index = selected.item(0).index();
       }
 
+      if(index === -1){
+        index = 0;
+      }
+
+      list.select('li').item(index).addClass(focusedItemCls);
       me.scrollToListItem(index);
 
       if (!me.docSpy) {
@@ -9415,34 +9547,68 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     set: function (value, onInput) {
       var me = this,
         valueStr = '',
-        i = 0,
-        iL = me.data.length,
-        found = false;
+        index;
 
-      for (; i < iL; i++) {
-        if (me.data[i][me.valueKey] == value) {
-          me.valueIndex = i;
-          valueStr = me.data[i][me.displayKey];
-          found = true;
-          break;
+      if(me.multiSelect && !Fancy.isArray(value)){
+        if(value === -1){
+          value = [];
+        }
+        else {
+          value = [value];
         }
       }
 
-      me.selectItem(i);
+      if(Fancy.isArray(value) && me.multiSelect){
+        var i = 0,
+          iL = value.length,
+          displayedValues = [],
+          valuesIndex = [];
 
-      if (found === false) {
-        if (value !== -1 && value && value.length > 0) {
-          valueStr = value;
-          me.value = -1;
-          me.valueIndex = -1;
+        me.valuesIndex.removeAll();
+
+        for(;i<iL;i++){
+          var _index = me.getIndex(value[i]);
+
+          if(_index === -1){
+            continue;
+          }
+
+          me.valuesIndex.add(_index, value[i]);
+
+          displayedValues.push(me.data[_index][me.displayKey]);
+
+          valueStr = displayedValues.join(', ');
         }
-        else {
-          valueStr = '';
+
+        me.values = value;
+        index = me.getIndex(value[0]);
+        me.value = value[0];
+        me.valueIndex = index;
+      }
+      else{
+        index = me.getIndex(value);
+
+        if(index !== -1) {
+          me.valueIndex = index;
+          valueStr = me.data[index][me.displayKey];
+          me.selectItem(index);
         }
+        else{
+          if (value !== -1 && value && value.length > 0) {
+            valueStr = '';
+            //valueStr = value;
+            me.value = -1;
+            me.valueIndex = -1;
+          }
+          else {
+            valueStr = '';
+          }
+        }
+
+        me.value = value;
       }
 
       me.input.dom.value = valueStr;
-      me.value = value;
 
       if (onInput !== false) {
         me.onInput();
@@ -9454,19 +9620,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     addValue: function (v) {
       var me = this,
         values = me.values,
-        i = 0,
-        iL = values.length,
-        founded = false;
+        index = me.getIndex(v);
 
-      for (; i < iL; i++) {
-        if (values[i] === v) {
-          founded = true;
-        }
-      }
-
-      if (!founded) {
+      if(index !== -1 && !me.valuesIndex.get(index)){
         me.value = v;
         me.values.push(v);
+        me.valuesIndex.add(index, v);
       }
     },
     /*
@@ -9474,14 +9633,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     removeValue: function (v) {
       var me = this,
-        values = me.values,
-        i = 0,
-        iL = values.length;
+        index = me.getIndex(v);
 
-      for (; i < iL; i++) {
-        if (values[i] === v) {
-          me.values.splice(i, 1);
-        }
+      if(index !== -1) {
+        me.values.splice(index, 1);
+        me.valuesIndex.remove(index);
       }
 
       if (me.values.length) {
@@ -9495,24 +9651,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * Method used only for multiSelect
      */
-    updateInput: function () {
+    updateInput: function (onInput) {
       var me = this,
-        displayValues = [],
-        i = 0,
-        iL = me.values.length,
-        value,
-        displayValue;
+        displayValues = [];
 
-      for (; i < iL; i++) {
-        value = me.values[i];
-        displayValue = me.getDisplayValue(value);
-
-        displayValues.push(displayValue);
-      }
+      me.valuesIndex.each(function (i, v, length) {
+        displayValues.push(me.data[i][me.displayKey]);
+      });
 
       me.input.dom.value = displayValues.join(", ");
 
-      me.onInput();
+      if (onInput !== false) {
+        me.onInput();
+      }
     },
     /*
      * @param {Number} index
@@ -9540,7 +9691,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this,
         renderTo = Fancy.get(me.renderTo || document.body).dom,
         el = Fancy.get(document.createElement('div')),
-        value = me.value;
+        value = me.value,
+        index = -1;
 
       el.attr('id', me.id);
 
@@ -9548,21 +9700,30 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         value = '';
       }
       else {
-        var i = 0,
-          iL = me.data.length,
-          found = false;
-
-        for (; i < iL; i++) {
-          if (me.data[i][me.valueKey] === value) {
-            me.valueIndex = i;
-            value = me.data[i][me.displayKey];
-            found = true;
-            break;
-          }
-        }
-
-        if (found === false) {
+        if(me.multiSelect && Fancy.isArray(me.data) && me.data.length > 0){
           value = '';
+
+          me.valuesIndex.each(function(i, v){
+            if(index === -1){
+              index = i;
+              me.valueIndex = i;
+            }
+
+            value += me.data[i][me.displayKey] + ', ';
+          });
+
+          value = value.replace(/, $/, '');
+        }
+        else {
+          index = me.getIndex(value);
+
+          if (index !== -1) {
+            me.valueIndex = index;
+            value = me.data[index][me.displayKey];
+          }
+          else {
+            value = '';
+          }
         }
       }
 
@@ -9729,10 +9890,27 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         iL = data.length;
 
       if (me.multiSelect) {
-        var splitted = inputValue.split(', ');
+        var splitted = inputValue.split(', '),
+          inputSelection = me.getInputSelection(),
+          i = 0,
+          iL = inputValue.length,
+          passedCommas = 0;
 
-        inputValue = splitted[splitted.length - 1];
+        for(;i<iL;i++){
+          if(inputSelection.start <= i){
+            break;
+          }
+
+          if(inputValue[i] === ','){
+            passedCommas++;
+          }
+        }
+
+        inputValue = splitted[passedCommas];
       }
+
+      i = 0;
+      iL = data.length;
 
       for (; i < iL; i++) {
         if (new RegExp('^' + inputValue).test(data[i][me.displayKey].toLocaleLowerCase())) {
@@ -9825,7 +10003,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     clear: function () {
       var me = this;
 
-      me.set(-1, false);
+      if(me.multiSelect){
+        me.set([], false);
+      }
+      else {
+        me.set(-1, false);
+      }
     },
     /*
      *
@@ -9842,7 +10025,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this,
         focusedItemCls = me.focusedItemCls;
 
-      me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
+      if(me.list) {
+        me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
+      }
+
+      if(me.aheadList) {
+        me.aheadList.select('.' + focusedItemCls).removeClass(focusedItemCls);
+      }
     },
     /*
      *
@@ -9868,16 +10057,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     getDisplayValue: function (value, returnPosition) {
       var me = this,
-        i = 0,
-        iL = me.data.length;
+        index = me.getIndex(value);
 
-      for (; i < iL; i++) {
-        if (me.data[i][me.valueKey] == value) {
-          if (returnPosition) {
-            return i;
-          }
-          return me.data[i][me.displayKey];
-        }
+      if(returnPosition){
+        return index;
+      }
+      else{
+        return me.data[index][me.displayKey];
       }
     },
     /*
@@ -10013,7 +10199,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }
       else if (list) {
-        value = list.select('.' + focusedItemCls).attr('value');
+        var item = list.select('.' + focusedItemCls);
+
+        if(!item || !item.dom){
+          item = list.select('.' + selectedItemCls);
+        }
+
+        value = item.attr('value');
 
         me.set(value);
       }
@@ -10076,7 +10268,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         me.clearFocused();
 
-        //activeLi.removeClass(focusedItemCls);
         nextActiveLi.addClass(focusedItemCls);
       }
     },
@@ -10174,10 +10365,67 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         value = me.value;
 
       me.values = [];
+      me.valuesIndex = new Fancy.Collection();
 
-      if (value !== undefined && value !== null && value !== '' && value !== -1) {
-        me.values.push(value);
+      if(me.value !== undefined && value !== null && value !== ''){
+        if(Fancy.isArray(value)){
+          me.values = value;
+          me.value = value[0];
+        }
+        else{
+          me.values = [me.value];
+        }
+
+        var i = 0,
+          iL = me.values.length,
+          index;
+
+        for(;i<iL;i++){
+          value = me.values[i];
+
+          index = me.getIndex(value);
+
+          me.valuesIndex.add(index, value);
+        }
       }
+    },
+    getIndex: function(value){
+      var me = this,
+        data = me.data,
+        i = 0,
+        iL = data.length,
+        index = -1;
+
+      for(;i<iL;i++){
+        if(data[i][me.valueKey] == value) {
+          return i;
+        }
+      }
+
+      return index;
+    },
+    /*
+     * Method used only for multiSelect
+     */
+    getFromInput: function () {
+      var me = this,
+        value = me.input.dom.value,
+        values = value.split(','),
+        i = 0,
+        iL = values.length,
+        displayValue,
+        _values = [];
+
+      for(;i<iL;i++){
+        displayValue = values[i].replace(/ $/, '').replace(/^ /, '');
+
+        var _value = me.getValueKey(displayValue);
+        if(_value){
+          _values.push(_value);
+        }
+      }
+
+      return _values;
     }
   });
 
@@ -10747,7 +10995,7 @@ Fancy.addValid('min', {
   before: ['notempty', 'notnan'],
   text: 'Must be must be at least {param}',
   fn: function(value){
-    return value > this.param;
+    return value >= this.param;
   }
 });
 
@@ -10755,7 +11003,7 @@ Fancy.addValid('max', {
   before: ['notempty', 'notnan'],
   text: 'Must be no more than {param}',
   fn: function(value){
-    return value < this.param;
+    return value <= this.param;
   }
 });
 
@@ -11094,7 +11342,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'set',
       'update',
       'sort',
-      'beforeload', 'load',
+      'beforeload', 'load', 'servererror',
       'select',
       'clearselect',
       'activate', 'deactivate',

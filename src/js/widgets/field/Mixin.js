@@ -11,6 +11,7 @@ Fancy.form.field.Mixin.prototype = {
   labelHeight: 18,
   failedValidCls: 'fancy-field-not-valid',
   cls: '',
+  checkValidOnTyping: false,
   /*
    *
    */
@@ -135,7 +136,7 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     if (me.labelAlign === 'top' && me.label) {
-      //auto fixing of wrang labelWidth.
+      //auto fixing of wrong labelWidth.
       //will not fix right if user change color of label font-size to bigger
       if (me.labelWidth < me.label.length * 7) {
         me.labelWidth = (me.label.length + 2) * 7;
@@ -359,7 +360,9 @@ Fancy.form.field.Mixin.prototype = {
    * @param {*} value
    */
   onKey: function(me, value){
-    me.validate(value);
+    if(!me.isValid() || me.checkValidOnTyping){
+      me.validate(value);
+    }
   },
   /*
    *
@@ -372,6 +375,8 @@ Fancy.form.field.Mixin.prototype = {
     if(me.input){
       return me.validate(me.input.dom.value);
     }
+
+    return true;
   },
   /*
    * @param {*} value
@@ -412,10 +417,6 @@ Fancy.form.field.Mixin.prototype = {
     var me = this;
 
     me.fire('focus');
-
-    if(Fancy.datepicker){
-      //Fancy.datepicker.Manager.hide();
-    }
   },
   /*
    *
@@ -496,7 +497,10 @@ Fancy.form.field.Mixin.prototype = {
    *
    */
   clear: function(){
-    this.set('');
+    var me = this;
+
+    me.set('');
+    me.clearValid();
   },
   /*
    *
@@ -526,6 +530,11 @@ Fancy.form.field.Mixin.prototype = {
 
       me.addClass(me.failedValidCls);
     }
+  },
+  clearValid: function () {
+    var me = this;
+
+    me.removeClass(me.failedValidCls);
   },
   /*
    *
@@ -610,8 +619,11 @@ Fancy.form.field.Mixin.prototype = {
   setSize: function(width, height){
     var me = this;
 
-    if(me.type === 'set'){
-      return;
+    switch(me.type){
+      case 'set':
+      case 'line':
+        return;
+        break;
     }
 
     if(width === undefined && height === undefined){
@@ -817,5 +829,58 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     me.tooltip.show(e.pageX + 15, e.pageY - 25);
+  },
+  getInputSelection: function(){
+    var me = this,
+      start = 0,
+      end = 0,
+      normalizedValue,
+      range,
+      textInputRange,
+      len,
+      endRange,
+      el = me.input.dom;
+
+    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+      start = el.selectionStart;
+      end = el.selectionEnd;
+    }
+    else {
+      range = document.selection.createRange();
+
+      if (range && range.parentElement() == el) {
+        len = el.value.length;
+        normalizedValue = el.value.replace(/\r\n/g, "\n");
+
+        // Create a working TextRange that lives only in the input
+        textInputRange = el.createTextRange();
+        textInputRange.moveToBookmark(range.getBookmark());
+
+        // Check if the start and end of the selection are at the very end
+        // of the input, since moveStart/moveEnd doesn't return what we want
+        // in those cases
+        endRange = el.createTextRange();
+        endRange.collapse(false);
+
+        if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+          start = end = len;
+        } else {
+          start = -textInputRange.moveStart("character", -len);
+          start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+          if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+            end = len;
+          } else {
+            end = -textInputRange.moveEnd("character", -len);
+            end += normalizedValue.slice(0, end).split("\n").length - 1;
+          }
+        }
+      }
+    }
+
+    return {
+      start: start,
+      end: end
+    };
   }
 };

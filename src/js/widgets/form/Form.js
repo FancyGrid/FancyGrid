@@ -13,6 +13,7 @@ Fancy.define('Fancy.Form', {
   type: 'form',
   theme: 'default',
   i18n: 'en',
+  //labelWidth: 100,
   maxLabelNumber: 11,
   minWidth: 200,
   minHeight: 200,

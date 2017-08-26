@@ -134,6 +134,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.panel.addClass('fancy-panel-grid-inside');
     }
 
+    if(me.extraCls && me.panel){
+      me.panel.addClass(me.extraCls);
+    }
+
     if(me.title) {
       me.height -= me.titleHeight;
     }
@@ -557,7 +561,7 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
     });
 
-    return valid;
+    return !!valid;
   },
   getItem: function(name){
     var me= this,
@@ -669,7 +673,6 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     defaults.width = width - me.panelBorderWidth * 2;
 
-    if(labelWidth === undefined){
       Fancy.each(me.items, function(item){
         switch(item.type){
           case 'set':
@@ -692,6 +695,7 @@ Fancy.define('Fancy.toolbar.Tab', {
 
             item.defaults = item.defaults || {};
             item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
+
             break;
           case 'line':
             var numOfFields = item.items.length,
@@ -699,6 +703,7 @@ Fancy.define('Fancy.toolbar.Tab', {
               averageWidth = (width - 8 - 8 - 8)/numOfFields;
 
             Fancy.each(item.items, function(_item){
+              _item.width = averageWidth;
               if(_item.labelWidth || _item.inputWidth){
                 isWidthInit = true;
               }
@@ -706,14 +711,20 @@ Fancy.define('Fancy.toolbar.Tab', {
 
             if(isWidthInit === false){
               Fancy.each(item.items, function(_item){
-                _item.width = averageWidth;
                 if(_item.labelAlign === 'top'){
                   _item.labelWidth = averageWidth;
+                }
+                else{
+                  //Bad bug fix
+                  _item.labelWidth = 100;
                 }
               });
             }
 
             item.defaults = item.defaults || {};
+            if(item.defaults.labelWidth === undefined){
+              item.defaults.labelWidth = me.labelWidth;
+            }
             break;
           default:
             if(item.label && item.label.length > maxLabelNumber){
@@ -724,12 +735,10 @@ Fancy.define('Fancy.toolbar.Tab', {
 
       maxLabelNumber++;
 
-      //labelWidth = defaults.width / 4.5;
       labelWidth = maxLabelNumber * 8;
       if(labelWidth < 50){
         labelWidth = 50;
       }
-    }
 
     defaults.labelWidth = labelWidth;
 
@@ -907,24 +916,29 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigItems: function(config){
-    var me = this;
+    var me = this,
+      fn = function(item){
+        item.theme = me.theme || '';
 
-    Fancy.each(config.items, function(item){
-      item.theme = me.theme || '';
+        if( item.labelWidth === undefined ){
+          item.labelWidth = me.labelWidth;
+        }
 
-      if( item.labelWidth === undefined ){
-        item.labelWidth = me.labelWidth;
-      }
+        if( item.inputWidth === undefined ){
+          item.inputWidth = me.inputWidth;
+        }
 
-      if( item.inputWidth === undefined ){
-        item.inputWidth = me.inputWidth;
-      }
+        if( item.type === 'pass' || item.type === 'password' ){
+          item.type = 'string';
+          item.isPassword = true;
+        }
 
-      if( item.type === 'pass' || item.type === 'password' ){
-        item.type = 'string';
-        item.isPassword = true;
-      }
-    });
+        if(item.items){
+          Fancy.each(item.items, fn);
+        }
+      };
+
+    Fancy.each(config.items, fn);
 
     return config;
   }

@@ -16,6 +16,11 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       var indexFilters = filters[p],
         indexValue = item.data[p];
 
+      if(/\./.test(p)){
+        var splitted = p.split('.'),
+          indexValue = item.data[splitted[0]][splitted[1]];
+      }
+
 	    if(indexFilters.type === 'date'){
 		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
 	    }
@@ -708,6 +713,8 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         w.grouping.reGroup();
       }
     }
+
+    w.setSidesHeight();
   },
   /*
    * @param {String|Number} value

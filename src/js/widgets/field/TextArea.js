@@ -22,7 +22,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
   init: function(){
     var me = this;
 
-    me.addEvents('change');
+    me.addEvents('change', 'key');
     me.Super('init', arguments);
 
     me.preRender();
@@ -63,6 +63,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
     input.on('focus', me.onFocus, me);
     input.on('input', me.onInput, me);
     input.on('keydown', me.onKeyDown, me);
+    me.on('key', me.onKey, me);
 
     if( me.autoHeight ){
       input.on('input', me.onChange, me);

@@ -1,6 +1,8 @@
 /**
  * @class Fancy.Combo
  * @extends Fancy.Widget
+ *
+ * Note: because multiselection code became overcomplex
  */
 (function(){
   Fancy.define('Fancy.combo.Manager', {
@@ -47,12 +49,13 @@
     itemCheckBox: false,
     tpl: [
       '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-      '{label}',
+        '{label}',
       '</div>',
       '<div class="fancy-field-text">',
-      '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-      '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
-      '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
+        '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
+          '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
+        '</div>',
       '</div>',
       '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
       '<div class="fancy-clearfix"></div>'
@@ -84,6 +87,10 @@
         me.data = me.configData(me.data);
       }
 
+      if(me.multiSelect && me.data.length){
+        me.initMultiSelect();
+      }
+
       me.preRender();
       me.render();
 
@@ -98,8 +105,6 @@
       setTimeout(function () {
         me.applyTheme();
       }, 1);
-
-      me.initMultiSelect();
     },
     /*
      *
@@ -132,7 +137,14 @@
           me.renderList();
           me.onsList();
 
-          if (me.value) {
+          if(me.multiSelect){
+            me.initMultiSelect();
+
+            if(me.value){
+              me.updateInput();
+            }
+          }
+          else if (me.value) {
             var displayValue = me.getDisplayValue(me.value);
 
             if (displayValue) {
@@ -251,10 +263,8 @@
         case key.BACKSPACE:
           setTimeout(function () {
             if (me.input.dom.value.length === 0) {
-              //me.fire('empty');
               me.value = -1;
               me.valueIndex = -1;
-              //me.set(-1);
               me.hideAheadList();
 
               if (me.multiSelect) {
@@ -265,6 +275,14 @@
               me.fire('empty');
             }
             else {
+              if(me.multiSelect){
+                if(me.input.dom.value.split(',').length !== me.valuesIndex.length){
+                  var newValues = me.getFromInput();
+
+                  me.set(newValues);
+                }
+              }
+
               if (me.generateAheadData().length === 0) {
                 me.hideAheadList();
                 return;
@@ -348,7 +366,6 @@
         display: '',
         left: xy[0] + 'px',
         top: xy[1] + 'px',
-        //width: el.width(),
         width: me.getListWidth(),
         "z-index": 2000 + Fancy.zIndex++
       });
@@ -357,15 +374,42 @@
 
       me.clearFocused();
 
-      if (list.select('.' + selectedItemCls).length === 0) {
-        list.select('li').item(0).addClass(focusedItemCls);
-        index = 0;
+      var selected = list.select('.' + selectedItemCls);
+
+      if (selected.length === 0) {
+        if(me.multiSelect && me.values.length){
+          me.valuesIndex.each(function (i, value, length) {
+            if(index === undefined){
+              index = i;
+            }
+
+            list.select('li').item(i).addClass(selectedItemCls);
+          });
+        }
+        else {
+          index = 0;
+        }
       }
       else {
-        index = list.select('.' + selectedItemCls).item(0).index();
-        list.select('li').item(index).addClass(focusedItemCls);
+        if(me.multiSelect && selected.length !== me.valuesIndex.length){
+          list.select('.' + selectedItemCls).removeClass(selectedItemCls);
+
+          me.valuesIndex.each(function (i, value, length) {
+            if(index === undefined){
+              index = i;
+            }
+            list.select('li').item(i).addClass(selectedItemCls);
+          });
+        }
+
+        index = selected.item(0).index();
       }
 
+      if(index === -1){
+        index = 0;
+      }
+
+      list.select('li').item(index).addClass(focusedItemCls);
       me.scrollToListItem(index);
 
       if (!me.docSpy) {
@@ -552,34 +596,68 @@
     set: function (value, onInput) {
       var me = this,
         valueStr = '',
-        i = 0,
-        iL = me.data.length,
-        found = false;
+        index;
 
-      for (; i < iL; i++) {
-        if (me.data[i][me.valueKey] == value) {
-          me.valueIndex = i;
-          valueStr = me.data[i][me.displayKey];
-          found = true;
-          break;
+      if(me.multiSelect && !Fancy.isArray(value)){
+        if(value === -1){
+          value = [];
+        }
+        else {
+          value = [value];
         }
       }
 
-      me.selectItem(i);
+      if(Fancy.isArray(value) && me.multiSelect){
+        var i = 0,
+          iL = value.length,
+          displayedValues = [],
+          valuesIndex = [];
 
-      if (found === false) {
-        if (value !== -1 && value && value.length > 0) {
-          valueStr = value;
-          me.value = -1;
-          me.valueIndex = -1;
+        me.valuesIndex.removeAll();
+
+        for(;i<iL;i++){
+          var _index = me.getIndex(value[i]);
+
+          if(_index === -1){
+            continue;
+          }
+
+          me.valuesIndex.add(_index, value[i]);
+
+          displayedValues.push(me.data[_index][me.displayKey]);
+
+          valueStr = displayedValues.join(', ');
         }
-        else {
-          valueStr = '';
+
+        me.values = value;
+        index = me.getIndex(value[0]);
+        me.value = value[0];
+        me.valueIndex = index;
+      }
+      else{
+        index = me.getIndex(value);
+
+        if(index !== -1) {
+          me.valueIndex = index;
+          valueStr = me.data[index][me.displayKey];
+          me.selectItem(index);
         }
+        else{
+          if (value !== -1 && value && value.length > 0) {
+            valueStr = '';
+            //valueStr = value;
+            me.value = -1;
+            me.valueIndex = -1;
+          }
+          else {
+            valueStr = '';
+          }
+        }
+
+        me.value = value;
       }
 
       me.input.dom.value = valueStr;
-      me.value = value;
 
       if (onInput !== false) {
         me.onInput();
@@ -591,19 +669,12 @@
     addValue: function (v) {
       var me = this,
         values = me.values,
-        i = 0,
-        iL = values.length,
-        founded = false;
+        index = me.getIndex(v);
 
-      for (; i < iL; i++) {
-        if (values[i] === v) {
-          founded = true;
-        }
-      }
-
-      if (!founded) {
+      if(index !== -1 && !me.valuesIndex.get(index)){
         me.value = v;
         me.values.push(v);
+        me.valuesIndex.add(index, v);
       }
     },
     /*
@@ -611,14 +682,11 @@
      */
     removeValue: function (v) {
       var me = this,
-        values = me.values,
-        i = 0,
-        iL = values.length;
+        index = me.getIndex(v);
 
-      for (; i < iL; i++) {
-        if (values[i] === v) {
-          me.values.splice(i, 1);
-        }
+      if(index !== -1) {
+        me.values.splice(index, 1);
+        me.valuesIndex.remove(index);
       }
 
       if (me.values.length) {
@@ -632,24 +700,19 @@
     /*
      * Method used only for multiSelect
      */
-    updateInput: function () {
+    updateInput: function (onInput) {
       var me = this,
-        displayValues = [],
-        i = 0,
-        iL = me.values.length,
-        value,
-        displayValue;
+        displayValues = [];
 
-      for (; i < iL; i++) {
-        value = me.values[i];
-        displayValue = me.getDisplayValue(value);
-
-        displayValues.push(displayValue);
-      }
+      me.valuesIndex.each(function (i, v, length) {
+        displayValues.push(me.data[i][me.displayKey]);
+      });
 
       me.input.dom.value = displayValues.join(", ");
 
-      me.onInput();
+      if (onInput !== false) {
+        me.onInput();
+      }
     },
     /*
      * @param {Number} index
@@ -677,7 +740,8 @@
       var me = this,
         renderTo = Fancy.get(me.renderTo || document.body).dom,
         el = Fancy.get(document.createElement('div')),
-        value = me.value;
+        value = me.value,
+        index = -1;
 
       el.attr('id', me.id);
 
@@ -685,21 +749,30 @@
         value = '';
       }
       else {
-        var i = 0,
-          iL = me.data.length,
-          found = false;
-
-        for (; i < iL; i++) {
-          if (me.data[i][me.valueKey] === value) {
-            me.valueIndex = i;
-            value = me.data[i][me.displayKey];
-            found = true;
-            break;
-          }
-        }
-
-        if (found === false) {
+        if(me.multiSelect && Fancy.isArray(me.data) && me.data.length > 0){
           value = '';
+
+          me.valuesIndex.each(function(i, v){
+            if(index === -1){
+              index = i;
+              me.valueIndex = i;
+            }
+
+            value += me.data[i][me.displayKey] + ', ';
+          });
+
+          value = value.replace(/, $/, '');
+        }
+        else {
+          index = me.getIndex(value);
+
+          if (index !== -1) {
+            me.valueIndex = index;
+            value = me.data[index][me.displayKey];
+          }
+          else {
+            value = '';
+          }
         }
       }
 
@@ -866,10 +939,27 @@
         iL = data.length;
 
       if (me.multiSelect) {
-        var splitted = inputValue.split(', ');
+        var splitted = inputValue.split(', '),
+          inputSelection = me.getInputSelection(),
+          i = 0,
+          iL = inputValue.length,
+          passedCommas = 0;
 
-        inputValue = splitted[splitted.length - 1];
+        for(;i<iL;i++){
+          if(inputSelection.start <= i){
+            break;
+          }
+
+          if(inputValue[i] === ','){
+            passedCommas++;
+          }
+        }
+
+        inputValue = splitted[passedCommas];
       }
+
+      i = 0;
+      iL = data.length;
 
       for (; i < iL; i++) {
         if (new RegExp('^' + inputValue).test(data[i][me.displayKey].toLocaleLowerCase())) {
@@ -962,7 +1052,12 @@
     clear: function () {
       var me = this;
 
-      me.set(-1, false);
+      if(me.multiSelect){
+        me.set([], false);
+      }
+      else {
+        me.set(-1, false);
+      }
     },
     /*
      *
@@ -979,7 +1074,13 @@
       var me = this,
         focusedItemCls = me.focusedItemCls;
 
-      me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
+      if(me.list) {
+        me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
+      }
+
+      if(me.aheadList) {
+        me.aheadList.select('.' + focusedItemCls).removeClass(focusedItemCls);
+      }
     },
     /*
      *
@@ -1005,16 +1106,13 @@
      */
     getDisplayValue: function (value, returnPosition) {
       var me = this,
-        i = 0,
-        iL = me.data.length;
+        index = me.getIndex(value);
 
-      for (; i < iL; i++) {
-        if (me.data[i][me.valueKey] == value) {
-          if (returnPosition) {
-            return i;
-          }
-          return me.data[i][me.displayKey];
-        }
+      if(returnPosition){
+        return index;
+      }
+      else{
+        return me.data[index][me.displayKey];
       }
     },
     /*
@@ -1150,7 +1248,13 @@
         }
       }
       else if (list) {
-        value = list.select('.' + focusedItemCls).attr('value');
+        var item = list.select('.' + focusedItemCls);
+
+        if(!item || !item.dom){
+          item = list.select('.' + selectedItemCls);
+        }
+
+        value = item.attr('value');
 
         me.set(value);
       }
@@ -1213,7 +1317,6 @@
 
         me.clearFocused();
 
-        //activeLi.removeClass(focusedItemCls);
         nextActiveLi.addClass(focusedItemCls);
       }
     },
@@ -1311,10 +1414,67 @@
         value = me.value;
 
       me.values = [];
+      me.valuesIndex = new Fancy.Collection();
 
-      if (value !== undefined && value !== null && value !== '' && value !== -1) {
-        me.values.push(value);
+      if(me.value !== undefined && value !== null && value !== ''){
+        if(Fancy.isArray(value)){
+          me.values = value;
+          me.value = value[0];
+        }
+        else{
+          me.values = [me.value];
+        }
+
+        var i = 0,
+          iL = me.values.length,
+          index;
+
+        for(;i<iL;i++){
+          value = me.values[i];
+
+          index = me.getIndex(value);
+
+          me.valuesIndex.add(index, value);
+        }
       }
+    },
+    getIndex: function(value){
+      var me = this,
+        data = me.data,
+        i = 0,
+        iL = data.length,
+        index = -1;
+
+      for(;i<iL;i++){
+        if(data[i][me.valueKey] == value) {
+          return i;
+        }
+      }
+
+      return index;
+    },
+    /*
+     * Method used only for multiSelect
+     */
+    getFromInput: function () {
+      var me = this,
+        value = me.input.dom.value,
+        values = value.split(','),
+        i = 0,
+        iL = values.length,
+        displayValue,
+        _values = [];
+
+      for(;i<iL;i++){
+        displayValue = values[i].replace(/ $/, '').replace(/^ /, '');
+
+        var _value = me.getValueKey(displayValue);
+        if(_value){
+          _values.push(_value);
+        }
+      }
+
+      return _values;
     }
   });
 

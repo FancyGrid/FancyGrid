@@ -139,7 +139,8 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
     var itemConfig = {
       renderTo: renderTo,
       label: false,
-      style: style
+      style: style,
+      checkValidOnTyping: true
     };
 
     switch(type){
@@ -185,7 +186,8 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
           value: 0,
           padding: false,
           vtype: vtype,
-          events: events
+          events: events,
+          checkValidOnTyping: true
         });
         break;
       case 'text':
@@ -194,6 +196,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
           label: false,
           style: style,
           vtype: vtype,
+          checkValidOnTyping: true,
           events: [{
             enter: me.onEditorEnter,
             scope: me
@@ -214,6 +217,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
           style: style,
           vtype: vtype,
           format: column.format,
+          checkValidOnTyping: true,
           events: [{
             enter: me.onEditorEnter,
             scope: me
@@ -270,6 +274,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
           lang: w.lang,
           vtype: vtype,
           theme: theme,
+          checkValidOnTyping: true,
           events: [{
             enter: me.onEditorEnter,
             scope: me

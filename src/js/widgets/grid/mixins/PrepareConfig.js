@@ -39,6 +39,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
+    config = me.prepareConfigWidgetColumn(config);
     config = me.prepareConfigChart(config, originalConfig);
     config = me.prepareConfigCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
@@ -702,6 +703,128 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             }
           }
         }
+      }
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @returns {Object}
+   */
+  prepareConfigWidgetColumn: function(config){
+    var me = this,
+      columns = config.columns,
+      i = 0,
+      iL = columns.length;
+
+    for(;i<iL;i++) {
+      var column = columns[i];
+
+      if(column.widget){
+        column.render = function(o){
+          var fieldEl = o.cell.select('.fancy-field'),
+            field,
+            renderTo = o.cell.dom,
+            column = o.column;
+
+          var itemComfig = {
+            vtype: column.vtype,
+            style: {
+              'padding': '0px',
+              'margin-top': '-10px',
+              'margin-left': '-1px'
+            },
+            label: false,
+            renderTo: renderTo,
+            value: o.value,
+            emptyText: column.emptyText
+          };
+
+          if(fieldEl.length){
+            field = Fancy.getWidget(fieldEl.dom.id);
+
+            if(field.get() != o.value){
+              field.set(o.value);
+            }
+          }
+          else {
+            var width = o.column.width,
+              column = o.column,
+              index = column.index;
+
+            switch(o.column.type){
+              case 'number':
+              case 'currency':
+                Fancy.apply(itemComfig, {
+                  spin: column.spin,
+                  min: column.min,
+                  max: column.max,
+                  events: [{
+                    change: function(field, value){
+                      grid.set(o.rowIndex, index, value);
+                      grid.updater.updateRow();
+                    }
+                  }]
+                });
+
+                field = new Fancy.NumberField(itemComfig);
+                break;
+              case 'string':
+              case 'image':
+                Fancy.apply(itemComfig, {
+                  events: [{
+                    change: function(field, value){
+                      grid.set(o.rowIndex, index, value);
+                      grid.updater.updateRow();
+                    }
+                  }]
+                });
+
+                field = new Fancy.StringField(itemComfig);
+                break;
+              case 'combo':
+                Fancy.apply(itemComfig, {
+                  displayKey: o.column.displayKey,
+                  valueKey: o.column.displayKey,
+                  padding: false,
+                  checkValidOnTyping: true,
+                  data: o.column.data,
+                  events: [{
+                    change: function(field, value){
+                      grid.set(o.rowIndex, index, value);
+                      grid.updater.updateRow();
+                    }
+                  }]
+                });
+
+                field = new Fancy.Combo(itemComfig);
+                break;
+            }
+
+            switch(o.column.type){
+              case 'number':
+              case 'string':
+              case 'currency':
+              case 'image':
+                field.setInputSize({
+                  width: width + 1,
+                  height: 33
+                });
+                break;
+              case 'combo':
+                field.size({
+                  width: width + 1,
+                  height: 33
+                });
+                break;
+            }
+
+
+          }
+
+          return o;
+        };
       }
     }
 

@@ -20,7 +20,7 @@ Fancy.addValid('min', {
   before: ['notempty', 'notnan'],
   text: 'Must be must be at least {param}',
   fn: function(value){
-    return value > this.param;
+    return value >= this.param;
   }
 });
 
@@ -28,7 +28,7 @@ Fancy.addValid('max', {
   before: ['notempty', 'notnan'],
   text: 'Must be no more than {param}',
   fn: function(value){
-    return value < this.param;
+    return value <= this.param;
   }
 });
 

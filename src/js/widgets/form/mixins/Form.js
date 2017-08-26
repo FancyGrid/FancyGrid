@@ -101,6 +101,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.panel.addClass('fancy-panel-grid-inside');
     }
 
+    if(me.extraCls && me.panel){
+      me.panel.addClass(me.extraCls);
+    }
+
     if(me.title) {
       me.height -= me.titleHeight;
     }
@@ -524,7 +528,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       }
     });
 
-    return valid;
+    return !!valid;
   },
   getItem: function(name){
     var me= this,
@@ -636,7 +640,6 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     defaults.width = width - me.panelBorderWidth * 2;
 
-    if(labelWidth === undefined){
       Fancy.each(me.items, function(item){
         switch(item.type){
           case 'set':
@@ -659,6 +662,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
             item.defaults = item.defaults || {};
             item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
+
             break;
           case 'line':
             var numOfFields = item.items.length,
@@ -666,6 +670,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
               averageWidth = (width - 8 - 8 - 8)/numOfFields;
 
             Fancy.each(item.items, function(_item){
+              _item.width = averageWidth;
               if(_item.labelWidth || _item.inputWidth){
                 isWidthInit = true;
               }
@@ -673,14 +678,20 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
             if(isWidthInit === false){
               Fancy.each(item.items, function(_item){
-                _item.width = averageWidth;
                 if(_item.labelAlign === 'top'){
                   _item.labelWidth = averageWidth;
+                }
+                else{
+                  //Bad bug fix
+                  _item.labelWidth = 100;
                 }
               });
             }
 
             item.defaults = item.defaults || {};
+            if(item.defaults.labelWidth === undefined){
+              item.defaults.labelWidth = me.labelWidth;
+            }
             break;
           default:
             if(item.label && item.label.length > maxLabelNumber){
@@ -691,12 +702,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
       maxLabelNumber++;
 
-      //labelWidth = defaults.width / 4.5;
       labelWidth = maxLabelNumber * 8;
       if(labelWidth < 50){
         labelWidth = 50;
       }
-    }
 
     defaults.labelWidth = labelWidth;
 

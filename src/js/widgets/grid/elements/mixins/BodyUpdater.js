@@ -333,13 +333,17 @@ Fancy.grid.body.mixin.Updater.prototype = {
     for(;j<jL;j++){
       var data = s.get(j),
         id = s.getId(j),
+        inner = cellsDomInner.item(j),
+        cell = cellsDom.item(j),
         o = {
           rowIndex: j,
           data: data,
           style: {},
           column: column,
           id: id,
-          item: s.getItem(j)
+          item: s.getItem(j),
+          inner: inner,
+          cell: cell
         },
         value,
         dirty = false;
@@ -383,7 +387,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
           break;
       }
 
-      var cell = cellsDom.item(j);
       if(w.cellStylingCls){
         me.clearCls(cell);
       }
@@ -397,7 +400,10 @@ Fancy.grid.body.mixin.Updater.prototype = {
       }
 
       cell.css(o.style);
-      cellsDomInner.item(j).update(value);
+
+      if(!o.column.widget){
+        inner.update(value);
+      }
     }
   },
   /*

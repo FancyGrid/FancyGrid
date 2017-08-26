@@ -162,6 +162,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
         me.fire('change');
         me.fire('load');
+      },
+      error: function (request, errorTitle, errorMessage) {
+        me.fire('servererror', errorTitle, errorMessage);
       }
     });
   },
@@ -229,6 +232,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.loading = false;
 
         me.fire('update', id, key, value);
+      },
+      error: function (request, errorTitle, errorMessage) {
+        me.fire('servererror', errorTitle, errorMessage);
       }
     });
   },
@@ -265,6 +271,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.loading = false;
 
         me.fire('destroy', id);
+      },
+      error: function (request, errorTitle, errorMessage) {
+        me.fire('servererror', errorTitle, errorMessage);
       }
     });
   },
@@ -318,6 +327,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
 
         me.fire('create', o.data);
+      },
+      error: function (request, errorTitle, errorMessage) {
+        me.fire('servererror', errorTitle, errorMessage);
       }
     });
   },

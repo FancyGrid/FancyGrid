@@ -569,6 +569,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     docEl.on('mouseup', me.onDocMouseUp, me);
     docEl.on('click', me.onDocClick, me);
     docEl.on('mousemove', me.onDocMove, me);
+    store.on('servererror', me.onServerError, me);
 
     if(me.responsive){
       Fancy.$(window).bind('resize', function(){
@@ -578,6 +579,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     me.on('activate', me.onActivate, me);
     me.on('deactivate', me.onDeActivate, me);
+  },
+  onServerError: function (request, errorTitle, errorText) {
+    this.fire('servererror', request, errorTitle, errorText);
   },
   /*
    *
@@ -1237,10 +1241,9 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       });
     }
     else{
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
+      newCenterWidth = width - leftColumnWidth - rightColumnWidth - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
 
-      newCenterWidth -= me.panelBorderWidth * 2;
-      el.width(width);
+      el.css('width', width);
     }
 
     if(newCenterWidth < 100){
@@ -1253,6 +1256,32 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     body.css('width', newCenterWidth);
 
     me.scroller.setScrollBars();
+  },
+  getWidth: function () {
+    var me = this,
+      value;
+
+    if(me.panel){
+      value = parseInt( me.panel.css('width') );
+    }
+    else{
+      value = parseInt( me.css('width') );
+    }
+
+    return value;
+  },
+  getHeight: function () {
+    var me = this,
+      value;
+
+    if(me.panel){
+      value = parseInt( me.panel.css('height') );
+    }
+    else{
+      value = parseInt( me.css('height') );
+    }
+
+    return value;
   },
   /*
    * @param {Number} value
