@@ -308,6 +308,7 @@ Fancy.define('Fancy.toolbar.Tab', {
           item = me.applyDefaults(item);
           break;
         case 'string':
+        case undefined:
           field = Fancy.form.field.String;
           break;
         case 'number':
@@ -452,6 +453,10 @@ Fancy.define('Fancy.toolbar.Tab', {
           case 'button':
             return;
             break;
+        }
+
+        if(item.name === undefined){
+          return;
         }
 
         values[item.name] = item.get();
@@ -673,72 +678,72 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     defaults.width = width - me.panelBorderWidth * 2;
 
-      Fancy.each(me.items, function(item){
-        switch(item.type){
-          case 'set':
-          case 'tab':
-            if(item.type === 'tab'){
-              me.tabbed = true;
+    Fancy.each(me.items, function(item){
+      switch(item.type){
+        case 'set':
+        case 'tab':
+          if(item.type === 'tab'){
+            me.tabbed = true;
+          }
+
+          var minusWidth = item.type === 'set'? 62:20;
+
+          Fancy.each(item.items, function(_item){
+            if(_item.width === undefined){
+              _item.width = width - minusWidth;
             }
 
-            var minusWidth = item.type === 'set'? 62:20;
+            if(_item.label && _item.label.length > maxLabelNumber){
+              maxLabelNumber = _item.label.length;
+            }
+          });
 
+          item.defaults = item.defaults || {};
+          item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
+
+          break;
+        case 'line':
+          var numOfFields = item.items.length,
+            isWidthInit = false,
+            averageWidth = (width - 8 - 8 - 8)/numOfFields;
+
+          Fancy.each(item.items, function(_item){
+            _item.width = averageWidth;
+            if(_item.labelWidth || _item.inputWidth){
+              isWidthInit = true;
+            }
+          });
+
+          if(isWidthInit === false){
             Fancy.each(item.items, function(_item){
-              if(_item.width === undefined){
-                _item.width = width - minusWidth;
+              if(_item.labelAlign === 'top'){
+                _item.labelWidth = averageWidth;
               }
-
-              if(_item.label && _item.label.length > maxLabelNumber){
-                maxLabelNumber = _item.label.length;
+              else{
+                //Bad bug fix
+                _item.labelWidth = 100;
               }
             });
+          }
 
-            item.defaults = item.defaults || {};
-            item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
-
-            break;
-          case 'line':
-            var numOfFields = item.items.length,
-              isWidthInit = false,
-              averageWidth = (width - 8 - 8 - 8)/numOfFields;
-
-            Fancy.each(item.items, function(_item){
-              _item.width = averageWidth;
-              if(_item.labelWidth || _item.inputWidth){
-                isWidthInit = true;
-              }
-            });
-
-            if(isWidthInit === false){
-              Fancy.each(item.items, function(_item){
-                if(_item.labelAlign === 'top'){
-                  _item.labelWidth = averageWidth;
-                }
-                else{
-                  //Bad bug fix
-                  _item.labelWidth = 100;
-                }
-              });
-            }
-
-            item.defaults = item.defaults || {};
-            if(item.defaults.labelWidth === undefined){
-              item.defaults.labelWidth = me.labelWidth;
-            }
-            break;
-          default:
-            if(item.label && item.label.length > maxLabelNumber){
-              maxLabelNumber = item.label.length;
-            }
-        }
-      });
-
-      maxLabelNumber++;
-
-      labelWidth = maxLabelNumber * 8;
-      if(labelWidth < 50){
-        labelWidth = 50;
+          item.defaults = item.defaults || {};
+          if(item.defaults.labelWidth === undefined){
+            item.defaults.labelWidth = me.labelWidth;
+          }
+          break;
+        default:
+          if(item.label && item.label.length > maxLabelNumber){
+            maxLabelNumber = item.label.length;
+          }
       }
+    });
+
+    maxLabelNumber++;
+
+    labelWidth = maxLabelNumber * 6;
+    if(labelWidth < 80){
+      labelWidth = 80;
+    }
 
     defaults.labelWidth = labelWidth;
 

@@ -326,6 +326,10 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
     body.el.select('.' + activeCellCls).removeClass(activeCellCls);
     cell.addClass(activeCellCls);
 
+    if(_date > 28){
+      _date = 1;
+    }
+
     me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
     me.date = me.showDate;
 

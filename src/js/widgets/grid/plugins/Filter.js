@@ -460,7 +460,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         '!': true,
         '=': true
       };
-	
+
 	  options = options || {};
 
     if(me.intervalAutoEnter){

@@ -133,7 +133,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'set',
       'update',
       'sort',
-      'beforeload', 'load', 'servererror',
+      'beforeload', 'load', 'servererror', 'serversuccess',
       'select',
       'clearselect',
       'activate', 'deactivate',

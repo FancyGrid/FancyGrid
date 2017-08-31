@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.6',
+  version: '1.6.7',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1008,6 +1008,7 @@ Fancy.key = {
   NUM_NINE: 105,
   NUM_PLUS: 107,
   NUM_MINUS: 109,
+  NUM_DOT: 110,
   A: 65,
   B: 66,
   C: 67,
@@ -1091,6 +1092,7 @@ Fancy.Key = {
       case key.NUM_PLUS:
       case 189:
       case key.NUM_MINUS:
+      case key.NUM_DOT:
       case key.BACKSPACE:
       case key.DELETE:
       case key.TAB:
@@ -2268,7 +2270,7 @@ Fancy.define('Fancy.Store', {
       'beforeload', 'load',
       'filter',
       'insert',
-      'servererror'
+      'servererror', 'serversuccess'
     );
     me.initId();
     me.initPlugins();
@@ -2429,24 +2431,41 @@ Fancy.define('Fancy.Store', {
     var me = this,
       item = me.dataView[rowIndex],
       id = item.data.id || item.id,
-      oldValue = me.get(rowIndex, key);
+      oldValue;
 
-    /*
-    if(Fancy.isString(rowIndex)){
-      id = rowIndex;
-      rowIndex = me.getRow(id);
-      item = me.dataView[rowIndex];
-      oldValue = me.get(rowIndex, key);
-    }
-    else {
-      item = me.dataView[rowIndex];
-      id = item.data.id || item.id;
-      oldValue = me.get(rowIndex, key);
-    }
-    */
+    if(value === undefined){
+      var data = key;
 
-    if(oldValue == value){
+      for(var p in data){
+        if(p === 'id'){
+          continue;
+        }
+
+        oldValue = me.get(rowIndex, p);
+
+        me.dataView[rowIndex].data[p] = data[p];
+
+        me.fire('set', {
+          id: id,
+          data: me.dataView[rowIndex].data,
+          rowIndex: rowIndex,
+          key: p,
+          value: data[p],
+          oldValue: oldValue,
+          item: item
+        });
+      }
+
+      me.proxyCRUD('UPDATE', id, data);
+
       return;
+    }
+    else{
+      oldValue = me.get(rowIndex, key);
+
+      if(oldValue == value){
+        return;
+      }
     }
 
     me.dataView[rowIndex].data[key] = value;
@@ -2473,12 +2492,17 @@ Fancy.define('Fancy.Store', {
     var me = this,
       pastData = me.get(rowIndex);
 
-    for(var p in data){
-      if(pastData[p] == data[p]){
-        continue;
-      }
+    if(me.writeAllFields && me.proxyType === 'server'){
+      me.set(rowIndex, data);
+    }
+    else {
+      for (var p in data) {
+        if (pastData[p] == data[p]) {
+          continue;
+        }
 
-      me.set(rowIndex, p, data[p]);
+        me.set(rowIndex, p, data[p]);
+      }
     }
   },
   /*
@@ -5560,6 +5584,7 @@ Fancy.define('Fancy.Panel', {
         top: y + 'px'
       });
     }
+
   },
   /*
    *
@@ -9633,7 +9658,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     removeValue: function (v) {
       var me = this,
-        index = me.getIndex(v);
+        index = -1,
+        i = 0,
+        iL = me.values.length;
+
+      for(;i<iL;i++){
+        if( me.values[i] === v ){
+          index = i;
+        }
+      }
 
       if(index !== -1) {
         me.values.splice(index, 1);
@@ -11342,7 +11375,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'set',
       'update',
       'sort',
-      'beforeload', 'load', 'servererror',
+      'beforeload', 'load', 'servererror', 'serversuccess',
       'select',
       'clearselect',
       'activate', 'deactivate',

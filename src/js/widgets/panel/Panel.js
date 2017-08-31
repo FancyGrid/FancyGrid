@@ -369,6 +369,7 @@ Fancy.define('Fancy.Panel', {
         top: y + 'px'
       });
     }
+
   },
   /*
    *

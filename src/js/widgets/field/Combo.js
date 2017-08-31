@@ -682,7 +682,15 @@
      */
     removeValue: function (v) {
       var me = this,
-        index = me.getIndex(v);
+        index = -1,
+        i = 0,
+        iL = me.values.length;
+
+      for(;i<iL;i++){
+        if( me.values[i] === v ){
+          index = i;
+        }
+      }
 
       if(index !== -1) {
         me.values.splice(index, 1);

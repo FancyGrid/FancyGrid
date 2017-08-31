@@ -86,7 +86,6 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       return;
     }
 
-    //switch(Fancy.typeOf(me.value)){
     switch(Fancy.typeOf(value)){
       case 'date':
         me.date = me.value;
@@ -280,9 +279,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     }
 
     me.picker.setDate(date);
-    me.picker.showAt(x, y);
 
     Fancy.datepicker.Manager.add(me.picker);
+
+    me.picker.showAt(x, y);
 
     me.fire('showpicker');
 

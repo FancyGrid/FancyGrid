@@ -954,7 +954,6 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       return;
     }
 
-    //switch(Fancy.typeOf(me.value)){
     switch(Fancy.typeOf(value)){
       case 'date':
         me.date = me.value;
@@ -1148,9 +1147,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     }
 
     me.picker.setDate(date);
-    me.picker.showAt(x, y);
 
     Fancy.datepicker.Manager.add(me.picker);
+
+    me.picker.showAt(x, y);
 
     me.fire('showpicker');
 
@@ -2149,6 +2149,10 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
 
       me.hideMonthPicker();
 
+      if(date > 28){
+        date = 1;
+      }
+
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 
@@ -2524,6 +2528,10 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
 
     body.el.select('.' + activeCellCls).removeClass(activeCellCls);
     cell.addClass(activeCellCls);
+
+    if(_date > 28){
+      _date = 1;
+    }
 
     me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
     me.date = me.showDate;

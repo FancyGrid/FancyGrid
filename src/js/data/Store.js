@@ -63,7 +63,7 @@ Fancy.define('Fancy.Store', {
       'beforeload', 'load',
       'filter',
       'insert',
-      'servererror'
+      'servererror', 'serversuccess'
     );
     me.initId();
     me.initPlugins();
@@ -224,24 +224,41 @@ Fancy.define('Fancy.Store', {
     var me = this,
       item = me.dataView[rowIndex],
       id = item.data.id || item.id,
-      oldValue = me.get(rowIndex, key);
+      oldValue;
 
-    /*
-    if(Fancy.isString(rowIndex)){
-      id = rowIndex;
-      rowIndex = me.getRow(id);
-      item = me.dataView[rowIndex];
-      oldValue = me.get(rowIndex, key);
-    }
-    else {
-      item = me.dataView[rowIndex];
-      id = item.data.id || item.id;
-      oldValue = me.get(rowIndex, key);
-    }
-    */
+    if(value === undefined){
+      var data = key;
 
-    if(oldValue == value){
+      for(var p in data){
+        if(p === 'id'){
+          continue;
+        }
+
+        oldValue = me.get(rowIndex, p);
+
+        me.dataView[rowIndex].data[p] = data[p];
+
+        me.fire('set', {
+          id: id,
+          data: me.dataView[rowIndex].data,
+          rowIndex: rowIndex,
+          key: p,
+          value: data[p],
+          oldValue: oldValue,
+          item: item
+        });
+      }
+
+      me.proxyCRUD('UPDATE', id, data);
+
       return;
+    }
+    else{
+      oldValue = me.get(rowIndex, key);
+
+      if(oldValue == value){
+        return;
+      }
     }
 
     me.dataView[rowIndex].data[key] = value;
@@ -268,12 +285,17 @@ Fancy.define('Fancy.Store', {
     var me = this,
       pastData = me.get(rowIndex);
 
-    for(var p in data){
-      if(pastData[p] == data[p]){
-        continue;
-      }
+    if(me.writeAllFields && me.proxyType === 'server'){
+      me.set(rowIndex, data);
+    }
+    else {
+      for (var p in data) {
+        if (pastData[p] == data[p]) {
+          continue;
+        }
 
-      me.set(rowIndex, p, data[p]);
+        me.set(rowIndex, p, data[p]);
+      }
     }
   },
   /*

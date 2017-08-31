@@ -22,7 +22,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
 
 	    if(indexFilters.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
+		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
 	    }
 	  
       for(var q in indexFilters){
@@ -655,7 +655,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         '!': true,
         '=': true
       };
-	
+
 	  options = options || {};
 
     if(me.intervalAutoEnter){

@@ -149,7 +149,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       dataType: dataType,
       getJSON: true,
       headers: headers,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
         me.defineModel(o[me.readerRootProperty]);
 
@@ -162,9 +162,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
         me.fire('change');
         me.fire('load');
+
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -228,13 +230,14 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.update,
       params: params,
       sendJSON: sendJSON,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
 
         me.fire('update', id, key, value);
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -267,13 +270,14 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.destroy,
       params: params,
       sendJSON: sendJSON,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
 
-        me.fire('destroy', id);
+        me.fire('destroy', id, o);
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -309,7 +313,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.create,
       params: params,
       sendJSON: sendJSON,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
 
         if(Fancy.isObject(o.data) && String(id) !== String(o.data.id)){
@@ -327,9 +331,10 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
 
         me.fire('create', o.data);
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },

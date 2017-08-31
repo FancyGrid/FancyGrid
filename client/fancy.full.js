@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.6',
+  version: '1.6.7',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1878,6 +1878,7 @@ Fancy.key = {
   NUM_NINE: 105,
   NUM_PLUS: 107,
   NUM_MINUS: 109,
+  NUM_DOT: 110,
   A: 65,
   B: 66,
   C: 67,
@@ -1961,6 +1962,7 @@ Fancy.Key = {
       case key.NUM_PLUS:
       case 189:
       case key.NUM_MINUS:
+      case key.NUM_DOT:
       case key.BACKSPACE:
       case key.DELETE:
       case key.TAB:
@@ -3215,7 +3217,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       dataType: dataType,
       getJSON: true,
       headers: headers,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
         me.defineModel(o[me.readerRootProperty]);
 
@@ -3228,9 +3230,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
         me.fire('change');
         me.fire('load');
+
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -3294,13 +3298,14 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.update,
       params: params,
       sendJSON: sendJSON,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
 
         me.fire('update', id, key, value);
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -3333,13 +3338,14 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.destroy,
       params: params,
       sendJSON: sendJSON,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
 
-        me.fire('destroy', id);
+        me.fire('destroy', id, o);
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -3375,7 +3381,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.create,
       params: params,
       sendJSON: sendJSON,
-      success: function(o){
+      success: function(o, status, request){
         me.loading = false;
 
         if(Fancy.isObject(o.data) && String(id) !== String(o.data.id)){
@@ -3393,9 +3399,10 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
 
         me.fire('create', o.data);
+        me.fire('serversuccess', o, request);
       },
       error: function (request, errorTitle, errorMessage) {
-        me.fire('servererror', errorTitle, errorMessage);
+        me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
   },
@@ -4573,7 +4580,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
 
 	    if(indexFilters.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
+		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
 	    }
 	  
       for(var q in indexFilters){
@@ -4894,7 +4901,7 @@ Fancy.define('Fancy.Store', {
       'beforeload', 'load',
       'filter',
       'insert',
-      'servererror'
+      'servererror', 'serversuccess'
     );
     me.initId();
     me.initPlugins();
@@ -5055,24 +5062,41 @@ Fancy.define('Fancy.Store', {
     var me = this,
       item = me.dataView[rowIndex],
       id = item.data.id || item.id,
-      oldValue = me.get(rowIndex, key);
+      oldValue;
 
-    /*
-    if(Fancy.isString(rowIndex)){
-      id = rowIndex;
-      rowIndex = me.getRow(id);
-      item = me.dataView[rowIndex];
-      oldValue = me.get(rowIndex, key);
-    }
-    else {
-      item = me.dataView[rowIndex];
-      id = item.data.id || item.id;
-      oldValue = me.get(rowIndex, key);
-    }
-    */
+    if(value === undefined){
+      var data = key;
 
-    if(oldValue == value){
+      for(var p in data){
+        if(p === 'id'){
+          continue;
+        }
+
+        oldValue = me.get(rowIndex, p);
+
+        me.dataView[rowIndex].data[p] = data[p];
+
+        me.fire('set', {
+          id: id,
+          data: me.dataView[rowIndex].data,
+          rowIndex: rowIndex,
+          key: p,
+          value: data[p],
+          oldValue: oldValue,
+          item: item
+        });
+      }
+
+      me.proxyCRUD('UPDATE', id, data);
+
       return;
+    }
+    else{
+      oldValue = me.get(rowIndex, key);
+
+      if(oldValue == value){
+        return;
+      }
     }
 
     me.dataView[rowIndex].data[key] = value;
@@ -5099,12 +5123,17 @@ Fancy.define('Fancy.Store', {
     var me = this,
       pastData = me.get(rowIndex);
 
-    for(var p in data){
-      if(pastData[p] == data[p]){
-        continue;
-      }
+    if(me.writeAllFields && me.proxyType === 'server'){
+      me.set(rowIndex, data);
+    }
+    else {
+      for (var p in data) {
+        if (pastData[p] == data[p]) {
+          continue;
+        }
 
-      me.set(rowIndex, p, data[p]);
+        me.set(rowIndex, p, data[p]);
+      }
     }
   },
   /*
@@ -10377,6 +10406,7 @@ Fancy.define('Fancy.Panel', {
         top: y + 'px'
       });
     }
+
   },
   /*
    *
@@ -12095,6 +12125,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
           item = me.applyDefaults(item);
           break;
         case 'string':
+        case undefined:
           field = Fancy.form.field.String;
           break;
         case 'number':
@@ -12239,6 +12270,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
           case 'button':
             return;
             break;
+        }
+
+        if(item.name === undefined){
+          return;
         }
 
         values[item.name] = item.get();
@@ -12460,72 +12495,72 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     defaults.width = width - me.panelBorderWidth * 2;
 
-      Fancy.each(me.items, function(item){
-        switch(item.type){
-          case 'set':
-          case 'tab':
-            if(item.type === 'tab'){
-              me.tabbed = true;
+    Fancy.each(me.items, function(item){
+      switch(item.type){
+        case 'set':
+        case 'tab':
+          if(item.type === 'tab'){
+            me.tabbed = true;
+          }
+
+          var minusWidth = item.type === 'set'? 62:20;
+
+          Fancy.each(item.items, function(_item){
+            if(_item.width === undefined){
+              _item.width = width - minusWidth;
             }
 
-            var minusWidth = item.type === 'set'? 62:20;
+            if(_item.label && _item.label.length > maxLabelNumber){
+              maxLabelNumber = _item.label.length;
+            }
+          });
 
+          item.defaults = item.defaults || {};
+          item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
+
+          break;
+        case 'line':
+          var numOfFields = item.items.length,
+            isWidthInit = false,
+            averageWidth = (width - 8 - 8 - 8)/numOfFields;
+
+          Fancy.each(item.items, function(_item){
+            _item.width = averageWidth;
+            if(_item.labelWidth || _item.inputWidth){
+              isWidthInit = true;
+            }
+          });
+
+          if(isWidthInit === false){
             Fancy.each(item.items, function(_item){
-              if(_item.width === undefined){
-                _item.width = width - minusWidth;
+              if(_item.labelAlign === 'top'){
+                _item.labelWidth = averageWidth;
               }
-
-              if(_item.label && _item.label.length > maxLabelNumber){
-                maxLabelNumber = _item.label.length;
+              else{
+                //Bad bug fix
+                _item.labelWidth = 100;
               }
             });
+          }
 
-            item.defaults = item.defaults || {};
-            item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
-
-            break;
-          case 'line':
-            var numOfFields = item.items.length,
-              isWidthInit = false,
-              averageWidth = (width - 8 - 8 - 8)/numOfFields;
-
-            Fancy.each(item.items, function(_item){
-              _item.width = averageWidth;
-              if(_item.labelWidth || _item.inputWidth){
-                isWidthInit = true;
-              }
-            });
-
-            if(isWidthInit === false){
-              Fancy.each(item.items, function(_item){
-                if(_item.labelAlign === 'top'){
-                  _item.labelWidth = averageWidth;
-                }
-                else{
-                  //Bad bug fix
-                  _item.labelWidth = 100;
-                }
-              });
-            }
-
-            item.defaults = item.defaults || {};
-            if(item.defaults.labelWidth === undefined){
-              item.defaults.labelWidth = me.labelWidth;
-            }
-            break;
-          default:
-            if(item.label && item.label.length > maxLabelNumber){
-              maxLabelNumber = item.label.length;
-            }
-        }
-      });
-
-      maxLabelNumber++;
-
-      labelWidth = maxLabelNumber * 8;
-      if(labelWidth < 50){
-        labelWidth = 50;
+          item.defaults = item.defaults || {};
+          if(item.defaults.labelWidth === undefined){
+            item.defaults.labelWidth = me.labelWidth;
+          }
+          break;
+        default:
+          if(item.label && item.label.length > maxLabelNumber){
+            maxLabelNumber = item.label.length;
+          }
       }
+    });
+
+    maxLabelNumber++;
+
+    labelWidth = maxLabelNumber * 6;
+    if(labelWidth < 80){
+      labelWidth = 80;
+    }
 
     defaults.labelWidth = labelWidth;
 
@@ -14232,7 +14267,6 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       return;
     }
 
-    //switch(Fancy.typeOf(me.value)){
     switch(Fancy.typeOf(value)){
       case 'date':
         me.date = me.value;
@@ -14426,9 +14460,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     }
 
     me.picker.setDate(date);
-    me.picker.showAt(x, y);
 
     Fancy.datepicker.Manager.add(me.picker);
+
+    me.picker.showAt(x, y);
 
     me.fire('showpicker');
 
@@ -16068,7 +16103,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     removeValue: function (v) {
       var me = this,
-        index = me.getIndex(v);
+        index = -1,
+        i = 0,
+        iL = me.values.length;
+
+      for(;i<iL;i++){
+        if( me.values[i] === v ){
+          index = i;
+        }
+      }
 
       if(index !== -1) {
         me.values.splice(index, 1);
@@ -20289,6 +20332,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     docEl.on('click', me.onDocClick, me);
     docEl.on('mousemove', me.onDocMove, me);
     store.on('servererror', me.onServerError, me);
+    store.on('serversuccess', me.onServerSuccess, me);
 
     if(me.responsive){
       Fancy.$(window).bind('resize', function(){
@@ -20299,8 +20343,11 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     me.on('activate', me.onActivate, me);
     me.on('deactivate', me.onDeActivate, me);
   },
-  onServerError: function (request, errorTitle, errorText) {
-    this.fire('servererror', request, errorTitle, errorText);
+  onServerError: function (grid, errorTitle, errorText, request) {
+    this.fire('servererror', errorTitle, errorText, request);
+  },
+  onServerSuccess: function (grid, data, request) {
+    this.fire('serversuccess', data, request);
   },
   /*
    *
@@ -20581,17 +20628,19 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     if(me.textSelection === false) {
       me.addClass('fancy-grid-unselectable');
-      body.el.on('mousedown', function(e){
-        e.preventDefault();
-      });
 
-      leftBody.el.on('mousedown', function(e){
-        e.preventDefault();
-      });
+      var fn = function(e){
+        var targetEl = Fancy.get(e.target);
+        if(targetEl.hasClass('fancy-field-text-input') || targetEl.hasClass('fancy-textarea-text-input')){
+          return;
+        }
 
-      rightBody.el.on('mousedown', function(e){
         e.preventDefault();
-      });
+      };
+
+      body.el.on('mousedown', fn);
+      leftBody.el.on('mousedown', fn);
+      rightBody.el.on('mousedown', fn);
     }
   },
   /*
@@ -21465,7 +21514,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     if(Fancy.isDate(value)){
-      var format = this.getColumnByIndex('birthday').format;
+      var format = this.getColumnByIndex(index).format;
 
       filter['type'] = 'date';
       filter['format'] = format;
@@ -21699,7 +21748,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'set',
       'update',
       'sort',
-      'beforeload', 'load', 'servererror',
+      'beforeload', 'load', 'servererror', 'serversuccess',
       'select',
       'clearselect',
       'activate', 'deactivate',
@@ -30291,7 +30340,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
         '!': true,
         '=': true
       };
-	
+
 	  options = options || {};
 
     if(me.intervalAutoEnter){
@@ -35585,6 +35634,10 @@ Fancy.define('Fancy.grid.Header', {
 
       me.hideMonthPicker();
 
+      if(date > 28){
+        date = 1;
+      }
+
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 
@@ -35961,6 +36014,10 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
 
     body.el.select('.' + activeCellCls).removeClass(activeCellCls);
     cell.addClass(activeCellCls);
+
+    if(_date > 28){
+      _date = 1;
+    }
 
     me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
     me.date = me.showDate;

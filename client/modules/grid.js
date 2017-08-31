@@ -2240,6 +2240,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     docEl.on('click', me.onDocClick, me);
     docEl.on('mousemove', me.onDocMove, me);
     store.on('servererror', me.onServerError, me);
+    store.on('serversuccess', me.onServerSuccess, me);
 
     if(me.responsive){
       Fancy.$(window).bind('resize', function(){
@@ -2250,8 +2251,11 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     me.on('activate', me.onActivate, me);
     me.on('deactivate', me.onDeActivate, me);
   },
-  onServerError: function (request, errorTitle, errorText) {
-    this.fire('servererror', request, errorTitle, errorText);
+  onServerError: function (grid, errorTitle, errorText, request) {
+    this.fire('servererror', errorTitle, errorText, request);
+  },
+  onServerSuccess: function (grid, data, request) {
+    this.fire('serversuccess', data, request);
   },
   /*
    *
@@ -2532,17 +2536,19 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
 
     if(me.textSelection === false) {
       me.addClass('fancy-grid-unselectable');
-      body.el.on('mousedown', function(e){
-        e.preventDefault();
-      });
 
-      leftBody.el.on('mousedown', function(e){
-        e.preventDefault();
-      });
+      var fn = function(e){
+        var targetEl = Fancy.get(e.target);
+        if(targetEl.hasClass('fancy-field-text-input') || targetEl.hasClass('fancy-textarea-text-input')){
+          return;
+        }
 
-      rightBody.el.on('mousedown', function(e){
         e.preventDefault();
-      });
+      };
+
+      body.el.on('mousedown', fn);
+      leftBody.el.on('mousedown', fn);
+      rightBody.el.on('mousedown', fn);
     }
   },
   /*
@@ -3416,7 +3422,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     }
 
     if(Fancy.isDate(value)){
-      var format = this.getColumnByIndex('birthday').format;
+      var format = this.getColumnByIndex(index).format;
 
       filter['type'] = 'date';
       filter['format'] = format;

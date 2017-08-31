@@ -612,6 +612,10 @@
 
       me.hideMonthPicker();
 
+      if(date > 28){
+        date = 1;
+      }
+
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 

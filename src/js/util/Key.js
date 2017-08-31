@@ -37,6 +37,7 @@ Fancy.key = {
   NUM_NINE: 105,
   NUM_PLUS: 107,
   NUM_MINUS: 109,
+  NUM_DOT: 110,
   A: 65,
   B: 66,
   C: 67,
@@ -120,6 +121,7 @@ Fancy.Key = {
       case key.NUM_PLUS:
       case 189:
       case key.NUM_MINUS:
+      case key.NUM_DOT:
       case key.BACKSPACE:
       case key.DELETE:
       case key.TAB:
