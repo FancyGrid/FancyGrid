@@ -20,6 +20,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
      * prevent columns linking if one columns object for several grids
      */
     config = me.copyColumns(config, originalConfig);
+    config = me.prepareConfigScroll(config, originalConfig);
     config = me.prepareConfigData(config, originalConfig);
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
@@ -58,6 +59,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(originalConfig.columns){
       originalConfig.columns = Fancy.Array.copy(originalConfig.columns);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @returns {Object}
+   */
+  prepareConfigScroll: function (config, originalConfig) {
+    if(Fancy.isIE && originalConfig.nativeScroller !== false){
+      config.nativeScroller = true;
     }
 
     return config;
@@ -876,6 +889,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(config.selModel){
       initSelection = true;
+      var checkOnly = false;
+
+      if(Fancy.isObject(config.selModel)){
+        checkOnly = !!config.selModel.checkOnly;
+
+        if(!config.selModel.type){
+          throw new Error('FancyGrid Error 5: Type for selection is not set');
+        }
+
+        config.selModel = config.selModel.type;
+      }
 
       if(config.selModel === 'rows'){
         config.multiSelect = true;
@@ -884,6 +908,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection = config.selection || {};
       config.selection.selModel = config.selModel;
       config.selection[config.selModel] = true;
+      config.selection.checkOnly = checkOnly;
     }
 
     if(config.selection){
@@ -985,6 +1010,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       config.expanded = {};
+
+      if(config.grouping){
+        expanderConfig.expanded = false;
+      }
 
       config._plugins.push(expanderConfig);
     }

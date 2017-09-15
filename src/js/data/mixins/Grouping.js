@@ -109,7 +109,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} key
    * @param {String} group
    */
-  getColumnOriginalValuesByGroup: function(key, group){
+  getColumnOriginalValuesByGroup: function(key, group, options){
     var me = this,
       data = me.data,
       i = 0,
@@ -118,18 +118,36 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       values = [],
       groupName = data[0].data[group];
 
-    for(;i<iL;i++){
-      if(data[i].data[group] === groupName){
-        values.push(data[i].data[key]);
+    if(options.format && options.type === 'date'){
+      for (; i < iL; i++) {
+        if (data[i].data[group] === groupName) {
+          values.push(Fancy.Date.parse(data[i].data[key], options.format, options.mode));
+        }
+        else {
+          result.push({
+            values: values,
+            groupName: groupName
+          });
+          values = [];
+          groupName = data[i].data[group];
+          i--;
+        }
       }
-      else{
-        result.push({
-          values: values,
-          groupName: groupName
-        });
-        values = [];
-        groupName = data[i].data[group];
-        i--;
+    }
+    else {
+      for (; i < iL; i++) {
+        if (data[i].data[group] === groupName) {
+          values.push(data[i].data[key]);
+        }
+        else {
+          result.push({
+            values: values,
+            groupName: groupName
+          });
+          values = [];
+          groupName = data[i].data[group];
+          i--;
+        }
       }
     }
 

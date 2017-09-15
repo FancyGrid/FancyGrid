@@ -84,6 +84,26 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     if(w.watermark){
       me.configWatermark();
     }
+
+    me.showConsoleText();
+  },
+  showConsoleText: function(){
+    if(!window.console || !console.log){
+      return;
+    }
+
+    if(!Fancy.isChrome){
+      return;
+    }
+
+    //console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license that we can do it better!",
+    console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license for legal usage!\nSales email: sales@fancygrid.com",
+      'color:#A2CFE8;font-size: 14px;font-weight: bold;',
+      'color:#088EC7;font-size: 14px;font-weight: bold;',
+      'font-weight:bold;color: #515151;font-size: 12px;',
+      'color: red;font-weight: bold;font-size: 14px;',
+      'font-weight:bold;color: #515151;font-size: 12px;'
+    );
   },
   /*
    *

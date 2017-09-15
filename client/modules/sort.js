@@ -14,6 +14,11 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       fn,
       sortType;
 
+    me.fire('beforesort', {
+      key: 'key',
+      action: action
+    });
+
     if(me.multiSort && me.multiSortInited !== true){
       me.initMultiSort();
     }
@@ -101,7 +106,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       iL;
 
     if(me.grouping){
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by);
+      //BUG: It does not work for date
+
+      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -288,10 +295,6 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       if(me.sorters[i].key === key){
         me.sorters.splice(i, 1);
         break;
-        //if(me.sorters[i].dir !== dir){
-          //me.sorters[i].dir = dir;
-        //}
-        //return;
       }
     }
 

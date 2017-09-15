@@ -435,7 +435,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     me.checkRightScroll();
     if(!me.checkBottomScroll()){
-      w.scroll(false, 0);
+      if(me.scrollTop){
+        w.scroll(false, 0);
+      }
     }
 
     if(!w.nativeScroller){
@@ -714,10 +716,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   onChangeStore: function(){
-    var me = this;
-
-    me.setScrollBars();
-    me.checkScroll();
+    this.update();
   },
   /*
    *

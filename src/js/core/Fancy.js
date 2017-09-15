@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.7',
+  version: '1.6.8',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -380,11 +380,62 @@ var userAgent = navigator.userAgent.toLowerCase(),
     return regex.test(userAgent);
   },
   isOpera = check(/opera/),
-  isIE = !isOpera && check(/msie/);
+  isIE = !isOpera && check(/msie/),
+  isChromium = window.chrome,
+  winNav = window.navigator,
+  vendorName = winNav.vendor,
+  isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+  isIOSChrome = winNav.userAgent.match("CriOS"),
+  isChrome = function() {
+    var isOpera = winNav.userAgent.indexOf("OPR") > -1;
+
+    if (isIOSChrome) {
+      return true;
+    } else if (
+      isChromium !== null &&
+      typeof isChromium !== "undefined" &&
+      vendorName === "Google Inc." &&
+      isOpera === false &&
+      isIEedge === false
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }(),
+  getInternetExplorerVersion = function(){
+    var rv = -1;
+    if (navigator.appName == 'Microsoft Internet Explorer') {
+      var ua = navigator.userAgent,
+        re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+
+      if (re.exec(ua) != null) {
+        rv = parseFloat(RegExp.$1);
+      }
+    }
+    else if (navigator.appName == 'Netscape') {
+      var ua = navigator.userAgent,
+        re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+
+      if (re.exec(ua) != null) {
+        rv = parseFloat(RegExp.$1);
+      }
+    }
+    return rv;
+  };
+
+  if(getInternetExplorerVersion() === 11){
+    isIE = true;
+  }
+
+  if(isIE === false && isIEedge){
+    isIE = true;
+  }
 
 Fancy.apply(Fancy, {
   isOpera: isOpera,
-  isIE: isIE
+  isIE: isIE,
+  isChrome: isChrome
 });
 
 /**

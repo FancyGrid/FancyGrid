@@ -59,7 +59,7 @@ Fancy.define('Fancy.Store', {
       'remove',
       'beforedestroy', 'destroy',
       'beforecreate', 'create',
-      'sort',
+      'beforesort', 'sort',
       'beforeload', 'load',
       'filter',
       'insert',
@@ -122,6 +122,7 @@ Fancy.define('Fancy.Store', {
     }
     else {
       if(me.expanded){
+        //??? It looks like never reacheds
         for (; i < iL; i++) {
           item = new model(data[i]);
           item.$index = i;
@@ -409,8 +410,21 @@ Fancy.define('Fancy.Store', {
         }
       }
       else {
-        for (; i < iL; i++) {
-          values.push(data[i].data[key]);
+        if(options.groupMap){
+          me.groupMap = {};
+
+          for (; i < iL; i++) {
+            var item = data[i],
+              value = item.data[key];
+
+            values.push(value);
+            me.groupMap[item.id] = value;
+          }
+        }
+        else {
+          for (; i < iL; i++) {
+            values.push(data[i].data[key]);
+          }
         }
       }
     }

@@ -132,7 +132,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'remove',
       'set',
       'update',
-      'sort',
+      'beforesort', 'sort',
       'beforeload', 'load', 'servererror', 'serversuccess',
       'select',
       'clearselect',
@@ -142,6 +142,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'changepage',
       'dropitems',
       'collapse', 'expand',
+      'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter'
     );
 
@@ -357,6 +358,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
+
+    me.fire('lockcolumn');
   },
   rightLockColumn: function(indexOrder, side){
     var me = this;
@@ -368,6 +371,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
+
+    me.fire('rightcolumn');
   },
   unLockColumn: function(indexOrder, side){
     var me = this,
@@ -387,6 +392,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     if(side === 'left' && me.grouping && me.leftColumns.length === 0){
       me.grouping.insertGroupEls();
     }
+
+    me.fire('unlockcolumn');
   }
 });
 

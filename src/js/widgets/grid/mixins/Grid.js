@@ -563,6 +563,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     store.on('change', me.onChangeStore, me);
     store.on('set', me.onSetStore, me);
     store.on('remove', me.onRemoveStore, me);
+    store.on('beforesort', me.onBeforeSortStore, me);
     store.on('sort', me.onSortStore, me);
     store.on('beforeload', me.onBeforeLoadStore, me);
     store.on('load', me.onLoadStore, me);
@@ -634,6 +635,15 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
    * @param {Object} store
    * @param {Object} o
    */
+  onBeforeSortStore: function(store, o){
+    var me = this;
+
+    me.fire('beforesort', o);
+  },
+  /*
+   * @param {Object} store
+   * @param {Object} o
+   */
   onSortStore: function(store, o){
     var me = this;
 
@@ -649,11 +659,11 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       scrollBottomHeight = 0;
 
     if(me.grouping){
-      plusScroll = me.grouping.plusScroll;
+      plusScroll += me.grouping.plusScroll;
     }
 
     if(me.expander){
-      plusScroll = me.expander.plusScroll;
+      plusScroll += me.expander.plusScroll;
     }
 
     if(!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasClass('fancy-display-none')){}

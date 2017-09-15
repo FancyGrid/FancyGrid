@@ -11,6 +11,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   ],
   enabled: true,
   checkboxRow: false,
+  checkOnly: false,
   /*
    * @constructor
    * @param {Object} config
@@ -240,6 +241,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       w = me.widget;
 
     if(!me.rows || !me.enabled){
+      return;
+    }
+
+    if(me.checkOnly && params.column.index !== '$selected'){
       return;
     }
 
@@ -622,6 +627,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       return;
     }
 
+    if(me.checkOnly && params.column.index !== '$selected'){
+      return;
+    }
+
     var column = params.column,
       select = true;
 
@@ -674,6 +683,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       w = me.widget;
 
     if(!me.rows || !me.enabled){
+      return;
+    }
+
+    if(me.checkOnly && params.column.index !== '$selected'){
       return;
     }
 

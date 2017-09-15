@@ -20,6 +20,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
      * prevent columns linking if one columns object for several grids
      */
     config = me.copyColumns(config, originalConfig);
+    config = me.prepareConfigScroll(config, originalConfig);
     config = me.prepareConfigData(config, originalConfig);
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
@@ -58,6 +59,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(originalConfig.columns){
       originalConfig.columns = Fancy.Array.copy(originalConfig.columns);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @returns {Object}
+   */
+  prepareConfigScroll: function (config, originalConfig) {
+    if(Fancy.isIE && originalConfig.nativeScroller !== false){
+      config.nativeScroller = true;
     }
 
     return config;
@@ -876,6 +889,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(config.selModel){
       initSelection = true;
+      var checkOnly = false;
+
+      if(Fancy.isObject(config.selModel)){
+        checkOnly = !!config.selModel.checkOnly;
+
+        if(!config.selModel.type){
+          throw new Error('FancyGrid Error 5: Type for selection is not set');
+        }
+
+        config.selModel = config.selModel.type;
+      }
 
       if(config.selModel === 'rows'){
         config.multiSelect = true;
@@ -884,6 +908,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection = config.selection || {};
       config.selection.selModel = config.selModel;
       config.selection[config.selModel] = true;
+      config.selection.checkOnly = checkOnly;
     }
 
     if(config.selection){
@@ -985,6 +1010,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       config.expanded = {};
+
+      if(config.grouping){
+        expanderConfig.expanded = false;
+      }
 
       config._plugins.push(expanderConfig);
     }
@@ -2233,6 +2262,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     store.on('change', me.onChangeStore, me);
     store.on('set', me.onSetStore, me);
     store.on('remove', me.onRemoveStore, me);
+    store.on('beforesort', me.onBeforeSortStore, me);
     store.on('sort', me.onSortStore, me);
     store.on('beforeload', me.onBeforeLoadStore, me);
     store.on('load', me.onLoadStore, me);
@@ -2304,6 +2334,15 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
    * @param {Object} store
    * @param {Object} o
    */
+  onBeforeSortStore: function(store, o){
+    var me = this;
+
+    me.fire('beforesort', o);
+  },
+  /*
+   * @param {Object} store
+   * @param {Object} o
+   */
   onSortStore: function(store, o){
     var me = this;
 
@@ -2319,11 +2358,11 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       scrollBottomHeight = 0;
 
     if(me.grouping){
-      plusScroll = me.grouping.plusScroll;
+      plusScroll += me.grouping.plusScroll;
     }
 
     if(me.expander){
-      plusScroll = me.expander.plusScroll;
+      plusScroll += me.expander.plusScroll;
     }
 
     if(!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasClass('fancy-display-none')){}
@@ -4001,7 +4040,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     me.checkRightScroll();
     if(!me.checkBottomScroll()){
-      w.scroll(false, 0);
+      if(me.scrollTop){
+        w.scroll(false, 0);
+      }
     }
 
     if(!w.nativeScroller){
@@ -4280,10 +4321,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   onChangeStore: function(){
-    var me = this;
-
-    me.setScrollBars();
-    me.checkScroll();
+    this.update();
   },
   /*
    *
@@ -5326,6 +5364,26 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     if(w.watermark){
       me.configWatermark();
     }
+
+    me.showConsoleText();
+  },
+  showConsoleText: function(){
+    if(!window.console || !console.log){
+      return;
+    }
+
+    if(!Fancy.isChrome){
+      return;
+    }
+
+    //console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license that we can do it better!",
+    console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license for legal usage!\nSales email: sales@fancygrid.com",
+      'color:#A2CFE8;font-size: 14px;font-weight: bold;',
+      'color:#088EC7;font-size: 14px;font-weight: bold;',
+      'font-weight:bold;color: #515151;font-size: 12px;',
+      'color: red;font-weight: bold;font-size: 14px;',
+      'font-weight:bold;color: #515151;font-size: 12px;'
+    );
   },
   /*
    *
@@ -6151,7 +6209,9 @@ Fancy.grid.body.mixin.Updater.prototype = {
       var cellInnerEl = cellsDomInner.item(j),
         checkBox = cellInnerEl.select('.fancy-field-checkbox'),
         checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0;
+        isCheckBoxInside = checkBox.length !== 0,
+        dataItem = w.get(j),
+        dataItemId = dataItem.id;
 
       if(isCheckBoxInside === false){
         new Fancy.CheckBox({
@@ -6181,7 +6241,13 @@ Fancy.grid.body.mixin.Updater.prototype = {
       else{
         checkBoxId = checkBox.dom.id;
         checkBox = Fancy.getWidget(checkBoxId);
-        checkBox.set(false, false);
+
+        if(w.expander._expandedIds[dataItemId]){
+          checkBox.set(true, false);
+        }
+        else{
+          checkBox.set(false, false);
+        }
       }
     }
   },

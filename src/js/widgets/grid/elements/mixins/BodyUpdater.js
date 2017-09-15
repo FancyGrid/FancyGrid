@@ -490,7 +490,9 @@ Fancy.grid.body.mixin.Updater.prototype = {
       var cellInnerEl = cellsDomInner.item(j),
         checkBox = cellInnerEl.select('.fancy-field-checkbox'),
         checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0;
+        isCheckBoxInside = checkBox.length !== 0,
+        dataItem = w.get(j),
+        dataItemId = dataItem.id;
 
       if(isCheckBoxInside === false){
         new Fancy.CheckBox({
@@ -520,7 +522,13 @@ Fancy.grid.body.mixin.Updater.prototype = {
       else{
         checkBoxId = checkBox.dom.id;
         checkBox = Fancy.getWidget(checkBoxId);
-        checkBox.set(false, false);
+
+        if(w.expander._expandedIds[dataItemId]){
+          checkBox.set(true, false);
+        }
+        else{
+          checkBox.set(false, false);
+        }
       }
     }
   },

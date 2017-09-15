@@ -236,6 +236,9 @@ Fancy.define('Fancy.grid.plugin.Filter', {
 
     w.on('columnresize', me.onColumnResize, me);
     w.on('filter', me.onFilter, me);
+    w.on('lockcolumn', me.onLockColumn, me);
+    w.on('rightlockcolumn', me.onRightLockColumn, me);
+    w.on('unlockcolumn', me.onUnLockColumn, me);
   },
   /*
    *
@@ -994,6 +997,21 @@ Fancy.define('Fancy.grid.plugin.Filter', {
     }
 
     return _data;
+  },
+  onLockColumn: function(){
+    var me = this;
+
+    me.render();
+  },
+  onUnLockColumn: function(){
+    var me = this;
+
+    me.render();
+  },
+  onRightLockColumn: function(){
+    var me = this;
+
+    me.render();
   }
 });/*
  * @class Fancy.grid.plugin.Search
