@@ -316,7 +316,7 @@ Fancy.form.field.Mixin.prototype = {
             break;
         }
 
-        me.fire('up', me.getValue());
+        me.fire('down', me.getValue());
 
         if( me.type !== 'textarea' ){
           e.preventDefault();

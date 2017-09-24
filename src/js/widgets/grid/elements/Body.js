@@ -86,8 +86,7 @@ Fancy.define('Fancy.grid.Body', {
    *
    */
 	onAfterRender: function(){
-		var me = this,
-      w = me.widget;
+		var me = this;
 
     me.update();
     me.setHeight();

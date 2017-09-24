@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.8',
+  version: '1.6.9',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -4585,7 +4585,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       values = [],
       groupName = data[0].data[group];
 
-    if(options.format && options.type === 'date'){
+    if(options && options.format && options.type === 'date'){
       for (; i < iL; i++) {
         if (data[i].data[group] === groupName) {
           values.push(Fancy.Date.parse(data[i].data[key], options.format, options.mode));
@@ -13345,7 +13345,7 @@ Fancy.form.field.Mixin.prototype = {
             break;
         }
 
-        me.fire('up', me.getValue());
+        me.fire('down', me.getValue());
 
         if( me.type !== 'textarea' ){
           e.preventDefault();
@@ -18879,6 +18879,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.selModel){
       initSelection = true;
       var checkOnly = false;
+      var memory = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -18887,6 +18888,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           throw new Error('FancyGrid Error 5: Type for selection is not set');
         }
 
+        memory = config.selModel.memory === true;
         config.selModel = config.selModel.type;
       }
 
@@ -18898,6 +18900,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.selModel = config.selModel;
       config.selection[config.selModel] = true;
       config.selection.checkOnly = checkOnly;
+      config.selection.memory = memory;
     }
 
     if(config.selection){
@@ -18909,7 +18912,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(initSelection === true){
-
       config._plugins.push(selectionConfig);
     }
 
@@ -19272,15 +19274,23 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       width: 30,
       listeners: [{
         enter: function(field){
-          if(parseInt(field.getValue()) === 0){
+          if (parseInt(field.getValue()) === 0) {
             field.set(1);
           }
 
           var page = parseInt(field.getValue()) - 1,
             setPage = me.paging.setPage(page);
 
-          if(page !== setPage){
+          if (page !== setPage) {
             field.set(setPage);
+          }
+        }
+      },{
+        up: function(field, value){
+          var pages = me.store.pages;
+
+          if(Number(value) > pages ){
+            field.set(pages);
           }
         }
       }]
@@ -20117,6 +20127,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     if(me.heightFit){
       me.fitHeight();
     }
+
+    me.setBodysHeight();
   },
   /*
    *
@@ -20295,6 +20307,14 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     me.rightEl.css({
       height: height + 'px'
     });
+
+  },
+  setBodysHeight: function () {
+    var me = this;
+
+    me.body.setHeight();
+    me.leftBody.setHeight();
+    me.rightBody.setHeight();
   },
   /*
    *
@@ -21080,6 +21100,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       el = Fancy.get(renderTo);
       me.setWidth(parseInt(el.width()));
     }
+
+    me.setBodysHeight();
   },
   /*
    * @param {Number} width
@@ -21918,6 +21940,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     setTimeout(function(){
       me.inited = true;
       me.fire('init');
+
+      me.setBodysHeight();
     }, 1);
   },
   /*
@@ -22112,7 +22136,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    me.fire('rightcolumn');
+    me.fire('rightlockcolumn');
   },
   unLockColumn: function(indexOrder, side){
     var me = this,
@@ -26988,6 +27012,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   enabled: true,
   checkboxRow: false,
   checkOnly: false,
+  memory: false,
   /*
    * @constructor
    * @param {Object} config
@@ -27004,6 +27029,11 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     var me = this;
 
     me.Super('init', arguments);
+
+    if(me.memory){
+      me.initMemory();
+    }
+
     me.ons();
   },
   /*
@@ -27027,6 +27057,33 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     });
 
     w.on('sort', me.onSort, me);
+  },
+  /*
+   *
+   */
+  initMemory: function () {
+    var me = this,
+      w = me.widget;
+
+    me.memory = {
+      all: false,
+      except: {},
+      selected: {},
+      setAll: function(){
+        Fancy.apply(me.memory, {
+          all: true,
+          except: {},
+          selected: {}
+        });
+      },
+      clearAll: function(){
+        Fancy.apply(me.memory, {
+          all: false,
+          except: {},
+          selected: {}
+        });
+      }
+    };
   },
   /*
    *
@@ -27172,6 +27229,12 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onChangePage: function(){
+    var me = this;
+
+    if(me.memory){
+      return;
+    }
+
     this.clearSelection();
   },
   /*
@@ -27311,9 +27374,16 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   deSelectCheckBox: function(rowIndex){
     var me = this,
       w = me.widget,
+      s = w.store,
       checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="'+rowIndex+'"] .fancy-field-checkbox'),
       i = 0,
-      iL = checkBoxEls.length;
+      iL = checkBoxEls.length,
+      id = s.get(rowIndex, 'id');
+
+    if(me.memory){
+      me.memory.except[id] = true;
+      delete me.memory.selected[id];
+    }
 
     for(;i<iL;i++){
       var checkBox = Fancy.getWidget(checkBoxEls.item(i).attr('id'));
@@ -27329,9 +27399,16 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   domSelectRow: function(rowIndex){
     var me = this,
       w = me.widget,
+      s = w.store,
       rowCells = w.getDomRow(rowIndex),
       i = 0,
-      iL = rowCells.length;
+      iL = rowCells.length,
+      id = s.get(rowIndex, 'id');
+
+    if(me.memory){
+      delete me.memory.except[id];
+      me.memory.selected[id] = true;
+    }
 
     for(;i<iL;i++){
       Fancy.get(rowCells[i]).addClass(w.cellSelectedCls);
@@ -27772,7 +27849,13 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onSort: function(){
-    this.clearSelection();
+    var me = this;
+
+    if(me.memory){
+      return;
+    }
+
+    me.clearSelection();
   },
   /*
    * @param {Fancy.Grid} grid
@@ -28237,13 +28320,18 @@ Fancy.define('Fancy.grid.plugin.Selection', {
         break;
       case 'rows':
         model.rows = me.getSelectedRows();
-        model.items = [];
+        if(me.memory && me.memory.all){
+          model.items = s.data;
+        }
+        else {
+          model.items = [];
 
-        var i = 0,
-          iL = model.rows.length;
+          var i = 0,
+            iL = model.rows.length;
 
-        for(;i<iL;i++){
-          model.items.push( s.get(model.rows[i]) );
+          for (; i < iL; i++) {
+            model.items.push(s.get(model.rows[i]));
+          }
         }
         break;
       case 'cells':
@@ -28301,9 +28389,15 @@ Fancy.define('Fancy.grid.plugin.Selection', {
             change: function(checkbox, value){
               if(value){
                 me.selectAll();
+                if(me.memory){
+                  me.memory.setAll();
+                }
               }
               else{
                 me.deSelectAll();
+                if(me.memory){
+                  me.memory.clearAll();
+                }
               }
             }
           }]
@@ -29918,9 +30012,12 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       var groupName = me.groups[j];
 
       if(me._expanded[groupName] === true){
-        iL = rowIndex + groupsCounts[groupName];
+        var iL = rowIndex + groupsCounts[groupName];
         for(;rowIndex<iL;rowIndex++){
           dataItem = dataView[rowIndex];
+          if(!dataItem){
+            continue;
+          }
 
           var dataItemId = dataItem.id,
             expandedItem = expandedGroups[groupName][dataItemId];
@@ -33052,10 +33149,26 @@ Fancy.grid.body.mixin.Updater.prototype = {
 
     for(;j<jL;j++){
       var value = s.get(j, key),
+        id = s.get(j, 'id'),
         cellInnerEl = cellsDomInner.item(j),
         checkBox = cellInnerEl.select('.fancy-field-checkbox'),
         checkBoxId,
         isCheckBoxInside = checkBox.length !== 0;
+
+      if(w.selection.memory){
+        if( w.selection.memory.all && !w.selection.memory.except[id]){
+          value = true;
+          w.selection.domSelectRow(j);
+        }
+        else if(w.selection.memory.selected[id]){
+          value = true;
+          w.selection.domSelectRow(j);
+        }
+        else{
+          value = false;
+          w.selection.domDeSelectRow(j);
+        }
+      }
 
       if(isCheckBoxInside === false){
         new Fancy.CheckBox({
@@ -33993,8 +34106,7 @@ Fancy.define('Fancy.grid.Body', {
    *
    */
 	onAfterRender: function(){
-		var me = this,
-      w = me.widget;
+		var me = this;
 
     me.update();
     me.setHeight();

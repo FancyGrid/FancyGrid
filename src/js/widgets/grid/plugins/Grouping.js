@@ -733,9 +733,12 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       var groupName = me.groups[j];
 
       if(me._expanded[groupName] === true){
-        iL = rowIndex + groupsCounts[groupName];
+        var iL = rowIndex + groupsCounts[groupName];
         for(;rowIndex<iL;rowIndex++){
           dataItem = dataView[rowIndex];
+          if(!dataItem){
+            continue;
+          }
 
           var dataItemId = dataItem.id,
             expandedItem = expandedGroups[groupName][dataItemId];

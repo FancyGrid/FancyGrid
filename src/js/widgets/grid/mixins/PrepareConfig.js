@@ -890,6 +890,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.selModel){
       initSelection = true;
       var checkOnly = false;
+      var memory = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -898,6 +899,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           throw new Error('FancyGrid Error 5: Type for selection is not set');
         }
 
+        memory = config.selModel.memory === true;
         config.selModel = config.selModel.type;
       }
 
@@ -909,6 +911,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.selModel = config.selModel;
       config.selection[config.selModel] = true;
       config.selection.checkOnly = checkOnly;
+      config.selection.memory = memory;
     }
 
     if(config.selection){
@@ -920,7 +923,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(initSelection === true){
-
       config._plugins.push(selectionConfig);
     }
 
@@ -1283,15 +1285,23 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       width: 30,
       listeners: [{
         enter: function(field){
-          if(parseInt(field.getValue()) === 0){
+          if (parseInt(field.getValue()) === 0) {
             field.set(1);
           }
 
           var page = parseInt(field.getValue()) - 1,
             setPage = me.paging.setPage(page);
 
-          if(page !== setPage){
+          if (page !== setPage) {
             field.set(setPage);
+          }
+        }
+      },{
+        up: function(field, value){
+          var pages = me.store.pages;
+
+          if(Number(value) > pages ){
+            field.set(pages);
           }
         }
       }]

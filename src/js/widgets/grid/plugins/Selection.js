@@ -12,6 +12,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   enabled: true,
   checkboxRow: false,
   checkOnly: false,
+  memory: false,
   /*
    * @constructor
    * @param {Object} config
@@ -28,6 +29,11 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     var me = this;
 
     me.Super('init', arguments);
+
+    if(me.memory){
+      me.initMemory();
+    }
+
     me.ons();
   },
   /*
@@ -51,6 +57,33 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     });
 
     w.on('sort', me.onSort, me);
+  },
+  /*
+   *
+   */
+  initMemory: function () {
+    var me = this,
+      w = me.widget;
+
+    me.memory = {
+      all: false,
+      except: {},
+      selected: {},
+      setAll: function(){
+        Fancy.apply(me.memory, {
+          all: true,
+          except: {},
+          selected: {}
+        });
+      },
+      clearAll: function(){
+        Fancy.apply(me.memory, {
+          all: false,
+          except: {},
+          selected: {}
+        });
+      }
+    };
   },
   /*
    *
@@ -196,6 +229,12 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onChangePage: function(){
+    var me = this;
+
+    if(me.memory){
+      return;
+    }
+
     this.clearSelection();
   },
   /*
@@ -335,9 +374,16 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   deSelectCheckBox: function(rowIndex){
     var me = this,
       w = me.widget,
+      s = w.store,
       checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="'+rowIndex+'"] .fancy-field-checkbox'),
       i = 0,
-      iL = checkBoxEls.length;
+      iL = checkBoxEls.length,
+      id = s.get(rowIndex, 'id');
+
+    if(me.memory){
+      me.memory.except[id] = true;
+      delete me.memory.selected[id];
+    }
 
     for(;i<iL;i++){
       var checkBox = Fancy.getWidget(checkBoxEls.item(i).attr('id'));
@@ -353,9 +399,16 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   domSelectRow: function(rowIndex){
     var me = this,
       w = me.widget,
+      s = w.store,
       rowCells = w.getDomRow(rowIndex),
       i = 0,
-      iL = rowCells.length;
+      iL = rowCells.length,
+      id = s.get(rowIndex, 'id');
+
+    if(me.memory){
+      delete me.memory.except[id];
+      me.memory.selected[id] = true;
+    }
 
     for(;i<iL;i++){
       Fancy.get(rowCells[i]).addClass(w.cellSelectedCls);
@@ -796,7 +849,13 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   onSort: function(){
-    this.clearSelection();
+    var me = this;
+
+    if(me.memory){
+      return;
+    }
+
+    me.clearSelection();
   },
   /*
    * @param {Fancy.Grid} grid
@@ -1261,13 +1320,18 @@ Fancy.define('Fancy.grid.plugin.Selection', {
         break;
       case 'rows':
         model.rows = me.getSelectedRows();
-        model.items = [];
+        if(me.memory && me.memory.all){
+          model.items = s.data;
+        }
+        else {
+          model.items = [];
 
-        var i = 0,
-          iL = model.rows.length;
+          var i = 0,
+            iL = model.rows.length;
 
-        for(;i<iL;i++){
-          model.items.push( s.get(model.rows[i]) );
+          for (; i < iL; i++) {
+            model.items.push(s.get(model.rows[i]));
+          }
         }
         break;
       case 'cells':
@@ -1325,9 +1389,15 @@ Fancy.define('Fancy.grid.plugin.Selection', {
             change: function(checkbox, value){
               if(value){
                 me.selectAll();
+                if(me.memory){
+                  me.memory.setAll();
+                }
               }
               else{
                 me.deSelectAll();
+                if(me.memory){
+                  me.memory.clearAll();
+                }
               }
             }
           }]

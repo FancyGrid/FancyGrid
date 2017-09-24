@@ -178,6 +178,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     setTimeout(function(){
       me.inited = true;
       me.fire('init');
+
+      me.setBodysHeight();
     }, 1);
   },
   /*
@@ -372,7 +374,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    me.fire('rightcolumn');
+    me.fire('rightlockcolumn');
   },
   unLockColumn: function(indexOrder, side){
     var me = this,

@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.8',
+  version: '1.6.9',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -7550,7 +7550,7 @@ Fancy.form.field.Mixin.prototype = {
             break;
         }
 
-        me.fire('up', me.getValue());
+        me.fire('down', me.getValue());
 
         if( me.type !== 'textarea' ){
           e.preventDefault();
@@ -11485,6 +11485,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     setTimeout(function(){
       me.inited = true;
       me.fire('init');
+
+      me.setBodysHeight();
     }, 1);
   },
   /*
@@ -11679,7 +11681,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    me.fire('rightcolumn');
+    me.fire('rightlockcolumn');
   },
   unLockColumn: function(indexOrder, side){
     var me = this,

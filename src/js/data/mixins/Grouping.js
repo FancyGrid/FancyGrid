@@ -118,7 +118,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       values = [],
       groupName = data[0].data[group];
 
-    if(options.format && options.type === 'date'){
+    if(options && options.format && options.type === 'date'){
       for (; i < iL; i++) {
         if (data[i].data[group] === groupName) {
           values.push(Fancy.Date.parse(data[i].data[key], options.format, options.mode));

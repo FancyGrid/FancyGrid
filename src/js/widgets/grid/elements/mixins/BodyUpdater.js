@@ -790,10 +790,26 @@ Fancy.grid.body.mixin.Updater.prototype = {
 
     for(;j<jL;j++){
       var value = s.get(j, key),
+        id = s.get(j, 'id'),
         cellInnerEl = cellsDomInner.item(j),
         checkBox = cellInnerEl.select('.fancy-field-checkbox'),
         checkBoxId,
         isCheckBoxInside = checkBox.length !== 0;
+
+      if(w.selection.memory){
+        if( w.selection.memory.all && !w.selection.memory.except[id]){
+          value = true;
+          w.selection.domSelectRow(j);
+        }
+        else if(w.selection.memory.selected[id]){
+          value = true;
+          w.selection.domSelectRow(j);
+        }
+        else{
+          value = false;
+          w.selection.domDeSelectRow(j);
+        }
+      }
 
       if(isCheckBoxInside === false){
         new Fancy.CheckBox({

@@ -240,6 +240,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     if(me.heightFit){
       me.fitHeight();
     }
+
+    me.setBodysHeight();
   },
   /*
    *
@@ -418,6 +420,14 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
     me.rightEl.css({
       height: height + 'px'
     });
+
+  },
+  setBodysHeight: function () {
+    var me = this;
+
+    me.body.setHeight();
+    me.leftBody.setHeight();
+    me.rightBody.setHeight();
   },
   /*
    *
@@ -1203,6 +1213,8 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       el = Fancy.get(renderTo);
       me.setWidth(parseInt(el.width()));
     }
+
+    me.setBodysHeight();
   },
   /*
    * @param {Number} width
