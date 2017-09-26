@@ -32,6 +32,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       columnCls = w.columnCls,
+      columnTextCls = w.columnTextCls,
+      columnWithEllipsisCls = w.columnWithEllipsisCls,
       numExistedColumn = me.el.select('.' + columnCls).length,
       columns = me.getColumns(),
       i = 0,
@@ -69,7 +71,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       }
 
       if(column.type === 'text'){
-        el.addClass('fancy-grid-column-text');
+        el.addClass(columnTextCls);
       }
 
       el.css({
@@ -86,7 +88,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
           case 'string':
           case 'text':
           case 'number':
-            el.addClass('fancy-grid-column-ellipsis');
+            el.addClass(columnWithEllipsisCls);
             break;
         }
       }
@@ -596,7 +598,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
 
       o.value = value;
 
-      cellsDom.item(j).css(o.style);
+      var cell = cellsDom.item(j);
+      cell.css(o.style);
+
+      var cellInner = cell.select('.fancy-grid-cell-inner');
+      cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
     }
   },
   /*
@@ -1245,7 +1251,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
       jL,
-      maxValue = 100,
       sparkConfig = column.sparkConfig || {},
       disabled = column.disabled || {};
 

@@ -208,8 +208,6 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
    */
   setHardBordersWidth: function(){
     var me = this,
-      gridBorders = me.gridBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders,
       borders = me.panel? me.gridBorders : me.gridWithoutPanelBorders;
 
     if(me.wrapped){

@@ -9,6 +9,10 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   extend: Fancy.Widget,
   type: 'field.radio',
   /*
+   * @private
+   */
+  radioRows: 1,
+  /*
    * @constructor
    */
   constructor: function(){
@@ -64,6 +68,7 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
 
     me.preRender();
     me.render();
+    me.setColumnsStyle();
     me.acceptedValue = me.value;
     me.set(me.value);
 
@@ -162,5 +167,55 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
    */
   clear: function(){
     this.set(false);
+  },
+  calcColumns: function(){
+    var me = this,
+      maxChars = 0,
+      inputWidth = me.width;
+
+    if(me.labelAlign !== 'top' && me.label){
+      inputWidth -= me.labelWidth;
+      inputWidth -= 20;
+    }
+
+    Fancy.Array.each(me.items, function (item) {
+      if(item.text.length > maxChars){
+        maxChars = item.text.length;
+      }
+    });
+
+    var columns = Math.floor(inputWidth/(maxChars * 7 + 30));
+
+    if(me.columns && me.columns <= columns){
+      columns = me.columns;
+    }
+    else{
+      me.columns = columns;
+    }
+
+    me.columnWidth = Math.ceil(inputWidth/columns);
+    me.rows = Math.ceil(me.items.length/columns);
+  },
+  setColumnsStyle: function(){
+    var me = this;
+
+    if(!me.columns || me.rows === 1){
+      return;
+    }
+
+    var i = 0,
+      iL = me.items.length,
+      radioEls = me.el.select('.fancy-field-text'),
+      radioInputs = me.el.select('.fancy-field-text .fancy-field-radio-input');
+
+    for(;i<iL;i++){
+      var item = radioEls.item(i);
+
+      if(i % me.columns === 0){
+        radioInputs.item(i).css('margin-left', '0px');
+      }
+
+      item.css('width', me.columnWidth);
+    }
   }
 });

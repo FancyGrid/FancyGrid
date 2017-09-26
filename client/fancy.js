@@ -9,7 +9,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.9',
+  version: '1.6.10',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -2441,8 +2441,14 @@ Fancy.define('Fancy.Store', {
       return me.data;
     }
 
+    var item = me.dataView[rowIndex];
+    if(!item){
+      return undefined;
+    }
+
     if(key === undefined){
-      data = me.dataView[rowIndex].data;
+      data = item.data;
+
       if(data.id === undefined){
         data.id = me.dataView[rowIndex].id;
       }
@@ -7899,6 +7905,10 @@ Fancy.form.field.Mixin.prototype = {
     }
     else{
       me.css('height', height);
+
+      if(me.label){
+        me.el.select('.fancy-field-label').css('height', me.inputHeight);
+      }
     }
 
     me.setInputSize({
@@ -7952,6 +7962,7 @@ Fancy.form.field.Mixin.prototype = {
   calcSize: function(){
     var me = this,
       inputWidth = me.inputWidth,
+      inputHeight = me.inputHeight,
       padding = me.padding,
       value,
       value1,
@@ -8002,11 +8013,19 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     if(me.height === me.inputHeight && me.padding !== false){
-      me.inputHeight -= padding[0] + padding[2];
+      inputHeight -= padding[0] + padding[2];
     }
 
+    if(me.type === 'radio' && !me.column){
+      me.calcColumns();
+      if(me.rows !== 1) {
+        inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
+      }
+    }
+
+    me.inputHeight = inputHeight;
     me.inputWidth = inputWidth -  padding[1] - padding[3];
-    me.height = me.inputHeight + padding[0] + padding[2];
+    me.height = inputHeight + padding[0] + padding[2];
   },
   /*
    * @param {Number} value
@@ -9553,8 +9572,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} e
      */
     onDropMouseDown: function (e) {
-      var me = this;
-
       e.preventDefault();
     },
     /*
@@ -9707,9 +9724,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * Method used only for multiSelect
      */
-    addValue: function (v) {
+    addValue: function(v){
       var me = this,
-        values = me.values,
         index = me.getIndex(v);
 
       if(index !== -1 && !me.valuesIndex.get(index)){
@@ -9721,7 +9737,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * Method used only for multiSelect
      */
-    removeValue: function (v) {
+    removeValue: function(v){
       var me = this,
         index = -1,
         i = 0,
@@ -9735,7 +9751,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       if(index !== -1) {
         me.values.splice(index, 1);
-        me.valuesIndex.remove(index);
+        me.valuesIndex.remove(me.getIndex(v));
       }
 
       if (me.values.length) {
@@ -9749,7 +9765,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * Method used only for multiSelect
      */
-    updateInput: function (onInput) {
+    updateInput: function(onInput){
       var me = this,
         displayValues = [];
 
@@ -10831,6 +10847,10 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   extend: Fancy.Widget,
   type: 'field.radio',
   /*
+   * @private
+   */
+  radioRows: 1,
+  /*
    * @constructor
    */
   constructor: function(){
@@ -10886,6 +10906,7 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
 
     me.preRender();
     me.render();
+    me.setColumnsStyle();
     me.acceptedValue = me.value;
     me.set(me.value);
 
@@ -10984,6 +11005,56 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
    */
   clear: function(){
     this.set(false);
+  },
+  calcColumns: function(){
+    var me = this,
+      maxChars = 0,
+      inputWidth = me.width;
+
+    if(me.labelAlign !== 'top' && me.label){
+      inputWidth -= me.labelWidth;
+      inputWidth -= 20;
+    }
+
+    Fancy.Array.each(me.items, function (item) {
+      if(item.text.length > maxChars){
+        maxChars = item.text.length;
+      }
+    });
+
+    var columns = Math.floor(inputWidth/(maxChars * 7 + 30));
+
+    if(me.columns && me.columns <= columns){
+      columns = me.columns;
+    }
+    else{
+      me.columns = columns;
+    }
+
+    me.columnWidth = Math.ceil(inputWidth/columns);
+    me.rows = Math.ceil(me.items.length/columns);
+  },
+  setColumnsStyle: function(){
+    var me = this;
+
+    if(!me.columns || me.rows === 1){
+      return;
+    }
+
+    var i = 0,
+      iL = me.items.length,
+      radioEls = me.el.select('.fancy-field-text'),
+      radioInputs = me.el.select('.fancy-field-text .fancy-field-radio-input');
+
+    for(;i<iL;i++){
+      var item = radioEls.item(i);
+
+      if(i % me.columns === 0){
+        radioInputs.item(i).css('margin-left', '0px');
+      }
+
+      item.css('width', me.columnWidth);
+    }
   }
 });
 (function () {
@@ -11361,6 +11432,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   rowEditCls: 'fancy-grid-row-edit',
   rowEditButtonCls: 'fancy-grid-row-edit-buttons',
   clsSparkColumnHBar: 'fancy-grid-column-h-bar',
+  columnColorCls: 'fancy-grid-column-color',
+  columnTextCls: 'fancy-grid-column-text',
+  columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
   header: true,
   shadow: true,
   striped: true,

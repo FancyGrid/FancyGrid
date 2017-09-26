@@ -512,8 +512,6 @@
      * @param {Object} e
      */
     onDropMouseDown: function (e) {
-      var me = this;
-
       e.preventDefault();
     },
     /*
@@ -666,9 +664,8 @@
     /*
      * Method used only for multiSelect
      */
-    addValue: function (v) {
+    addValue: function(v){
       var me = this,
-        values = me.values,
         index = me.getIndex(v);
 
       if(index !== -1 && !me.valuesIndex.get(index)){
@@ -680,7 +677,7 @@
     /*
      * Method used only for multiSelect
      */
-    removeValue: function (v) {
+    removeValue: function(v){
       var me = this,
         index = -1,
         i = 0,
@@ -694,7 +691,7 @@
 
       if(index !== -1) {
         me.values.splice(index, 1);
-        me.valuesIndex.remove(index);
+        me.valuesIndex.remove(me.getIndex(v));
       }
 
       if (me.values.length) {
@@ -708,7 +705,7 @@
     /*
      * Method used only for multiSelect
      */
-    updateInput: function (onInput) {
+    updateInput: function(onInput){
       var me = this,
         displayValues = [];
 

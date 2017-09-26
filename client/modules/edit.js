@@ -623,6 +623,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
         break;
       case 'image':
       case 'string':
+      case 'color':
         editor = new Fancy.StringField({
           renderTo: renderTo,
           label: false,

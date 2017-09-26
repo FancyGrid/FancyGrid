@@ -665,6 +665,10 @@ Fancy.form.field.Mixin.prototype = {
     }
     else{
       me.css('height', height);
+
+      if(me.label){
+        me.el.select('.fancy-field-label').css('height', me.inputHeight);
+      }
     }
 
     me.setInputSize({
@@ -718,6 +722,7 @@ Fancy.form.field.Mixin.prototype = {
   calcSize: function(){
     var me = this,
       inputWidth = me.inputWidth,
+      inputHeight = me.inputHeight,
       padding = me.padding,
       value,
       value1,
@@ -768,11 +773,19 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     if(me.height === me.inputHeight && me.padding !== false){
-      me.inputHeight -= padding[0] + padding[2];
+      inputHeight -= padding[0] + padding[2];
     }
 
+    if(me.type === 'radio' && !me.column){
+      me.calcColumns();
+      if(me.rows !== 1) {
+        inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
+      }
+    }
+
+    me.inputHeight = inputHeight;
     me.inputWidth = inputWidth -  padding[1] - padding[3];
-    me.height = me.inputHeight + padding[0] + padding[2];
+    me.height = inputHeight + padding[0] + padding[2];
   },
   /*
    * @param {Number} value

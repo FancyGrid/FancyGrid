@@ -183,8 +183,14 @@ Fancy.define('Fancy.Store', {
       return me.data;
     }
 
+    var item = me.dataView[rowIndex];
+    if(!item){
+      return undefined;
+    }
+
     if(key === undefined){
-      data = me.dataView[rowIndex].data;
+      data = item.data;
+
       if(data.id === undefined){
         data.id = me.dataView[rowIndex].id;
       }

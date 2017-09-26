@@ -62,8 +62,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
    *
    */
   initMemory: function () {
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     me.memory = {
       all: false,
@@ -379,6 +378,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
       i = 0,
       iL = checkBoxEls.length,
       id = s.get(rowIndex, 'id');
+
+    if(!id){
+      return;
+    }
 
     if(me.memory){
       me.memory.except[id] = true;
@@ -815,6 +818,10 @@ Fancy.define('Fancy.grid.plugin.Selection', {
         var rowIndex = selected.item(i).attr('index');
 
         me.deSelectCheckBox(rowIndex);
+      }
+
+      if(me.memory){
+        me.memory.clearAll();
       }
     }
 
@@ -1411,15 +1418,21 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   selectAll: function(){
     var me = this,
       w = me.widget,
-      checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-field-checkbox'),
       headerCheckBoxEls = w.el.select('.fancy-grid-header-cell-select .fancy-field-checkbox'),
       i = 0,
-      iL = checkBoxEls.length;
+      iL = w.getViewTotal();
 
     for(;i<iL;i++){
-      var checkBox = Fancy.getWidget(checkBoxEls.item(i).attr('id'));
+      var checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="' + i + '"] .fancy-field-checkbox'),
+        j = 0,
+        jL = checkBoxEls.length;
 
-      checkBox.setValue(true);
+      for(;j<jL;j++){
+        var checkBox = Fancy.getWidget(checkBoxEls.item(j).attr('id'));
+
+        checkBox.setValue(true);
+      }
+
       me.domSelectRow(i);
     }
 
@@ -1438,14 +1451,20 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   deSelectAll: function(){
     var me = this,
       w = me.widget,
-      checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-field-checkbox'),
       i = 0,
-      iL = checkBoxEls.length;
+      iL = iL = w.getViewTotal();
 
     for(;i<iL;i++){
-      var checkBox = Fancy.getWidget(checkBoxEls.item(i).attr('id'));
+      var checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="' + i + '"] .fancy-field-checkbox'),
+        j = 0,
+        jL = checkBoxEls.length;
 
-      checkBox.setValue(false);
+      for(;j<jL;j++){
+        var checkBox = Fancy.getWidget(checkBoxEls.item(j).attr('id'));
+
+        checkBox.setValue(false);
+      }
+
       me.domDeSelectRow(i);
     }
 
