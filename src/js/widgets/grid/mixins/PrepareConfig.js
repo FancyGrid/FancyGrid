@@ -38,6 +38,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigFilter(config);
     config = me.prepareConfigSearch(config);
+    config = me.prepareConfigSummary(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
     config = me.prepareConfigWidgetColumn(config);
@@ -202,9 +203,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigLoadMask: function(config){
-    var me = this,
-      data = config.data;
-
     config._plugins.push({
       type: 'grid.loadmask'
     });
@@ -237,8 +235,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigDefaults: function(config){
-    var me = this;
-
     config.defaults = config.defaults || {};
 
     if(config.defaults.type === undefined){
@@ -267,8 +263,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     return config;
   },
   prepareConfigColumnMinMaxWidth: function(config){
-    var me = this,
-      column,
+    var column,
       i = 0,
       iL = config.columns.length;
 
@@ -287,8 +282,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigCellTip: function(config){
-    var me = this,
-      columns = config.columns,
+    var columns = config.columns,
       i = 0,
       iL = columns.length;
 
@@ -310,8 +304,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigDD: function(config){
-    var me = this;
-
     if(config.gridToGrid){
       var pluginConfig = {
         type: 'grid.dragdrop'
@@ -342,7 +334,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'select':
           this.checkboxRowSelection = true;
           this.multiSelect = true;
-          //columns[i].type = 'checkbox';
           columns[i].index = '$selected';
           columns[i].editable = true;
 
@@ -563,8 +554,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigSmartIndex: function(config){
-    var me = this,
-      columns = config.columns,
+    var columns = config.columns,
       i = 0,
       iL = columns.length;
 
@@ -726,8 +716,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigWidgetColumn: function(config){
-    var me = this,
-      columns = config.columns,
+    var columns = config.columns,
       i = 0,
       iL = columns.length;
 
@@ -1041,6 +1030,23 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
+  prepareConfigSummary: function(config){
+    if(config.summary){
+      var summaryConfig = config.summary;
+
+      if(summaryConfig === true){
+        summaryConfig = {};
+      }
+
+      Fancy.apply(summaryConfig, {
+        type: 'grid.summary'
+      });
+
+      config._plugins.push(summaryConfig);
+    }
+
+    return config;
+  },
   /*
    * @param {Object} config
    * @returns {Object}
@@ -1134,7 +1140,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(isGrouped){
       i = 0;
-      var prev = 0;
       for(;i<iL;i++){
         var column = columns[i];
 
@@ -1508,8 +1513,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigChart: function(config){
-    var me = this,
-      data = config.data,
+    var data = config.data,
       chart = data.chart;
 
     if(Fancy.isObject(chart)){
@@ -1554,10 +1558,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @returns {Object}
    */
   prepareConfigSize: function(config, originalConfig){
-    var me = this,
-      renderTo = config.renderTo,
+    var renderTo = config.renderTo,
       el,
-      //isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel);
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
       panelBodyBorders = config.panelBodyBorders,
       gridBorders = config.gridBorders;

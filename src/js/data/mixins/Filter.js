@@ -16,9 +16,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       var indexFilters = filters[p],
         indexValue = item.data[p];
 
-      if(/\./.test(p)){
-        var splitted = p.split('.'),
-          indexValue = item.data[splitted[0]][splitted[1]];
+      if(me.smartIndexes && me.smartIndexes[p]){
+        indexValue = me.smartIndexes[p](item.data);
+      }
+      else if(/\./.test(p)){
+        var splitted = p.split('.');
+        indexValue = item.data[splitted[0]][splitted[1]];
       }
 
 	    if(indexFilters.type === 'date'){

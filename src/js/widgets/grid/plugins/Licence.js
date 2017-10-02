@@ -45,8 +45,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       body = w.body,
       licenceEl = Fancy.get(document.createElement('div'));
 
-    var host = location.host.replace(/^www\./, '');
-
     if(/fancygrid/.test(location.host) && !w.watermark){
       return;
     }
@@ -96,7 +94,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       return;
     }
 
-    //console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license that we can do it better!",
     console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license for legal usage!\nSales email: sales@fancygrid.com",
       'color:#A2CFE8;font-size: 14px;font-weight: bold;',
       'color:#088EC7;font-size: 14px;font-weight: bold;',

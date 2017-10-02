@@ -30,8 +30,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     w.once('render', function(){
       me.initEditorContainer();
@@ -95,8 +94,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   edit: function(o){
     var me = this,
       w = me.widget,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
     if(column.index === '$selected'){
       return;
@@ -165,10 +163,6 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
         if(column.displayKey !== undefined){
           displayKey = column.displayKey;
           valueKey = displayKey;
-        }
-
-        if(column.valueKey !== undefined){
-          //valueKey = column.valueKey;
         }
 
         if(theme === 'default'){
@@ -423,7 +417,6 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   setEditorValue: function(o){
     var me = this,
       w = me.widget,
-      lang = w.lang,
       editor = me.activeEditor;
 
     switch(o.column.type){
@@ -447,26 +440,19 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    * @param {String} value
    */
   onEditorEnter: function(editor, value){
-    var me = this;
-
-    me.hideEditor();
+    this.hideEditor();
   },
   /*
    *
    */
   onHeaderCellMouseDown: function(){
-    var me = this;
-
-    me.hideEditor();
+    this.hideEditor();
   },
   /*
    * @param {Object} editor
    * @param {String} value
    */
-  onKey: function(editor, value){
-    var me = this;
-
-  },
+  onKey: function(editor, value){},
   /*
    * @param {String} value
    */
@@ -504,19 +490,15 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    * @param {Object} editor
    */
   onEditorBeforeHide: function(editor){
-    var me = this;
-
     if(editor.isValid()){
-      me.setValue(editor.getValue());
+      this.setValue(editor.getValue());
     }
   },
   /*
    *
    */
   onScroll: function(){
-    var me = this;
-
-    me.hideEditor();
+    this.hideEditor();
   },
   /*
    * @param {Object} field

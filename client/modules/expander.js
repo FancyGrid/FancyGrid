@@ -293,8 +293,7 @@ Fancy.define('Fancy.grid.plugin.Expander', {
    */
   clearMargin: function(rowIndex, id){
     var me = this,
-      w = me.widget,
-      height = me._expandedIds[id].height;
+      w = me.widget;
 
     w.el.select('.fancy-grid-column[grid="'+ w.id +'"] .fancy-grid-cell[index="' + rowIndex + '"]').css('margin-top', '0');
   },
@@ -484,7 +483,6 @@ Fancy.define('Fancy.grid.plugin.Expander', {
    */
   getPlusHeight: function(){
     var me = this,
-      w = me.widget,
       plusHeight = 0;
 
     for(var p in me._expandedIds){
@@ -533,9 +531,7 @@ Fancy.define('Fancy.grid.plugin.Expander', {
    *
    */
   changeSidesSize: function(){
-    var me = this,
-      w = me.widget,
-      scroller = w.scroller;
+    var w = this.widget;
 
     w.setSidesHeight();
     w.scroller.checkRightScroll();

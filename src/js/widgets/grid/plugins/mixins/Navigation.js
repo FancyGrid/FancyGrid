@@ -1,16 +1,15 @@
 /*
  * @class Fancy.grid.selection.mixin.Navigation
+ * TODO: write realization for key navigation
  */
 Fancy.Mixin('Fancy.grid.selection.mixin.Navigation', {
   /*
    *
    */
   initNavigation: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     me.addEvents('up', 'down', 'left', 'right');
-
     me.onsNav();
   },
   /*
@@ -36,19 +35,14 @@ Fancy.Mixin('Fancy.grid.selection.mixin.Navigation', {
 
     switch(keyCode) {
       case key.TAB:
-
         break;
       case key.UP:
-
         break;
       case key.DOWN:
-
         break;
       case key.LEFT:
-
         break;
       case key.RIGHT:
-
         break;
     }
   }

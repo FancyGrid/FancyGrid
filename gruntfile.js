@@ -1,6 +1,6 @@
 var chalk = require('chalk'),
   good = chalk.green('Ok'),
-	bad = chalk.red("Bad");
+  bad = chalk.red("Bad");
 
 var tokens = {
 	generated: false

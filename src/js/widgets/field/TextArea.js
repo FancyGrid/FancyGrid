@@ -136,7 +136,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
    */
   calcSize: function(){
     var me = this,
-      inputWidth = me.inputWidth,
+      inputWidth,
       padding = me.padding,
       value,
       value1,

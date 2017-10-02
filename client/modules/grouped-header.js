@@ -28,10 +28,5 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
   /*
    *
    */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-  }
+  ons: function(){}
 });

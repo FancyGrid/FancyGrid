@@ -126,8 +126,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = me.params || {},
-      headers = proxy.headers || {},
-      dataType;
+      headers = proxy.headers || {};
 
     me.fire('beforeload');
     //IDEA: sortType === 'server'
@@ -146,7 +145,6 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       url: proxy.api.read,
       method: proxy.methods.read,
       params: params,
-      dataType: dataType,
       getJSON: true,
       headers: headers,
       success: function(o, status, request){

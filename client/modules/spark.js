@@ -166,11 +166,9 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   renderProgress: function(){
     //render progress
     var me = this,
-      size = me.size,
       radius = me.radius,
       innerRadius = me.innerRadius,
       path = document.createElementNS(me.svgns, "path"),
-      unit = (Math.PI *2) / 100,
       value = me.value,
       cumulative = 0;
       
@@ -299,7 +297,6 @@ Fancy.define('Fancy.spark.ProgressDonut', {
    */
   setParams: function(){
     var me = this,
-      size = me.size,
       radius = me.radius,
       innerRadius = me.innerRadius,
       height = me.height,

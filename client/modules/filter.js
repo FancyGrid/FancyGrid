@@ -16,9 +16,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       var indexFilters = filters[p],
         indexValue = item.data[p];
 
-      if(/\./.test(p)){
-        var splitted = p.split('.'),
-          indexValue = item.data[splitted[0]][splitted[1]];
+      if(me.smartIndexes && me.smartIndexes[p]){
+        indexValue = me.smartIndexes[p](item.data);
+      }
+      else if(/\./.test(p)){
+        var splitted = p.split('.');
+        indexValue = item.data[splitted[0]][splitted[1]];
       }
 
 	    if(indexFilters.type === 'date'){
@@ -227,8 +230,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
     
     w.once('render', function(){
       me.render();
@@ -345,9 +347,9 @@ Fancy.define('Fancy.grid.plugin.Filter', {
     var me = this,
       w = me.widget;
 
-    this._clearColumnsFields(w.columns, w.header, index, sign);
-    this._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
-    this._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
+    me._clearColumnsFields(w.columns, w.header, index, sign);
+    me._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
+    me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
   },
   _addValuesInColumnFields: function(columns, header, index, value, sign){
     var i = 0,
@@ -415,9 +417,9 @@ Fancy.define('Fancy.grid.plugin.Filter', {
     var  me = this,
       w = me.widget;
 
-    this._addValuesInColumnFields(w.columns, w.header, index, value, sign);
-    this._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
-    this._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
+    me._addValuesInColumnFields(w.columns, w.header, index, value, sign);
+    me._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
+    me._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
   },
   /*
    * @param {String} type
@@ -807,6 +809,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
     w.update();
 
     w.fire('filter', me.filters);
+    w.setSidesHeight();
   },
   /*
    * @param {Fancy.Grid} grid
@@ -814,7 +817,6 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    */
   onColumnResize: function(grid, o){
     var me = this,
-      w = me.widget,
       cell = Fancy.get(o.cell),
       width = o.width,
       fieldEl = cell.select('.fancy-field'),
@@ -853,8 +855,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    * @param {Object} e
    */
   onKey: function(field, value, e){
-    var me = this,
-      autoEnterTime = me.autoEnterTime || +new Date();
+    var me = this;
 
     if( e.keyCode === Fancy.key.ENTER ){
       return;

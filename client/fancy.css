@@ -1220,6 +1220,9 @@
   float: left;
   height: 100%;
   border-right: 2px solid #d3dbe1;
+  /*
+  overflow: hidden;
+  */
 }
 .fancy-grid-left-empty {
   border-right-width: 0;
@@ -1229,6 +1232,9 @@
   top: 0;
   float: left;
   height: 100%;
+  /*
+  overflow: hidden;
+  */
 }
 .fancy-grid-right {
   position: absolute;
@@ -1236,6 +1242,9 @@
   float: left;
   height: 100%;
   border-left: 2px solid #d3dbe1;
+  /*
+  overflow: hidden;
+  */
 }
 .fancy-grid-right-empty {
   border-left-width: 0;
@@ -1336,6 +1345,9 @@
 }
 .fancy-checkbox-expander.fancy-checkbox-on .fancy-field-checkbox-input:hover {
   background-position: 0 -18px;
+}
+.fancy-grid-header-cell-double .fancy-grid-header-cell-trigger-image {
+  margin-top: 25px;
 }
 /*
  scroll.less
@@ -1888,6 +1900,22 @@ vml {
 .fancy-grid-expand-row.fancy-grid-expand-row-selected {
   background: #E0E5E9;
 }
+.fancy-grid-summary-container {
+  z-index: 1;
+  background: white;
+  overflow: hidden;
+}
+.fancy-grid-summary-row {
+  position: relative;
+  left: 0;
+}
+.fancy-grid-summary-row .fancy-grid-cell {
+  float: left;
+}
+.fancy-grid-summary-row-bottom .fancy-grid-cell {
+  border-bottom-width: 0;
+  border-top-width: 1px;
+}
 /*
  datepicker.less
 */
@@ -2094,10 +2122,10 @@ vml {
 /*
  column-order.less
 */
-.fancy-grid-cell-order .fancy-grid-cell {
+.fancy-grid-column-order .fancy-grid-cell {
   background-color: #e3e9ee;
 }
-.fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected {
+.fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
   background-color: #e3e9ee;
 }
 /*
@@ -2345,10 +2373,10 @@ vml {
 .fancy-theme-gray .fancy-panel-resize-corner:before {
   bottom: -13px;
 }
-.fancy-theme-gray .fancy-grid-cell-order .fancy-grid-cell {
+.fancy-theme-gray .fancy-grid-column-order .fancy-grid-cell {
   background: #ececec url(images/gray/a_bg.png) 0 -1px repeat-x;
 }
-.fancy-theme-gray .fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected {
+.fancy-theme-gray .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
   background: #ececec url(images/gray/a_bg.png) 0 -1px repeat-x;
 }
 .fancy-theme-gray .fancy-checkbox-expander .fancy-field-checkbox-input {
@@ -2659,10 +2687,10 @@ vml {
 .fancy-theme-dark .fancy-combo-input-container {
   border-color: #5a5a5a;
 }
-.fancy-theme-dark .fancy-grid-cell-order .fancy-grid-cell {
+.fancy-theme-dark .fancy-grid-column-order .fancy-grid-cell {
   background: rgba(85, 85, 85, 0.35);
 }
-.fancy-theme-dark .fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected {
+.fancy-theme-dark .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
   background: rgba(85, 85, 85, 0.35);
 }
 .fancy-theme-dark .fancy-grid-row-edit {
@@ -3134,16 +3162,16 @@ vml {
 .fancy-theme-sand .fancy-grid-column-sort-ASC .fancy-grid-header-cell-text {
   background-image: url(images/sand/sort-arrows.png);
 }
-.fancy-theme-sand .fancy-grid-cell-order .fancy-grid-cell {
+.fancy-theme-sand .fancy-grid-column-order .fancy-grid-cell {
   background-color: #DDD5B6;
 }
-.fancy-theme-sand .fancy-grid-cell-order .fancy-grid-cell .fancy-grid-cell-inner {
+.fancy-theme-sand .fancy-grid-column-order .fancy-grid-cell .fancy-grid-cell-inner {
   color: #888;
 }
-.fancy-theme-sand .fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected {
+.fancy-theme-sand .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
   background-color: #DDD5B6;
 }
-.fancy-theme-sand .fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected .fancy-grid-cell-inner {
+.fancy-theme-sand .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected .fancy-grid-cell-inner {
   color: #888;
 }
 .fancy-theme-sand .fancy-grid-row-edit {
@@ -3414,16 +3442,16 @@ vml {
 .fancy-theme-bootstrap .fancy-button.fancy-button-pressed .fancy-button-text {
   color: white;
 }
-.fancy-theme-bootstrap .fancy-grid-cell-order .fancy-grid-cell {
+.fancy-theme-bootstrap .fancy-grid-column-order .fancy-grid-cell {
   background-color: #f5f5f5;
 }
-.fancy-theme-bootstrap .fancy-grid-cell-order .fancy-grid-cell .fancy-grid-cell-inner {
+.fancy-theme-bootstrap .fancy-grid-column-order .fancy-grid-cell .fancy-grid-cell-inner {
   color: #333;
 }
-.fancy-theme-bootstrap .fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected {
+.fancy-theme-bootstrap .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
   background-color: #f5f5f5;
 }
-.fancy-theme-bootstrap .fancy-grid-cell-order .fancy-grid-cell.fancy-grid-cell-selected .fancy-grid-cell-inner {
+.fancy-theme-bootstrap .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected .fancy-grid-cell-inner {
   color: #333;
 }
 .fancy-theme-bootstrap .fancy-grid-row-edit .fancy-field-text-value {

@@ -37,20 +37,21 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
   },
   hideMenu: function(){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      triggeredColumnCls = me.triggeredColumnCls;
 
     switch(me.side){
       case 'left':
         if(w.header.activeMenu){
           w.header.activeMenu.hide();
-          w.header.activeCell.removeClass(me.triggeredColumnCls);
+          w.header.activeCell.removeClass(triggeredColumnCls);
           delete w.header.activeMenu;
           delete w.header.activeCell;
         }
 
         if(w.rightHeader.activeMenu){
           w.rightHeader.activeMenu.hide();
-          w.rightHeader.activeCell.removeClass(me.triggeredColumnCls);
+          w.rightHeader.activeCell.removeClass(triggeredColumnCls);
           delete w.rightHeader.activeMenu;
           delete w.rightHeader.activeCell;
         }
@@ -58,14 +59,14 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       case 'center':
         if(w.leftHeader.activeMenu){
           w.leftHeader.activeMenu.hide();
-          w.leftHeader.activeCell.removeClass(me.triggeredColumnCls);
+          w.leftHeader.activeCell.removeClass(triggeredColumnCls);
           delete w.leftHeader.activeMenu;
           delete w.leftHeader.activeCell;
         }
 
         if(w.rightHeader.activeMenu){
           w.rightHeader.activeMenu.hide();
-          w.rightHeader.activeCell.removeClass(me.triggeredColumnCls);
+          w.rightHeader.activeCell.removeClass(triggeredColumnCls);
           delete w.rightHeader.activeMenu;
           delete w.rightHeader.activeCell;
         }
@@ -73,14 +74,14 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       case 'right':
         if(w.leftHeader.activeMenu){
           w.leftHeader.activeMenu.hide();
-          w.leftHeader.activeCell.removeClass(me.triggeredColumnCls);
+          w.leftHeader.activeCell.removeClass(triggeredColumnCls);
           delete w.leftHeader.activeMenu;
           delete w.leftHeader.activeCell;
         }
 
         if(w.header.activeMenu){
           w.header.activeMenu.hide();
-          w.header.activeCell.removeClass(me.triggeredColumnCls);
+          w.header.activeCell.removeClass(triggeredColumnCls);
           delete w.header.activeMenu;
           delete w.header.activeCell;
         }
@@ -89,7 +90,7 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
 
     if(me.activeMenu){
       me.activeMenu.hide();
-      me.activeCell.removeClass(me.triggeredColumnCls);
+      me.activeCell.removeClass(triggeredColumnCls);
     }
 
     delete me.activeMenu;

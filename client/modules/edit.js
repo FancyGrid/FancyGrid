@@ -131,13 +131,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w = me.widget,
       s = w.store,
       activeParams = me.activeCellEditParams,
-      rightColumns = w.rightColumns,
       leftColumns = w.leftColumns;
 
     var columnIndex = activeParams.columnIndex,
       rowIndex = activeParams.rowIndex,
       side = activeParams.side,
-      body = w.getBody(side),
+      body,
       columns = w.getColumns(side),
       nextColumn = columns[columnIndex + 1],
       nextCell,
@@ -181,7 +180,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
 
     //TODO: function that get next editable cell(checkbox does not suit)
-    //maybe in future to learn how ExtJS does it, and checkbox also to add.
+    //maybe in future to learn how other frameworks does it and checkbox also to add.
 
     key = nextColumn.index || nextColumn.key;
     id = s.getId(rowIndex);
@@ -286,8 +285,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   onClickCell: function(grid, o){
     var me = this,
       w = me.widget,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
     if(column.editable && column.type === 'checkbox' && w.celledit){
       w.celledit.onCheckBoxChange(o);
@@ -300,12 +298,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   onClickCellToEdit: function(grid, o){
     var me = this,
       w = me.widget,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
-    if(w.rowedit){
-
-    }
+    if(w.rowedit){}
     else if(w.celledit){
       w.celledit.hideEditor();
     }
@@ -340,39 +335,26 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   onStoreCRUDBeforeUpdate: function(){
     var me = this,
       w = me.widget,
-      o = me.activeCellEditParams,
-      cellEl;
+      o = me.activeCellEditParams;
 
     if(!o){
       return;
     }
 
-    cellEl = Fancy.get(o.cell);
     w.updater.updateRow(o.rowIndex);
   },
   /*
    *
    */
   onStoreCRUDUpdate: function(store, id, key, value){
-    var me = this,
-      w = me.widget,
-      o = me.activeCellEditParams,
-      cellEl;
-
-    if(o){
-      cellEl = Fancy.get(o.cell);
-    }
-
     delete store.changed[id];
 
-    me.clearDirty();
+    this.clearDirty();
   },
   /*
    *
    */
-  onStoreCRUDBeforeDestroy: function(){
-
-  },
+  onStoreCRUDBeforeDestroy: function(){},
   /*
    *
    */
@@ -388,9 +370,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   clearDirty: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
+    var w = this.widget;
 
     setTimeout(function() {
       w.leftBody.clearDirty();
@@ -404,8 +384,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    */
   onCreate: function(store, data){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     w.updater.update();
     me.clearDirty();
@@ -442,8 +421,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     w.once('render', function(){
       me.initEditorContainer();
@@ -507,8 +485,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   edit: function(o){
     var me = this,
       w = me.widget,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
     if(column.index === '$selected'){
       return;
@@ -577,10 +554,6 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
         if(column.displayKey !== undefined){
           displayKey = column.displayKey;
           valueKey = displayKey;
-        }
-
-        if(column.valueKey !== undefined){
-          //valueKey = column.valueKey;
         }
 
         if(theme === 'default'){
@@ -835,7 +808,6 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   setEditorValue: function(o){
     var me = this,
       w = me.widget,
-      lang = w.lang,
       editor = me.activeEditor;
 
     switch(o.column.type){
@@ -859,26 +831,19 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    * @param {String} value
    */
   onEditorEnter: function(editor, value){
-    var me = this;
-
-    me.hideEditor();
+    this.hideEditor();
   },
   /*
    *
    */
   onHeaderCellMouseDown: function(){
-    var me = this;
-
-    me.hideEditor();
+    this.hideEditor();
   },
   /*
    * @param {Object} editor
    * @param {String} value
    */
-  onKey: function(editor, value){
-    var me = this;
-
-  },
+  onKey: function(editor, value){},
   /*
    * @param {String} value
    */
@@ -916,19 +881,15 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    * @param {Object} editor
    */
   onEditorBeforeHide: function(editor){
-    var me = this;
-
     if(editor.isValid()){
-      me.setValue(editor.getValue());
+      this.setValue(editor.getValue());
     }
   },
   /*
    *
    */
   onScroll: function(){
-    var me = this;
-
-    me.hideEditor();
+    this.hideEditor();
   },
   /*
    * @param {Object} field
@@ -1131,9 +1092,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
   edit: function(o){
     var me = this,
       w = me.widget,
-      store = w.store,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
     if(column.index === '$selected'){
       return;
@@ -1214,8 +1173,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       el = Fancy.get(renderTo.dom.appendChild(container.dom));
     }
     else{
-      var body = w.getBody(side),
-        fieldEls = renderTo.select('.fancy-field');
+      var fieldEls = renderTo.select('.fancy-field');
 
       i = order;
       iL = order + 1;
@@ -1536,8 +1494,6 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    * @param {Number} size
    */
   setEditorSize: function(editor, size){
-    var me = this;
-
     if(editor.wtype === 'field.combo'){
       editor.size(size);
 
@@ -1683,8 +1639,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    * @param {Array} columns
    */
   _setValues: function(data, columns){
-    var me = this,
-      i = 0,
+    var i = 0,
       iL = columns.length,
       column,
       editor;
@@ -1709,8 +1664,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    *
    */
   onScroll: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     if(me.rendered === false){
       return;
@@ -1724,8 +1678,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    *
    */
   onColumnResize: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     if(me.rendered === false){
       return;

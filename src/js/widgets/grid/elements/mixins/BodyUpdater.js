@@ -34,6 +34,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columnCls = w.columnCls,
       columnTextCls = w.columnTextCls,
       columnWithEllipsisCls = w.columnWithEllipsisCls,
+      columnOrderCls = w.columnOrderCls,
+      columnSelectCls = w.columnSelectCls,
       numExistedColumn = me.el.select('.' + columnCls).length,
       columns = me.getColumns(),
       i = 0,
@@ -56,12 +58,12 @@ Fancy.grid.body.mixin.Updater.prototype = {
       el.attr('grid', w.id);
 
       if(column.index === '$selected'){
-        el.addClass('fancy-grid-cell-select');
+        el.addClass(columnSelectCls);
       }
       else{
         switch(column.type){
           case 'order':
-            el.addClass('fancy-grid-cell-order');
+            el.addClass(columnOrderCls);
             break;
         }
       }
@@ -104,6 +106,8 @@ Fancy.grid.body.mixin.Updater.prototype = {
   checkDomCells: function(indexOrder){
     var me = this,
       w = me.widget,
+      columnCls = w.columnCls,
+      cellCls = w.cellCls,
       s = w.store,
       i = 0,
       iL = s.dataView.length,
@@ -126,7 +130,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
 
     jL = columns.length;
 
-    var columsDom = me.el.select('.fancy-grid-column'),
+    var columsDom = me.el.select('.'+columnCls),
       dataLength = s.getLength(),
       cellTpl = me.cellTpl;
 
@@ -143,7 +147,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       column = columns[j];
       var columnDom = columsDom.item(j);
       i = 0;
-      var delta = dataLength - columnDom.select('.fancy-grid-cell').length;
+      var delta = dataLength - columnDom.select('.'+cellCls).length;
       i = iL - delta;
       for(;i<iL;i++){
         var cellHTML = cellTpl.getHTML({});
@@ -299,13 +303,14 @@ Fancy.grid.body.mixin.Updater.prototype = {
   renderUniversal: function(i, rowIndex){
     var me = this,
       w = me.widget,
+      columnCls = w.columnCls,
       lang = w.lang,
       emptyValue = w.emptyValue,
       s = w.store,
       columns = me.getColumns(),
       column = columns[i],
       key,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.'+columnCls),
       columnDom = columsDom.item(i),
       cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
@@ -410,18 +415,20 @@ Fancy.grid.body.mixin.Updater.prototype = {
   },
   /*
    * @param {Number} i
-   * @param {Number} rowIndex
    */
-  renderOrder: function(i, rowIndex){
+  renderOrder: function(i){
     var me = this,
       w = me.widget,
+      columnCls = w.columnCls,
+      cellCls = w.cellCls,
+      cellInnerCls = w.cellInnerCls,
       s = w.store,
       columns = me.getColumns(),
       column = columns[i],
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + columnCls),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
+      cellsDom = columnDom.select('.' + cellCls),
+      cellsDomInner = columnDom.select('.' + cellCls + ' .' + cellInnerCls),
       j = 0,
       jL = s.getLength(),
       plusValue = 0;
@@ -471,9 +478,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + w.columnCls),
       columnDom = columsDom.item(i),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
@@ -556,10 +561,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       s = w.store,
+      columnCls = w.columnCls,
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + columnCls),
       columnDom = columsDom.item(i),
       cellsDom = columnDom.select('.' + w.cellCls),
       j,
@@ -601,7 +607,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       var cell = cellsDom.item(j);
       cell.css(o.style);
 
-      var cellInner = cell.select('.fancy-grid-cell-inner');
+      var cellInner = cell.select('.' + w.cellInnerCls);
       cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
     }
   },
@@ -613,13 +619,15 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       s = w.store,
+      columnCls = w.columnCls,
+      cellCls = w.cellCls,
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + columnCls),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
+      cellsDom = columnDom.select('.' + cellCls),
+      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
 
@@ -657,13 +665,15 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       s = w.store,
+      columnCls = w.columnCls,
+      cellCls = w.cellCls,
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + columnCls),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
+      cellsDom = columnDom.select('.' + cellCls),
+      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
 
@@ -779,7 +789,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + w.columnCls),
       columnDom = columsDom.item(i),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
@@ -845,13 +855,14 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       s = w.store,
+      cellCls = w.cellCls,
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + w.columnCls),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
+      cellsDom = columnDom.select('.' + cellCls),
+      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
 
@@ -901,15 +912,17 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       cellHeight = w.cellHeight,
+      cellCls = w.cellCls,
+      columnCls = w.columnCls,
       s = w.store,
       columns = me.getColumns(),
       column = columns[i],
       columnWidth = column.width,
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + columnCls),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
+      cellsDom = columnDom.select('.' + cellCls),
+      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
       j,
       jL,
       _sparkConfig = column.sparkConfig || {};
@@ -1005,13 +1018,15 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       s = w.store,
+      columnCls = w.columnCls,
+      cellCls = w.cellCls,
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + columnCls),
       columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
+      cellsDom = columnDom.select('.' + cellCls),
+      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
       j,
       jL;
 
@@ -1084,7 +1099,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + w.columnCls),
       columnDom = columsDom.item(i),
       cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
@@ -1159,7 +1174,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + w.columnCls),
       columnDom = columsDom.item(i),
       cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
@@ -1245,7 +1260,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.'+ w.columnCls),
       columnDom = columsDom.item(i),
       cellsDom = columnDom.select('.' + w.cellCls),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
@@ -1411,7 +1426,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       columns = me.getColumns(),
       column = columns[i],
       key = column.key || column.index,
-      columsDom = me.el.select('.fancy-grid-column'),
+      columsDom = me.el.select('.' + w.columnCls),
       columnDom = columsDom.item(i),
       cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
       j,
@@ -1529,13 +1544,13 @@ Fancy.grid.body.mixin.Updater.prototype = {
     var me = this,
       w = me.widget,
       store = w.store,
-      columnsDom = me.el.select('.fancy-grid-column'),
+      columnsDom = me.el.select('.' + w.columnCls),
       i = 0,
       iL = columnsDom.length;
 
     for(;i<iL;i++){
       var columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select('.fancy-grid-cell'),
+        cellsDom = columnDom.select('.' + w.cellCls),
         j = store.getLength(),
         jL = cellsDom.length;
 
@@ -1597,7 +1612,6 @@ Fancy.grid.body.mixin.Updater.prototype = {
         value = format(value);
         break;
       case 'object':
-        //value = this.getFormat(format)(value);
         if(format.inputFn){
           value = format.inputFn(value);
         }

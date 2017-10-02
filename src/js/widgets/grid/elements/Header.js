@@ -44,13 +44,15 @@ Fancy.define('Fancy.grid.Header', {
   },
   ons: function(){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      headerCellCls = w.headerCellCls,
+      headerCellSelector = 'div.' + headerCellCls;
 
     w.on('render', me.onAfterRender, me);
     me.el.on('click', me.onTriggerClick, me, 'span.fancy-grid-header-cell-trigger');
-    me.el.on('click', me.onCellClick, me, 'div.fancy-grid-header-cell');
-    me.el.on('mousemove', me.onCellMouseMove, me, 'div.fancy-grid-header-cell');
-    me.el.on('mousedown', me.onCellMouseDown, me, 'div.fancy-grid-header-cell');
+    me.el.on('click', me.onCellClick, me, headerCellSelector);
+    me.el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
+    me.el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
     me.el.on('mousedown', me.onMouseDown, me);
   },
   render: function(){
@@ -180,6 +182,20 @@ Fancy.define('Fancy.grid.Header', {
       groupIndex = '',
       left = 0;
 
+    if(w.groupheader){
+      cellHeight = w.cellHeight * 2;
+      var groupUpCells = me.el.select('.fancy-grid-header-cell-group-level-2');
+
+      //BUG: possible bug for dragging column
+      if(index !== w.columns.length - 1){
+        groupUpCells.each(function(cell){
+          var left = parseInt(cell.css('left') || 0) + column.width;
+
+          cell.css('left', left);
+        });
+      }
+    }
+
     if(column.index === '$selected'){
       cls += ' fancy-grid-header-cell-select';
     }
@@ -210,7 +226,7 @@ Fancy.define('Fancy.grid.Header', {
       columnName: title,
       columnWidth: column.width,
       index: index,
-      height: cellHeight,
+      height: String(cellHeight) + 'px',
       left: String(left) + 'px',
       groupIndex: groupIndex
     });
@@ -321,9 +337,10 @@ Fancy.define('Fancy.grid.Header', {
     return columns;
   },
   getDomCell: function(index){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
-    return me.el.select('.fancy-grid-header-cell').item(index);
+    return me.el.select('.' + w.headerCellCls).item(index);
   },
   onCellClick: function(e){
     var me = this,
@@ -419,17 +436,22 @@ Fancy.define('Fancy.grid.Header', {
     return html;
   },
   destroy: function(){
-    var me = this;
+    var me = this,
+      w = me.widget,
+      headerCellCls = w.headerCellCls,
+      cellSelector = 'div.' + headerCellCls;
 
-    me.el.un('click', me.onCellClick, me, 'div.fancy-grid-header-cell');
-    me.el.un('mousemove', me.onCellMouseMove, me, 'div.fancy-grid-header-cell');
-    me.el.un('mousedown', me.onCellMouseDown, me, 'div.fancy-grid-header-cell');
+    me.el.un('click', me.onCellClick, me, cellSelector);
+    me.el.un('mousemove', me.onCellMouseMove, me, cellSelector);
+    me.el.un('mousedown', me.onCellMouseDown, me, cellSelector);
     me.el.un('mousedown', me.onMouseDown, me);
   },
   getCell: function(index){
-    var me = this;
+    var me = this,
+      w = me.widget,
+      headerCellCls = w.headerCellCls;
 
-    return me.el.select('.fancy-grid-header-cell[index="'+index+'"]');
+    return me.el.select('.'+headerCellCls+'[index="'+index+'"]');
   },
   onTriggerClick: function(e){
     var me = this,
@@ -526,7 +548,6 @@ Fancy.define('Fancy.grid.Header', {
   },
   removeCell: function(orderIndex){
     var me = this,
-      w = me.widget,
       cells = me.el.select('.fancy-grid-header-cell:not(.fancy-grid-header-cell-group-level-2)'),
       cell = cells.item(orderIndex),
       cellWidth = parseInt(cell.css('width')),
@@ -587,10 +608,11 @@ Fancy.define('Fancy.grid.Header', {
   renderHeaderCheckBox: function(){
     var me = this,
       w = me.widget,
+      headerCellCls = w.headerCellCls,
       columns = me.getColumns(),
       i = 0,
       iL = columns.length,
-      cells = me.el.select('.fancy-grid-header-cell:not(.fancy-grid-header-cell-group-level-2)');
+      cells = me.el.select('.'+headerCellCls+':not(.fancy-grid-header-cell-group-level-2)');
 
     for(;i<iL;i++){
       var column = columns[i];
@@ -637,7 +659,9 @@ Fancy.define('Fancy.grid.Header', {
   },
   reSetIndexes: function(){
     var me = this,
-      cells = me.el.select('.fancy-grid-header-cell:not(.fancy-grid-header-cell-group-level-2)');
+      w = me.widget,
+      headerCellCls = w.headerCellCls,
+      cells = me.el.select('.'+headerCellCls+':not(.fancy-grid-header-cell-group-level-2)');
 
     cells.each(function(cell, i) {
       cell.attr('index', i);

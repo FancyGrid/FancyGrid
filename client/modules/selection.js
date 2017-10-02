@@ -353,7 +353,9 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   selectCheckBox: function(rowIndex){
     var me = this,
       w = me.widget,
-      checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="'+rowIndex+'"] .fancy-field-checkbox'),
+      columnSelectCls = w.columnSelectCls,
+      cellCls = w.cellCls,
+      checkBoxEls = w.el.select('.'+columnSelectCls+' .'+cellCls+'[index="'+rowIndex+'"] .fancy-field-checkbox'),
       i = 0,
       iL = checkBoxEls.length;
 
@@ -374,7 +376,9 @@ Fancy.define('Fancy.grid.plugin.Selection', {
     var me = this,
       w = me.widget,
       s = w.store,
-      checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="'+rowIndex+'"] .fancy-field-checkbox'),
+      columnSelectCls = w.columnSelectCls,
+      cellCls = w.cellCls,
+      checkBoxEls = w.el.select('.'+columnSelectCls+' .'+cellCls+'[index="'+rowIndex+'"] .fancy-field-checkbox'),
       i = 0,
       iL = checkBoxEls.length,
       id = s.get(rowIndex, 'id');
@@ -703,8 +707,7 @@ Fancy.define('Fancy.grid.plugin.Selection', {
 
     var rowCells = w.getDomRow(rowIndex),
       i = 0,
-      iL = rowCells.length,
-      selected = w.get(rowIndex);
+      iL = rowCells.length;
 
     me.clearSelection();
 
@@ -1418,12 +1421,14 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   selectAll: function(){
     var me = this,
       w = me.widget,
+      columnSelectCls = w.columnSelectCls,
+      cellCls = w.cellCls,
       headerCheckBoxEls = w.el.select('.fancy-grid-header-cell-select .fancy-field-checkbox'),
       i = 0,
       iL = w.getViewTotal();
 
     for(;i<iL;i++){
-      var checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="' + i + '"] .fancy-field-checkbox'),
+      var checkBoxEls = w.el.select('.'+columnSelectCls+' .'+cellCls+'[index="' + i + '"] .fancy-field-checkbox'),
         j = 0,
         jL = checkBoxEls.length;
 
@@ -1451,11 +1456,13 @@ Fancy.define('Fancy.grid.plugin.Selection', {
   deSelectAll: function(){
     var me = this,
       w = me.widget,
+      columnSelectCls = w.columnSelectCls,
+      cellCls = w.cellCls,
       i = 0,
       iL = iL = w.getViewTotal();
 
     for(;i<iL;i++){
-      var checkBoxEls = w.el.select('.fancy-grid-cell-select .fancy-grid-cell[index="' + i + '"] .fancy-field-checkbox'),
+      var checkBoxEls = w.el.select('.'+columnSelectCls+' .'+cellCls+'[index="' + i + '"] .fancy-field-checkbox'),
         j = 0,
         jL = checkBoxEls.length;
 

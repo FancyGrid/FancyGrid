@@ -366,7 +366,6 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   setSeriesData: function(id, data){
     var me = this,
       chart = me.getChart(chartConfig.id),
-      series = chart.series,
       sery = chart.series[0];
 
     sery.setData(data.data);
@@ -377,8 +376,6 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    */
   set: function(chartConfig, o){
     var me = this,
-      w = me.widget,
-      s = w.store,
       fieldsMap = me.getFieldsMap(chartConfig),
       _chart = me.getChart(chartConfig.id),
       series = _chart.series,
@@ -425,7 +422,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
       j = 0,
       jL = data.length,
       i = 0,
-      iL = fields.length,
+      iL,
       chart = me.getChart(chartConfig.id),
       series = chart.series,
       _data = [],
@@ -458,8 +455,6 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    */
   getData: function(chartConfig){
     var me = this,
-      w = me.widget,
-      s = w.store,
       chart = me.getChart(chartConfig.id),
       fields =  fields = chartConfig.fields,
       i = 0,
@@ -526,10 +521,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} chartConfig
    */
   getFieldsMap: function(chartConfig){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      fieldsMap = {},
+    var fieldsMap = {},
       fields = chartConfig.fields,
       j = 0,
       jL = fields.length;

@@ -26,37 +26,49 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   prefix: 'fancy-grid-',
   cls: '',
   widgetCls: 'fancy-grid',
+  // Cell cls-s
   cellCls: 'fancy-grid-cell',
-  pseudoCellCls: 'fancy-grid-pseudo-cell',
   cellInnerCls: 'fancy-grid-cell-inner',
   cellEvenCls: 'fancy-grid-cell-even',
+  cellOverCls: 'fancy-grid-cell-over',
+  cellSelectedCls: 'fancy-grid-cell-selected',
+  // Cell Header cls-s
+  headerCellCls: 'fancy-grid-header-cell',
+  cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
+  cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
   clsASC: 'fancy-grid-column-sort-ASC',
   clsDESC: 'fancy-grid-column-sort-DESC',
+  //Column cls-s
+  columnCls: 'fancy-grid-column',
+  columnOverCls: 'fancy-grid-column-over',
+  columnSelectedCls: 'fancy-grid-column-selected',
+  columnColorCls: 'fancy-grid-column-color',
+  columnTextCls: 'fancy-grid-column-text',
+  columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
+  columnOrderCls: 'fancy-grid-column-order',
+  columnSelectCls: 'fancy-grid-column-select',
+  //Column spark cls-s
   clsSparkColumn: 'fancy-grid-column-sparkline',
   clsSparkColumnBullet: 'fancy-grid-column-sparkline-bullet',
   clsSparkColumnCircle: 'fancy-grid-column-chart-circle',
   clsSparkColumnDonutProgress: 'fancy-grid-column-spark-progress-donut',
   clsColumnGrossLoss: 'fancy-grid-column-grossloss',
   clsColumnProgress: 'fancy-grid-column-progress',
+  clsSparkColumnHBar: 'fancy-grid-column-h-bar',
+  //Row cls-s
   clsGroupRow: 'fancy-grid-group-row',
   clsCollapsedRow: 'fancy-grid-group-row-collapsed',
-  rowOverCls: 'fancy-grid-cell-over',
-  expandRowOverCls: 'fancy-grid-expand-row-over',
-  cellOverCls: 'fancy-grid-cell-over',
-  cellSelectedCls: 'fancy-grid-cell-selected',
-  expandRowSelectedCls: 'fancy-grid-expand-row-selected',
-  columnCls: 'fancy-grid-column',
-  columnOverCls: 'fancy-grid-column-over',
-  columnSelectedCls: 'fancy-grid-column-selected',
-  filterHeaderCellCls: 'fancy-grid-header-filter-cell',
-  cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
-  cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
+  clsSummaryContainer: 'fancy-grid-summary-container',
+  clsSummaryRow: 'fancy-grid-summary-row',
   rowEditCls: 'fancy-grid-row-edit',
   rowEditButtonCls: 'fancy-grid-row-edit-buttons',
-  clsSparkColumnHBar: 'fancy-grid-column-h-bar',
-  columnColorCls: 'fancy-grid-column-color',
-  columnTextCls: 'fancy-grid-column-text',
-  columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
+
+  pseudoCellCls: 'fancy-grid-pseudo-cell',
+  rowOverCls: 'fancy-grid-cell-over',
+  expandRowOverCls: 'fancy-grid-expand-row-over',
+  expandRowSelectedCls: 'fancy-grid-expand-row-selected',
+  filterHeaderCellCls: 'fancy-grid-header-filter-cell',
+
   header: true,
   shadow: true,
   striped: true,
@@ -98,9 +110,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       var i18n = config.i18n || me.i18n;
 
       if( Fancy.loadLang(i18n, fn) === true ){
-        // TODO: Find out is lang required ot not.
-        var lang = config.lang;
-
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -205,6 +214,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.touch = true;
     }
 
+    if(me.summary){
+      requiredModules.summary = true;
+    }
+
     if(me.paging){
       requiredModules.paging = true;
     }
@@ -220,10 +233,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     if(me.clicksToEdit){
       requiredModules.edit = true;
     }
-
-    //if(me.searching){
-      //requiredModules.search = true;
-    //}
 
     if(Fancy.isObject(me.data)){
       if(me.data.proxy){
@@ -248,6 +257,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.grouping){
       requiredModules['grouping'] = true;
+    }
+
+    if(me.summary){
+      requiredModules['summary'] = true;
     }
 
     if(me.trackOver || me.columnTrackOver || me.cellTrackOver || me.selection){

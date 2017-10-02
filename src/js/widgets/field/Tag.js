@@ -228,8 +228,6 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} e
    */
   onDropMouseDown: function(e){
-    var me = this;
-
     e.preventDefault();
   },
   /*
@@ -238,7 +236,6 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   onsList: function(){
     var me = this,
       list = me.list,
-      input = me.input,
       liEls = list.select('li');
 
     liEls.hover(function (e) {
@@ -270,22 +267,14 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    */
   set: function (value, onInput) {
     var me = this,
-      valueStr = '',
       i = 0,
-      iL = me.data.length,
-      found = false;
+      iL = me.data.length;
 
     for (; i < iL; i++) {
       if (me.data[i][me.valueKey] == value) {
         me.valueIndex = i;
-        valueStr = me.data[i][me.displayKey];
-        found = true;
         break;
       }
-    }
-
-    if (found === false) {
-      valueStr = '';
     }
 
     me.value = value;
@@ -310,7 +299,6 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   renderListCheckBoxes: function(){
     var me = this,
       list = me.list,
-      input = me.input,
       liEls = list.select('li'),
       i = 0,
       iL = liEls.length;
@@ -370,7 +358,6 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    */
   renderTags: function(){
     var me = this,
-      tags = me.tags,
       inputWidth = me.input.width(),
       item,
       newInputWidth,
@@ -447,22 +434,10 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     el.addClass( me.cls );
     el.addClass( me.fieldCls );
 
-    var labelWidth = '',
-      inputWidth = '',
-      inputHeight = '';
+    var labelWidth = '';
 
     if (me.labelWidth) {
       labelWidth = 'width:' + me.labelWidth + 'px;';
-    }
-
-    var left = me.labelWidth + 8 + 10;
-
-    if (me.labelAlign === 'top') {
-      left = 8;
-    }
-
-    if (me.labelAlign === 'right') {
-      left = 8;
     }
 
     var listHtml = [

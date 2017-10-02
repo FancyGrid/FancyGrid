@@ -130,6 +130,8 @@
 
       pathToSrc + 'widgets/grid/plugins/Grouping.js', // grouping module
 
+      pathToSrc + 'widgets/grid/plugins/Summary.js', // summary module
+
       pathToSrc + 'widgets/grid/plugins/CellTip.js',
 
       pathToSrc + 'widgets/grid/plugins/Filter.js', // filter module

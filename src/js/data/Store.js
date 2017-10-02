@@ -44,6 +44,8 @@ Fancy.define('Fancy.Store', {
         me.setData(me.data);
       }
     }
+
+    me.readSmartIndexes();
   },
   /*
    *
@@ -737,6 +739,27 @@ Fancy.define('Fancy.Store', {
       for(;i<iL;i++){
         fn(dataView[i]);
       }
+    }
+  },
+  readSmartIndexes: function () {
+    var me = this,
+      w = me.widget,
+      i = 0,
+      iL = w.columns.length,
+      numOfSmartIndexes = 0,
+      smartIndexes = {};
+
+    for(;i<iL;i++){
+      var column = w.columns[i];
+
+      if(column.smartIndexFn){
+        smartIndexes[column.index] = column.smartIndexFn;
+        numOfSmartIndexes++;
+      }
+    }
+
+    if(numOfSmartIndexes){
+      me.smartIndexes = smartIndexes;
     }
   }
 });

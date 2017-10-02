@@ -63,9 +63,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
   edit: function(o){
     var me = this,
       w = me.widget,
-      store = w.store,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
     if(column.index === '$selected'){
       return;
@@ -146,8 +144,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       el = Fancy.get(renderTo.dom.appendChild(container.dom));
     }
     else{
-      var body = w.getBody(side),
-        fieldEls = renderTo.select('.fancy-field');
+      var fieldEls = renderTo.select('.fancy-field');
 
       i = order;
       iL = order + 1;
@@ -468,8 +465,6 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    * @param {Number} size
    */
   setEditorSize: function(editor, size){
-    var me = this;
-
     if(editor.wtype === 'field.combo'){
       editor.size(size);
 
@@ -615,8 +610,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    * @param {Array} columns
    */
   _setValues: function(data, columns){
-    var me = this,
-      i = 0,
+    var i = 0,
       iL = columns.length,
       column,
       editor;
@@ -641,8 +635,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    *
    */
   onScroll: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     if(me.rendered === false){
       return;
@@ -656,8 +649,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    *
    */
   onColumnResize: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     if(me.rendered === false){
       return;

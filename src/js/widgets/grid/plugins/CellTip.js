@@ -32,7 +32,6 @@ Fancy.define('Fancy.grid.plugin.CellTip', {
   ons: function(){
     var me = this,
       w = me.widget,
-      store = w.store,
       docEl = Fancy.get(document);
 
     w.on('cellenter', me.onCellEnter, me);
@@ -81,9 +80,7 @@ Fancy.define('Fancy.grid.plugin.CellTip', {
    * @param {Object} o
    */
   onCellLeave: function(grid, o){
-    var me = this;
-
-    me.stopped = true;
+    this.stopped = true;
     Fancy.tip.hide(1000);
   },
   /*
@@ -91,18 +88,14 @@ Fancy.define('Fancy.grid.plugin.CellTip', {
    * @param {Object} o
    */
   onTouchEnd: function(grid, o){
-    var me = this;
-
-    me.stopped = true;
+    this.stopped = true;
     Fancy.tip.hide(1000);
   },
   /*
    * @param {Object} e
    */
   onDocMove: function(e){
-    var me = this;
-
-    if(me.stopped === true){
+    if(this.stopped === true){
       return;
     }
 

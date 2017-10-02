@@ -410,44 +410,16 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   renderGroupedRows: function(){
     var me = this,
       w = me.widget,
-      columns = w.columns,
-      leftColumns = w.leftColumns,
-      rightColumns = w.rightColumns,
       body = w.body,
       leftBody = w.leftBody,
       rightBody = w.rightBody,
       i = 0,
-      iL,
-      width = 0,
-      leftWidth = 0,
-      rightWidth = 0,
+      iL = me.groups.length,
+      width = w.getCenterFullWidth(),
+      leftWidth = w.getLeftFullWidth(),
+      rightWidth = w.getRightFullWidth(),
       el;
 
-    iL = columns.length;
-    for(;i<iL;i++){
-      if(!columns[i].hidden){
-        width += columns[i].width;
-      }
-    }
-
-    i = 0;
-    iL = leftColumns.length;
-    for(;i<iL;i++){
-      if(!leftColumns[i].hidden){
-        leftWidth += leftColumns[i].width;
-      }
-    }
-
-    i = 0;
-    iL = rightColumns.length;
-    for(;i<iL;i++){
-      if(!rightColumns[i].hidden){
-        rightWidth += rightColumns[i].width;
-      }
-    }
-
-    i = 0;
-    iL = me.groups.length;
     var passedTop = 0;
     for(;i<iL;i++){
       var groupText = me.groups[i],
@@ -619,10 +591,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  fastCollapse: function(){
-    var me = this;
-
-  },
+  fastCollapse: function(){},
   /*
    * @param {Object} e
    */
@@ -633,10 +602,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
    *
    */
   onScroll: function(){
-    var me = this,
-      w = me.widget;
-
-    me.setPositions();
+    this.setPositions();
   },
   /*
    * @param {String} group
@@ -1018,45 +984,29 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   onColumnResize: function(){
     this.updateGroupRows();
   },
-  updateGroupRows: function () {
+  updateGroupRows: function(){
     var me = this,
       w = me.widget,
       leftColumns = w.leftColumns,
-      columns = w.columns,
       rightColumns = w.rightColumns,
       body = w.body,
       leftBody = w.leftBody,
       rightBody = w.rightBody,
-      i = 0,
-      iL,
       width = 0;
 
-    iL = columns.length;
-    for(;i<iL;i++){
-      width += columns[i].width;
-    }
+    width += w.getCenterFullWidth();
 
     body.el.select('.fancy-grid-group-row').css('width', width + 'px');
 
-    i = 0;
-    width = 0;
-    iL = leftColumns.length;
-    for(;i<iL;i++){
-      width += leftColumns[i].width;
-    }
+    width += w.getLeftFullWidth();
 
-    if(iL){
+    if(leftColumns.length){
       leftBody.el.select('.fancy-grid-group-row').css('width', width + 'px');
     }
 
-    i = 0;
-    width = 0;
-    iL = rightColumns.length;
-    for(;i<iL;i++){
-      width += rightColumns[i].width;
-    }
+    width += w.getRightFullWidth();
 
-    if(iL){
+    if(rightColumns.length){
       rightBody.el.select('.fancy-grid-group-row').css('width', width + 'px');
     }
   },

@@ -53,10 +53,7 @@ Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
     '</div>',
-    //'<div class="fancy-field-text fancy-button">',
     '<div class="fancy-field-text">',
-      //'<div class="fancy-button-image"></div>',
-      //'<a class="fancy-button-text">{buttonText}</a>',
     '</div>',
     '<div class="fancy-clearfix"></div>'
   ],

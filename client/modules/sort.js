@@ -207,8 +207,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @return {Array}
    */
   getOrder: function(original, sorted){
-    var me = this,
-      mapValues = {},
+    var mapValues = {},
       i = 0,
       iL = original.length,
       order = [],

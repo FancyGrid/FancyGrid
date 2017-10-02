@@ -107,8 +107,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
    */
   onMouseMoveResize: function(e){
     var me = this,
-      el = me.el,
-      maskWidth = 2,
       clientX = e.clientX,
       clientY = e.clientY,
       deltaX = me.startClientX - clientX,

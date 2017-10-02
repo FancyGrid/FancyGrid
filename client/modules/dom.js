@@ -1416,8 +1416,7 @@ if( Fancy.nojQuery ) {
 if( Fancy.nojQuery ) {
 
   (function ($, undefined) {
-    var document = window.document, docElem = document.documentElement,
-      origShow = $.fn.show, origHide = $.fn.hide, origToggle = $.fn.toggle
+    var origShow = $.fn.show, origHide = $.fn.hide, origToggle = $.fn.toggle
 
     function anim(el, speed, opacity, scale, callback) {
       if (typeof speed == 'function' && !callback) callback = speed, speed = undefined

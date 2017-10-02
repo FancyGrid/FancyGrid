@@ -111,7 +111,6 @@ Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
    * @return {Boolean}
    */
   isNumber: function(value){
-    var me = this;
     if(value === '' || value === '-'){
       return true;
     }

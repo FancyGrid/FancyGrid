@@ -215,8 +215,7 @@ El.prototype = {
   },
   removeClass: function(className){
     //Not good realization about performance
-    var me = this,
-      dom = me[0];
+    var me = this;
     
     if( Fancy.isArray(className) ){
       var i = 0, 
@@ -456,8 +455,6 @@ El.prototype = {
     return isWithin;
   },
   on: function(eventName, fn, scope, delegate){
-    var me = this;
-    
     if (scope) {
       fn = Fancy.proxy(fn, scope);
     }

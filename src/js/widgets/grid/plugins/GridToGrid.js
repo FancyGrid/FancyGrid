@@ -61,9 +61,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      store = w.store,
-      docEl = Fancy.get(document);
+      w = me.widget;
 
     w.on('render', function(){
       me.addDragDropCls();
@@ -87,9 +85,6 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
       w = me.widget,
       dropGrid = me.dropGrid,
       rowIndex = dropGrid.activeRowEnterIndex === undefined? dropGrid.getViewTotal():dropGrid.activeRowEnterIndex;
-
-    //w.clearSelection();
-    //dropGrid.clearSelection();
 
     w.fire('dropitems', items, rowIndex);
     if(me.onDrop){
@@ -156,8 +151,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
   onCellMouseDown: function(grid, o){
     var me = this,
       w = me.widget,
-      docEl = Fancy.get(document),
-      selected = w.getSelection();
+      docEl = Fancy.get(document);
 
     if(w.selection.enabled === false){
       return;
@@ -375,8 +369,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
    * @param {Object} e
    */
   onDocMouseMove: function(e){
-    var me = this,
-      w = me.widget;
+    var me = this;
     
     if(!me.dragItems){
       return;

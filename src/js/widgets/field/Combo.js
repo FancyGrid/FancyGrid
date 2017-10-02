@@ -608,8 +608,7 @@
       if(Fancy.isArray(value) && me.multiSelect){
         var i = 0,
           iL = value.length,
-          displayedValues = [],
-          valuesIndex = [];
+          displayedValues = [];
 
         me.valuesIndex.removeAll();
 
@@ -791,16 +790,6 @@
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
-      var left = me.labelWidth + 8 + 10;
-
-      if (me.labelAlign === 'top') {
-        left = 8;
-      }
-
-      if (me.labelAlign === 'right') {
-        left = 8;
-      }
-
       var label = me.label;
 
       if (me.label === '') {
@@ -946,9 +935,10 @@
       if (me.multiSelect) {
         var splitted = inputValue.split(', '),
           inputSelection = me.getInputSelection(),
-          i = 0,
-          iL = inputValue.length,
           passedCommas = 0;
+
+        i = 0;
+        iL = inputValue.length;
 
         for(;i<iL;i++){
           if(inputSelection.start <= i){
@@ -1026,12 +1016,10 @@
         width: me.getListWidth()
       });
 
-      //if (me.aheadData.length > 9) {
       list.css({
         'max-height': me.listRowHeight * 9 + 'px',
         overflow: 'auto'
       });
-      //}
 
       if (presented === false) {
         list.addClass('fancy fancy-combo-result-list');

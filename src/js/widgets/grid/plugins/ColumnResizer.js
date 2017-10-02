@@ -266,7 +266,6 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       return column.minWidth;
     }
 
-
     return minCellWidth;
   },
   /*
@@ -547,7 +546,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
 
         break;
       case 'right':
-        vnewCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+        newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
 
         if(newCenterWidth < minCenterWidth){
           return;

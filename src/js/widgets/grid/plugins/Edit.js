@@ -131,13 +131,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w = me.widget,
       s = w.store,
       activeParams = me.activeCellEditParams,
-      rightColumns = w.rightColumns,
       leftColumns = w.leftColumns;
 
     var columnIndex = activeParams.columnIndex,
       rowIndex = activeParams.rowIndex,
       side = activeParams.side,
-      body = w.getBody(side),
+      body,
       columns = w.getColumns(side),
       nextColumn = columns[columnIndex + 1],
       nextCell,
@@ -181,7 +180,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
 
     //TODO: function that get next editable cell(checkbox does not suit)
-    //maybe in future to learn how ExtJS does it, and checkbox also to add.
+    //maybe in future to learn how other frameworks does it and checkbox also to add.
 
     key = nextColumn.index || nextColumn.key;
     id = s.getId(rowIndex);
@@ -286,8 +285,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   onClickCell: function(grid, o){
     var me = this,
       w = me.widget,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
     if(column.editable && column.type === 'checkbox' && w.celledit){
       w.celledit.onCheckBoxChange(o);
@@ -300,12 +298,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   onClickCellToEdit: function(grid, o){
     var me = this,
       w = me.widget,
-      column = o.column,
-      columnType = column.type;
+      column = o.column;
 
-    if(w.rowedit){
-
-    }
+    if(w.rowedit){}
     else if(w.celledit){
       w.celledit.hideEditor();
     }
@@ -340,39 +335,26 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   onStoreCRUDBeforeUpdate: function(){
     var me = this,
       w = me.widget,
-      o = me.activeCellEditParams,
-      cellEl;
+      o = me.activeCellEditParams;
 
     if(!o){
       return;
     }
 
-    cellEl = Fancy.get(o.cell);
     w.updater.updateRow(o.rowIndex);
   },
   /*
    *
    */
   onStoreCRUDUpdate: function(store, id, key, value){
-    var me = this,
-      w = me.widget,
-      o = me.activeCellEditParams,
-      cellEl;
-
-    if(o){
-      cellEl = Fancy.get(o.cell);
-    }
-
     delete store.changed[id];
 
-    me.clearDirty();
+    this.clearDirty();
   },
   /*
    *
    */
-  onStoreCRUDBeforeDestroy: function(){
-
-  },
+  onStoreCRUDBeforeDestroy: function(){},
   /*
    *
    */
@@ -388,9 +370,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   clearDirty: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
+    var w = this.widget;
 
     setTimeout(function() {
       w.leftBody.clearDirty();
@@ -404,8 +384,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    */
   onCreate: function(store, data){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     w.updater.update();
     me.clearDirty();

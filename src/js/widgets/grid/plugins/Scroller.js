@@ -106,7 +106,15 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.setScrollBars();
     docEl.on('mouseup', me.onMouseUpDoc, me);
     docEl.on('mousemove', me.onMouseMoveDoc, me);
-    w.on('columnresize', me.onColumnResize, me)
+    w.on('columnresize', me.onColumnResize, me);
+
+    w.on('lockcolumn', me.onLockColumn, me);
+    w.on('rightlockcolumn', me.onRightLockColumn, me);
+    w.on('unlockcolumn', me.onUnLockColumn, me);
+
+    setTimeout(function(){
+      me.update();
+    }, 1);
   },
   /*
    *
@@ -280,9 +288,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   initRightScroll: function(){
-    var me = this,
-      w = me.widget,
-      docEl = Fancy.get(document);
+    var me = this;
 
     me.rightKnob = me.scrollRightEl.select('.fancy-scroll-right-inner');
     me.scrollRightEl.on('mousedown', me.onMouseDownRightSpin, me);
@@ -291,9 +297,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   initBottomScroll: function(){
-    var me = this,
-      w = me.widget,
-      docEl = Fancy.get(document);
+    var me = this;
 
     me.bottomKnob = me.scrollBottomEl.select('.fancy-scroll-bottom-inner');
     me.scrollBottomEl.on('mousedown', me.onMouseDownBottomSpin, me);
@@ -389,7 +393,6 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
         marginTop = 0;
       }
 
-      //me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
       me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
       topScroll = me.rightScrollScale * marginTop;
 
@@ -422,7 +425,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       }
 
       me.bottomKnob.css('margin-left', marginLeft + 'px');
-      bottomScroll =  me.bottomScrollScale * (marginLeft - 1);
+      bottomScroll =  Math.ceil(me.bottomScrollScale * (marginLeft - 1));
+
       me.scroll(false, bottomScroll);
     }
   },
@@ -433,7 +437,11 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     var me = this,
       w = me.widget;
 
-    me.checkRightScroll();
+    //me.checkRightScroll();
+    setTimeout(function(){
+      me.checkRightScroll();
+    }, 1);
+
     if(!me.checkBottomScroll()){
       if(me.scrollTop){
         w.scroll(false, 0);
@@ -636,8 +644,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
   scrollDelta: function(value){
     var me = this,
       w = me.widget,
-      scrollInfo,
-      scrolled = true;
+      scrollInfo;
 
     w.leftBody.wheelScroll(value);
     scrollInfo = w.body.wheelScroll(value);
@@ -706,8 +713,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    *
    */
   update: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     me.setScrollBars();
     me.checkScroll();
@@ -777,8 +783,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     if(isCenterBody){
       var columns = w.columns,
-        i = 0,
-        iL = columns.length;
+        i = 0;
 
       for(;i<=columnIndex;i++){
         passedWidth += columns[i].width;
@@ -840,5 +845,26 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     w.leftBody.el.dom.scrollTop -= scrollTop;
     w.body.el.dom.scrollTop -= scrollTop;
     w.rightBody.el.dom.scrollTop -= scrollTop;
+  },
+  onLockColumn: function () {
+    var me = this,
+      w = me.widget;
+
+    me.update();
+    w.setColumnsPosition();
+  },
+  onRightLockColumn: function () {
+    var me = this,
+      w = me.widget;
+
+    me.update();
+    w.setColumnsPosition();
+  },
+  onUnLockColumn: function () {
+    var me = this,
+      w = me.widget;
+
+    me.update();
+    w.setColumnsPosition();
   }
 });

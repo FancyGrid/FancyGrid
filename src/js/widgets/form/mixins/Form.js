@@ -233,10 +233,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
   renderItems: function(renderTo, items){
     var me = this,
       i = 0,
-      iL,
-      subItems = [],
-      j,
-      jL;
+      iL;
 
     items = items || me.items;
     iL = items.length;
@@ -622,11 +619,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.css('height', height);
   },
-  setWidth: function(){
-    var me = this;
-
-
-  },
+  setWidth: function(){},
   getHeight: function(){
     var me = this;
 
@@ -640,7 +633,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
     var me = this,
       width = me.width,
       defaults = me.defaults || {},
-      labelWidth = me.labelWidth,
+      labelWidth,
       maxLabelNumber = me.maxLabelNumber;
 
     defaults.width = width - me.panelBorderWidth * 2;

@@ -351,7 +351,6 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     setTimeout(function(){
-      //me.fire('key', me.getValue(), e);
       me.fire('key', me.input.dom.value, e);
     }, 1);
   },
@@ -721,7 +720,7 @@ Fancy.form.field.Mixin.prototype = {
    */
   calcSize: function(){
     var me = this,
-      inputWidth = me.inputWidth,
+      inputWidth,
       inputHeight = me.inputHeight,
       padding = me.padding,
       value,
