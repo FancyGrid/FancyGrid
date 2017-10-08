@@ -27,7 +27,7 @@ Fancy.Template.prototype = {
     return me.compiled(values);
   },
   /*
-   * @returns {Fancy.Template}
+   * @return {Fancy.Template}
    */
   compile: function(){
     var me = this;

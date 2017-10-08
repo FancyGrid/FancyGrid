@@ -108,8 +108,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     var me = this;
 
     if( me.theme && me.theme !== 'default' ){
-      me.addClass('fancy-theme-' + me.theme);
-      me.list.addClass('fancy-theme-' + me.theme);
+      me.addCls('fancy-theme-' + me.theme);
+      me.list.addCls('fancy-theme-' + me.theme);
     }
   },
   fieldCls: 'fancy fancy-field fancy-tag-field',
@@ -240,9 +240,9 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     liEls.hover(function (e) {
       if (me.listItemOver) {
-        me.listItemOver.removeClass('fancy-tag-field-list-active');
+        me.listItemOver.removeCls('fancy-tag-field-list-active');
       }
-      Fancy.get(e.target).addClass('fancy-tag-field-list-active');
+      Fancy.get(e.target).addCls('fancy-tag-field-list-active');
       me.listItemOver = Fancy.get(e.target);
     });
 
@@ -329,7 +329,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         var el = Fancy.get(this);
         me.clearListActive();
 
-        el.parent().addClass(me.activeListItemCls);
+        el.parent().addCls(me.activeListItemCls);
       });
     }
 
@@ -431,8 +431,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     }
 
     me.fire('beforerender');
-    el.addClass( me.cls );
-    el.addClass( me.fieldCls );
+    el.addCls(me.cls, me.fieldCls);
 
     var labelWidth = '';
 
@@ -487,7 +486,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     renderTo.appendChild(el.dom);
     me.el = el;
 
-    list.addClass('fancy fancy-tag-field-result-list');
+    list.addCls('fancy fancy-tag-field-result-list');
     list.update( listHtml.join("") );
     list.css({
       display: 'none',
@@ -507,10 +506,10 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     me.list = list;
 
     if (me.labelAlign === 'top') {
-      me.el.addClass('fancy-field-label-align-top');
+      me.el.addCls('fancy-field-label-align-top');
     }
     else if (me.labelAlign === 'right') {
-      me.el.addClass('fancy-field-label-align-right');
+      me.el.addCls('fancy-field-label-align-right');
       $(el).find('.fancy-field-label').insertAfter($(el).find('.fancy-tag-field-text'));
     }
 
@@ -546,7 +545,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     var me = this,
       activeListItemCls = me.activeListItemCls;
 
-    me.list.select('.' + activeListItemCls).removeClass(activeListItemCls);
+    me.list.select('.' + activeListItemCls).removeCls(activeListItemCls);
   },
   /*
    *
@@ -742,8 +741,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         list.dom.scrollTop = list.dom.scrollTop - parseInt(activeLi.css('height'));
       }
 
-      activeLi.removeClass(selectedItemCls);
-      nextActiveLi.addClass(selectedItemCls);
+      activeLi.removeCls(selectedItemCls);
+      nextActiveLi.addCls(selectedItemCls);
     }
   },
   /*
@@ -779,8 +778,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         list.dom.scrollTop = list.dom.scrollTop + (top - height) + parseInt(activeLi.css('height'));
       }
 
-      activeLi.removeClass(selectedItemCls);
-      nextActiveLi.addClass(selectedItemCls);
+      activeLi.removeCls(selectedItemCls);
+      nextActiveLi.addCls(selectedItemCls);
     }
     else{
       me.showList();
@@ -880,7 +879,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     }
 
     if(presented === false){
-      list.addClass('fancy fancy-combo-result-list');
+      list.addCls('fancy fancy-combo-result-list');
       document.body.appendChild(list.dom);
       me.aheadList = list;
 

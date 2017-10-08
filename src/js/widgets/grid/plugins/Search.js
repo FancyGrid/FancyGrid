@@ -32,11 +32,9 @@ Fancy.define('Fancy.grid.plugin.Search', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
     
     w.once('init', function(){
-      //me.render();
       me.generateKeys();
     });
   },
@@ -112,8 +110,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
    */
   generateKeys: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     if(!me.keys){
       me.keys = {};
@@ -132,16 +129,13 @@ Fancy.define('Fancy.grid.plugin.Search', {
         columns = columns.concat(w.rightColumns);
       }
 
-      var fields = [],
-        i = 0,
-        iL = columns.length;
+      var fields = [];
 
-      for(;i<iL;i++){
-        var column = columns[i],
-          index = column.index || column.key;
+      Fancy.each(columns, function (column) {
+        var index = column.index || column.key;
 
         if(column.searchable === false){
-          continue;
+          return;
         }
 
         switch(column.type){
@@ -154,24 +148,21 @@ Fancy.define('Fancy.grid.plugin.Search', {
           case 'currency':
             break;
           default:
-            continue;
+            return;
         }
 
         if(index){
           fields.push(index);
         }
-      }
+      });
 
-      i = 0;
-      iL = fields.length;
-
-      for(;i<iL;i++){
-        if(fields[i] === '$selected'){
-          continue;
+      Fancy.each(fields, function(index){
+        if(index === '$selected'){
+          return;
         }
 
-        me.keys[fields[i]] = true;
-      }
+        me.keys[index] = true;
+      });
     }
 
     return me.keys;

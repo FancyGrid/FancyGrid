@@ -42,7 +42,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     });
 
     if(me.expander){
-      me.addClass('fancy-checkbox-expander');
+      me.addCls('fancy-checkbox-expander');
     }
 
     me.acceptedValue = me.value;
@@ -80,7 +80,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     el.on('mousedown', me.onMouseDown, me);
   },
   /*
-   *
+   * @param {Object} e
    */
   onClick: function(e){
     var me = this,
@@ -102,9 +102,9 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
       return;
     }
 
-    el.toggleClass(checkedCls);
+    el.toggleCls(checkedCls);
     var oldValue = me.value;
-    me.value = el.hasClass(checkedCls);
+    me.value = el.hasCls(checkedCls);
     me.fire('change', me.value, oldValue);
   },
   /*
@@ -128,7 +128,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     }
 
     if(value === true || value === 1){
-      el.addClass(checkedCls);
+      el.addCls(checkedCls);
       value = true;
     }
     else if(value === false || value === 0){
@@ -149,7 +149,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
   },
   /*
    * @params {*} value
-   * @params {Boolean} fire
+   * @params {Boolean} onInput
    */
   setValue: function(value, onInput){
     this.set(value, onInput);

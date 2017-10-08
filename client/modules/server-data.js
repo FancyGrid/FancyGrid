@@ -28,6 +28,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     '*': 'likeor',
     '|': 'or'
   },
+  loadedTimes: 0,
   /*
    *
    */
@@ -148,6 +149,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       getJSON: true,
       headers: headers,
       success: function(o, status, request){
+        me.loadedTimes++;
         me.loading = false;
         me.defineModel(o[me.readerRootProperty]);
 

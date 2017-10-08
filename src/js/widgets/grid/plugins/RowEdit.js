@@ -30,8 +30,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      store = w.store;
+      w = me.widget;
 
     w.on('scroll', me.onScroll, me);
     w.on('columnresize', me.onColumnResize, me);
@@ -120,6 +119,9 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
   /*
    * @param {Object} renderTo
    * @param {Array} columns
+   *  @param {Number} order
+   * @param {String} side
+   * @param {String} fromSide
    * @return {Fancy.Element}
    */
   renderTo: function(renderTo, columns, order, side, fromSide){
@@ -140,11 +142,11 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       renderBefore;
 
     if(!side){
-      container.addClass(w.rowEditCls);
+      container.addCls(w.rowEditCls);
       el = Fancy.get(renderTo.dom.appendChild(container.dom));
     }
     else{
-      var fieldEls = renderTo.select('.fancy-field');
+      var fieldEls = renderTo.select('.' + Fancy.fieldCls);
 
       i = order;
       iL = order + 1;
@@ -324,7 +326,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       container = Fancy.get(document.createElement('div')),
       el;
 
-    container.addClass(w.rowEditButtonCls);
+    container.addCls(w.rowEditButtonCls);
 
     el = Fancy.get(w.body.el.dom.appendChild(container.dom));
 
@@ -385,6 +387,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     }
   },
   /*
+   * @private
    * @param {Fancy.Elements} firstRowCells
    * @param {Array} columns
    * @param {String} side
@@ -606,18 +609,13 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     me.activeRowIndex = o.rowIndex;
   },
   /*
+   * @private
    * @param {Array} data
    * @param {Array} columns
    */
   _setValues: function(data, columns){
-    var i = 0,
-      iL = columns.length,
-      column,
-      editor;
-
-    for(;i<iL;i++){
-      column = columns[i];
-      editor = column.rowEditor;
+    Fancy.each(columns, function(column){
+      var editor = column.rowEditor;
       if(editor){
         switch(column.type){
           case 'action':
@@ -629,7 +627,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
             editor.set(data[column.index], false);
         }
       }
-    }
+    });
   },
   /*
    *
@@ -772,6 +770,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
     me.hide();
   },
+  /*
+   * @param {Number} index
+   * @param {String} side
+   */
   hideField: function(index, side){
     var me = this,
       w = me.widget,
@@ -782,6 +784,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       column.rowEditor.hide();
     }
   },
+  /*
+   * @param {Number} index
+   * @param {String} side
+   */
   showField: function(index, side){
     var me = this,
       w = me.widget,
@@ -792,6 +798,12 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       column.rowEditor.show();
     }
   },
+  /*
+   * @param {Object} column
+   * @param {Number} index
+   * @param {String} side
+   * @param {String} fromSide
+   */
   moveEditor: function(column, index, side, fromSide){
     var me = this,
       w = me.widget,
@@ -820,6 +832,11 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     me.changeButtonsLeftPos();
     me.reSetColumnsEditorsLinks();
   },
+  /*
+   * @param {Number} index
+   * @param {String} side
+   * @return {Object}
+   */
   getField: function(index, side){
     var me = this,
       w = me.widget,
@@ -832,42 +849,35 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         break;
     }
 
-    field = Fancy.getWidget(body.el.select('.fancy-field').item(index).attr('id'));
+    field = Fancy.getWidget(body.el.select('.' + Fancy.fieldCls).item(index).attr('id'));
 
     return field;
   },
-  reSetColumnsEditorsLinks: function () {
+  /*
+   *
+   */
+  reSetColumnsEditorsLinks: function(){
     var me = this,
       w = me.widget,
-      columns = w.columns,
-      leftColumns = w.leftColumns,
-      rightColumns = w.rightColumns,
-      i,
-      iL,
+      fieldCls = Fancy.fieldCls,
       cells;
 
-    i = 0;
-    iL = columns.length;
-    cells = w.body.el.select('.fancy-field');
+    cells = w.body.el.select('.' + fieldCls);
 
-    for(;i<iL;i++){
-      columns[i].rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
-    }
+    Fancy.each(w.columns, function(column, i){
+      column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
+    });
 
-    i = 0;
-    iL = leftColumns.length;
-    cells = w.leftBody.el.select('.fancy-field');
+    cells = w.leftBody.el.select('.' + fieldCls);
 
-    for(;i<iL;i++){
-      leftColumns[i].rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
-    }
+    Fancy.each(w.leftColumns, function(column, i){
+      column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
+    });
 
-    i = 0;
-    iL = rightColumns.length;
-    cells = w.rightBody.el.select('.fancy-field');
+    cells = w.rightBody.el.select('.' + fieldCls);
 
-    for(;i<iL;i++){
-      rightColumns[i].rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
-    }
+    Fancy.each(w.rightColumns, function(column, i){
+      column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
+    });
   }
 });

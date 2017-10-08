@@ -32,6 +32,9 @@ Fancy.define('Fancy.toolbar.Tab', {
     me.Super('render', arguments);
   }
 });Fancy.Mixin('Fancy.form.mixin.Form', {
+  /*
+   *
+   */
   init: function(){
     var me = this;
 
@@ -54,7 +57,7 @@ Fancy.define('Fancy.toolbar.Tab', {
     me.fire('init');
   },
   cls: '',
-  widgetCls: 'fancy fancy-form',
+  widgetCls: 'fancy-form',
   value: '',
   width: 200,
   height: 300,
@@ -63,6 +66,9 @@ Fancy.define('Fancy.toolbar.Tab', {
     '<div class="fancy-form-body">',
     '</div>'
   ],
+  /*
+   *
+   */
   preRender: function(){
     var me = this;
 
@@ -72,6 +78,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.renderPanel();
     }
   },
+  /*
+   *
+   */
   renderPanel: function(){
     var me = this,
       panelConfig = {
@@ -131,11 +140,11 @@ Fancy.define('Fancy.toolbar.Tab', {
     me.buttons = me.panel.buttons;
 
     if(!me.wrapped){
-      me.panel.addClass('fancy-panel-grid-inside');
+      me.panel.addCls('fancy-panel-grid-inside');
     }
 
     if(me.extraCls && me.panel){
-      me.panel.addClass(me.extraCls);
+      me.panel.addCls(me.extraCls);
     }
 
     if(me.title) {
@@ -152,6 +161,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
   },
+  /*
+   *
+   */
   initRenderTo: function(){
     var me = this,
       renderTo = me.renderTo || document.body;
@@ -165,13 +177,20 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     me.renderTo = renderTo;
   },
+  /*
+   *
+   */
   render: function(){
     var me = this,
       renderTo = me.renderTo,
       el = Fancy.get( document.createElement('div') );
 
-    el.addClass(me.cls);
-    el.addClass(me.widgetCls);
+    el.addCls(
+      me.cls,
+      Fancy.cls,
+      me.widgetCls
+    );
+
     el.attr('id', me.id);
 
     el.css({
@@ -185,11 +204,11 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     if(me.panel === undefined){
       if(me.shadow){
-        el.addClass('fancy-panel-shadow');
+        el.addCls('fancy-panel-shadow');
       }
 
       if( me.theme !== 'default' ){
-        el.addClass('fancy-theme-' + me.theme);
+        el.addCls('fancy-theme-' + me.theme);
       }
     }
 
@@ -205,6 +224,9 @@ Fancy.define('Fancy.toolbar.Tab', {
     me.fire('afterrender');
     me.fire('render');
   },
+  /*
+   * @param {Array} tbar
+   */
   generateTabs: function(){
     var me = this,
       tbar = [];
@@ -241,6 +263,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     return tbar;
   },
+  /*
+   * @param {Number} newActiveTab
+   */
   setActiveTab: function(newActiveTab){
     var me = this,
       tabs = me.el.select('.fancy-field-tab'),
@@ -254,15 +279,19 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.activeTab = 0;
     }
 
-    oldActiveTab.removeClass('fancy-field-tab-active');
-    tabs.item(me.activeTab).addClass('fancy-field-tab-active');
+    oldActiveTab.removeCls('fancy-field-tab-active');
+    tabs.item(me.activeTab).addCls('fancy-field-tab-active');
 
     if(me.tabs){
       var toolbarTabs = me.panel.el.select('.fancy-panel-tbar .fancy-toolbar-tab');
-      toolbarTabs.removeClass('fancy-toolbar-tab-active');
-      toolbarTabs.item(me.activeTab).addClass('fancy-toolbar-tab-active');
+      toolbarTabs.removeCls('fancy-toolbar-tab-active');
+      toolbarTabs.item(me.activeTab).addCls('fancy-toolbar-tab-active');
     }
   },
+  /*
+   * @param {HTMLElement} renderTo
+   * @param {Array} [items]
+   */
   renderItems: function(renderTo, items){
     var me = this,
       i = 0,
@@ -362,7 +391,11 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
     }
   },
-  applyDefaults: function(item) {
+  /*
+   * @param {Object} item
+   * @return {Object}
+   */
+  applyDefaults: function(item){
     var me = this;
 
     if(item === undefined){
@@ -392,6 +425,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     return item;
   },
+  /*
+   *
+   */
   ons: function(){
     var me = this;
 
@@ -412,6 +448,11 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
     });
   },
+  /*
+   * @param {Object} field
+   * @param {*} value
+   * @param {*} oldValue
+   */
   onChange: function(field, value, oldValue){
     var me = this;
 
@@ -421,6 +462,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       oldValue: oldValue
     });
   },
+  /*
+   * @param {String} name
+   * @return {Array|String|Number}
+   */
   get: function(name){
     var me = this;
 
@@ -462,6 +507,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       return values;
     }
   },
+  /*
+   * @param {String} name
+   * @param {*} value
+   */
   set: function(name, value){
     var me = this;
 
@@ -483,6 +532,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       return value;
     }
   },
+  /*
+   * @param {Boolean} clear
+   */
   clear: function(clear){
     var me = this;
 
@@ -499,12 +551,12 @@ Fancy.define('Fancy.toolbar.Tab', {
         item.clear();
       }
 
-      if( me.hasClass('fancy-field-not-valid') ){
-        me.removeClass('fancy-field-not-valid');
+      if( me.hasCls('fancy-field-not-valid') ){
+        me.removeCls('fancy-field-not-valid');
         me.css('height', ( parseInt( me.css('height') ) - 6) + 'px');
       }
-      if( me.hasClass('fancy-field-blank-err') ){
-        me.removeClass('fancy-field-blank-err');
+      if( me.hasCls('fancy-field-blank-err') ){
+        me.removeCls('fancy-field-blank-err');
         me.css('height', ( parseInt( me.css('height') ) - 6) + 'px');
       }
 
@@ -513,6 +565,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
     });
   },
+  /*
+   * @param {Object} o
+   */
   submit: function(o){
     var me = this,
       o = o || {},
@@ -550,6 +605,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     Fancy.Ajax(me);
   },
+  /*
+   * @return {Boolean}
+   */
   valid: function(){
     var me = this,
       valid = true;
@@ -565,6 +623,10 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     return !!valid;
   },
+  /*
+   * @param {String} name
+   * @return {Object}
+   */
   getItem: function(name){
     var me= this,
       item = false;
@@ -578,6 +640,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     return item;
   },
+  /*
+   *
+   */
   showAt: function(){
     var me = this;
 
@@ -585,6 +650,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.panel.showAt.apply(me.panel, arguments);
     }
   },
+  /*
+   *
+   */
   show: function(){
     var me = this;
 
@@ -595,6 +663,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.el.show();
     }
   },
+  /*
+   *
+   */
   hide: function(){
     var me = this;
 
@@ -624,6 +695,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
     }
   },
+  /*
+   * @param {Number} height
+   */
   setHeight: function(height){
     var me = this;
 
@@ -652,7 +726,13 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     me.css('height', height);
   },
+  /*
+   * TODO:
+   */
   setWidth: function(){},
+  /*
+   * @return {Number}
+   */
   getHeight: function(){
     var me = this;
 
@@ -662,6 +742,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     return parseInt(me.css('height'));
   },
+  /*
+   *
+   */
   calcFieldSize: function(){
     var me = this,
       width = me.width,
@@ -746,6 +829,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     me.defaults = defaults;
   },
+  /*
+   *
+   */
   destroy: function() {
     var me = this;
 
@@ -755,6 +841,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.panel.el.destroy();
     }
   },
+  /*
+   * @param {Function} fn
+   * @param {Object} scope
+   */
   each: function(fn, scope){
     var me = this,
       items = me.items,
@@ -771,7 +861,10 @@ Fancy.define('Fancy.toolbar.Tab', {
         fn(items[i]);
       }
     }
-  },  
+  },
+  /*
+   *
+   */
   loadModules: function(){
     var me = this,
       existedModules = Fancy.modules || {},
@@ -850,6 +943,9 @@ Fancy.define('Fancy.toolbar.Tab', {
       Fancy.loadModule(p, onLoad);
     }
   },
+  /*
+   *
+   */
   prevTab: function(){
     var me = this;
 
@@ -860,6 +956,9 @@ Fancy.define('Fancy.toolbar.Tab', {
 
     me.setActiveTab();
   },
+  /*
+   *
+   */
   nextTab: function(){
     var me = this,
       tabNumber = me.el.select('.fancy-field-tab').length;
@@ -1040,22 +1139,15 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
 
     me.Super('init', arguments);
 
-    var i = 0,
-      iL = me.items.length,
-      isItemTop;
-
-    for(;i<iL;i++){
-      var item = me.items[i];
-
+    Fancy.each(me.items, function(item, i){
       if( item.labelAlign === 'top' ){
-        isItemTop = true;
         if( i === 0 ){
           item.style = {
             'padding-left': '0px'
           };
         }
       }
-    }
+    });
 
     me.preRender();
     me.render();
@@ -1066,7 +1158,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     me.on('beforecollapse', me.onBeforeCollapsed, me);
     me.on('expanded', me.onExpanded, me);
   },
-  fieldCls: 'fancy fancy-field-set',
+  fieldCls: 'fancy-field-set',
   value: '',
   width: 100,
   emptyText: '',
@@ -1092,7 +1184,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     checkbox.css('display', '');
 
     if( me.checkbox === true ){
-      me.addClass('fancy-checkbox-on');
+      me.addCls('fancy-checkbox-on');
     }
 
     var itemsEl = me.el.select('.fancy-field-set-items');
@@ -1106,29 +1198,29 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
 
     if( me.checkbox === true ){
       itemsEl.css('display', '');
-      me.removeClass('fancy-set-collapsed');
+      me.removeCls('fancy-set-collapsed');
     }
     else{
       itemsEl.css('display', 'none');
-      me.addClass('fancy-set-collapsed');
+      me.addCls('fancy-set-collapsed');
     }
 
     checkbox.on('click', function(){
-      me.toggleClass('fancy-checkbox-on');
+      me.toggleCls('fancy-checkbox-on');
 
-      var isChecked = me.el.hasClass('fancy-checkbox-on'),
+      var isChecked = me.el.hasCls('fancy-checkbox-on'),
         itemsEl = me.el.select('.fancy-field-set-items');
 
       if( isChecked ){
         me.fire('beforeexpanded');
         itemsEl.css('display', '');
-        me.removeClass('fancy-set-collapsed');
+        me.removeCls('fancy-set-collapsed');
         me.fire('expanded');
       }
       else{
         me.fire('beforecollapse');
         itemsEl.css('display', 'none');
-        me.addClass('fancy-set-collapsed');
+        me.addCls('fancy-set-collapsed');
         me.fire('collapse');
       }
     });
@@ -1217,8 +1309,6 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
       renderTo = me.renderTo || document.body,
       el = document.createElement('div');
 
-    //me.prepareValid();
-
     me.fire('beforerender');
 
     el.innerHTML = me.tpl.getHTML({
@@ -1228,8 +1318,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
 
     me.el = renderTo.appendChild(el);
     me.el = Fancy.get(me.el);
-    me.el.addClass( me.cls );
-    me.el.addClass( me.fieldCls );
+
+    me.addCls(me.cls, me.fieldCls);
 
     me.acceptedValue = me.value;
     me.fire('afterrender');
@@ -1248,7 +1338,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
     }
   },
   /*
-   * @returns {String}
+   * @return {String}
    */
   get: function(){
     var me = this;
@@ -1331,7 +1421,7 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
 
     return me.value;
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   tpl: [

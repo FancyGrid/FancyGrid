@@ -4,12 +4,11 @@
  */
 var Fancy = {
   global: this,
-  cls: 'fancy',
   /**
    * The version of the framework
    * @type String
    */
-  version: '1.6.11',
+  version: '1.6.12',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -212,16 +211,21 @@ Fancy.each = function(arrayObject, fn){
 
   switch(type){
     case 'array':
+    case 'string':
       var i = 0,
         iL = arrayObject.length;
 
       for(;i<iL;i++){
-        fn(arrayObject[i], i, arrayObject);
+        if(fn(arrayObject[i], i, arrayObject) === true){
+          break;
+        }
       }
       break;
     case 'object':
       for(var p in arrayObject){
-        fn(arrayObject[p], p, arrayObject);
+        if(fn(arrayObject[p], p, arrayObject) === true){
+          break;
+        }
       }
       break;
   }
@@ -371,6 +375,19 @@ Fancy.apply(Fancy, {
     }
     return el.id;
   }
+});
+
+/**
+ * Apply base classnames for fast fetching
+ */
+Fancy.apply(Fancy, {
+  cls: 'fancy',
+  touchCls: 'fancy-touch',
+  gridCls: 'fancy-grid',
+  gridHeaderCls: 'fancy-grid-header',
+  fieldCls: 'fancy-field',
+  fieldEmptyCls: 'fancy-field-empty',
+  hiddenCls: 'fancy-display-none'
 });
 
 (function(){
@@ -829,6 +846,59 @@ Fancy.Array = {
     for(;i<iL;i++){
       fn(arr[i], i);
     }
+  },
+  /*
+   * @param {Array} values
+   * @return {Number}
+   */
+  count: function(values){
+    return values.length;
+  },
+  /*
+   * @param {Array} values
+   * @return {Number}
+   */
+  sum: function(values){
+    var i = 0,
+      iL = values.length,
+      value = 0;
+
+    if(Fancy.isArray(values[0])){
+      value = [];
+      for (;i<iL;i++){
+        var j = 0,
+          jL = values[i].length;
+
+        for(;j<jL;j++){
+          if(value[j] === undefined){
+            value[j] = 0;
+          }
+
+          value[j] += values[i][j];
+        }
+      }
+    }
+    else {
+      for (; i < iL; i++) {
+        value += values[i];
+      }
+    }
+
+    return value;
+  },
+  /*
+   * @param {Array} values
+   * @return {Number}
+   */
+  min: function(values){
+    return Math.min.apply(this, values);
+  },
+  /*
+   * @param {Array} values
+   * @return {Number}
+   */
+  max: function(values){
+    return Math.max.apply(this, values);
   }
 };
 /**
@@ -955,7 +1025,7 @@ Fancy.Collection.prototype = {
   },
   /*
    * @param {String|Number} key
-   * @returns {*}
+   * @return {*}
    */
   get: function(key){
     var me = this;
@@ -1005,7 +1075,7 @@ Fancy.Template.prototype = {
     return me.compiled(values);
   },
   /*
-   * @returns {Fancy.Template}
+   * @return {Fancy.Template}
    */
   compile: function(){
     var me = this;
@@ -1092,7 +1162,7 @@ Fancy.key = {
 Fancy.Key = {
   /*
    * @param {number} c
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   isNum: function(c){
     var key = Fancy.key;
@@ -1126,7 +1196,7 @@ Fancy.Key = {
   /*
    * @param {Number} c
    * @param {Object} w
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   isNumControl: function(c, e){
     var key = Fancy.key;
@@ -1227,7 +1297,7 @@ ClassManager.prototype = {
   /*
    * Returns class by key
    * @param {String} key
-   * @returns {Object}
+   * @return {Object}
    */
   get: function(key){
     return this.items.get(key);
@@ -1400,7 +1470,7 @@ Fancy.define = function(name, config){
 /*
  * Returns class by it's type
  * @param {String} type
- * @returns {Object}
+ * @return {Object}
  */
 Fancy.getClassByType = function(type){
   return $types[type];
@@ -1517,7 +1587,7 @@ Fancy.define('Fancy.Data', {
   },
   /*
    * @param {String|Number} key
-   * @returns {*}
+   * @return {*}
    */
   get: function(key){
     return this.map[key];
@@ -2100,6 +2170,27 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     });
   },
   /*
+   *
+   */
+  removeAll: function () {
+    var me = this;
+
+    me.data = [];
+    me.dataView = [];
+    delete me.order;
+
+    if(me.paging){
+      me.showPage = 0;
+      me.calcPages();
+    }
+
+    if(me.filters){
+      delete me.filters;
+      delete me.filteredData;
+      delete me.filterOrder;
+    }
+  },
+  /*
    * @param {Object} o
    * @return {Fancy.Model}
    */
@@ -2115,6 +2206,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    */
   insert: function(index, o){
     var me = this;
+
+    //Bug fix for empty data on start with grouping
+    if(me.grouping && !me.bugFixGrouping){
+      me.defineModel(o, true);
+      me.bugFixGrouping = true;
+    }
 
     me.addIndex = index;
 
@@ -2166,7 +2263,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     return item;
   },
   /*
-   *
+   * @param {Object} store
+   * @param {Object} o
    */
   onCreate: function(store, o){
     return this.insertItem(o);
@@ -2596,12 +2694,13 @@ Fancy.define('Fancy.Store', {
   },
   /*
    * @param {Object} data
+   * @param {Boolean} force
    */
-  defineModel: function(data){
+  defineModel: function(data, force){
     var me = this,
       s = me.store;
 
-    if(me.model && me.fields && me.fields.length !== 0){
+    if(me.model && me.fields && me.fields.length !== 0 && !force){
       return;
     }
 
@@ -2636,6 +2735,10 @@ Fancy.define('Fancy.Store', {
 
     var itemZero = items[0],
       fields = [];
+
+    if(items.length === undefined){
+      itemZero = items;
+    }
 
     for(var p in itemZero){
       fields.push(p);
@@ -2851,7 +2954,7 @@ Fancy.define('Fancy.Store', {
     return _data;
   },
   /*
-   * @returns {Array}
+   * @return {Array}
    */
   getData: function(){
     var me = this,
@@ -2866,7 +2969,7 @@ Fancy.define('Fancy.Store', {
     return _data;
   },
   /*
-   * @returns {Array}
+   * @return {Array}
    */
   getDataView: function(){
     var me = this,
@@ -2882,7 +2985,7 @@ Fancy.define('Fancy.Store', {
   },
   /*
    * @param {String} id
-   * @returns {Fancy.Model}
+   * @return {Fancy.Model}
    */
   getById: function(id){
     var me = this;
@@ -2913,7 +3016,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {String|Number} key
    * @param {*} value
-   * @returns {Array}
+   * @return {Array}
    */
   find: function(key, value){
     var me = this,
@@ -2999,22 +3102,21 @@ Fancy.define('Fancy.Store', {
       }
     }
   },
-  readSmartIndexes: function () {
+  /*
+   *
+   */
+  readSmartIndexes: function(){
     var me = this,
       w = me.widget,
-      i = 0,
-      iL = w.columns.length,
       numOfSmartIndexes = 0,
       smartIndexes = {};
 
-    for(;i<iL;i++){
-      var column = w.columns[i];
-
+    Fancy.each(w.columns, function(column){
       if(column.smartIndexFn){
         smartIndexes[column.index] = column.smartIndexFn;
         numOfSmartIndexes++;
       }
-    }
+    });
 
     if(numOfSmartIndexes){
       me.smartIndexes = smartIndexes;
@@ -3223,14 +3325,37 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   addClass: function(cls){
+    this.addCls.apply(this, arguments);
+  },
+  /*
+   * @param {String} cls
+   */
+  addCls: function(cls){
     var me = this;
 
     me.$dom.addClass(cls);
+
+    if(arguments.length > 1){
+      var i = 1,
+        iL = arguments.length;
+
+      for (;i<iL;i++){
+        me.addClass(arguments[i]);
+      }
+    }
   },
   /*
    * @param {String} cls
    */
   removeClass: function(cls){
+    var me = this;
+
+    me.$dom.removeClass(cls);
+  },
+  /*
+   * @param {String} cls
+   */
+  removeCls: function(cls){
     var me = this;
 
     me.$dom.removeClass(cls);
@@ -3246,8 +3371,25 @@ Fancy.Element.prototype = {
   },
   /*
    * @param {String} cls
+   * @return {Boolean}
+   */
+  hasCls: function(cls){
+    var me = this;
+
+    return me.$dom.hasClass(cls);
+  },
+  /*
+   * @param {String} cls
    */
   toggleClass: function(cls){
+    var me = this;
+
+    me.$dom.toggleClass(cls);
+  },
+  /*
+   * @param {String} cls
+   */
+  toggleCls: function(cls){
     var me = this;
 
     me.$dom.toggleClass(cls);
@@ -3271,7 +3413,9 @@ Fancy.Element.prototype = {
         length: 0,
         dom: undefined,
         addClass: function(){},
+        addCls: function(){},
         removeClass: function(){},
+        removeCls: function(){},
         destroy: function(){},
         remove: function(){},
         css: function(){},
@@ -3758,6 +3902,12 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   addClass: function(cls){
+    this.addCls.apply(this, arguments);
+  },
+  /*
+   * @param {String} cls
+   */
+  addCls: function(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -3765,17 +3915,32 @@ Fancy.Elements.prototype = {
     for(;i<iL;i++){
       Fancy.get(me.$dom[i]).addClass(cls);
     }
+
+    if(arguments.length > 1){
+      i = 1;
+      iL = arguments.length;
+
+      for(;i<iL;i++){
+        me.addClass(arguments[i]);
+      }
+    }
   },
   /*
    * @param {String} cls
    */
   removeClass: function(cls){
+    this.removeCls.apply(this, arguments);
+  },
+  /*
+   * @param {String} cls
+   */
+  removeCls: function(cls){
     var me = this,
       i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
-      Fancy.get(me.$dom[i]).removeClass(cls);
+      Fancy.get(me.$dom[i]).removeCls(cls);
     }
   },
   /*
@@ -3817,6 +3982,18 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   toggleClass: function(cls){
+    var me = this,
+      i = 0,
+      iL = me.length;
+
+    for(;i<iL;i++){
+      Fancy.get(me.$dom[i]).toggleClass(cls);
+    }
+  },
+  /*
+   * @param {String} cls
+   */
+  toggleCls: function(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -4166,17 +4343,14 @@ Fancy.define('Fancy.Widget', {
    * @param {String|HTMLElement}
    */
   renderItems: function(renderTo){
-    var me = this,
-      i = 0,
-      iL = me.items.length;
+    var me = this;
 
-    for(;i<iL;i++){
-      var item = me.items[i],
-        w = Fancy.getClassByType(item.type);
+    Fancy.each(me.items, function(item, i){
+      var w = Fancy.getClassByType(item.type);
 
       item.renderTo = renderTo;
       me.items[i] = new w(item);
-    }
+    });
   },
   /*
    *
@@ -4292,35 +4466,92 @@ Fancy.define('Fancy.Widget', {
       }
     }
   },
+  /*
+   * @param {String|Object} o1
+   * @param {Number|String} [o2]
+   */
   css: function(o1, o2){
-    var me = this;
-
-    return me.el.css(o1, o2);
+    return this.el.css(o1, o2);
   },
+  /*
+   * @param {String} value
+   */
   addClass: function(value){
-    this.el.addClass(value);
+    this.el.addCls(value);
   },
+  /*
+   * @param {String} value
+   */
+  addCls: function(value){
+    this.el.addCls(value);
+  },
+  /*
+   * @param {String} value
+   */
   removeClass: function(value){
-    this.el.removeClass(value);
+    this.el.removeCls(value);
   },
+  /*
+ * @param {String} value
+ */
+  removeCls: function(value){
+    this.el.removeCls(value);
+  },
+  /*
+   * @param {String} value
+   */
   hasClass: function(value){
-    return this.el.hasClass(value);
+    return this.el.hasCls(value);
   },
+  /*
+   * @param {String} value
+   */
+  hasCls: function(value){
+    return this.el.hasCls(value);
+  },
+  /*
+   * @param {String} value
+   */
   toggleClass: function(value){
-    this.el.toggleClass(value);
+    this.el.toggleCls(value);
   },
+  /*
+   * @param {String} value
+   */
+  toggleCls: function(value){
+    this.el.toggleCls(value);
+  },
+  /*
+   *
+   */
   destroy: function(){
-    var me = this;
-
-    if(me.el){
-      me.el.destroy();
+    if(this.el){
+      this.el.destroy();
     }
   },
+  /*
+   *
+   */
   show: function() {
     this.el.show();
   },
+  /*
+   *
+   */
   hide: function() {
     this.el.hide();
+  },
+  /*
+   *
+   */
+  initTpl: function(){
+    var me = this;
+
+    if(!me.tpl){
+      return;
+    }
+
+    me.tpl = new Fancy.Template(me.tpl);
   }
 });
 /*
@@ -4346,6 +4577,18 @@ Fancy.define('Fancy.Plugin', {
 
     me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
+  },
+  /*
+   *
+   */
+  initTpl: function(){
+    var me = this;
+
+    if(!me.tpl){
+      return;
+    }
+
+    me.tpl = new Fancy.Template(me.tpl);
   }
 });
 
@@ -4414,26 +4657,23 @@ Fancy.define('Fancy.Plugin', {
     },
     widgetCls: 'fancy-button',
     cls: '',
-    disabledCls: 'fancy-button-disabled',
     extraCls: '',
+    disabledCls: 'fancy-button-disabled',
+    pressedCls: 'fancy-button-pressed',
+    buttonImageCls: 'fancy-button-image',
+    buttonImageColorCls: 'fancy-button-image-color',
+    textCls: 'fancy-button-text',
+    dropCls: 'fancy-button-drop',
     text: '',
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
     pressed: false,
     tpl: [
-      '<div class="fancy-button-image"></div>',
-      '<a class="fancy-button-text">{text}</a>',
-      '<div class="fancy-button-drop" style="{dropDisplay}"></div>'
+      '<div class="{buttonImageCls}"></div>',
+      '<a class="{textCls}">{text}</a>',
+      '<div class="{dropCls}" style="{dropDisplay}"></div>'
     ],
-    /*
-     *
-     */
-    initTpl: function () {
-      var me = this;
-
-      me.tpl = new Fancy.Template(me.tpl);
-    },
     /*
      *
      */
@@ -4461,7 +4701,7 @@ Fancy.define('Fancy.Plugin', {
       }
 
       if(me.imageColor){
-        me.imageCls = 'fancy-button-image-color';
+        me.imageCls = me.buttonImageColorCls;
       }
 
       if(width < me.minWidth){
@@ -4477,13 +4717,15 @@ Fancy.define('Fancy.Plugin', {
         width += me.imageWidth;
       }
 
-      el.addClass(Fancy.cls);
-      el.addClass(me.widgetCls);
-      el.addClass(me.cls);
-      el.addClass(me.extraCls);
+      el.addCls(
+        Fancy.cls,
+        me.widgetCls,
+        me.cls,
+        me.extraCls
+      );
 
       if (me.disabled) {
-        el.addClass(me.disabledCls);
+        el.addCls(me.disabledCls);
       }
 
       el.css({
@@ -4498,25 +4740,24 @@ Fancy.define('Fancy.Plugin', {
       el.css(me.style || {});
 
       el.update(me.tpl.getHTML({
-        text: me.text || ''
+        text: me.text || '',
+        buttonImageCls: me.buttonImageCls,
+        textCls: me.textCls,
+        dropCls: me.dropCls
       }));
 
       if(me.imageCls){
-        var imageEl = el.select('.fancy-button-image');
+        var imageEl = el.select('.' + me.buttonImageCls);
         if(me.imageColor){
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
         if(Fancy.isString(me.imageCls)){
-          imageEl.addClass(me.imageCls);
+          imageEl.addCls(me.imageCls);
         }
       }
 
       me.el = Fancy.get(renderTo.appendChild(el.dom));
-
-      Fancy.each(me.style, function (value, p) {
-        me.el.css(p, value);
-      });
 
       if (me.disabled) {
         me.disable();
@@ -4543,12 +4784,11 @@ Fancy.define('Fancy.Plugin', {
         el = Fancy.get(document.createElement('div'));
 
       el.css(wrapper.style || {});
-      el.addClass(wrapper.cls || '');
+      el.addCls(wrapper.cls || '');
 
       me.wrapper = Fancy.get(renderTo.appendChild(el.dom));
 
       me.renderTo = me.wrapper.dom;
-
     },
     /*
      *
@@ -4564,11 +4804,11 @@ Fancy.define('Fancy.Plugin', {
      * @param {Boolean} value
      */
     setPressed: function(value, fire){
-      var me = this;
+      var me = this,
+        pressedCls = me.pressedCls;
 
       if (value) {
-        me.addClass('fancy-button-pressed');
-        //me.el.removeClass('fancy-button-not-pressed');
+        me.addCls(pressedCls);
         me.pressed = true;
 
         if(me.toggleGroup){
@@ -4581,8 +4821,7 @@ Fancy.define('Fancy.Plugin', {
         }
       }
       else {
-        //me.el.addClass('fancy-button-not-pressed');
-        me.removeClass('fancy-button-pressed');
+        me.removeCls(pressedCls);
         me.pressed = false;
       }
 
@@ -4638,7 +4877,7 @@ Fancy.define('Fancy.Plugin', {
      */
     getHandler: function(name){
       var me = this,
-        grid = Fancy.getWidget(me.el.parent().parent().select('.fancy-grid').attr('id'));
+        grid = Fancy.getWidget(me.el.parent().parent().select('.' + Fancy.gridCls).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -4720,7 +4959,7 @@ Fancy.define('Fancy.Plugin', {
       var me = this;
 
       me.disabled = true;
-      me.el.addClass(me.disabledCls);
+      me.addCls(me.disabledCls);
     },
     /*
      *
@@ -4729,7 +4968,7 @@ Fancy.define('Fancy.Plugin', {
       var me = this;
 
       me.disabled = false;
-      me.el.removeClass(me.disabledCls);
+      me.removeCls(me.disabledCls);
     },
     /*
      *
@@ -4792,10 +5031,12 @@ Fancy.define('Fancy.SegButton', {
 
     renderTo = Fancy.get(me.renderTo || document.body).dom;
 
-    el.addClass(Fancy.cls);
-    el.addClass(me.widgetCls);
-    el.addClass(me.cls);
-    el.addClass(me.extraCls);
+    el.addCls(
+      Fancy.cls,
+      me.widgetCls,
+      me.cls,
+      me.extraCls
+    );
 
     if(me.hidden){
       el.css('display', 'none');
@@ -4937,6 +5178,7 @@ Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
+   * @return {Object}
    */
   prepareConfigTheme: function(config, originalConfig){
     var themeName = config.theme || originalConfig.theme,
@@ -5118,7 +5360,7 @@ Fancy.Mixin('Fancy.panel.mixin.DD', {
   addDDCls: function(){
     var me = this;
 
-    me.el.addClass(me.ddCls);
+    me.el.addCls(me.ddCls);
   },
   /*
    *
@@ -5158,7 +5400,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       el = me.el,
       cornerEl = Fancy.get(document.createElement('div'));
 
-    cornerEl.addClass(me.cornerResizeCls);
+    cornerEl.addCls(me.cornerResizeCls);
 
     me.cornerResizeEl = Fancy.get(el.dom.appendChild(cornerEl.dom));
   },
@@ -5292,7 +5534,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       panelLeft = offset.left;
     }
 
-    maskEl.addClass(me.resizeMaskCls);
+    maskEl.addCls(me.resizeMaskCls);
 
     maskEl.css({
       left: panelLeft,
@@ -5367,21 +5609,21 @@ Fancy.define('Fancy.Panel', {
   barContainer: true,
   theme: 'default',
   tpl: [
-    '<div style="height:{titleHeight}px;" class="fancy-panel-header fancy-display-none">',
+    '<div style="height:{titleHeight}px;" class="fancy-panel-header {hiddenCls}">',
       '{titleImg}',
       '<div class="fancy-panel-header-text">{title}</div>',
       '<div class="fancy-panel-header-tools"></div>',
     '</div>',
-    '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header fancy-display-none">',
+    '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header {hiddenCls}">',
       '<div class="fancy-panel-sub-header-text">{subTitle}</div>',
     '</div>',
     '<div class="fancy-panel-body">',
-      '<div class="fancy-panel-tbar fancy-display-none" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-sub-tbar fancy-display-none" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-tbar {hiddenCls}" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-sub-tbar {hiddenCls}" style="height:{barHeight}px;"></div>',
       '<div class="fancy-panel-body-inner"></div>',
-      '<div class="fancy-panel-bbar fancy-display-none" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-buttons fancy-display-none" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-footer fancy-display-none" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-bbar {hiddenCls}" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-buttons {hiddenCls}" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-footer {hiddenCls}" style="height:{barHeight}px;"></div>',
     '</div>'
   ],
   /*
@@ -5394,7 +5636,7 @@ Fancy.define('Fancy.Panel', {
       minusHeight = 0,
       titleHeight = me.titleHeight,
       subTitleHeight = me.subTitleHeight,
-      displayNoneCls = 'fancy-display-none';
+      displayNoneCls = Fancy.hiddenCls;
 
     if( me.window === true ){
       el.css({
@@ -5404,16 +5646,16 @@ Fancy.define('Fancy.Panel', {
     }
 
     if(me.frame === false){
-      el.addClass('fancy-panel-noframe');
+      el.addCls('fancy-panel-noframe');
     }
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
     if( me.theme !== 'default' ){
-      el.addClass('fancy-theme-' + me.theme);
+      el.addCls('fancy-theme-' + me.theme);
     }
 
     if( me.shadow ){
-      el.addClass('fancy-panel-shadow');
+      el.addCls('fancy-panel-shadow');
     }
 
     el.css({
@@ -5454,7 +5696,8 @@ Fancy.define('Fancy.Panel', {
       titleHeight: titleHeight,
       subTitleHeight: subTitleHeight,
       title: titleText,
-      subTitle: subTitleText
+      subTitle: subTitleText,
+      hiddenCls: Fancy.hiddenCls
     }));
 
     if(Fancy.isObject(me.title)){
@@ -5463,7 +5706,7 @@ Fancy.define('Fancy.Panel', {
       }
 
       if(me.title.cls){
-        el.select('.fancy-panel-header').addClass(me.title.cls);
+        el.select('.fancy-panel-header').addCls(me.title.cls);
       }
 
       if(me.title.tools){
@@ -5477,12 +5720,12 @@ Fancy.define('Fancy.Panel', {
       }
 
       if(me.subTitle.cls){
-        el.select('.fancy-panel-sub-header').addClass(me.subTitle.cls);
+        el.select('.fancy-panel-sub-header').addCls(me.subTitle.cls);
       }
     }
 
     if(me.title){
-      el.select('.fancy-panel-header').removeClass(displayNoneCls);
+      el.select('.fancy-panel-header').removeCls(displayNoneCls);
     }
     else{
       el.select('.fancy-panel-body').css('border-top-width', '0px');
@@ -5490,27 +5733,27 @@ Fancy.define('Fancy.Panel', {
 
     if(me.subTitle){
       el.select('.fancy-panel-body').css('border-top-width', '0px');
-      el.select('.fancy-panel-sub-header').removeClass(displayNoneCls);
+      el.select('.fancy-panel-sub-header').removeCls(displayNoneCls);
     }
 
     if(me.tbar){
-      el.select('.fancy-panel-tbar').removeClass(displayNoneCls);
+      el.select('.fancy-panel-tbar').removeCls(displayNoneCls);
     }
 
     if(me.subTBar){
-      el.select('.fancy-panel-sub-tbar').removeClass(displayNoneCls);
+      el.select('.fancy-panel-sub-tbar').removeCls(displayNoneCls);
     }
 
     if(me.bbar){
-      el.select('.fancy-panel-bbar').removeClass(displayNoneCls);
+      el.select('.fancy-panel-bbar').removeCls(displayNoneCls);
     }
 
     if(me.buttons){
-      el.select('.fancy-panel-buttons').removeClass(displayNoneCls);
+      el.select('.fancy-panel-buttons').removeCls(displayNoneCls);
     }
 
     if(me.footer){
-      el.select('.fancy-panel-footer').removeClass(displayNoneCls);
+      el.select('.fancy-panel-footer').removeCls(displayNoneCls);
     }
 
     me.el = renderTo.dom.appendChild(el.dom);
@@ -5556,21 +5799,10 @@ Fancy.define('Fancy.Panel', {
       return;
     }
 
-    var i = 0,
-      iL = tools.length;
-
-    for(;i<iL;i++){
-      me.tools[i].renderTo = me.el.select('.fancy-panel-header-tools').dom;
-      me.tools[i] = new Fancy.Tool(me.tools[i], me.scope || me);
-    }
-  },
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
-
-    me.tpl = new Fancy.Template(me.tpl);
+    Fancy.each(tools, function(tool, i){
+      tool.renderTo = me.el.select('.fancy-panel-header-tools').dom;
+      me.tools[i] = new Fancy.Tool(tool, me.scope || me);
+    });
   },
   /*
    *
@@ -5746,15 +5978,11 @@ Fancy.define('Fancy.Panel', {
 
     Fancy.select('.fancy-modal').css('display', 'none');
 
-    var items = me.items || [],
-      i = 0,
-      iL = items.length;
-
-    for(;i<iL;i++){
-      if(me.items[i].type === 'combo'){
-        me.items[i].hideList();
+    Fancy.each(me.items || [], function(item){
+      if(item.type === 'combo'){
+        item.hideList();
       }
-    }
+    });
   },
   /*
    * @param {String} value
@@ -5816,13 +6044,16 @@ Fancy.define('Fancy.Panel', {
 
     me.items[0].setHeight(value, false);
   },
+  /*
+   *
+   */
   setActiveWindowWatcher: function(){
     var me = this;
 
     me.el.on('click', function(e){
       var targetEl = Fancy.get(e.target);
 
-      if(targetEl.hasClass('fancy-field-picker-button')){
+      if(targetEl.hasCls('fancy-field-picker-button')){
         return;
       }
 
@@ -5862,12 +6093,12 @@ Fancy.define('Fancy.Tool', {
     me.style = me.style || {};
 
     me.render();
-    me.setOns();
+    me.ons();
   },
   /*
    *
    */
-  setOns: function(){
+  ons: function(){
     var me = this,
       el = me.el;
 
@@ -5967,9 +6198,9 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.renderTabWrappers();
 
     if(!me.wrapped){
-      me.el.addClass('fancy-panel-grid-inside');
+      me.el.addCls('fancy-panel-grid-inside');
     }
-    me.el.addClass('fancy-panel-tab');
+    me.el.addCls('fancy-panel-tab');
 
     me.rendered = true;
   },
@@ -6064,17 +6295,15 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.tabs = tabs;
   },
   renderTabWrappers: function(){
-    var me = this,
-      i = 0,
-      iL = me.items.length;
+    var me = this;
 
-    for(;i<iL;i++){
+    Fancy.each(me.items, function(item){
       var el = Fancy.get( document.createElement('div') );
 
-      el.addClass(me.tabWrapperCls);
+      el.addCls(me.tabWrapperCls);
 
-      me.items[i].renderTo = me.panelBodyEl.dom.appendChild(el.dom);
-    }
+      item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
+    });
   },
   setActiveTab: function(newActiveTab){
     var me = this,
@@ -6086,10 +6315,10 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
       return;
     }
 
-    tabs.item(me.activeTab).removeClass(activeTabWrapperCls);
+    tabs.item(me.activeTab).removeCls(activeTabWrapperCls);
     me.activeTab = newActiveTab;
 
-    tabs.item(me.activeTab).addClass(activeTabWrapperCls);
+    tabs.item(me.activeTab).addCls(activeTabWrapperCls);
 
     var item = me.items[me.activeTab];
 
@@ -6115,8 +6344,8 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     }
 
     if(me.tabs){
-      me.tbar[oldActiveTab].removeClass(me.activeTabTBarButtonCls);
-      me.tbar[me.activeTab].addClass(me.activeTabTBarButtonCls);
+      me.tbar[oldActiveTab].removeCls(me.activeTabTBarButtonCls);
+      me.tbar[me.activeTab].addCls(me.activeTabTBarButtonCls);
     }
   },
   /*
@@ -6232,8 +6461,7 @@ Fancy.define('Fancy.Bar', {
     if(!me.el){
       var el = Fancy.get(document.createElement('div'));
 
-      el.addClass(me.widgetCls);
-      el.addClass(me.cls);
+      el.addCls(me.widgetCls, me.cls);
       el.update(me.text);
 
       me.el = Fancy.get(me.renderTo.appendChild(el.dom));
@@ -6244,7 +6472,7 @@ Fancy.define('Fancy.Bar', {
     }
 
     var containerEl = Fancy.get(document.createElement('div'));
-    containerEl.addClass(me.containerCls);
+    containerEl.addCls(me.containerCls);
 
     me.containerEl = Fancy.get(me.el.dom.appendChild(containerEl.dom));
   },
@@ -6325,6 +6553,7 @@ Fancy.define('Fancy.Bar', {
   },
   /*
    * @param {Object} item
+   * @return {Object}
    */
   renderItem: function(item){
     var me = this,
@@ -6514,7 +6743,7 @@ Fancy.define('Fancy.Bar', {
 
         item.events = item.events.concat([{
           enter: function(field, value){
-            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.fancy-grid').attr('id') );
+            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id') );
             //this.search(['name', 'surname', 'position'], value);
             //this.search(value);
             //this.search(['a', 'b', 'c']);
@@ -6523,7 +6752,7 @@ Fancy.define('Fancy.Bar', {
         }, {
           key: function (field, value) {
             var me = this,
-              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.fancy-grid').attr('id'));
+              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id'));
 
             if (!me.autoEnterTime) {
               me.autoEnterTime = new Date();
@@ -6561,7 +6790,7 @@ Fancy.define('Fancy.Bar', {
 
             field.el.on('click', function(e){
               var toShow = false,
-                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.fancy-grid').attr('id')),
+                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id')),
                 columns = grid.columns || [],
                 leftColumns = grid.leftColumns || [],
                 rightColumns = grid.rightColumns || [],
@@ -6822,18 +7051,15 @@ Fancy.define('Fancy.Bar', {
    */
   getItemsWidth: function(){
     var me = this,
-      i = 0,
-      iL = me.items.length,
       width = 0;
 
-    for(;i<iL;i++){
-      var item = me.items[i];
+    Fancy.each(me.items, function (item){
       width += item.el.width();
       width += parseInt(item.el.css('margin-left'));
       width += parseInt(item.el.css('margin-right'));
       width += parseInt(item.el.css('padding-right'));
       width += parseInt(item.el.css('padding-left'));
-    }
+    });
 
     return width;
   },
@@ -6963,23 +7189,25 @@ Fancy.define('Fancy.Bar', {
     }
   },
   /*
-   *
+   * @param {Object} field
+   * @param {Object} e
    */
   onTabLastInput: function(field, e){
     var me = this,
-      grid = Fancy.getWidget(me.el.parent().select('.fancy-grid').attr('id'));
+      grid = Fancy.getWidget(me.el.parent().select('.' + Fancy.gridCls).attr('id')),
+      cellCls = grid.cellCls;
 
     //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
     e.preventDefault();
 
     if(grid.leftColumns.length){
       setTimeout(function(){
-        grid.leftBody.el.select('.fancy-grid-cell').item(0).dom.click();
+        grid.leftBody.el.select('.' + cellCls).item(0).dom.click();
       }, 100);
     }
     else{
       setTimeout(function(){
-        grid.body.el.select('.fancy-grid-cell').item(0).dom.click();
+        grid.body.el.select('.' + cellCls).item(0).dom.click();
       }, 100);
     }
   }
@@ -7016,7 +7244,7 @@ Fancy.define('Fancy.Separator', {
     var me = this,
       el = Fancy.get(document.createElement('div'));
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
     el.update('<div></div>');
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
@@ -7063,8 +7291,7 @@ Fancy.define('Fancy.bar.Text', {
     var me = this,
       el = Fancy.get(document.createElement('div'));
 
-    el.addClass(me.widgetCls);
-    el.addClass(me.cls);
+    el.addCls(me.widgetCls, me.cls);
     el.update(me.text);
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
@@ -7077,9 +7304,15 @@ Fancy.define('Fancy.bar.Text', {
       me.el.css('display', 'none');
     }
   },
+  /*
+   * @return {String}
+   */
   get: function() {
     return this.el.dom.innerHTML;
   },
+  /*
+   * @return {String}
+   */
   getValue: function () {
     return this.get();
   }
@@ -7147,6 +7380,10 @@ Fancy.define('Fancy.Form', {
       preInit();
     }
   },
+  /*
+   * @param {Function} preInit
+   * @param {Object} config
+   */
   loadModules: function(preInit, config){
     var me = this,
       requiredModules = {
@@ -7384,8 +7621,12 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     me.fire('beforerender');
-    el.addClass( me.cls );
-    el.addClass( me.fieldCls );
+
+    el.addCls(
+      Fancy.cls,
+      me.cls,
+      me.fieldCls
+    );
 
     el.attr('id', me.id);
 
@@ -7491,11 +7732,11 @@ Fancy.form.field.Mixin.prototype = {
     me.setSize();
 
     if( me.labelAlign === 'top' ){
-      me.el.addClass('fancy-field-label-align-top');
+      me.el.addCls('fancy-field-label-align-top');
       me.el.select('.fancy-field-text').css('float', 'none');
     }
     else if( me.labelAlign === 'right' ){
-      me.el.addClass('fancy-field-label-align-right');
+      me.el.addCls('fancy-field-label-align-right');
       switch (me.type){
         case 'radio':
           $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text:last'));
@@ -7668,7 +7909,7 @@ Fancy.form.field.Mixin.prototype = {
   isValid: function(){
     var me = this;
 
-    return !me.hasClass(me.failedValidCls);
+    return !me.hasCls(me.failedValidCls);
   },
   /*
    *
@@ -7768,7 +8009,7 @@ Fancy.form.field.Mixin.prototype = {
   failedValid: function(){
     var me = this;
 
-    if(me.hasClass(me.failedValidCls)){
+    if(me.hasCls(me.failedValidCls)){
       if(me.tooltip && me.errorText){
         me.tooltip.update(me.errorText);
       }
@@ -7788,13 +8029,13 @@ Fancy.form.field.Mixin.prototype = {
         });
       }
 
-      me.addClass(me.failedValidCls);
+      me.addCls(me.failedValidCls);
     }
   },
   clearValid: function () {
     var me = this;
 
-    me.removeClass(me.failedValidCls);
+    me.removeCls(me.failedValidCls);
   },
   /*
    *
@@ -7802,7 +8043,7 @@ Fancy.form.field.Mixin.prototype = {
   successValid: function(){
     var me = this;
 
-    me.removeClass(me.failedValidCls);
+    me.removeCls(me.failedValidCls);
     me.hideErrorTip();
     delete me.errorText;
   },
@@ -8103,6 +8344,9 @@ Fancy.form.field.Mixin.prototype = {
 
     me.tooltip.show(e.pageX + 15, e.pageY - 25);
   },
+  /*
+   * @return {Object}
+   */
   getInputSelection: function(){
     var me = this,
       start = 0,
@@ -8208,7 +8452,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       me.css(me.style);
     }
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   emptyText: '',
@@ -8267,7 +8511,7 @@ Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
 
     me.initSpin();
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   emptyText: '',
@@ -8424,7 +8668,7 @@ Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
     });
   },
   /*
-   *
+   * @param {Object} e
    */
   onMouseDownSpinDown: function(e){
     var me = this,
@@ -8551,7 +8795,7 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
       me.css(me.style);
     }
   },
-  fieldCls: 'fancy fancy-field fancy-field-field-text',
+  fieldCls: Fancy.fieldCls + ' fancy-field-field-text',
   value: '',
   width: 100,
   emptyText: '',
@@ -8617,7 +8861,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
    *
    */
   ons: function(){},
-  fieldCls: 'fancy fancy-field fancy-field-empty',
+  fieldCls: Fancy.fieldCls + ' ' + Fancy.fieldEmptyCls,
   width: 100,
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
@@ -8898,7 +9142,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     });
 
     if(me.expander){
-      me.addClass('fancy-checkbox-expander');
+      me.addCls('fancy-checkbox-expander');
     }
 
     me.acceptedValue = me.value;
@@ -8936,7 +9180,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     el.on('mousedown', me.onMouseDown, me);
   },
   /*
-   *
+   * @param {Object} e
    */
   onClick: function(e){
     var me = this,
@@ -8958,9 +9202,9 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
       return;
     }
 
-    el.toggleClass(checkedCls);
+    el.toggleCls(checkedCls);
     var oldValue = me.value;
-    me.value = el.hasClass(checkedCls);
+    me.value = el.hasCls(checkedCls);
     me.fire('change', me.value, oldValue);
   },
   /*
@@ -8984,7 +9228,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     }
 
     if(value === true || value === 1){
-      el.addClass(checkedCls);
+      el.addCls(checkedCls);
       value = true;
     }
     else if(value === false || value === 0){
@@ -9005,7 +9249,7 @@ Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
   },
   /*
    * @params {*} value
-   * @params {Boolean} fire
+   * @params {Boolean} onInput
    */
   setValue: function(value, onInput){
     this.set(value, onInput);
@@ -9063,15 +9307,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     this.Super('init', arguments);
   },
   checkedCls: 'fancy-switcher-on',
-  fieldCls: 'fancy fancy-field fancy-field-switcher',
+  fieldCls: Fancy.fieldCls + ' fancy-field-switcher',
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
     '</div>',
     '<div class="fancy-field-text">',
-      //'<div class="fancy-field-switcher-input" style=""></div>',
     '</div>',
-    '<div class="fancy-field-input-label" style="inputLabelDisplay">',
+    '<div class="fancy-field-input-label" style="{inputLabelDisplay}">',
       '{inputLabel}',
     '</div>',
     '<div class="fancy-clearfix"></div>'
@@ -9092,17 +9335,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       this.opened.push(combo);
     },
-    hideLists: function () {
-      var me = this,
-        opened = me.opened,
-        i = 0,
-        iL = opened.length;
+    hideLists: function(){
+      Fancy.each(this.opened, function(item){
+        item.hideList();
+      });
 
-      for(;i<iL;i++){
-        opened[i].hideList();
-      }
-
-      me.opened = [];
+      this.opened = [];
     }
   });
 
@@ -9114,6 +9352,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     extend: Fancy.Widget,
     selectedItemCls: 'fancy-combo-item-selected',
     focusedItemCls: 'fancy-combo-item-focused',
+    fieldCls: 'fancy fancy-field fancy-combo',
     width: 250,
     labelWidth: 60,
     listRowHeight: 25,
@@ -9186,7 +9425,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }, 1);
     },
     /*
-     *
+     * @return {Boolean}
      */
     loadListData: function () {
       var me = this;
@@ -9284,11 +9523,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this;
 
       if (me.theme && me.theme !== 'default') {
-        me.addClass('fancy-theme-' + me.theme);
-        me.list.addClass('fancy-theme-' + me.theme);
+        me.addCls('fancy-theme-' + me.theme);
+        me.list.addCls('fancy-theme-' + me.theme);
       }
     },
-    fieldCls: 'fancy fancy-field fancy-combo',
     /*
      *
      */
@@ -9462,7 +9700,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               index = i;
             }
 
-            list.select('li').item(i).addClass(selectedItemCls);
+            list.select('li').item(i).addCls(selectedItemCls);
           });
         }
         else {
@@ -9471,13 +9709,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
       else {
         if(me.multiSelect && selected.length !== me.valuesIndex.length){
-          list.select('.' + selectedItemCls).removeClass(selectedItemCls);
+          list.select('.' + selectedItemCls).removeCls(selectedItemCls);
 
           me.valuesIndex.each(function (i, value, length) {
             if(index === undefined){
               index = i;
             }
-            list.select('li').item(i).addClass(selectedItemCls);
+            list.select('li').item(i).addCls(selectedItemCls);
           });
         }
 
@@ -9488,7 +9726,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         index = 0;
       }
 
-      list.select('li').item(index).addClass(focusedItemCls);
+      list.select('li').item(index).addCls(focusedItemCls);
       me.scrollToListItem(index);
 
       if (!me.docSpy) {
@@ -9611,12 +9849,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.aheadList.on('click', me.onListItemClick, me, 'li');
     },
+    /*
+     * @param {Object} e
+     */
     onListItemOver: function (e) {
       var me = this,
         li = Fancy.get(e.target);
 
-      li.addClass(me.focusedItemCls);
+      li.addCls(me.focusedItemCls);
     },
+    /*
+     *
+     */
     onListItemLeave: function () {
       this.clearFocused();
     },
@@ -9641,11 +9885,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         me.clearFocused();
 
-        li.toggleClass(selectedItemCls);
+        li.toggleCls(selectedItemCls);
 
-        if (li.hasClass(selectedItemCls)) {
+        if (li.hasCls(selectedItemCls)) {
           me.addValue(value);
-          li.addClass(focusedItemCls);
+          li.addCls(focusedItemCls);
         }
         else {
           me.removeValue(value);
@@ -9685,17 +9929,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       if(Fancy.isArray(value) && me.multiSelect){
-        var i = 0,
-          iL = value.length,
-          displayedValues = [];
+        var displayedValues = [];
 
         me.valuesIndex.removeAll();
 
-        for(;i<iL;i++){
-          var _index = me.getIndex(value[i]);
+        Fancy.each(value, function(v, i){
+          var _index = me.getIndex(v);
 
           if(_index === -1){
-            continue;
+            return;
           }
 
           me.valuesIndex.add(_index, value[i]);
@@ -9703,7 +9945,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           displayedValues.push(me.data[_index][me.displayKey]);
 
           valueStr = displayedValues.join(', ');
-        }
+        });
 
         me.values = value;
         index = me.getIndex(value[0]);
@@ -9741,6 +9983,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     },
     /*
      * Method used only for multiSelect
+     *
+     * @param {*} v
      */
     addValue: function(v){
       var me = this,
@@ -9754,18 +9998,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     },
     /*
      * Method used only for multiSelect
+     *
+     * @param {*} v
      */
     removeValue: function(v){
       var me = this,
-        index = -1,
-        i = 0,
-        iL = me.values.length;
+        index = -1;
 
-      for(;i<iL;i++){
-        if( me.values[i] === v ){
+      Fancy.each(me.values, function(value, i){
+        if( value === v ){
           index = i;
         }
-      }
+      });
 
       if(index !== -1) {
         me.values.splice(index, 1);
@@ -9782,6 +10026,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     },
     /*
      * Method used only for multiSelect
+     *
+     * @param {Boolean} onInput
      */
     updateInput: function(onInput){
       var me = this,
@@ -9800,7 +10046,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Number} index
      */
-    selectItem: function (index) {
+    selectItem: function(index){
       var me = this;
 
       if (!me.list) {
@@ -9813,8 +10059,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.clearFocused();
 
-      me.list.select('li').item(index).addClass(me.focusedItemCls);
-      me.list.select('li').item(index).addClass(me.selectedItemCls);
+      var item = me.list.select('li').item(index);
+
+      item.addCls(me.focusedItemCls, me.selectedItemCls);
     },
     /*
      *
@@ -9860,8 +10107,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       me.fire('beforerender');
-      el.addClass(me.cls);
-      el.addClass(me.fieldCls);
+      el.addCls(me.cls, me.fieldCls);
 
       var labelWidth = '';
 
@@ -9900,10 +10146,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       renderTo.appendChild(el.dom);
 
       if (me.labelAlign === 'top') {
-        me.el.addClass('fancy-field-label-align-top');
+        me.el.addCls('fancy-field-label-align-top');
       }
       else if (me.labelAlign === 'right') {
-        me.el.addClass('fancy-field-label-align-right');
+        me.el.addCls('fancy-field-label-align-right');
         $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
       }
 
@@ -9961,7 +10207,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       listHtml.push('</ul>');
 
-      list.addClass('fancy fancy-combo-result-list');
+      list.addCls('fancy fancy-combo-result-list');
       list.update(listHtml.join(""));
 
       list.css({
@@ -9981,7 +10227,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       document.body.appendChild(list.dom);
       me.list = list;
     },
-    getListWidth: function () {
+    /*
+     * @return {Number}
+     */
+    getListWidth: function(){
       var me = this,
         el,
         listWidth = me.inputWidth + 14,
@@ -9999,47 +10248,36 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       return listWidth;
     },
     /*
-     *
      * @return {Array}
-     *
      */
-    generateAheadData: function () {
+    generateAheadData: function(){
       var me = this,
         inputValue = me.input.dom.value.toLocaleLowerCase(),
-        data = me.data,
-        aheadData = [],
-        i = 0,
-        iL = data.length;
+        aheadData = [];
 
       if (me.multiSelect) {
         var splitted = inputValue.split(', '),
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        i = 0;
-        iL = inputValue.length;
-
-        for(;i<iL;i++){
+        Fancy.each(inputValue, function (v, i) {
           if(inputSelection.start <= i){
-            break;
+            return true;
           }
 
           if(inputValue[i] === ','){
             passedCommas++;
           }
-        }
+        });
 
         inputValue = splitted[passedCommas];
       }
 
-      i = 0;
-      iL = data.length;
-
-      for (; i < iL; i++) {
-        if (new RegExp('^' + inputValue).test(data[i][me.displayKey].toLocaleLowerCase())) {
-          aheadData.push(data[i]);
+      Fancy.each(me.data, function (item){
+        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
+          aheadData.push(item);
         }
-      }
+      });
 
       if (me.data.length === aheadData.length) {
         aheadData = [];
@@ -10139,19 +10377,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
-      me.list.select('.' + selectedItemCls).removeClass(selectedItemCls);
+      me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
+      me.list.select('.' + selectedItemCls).removeCls(selectedItemCls);
     },
     clearFocused: function () {
       var me = this,
         focusedItemCls = me.focusedItemCls;
 
       if(me.list) {
-        me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
+        me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
 
       if(me.aheadList) {
-        me.aheadList.select('.' + focusedItemCls).removeClass(focusedItemCls);
+        me.aheadList.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
     },
     /*
@@ -10189,13 +10427,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     },
     /*
      * @param {key} value
+     * @param {Boolean} [returnPosition]
      */
     getValueKey: function (value, returnPosition) {
       var me = this,
         i = 0,
         iL = me.data.length;
 
-      for (; i < iL; i++) {
+      for(;i<iL;i++){
         if (me.data[i][me.displayKey] === value) {
           if (returnPosition) {
             return i;
@@ -10437,7 +10676,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         me.clearFocused();
 
-        //activeLi.removeClass(focusedItemCls);
         nextActiveLi.addClass(focusedItemCls);
       }
       else {
@@ -10481,6 +10719,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       return list;
     },
+    /*
+     *
+     */
     initMultiSelect: function () {
       var me = this,
         value = me.value;
@@ -10497,19 +10738,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.values = [me.value];
         }
 
-        var i = 0,
-          iL = me.values.length,
-          index;
-
-        for(;i<iL;i++){
-          value = me.values[i];
-
-          index = me.getIndex(value);
-
-          me.valuesIndex.add(index, value);
-        }
+        Fancy.each(me.values, function(value){
+          me.valuesIndex.add(me.getIndex(value), value);
+        });
       }
     },
+    /*
+     * @param {*} value
+     * @return {Number}
+     */
     getIndex: function(value){
       var me = this,
         data = me.data,
@@ -10527,24 +10764,23 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     },
     /*
      * Method used only for multiSelect
+     *
+     * @return {Array}
      */
-    getFromInput: function () {
+    getFromInput: function(){
       var me = this,
         value = me.input.dom.value,
         values = value.split(','),
-        i = 0,
-        iL = values.length,
-        displayValue,
         _values = [];
 
-      for(;i<iL;i++){
-        displayValue = values[i].replace(/ $/, '').replace(/^ /, '');
+      Fancy.each(values, function(v){
+        var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
+          _value = me.getValueKey(displayValue);
 
-        var _value = me.getValueKey(displayValue);
         if(_value){
           _values.push(_value);
         }
-      }
+      });
 
       return _values;
     }
@@ -10610,6 +10846,9 @@ Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     '</div>',
     '<div class="fancy-clearfix"></div>'
   ],
+  /*
+   *
+   */
   renderButton: function(){
     var me = this;
 
@@ -10695,10 +10934,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
     '</div>',
-    //'<div class="fancy-field-text fancy-button">',
     '<div class="fancy-field-text">',
-      //'<div class="fancy-button-image"></div>',
-      //'<a class="fancy-button-text">{buttonText}</a>',
     '</div>',
     '<div class="fancy-clearfix"></div>'
   ],
@@ -10742,14 +10978,9 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    */
   get: function(){
     var me = this,
-      items = me.items,
-      i = 0,
-      iL = items.length,
       pressed = [];
 
-    for(;i<iL;i++){
-      var item = items[i];
-
+    Fancy.each(me.items, function (item, i) {
       if(item.pressed){
         if(item.value){
           pressed.push(item.value);
@@ -10758,23 +10989,20 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
           pressed.push(i);
         }
       }
-    }
+    });
 
     return pressed.toString();
   },
   /*
-   *
+   * @param {Boolean} [fire]
    */
   clear: function(fire){
-    var me = this,
-      items = me.items,
-      i = 0,
-      iL = items.length;
+    var me = this;
 
     if(me.allowToggle){
-      for(;i<iL;i++){
-        items[i].setPressed(false, fire);
-      }
+      Fancy.each(me.items, function (item){
+        item.setPressed(false, fire);
+      });
     }
   }
 });
@@ -10871,19 +11099,15 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
     me.Super('init', arguments);
 
-    var itemsHTML = '',
-      items = me.items,
-      i = 0,
-      iL = items.length;
+    var itemsHTML = '';
 
     if( me.column ){
       me.cls += ' fancy-field-radio-column';
       itemsHTML += '<div style="margin-left: '+ ( me.labelWidth )+'px;">';
     }
 
-    for(;i<iL;i++){
-      var item = items[i],
-        marginLeft = '',
+    Fancy.each(me.items, function (item, i){
+      var marginLeft = '',
         itemCls = 'fancy-field-text';
 
       if( !me.column && i !== 0 ){
@@ -10896,11 +11120,11 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
 
       itemsHTML += [
         '<div class="'+itemCls+'" value='+item.value+'>',
-          '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
-          '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
+        '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
+        '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
         '</div>'
       ].join("");
-    }
+    });
 
     if( me.column ){
       itemsHTML += '</div>';
@@ -10920,7 +11144,7 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   labelWidth: 60,
   value: false,
   checkedCls: 'fancy-field-radio-on',
-  fieldCls: 'fancy fancy-field fancy-field-radio',
+  fieldCls: Fancy.fieldCls + ' fancy-field-radio',
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
@@ -10949,15 +11173,15 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     var me = this,
       checkedCls = me.checkedCls;
 
-    me.addClass(checkedCls);
-    me.toggleClass(checkedCls);
+    me.addCls(checkedCls);
+    me.toggleCls(checkedCls);
 
-    me.value = me.hasClass(checkedCls);
+    me.value = me.hasCls(checkedCls);
 
     me.fire('change', me.value);
   },
   /*
-   *
+   * @param {Object} e
    */
   onMouseDown: function(e){
 
@@ -10973,9 +11197,9 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
       checkedCls = me.checkedCls,
       radioEls = el.select('.fancy-field-text');
 
-    radioEls.removeClass(checkedCls);
+    radioEls.removeCls(checkedCls);
 
-    el.select('[value='+value+']').addClass(checkedCls);
+    el.select('[value='+value+']').addCls(checkedCls);
 
     me.value = value;
     if(fire !== false){
@@ -11010,6 +11234,9 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   clear: function(){
     this.set(false);
   },
+  /*
+   *
+   */
   calcColumns: function(){
     var me = this,
       maxChars = 0,
@@ -11038,6 +11265,9 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     me.columnWidth = Math.ceil(inputWidth/columns);
     me.rows = Math.ceil(me.items.length/columns);
   },
+  /*
+   *
+   */
   setColumnsStyle: function(){
     var me = this;
 
@@ -11045,20 +11275,16 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
       return;
     }
 
-    var i = 0,
-      iL = me.items.length,
-      radioEls = me.el.select('.fancy-field-text'),
+    var radioEls = me.el.select('.fancy-field-text'),
       radioInputs = me.el.select('.fancy-field-text .fancy-field-radio-input');
 
-    for(;i<iL;i++){
-      var item = radioEls.item(i);
-
+    radioEls.each(function(item, i){
       if(i % me.columns === 0){
         radioInputs.item(i).css('margin-left', '0px');
       }
 
       item.css('width', me.columnWidth);
-    }
+    });
   }
 });
 (function () {
@@ -11240,6 +11466,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     me.remove(o, true);
   },
   /*
+   *
+   */
+  removeAll: function () {
+    var me = this;
+
+    me.store.removeAll();
+    me.update();
+    me.scroller.update();
+
+    if(me.paging){
+      me.paging.updateBar();
+    }
+
+    if(me.grouping){
+      me.grouping.reGroup();
+    }
+  },
+  /*
    * @param {*} o
    */
   add: function(o){
@@ -11407,7 +11651,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   emptyText: '',
   prefix: 'fancy-grid-',
   cls: '',
-  widgetCls: 'fancy-grid',
+  widgetCls: Fancy.gridCls,
   // Cell cls-s
   cellCls: 'fancy-grid-cell',
   cellInnerCls: 'fancy-grid-cell-inner',
@@ -11415,9 +11659,16 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   cellOverCls: 'fancy-grid-cell-over',
   cellSelectedCls: 'fancy-grid-cell-selected',
   // Cell Header cls-s
-  headerCellCls: 'fancy-grid-header-cell',
+  cellHeaderCls: 'fancy-grid-header-cell',
+  cellHeaderSelectCls: 'fancy-grid-header-cell-select',
   cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
   cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
+  cellHeaderTriggerCls: 'fancy-grid-header-cell-trigger',
+  cellHeaderTriggerImageCls: 'fancy-grid-header-cell-trigger-image',
+  cellHeaderGroupLevel1: 'fancy-grid-header-cell-group-level-1',
+  cellHeaderGroupLevel2: 'fancy-grid-header-cell-group-level-2',
+  filterHeaderCellCls: 'fancy-grid-header-filter-cell',//TODO: rename to cellHeaderFilterCls
+  //Column header cls-s sorting
   clsASC: 'fancy-grid-column-sort-ASC',
   clsDESC: 'fancy-grid-column-sort-DESC',
   //Column cls-s
@@ -11429,27 +11680,38 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
   columnOrderCls: 'fancy-grid-column-order',
   columnSelectCls: 'fancy-grid-column-select',
+  columnResizerCls: 'fancy-grid-column-resizer',
   //Column spark cls-s
-  clsSparkColumn: 'fancy-grid-column-sparkline',
-  clsSparkColumnBullet: 'fancy-grid-column-sparkline-bullet',
-  clsSparkColumnCircle: 'fancy-grid-column-chart-circle',
-  clsSparkColumnDonutProgress: 'fancy-grid-column-spark-progress-donut',
-  clsColumnGrossLoss: 'fancy-grid-column-grossloss',
-  clsColumnProgress: 'fancy-grid-column-progress',
-  clsSparkColumnHBar: 'fancy-grid-column-h-bar',
+  clsSparkColumn: 'fancy-grid-column-sparkline',//TODO: rename to columnSparkCls
+  clsSparkColumnBullet: 'fancy-grid-column-sparkline-bullet',//TODO: rename to columnSparkBulletCls
+  clsSparkColumnCircle: 'fancy-grid-column-chart-circle',//TODO: rename to columnSparkCircleCls
+  clsSparkColumnDonutProgress: 'fancy-grid-column-spark-progress-donut',//TODO: rename to columnSparkDonutCls
+  clsColumnGrossLoss: 'fancy-grid-column-grossloss',//TODO: rename to columnGrossCls
+  clsColumnProgress: 'fancy-grid-column-progress',//TODO: rename to columnProgressCls
+  clsSparkColumnHBar: 'fancy-grid-column-h-bar',//TODO: rename to columnSparkHBarCls
   //Row cls-s
-  clsGroupRow: 'fancy-grid-group-row',
-  clsCollapsedRow: 'fancy-grid-group-row-collapsed',
-  clsSummaryContainer: 'fancy-grid-summary-container',
-  clsSummaryRow: 'fancy-grid-summary-row',
+  clsGroupRow: 'fancy-grid-group-row',//TODO: rename to rowGroupCls
+  clsCollapsedRow: 'fancy-grid-group-row-collapsed',//TODO: rename to rowCollapsedCls
+  clsSummaryContainer: 'fancy-grid-summary-container',//TODO: rename to ???
+  clsSummaryRow: 'fancy-grid-summary-row',//TODO: rename to rowSummaryCls
   rowEditCls: 'fancy-grid-row-edit',
   rowEditButtonCls: 'fancy-grid-row-edit-buttons',
 
   pseudoCellCls: 'fancy-grid-pseudo-cell',
   rowOverCls: 'fancy-grid-cell-over',
-  expandRowOverCls: 'fancy-grid-expand-row-over',
-  expandRowSelectedCls: 'fancy-grid-expand-row-selected',
-  filterHeaderCellCls: 'fancy-grid-header-filter-cell',
+
+  expandRowCls: 'fancy-grid-expand-row',//TODO: rename to rowExpandCls
+  expandRowOverCls: 'fancy-grid-expand-row-over',//TODO: rename to rowExpandOverCls
+  expandRowSelectedCls: 'fancy-grid-expand-row-selected', //TODO: rename to rowExpandSelectedCls
+
+  leftEmptyCls: 'fancy-grid-left-empty',
+  rightEmptyCls: 'fancy-grid-right-empty',
+
+  centerCls: 'fancy-grid-center',
+  leftCls: 'fancy-grid-left',
+  rightCls: 'fancy-grid-right',
+
+  headerCls: Fancy.gridHeaderCls,
 
   header: true,
   shadow: true,
@@ -11460,6 +11722,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   height: 200,
   minWidth: 200,
   minHeight: 200,
+  minColumnWidth: 30,
   emptyValue: '&nbsp;',
   frame: true,
   keyNavigation: false,
@@ -11549,7 +11812,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.initStore();
 
-    //me.Super('init', arguments);
     me.initPlugins();
 
     me.ons();
@@ -11649,13 +11911,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules['selection'] = true;
     }
 
-    var _columns = columns.concat(leftColumns).concat(rightColumns),
-      i = 0,
-      iL = _columns.length;
+    var _columns = columns.concat(leftColumns).concat(rightColumns);
 
-    for(;i<iL;i++){
-      var column = _columns[i];
-
+    Fancy.each(_columns, function(column){
       if(column.sortable === true){
         requiredModules.sort = true;
       }
@@ -11693,20 +11951,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           requiredModules.selection = true;
           break;
       }
-    }
+    });
 
     if(Fancy.isArray(me.tbar)){
-      var i = 0,
-        iL = me.tbar.length;
-
-      for(;i<iL;i++){
-        switch(me.tbar[i].action){
+      Fancy.each(me.tbar, function(item){
+        switch(item.action){
           case 'add':
           case 'remove':
             requiredModules.edit = true;
             break;
         }
-      }
+      });
     }
 
     if(me.gridToGrid){
@@ -11748,6 +12003,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       Fancy.loadModule(p, onLoad);
     }
   },
+  /*
+   * @param {Number} indexOrder
+   * @param {String} side
+   */
   lockColumn: function(indexOrder, side){
     var me = this;
 
@@ -11761,6 +12020,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.fire('lockcolumn');
   },
+  /*
+   * @param {Number} indexOrder
+   * @param {String} side
+   */
   rightLockColumn: function(indexOrder, side){
     var me = this;
 
@@ -11774,6 +12037,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.fire('rightlockcolumn');
   },
+  /*
+   * @param {Number} indexOrder
+   * @param {String} side
+   */
   unLockColumn: function(indexOrder, side){
     var me = this,
       removedColumn;
@@ -11797,8 +12064,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   }
 });
 
+/*
+ * @param {String} id
+ */
 FancyGrid.get = function(id){
-  var gridId = Fancy.get(id).select('.fancy-grid').dom.id;
+  var gridId = Fancy.get(id).select('.' + Fancy.gridCls).dom.id;
 
   return Fancy.getWidget(gridId);
 };
@@ -11942,19 +12212,12 @@ Fancy.define('Fancy.ToolTip', {
     me.render();
   },
   tpl: [
-    '<div class="fancy-tooltip-inner">{text}</div>'
+    '<div class="{innerCls}">{text}</div>'
   ],
   widgetCls: 'fancy-tooltip',
   cls: '',
   extraCls: '',
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
-
-    me.tpl = new Fancy.Template(me.tpl);
-  },
+  innerCls: 'fancy-tooltip-inner',
   /*
    *
    */
@@ -11963,13 +12226,16 @@ Fancy.define('Fancy.ToolTip', {
       renderTo = Fancy.get(me.renderTo || document.body).dom,
       el = Fancy.get(document.createElement('div'));
 
-    el.addClass(Fancy.cls);
-    el.addClass(me.widgetCls);
-    el.addClass(me.cls);
-    el.addClass(me.extraCls);
+    el.addCls(
+      Fancy.cls,
+      me.widgetCls,
+      me.cls,
+      me.extraCls
+    );
 
     el.update(me.tpl.getHTML({
-      text: me.text
+      text: me.text,
+      innerCls: me.innerCls
     }));
 
     me.el = Fancy.get(renderTo.appendChild(el.dom));
@@ -11998,7 +12264,7 @@ Fancy.define('Fancy.ToolTip', {
     });
   },
   /*
-   *
+   * @param {Number} [delay]
    */
   hide: function(delay){
     var me = this;
@@ -12029,7 +12295,9 @@ Fancy.define('Fancy.ToolTip', {
    * @param {String} html
    */
   update: function(html){
-    this.el.select('.fancy-tooltip-inner').update(html);
+    var me = this;
+
+    me.el.select('.' + me.innerCls).update(html);
   }
 });
 
@@ -12051,17 +12319,28 @@ Fancy.tip = {
     });
   }
 };
+/*
+ *
+ */
 Fancy.enableCompo = function(){
   var doc = document,
     componentsLength = 0,
     components = {},
     interval;
 
+  /*
+   * @constructor
+   * @param {String} selector
+   * @param {Object} o
+   */
   Fancy.Component = function (selector, o) {
     componentsLength++;
     components[selector] = o;
   };
 
+  /*
+   *
+   */
   Fancy.stopWatch = function(){
     clearInterval(interval);
   };
@@ -12134,6 +12413,10 @@ Fancy.enableCompo = function(){
     }
   }
 
+  /*
+   * @param {String} v
+   * @return {String}
+   */
   function prePareValue(v) {
     if (/\[/.test(v) || /\{/.test(v)) {
       v = v.replace(/\n/g, '');

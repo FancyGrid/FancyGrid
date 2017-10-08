@@ -17,7 +17,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     me.init();
   },
   /*
-   8
+   *
    */
   init: function(){
     var me = this;
@@ -61,9 +61,9 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     me.el.on('mousemove', me.onMouseMove, me);
   },
   /*
-   *
+   * @param {Object} e
    */
-  onMouseEnter: function(){
+  onMouseEnter: function(e){
     var me = this,
       value = me.el.attr('value');
 
@@ -79,9 +79,9 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     });
   },
   /*
-   *
+   * @param {Object} e
    */
-  onMouseLeave: function(){
+  onMouseLeave: function(e){
     var me = this;
 
     me.tooltip.destroy();

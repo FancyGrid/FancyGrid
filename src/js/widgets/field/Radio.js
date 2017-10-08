@@ -29,19 +29,15 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
     me.Super('init', arguments);
 
-    var itemsHTML = '',
-      items = me.items,
-      i = 0,
-      iL = items.length;
+    var itemsHTML = '';
 
     if( me.column ){
       me.cls += ' fancy-field-radio-column';
       itemsHTML += '<div style="margin-left: '+ ( me.labelWidth )+'px;">';
     }
 
-    for(;i<iL;i++){
-      var item = items[i],
-        marginLeft = '',
+    Fancy.each(me.items, function (item, i){
+      var marginLeft = '',
         itemCls = 'fancy-field-text';
 
       if( !me.column && i !== 0 ){
@@ -54,11 +50,11 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
 
       itemsHTML += [
         '<div class="'+itemCls+'" value='+item.value+'>',
-          '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
-          '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
+        '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
+        '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
         '</div>'
       ].join("");
-    }
+    });
 
     if( me.column ){
       itemsHTML += '</div>';
@@ -78,7 +74,7 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   labelWidth: 60,
   value: false,
   checkedCls: 'fancy-field-radio-on',
-  fieldCls: 'fancy fancy-field fancy-field-radio',
+  fieldCls: Fancy.fieldCls + ' fancy-field-radio',
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
@@ -107,15 +103,15 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     var me = this,
       checkedCls = me.checkedCls;
 
-    me.addClass(checkedCls);
-    me.toggleClass(checkedCls);
+    me.addCls(checkedCls);
+    me.toggleCls(checkedCls);
 
-    me.value = me.hasClass(checkedCls);
+    me.value = me.hasCls(checkedCls);
 
     me.fire('change', me.value);
   },
   /*
-   *
+   * @param {Object} e
    */
   onMouseDown: function(e){
 
@@ -131,9 +127,9 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
       checkedCls = me.checkedCls,
       radioEls = el.select('.fancy-field-text');
 
-    radioEls.removeClass(checkedCls);
+    radioEls.removeCls(checkedCls);
 
-    el.select('[value='+value+']').addClass(checkedCls);
+    el.select('[value='+value+']').addCls(checkedCls);
 
     me.value = value;
     if(fire !== false){
@@ -168,6 +164,9 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   clear: function(){
     this.set(false);
   },
+  /*
+   *
+   */
   calcColumns: function(){
     var me = this,
       maxChars = 0,
@@ -196,6 +195,9 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     me.columnWidth = Math.ceil(inputWidth/columns);
     me.rows = Math.ceil(me.items.length/columns);
   },
+  /*
+   *
+   */
   setColumnsStyle: function(){
     var me = this;
 
@@ -203,19 +205,15 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
       return;
     }
 
-    var i = 0,
-      iL = me.items.length,
-      radioEls = me.el.select('.fancy-field-text'),
+    var radioEls = me.el.select('.fancy-field-text'),
       radioInputs = me.el.select('.fancy-field-text .fancy-field-radio-input');
 
-    for(;i<iL;i++){
-      var item = radioEls.item(i);
-
+    radioEls.each(function(item, i){
       if(i % me.columns === 0){
         radioInputs.item(i).css('margin-left', '0px');
       }
 
       item.css('width', me.columnWidth);
-    }
+    });
   }
 });

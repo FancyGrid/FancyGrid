@@ -71,21 +71,21 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       if(column.filter && column.filter.header){
         me.renderFilter(column.type, column, cell);
         if(me.groupHeader && !column.grouping){
-          cell.addClass(cellHeaderTripleCls);
+          cell.addCls(cellHeaderTripleCls);
         }
 
-        cell.addClass(w.filterHeaderCellCls);
+        cell.addCls(w.filterHeaderCellCls);
       }
       else if(me.header){
         if(me.groupHeader && !column.grouping){
-          cell.addClass(cellHeaderTripleCls);
+          cell.addCls(cellHeaderTripleCls);
         }
         else{
           if(column.grouping && me.groupHeader){
-            cell.addClass(cellHeaderDoubleCls);
+            cell.addCls(cellHeaderDoubleCls);
           }
           else if(!column.grouping){
-            cell.addClass(cellHeaderDoubleCls);
+            cell.addCls(cellHeaderDoubleCls);
           }
         }
       }
@@ -105,7 +105,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
 
         switch(column.type){
           case 'date':
-            var els = header.getCell(i).select('.fancy-field'),
+            var els = header.getCell(i).select('.' + Fancy.fieldCls),
               fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
               fieldTo = Fancy.getWidget(els.item(1).attr('id'));
 
@@ -113,7 +113,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             fieldTo.clear();
             break;
           default:
-            var id = header.getCell(i).select('.fancy-field').attr('id'),
+            var id = header.getCell(i).select('.' + Fancy.fieldCls).attr('id'),
               field = Fancy.getWidget(id);
 
             if(sign){
@@ -155,6 +155,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
   },
   _addValuesInColumnFields: function(columns, header, index, value, sign){
     var i = 0,
+      fieldCls = Fancy.fieldCls,
       iL = columns.length,
       column;
 
@@ -163,7 +164,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       if(column.index === index && column.filter && column.filter.header){
         switch(column.type){
           case 'date':
-            var els = header.getCell(i).select('.fancy-field'),
+            var els = header.getCell(i).select('.' + fieldCls),
               fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
               fieldTo = Fancy.getWidget(els.item(1).attr('id'));
 
@@ -171,7 +172,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             fieldTo.clear();
             break;
           default:
-            var id = header.getCell(i).select('.fancy-field').attr('id'),
+            var id = header.getCell(i).select('.' + fieldCls).attr('id'),
               field = Fancy.getWidget(id),
               fieldValue = field.get(),
               splitted = field.get().split(',');
@@ -618,10 +619,9 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    * @param {Object} o
    */
   onColumnResize: function(grid, o){
-    var me = this,
-      cell = Fancy.get(o.cell),
+    var cell = Fancy.get(o.cell),
       width = o.width,
-      fieldEl = cell.select('.fancy-field'),
+      fieldEl = cell.select('.' + Fancy.fieldCls),
       field;
 
     if(fieldEl.length === 0){}

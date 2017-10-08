@@ -74,30 +74,23 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   changeOrderByGroups: function(groups, by){
     var me = this,
       grouped = {},
-      i = 0,
-      iL = groups.length,
-      item,
       data = [];
 
-    for(;i<iL;i++){
-      grouped[groups[i]] = [];
+    Fancy.each(groups, function(group){
+      grouped[group] = [];
+    });
+
+    if(Fancy.isArray(me.data)){
+      Fancy.each(me.data, function(item){
+        var group = item.data[by];
+
+        grouped[group].push(item);
+      });
     }
 
-    i = 0;
-    iL = me.data.length;
-
-    for(;i<iL;i++){
-      item = me.data[i];
-      var group = item.data[by];
-
-      grouped[group].push(item);
-    }
-
-    i = 0;
-    iL = groups.length;
-    for(;i<iL;i++){
-      data = data.concat(grouped[ groups[i]]);
-    }
+    Fancy.each(groups, function (group){
+      data = data.concat(grouped[group]);
+    });
 
     me.grouping = {
       by: by

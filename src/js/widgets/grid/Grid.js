@@ -25,7 +25,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   emptyText: '',
   prefix: 'fancy-grid-',
   cls: '',
-  widgetCls: 'fancy-grid',
+  widgetCls: Fancy.gridCls,
   // Cell cls-s
   cellCls: 'fancy-grid-cell',
   cellInnerCls: 'fancy-grid-cell-inner',
@@ -33,9 +33,16 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   cellOverCls: 'fancy-grid-cell-over',
   cellSelectedCls: 'fancy-grid-cell-selected',
   // Cell Header cls-s
-  headerCellCls: 'fancy-grid-header-cell',
+  cellHeaderCls: 'fancy-grid-header-cell',
+  cellHeaderSelectCls: 'fancy-grid-header-cell-select',
   cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
   cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
+  cellHeaderTriggerCls: 'fancy-grid-header-cell-trigger',
+  cellHeaderTriggerImageCls: 'fancy-grid-header-cell-trigger-image',
+  cellHeaderGroupLevel1: 'fancy-grid-header-cell-group-level-1',
+  cellHeaderGroupLevel2: 'fancy-grid-header-cell-group-level-2',
+  filterHeaderCellCls: 'fancy-grid-header-filter-cell',//TODO: rename to cellHeaderFilterCls
+  //Column header cls-s sorting
   clsASC: 'fancy-grid-column-sort-ASC',
   clsDESC: 'fancy-grid-column-sort-DESC',
   //Column cls-s
@@ -47,27 +54,38 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
   columnOrderCls: 'fancy-grid-column-order',
   columnSelectCls: 'fancy-grid-column-select',
+  columnResizerCls: 'fancy-grid-column-resizer',
   //Column spark cls-s
-  clsSparkColumn: 'fancy-grid-column-sparkline',
-  clsSparkColumnBullet: 'fancy-grid-column-sparkline-bullet',
-  clsSparkColumnCircle: 'fancy-grid-column-chart-circle',
-  clsSparkColumnDonutProgress: 'fancy-grid-column-spark-progress-donut',
-  clsColumnGrossLoss: 'fancy-grid-column-grossloss',
-  clsColumnProgress: 'fancy-grid-column-progress',
-  clsSparkColumnHBar: 'fancy-grid-column-h-bar',
+  clsSparkColumn: 'fancy-grid-column-sparkline',//TODO: rename to columnSparkCls
+  clsSparkColumnBullet: 'fancy-grid-column-sparkline-bullet',//TODO: rename to columnSparkBulletCls
+  clsSparkColumnCircle: 'fancy-grid-column-chart-circle',//TODO: rename to columnSparkCircleCls
+  clsSparkColumnDonutProgress: 'fancy-grid-column-spark-progress-donut',//TODO: rename to columnSparkDonutCls
+  clsColumnGrossLoss: 'fancy-grid-column-grossloss',//TODO: rename to columnGrossCls
+  clsColumnProgress: 'fancy-grid-column-progress',//TODO: rename to columnProgressCls
+  clsSparkColumnHBar: 'fancy-grid-column-h-bar',//TODO: rename to columnSparkHBarCls
   //Row cls-s
-  clsGroupRow: 'fancy-grid-group-row',
-  clsCollapsedRow: 'fancy-grid-group-row-collapsed',
-  clsSummaryContainer: 'fancy-grid-summary-container',
-  clsSummaryRow: 'fancy-grid-summary-row',
+  clsGroupRow: 'fancy-grid-group-row',//TODO: rename to rowGroupCls
+  clsCollapsedRow: 'fancy-grid-group-row-collapsed',//TODO: rename to rowCollapsedCls
+  clsSummaryContainer: 'fancy-grid-summary-container',//TODO: rename to ???
+  clsSummaryRow: 'fancy-grid-summary-row',//TODO: rename to rowSummaryCls
   rowEditCls: 'fancy-grid-row-edit',
   rowEditButtonCls: 'fancy-grid-row-edit-buttons',
 
   pseudoCellCls: 'fancy-grid-pseudo-cell',
   rowOverCls: 'fancy-grid-cell-over',
-  expandRowOverCls: 'fancy-grid-expand-row-over',
-  expandRowSelectedCls: 'fancy-grid-expand-row-selected',
-  filterHeaderCellCls: 'fancy-grid-header-filter-cell',
+
+  expandRowCls: 'fancy-grid-expand-row',//TODO: rename to rowExpandCls
+  expandRowOverCls: 'fancy-grid-expand-row-over',//TODO: rename to rowExpandOverCls
+  expandRowSelectedCls: 'fancy-grid-expand-row-selected', //TODO: rename to rowExpandSelectedCls
+
+  leftEmptyCls: 'fancy-grid-left-empty',
+  rightEmptyCls: 'fancy-grid-right-empty',
+
+  centerCls: 'fancy-grid-center',
+  leftCls: 'fancy-grid-left',
+  rightCls: 'fancy-grid-right',
+
+  headerCls: Fancy.gridHeaderCls,
 
   header: true,
   shadow: true,
@@ -78,6 +96,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   height: 200,
   minWidth: 200,
   minHeight: 200,
+  minColumnWidth: 30,
   emptyValue: '&nbsp;',
   frame: true,
   keyNavigation: false,
@@ -167,7 +186,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.initStore();
 
-    //me.Super('init', arguments);
     me.initPlugins();
 
     me.ons();
@@ -267,13 +285,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules['selection'] = true;
     }
 
-    var _columns = columns.concat(leftColumns).concat(rightColumns),
-      i = 0,
-      iL = _columns.length;
+    var _columns = columns.concat(leftColumns).concat(rightColumns);
 
-    for(;i<iL;i++){
-      var column = _columns[i];
-
+    Fancy.each(_columns, function(column){
       if(column.sortable === true){
         requiredModules.sort = true;
       }
@@ -311,20 +325,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           requiredModules.selection = true;
           break;
       }
-    }
+    });
 
     if(Fancy.isArray(me.tbar)){
-      var i = 0,
-        iL = me.tbar.length;
-
-      for(;i<iL;i++){
-        switch(me.tbar[i].action){
+      Fancy.each(me.tbar, function(item){
+        switch(item.action){
           case 'add':
           case 'remove':
             requiredModules.edit = true;
             break;
         }
-      }
+      });
     }
 
     if(me.gridToGrid){
@@ -366,6 +377,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       Fancy.loadModule(p, onLoad);
     }
   },
+  /*
+   * @param {Number} indexOrder
+   * @param {String} side
+   */
   lockColumn: function(indexOrder, side){
     var me = this;
 
@@ -379,6 +394,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.fire('lockcolumn');
   },
+  /*
+   * @param {Number} indexOrder
+   * @param {String} side
+   */
   rightLockColumn: function(indexOrder, side){
     var me = this;
 
@@ -392,6 +411,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.fire('rightlockcolumn');
   },
+  /*
+   * @param {Number} indexOrder
+   * @param {String} side
+   */
   unLockColumn: function(indexOrder, side){
     var me = this,
       removedColumn;
@@ -415,8 +438,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   }
 });
 
+/*
+ * @param {String} id
+ */
 FancyGrid.get = function(id){
-  var gridId = Fancy.get(id).select('.fancy-grid').dom.id;
+  var gridId = Fancy.get(id).select('.' + Fancy.gridCls).dom.id;
 
   return Fancy.getWidget(gridId);
 };

@@ -37,17 +37,14 @@ Fancy.define('Fancy.Widget', {
    * @param {String|HTMLElement}
    */
   renderItems: function(renderTo){
-    var me = this,
-      i = 0,
-      iL = me.items.length;
+    var me = this;
 
-    for(;i<iL;i++){
-      var item = me.items[i],
-        w = Fancy.getClassByType(item.type);
+    Fancy.each(me.items, function(item, i){
+      var w = Fancy.getClassByType(item.type);
 
       item.renderTo = renderTo;
       me.items[i] = new w(item);
-    }
+    });
   },
   /*
    *
@@ -163,34 +160,91 @@ Fancy.define('Fancy.Widget', {
       }
     }
   },
+  /*
+   * @param {String|Object} o1
+   * @param {Number|String} [o2]
+   */
   css: function(o1, o2){
-    var me = this;
-
-    return me.el.css(o1, o2);
+    return this.el.css(o1, o2);
   },
+  /*
+   * @param {String} value
+   */
   addClass: function(value){
-    this.el.addClass(value);
+    this.el.addCls(value);
   },
+  /*
+   * @param {String} value
+   */
+  addCls: function(value){
+    this.el.addCls(value);
+  },
+  /*
+   * @param {String} value
+   */
   removeClass: function(value){
-    this.el.removeClass(value);
+    this.el.removeCls(value);
   },
+  /*
+ * @param {String} value
+ */
+  removeCls: function(value){
+    this.el.removeCls(value);
+  },
+  /*
+   * @param {String} value
+   */
   hasClass: function(value){
-    return this.el.hasClass(value);
+    return this.el.hasCls(value);
   },
+  /*
+   * @param {String} value
+   */
+  hasCls: function(value){
+    return this.el.hasCls(value);
+  },
+  /*
+   * @param {String} value
+   */
   toggleClass: function(value){
-    this.el.toggleClass(value);
+    this.el.toggleCls(value);
   },
+  /*
+   * @param {String} value
+   */
+  toggleCls: function(value){
+    this.el.toggleCls(value);
+  },
+  /*
+   *
+   */
   destroy: function(){
-    var me = this;
-
-    if(me.el){
-      me.el.destroy();
+    if(this.el){
+      this.el.destroy();
     }
   },
+  /*
+   *
+   */
   show: function() {
     this.el.show();
   },
+  /*
+   *
+   */
   hide: function() {
     this.el.hide();
+  },
+  /*
+   *
+   */
+  initTpl: function(){
+    var me = this;
+
+    if(!me.tpl){
+      return;
+    }
+
+    me.tpl = new Fancy.Template(me.tpl);
   }
 });

@@ -123,8 +123,12 @@ Fancy.form.field.Mixin.prototype = {
     }
 
     me.fire('beforerender');
-    el.addClass( me.cls );
-    el.addClass( me.fieldCls );
+
+    el.addCls(
+      Fancy.cls,
+      me.cls,
+      me.fieldCls
+    );
 
     el.attr('id', me.id);
 
@@ -230,11 +234,11 @@ Fancy.form.field.Mixin.prototype = {
     me.setSize();
 
     if( me.labelAlign === 'top' ){
-      me.el.addClass('fancy-field-label-align-top');
+      me.el.addCls('fancy-field-label-align-top');
       me.el.select('.fancy-field-text').css('float', 'none');
     }
     else if( me.labelAlign === 'right' ){
-      me.el.addClass('fancy-field-label-align-right');
+      me.el.addCls('fancy-field-label-align-right');
       switch (me.type){
         case 'radio':
           $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text:last'));
@@ -407,7 +411,7 @@ Fancy.form.field.Mixin.prototype = {
   isValid: function(){
     var me = this;
 
-    return !me.hasClass(me.failedValidCls);
+    return !me.hasCls(me.failedValidCls);
   },
   /*
    *
@@ -507,7 +511,7 @@ Fancy.form.field.Mixin.prototype = {
   failedValid: function(){
     var me = this;
 
-    if(me.hasClass(me.failedValidCls)){
+    if(me.hasCls(me.failedValidCls)){
       if(me.tooltip && me.errorText){
         me.tooltip.update(me.errorText);
       }
@@ -527,13 +531,13 @@ Fancy.form.field.Mixin.prototype = {
         });
       }
 
-      me.addClass(me.failedValidCls);
+      me.addCls(me.failedValidCls);
     }
   },
   clearValid: function () {
     var me = this;
 
-    me.removeClass(me.failedValidCls);
+    me.removeCls(me.failedValidCls);
   },
   /*
    *
@@ -541,7 +545,7 @@ Fancy.form.field.Mixin.prototype = {
   successValid: function(){
     var me = this;
 
-    me.removeClass(me.failedValidCls);
+    me.removeCls(me.failedValidCls);
     me.hideErrorTip();
     delete me.errorText;
   },
@@ -842,6 +846,9 @@ Fancy.form.field.Mixin.prototype = {
 
     me.tooltip.show(e.pageX + 15, e.pageY - 25);
   },
+  /*
+   * @return {Object}
+   */
   getInputSelection: function(){
     var me = this,
       start = 0,

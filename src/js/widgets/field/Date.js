@@ -181,7 +181,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
 
     me.input.dom.value = value;
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   emptyText: '',
@@ -301,7 +301,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       target = e.target;
 
     if(target.tagName.toLocaleLowerCase() === 'input'){}
-    else if(Fancy.get(target).hasClass('fancy-field-picker-button')){}
+    else if(Fancy.get(target).hasCls('fancy-field-picker-button')){}
     else if( datePicker.panel.el.within(target) ){}
     else if( monthPicker && monthPicker.panel.el.within(target) ){}
     else{
@@ -457,6 +457,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     me.initDate(value);
     me.changeInputValue();
   },
+  /*
+   * @param {*} oldValue
+   * @return {Boolean}
+   */
   isEqual: function(oldValue){
     var me = this,
       oldDate = Fancy.Date.parse(oldValue, me.format.read, me.format.mode),

@@ -124,7 +124,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
   },
   /*
-   *
+   * @return {Object}
    */
   getNextCellEditParam: function(){
     var me = this,
@@ -199,6 +199,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   },
   /*
    * @param {Object} o
+   * @return {Object}
    */
   getNextCellInfo: function(o){
     var me = this,
@@ -257,7 +258,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
   },
   /*
-   *
+   * @return {String}
    */
   getClickEventName: function(){
     var me = this;
@@ -279,7 +280,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     me.stopped = true;
   },
   /*
-   * @param {Object} grid
+   * @param {Fancy.Grid} grid
    * @param {Object} o
    */
   onClickCell: function(grid, o){
@@ -292,7 +293,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
   },
   /*
-   * @param {Object} grid
+   * @param {Fancy.Grid} grid
    * @param {Object} o
    */
   onClickCellToEdit: function(grid, o){
@@ -344,7 +345,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     w.updater.updateRow(o.rowIndex);
   },
   /*
-   *
+   * @param {Fancy.Store} store
+   * @param {String|Number} id
+   * @param {String} key
+   * @param {*} value
    */
   onStoreCRUDUpdate: function(store, id, key, value){
     delete store.changed[id];

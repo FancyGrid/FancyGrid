@@ -48,16 +48,19 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   onCellMouseMove: function(grid, o){
     var me = this,
       w = me.widget,
+      fieldCls = Fancy.fieldCls,
+      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
+      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
       e = o.e,
       cellEl = Fancy.get(o.cell),
       offsetX = e.offsetX,
       cellWidth = cellEl.width(),
       target = Fancy.get(e.target),
-      isInTrigger = target.hasClass('fancy-grid-header-cell-trigger'),
-      isInTriggerImage = target.hasClass('fancy-grid-header-cell-trigger-image'),
-      triggerEl = cellEl.select('.fancy-grid-header-cell-trigger').item(0),
-      triggerImageEl = cellEl.select('.fancy-grid-header-cell-trigger-image').item(0),
-      hasFieldInSide = Fancy.get(e.target).closest('.fancy-field').hasClass('fancy-field'),
+      isInTrigger = target.hasCls(cellHeaderTriggerCls),
+      isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
+      triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
+      triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
+      hasFieldInSide = Fancy.get(e.target).closest('.' + fieldCls).hasCls(fieldCls),
       triggerWidth = parseInt(triggerEl.css('width')),
       triggerImageWidth = parseInt(triggerImageEl.css('width')),
       _width = cellWidth,
@@ -125,15 +128,25 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
    * @param {Fancy.Element} cell
    */
   addCellResizeCls: function(cell){
-    Fancy.get(cell).addClass('fancy-grid-column-resizer');
-    Fancy.get(cell).select('.fancy-grid-header-cell-trigger').addClass('fancy-grid-column-resizer');
+    var me = this,
+      w = me.widget,
+      columnResizerCls = w.columnResizerCls,
+      cellHeaderTriggerCls = w.cellHeaderTriggerCls;
+
+    Fancy.get(cell).addCls(columnResizerCls);
+    Fancy.get(cell).select('.' + cellHeaderTriggerCls).addCls(columnResizerCls);
   },
   /*
    * @param {Fancy.Element} cell
    */
   removeCellResizeCls: function(cell){
-    Fancy.get(cell).removeClass('fancy-grid-column-resizer');
-    Fancy.get(cell).select('.fancy-grid-header-cell-trigger').item(0).removeClass('fancy-grid-column-resizer');
+    var me = this,
+      w = me.widget,
+      columnResizerCls = w.columnResizerCls,
+      cellHeaderTriggerCls = w.cellHeaderTriggerCls;
+
+    Fancy.get(cell).removeClass(columnResizerCls);
+    Fancy.get(cell).select('.' + cellHeaderTriggerCls).item(0).removeClass(columnResizerCls);
   },
   /*
    * @param {Object} e
@@ -142,16 +155,18 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   onHeaderCellMouseDown: function(e, o){
     var me = this,
       w = me.widget,
+      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
+      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
       e = o.e,
       target = Fancy.get(e.target),
       cellEl = Fancy.get(o.cell),
       offsetX = e.offsetX,
       cellWidth = cellEl.width(),
-      field = cellEl.select('.fancy-field'),
-      isInTrigger = target.hasClass('fancy-grid-header-cell-trigger'),
-      isInTriggerImage = target.hasClass('fancy-grid-header-cell-trigger-image'),
-      triggerEl = cellEl.select('.fancy-grid-header-cell-trigger').item(0),
-      triggerImageEl = cellEl.select('.fancy-grid-header-cell-trigger-image').item(0),
+      field = cellEl.select('.' + Fancy.fieldCls),
+      isInTrigger = target.hasCls(cellHeaderTriggerCls),
+      isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
+      triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
+      triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
       triggerWidth = parseInt(triggerEl.css('width')),
       triggerImageWidth = parseInt(triggerImageEl.css('width')),
       _width = cellWidth,
@@ -246,7 +261,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
     }
   },
   /*
-   *
+   * @return {Number}
    */
   getMinColumnWidth: function(){
     var me = this,
@@ -269,7 +284,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
     return minCellWidth;
   },
   /*
-   *
+   * @return {Number|false}
    */
   getMaxColumnWidth: function(){
     var me = this,
@@ -300,7 +315,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
     w.startResizing = false;
   },
   /*
-   *
+   * @param {Fancy.Grid} grid
+   * @param {Object} e
    */
   onDocMove: function(grid, e){
     var me = this,
@@ -319,14 +335,14 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       leftEl = Fancy.get( document.createElement('div')),
       rightEl = Fancy.get( document.createElement('div') );
 
-    leftEl.addClass('fancy-grid-resizer-left');
-    rightEl.addClass('fancy-grid-resizer-right');
+    leftEl.addCls('fancy-grid-resizer-left');
+    rightEl.addCls('fancy-grid-resizer-right');
 
     me.leftEl = Fancy.get(w.el.dom.appendChild(leftEl.dom));
     me.rightEl = Fancy.get(w.el.dom.appendChild(rightEl.dom));
   },
   /*
-   *
+   * @param {Object} e
    */
   moveResizeEls: function(e){
     var me = this,
@@ -415,7 +431,6 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       display: 'none'
     });
 
-    //me.resizeColumn();
     me.fixSidesWidth();
     w.startResizing = false;
     me.moveLeftResizer = false;
@@ -427,6 +442,9 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   fixSidesWidth: function(){
     var me = this,
       w = me.widget,
+      cellHeaderCls = w.cellHeaderCls,
+      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
+      columnCls = w.columnCls,
       cellWidth = me.cellWidth,
       index = me.columnIndex,
       delta = me.deltaWidth,
@@ -465,8 +483,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
         column = w.leftColumns[index];
 
         w.leftColumns[me.columnIndex].width = cellWidth;
-        domColumns = w.leftBody.el.select('.fancy-grid-column');
-        domHeaderCells = w.leftHeader.el.select('.fancy-grid-header-cell');
+        domColumns = w.leftBody.el.select('.' + columnCls);
+        domHeaderCells = w.leftHeader.el.select('.' + cellHeaderCls);
         domColumns.item(index).css('width', cellWidth + 'px');
 
         var i = me.columnIndex + 1,
@@ -488,7 +506,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
             domHeaderCell = domHeaderCells.item(i);
 
           domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
-          if(domHeaderCell.hasClass('fancy-grid-header-cell-group-level-2') && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
+          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
           else{
             domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
           }
@@ -508,8 +526,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       case 'center':
         column = w.columns[index];
         w.columns[me.columnIndex].width = cellWidth;
-        domColumns = w.body.el.select('.fancy-grid-column');
-        domHeaderCells = w.header.el.select('.fancy-grid-header-cell');
+        domColumns = w.body.el.select('.' + columnCls);
+        domHeaderCells = w.header.el.select('.' + cellHeaderCls);
         domColumns.item(index).css('width', cellWidth + 'px');
 
         var i = me.columnIndex + 1,
@@ -538,7 +556,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
 
           domColumnEl.css('left', left);
 
-          if(domHeaderCell.hasClass('fancy-grid-header-cell-group-level-2') && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
+          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
           else{
             domHeaderCell.css('left', _left);
           }
@@ -555,8 +573,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
         column = w.rightColumns[index];
 
         w.rightColumns[me.columnIndex].width = cellWidth;
-        domColumns = w.rightBody.el.select('.fancy-grid-column');
-        domHeaderCells = w.rightHeader.el.select('.fancy-grid-header-cell');
+        domColumns = w.rightBody.el.select('.' + columnCls);
+        domHeaderCells = w.rightHeader.el.select('.' + cellHeaderCls);
         domColumns.item(index).css('width', cellWidth + 'px');
 
         var i = me.columnIndex + 1,
@@ -579,7 +597,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
 
           domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
 
-          if(domHeaderCell.hasClass('fancy-grid-header-cell-group-level-2') && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
+          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
           else{
             domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
           }
@@ -639,6 +657,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   getPrevCell: function(o){
     var me = this,
       w = me.widget,
+      cellHeaderCls = w.cellHeaderCls,
       header;
 
     switch(o.side){
@@ -653,15 +672,16 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
         break;
     }
 
-    return header.el.select('.fancy-grid-header-cell').item(o.index - 1).dom;
+    return header.el.select('.' + cellHeaderCls).item(o.index - 1).dom;
   },
   /*
    * @param {Object} o
-   * @return {Fancy.Element}
+   * @return {HTMLElement}
    */
   getCell: function(o){
     var me = this,
       w = me.widget,
+      cellHeaderCls = w.cellHeaderCls,
       header;
 
     switch(o.side){
@@ -676,6 +696,56 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
         break;
     }
 
-    return header.el.select('.fancy-grid-header-cell').item(o.index).dom;
+    return header.el.select('.' + cellHeaderCls).item(o.index).dom;
+  },
+  /*
+   * @param {String} side
+   */
+  updateColumnsWidth: function(side){
+    var me = this,
+      w = me.widget,
+      side = side || 'center',
+      header = w.getHeader(side),
+      columns = w.getColumns(side),
+      i = 0,
+      iL = columns.length;
+
+    for(;i<iL;i++){
+      var column = columns[i];
+
+      me.setColumnWidth(i, column.width, side);
+    }
+
+    header.setCellsPosition();
+  },
+  /*
+   * @param {Number} index
+   * @param {Number} width
+   * @param {String} side
+   */
+  setColumnWidth: function(index, width, side){
+    var me = this,
+      w = me.widget,
+      columns = w.getColumns(side),
+      header = w.getHeader(side),
+      body = w.getBody(side),
+      columnEl = Fancy.get(body.getDomColumn(index)),
+      headerCellEl = header.getCell(index),
+      nextHeaderCellEl,
+      nextColumnEl,
+      left = parseInt(columnEl.css('left'));
+
+    columnEl.css('width', width);
+    headerCellEl.css('width', width);
+
+    if(columns[index + 1]){
+      left += width;
+
+      nextColumnEl = Fancy.get(body.getDomColumn(index + 1));
+      nextColumnEl.css('left', left);
+
+      nextHeaderCellEl = header.getCell(index + 1);
+      nextHeaderCellEl.css('left', left);
+    }
   }
 });

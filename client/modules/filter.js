@@ -269,21 +269,21 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       if(column.filter && column.filter.header){
         me.renderFilter(column.type, column, cell);
         if(me.groupHeader && !column.grouping){
-          cell.addClass(cellHeaderTripleCls);
+          cell.addCls(cellHeaderTripleCls);
         }
 
-        cell.addClass(w.filterHeaderCellCls);
+        cell.addCls(w.filterHeaderCellCls);
       }
       else if(me.header){
         if(me.groupHeader && !column.grouping){
-          cell.addClass(cellHeaderTripleCls);
+          cell.addCls(cellHeaderTripleCls);
         }
         else{
           if(column.grouping && me.groupHeader){
-            cell.addClass(cellHeaderDoubleCls);
+            cell.addCls(cellHeaderDoubleCls);
           }
           else if(!column.grouping){
-            cell.addClass(cellHeaderDoubleCls);
+            cell.addCls(cellHeaderDoubleCls);
           }
         }
       }
@@ -303,7 +303,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
 
         switch(column.type){
           case 'date':
-            var els = header.getCell(i).select('.fancy-field'),
+            var els = header.getCell(i).select('.' + Fancy.fieldCls),
               fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
               fieldTo = Fancy.getWidget(els.item(1).attr('id'));
 
@@ -311,7 +311,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             fieldTo.clear();
             break;
           default:
-            var id = header.getCell(i).select('.fancy-field').attr('id'),
+            var id = header.getCell(i).select('.' + Fancy.fieldCls).attr('id'),
               field = Fancy.getWidget(id);
 
             if(sign){
@@ -353,6 +353,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
   },
   _addValuesInColumnFields: function(columns, header, index, value, sign){
     var i = 0,
+      fieldCls = Fancy.fieldCls,
       iL = columns.length,
       column;
 
@@ -361,7 +362,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       if(column.index === index && column.filter && column.filter.header){
         switch(column.type){
           case 'date':
-            var els = header.getCell(i).select('.fancy-field'),
+            var els = header.getCell(i).select('.' + fieldCls),
               fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
               fieldTo = Fancy.getWidget(els.item(1).attr('id'));
 
@@ -369,7 +370,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             fieldTo.clear();
             break;
           default:
-            var id = header.getCell(i).select('.fancy-field').attr('id'),
+            var id = header.getCell(i).select('.' + fieldCls).attr('id'),
               field = Fancy.getWidget(id),
               fieldValue = field.get(),
               splitted = field.get().split(',');
@@ -816,10 +817,9 @@ Fancy.define('Fancy.grid.plugin.Filter', {
    * @param {Object} o
    */
   onColumnResize: function(grid, o){
-    var me = this,
-      cell = Fancy.get(o.cell),
+    var cell = Fancy.get(o.cell),
       width = o.width,
-      fieldEl = cell.select('.fancy-field'),
+      fieldEl = cell.select('.' + Fancy.fieldCls),
       field;
 
     if(fieldEl.length === 0){}
@@ -1048,11 +1048,9 @@ Fancy.define('Fancy.grid.plugin.Search', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
     
     w.once('init', function(){
-      //me.render();
       me.generateKeys();
     });
   },
@@ -1128,8 +1126,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
    */
   generateKeys: function(){
     var me = this,
-      w = me.widget,
-      s = w.store;
+      w = me.widget;
 
     if(!me.keys){
       me.keys = {};
@@ -1148,16 +1145,13 @@ Fancy.define('Fancy.grid.plugin.Search', {
         columns = columns.concat(w.rightColumns);
       }
 
-      var fields = [],
-        i = 0,
-        iL = columns.length;
+      var fields = [];
 
-      for(;i<iL;i++){
-        var column = columns[i],
-          index = column.index || column.key;
+      Fancy.each(columns, function (column) {
+        var index = column.index || column.key;
 
         if(column.searchable === false){
-          continue;
+          return;
         }
 
         switch(column.type){
@@ -1170,24 +1164,21 @@ Fancy.define('Fancy.grid.plugin.Search', {
           case 'currency':
             break;
           default:
-            continue;
+            return;
         }
 
         if(index){
           fields.push(index);
         }
-      }
+      });
 
-      i = 0;
-      iL = fields.length;
-
-      for(;i<iL;i++){
-        if(fields[i] === '$selected'){
-          continue;
+      Fancy.each(fields, function(index){
+        if(index === '$selected'){
+          return;
         }
 
-        me.keys[fields[i]] = true;
-      }
+        me.keys[index] = true;
+      });
     }
 
     return me.keys;

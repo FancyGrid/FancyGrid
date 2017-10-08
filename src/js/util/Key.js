@@ -70,7 +70,7 @@ Fancy.key = {
 Fancy.Key = {
   /*
    * @param {number} c
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   isNum: function(c){
     var key = Fancy.key;
@@ -104,7 +104,7 @@ Fancy.Key = {
   /*
    * @param {Number} c
    * @param {Object} w
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   isNumControl: function(c, e){
     var key = Fancy.key;

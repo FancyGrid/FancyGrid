@@ -256,6 +256,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   ptype: 'grid.highchart',
   inWidgetName: 'highchart',
   /*
+   * @constructor
    * @param {Object} config
    */
   constructor: function(config){
@@ -276,12 +277,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   /*
    *
    */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-  },
+  ons: function(){},
   /*
    * @param {Object} chartConfig
    */
@@ -386,6 +382,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   },
   /*
    * @param {Object} chartConfig
+   * @return {Object}
    */
   sort: function(chartConfig){
     var me = this,
@@ -452,6 +449,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   },
   /*
    * @param {Object} chartConfig
+   * @return {Array}
    */
   getData: function(chartConfig){
     var me = this,
@@ -497,7 +495,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
     return data;
   },
   /*
-   *
+   * @return {Array}
    */
   getColumnsChartIndexes: function(){
     var me = this,
@@ -519,6 +517,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   },
   /*
    * @param {Object} chartConfig
+   * @return {Object}
    */
   getFieldsMap: function(chartConfig){
     var fieldsMap = {},
@@ -544,6 +543,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   },
   /*
    * @param {String} id
+   * @return {Number}
    */
   getNumberSeries: function(id){
     var me = this,
@@ -573,6 +573,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   /*
    * @param {String} id
    * @param {String} name
+   * @return {false|Number}
    */
   doesSeriesExist: function(id, name){
     var me= this,
@@ -590,6 +591,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
   },
   /*
    * @param {String} id
+   * @return {Boolean}
    */
   isTreeMap: function(id){
     var me = this,
@@ -601,6 +603,10 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
 
     return chart.series[0].type === 'treemap';
   },
+  /*
+   * @param {String} id
+   * @return {Object}
+   */
   getChart: function(id){
     var charts = Highcharts.charts,
       chosenChart;

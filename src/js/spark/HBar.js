@@ -30,6 +30,9 @@ Fancy.define('Fancy.spark.HBar', {
       me.ons();
     }
   },
+  /*
+   *
+   */
   initId: function(){
     var me = this,
       prefix = me.prefix || Fancy.prefix;
@@ -51,7 +54,7 @@ Fancy.define('Fancy.spark.HBar', {
     }
   },
   /*
-   *
+   * @param {Object} e
    */
   onMouseEnter: function(e){
     var me = this,
@@ -82,9 +85,9 @@ Fancy.define('Fancy.spark.HBar', {
     Fancy.tip.update(text);
   },
   /*
-   *
+   * @param {Object} e
    */
-  onMouseLeave: function(){
+  onMouseLeave: function(e){
     Fancy.tip.hide(1000);
   },
   /*
@@ -108,33 +111,30 @@ Fancy.define('Fancy.spark.HBar', {
       disabled = column.disabled || {},
       lineHeight = '',
       margin = '',
-      marginTop = 2;
-
-    var i = 0,
+      marginTop = 2,
+      i = 0,
       iL = fields.length;
 
     if(column.fields){
       iL = column.fields.length;
-      for(;i<iL;i++){
-        var key = column.index + '.' + column.fields[i];
+      Fancy.each(column.fields, function (field) {
+        var key = column.index + '.' + field;
 
         if(disabled[key]){
-          continue;
+          return;
         }
 
         totalValue += me.data[column.index][key];
-      }
+      });
     }
     else{
-      for(;i<iL;i++){
-        var key = fields[i];
-
+      Fancy.each(fields, function (key) {
         if(disabled[key]){
-          continue;
+          return;
         }
 
         totalValue += me.data[key];
-      }
+      });
     }
 
     if(!me.stacked){
@@ -216,6 +216,9 @@ Fancy.define('Fancy.spark.HBar', {
     me.renderTo.innerHTML = value;
     me.el = Fancy.get(me.renderTo);
   },
+  /*
+   * @param {Array} data
+   */
   update: function(data){
     var me = this,
       column = me.column,
@@ -237,28 +240,24 @@ Fancy.define('Fancy.spark.HBar', {
     if(column.fields){
       iL = column.fields.length;
 
-      for(;i<iL;i++){
-        var key = column.fields[i];
-
+      Fancy.each(column.fields, function(key){
         if(disabled[column.index + '.' + key]){
           dLength++;
-          continue;
+          return;
         }
 
         totalValue += me.data[column.index][key];
-      }
+      });
     }
     else{
-      for(;i<iL;i++){
-        var key = fields[i];
-
+      Fancy.each(fields, function(key){
         if(disabled[key]){
           dLength++;
-          continue;
+          return;
         }
 
         totalValue += me.data[key];
-      }
+      });
     }
 
     if(!me.stacked){

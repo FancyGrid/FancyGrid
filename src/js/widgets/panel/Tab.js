@@ -46,9 +46,9 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.renderTabWrappers();
 
     if(!me.wrapped){
-      me.el.addClass('fancy-panel-grid-inside');
+      me.el.addCls('fancy-panel-grid-inside');
     }
-    me.el.addClass('fancy-panel-tab');
+    me.el.addCls('fancy-panel-tab');
 
     me.rendered = true;
   },
@@ -143,17 +143,15 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     me.tabs = tabs;
   },
   renderTabWrappers: function(){
-    var me = this,
-      i = 0,
-      iL = me.items.length;
+    var me = this;
 
-    for(;i<iL;i++){
+    Fancy.each(me.items, function(item){
       var el = Fancy.get( document.createElement('div') );
 
-      el.addClass(me.tabWrapperCls);
+      el.addCls(me.tabWrapperCls);
 
-      me.items[i].renderTo = me.panelBodyEl.dom.appendChild(el.dom);
-    }
+      item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
+    });
   },
   setActiveTab: function(newActiveTab){
     var me = this,
@@ -165,10 +163,10 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
       return;
     }
 
-    tabs.item(me.activeTab).removeClass(activeTabWrapperCls);
+    tabs.item(me.activeTab).removeCls(activeTabWrapperCls);
     me.activeTab = newActiveTab;
 
-    tabs.item(me.activeTab).addClass(activeTabWrapperCls);
+    tabs.item(me.activeTab).addCls(activeTabWrapperCls);
 
     var item = me.items[me.activeTab];
 
@@ -194,8 +192,8 @@ Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     }
 
     if(me.tabs){
-      me.tbar[oldActiveTab].removeClass(me.activeTabTBarButtonCls);
-      me.tbar[me.activeTab].addClass(me.activeTabTBarButtonCls);
+      me.tbar[oldActiveTab].removeCls(me.activeTabTBarButtonCls);
+      me.tbar[me.activeTab].addCls(me.activeTabTBarButtonCls);
     }
   },
   /*

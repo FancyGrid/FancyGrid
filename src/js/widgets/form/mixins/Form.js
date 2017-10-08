@@ -1,4 +1,7 @@
 Fancy.Mixin('Fancy.form.mixin.Form', {
+  /*
+   *
+   */
   init: function(){
     var me = this;
 
@@ -21,7 +24,7 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
     me.fire('init');
   },
   cls: '',
-  widgetCls: 'fancy fancy-form',
+  widgetCls: 'fancy-form',
   value: '',
   width: 200,
   height: 300,
@@ -30,6 +33,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
     '<div class="fancy-form-body">',
     '</div>'
   ],
+  /*
+   *
+   */
   preRender: function(){
     var me = this;
 
@@ -39,6 +45,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.renderPanel();
     }
   },
+  /*
+   *
+   */
   renderPanel: function(){
     var me = this,
       panelConfig = {
@@ -98,11 +107,11 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
     me.buttons = me.panel.buttons;
 
     if(!me.wrapped){
-      me.panel.addClass('fancy-panel-grid-inside');
+      me.panel.addCls('fancy-panel-grid-inside');
     }
 
     if(me.extraCls && me.panel){
-      me.panel.addClass(me.extraCls);
+      me.panel.addCls(me.extraCls);
     }
 
     if(me.title) {
@@ -119,6 +128,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
   },
+  /*
+   *
+   */
   initRenderTo: function(){
     var me = this,
       renderTo = me.renderTo || document.body;
@@ -132,13 +144,20 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.renderTo = renderTo;
   },
+  /*
+   *
+   */
   render: function(){
     var me = this,
       renderTo = me.renderTo,
       el = Fancy.get( document.createElement('div') );
 
-    el.addClass(me.cls);
-    el.addClass(me.widgetCls);
+    el.addCls(
+      me.cls,
+      Fancy.cls,
+      me.widgetCls
+    );
+
     el.attr('id', me.id);
 
     el.css({
@@ -152,11 +171,11 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     if(me.panel === undefined){
       if(me.shadow){
-        el.addClass('fancy-panel-shadow');
+        el.addCls('fancy-panel-shadow');
       }
 
       if( me.theme !== 'default' ){
-        el.addClass('fancy-theme-' + me.theme);
+        el.addCls('fancy-theme-' + me.theme);
       }
     }
 
@@ -172,6 +191,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
     me.fire('afterrender');
     me.fire('render');
   },
+  /*
+   * @param {Array} tbar
+   */
   generateTabs: function(){
     var me = this,
       tbar = [];
@@ -208,6 +230,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     return tbar;
   },
+  /*
+   * @param {Number} newActiveTab
+   */
   setActiveTab: function(newActiveTab){
     var me = this,
       tabs = me.el.select('.fancy-field-tab'),
@@ -221,15 +246,19 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.activeTab = 0;
     }
 
-    oldActiveTab.removeClass('fancy-field-tab-active');
-    tabs.item(me.activeTab).addClass('fancy-field-tab-active');
+    oldActiveTab.removeCls('fancy-field-tab-active');
+    tabs.item(me.activeTab).addCls('fancy-field-tab-active');
 
     if(me.tabs){
       var toolbarTabs = me.panel.el.select('.fancy-panel-tbar .fancy-toolbar-tab');
-      toolbarTabs.removeClass('fancy-toolbar-tab-active');
-      toolbarTabs.item(me.activeTab).addClass('fancy-toolbar-tab-active');
+      toolbarTabs.removeCls('fancy-toolbar-tab-active');
+      toolbarTabs.item(me.activeTab).addCls('fancy-toolbar-tab-active');
     }
   },
+  /*
+   * @param {HTMLElement} renderTo
+   * @param {Array} [items]
+   */
   renderItems: function(renderTo, items){
     var me = this,
       i = 0,
@@ -329,7 +358,11 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       }
     }
   },
-  applyDefaults: function(item) {
+  /*
+   * @param {Object} item
+   * @return {Object}
+   */
+  applyDefaults: function(item){
     var me = this;
 
     if(item === undefined){
@@ -359,6 +392,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     return item;
   },
+  /*
+   *
+   */
   ons: function(){
     var me = this;
 
@@ -379,6 +415,11 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       }
     });
   },
+  /*
+   * @param {Object} field
+   * @param {*} value
+   * @param {*} oldValue
+   */
   onChange: function(field, value, oldValue){
     var me = this;
 
@@ -388,6 +429,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       oldValue: oldValue
     });
   },
+  /*
+   * @param {String} name
+   * @return {Array|String|Number}
+   */
   get: function(name){
     var me = this;
 
@@ -429,6 +474,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       return values;
     }
   },
+  /*
+   * @param {String} name
+   * @param {*} value
+   */
   set: function(name, value){
     var me = this;
 
@@ -450,6 +499,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       return value;
     }
   },
+  /*
+   * @param {Boolean} clear
+   */
   clear: function(clear){
     var me = this;
 
@@ -466,12 +518,12 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
         item.clear();
       }
 
-      if( me.hasClass('fancy-field-not-valid') ){
-        me.removeClass('fancy-field-not-valid');
+      if( me.hasCls('fancy-field-not-valid') ){
+        me.removeCls('fancy-field-not-valid');
         me.css('height', ( parseInt( me.css('height') ) - 6) + 'px');
       }
-      if( me.hasClass('fancy-field-blank-err') ){
-        me.removeClass('fancy-field-blank-err');
+      if( me.hasCls('fancy-field-blank-err') ){
+        me.removeCls('fancy-field-blank-err');
         me.css('height', ( parseInt( me.css('height') ) - 6) + 'px');
       }
 
@@ -480,6 +532,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       }
     });
   },
+  /*
+   * @param {Object} o
+   */
   submit: function(o){
     var me = this,
       o = o || {},
@@ -517,6 +572,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     Fancy.Ajax(me);
   },
+  /*
+   * @return {Boolean}
+   */
   valid: function(){
     var me = this,
       valid = true;
@@ -532,6 +590,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     return !!valid;
   },
+  /*
+   * @param {String} name
+   * @return {Object}
+   */
   getItem: function(name){
     var me= this,
       item = false;
@@ -545,6 +607,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     return item;
   },
+  /*
+   *
+   */
   showAt: function(){
     var me = this;
 
@@ -552,6 +617,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.panel.showAt.apply(me.panel, arguments);
     }
   },
+  /*
+   *
+   */
   show: function(){
     var me = this;
 
@@ -562,6 +630,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.el.show();
     }
   },
+  /*
+   *
+   */
   hide: function(){
     var me = this;
 
@@ -591,6 +662,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       }
     }
   },
+  /*
+   * @param {Number} height
+   */
   setHeight: function(height){
     var me = this;
 
@@ -619,7 +693,13 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.css('height', height);
   },
+  /*
+   * TODO:
+   */
   setWidth: function(){},
+  /*
+   * @return {Number}
+   */
   getHeight: function(){
     var me = this;
 
@@ -629,6 +709,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     return parseInt(me.css('height'));
   },
+  /*
+   *
+   */
   calcFieldSize: function(){
     var me = this,
       width = me.width,
@@ -713,6 +796,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.defaults = defaults;
   },
+  /*
+   *
+   */
   destroy: function() {
     var me = this;
 
@@ -722,6 +808,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       me.panel.el.destroy();
     }
   },
+  /*
+   * @param {Function} fn
+   * @param {Object} scope
+   */
   each: function(fn, scope){
     var me = this,
       items = me.items,
@@ -738,7 +828,10 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
         fn(items[i]);
       }
     }
-  },  
+  },
+  /*
+   *
+   */
   loadModules: function(){
     var me = this,
       existedModules = Fancy.modules || {},
@@ -817,6 +910,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
       Fancy.loadModule(p, onLoad);
     }
   },
+  /*
+   *
+   */
   prevTab: function(){
     var me = this;
 
@@ -827,6 +923,9 @@ Fancy.Mixin('Fancy.form.mixin.Form', {
 
     me.setActiveTab();
   },
+  /*
+   *
+   */
   nextTab: function(){
     var me = this,
       tabNumber = me.el.select('.fancy-field-tab').length;

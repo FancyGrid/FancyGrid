@@ -23,19 +23,12 @@ Fancy.define('Fancy.ToolTip', {
     me.render();
   },
   tpl: [
-    '<div class="fancy-tooltip-inner">{text}</div>'
+    '<div class="{innerCls}">{text}</div>'
   ],
   widgetCls: 'fancy-tooltip',
   cls: '',
   extraCls: '',
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
-
-    me.tpl = new Fancy.Template(me.tpl);
-  },
+  innerCls: 'fancy-tooltip-inner',
   /*
    *
    */
@@ -44,13 +37,16 @@ Fancy.define('Fancy.ToolTip', {
       renderTo = Fancy.get(me.renderTo || document.body).dom,
       el = Fancy.get(document.createElement('div'));
 
-    el.addClass(Fancy.cls);
-    el.addClass(me.widgetCls);
-    el.addClass(me.cls);
-    el.addClass(me.extraCls);
+    el.addCls(
+      Fancy.cls,
+      me.widgetCls,
+      me.cls,
+      me.extraCls
+    );
 
     el.update(me.tpl.getHTML({
-      text: me.text
+      text: me.text,
+      innerCls: me.innerCls
     }));
 
     me.el = Fancy.get(renderTo.appendChild(el.dom));
@@ -79,7 +75,7 @@ Fancy.define('Fancy.ToolTip', {
     });
   },
   /*
-   *
+   * @param {Number} [delay]
    */
   hide: function(delay){
     var me = this;
@@ -110,7 +106,9 @@ Fancy.define('Fancy.ToolTip', {
    * @param {String} html
    */
   update: function(html){
-    this.el.select('.fancy-tooltip-inner').update(html);
+    var me = this;
+
+    me.el.select('.' + me.innerCls).update(html);
   }
 });
 

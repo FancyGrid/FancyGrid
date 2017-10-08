@@ -3,8 +3,13 @@
  */
 Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
   triggeredColumnCls: 'fancy-grid-header-column-triggered',
+  triggerUpCls: 'fancy-grid-header-cell-trigger-up',
+  triggerDownCls: 'fancy-grid-header-cell-trigger-down',
   /*
-   *
+   * @param {Object} cell
+   * @param {Number} index
+   * @param {Object} column
+   * @param {Array} columns
    */
   showMenu: function(cell, index, column, columns){
     var me = this,
@@ -12,7 +17,7 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       offset = cell.offset();
 
     me.hideMenu();
-    cell.addClass(me.triggeredColumnCls);
+    cell.addCls(me.triggeredColumnCls);
     
     if(!column.menu.rendered){
       column.menu = me.generateMenu(column, columns);
@@ -35,6 +40,9 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
     me.activeMenu = column.menu;
     me.activeCell = cell;
   },
+  /*
+   *
+   */
   hideMenu: function(){
     var me = this,
       w = me.widget,
@@ -44,14 +52,14 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       case 'left':
         if(w.header.activeMenu){
           w.header.activeMenu.hide();
-          w.header.activeCell.removeClass(triggeredColumnCls);
+          w.header.activeCell.removeCls(triggeredColumnCls);
           delete w.header.activeMenu;
           delete w.header.activeCell;
         }
 
         if(w.rightHeader.activeMenu){
           w.rightHeader.activeMenu.hide();
-          w.rightHeader.activeCell.removeClass(triggeredColumnCls);
+          w.rightHeader.activeCell.removeCls(triggeredColumnCls);
           delete w.rightHeader.activeMenu;
           delete w.rightHeader.activeCell;
         }
@@ -59,14 +67,14 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       case 'center':
         if(w.leftHeader.activeMenu){
           w.leftHeader.activeMenu.hide();
-          w.leftHeader.activeCell.removeClass(triggeredColumnCls);
+          w.leftHeader.activeCell.removeCls(triggeredColumnCls);
           delete w.leftHeader.activeMenu;
           delete w.leftHeader.activeCell;
         }
 
         if(w.rightHeader.activeMenu){
           w.rightHeader.activeMenu.hide();
-          w.rightHeader.activeCell.removeClass(triggeredColumnCls);
+          w.rightHeader.activeCell.removeCls(triggeredColumnCls);
           delete w.rightHeader.activeMenu;
           delete w.rightHeader.activeCell;
         }
@@ -74,14 +82,14 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       case 'right':
         if(w.leftHeader.activeMenu){
           w.leftHeader.activeMenu.hide();
-          w.leftHeader.activeCell.removeClass(triggeredColumnCls);
+          w.leftHeader.activeCell.removeCls(triggeredColumnCls);
           delete w.leftHeader.activeMenu;
           delete w.leftHeader.activeCell;
         }
 
         if(w.header.activeMenu){
           w.header.activeMenu.hide();
-          w.header.activeCell.removeClass(triggeredColumnCls);
+          w.header.activeCell.removeCls(triggeredColumnCls);
           delete w.header.activeMenu;
           delete w.header.activeCell;
         }
@@ -90,12 +98,16 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
 
     if(me.activeMenu){
       me.activeMenu.hide();
-      me.activeCell.removeClass(triggeredColumnCls);
+      me.activeCell.removeCls(triggeredColumnCls);
     }
 
     delete me.activeMenu;
     delete me.activeCell;
   },
+  /*
+   * @param {Object} column
+   * @param {Array} columns
+   */
   generateMenu: function(column, columns){
     var me = this,
       w = me.widget,
@@ -121,7 +133,7 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       menu.push({
         text: lang.sortAsc,
         cls: cls,
-        imageCls: 'fancy-grid-header-cell-trigger-up',
+        imageCls: me.triggerUpCls,
         handler: function () {
           w.sorter.sort('asc', column.index, me.side);
           column.menu.hide();
@@ -131,7 +143,7 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       menu.push({
         text: lang.sortDesc,
         cls: cls,
-        imageCls: 'fancy-grid-header-cell-trigger-down',
+        imageCls: w.triggerDownCls,
         handler: function () {
           w.sorter.sort('desc', column.index, me.side);
           column.menu.hide();
@@ -183,6 +195,9 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
 
     return menu;
   },
+  /*
+   * @param {Array} columns
+   */
   prepareColumns: function(columns) {
     var me = this,
       w = me.widget,
@@ -253,12 +268,20 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
 
     return _columns;
   },
+  /*
+   *
+   */
   onMenuHide: function(){
     var me = this,
-      triggerCls = 'fancy-grid-header-column-triggered';
+      triggerCls = me.triggeredColumnCls;
 
-    me.el.select('.'+triggerCls).removeClass(triggerCls);
+    me.el.select('.'+triggerCls).removeCls(triggerCls);
   },
+  /*
+   * @param {Object} column
+   * @param {Array} columns
+   * @param {Boolean} hard
+   */
   updateColumnsMenu: function(column, columns, hard){
     var me = this,
       menu = column.menu,
@@ -294,6 +317,9 @@ Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
       columnsMenu.items = me.prepareColumns(columns);
     }
   },
+  /*
+   *
+   */
   destroyMenus: function(){
     var me = this,
       w = me.widget,

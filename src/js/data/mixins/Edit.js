@@ -80,6 +80,27 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     });
   },
   /*
+   *
+   */
+  removeAll: function () {
+    var me = this;
+
+    me.data = [];
+    me.dataView = [];
+    delete me.order;
+
+    if(me.paging){
+      me.showPage = 0;
+      me.calcPages();
+    }
+
+    if(me.filters){
+      delete me.filters;
+      delete me.filteredData;
+      delete me.filterOrder;
+    }
+  },
+  /*
    * @param {Object} o
    * @return {Fancy.Model}
    */
@@ -95,6 +116,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    */
   insert: function(index, o){
     var me = this;
+
+    //Bug fix for empty data on start with grouping
+    if(me.grouping && !me.bugFixGrouping){
+      me.defineModel(o, true);
+      me.bugFixGrouping = true;
+    }
 
     me.addIndex = index;
 
@@ -146,7 +173,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     return item;
   },
   /*
-   *
+   * @param {Object} store
+   * @param {Object} o
    */
   onCreate: function(store, o){
     return this.insertItem(o);

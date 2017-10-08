@@ -47,10 +47,12 @@ Fancy.define('Fancy.SegButton', {
 
     renderTo = Fancy.get(me.renderTo || document.body).dom;
 
-    el.addClass(Fancy.cls);
-    el.addClass(me.widgetCls);
-    el.addClass(me.cls);
-    el.addClass(me.extraCls);
+    el.addCls(
+      Fancy.cls,
+      me.widgetCls,
+      me.cls,
+      me.extraCls
+    );
 
     if(me.hidden){
       el.css('display', 'none');

@@ -63,26 +63,23 @@
     },
     widgetCls: 'fancy-button',
     cls: '',
-    disabledCls: 'fancy-button-disabled',
     extraCls: '',
+    disabledCls: 'fancy-button-disabled',
+    pressedCls: 'fancy-button-pressed',
+    buttonImageCls: 'fancy-button-image',
+    buttonImageColorCls: 'fancy-button-image-color',
+    textCls: 'fancy-button-text',
+    dropCls: 'fancy-button-drop',
     text: '',
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
     pressed: false,
     tpl: [
-      '<div class="fancy-button-image"></div>',
-      '<a class="fancy-button-text">{text}</a>',
-      '<div class="fancy-button-drop" style="{dropDisplay}"></div>'
+      '<div class="{buttonImageCls}"></div>',
+      '<a class="{textCls}">{text}</a>',
+      '<div class="{dropCls}" style="{dropDisplay}"></div>'
     ],
-    /*
-     *
-     */
-    initTpl: function () {
-      var me = this;
-
-      me.tpl = new Fancy.Template(me.tpl);
-    },
     /*
      *
      */
@@ -110,7 +107,7 @@
       }
 
       if(me.imageColor){
-        me.imageCls = 'fancy-button-image-color';
+        me.imageCls = me.buttonImageColorCls;
       }
 
       if(width < me.minWidth){
@@ -126,13 +123,15 @@
         width += me.imageWidth;
       }
 
-      el.addClass(Fancy.cls);
-      el.addClass(me.widgetCls);
-      el.addClass(me.cls);
-      el.addClass(me.extraCls);
+      el.addCls(
+        Fancy.cls,
+        me.widgetCls,
+        me.cls,
+        me.extraCls
+      );
 
       if (me.disabled) {
-        el.addClass(me.disabledCls);
+        el.addCls(me.disabledCls);
       }
 
       el.css({
@@ -147,25 +146,24 @@
       el.css(me.style || {});
 
       el.update(me.tpl.getHTML({
-        text: me.text || ''
+        text: me.text || '',
+        buttonImageCls: me.buttonImageCls,
+        textCls: me.textCls,
+        dropCls: me.dropCls
       }));
 
       if(me.imageCls){
-        var imageEl = el.select('.fancy-button-image');
+        var imageEl = el.select('.' + me.buttonImageCls);
         if(me.imageColor){
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
         if(Fancy.isString(me.imageCls)){
-          imageEl.addClass(me.imageCls);
+          imageEl.addCls(me.imageCls);
         }
       }
 
       me.el = Fancy.get(renderTo.appendChild(el.dom));
-
-      Fancy.each(me.style, function (value, p) {
-        me.el.css(p, value);
-      });
 
       if (me.disabled) {
         me.disable();
@@ -192,12 +190,11 @@
         el = Fancy.get(document.createElement('div'));
 
       el.css(wrapper.style || {});
-      el.addClass(wrapper.cls || '');
+      el.addCls(wrapper.cls || '');
 
       me.wrapper = Fancy.get(renderTo.appendChild(el.dom));
 
       me.renderTo = me.wrapper.dom;
-
     },
     /*
      *
@@ -213,11 +210,11 @@
      * @param {Boolean} value
      */
     setPressed: function(value, fire){
-      var me = this;
+      var me = this,
+        pressedCls = me.pressedCls;
 
       if (value) {
-        me.addClass('fancy-button-pressed');
-        //me.el.removeClass('fancy-button-not-pressed');
+        me.addCls(pressedCls);
         me.pressed = true;
 
         if(me.toggleGroup){
@@ -230,8 +227,7 @@
         }
       }
       else {
-        //me.el.addClass('fancy-button-not-pressed');
-        me.removeClass('fancy-button-pressed');
+        me.removeCls(pressedCls);
         me.pressed = false;
       }
 
@@ -287,7 +283,7 @@
      */
     getHandler: function(name){
       var me = this,
-        grid = Fancy.getWidget(me.el.parent().parent().select('.fancy-grid').attr('id'));
+        grid = Fancy.getWidget(me.el.parent().parent().select('.' + Fancy.gridCls).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -369,7 +365,7 @@
       var me = this;
 
       me.disabled = true;
-      me.el.addClass(me.disabledCls);
+      me.addCls(me.disabledCls);
     },
     /*
      *
@@ -378,7 +374,7 @@
       var me = this;
 
       me.disabled = false;
-      me.el.removeClass(me.disabledCls);
+      me.removeCls(me.disabledCls);
     },
     /*
      *

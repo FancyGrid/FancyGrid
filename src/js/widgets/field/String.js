@@ -49,7 +49,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       me.css(me.style);
     }
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   emptyText: '',

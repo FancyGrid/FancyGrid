@@ -57,6 +57,9 @@ Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     '</div>',
     '<div class="fancy-clearfix"></div>'
   ],
+  /*
+   *
+   */
   renderButton: function(){
     var me = this;
 

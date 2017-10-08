@@ -6,9 +6,10 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   extend: Fancy.Plugin,
   ptype: 'grid.celledit',
   inWidgetName: 'celledit',
+  editorsCls: 'fancy-grid-editors',
   /*
    * @constructor
-   * @param config
+   * @param {Object} config
    */
   constructor: function(config){
     var me = this;
@@ -41,7 +42,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
     });
   },
   /*
-   * @param {Object} grid
+   * @param {Fancy.Grid} grid
    * @param {Object} e
    */
   onDocClick: function(grid, e){
@@ -86,7 +87,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
     var me = this,
       w = me.widget;
 
-    me.editorsContainer = w.el.select('.fancy-grid-editors');
+    me.editorsContainer = w.el.select('.' + me.editorsCls);
   },
   /*
    * @param {Object} o
@@ -111,6 +112,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   },
   /*
    * @param {Object} column
+   * @return {Object}
    */
   generateEditor: function(column){
     var me = this,
@@ -368,6 +370,11 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
     }
 
     delete me.activeEditor;
+
+    //Bug fix: when editor is out of side, grid el scrolls
+    if(w.el.dom.scrollTop){
+      w.el.dom.scrollTop = 0;
+    }
   },
   /*
    * @param {Fancy.Element} cell
@@ -416,7 +423,6 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    */
   setEditorValue: function(o){
     var me = this,
-      w = me.widget,
       editor = me.activeEditor;
 
     switch(o.column.type){
@@ -623,17 +629,12 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
   },
   checkAutoInitEditors: function(){
     var me = this,
-      w = me.widget,
-      columns = w.columns,
-      i = 0,
-      iL = columns.length;
+      w = me.widget;
 
-    for(;i<iL;i++){
-      var column = columns[i];
-
+    Fancy.each(w.columns, function(column){
       if(column.editorAutoInit){
         column.editor = me.generateEditor(column);
       }
-    }
+    });
   }
 });

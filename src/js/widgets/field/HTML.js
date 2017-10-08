@@ -60,8 +60,6 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
       renderTo = me.renderTo || document.body,
       el = document.createElement('div');
 
-    //me.prepareValid();
-
     me.fire('beforerender');
 
     el.innerHTML = me.tpl.getHTML({
@@ -71,8 +69,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
 
     me.el = renderTo.appendChild(el);
     me.el = Fancy.get(me.el);
-    me.el.addClass( me.cls );
-    me.el.addClass( me.fieldCls );
+
+    me.addCls(me.cls, me.fieldCls);
 
     me.acceptedValue = me.value;
     me.fire('afterrender');
@@ -91,7 +89,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
     }
   },
   /*
-   * @returns {String}
+   * @return {String}
    */
   get: function(){
     var me = this;

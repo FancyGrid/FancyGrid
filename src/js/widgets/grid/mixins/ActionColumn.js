@@ -36,6 +36,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   },
   /*
    * @param {Object} o
+   * @return {Number}
    */
   getActiveActionColumnItem: function(o){
     var cell = Fancy.get(o.cell),

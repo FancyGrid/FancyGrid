@@ -26,8 +26,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
    *
    */
   init: function(){
-    var me = this,
-      w = me.widget;
+    var me = this;
 
     me.addEvents('drop');
     me.Super('init', arguments);
@@ -54,7 +53,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
     var me = this,
       w = me.widget;
     
-    w.el.addClass(me.dragGroup);
+    w.el.addCls(me.dragGroup);
   },
   /*
    *
@@ -109,16 +108,14 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
     }
 
     if(selected.length > 1){
-      var i = 0,
-        iL = selected.length,
-        passed = false;
+      var passed = false;
 
-      for(;i<iL;i++){
-        if(selected[i].id === o.id){
+      Fancy.each(selected, function(item){
+        if(item.id === o.id){
           passed = true;
-          break;
+          return true;
         }
-      }
+      });
 
       if(passed === false){
         return;
@@ -175,6 +172,9 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
     me.cellMouseDown = true;
     me.activeRowIndex = o.rowIndex;
   },
+  /*
+   *
+   */
   initEnterLeave: function(){
     var me = this,
       dropEl = Fancy.select(me.dropCls);
@@ -201,7 +201,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
 
     var targetEl = Fancy.get(e.currentTarget);
     
-    me.dropGrid = Fancy.getWidget(targetEl.closest('.fancy-grid').attr('id'));
+    me.dropGrid = Fancy.getWidget(targetEl.closest('.' + Fancy.gridCls).attr('id'));
 
     if(me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false){
       me.dropOK = false;
@@ -216,7 +216,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
       me.onsDropGrid();
     }
 
-    targetEl.addClass(me.dropZoneCls);
+    targetEl.addCls(me.dropZoneCls);
     
     me.dropOK = true;
 
@@ -234,7 +234,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
       return;
     }
     
-    Fancy.get(e.currentTarget).removeClass(me.dropZoneCls);
+    Fancy.get(e.currentTarget).removeCls(me.dropZoneCls);
     
     me.dropOK = false;
     me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
@@ -245,6 +245,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
    */
   setDropGridCellsMask: function(){
     var me = this,
+      w = me.widget,
       dropGrid = me.dropGrid,
       total;
       
@@ -255,10 +256,10 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
     total = dropGrid.getTotal();
     
     if(total === 0){
-      dropGrid.el.addClass(me.dropHeaderMaskCls);
+      dropGrid.el.addCls(me.dropHeaderMaskCls);
     }
     else{
-      dropGrid.el.select('.fancy-grid-cell[index="'+(total - 1)+'"]').addClass(me.cellMaskCls);
+      dropGrid.el.select('.' + w.cellCls + '[index="'+(total - 1)+'"]').addCls(me.cellMaskCls);
     }
   },
   /*
@@ -289,10 +290,10 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
     me.clearCellsMask();
     
     if(o.rowIndex === 0){
-      grid.el.addClass(me.dropHeaderMaskCls);
+      grid.el.addCls(me.dropHeaderMaskCls);
     }
     else{
-      grid.el.select('.fancy-grid-cell[index="'+(o.rowIndex - 1)+'"]').addClass(me.cellMaskCls);
+      grid.el.select('.fancy-grid-cell[index="'+(o.rowIndex - 1)+'"]').addCls(me.cellMaskCls);
     }
 
     if( me.cellMouseDown === false ){
@@ -325,8 +326,8 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
       return;
     }
     
-    me.dropGrid.el.removeClass(me.dropHeaderMaskCls);
-    me.dropGrid.el.select('.' + cellMaskCls).removeClass(cellMaskCls);
+    me.dropGrid.el.removeCls(me.dropHeaderMaskCls);
+    me.dropGrid.el.select('.' + cellMaskCls).removeCls(cellMaskCls);
   },
   /*
    * @param {Object} e
@@ -353,7 +354,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
     delete me.dragItems;
     me.dropOK = false;
     
-    Fancy.select('.'+me.dropZoneCls).removeClass(me.dropZoneCls);
+    Fancy.select('.'+me.dropZoneCls).removeCls(me.dropZoneCls);
     
     me.clearCellsMask();    
     

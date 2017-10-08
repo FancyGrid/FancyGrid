@@ -24,7 +24,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       el = me.el,
       cornerEl = Fancy.get(document.createElement('div'));
 
-    cornerEl.addClass(me.cornerResizeCls);
+    cornerEl.addCls(me.cornerResizeCls);
 
     me.cornerResizeEl = Fancy.get(el.dom.appendChild(cornerEl.dom));
   },
@@ -158,7 +158,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       panelLeft = offset.left;
     }
 
-    maskEl.addClass(me.resizeMaskCls);
+    maskEl.addCls(me.resizeMaskCls);
 
     maskEl.css({
       left: panelLeft,

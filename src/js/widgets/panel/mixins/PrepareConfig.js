@@ -5,6 +5,7 @@ Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
+   * @return {Object}
    */
   prepareConfigTheme: function(config, originalConfig){
     var themeName = config.theme || originalConfig.theme,

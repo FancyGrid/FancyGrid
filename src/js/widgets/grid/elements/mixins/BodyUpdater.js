@@ -54,26 +54,26 @@ Fancy.grid.body.mixin.Updater.prototype = {
         el.css('display', 'none');
       }
 
-      el.addClass(columnCls);
+      el.addCls(columnCls);
       el.attr('grid', w.id);
 
       if(column.index === '$selected'){
-        el.addClass(columnSelectCls);
+        el.addCls(columnSelectCls);
       }
       else{
         switch(column.type){
           case 'order':
-            el.addClass(columnOrderCls);
+            el.addCls(columnOrderCls);
             break;
         }
       }
 
       if(column.cls){
-        el.addClass(column.cls);
+        el.addCls(column.cls);
       }
 
       if(column.type === 'text'){
-        el.addClass(columnTextCls);
+        el.addCls(columnTextCls);
       }
 
       el.css({
@@ -90,7 +90,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
           case 'string':
           case 'text':
           case 'number':
-            el.addClass(columnWithEllipsisCls);
+            el.addCls(columnWithEllipsisCls);
             break;
         }
       }
@@ -101,7 +101,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
     me.fire('adddomcolumns');
   },
   /*
-   *
+   * @param {number} indexOrder
    */
   checkDomCells: function(indexOrder){
     var me = this,
@@ -156,11 +156,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
         el.css({
           height: w.cellHeight + 'px'
         });
-        el.addClass(me.cellCls);
+        el.addCls(me.cellCls);
         el.attr('index', i);
 
         if(i%2 !== 0 && w.striped){
-          el.addClass(w.cellEvenCls)
+          el.addCls(w.cellEvenCls)
         }
         el.update(cellHTML);
         columnDom.dom.appendChild(el.dom);
@@ -177,7 +177,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
         el.css({
           height: w.cellHeight + 'px'
         });
-        el.addClass(me.pseudoCellCls);
+        el.addCls(me.pseudoCellCls);
 
         el.update(cellHTML);
         columnDom.dom.appendChild(el.dom);
@@ -399,7 +399,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       }
 
       if(o.cls){
-        cell.addClass(o.cls);
+        cell.addCls(o.cls);
       }
 
       if(dirty && w.dirtyEnabled){
@@ -463,7 +463,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       }
 
       if(o.cls){
-        cell.addClass(o.cls);
+        cell.addCls(o.cls);
       }
 
       cell.css(o.style);
@@ -550,7 +550,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       iL = cellStylingCls.length;
 
     for(;i<iL;i++){
-      cell.removeClass(cellStylingCls[i]);
+      cell.removeCls(cellStylingCls[i]);
     }
   },
   /*
@@ -927,7 +927,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL,
       _sparkConfig = column.sparkConfig || {};
 
-    columnDom.addClass(w.clsSparkColumn);
+    columnDom.addCls(w.clsSparkColumn);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -951,7 +951,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       case 'bullet':
         widthName = 'width';
         sparkHeight -= 11;
-        columnDom.addClass(w.clsSparkColumnBullet);
+        columnDom.addCls(w.clsSparkColumnBullet);
         break;
       case 'discrete':
         widthName = 'width';
@@ -1030,7 +1030,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       j,
       jL;
 
-    columnDom.addClass(w.clsSparkColumnDonutProgress);
+    columnDom.addCls(w.clsSparkColumnDonutProgress);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -1106,7 +1106,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       j,
       jL;
 
-    columnDom.addClass(w.clsColumnGrossLoss);
+    columnDom.addCls(w.clsColumnGrossLoss);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -1182,7 +1182,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL,
       maxValue = 100;
 
-    columnDom.addClass(w.clsColumnProgress);
+    columnDom.addCls(w.clsColumnProgress);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -1269,7 +1269,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       sparkConfig = column.sparkConfig || {},
       disabled = column.disabled || {};
 
-    columnDom.addClass(w.clsSparkColumnHBar);
+    columnDom.addCls(w.clsSparkColumnHBar);
 
     var values = {},
       i = 0,
@@ -1433,7 +1433,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL,
       cellHeight = w.cellHeight - 4;
 
-    columnDom.addClass(w.clsSparkColumnCircle);
+    columnDom.addCls(w.clsSparkColumnCircle);
 
     function pieChart(percentage, size) {
       //http://jsfiddle.net/da5LN/62/
@@ -1559,6 +1559,10 @@ Fancy.grid.body.mixin.Updater.prototype = {
       }
     }
   },
+  /*
+   * @param {String|Object} format
+   * @return {Function|String|Object}
+   */
   getFormat: function(format){
     var me = this,
       w = me.widget,
@@ -1602,6 +1606,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
   /*
    * @param {String} value
    * @param {*} format
+   * @return {String}
    */
   format: function(value, format){
     switch(Fancy.typeOf(format)){
@@ -1628,11 +1633,11 @@ Fancy.grid.body.mixin.Updater.prototype = {
    * @param {Fancy.Element} cell
    */
   enableCellDirty: function(cell){
-    if(cell.hasClass('fancy-grid-cell-dirty')){
+    if(cell.hasCls('fancy-grid-cell-dirty')){
       return;
     }
 
-    cell.addClass('fancy-grid-cell-dirty');
+    cell.addCls('fancy-grid-cell-dirty');
     cell.append('<div class="fancy-grid-cell-dirty-el"></div>');
   },
   /*
@@ -1643,13 +1648,13 @@ Fancy.grid.body.mixin.Updater.prototype = {
 
     if(rowIndex !== undefined){
       me.el.select('.fancy-grid-cell[index="'+rowIndex+'"] .fancy-grid-cell-dirty-el').destroy();
-      me.el.select('.fancy-grid-cell-dirty[index="'+rowIndex+'"]').removeClass('fancy-grid-cell-dirty');
+      me.el.select('.fancy-grid-cell-dirty[index="'+rowIndex+'"]').removeCls('fancy-grid-cell-dirty');
 
       return;
     }
 
     me.el.select('.fancy-grid-cell-dirty-el').destroy();
-    me.el.select('.fancy-grid-cell-dirty').removeClass('fancy-grid-cell-dirty');
+    me.el.select('.fancy-grid-cell-dirty').removeCls('fancy-grid-cell-dirty');
   },
   /*
    *
@@ -1671,7 +1676,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
     if(s.dataView.length === 0){
       var el = Fancy.get(document.createElement('div'));
 
-      el.addClass('fancy-grid-empty-text');
+      el.addCls('fancy-grid-empty-text');
       el.update(w.emptyText);
 
       me.emptyTextEl = Fancy.get(me.el.dom.appendChild(el.dom));

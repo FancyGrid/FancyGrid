@@ -18,7 +18,7 @@ Fancy.Mixin('Fancy.panel.mixin.DD', {
   addDDCls: function(){
     var me = this;
 
-    me.el.addClass(me.ddCls);
+    me.el.addCls(me.ddCls);
   },
   /*
    *

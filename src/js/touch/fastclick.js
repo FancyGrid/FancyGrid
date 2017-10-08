@@ -222,7 +222,7 @@
 	 * Determine whether a given element requires a native click.
 	 *
 	 * @param {EventTarget|Element} target Target DOM element
-	 * @returns {boolean} Returns true if the element needs a native click
+	 * @return {boolean} Returns true if the element needs a native click
 	 */
 	FastClick.prototype.needsClick = function(target) {
 		switch (target.nodeName.toLowerCase()) {
@@ -258,7 +258,7 @@
 	 * Determine whether a given element requires a call to focus to simulate click into element.
 	 *
 	 * @param {EventTarget|Element} target Target DOM element
-	 * @returns {boolean} Returns true if the element requires a call to focus to simulate native click.
+	 * @return {boolean} Returns true if the element requires a call to focus to simulate native click.
 	 */
 	FastClick.prototype.needsFocus = function(target) {
 		switch (target.nodeName.toLowerCase()) {
@@ -369,7 +369,7 @@
 
 	/**
 	 * @param {EventTarget} targetElement
-	 * @returns {Element|EventTarget}
+	 * @return {Element|EventTarget}
 	 */
 	FastClick.prototype.getTargetElementFromEventTarget = function(eventTarget) {
 
@@ -386,7 +386,7 @@
 	 * On touch start, record the position and scroll offset.
 	 *
 	 * @param {Event} event
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	FastClick.prototype.onTouchStart = function(event) {
 		var targetElement, touch, selection;
@@ -454,7 +454,7 @@
 	 * Based on a touchmove event object, check whether the touch has moved past a boundary since it started.
 	 *
 	 * @param {Event} event
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	FastClick.prototype.touchHasMoved = function(event) {
 		var touch = event.changedTouches[0], boundary = this.touchBoundary;
@@ -471,7 +471,7 @@
 	 * Update the last position.
 	 *
 	 * @param {Event} event
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	FastClick.prototype.onTouchMove = function(event) {
 		if (!this.trackingClick) {
@@ -492,7 +492,7 @@
 	 * Attempt to find the labelled control for the given label element.
 	 *
 	 * @param {EventTarget|HTMLLabelElement} labelElement
-	 * @returns {Element|null}
+	 * @return {Element|null}
 	 */
 	FastClick.prototype.findControl = function(labelElement) {
 
@@ -516,7 +516,7 @@
 	 * On touch end, determine whether to send a click event at once.
 	 *
 	 * @param {Event} event
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	FastClick.prototype.onTouchEnd = function(event) {
 		var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
@@ -613,7 +613,7 @@
 	/**
 	 * On touch cancel, stop tracking the click.
 	 *
-	 * @returns {void}
+	 * @return {void}
 	 */
 	FastClick.prototype.onTouchCancel = function() {
 		this.trackingClick = false;
@@ -625,7 +625,7 @@
 	 * Determine mouse events which should be permitted.
 	 *
 	 * @param {Event} event
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	FastClick.prototype.onMouse = function(event) {
 
@@ -675,7 +675,7 @@
 	 * an actual click which should be permitted.
 	 *
 	 * @param {Event} event
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	FastClick.prototype.onClick = function(event) {
 		var permitted;
@@ -707,7 +707,7 @@
 	/**
 	 * Remove all FastClick's event listeners.
 	 *
-	 * @returns {void}
+	 * @return {void}
 	 */
 	FastClick.prototype.destroy = function() {
 		var layer = this.layer;

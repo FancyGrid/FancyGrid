@@ -43,7 +43,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
       renderTo = me.renderTo || document.body,
       el = Fancy.get( document.createElement('div') );
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
 
     me.el = Fancy.get(Fancy.get(renderTo).dom.appendChild(el.dom));
   },

@@ -61,6 +61,10 @@ Fancy.define('Fancy.Form', {
       preInit();
     }
   },
+  /*
+   * @param {Function} preInit
+   * @param {Object} config
+   */
   loadModules: function(preInit, config){
     var me = this,
       requiredModules = {

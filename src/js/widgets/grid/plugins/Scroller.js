@@ -128,13 +128,12 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       right = 1;
 
     if(w.nativeScroller){
-      w.el.addClass('fancy-grid-native-scroller');
+      w.el.addCls('fancy-grid-native-scroller');
     }
     else{
-      rightScrollEl.addClass(me.rightScrollCls);
+      rightScrollEl.addCls(me.rightScrollCls);
 
-      bottomScrollEl.addClass(me.bottomScrollCls);
-      bottomScrollEl.addClass('fancy-display-none');
+      bottomScrollEl.addCls(me.bottomScrollCls, Fancy.hiddenCls);
 
       rightScrollEl.update([
         '<div class="fancy-scroll-right-inner"></div>'
@@ -189,18 +188,18 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     if(w.nativeScroller !== true) {
       me.scrollRightEl.hover(function () {
         if (me.bottomKnobDown !== true) {
-          me.scrollRightEl.addClass('fancy-scroll-right-hover');
+          me.scrollRightEl.addCls('fancy-scroll-right-hover');
         }
       }, function () {
-        me.scrollRightEl.removeClass('fancy-scroll-right-hover');
+        me.scrollRightEl.removeCls('fancy-scroll-right-hover');
       });
 
       me.scrollBottomEl.hover(function () {
         if (me.rightKnobDown !== true) {
-          me.scrollBottomEl.addClass('fancy-scroll-bottom-hover');
+          me.scrollBottomEl.addCls('fancy-scroll-bottom-hover');
         }
       }, function () {
-        me.scrollBottomEl.removeClass('fancy-scroll-bottom-hover');
+        me.scrollBottomEl.removeCls('fancy-scroll-bottom-hover');
       });
 
       me.initRightScroll();
@@ -250,10 +249,10 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     };
 
     me.rightKnobTop = parseInt(me.rightKnob.css('margin-top'));
-    me.scrollRightEl.addClass('fancy-scroll-right-active');
+    me.scrollRightEl.addCls('fancy-scroll-right-active');
 
     me.bottomKnobLeft = parseInt(me.bottomKnob.css('margin-left'));
-    me.scrollBottomEl.addClass('fancy-scroll-bottom-active');
+    me.scrollBottomEl.addCls('fancy-scroll-bottom-active');
   },
   /*
    *
@@ -321,7 +320,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     };
 
     me.rightKnobTop = parseInt(me.rightKnob.css('margin-top'));
-    me.scrollRightEl.addClass('fancy-scroll-right-active');
+    me.scrollRightEl.addCls('fancy-scroll-right-active');
   },
   /*
    * @param {Object} e
@@ -338,7 +337,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     };
 
     me.bottomKnobLeft = parseInt(me.bottomKnob.css('margin-left'));
-    me.scrollBottomEl.addClass('fancy-scroll-bottom-active');
+    me.scrollBottomEl.addCls('fancy-scroll-bottom-active');
   },
   /*
    *
@@ -350,13 +349,13 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       return;
     }
 
-    me.scrollRightEl.removeClass('fancy-scroll-right-active');
-    me.scrollBottomEl.removeClass('fancy-scroll-bottom-active');
+    me.scrollRightEl.removeCls('fancy-scroll-right-active');
+    me.scrollBottomEl.removeCls('fancy-scroll-bottom-active');
     me.rightKnobDown = false;
     me.bottomKnobDown = false;
   },
   /*
-   *
+   * @param {Object} e
    */
   onMouseMoveDoc: function(e){
     var me = this,
@@ -463,7 +462,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       body = w.body,
       gridBorders = w.gridBorders,
       bodyViewHeight = w.getBodyHeight(),
-      cellsViewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2];
+      cellsViewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2],
+      hiddenCls = Fancy.hiddenCls;
 
     if(w.nativeScroller){
       if(bodyViewHeight >= cellsViewHeight){
@@ -475,10 +475,10 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     }
     else {
       if (bodyViewHeight >= cellsViewHeight) {
-        me.scrollRightEl.addClass('fancy-display-none');
+        me.scrollRightEl.addCls(hiddenCls);
       }
       else {
-        me.scrollRightEl.removeClass('fancy-display-none');
+        me.scrollRightEl.removeCls(hiddenCls);
       }
     }
   },
@@ -493,7 +493,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       return w.body.el.css('overflow-y') === 'scroll';
     }
 
-    return !me.scrollRightEl.hasClass('fancy-display-none');
+    return !me.scrollRightEl.hasCls(Fancy.hiddenCls);
   },
   /*
    *
@@ -535,7 +535,8 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       body = w.body,
       centerViewWidth = w.getCenterViewWidth(),
       centerFullWidth = w.getCenterFullWidth() - 2,
-      showBottomScroll;
+      showBottomScroll,
+      hiddenCls = Fancy.hiddenCls;
 
     if(w.nativeScroller){
       if (centerViewWidth > centerFullWidth) {
@@ -550,11 +551,11 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     else {
       if (centerViewWidth > centerFullWidth) {
         showBottomScroll = false;
-        me.scrollBottomEl.addClass('fancy-display-none');
+        me.scrollBottomEl.addCls(hiddenCls);
       }
       else {
         showBottomScroll = true;
-        me.scrollBottomEl.removeClass('fancy-display-none');
+        me.scrollBottomEl.removeCls(hiddenCls);
       }
     }
 
@@ -565,13 +566,14 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
    */
   checkCorner: function(){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      hiddenCls = Fancy.hiddenCls;
 
     if(w.nativeScroller){
       return;
     }
 
-    me.corner = !me.scrollRightEl.hasClass('fancy-display-none') && !me.scrollBottomEl.hasClass('fancy-display-none');
+    me.corner = !me.scrollRightEl.hasCls(hiddenCls) && !me.scrollBottomEl.hasCls(hiddenCls);
   },
   /*
    *
@@ -640,6 +642,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
   },
   /*
    * @param {Number} value
+   * @return {Boolean}
    */
   scrollDelta: function(value){
     var me = this,
@@ -692,22 +695,22 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.bottomKnob.css('margin-left', -newKnobScroll + 'px');
   },
   /*
-   *
+   * @return {Number}
    */
   getScroll: function(){
     var me = this,
       w = me.widget;
 
-    return Math.abs(parseInt(w.body.el.select('.fancy-grid-column').item(0).css('top')));
+    return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('top')));
   },
   /*
-   *
+   * @return {Number}
    */
   getBottomScroll: function(){
     var me = this,
       w = me.widget;
 
-    return Math.abs(parseInt(w.body.el.select('.fancy-grid-column').item(0).css('left')));
+    return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('left')));
   },
   /*
    *
@@ -766,7 +769,7 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       bottomScroll = me.getBottomScroll(),
       bodyViewWidth = parseInt(w.body.el.css('width')),
       passedWidth = 0,
-      isCenterBody = columnEl.parent().parent().hasClass('fancy-grid-center');
+      isCenterBody = columnEl.parent().parent().hasCls(w.centerCls);
 
     if(rowIndex === 0 && columnIndex === 0){
       me.scroll(0, 0);
@@ -808,6 +811,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
 
     me.scrollRightKnob();
   },
+  /*
+   *
+   */
   onNativeScrollBody: function(){
     var me = this,
       w = me.widget,
@@ -826,6 +832,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
       w.rightBody.el.dom.scrollTop = scrollTop;
     }
   },
+  /*
+   * @param {Object} e
+   */
   onMouseWheelLeft: function(e){
     var me = this,
       w = me.widget,
@@ -836,6 +845,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     w.body.el.dom.scrollTop -= scrollTop;
     w.rightBody.el.dom.scrollTop -= scrollTop;
   },
+  /*
+   * @param {Object} e
+   */
   onMouseWheelRight: function(e){
     var me = this,
       w = me.widget,
@@ -846,6 +858,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     w.body.el.dom.scrollTop -= scrollTop;
     w.rightBody.el.dom.scrollTop -= scrollTop;
   },
+  /*
+   *
+   */
   onLockColumn: function () {
     var me = this,
       w = me.widget;
@@ -853,6 +868,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.update();
     w.setColumnsPosition();
   },
+  /*
+   *
+   */
   onRightLockColumn: function () {
     var me = this,
       w = me.widget;
@@ -860,6 +878,9 @@ Fancy.define('Fancy.grid.plugin.Scroller', {
     me.update();
     w.setColumnsPosition();
   },
+  /*
+   *
+   */
   onUnLockColumn: function () {
     var me = this,
       w = me.widget;

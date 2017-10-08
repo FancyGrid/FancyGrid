@@ -74,7 +74,7 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
 
     return me.value;
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   tpl: [

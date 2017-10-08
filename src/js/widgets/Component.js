@@ -1,14 +1,25 @@
+/*
+ *
+ */
 Fancy.enableCompo = function(){
   var doc = document,
     componentsLength = 0,
     components = {},
     interval;
 
+  /*
+   * @constructor
+   * @param {String} selector
+   * @param {Object} o
+   */
   Fancy.Component = function (selector, o) {
     componentsLength++;
     components[selector] = o;
   };
 
+  /*
+   *
+   */
   Fancy.stopWatch = function(){
     clearInterval(interval);
   };
@@ -81,6 +92,10 @@ Fancy.enableCompo = function(){
     }
   }
 
+  /*
+   * @param {String} v
+   * @return {String}
+   */
   function prePareValue(v) {
     if (/\[/.test(v) || /\{/.test(v)) {
       v = v.replace(/\n/g, '');

@@ -51,9 +51,9 @@ Fancy.define('Fancy.spark.ProgressBar', {
     }
   },
   /*
-   *
+   * @param {Object} e
    */
-  onMouseEnter: function(){
+  onMouseEnter: function(e){
     var me = this,
       value = me.el.attr('value'),
       suffix = '%';
@@ -71,9 +71,9 @@ Fancy.define('Fancy.spark.ProgressBar', {
     Fancy.tip.update(text);
   },
   /*
-   *
+   * @param {Object} e
    */
-  onMouseLeave: function(){
+  onMouseLeave: function(e){
     Fancy.tip.hide(1000);
   },
   /*
@@ -164,6 +164,9 @@ Fancy.define('Fancy.spark.ProgressBar', {
       me.el.css(_style)
     }
   },
+  /*
+   *
+   */
   update: function(){
     var me = this,
       column = me.column,

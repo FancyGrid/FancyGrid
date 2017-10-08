@@ -62,16 +62,20 @@
       me.fire('beforerender');
 
       if( me.theme !== 'default' ){
-        el.addClass('fancy-theme-' + me.theme);
+        el.addCls('fancy-theme-' + me.theme);
       }
 
-      el.addClass(Fancy.cls);
-      el.addClass(me.widgetCls);
-      el.addClass(me.cls);
-      el.addClass(me.extraCls);
+      el.addClass(
+        Fancy.cls,
+        me.widgetCls,
+        me.cls,
+        me.extraCls
+    );
 
-      el.css('width', me.width);
-      el.css('height', me.getItemsHeight());
+      el.css({
+        width: me.width,
+        height: me.getItemsHeight()
+      });
 
       renderTo = Fancy.get(me.renderTo || document.body);
 
@@ -86,7 +90,7 @@
       me.rendered = true;
     },
     /*
-     *
+     * @return {Number}
      */
     getItemsHeight: function () {
       var me = this,
@@ -100,6 +104,9 @@
 
       return height;
     },
+    /*
+     *
+     */
     renderItems: function () {
       var me = this,
         i = 0,
@@ -111,7 +118,7 @@
         var itemEl = Fancy.get(document.createElement('div'));
         itemEl.attr('index', i);
 
-        itemEl.addClass(me.itemCls);
+        itemEl.addCls(me.itemCls);
         itemEl.css('height', me.itemHeight);
         me.el.dom.appendChild(itemEl.dom);
         item.el = itemEl;
@@ -119,7 +126,7 @@
         var imageCls = item.imageCls || '';
 
         if(item.cls){
-          itemEl.addClass(item.cls);
+          itemEl.addCls(item.cls);
         }
 
         itemEl.update([
@@ -129,7 +136,7 @@
         ].join(""));
 
         if (item.image === false) {
-          itemEl.addClass('fancy-menu-item-no-image');
+          itemEl.addCls('fancy-menu-item-no-image');
         }
 
         switch (item.type) {
@@ -150,6 +157,9 @@
         }
       }
     },
+    /*
+     *
+     */
     applyDefaults: function () {
       var me = this,
         i = 0,
@@ -163,6 +173,9 @@
         Fancy.applyIf(me.items[i], me.defaults);
       }
     },
+    /*
+     * @param {Object} e
+     */
     onItemClick: function (e) {
       var me = this,
         target = Fancy.get(e.currentTarget),
@@ -179,6 +192,9 @@
         }
       }
     },
+    /*
+     * @param {Object} e
+     */
     onItemEnter: function (e) {
       var me = this,
         target = Fancy.get(e.currentTarget),
@@ -213,7 +229,14 @@
         me.shownSubMenu = item.menu;
       }
     },
+    /*
+     * @param {Object} e
+     */
     onItemLeave: function (e) {},
+    /*
+     * @param {Number} x
+     * @param {Number} y
+     */
     showAt: function(x, y){
       var me = this;
 
@@ -229,6 +252,9 @@
 
       Fancy.MenuManager.add(me);
     },
+    /*
+     *
+     */
     hide: function () {
       var me = this;
 
@@ -241,6 +267,9 @@
 
       me.fire('hide');
     },
+    /*
+     *
+     */
     hideAll: function(){
       var me = this;
 
@@ -250,13 +279,19 @@
 
       me.hide();
     },
+    /*
+     * @param {Number} index
+     */
     activateItem: function (index) {
       var me = this,
         item = me.items[index];
 
       me.activeItem = item;
-      item.el.addClass(me.activeItemCls);
+      item.el.addCls(me.activeItemCls);
     },
+    /*
+     *
+     */
     deActivateItem: function () {
       var me = this;
 
@@ -267,6 +302,9 @@
       me.activeItem.el.removeClass(me.activeItemCls);
       delete me.activeItem;
     },
+    /*
+     * @param {Object} e
+     */
     onItemMouseDown: function(e) {
       e.preventDefault();
     }
@@ -276,12 +314,18 @@
     singleton: true,
     inited: false,
     constructor: function(){},
+    /*
+     *
+     */
     init: function(){
       var me = this,
         docEl = Fancy.get(document);
 
       docEl.on('click', me.onDocClick, me);
     },
+    /*
+     * @param {Object} menu
+     */
     add: function(menu){
       var me = this;
 
@@ -291,6 +335,9 @@
 
       me.activeMenu = menu;
     },
+    /*
+     * @param {Object} e
+     */
     onDocClick: function(e){
       var me = this,
         target = Fancy.get(e.target),
@@ -306,7 +353,7 @@
           break;
         }
 
-        if( parentEl.hasClass('fancy-menu') ){
+        if( parentEl.hasCls('fancy-menu') ){
           return;
         }
 

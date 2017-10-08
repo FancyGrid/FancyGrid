@@ -57,7 +57,7 @@ ClassManager.prototype = {
   /*
    * Returns class by key
    * @param {String} key
-   * @returns {Object}
+   * @return {Object}
    */
   get: function(key){
     return this.items.get(key);
@@ -230,7 +230,7 @@ Fancy.define = function(name, config){
 /*
  * Returns class by it's type
  * @param {String} type
- * @returns {Object}
+ * @return {Object}
  */
 Fancy.getClassByType = function(type){
   return $types[type];

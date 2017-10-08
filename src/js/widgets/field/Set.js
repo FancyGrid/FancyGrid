@@ -30,22 +30,15 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
 
     me.Super('init', arguments);
 
-    var i = 0,
-      iL = me.items.length,
-      isItemTop;
-
-    for(;i<iL;i++){
-      var item = me.items[i];
-
+    Fancy.each(me.items, function(item, i){
       if( item.labelAlign === 'top' ){
-        isItemTop = true;
         if( i === 0 ){
           item.style = {
             'padding-left': '0px'
           };
         }
       }
-    }
+    });
 
     me.preRender();
     me.render();
@@ -56,7 +49,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     me.on('beforecollapse', me.onBeforeCollapsed, me);
     me.on('expanded', me.onExpanded, me);
   },
-  fieldCls: 'fancy fancy-field-set',
+  fieldCls: 'fancy-field-set',
   value: '',
   width: 100,
   emptyText: '',
@@ -82,7 +75,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     checkbox.css('display', '');
 
     if( me.checkbox === true ){
-      me.addClass('fancy-checkbox-on');
+      me.addCls('fancy-checkbox-on');
     }
 
     var itemsEl = me.el.select('.fancy-field-set-items');
@@ -96,29 +89,29 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
 
     if( me.checkbox === true ){
       itemsEl.css('display', '');
-      me.removeClass('fancy-set-collapsed');
+      me.removeCls('fancy-set-collapsed');
     }
     else{
       itemsEl.css('display', 'none');
-      me.addClass('fancy-set-collapsed');
+      me.addCls('fancy-set-collapsed');
     }
 
     checkbox.on('click', function(){
-      me.toggleClass('fancy-checkbox-on');
+      me.toggleCls('fancy-checkbox-on');
 
-      var isChecked = me.el.hasClass('fancy-checkbox-on'),
+      var isChecked = me.el.hasCls('fancy-checkbox-on'),
         itemsEl = me.el.select('.fancy-field-set-items');
 
       if( isChecked ){
         me.fire('beforeexpanded');
         itemsEl.css('display', '');
-        me.removeClass('fancy-set-collapsed');
+        me.removeCls('fancy-set-collapsed');
         me.fire('expanded');
       }
       else{
         me.fire('beforecollapse');
         itemsEl.css('display', 'none');
-        me.addClass('fancy-set-collapsed');
+        me.addCls('fancy-set-collapsed');
         me.fire('collapse');
       }
     });

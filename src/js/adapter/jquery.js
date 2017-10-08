@@ -200,14 +200,37 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   addClass: function(cls){
+    this.addCls.apply(this, arguments);
+  },
+  /*
+   * @param {String} cls
+   */
+  addCls: function(cls){
     var me = this;
 
     me.$dom.addClass(cls);
+
+    if(arguments.length > 1){
+      var i = 1,
+        iL = arguments.length;
+
+      for (;i<iL;i++){
+        me.addClass(arguments[i]);
+      }
+    }
   },
   /*
    * @param {String} cls
    */
   removeClass: function(cls){
+    var me = this;
+
+    me.$dom.removeClass(cls);
+  },
+  /*
+   * @param {String} cls
+   */
+  removeCls: function(cls){
     var me = this;
 
     me.$dom.removeClass(cls);
@@ -223,8 +246,25 @@ Fancy.Element.prototype = {
   },
   /*
    * @param {String} cls
+   * @return {Boolean}
+   */
+  hasCls: function(cls){
+    var me = this;
+
+    return me.$dom.hasClass(cls);
+  },
+  /*
+   * @param {String} cls
    */
   toggleClass: function(cls){
+    var me = this;
+
+    me.$dom.toggleClass(cls);
+  },
+  /*
+   * @param {String} cls
+   */
+  toggleCls: function(cls){
     var me = this;
 
     me.$dom.toggleClass(cls);
@@ -248,7 +288,9 @@ Fancy.Element.prototype = {
         length: 0,
         dom: undefined,
         addClass: function(){},
+        addCls: function(){},
         removeClass: function(){},
+        removeCls: function(){},
         destroy: function(){},
         remove: function(){},
         css: function(){},
@@ -735,6 +777,12 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   addClass: function(cls){
+    this.addCls.apply(this, arguments);
+  },
+  /*
+   * @param {String} cls
+   */
+  addCls: function(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -742,17 +790,32 @@ Fancy.Elements.prototype = {
     for(;i<iL;i++){
       Fancy.get(me.$dom[i]).addClass(cls);
     }
+
+    if(arguments.length > 1){
+      i = 1;
+      iL = arguments.length;
+
+      for(;i<iL;i++){
+        me.addClass(arguments[i]);
+      }
+    }
   },
   /*
    * @param {String} cls
    */
   removeClass: function(cls){
+    this.removeCls.apply(this, arguments);
+  },
+  /*
+   * @param {String} cls
+   */
+  removeCls: function(cls){
     var me = this,
       i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
-      Fancy.get(me.$dom[i]).removeClass(cls);
+      Fancy.get(me.$dom[i]).removeCls(cls);
     }
   },
   /*
@@ -794,6 +857,18 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   toggleClass: function(cls){
+    var me = this,
+      i = 0,
+      iL = me.length;
+
+    for(;i<iL;i++){
+      Fancy.get(me.$dom[i]).toggleClass(cls);
+    }
+  },
+  /*
+   * @param {String} cls
+   */
+  toggleCls: function(cls){
     var me = this,
       i = 0,
       iL = me.length;

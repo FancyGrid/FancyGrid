@@ -35,8 +35,7 @@ Fancy.define('Fancy.bar.Text', {
     var me = this,
       el = Fancy.get(document.createElement('div'));
 
-    el.addClass(me.widgetCls);
-    el.addClass(me.cls);
+    el.addCls(me.widgetCls, me.cls);
     el.update(me.text);
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
@@ -49,9 +48,15 @@ Fancy.define('Fancy.bar.Text', {
       me.el.css('display', 'none');
     }
   },
+  /*
+   * @return {String}
+   */
   get: function() {
     return this.el.dom.innerHTML;
   },
+  /*
+   * @return {String}
+   */
   getValue: function () {
     return this.get();
   }

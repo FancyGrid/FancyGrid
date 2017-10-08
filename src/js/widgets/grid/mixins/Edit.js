@@ -45,6 +45,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     me.remove(o, true);
   },
   /*
+   *
+   */
+  removeAll: function () {
+    var me = this;
+
+    me.store.removeAll();
+    me.update();
+    me.scroller.update();
+
+    if(me.paging){
+      me.paging.updateBar();
+    }
+
+    if(me.grouping){
+      me.grouping.reGroup();
+    }
+  },
+  /*
    * @param {*} o
    */
   add: function(o){

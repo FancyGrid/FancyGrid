@@ -1049,7 +1049,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
 
     me.input.dom.value = value;
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   emptyText: '',
@@ -1169,7 +1169,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
       target = e.target;
 
     if(target.tagName.toLocaleLowerCase() === 'input'){}
-    else if(Fancy.get(target).hasClass('fancy-field-picker-button')){}
+    else if(Fancy.get(target).hasCls('fancy-field-picker-button')){}
     else if( datePicker.panel.el.within(target) ){}
     else if( monthPicker && monthPicker.panel.el.within(target) ){}
     else{
@@ -1325,6 +1325,10 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     me.initDate(value);
     me.changeInputValue();
   },
+  /*
+   * @param {*} oldValue
+   * @return {Boolean}
+   */
   isEqual: function(oldValue){
     var me = this,
       oldDate = Fancy.Date.parse(oldValue, me.format.read, me.format.mode),
@@ -1392,7 +1396,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
       renderTo = me.renderTo || document.body,
       el = Fancy.get( document.createElement('div') );
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
 
     me.el = Fancy.get(Fancy.get(renderTo).dom.appendChild(el.dom));
   },
@@ -1543,6 +1547,9 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
   Fancy.define('Fancy.datepicker.Manager', {
     singleton: true,
     opened: [],
+    /*
+     * @param {Object} picker
+     */
     add: function (picker) {
       this.hide();
 
@@ -1582,7 +1589,14 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
     cellStylingCls: ['fancy-date-picker-cell-out-range', 'fancy-date-picker-cell-today', 'fancy-date-picker-cell-active'],
     activeCellCls: 'fancy-date-picker-cell-active',
     todayCellCls: 'fancy-date-picker-cell-today',
+    pickerDateCls: 'fancy-date-picker',
     outRangeCellCls: 'fancy-date-picker-cell-out-range',
+    buttonBackCls: 'fancy-picker-button-back',
+    buttonDateCls: 'fancy-picker-button-date',
+    buttonDateWrapperCls: 'fancy-picker-button-date-wrapper',
+    buttonNextCls: 'fancy-picker-button-next',
+    buttonTodayCls: 'fancy-picker-button-today',
+    buttonTodayWrapperCls: 'fancy-picker-button-today-wrapper',
     defaults: {
       type: 'string',
       width: 44,
@@ -1625,7 +1639,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
       me.on('update', me.onUpdate, me);
       me.on('cellclick', me.onCellClick, me);
 
-      me.addClass('fancy-date-picker');
+      me.addCls(me.pickerDateCls);
       me.el.on('mousewheel', me.onMouseWheel, me);
 
       me.panel.el.on('mousedown', me.onMouseDown, me);
@@ -1696,6 +1710,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
       var me = this,
         format = me.format,
         days = format.days,
+        outRangeCellCls = me.outRangeCellCls,
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
@@ -1709,13 +1724,13 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
         switch (o.rowIndex) {
           case 0:
             if (Number(o.value) > 20) {
-              o.cls += ' fancy-date-picker-cell-out-range';
+              o.cls += ' ' + outRangeCellCls;
             }
             break;
           case 4:
           case 5:
             if (Number(o.value) < 15) {
-              o.cls += ' fancy-date-picker-cell-out-range';
+              o.cls += ' ' + outRangeCellCls;
             }
             break;
         }
@@ -1773,7 +1788,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
       i = 0;
       iL = startDay;
 
-      for (; i < iL; i++) {
+      for(;i<iL;i++){
         columns.push({
           index: dayIndexes[i],
           title: days[i][0].toLocaleUpperCase(),
@@ -1909,27 +1924,26 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
         tbar = [];
 
       tbar.push({
-        cls: 'fancy-picker-button-back',
+        cls: me.buttonBackCls,
         handler: me.onBackClick,
         scope: me,
         style: {}
       });
 
       tbar.push({
-        cls: 'fancy-picker-button-date',
+        cls: me.buttonDateCls,
         wrapper: {
-          cls: 'fancy-picker-button-date-wrapper'
+          cls: me.buttonDateWrapperCls
         },
         handler: me.onDateClick,
         scope: me,
         text: '                       '
-        //text: '     '
       });
 
       tbar.push('side');
 
       tbar.push({
-        cls: 'fancy-picker-button-next',
+        cls: me.buttonNextCls,
         handler: me.onNextClick,
         scope: me
       });
@@ -1945,9 +1959,9 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
 
       bbar.push({
         text: me.format.today,
-        cls: 'fancy-picker-button-today',
+        cls: me.buttonTodayCls,
         wrapper: {
-          cls: 'fancy-picker-button-today-wrapper'
+          cls: me.buttonTodayWrapperCls
         },
         handler: me.onClickToday,
         scope: me
@@ -2055,13 +2069,13 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
 
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
-      me.el.select('.' + activeCellCls).removeClass(activeCellCls);
+      me.el.select('.' + activeCellCls).removeCls(activeCellCls);
 
-      cell.addClass(activeCellCls);
+      cell.addCls(activeCellCls);
 
       me.fire('changedate', me.date);
 
-      if (cell.hasClass(me.outRangeCellCls)) {
+      if (cell.hasCls(me.outRangeCellCls)) {
         day = Number(o.value);
         if (o.rowIndex < 3) {
           if (month === 0) {
@@ -2183,7 +2197,7 @@ Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
       }
     },
     /*
-     *
+     * @param {Object} e
      */
     onMouseDown: function (e) {
       e.preventDefault();
@@ -2225,6 +2239,10 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
   cellTrackOver: true,
   cellStylingCls: ['fancy-month-picker-cell-active'],
   activeCellCls: 'fancy-month-picker-cell-active',
+  pickerCls: 'fancy-month-picker',
+  buttonBackCls: 'fancy-picker-button-back',
+  buttonNextCls: 'fancy-picker-button-next',
+  actionButtonsCls: 'fancy-month-picker-action-buttons',
   defaults: {
     type: 'string',
     width: 76,
@@ -2263,7 +2281,7 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
     me.addEvents('changedate');
     me.on('cellclick', me.onCellClick, me);
 
-    me.panel.addClass('fancy-month-picker');
+    me.panel.addCls(me.pickerCls);
   },
   /*
    *
@@ -2402,13 +2420,13 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
 
     tbar.push('side');
     tbar.push({
-      cls: 'fancy-picker-button-back',
+      cls: me.buttonBackCls,
       handler: me.onBackClick,
       scope: me
     });
 
     tbar.push({
-      cls: 'fancy-picker-button-next',
+      cls: me.buttonNextCls,
       handler: me.onNextClick,
       scope: me
     });
@@ -2425,7 +2443,7 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
 
     bbar.push({
       type: 'wrapper',
-      cls: 'fancy-month-picker-action-buttons',
+      cls: me.actionButtonsCls,
       items: [{
         text: lang.date.ok,
         handler: me.onClickOk,
@@ -2526,8 +2544,8 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       month = o.rowIndex + o.columnIndex * 6;
     }
 
-    body.el.select('.' + activeCellCls).removeClass(activeCellCls);
-    cell.addClass(activeCellCls);
+    body.el.select('.' + activeCellCls).removeCls(activeCellCls);
+    cell.addCls(activeCellCls);
 
     if(_date > 28){
       _date = 1;

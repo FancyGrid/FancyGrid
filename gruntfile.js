@@ -1,6 +1,6 @@
 var chalk = require('chalk'),
   good = chalk.green('Ok'),
-  bad = chalk.red("Bad");
+	bad = chalk.red("Bad");
 
 var tokens = {
 	generated: false
@@ -109,11 +109,11 @@ module.exports = function(grunt){
   grunt.registerMultiTask('angular', 'AngularJS directive', function(){
     var done = this.async();
 	
-    var fileContent = grunt.file.read('./src/js/angular/client-angularjs.js');
+    var fileContent = grunt.file.read('./src/js/angular/fancygrid-angularjs.js');
     fileContent += '\n';
     fileContent += grunt.file.read('./src/js/angular/fancyform-angularjs.js');
     
-    grunt.file.write('./client/fancy-angular.js', [fileContent]);
+    grunt.file.write('./fancygrid/fancy-angular.js', [fileContent]);
     done();
   });
 
@@ -186,91 +186,97 @@ module.exports = function(grunt){
     modules: {
       fancy: {
         src: "<%= pkg.files %>",
-        dest: "./client/modules/"
+        dest: "./fancygrid/modules/"
       }
     },
     core: {
 			fancy: {
 				src: "<%= pkg.files %>",
-				dest: "./client/fancy.js"
+				dest: "./fancygrid/fancy.js"
 			}
 		},
     fully: {
       fancy: {
 				src: "<%= pkg.files %>",
-				dest: ["./client/fancy.full.js"]
+				dest: ["./fancygrid/fancy.full.js"]
 			}
     },
     myclean: {
 			fancy: {
 				src: "<%= pkg.mfiles %>",
-				dest: "./client/modules/"
+				dest: "./fancygrid/modules/"
 			}
 		},
 		uglify: {
 			fancy: {
 				files: [{
-          "./client/fancy.min.js": ["./client/fancy.js"]
+          "./fancygrid/fancy.min.js": ["./fancygrid/fancy.js"]
         },{
-          "./client/fancy.full.min.js": ["./client/fancy.full.js"]
+          "./fancygrid/fancy.full.min.js": ["./fancygrid/fancy.full.js"]
         },{
-          "./client/modules/chart-integration.min.js": ["./client/modules/chart-integration.js"]
+          "./fancygrid/modules/chart-integration.min.js": ["./fancygrid/modules/chart-integration.js"]
         },{
-          "./client/modules/edit.min.js": ["./client/modules/edit.js"]
+          "./fancygrid/modules/edit.min.js": ["./fancygrid/modules/edit.js"]
         },{
-          "./client/modules/paging.min.js": ["./client/modules/paging.js"]
+          "./fancygrid/modules/paging.min.js": ["./fancygrid/modules/paging.js"]
         },{
-          "./client/modules/sort.min.js": ["./client/modules/sort.js"]
+          "./fancygrid/modules/sort.min.js": ["./fancygrid/modules/sort.js"]
         },{
-          "./client/modules/touch.min.js": ["./client/modules/touch.js"]
+          "./fancygrid/modules/touch.min.js": ["./fancygrid/modules/touch.js"]
         },{
-          "./client/modules/server-data.min.js": ["./client/modules/server-data.js"]
+          "./fancygrid/modules/server-data.min.js": ["./fancygrid/modules/server-data.js"]
         },{
-          "./client/modules/selection.min.js": ["./client/modules/selection.js"]
+          "./fancygrid/modules/selection.min.js": ["./fancygrid/modules/selection.js"]
         },{
-          "./client/modules/spark.min.js": ["./client/modules/spark.js"]
+          "./fancygrid/modules/spark.min.js": ["./fancygrid/modules/spark.js"]
         },{
-          "./client/modules/grouped-header.min.js": ["./client/modules/grouped-header.js"]
+          "./fancygrid/modules/grouped-header.min.js": ["./fancygrid/modules/grouped-header.js"]
         },{
-          "./client/modules/grouping.min.js": ["./client/modules/grouping.js"]
+          "./fancygrid/modules/grouping.min.js": ["./fancygrid/modules/grouping.js"]
+		},{
+          "./fancygrid/modules/summary.min.js": ["./fancygrid/modules/summary.js"]
         },{
-          "./client/modules/filter.min.js": ["./client/modules/filter.js"]
+          "./fancygrid/modules/filter.min.js": ["./fancygrid/modules/filter.js"]
         },{
-          "./client/modules/date.min.js": ["./client/modules/date.js"]
+          "./fancygrid/modules/date.min.js": ["./fancygrid/modules/date.js"]
         },{
-          "./client/modules/form.min.js": ["./client/modules/form.js"]
+          "./fancygrid/modules/form.min.js": ["./fancygrid/modules/form.js"]
         },{
-          "./client/modules/dom.min.js": ["./client/modules/dom.js"]
+          "./fancygrid/modules/dom.min.js": ["./fancygrid/modules/dom.js"]
         },{
-          "./client/modules/ajax.min.js": ["./client/modules/ajax.js"]
+          "./fancygrid/modules/ajax.min.js": ["./fancygrid/modules/ajax.js"]
         },{
-          "./client/modules/dd.min.js": ["./client/modules/dd.js"]
+          "./fancygrid/modules/dd.min.js": ["./fancygrid/modules/dd.js"]
         },{
-          "./client/modules/expander.min.js": ["./client/modules/expander.js"]
+          "./fancygrid/modules/expander.min.js": ["./fancygrid/modules/expander.js"]
         },{
-          "./client/modules/menu.min.js": ["./client/modules/menu.js"]
+          "./fancygrid/modules/menu.min.js": ["./fancygrid/modules/menu.js"]
         },{
-          "./client/modules/grid.min.js": ["./client/modules/grid.js"]
+          "./fancygrid/modules/grid.min.js": ["./fancygrid/modules/grid.js"]
 				}]
 			},
 		},
     compress: {
       fancy: {
         options: {
-          archive: './client/client-latest.zip',
+          archive: './fancygrid/fancygrid-latest.zip',
           pretty: true,
           mode: 'zip'
         },
         files: [
-          { src: './client/fancy.min.js' },
-          { src: './client/fancy.full.min.js' },
-          { src: './client/fancy.min.css' },
+          { src: './fancygrid/fancy.js' },
+          { src: './fancygrid/fancy.min.js' },
+		  
+          { src: './fancygrid/fancy.full.js' },
+          { src: './fancygrid/fancy.full.min.js' },
+		  
+          { src: './fancygrid/fancy.css' },
+          { src: './fancygrid/fancy.min.css' },
           
-          { src: './client/client-angularjs.js' },
-          { src: './client/fancy-angular.js' },
+          { src: './fancygrid/fancy-angular.js' },
           
-          { src: './client/modules/**' },
-          { src: './client/images/**' },
+          { src: './fancygrid/modules/**' },
+          { src: './fancygrid/images/**' },
         ]
       }
     },
@@ -281,16 +287,16 @@ module.exports = function(grunt){
           version: "<%= pkg.version %>"
         },
         files: [
-          { src: './client/fancy.min.js' },
-          { src: './client/fancy.min.css' },
-          { src: './client/fancy.full.min.js' }
+          { src: './fancygrid/fancy.min.js' },
+          { src: './fancygrid/fancy.min.css' },
+          { src: './fancygrid/fancy.full.min.js' }
         ]
       }
 		},
     less: {
       fancy: {
         files: {
-          "./client/fancy.css": ["./src/less/fancy.less"]
+          "./fancygrid/fancy.css": ["./src/less/fancy.less"]
         }
       }
     },
@@ -304,7 +310,7 @@ module.exports = function(grunt){
       },
       fancy: {
         files: {
-          "./client/fancy.min.css": ["./client/fancy.css"]
+          "./fancygrid/fancy.min.css": ["./fancygrid/fancy.css"]
         }
       }
     },
@@ -331,16 +337,16 @@ module.exports = function(grunt){
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-image-embed');
+    grunt.loadNpmTasks('grunt-image-embed');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-compress');
-  grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-bump');
 
-  grunt.registerTask('dev', ['less:fancy']);
+    grunt.registerTask('dev', ['less:fancy']);
   
-  grunt.registerTask('cl', [
-    'myclean:fancy'
-  ]);
+	grunt.registerTask('cl', [
+  	  'myclean:fancy'
+	]);
   
   //grunt.registerTask('packer', ['pack:fancy']);
   

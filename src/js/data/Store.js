@@ -338,12 +338,13 @@ Fancy.define('Fancy.Store', {
   },
   /*
    * @param {Object} data
+   * @param {Boolean} force
    */
-  defineModel: function(data){
+  defineModel: function(data, force){
     var me = this,
       s = me.store;
 
-    if(me.model && me.fields && me.fields.length !== 0){
+    if(me.model && me.fields && me.fields.length !== 0 && !force){
       return;
     }
 
@@ -378,6 +379,10 @@ Fancy.define('Fancy.Store', {
 
     var itemZero = items[0],
       fields = [];
+
+    if(items.length === undefined){
+      itemZero = items;
+    }
 
     for(var p in itemZero){
       fields.push(p);
@@ -593,7 +598,7 @@ Fancy.define('Fancy.Store', {
     return _data;
   },
   /*
-   * @returns {Array}
+   * @return {Array}
    */
   getData: function(){
     var me = this,
@@ -608,7 +613,7 @@ Fancy.define('Fancy.Store', {
     return _data;
   },
   /*
-   * @returns {Array}
+   * @return {Array}
    */
   getDataView: function(){
     var me = this,
@@ -624,7 +629,7 @@ Fancy.define('Fancy.Store', {
   },
   /*
    * @param {String} id
-   * @returns {Fancy.Model}
+   * @return {Fancy.Model}
    */
   getById: function(id){
     var me = this;
@@ -655,7 +660,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {String|Number} key
    * @param {*} value
-   * @returns {Array}
+   * @return {Array}
    */
   find: function(key, value){
     var me = this,
@@ -741,22 +746,21 @@ Fancy.define('Fancy.Store', {
       }
     }
   },
-  readSmartIndexes: function () {
+  /*
+   *
+   */
+  readSmartIndexes: function(){
     var me = this,
       w = me.widget,
-      i = 0,
-      iL = w.columns.length,
       numOfSmartIndexes = 0,
       smartIndexes = {};
 
-    for(;i<iL;i++){
-      var column = w.columns[i];
-
+    Fancy.each(w.columns, function(column){
       if(column.smartIndexFn){
         smartIndexes[column.index] = column.smartIndexFn;
         numOfSmartIndexes++;
       }
-    }
+    });
 
     if(numOfSmartIndexes){
       me.smartIndexes = smartIndexes;

@@ -13,17 +13,12 @@
 
       this.opened.push(combo);
     },
-    hideLists: function () {
-      var me = this,
-        opened = me.opened,
-        i = 0,
-        iL = opened.length;
+    hideLists: function(){
+      Fancy.each(this.opened, function(item){
+        item.hideList();
+      });
 
-      for(;i<iL;i++){
-        opened[i].hideList();
-      }
-
-      me.opened = [];
+      this.opened = [];
     }
   });
 
@@ -35,6 +30,7 @@
     extend: Fancy.Widget,
     selectedItemCls: 'fancy-combo-item-selected',
     focusedItemCls: 'fancy-combo-item-focused',
+    fieldCls: 'fancy fancy-field fancy-combo',
     width: 250,
     labelWidth: 60,
     listRowHeight: 25,
@@ -107,7 +103,7 @@
       }, 1);
     },
     /*
-     *
+     * @return {Boolean}
      */
     loadListData: function () {
       var me = this;
@@ -205,11 +201,10 @@
       var me = this;
 
       if (me.theme && me.theme !== 'default') {
-        me.addClass('fancy-theme-' + me.theme);
-        me.list.addClass('fancy-theme-' + me.theme);
+        me.addCls('fancy-theme-' + me.theme);
+        me.list.addCls('fancy-theme-' + me.theme);
       }
     },
-    fieldCls: 'fancy fancy-field fancy-combo',
     /*
      *
      */
@@ -383,7 +378,7 @@
               index = i;
             }
 
-            list.select('li').item(i).addClass(selectedItemCls);
+            list.select('li').item(i).addCls(selectedItemCls);
           });
         }
         else {
@@ -392,13 +387,13 @@
       }
       else {
         if(me.multiSelect && selected.length !== me.valuesIndex.length){
-          list.select('.' + selectedItemCls).removeClass(selectedItemCls);
+          list.select('.' + selectedItemCls).removeCls(selectedItemCls);
 
           me.valuesIndex.each(function (i, value, length) {
             if(index === undefined){
               index = i;
             }
-            list.select('li').item(i).addClass(selectedItemCls);
+            list.select('li').item(i).addCls(selectedItemCls);
           });
         }
 
@@ -409,7 +404,7 @@
         index = 0;
       }
 
-      list.select('li').item(index).addClass(focusedItemCls);
+      list.select('li').item(index).addCls(focusedItemCls);
       me.scrollToListItem(index);
 
       if (!me.docSpy) {
@@ -532,12 +527,18 @@
 
       me.aheadList.on('click', me.onListItemClick, me, 'li');
     },
+    /*
+     * @param {Object} e
+     */
     onListItemOver: function (e) {
       var me = this,
         li = Fancy.get(e.target);
 
-      li.addClass(me.focusedItemCls);
+      li.addCls(me.focusedItemCls);
     },
+    /*
+     *
+     */
     onListItemLeave: function () {
       this.clearFocused();
     },
@@ -562,11 +563,11 @@
 
         me.clearFocused();
 
-        li.toggleClass(selectedItemCls);
+        li.toggleCls(selectedItemCls);
 
-        if (li.hasClass(selectedItemCls)) {
+        if (li.hasCls(selectedItemCls)) {
           me.addValue(value);
-          li.addClass(focusedItemCls);
+          li.addCls(focusedItemCls);
         }
         else {
           me.removeValue(value);
@@ -606,17 +607,15 @@
       }
 
       if(Fancy.isArray(value) && me.multiSelect){
-        var i = 0,
-          iL = value.length,
-          displayedValues = [];
+        var displayedValues = [];
 
         me.valuesIndex.removeAll();
 
-        for(;i<iL;i++){
-          var _index = me.getIndex(value[i]);
+        Fancy.each(value, function(v, i){
+          var _index = me.getIndex(v);
 
           if(_index === -1){
-            continue;
+            return;
           }
 
           me.valuesIndex.add(_index, value[i]);
@@ -624,7 +623,7 @@
           displayedValues.push(me.data[_index][me.displayKey]);
 
           valueStr = displayedValues.join(', ');
-        }
+        });
 
         me.values = value;
         index = me.getIndex(value[0]);
@@ -662,6 +661,8 @@
     },
     /*
      * Method used only for multiSelect
+     *
+     * @param {*} v
      */
     addValue: function(v){
       var me = this,
@@ -675,18 +676,18 @@
     },
     /*
      * Method used only for multiSelect
+     *
+     * @param {*} v
      */
     removeValue: function(v){
       var me = this,
-        index = -1,
-        i = 0,
-        iL = me.values.length;
+        index = -1;
 
-      for(;i<iL;i++){
-        if( me.values[i] === v ){
+      Fancy.each(me.values, function(value, i){
+        if( value === v ){
           index = i;
         }
-      }
+      });
 
       if(index !== -1) {
         me.values.splice(index, 1);
@@ -703,6 +704,8 @@
     },
     /*
      * Method used only for multiSelect
+     *
+     * @param {Boolean} onInput
      */
     updateInput: function(onInput){
       var me = this,
@@ -721,7 +724,7 @@
     /*
      * @param {Number} index
      */
-    selectItem: function (index) {
+    selectItem: function(index){
       var me = this;
 
       if (!me.list) {
@@ -734,8 +737,9 @@
 
       me.clearFocused();
 
-      me.list.select('li').item(index).addClass(me.focusedItemCls);
-      me.list.select('li').item(index).addClass(me.selectedItemCls);
+      var item = me.list.select('li').item(index);
+
+      item.addCls(me.focusedItemCls, me.selectedItemCls);
     },
     /*
      *
@@ -781,8 +785,7 @@
       }
 
       me.fire('beforerender');
-      el.addClass(me.cls);
-      el.addClass(me.fieldCls);
+      el.addCls(me.cls, me.fieldCls);
 
       var labelWidth = '';
 
@@ -821,10 +824,10 @@
       renderTo.appendChild(el.dom);
 
       if (me.labelAlign === 'top') {
-        me.el.addClass('fancy-field-label-align-top');
+        me.el.addCls('fancy-field-label-align-top');
       }
       else if (me.labelAlign === 'right') {
-        me.el.addClass('fancy-field-label-align-right');
+        me.el.addCls('fancy-field-label-align-right');
         $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
       }
 
@@ -882,7 +885,7 @@
 
       listHtml.push('</ul>');
 
-      list.addClass('fancy fancy-combo-result-list');
+      list.addCls('fancy fancy-combo-result-list');
       list.update(listHtml.join(""));
 
       list.css({
@@ -902,7 +905,10 @@
       document.body.appendChild(list.dom);
       me.list = list;
     },
-    getListWidth: function () {
+    /*
+     * @return {Number}
+     */
+    getListWidth: function(){
       var me = this,
         el,
         listWidth = me.inputWidth + 14,
@@ -920,47 +926,36 @@
       return listWidth;
     },
     /*
-     *
      * @return {Array}
-     *
      */
-    generateAheadData: function () {
+    generateAheadData: function(){
       var me = this,
         inputValue = me.input.dom.value.toLocaleLowerCase(),
-        data = me.data,
-        aheadData = [],
-        i = 0,
-        iL = data.length;
+        aheadData = [];
 
       if (me.multiSelect) {
         var splitted = inputValue.split(', '),
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        i = 0;
-        iL = inputValue.length;
-
-        for(;i<iL;i++){
+        Fancy.each(inputValue, function (v, i) {
           if(inputSelection.start <= i){
-            break;
+            return true;
           }
 
           if(inputValue[i] === ','){
             passedCommas++;
           }
-        }
+        });
 
         inputValue = splitted[passedCommas];
       }
 
-      i = 0;
-      iL = data.length;
-
-      for (; i < iL; i++) {
-        if (new RegExp('^' + inputValue).test(data[i][me.displayKey].toLocaleLowerCase())) {
-          aheadData.push(data[i]);
+      Fancy.each(me.data, function (item){
+        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
+          aheadData.push(item);
         }
-      }
+      });
 
       if (me.data.length === aheadData.length) {
         aheadData = [];
@@ -1060,19 +1055,19 @@
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
-      me.list.select('.' + selectedItemCls).removeClass(selectedItemCls);
+      me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
+      me.list.select('.' + selectedItemCls).removeCls(selectedItemCls);
     },
     clearFocused: function () {
       var me = this,
         focusedItemCls = me.focusedItemCls;
 
       if(me.list) {
-        me.list.select('.' + focusedItemCls).removeClass(focusedItemCls);
+        me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
 
       if(me.aheadList) {
-        me.aheadList.select('.' + focusedItemCls).removeClass(focusedItemCls);
+        me.aheadList.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
     },
     /*
@@ -1110,13 +1105,14 @@
     },
     /*
      * @param {key} value
+     * @param {Boolean} [returnPosition]
      */
     getValueKey: function (value, returnPosition) {
       var me = this,
         i = 0,
         iL = me.data.length;
 
-      for (; i < iL; i++) {
+      for(;i<iL;i++){
         if (me.data[i][me.displayKey] === value) {
           if (returnPosition) {
             return i;
@@ -1358,7 +1354,6 @@
 
         me.clearFocused();
 
-        //activeLi.removeClass(focusedItemCls);
         nextActiveLi.addClass(focusedItemCls);
       }
       else {
@@ -1402,6 +1397,9 @@
 
       return list;
     },
+    /*
+     *
+     */
     initMultiSelect: function () {
       var me = this,
         value = me.value;
@@ -1418,19 +1416,15 @@
           me.values = [me.value];
         }
 
-        var i = 0,
-          iL = me.values.length,
-          index;
-
-        for(;i<iL;i++){
-          value = me.values[i];
-
-          index = me.getIndex(value);
-
-          me.valuesIndex.add(index, value);
-        }
+        Fancy.each(me.values, function(value){
+          me.valuesIndex.add(me.getIndex(value), value);
+        });
       }
     },
+    /*
+     * @param {*} value
+     * @return {Number}
+     */
     getIndex: function(value){
       var me = this,
         data = me.data,
@@ -1448,24 +1442,23 @@
     },
     /*
      * Method used only for multiSelect
+     *
+     * @return {Array}
      */
-    getFromInput: function () {
+    getFromInput: function(){
       var me = this,
         value = me.input.dom.value,
         values = value.split(','),
-        i = 0,
-        iL = values.length,
-        displayValue,
         _values = [];
 
-      for(;i<iL;i++){
-        displayValue = values[i].replace(/ $/, '').replace(/^ /, '');
+      Fancy.each(values, function(v){
+        var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
+          _value = me.getValueKey(displayValue);
 
-        var _value = me.getValueKey(displayValue);
         if(_value){
           _values.push(_value);
         }
-      }
+      });
 
       return _values;
     }

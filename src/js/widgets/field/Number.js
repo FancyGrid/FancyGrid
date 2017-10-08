@@ -42,7 +42,7 @@ Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
 
     me.initSpin();
   },
-  fieldCls: 'fancy fancy-field',
+  fieldCls: Fancy.fieldCls,
   value: '',
   width: 100,
   emptyText: '',
@@ -199,7 +199,7 @@ Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
     });
   },
   /*
-   *
+   * @param {Object} e
    */
   onMouseDownSpinDown: function(e){
     var me = this,

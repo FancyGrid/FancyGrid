@@ -46,7 +46,7 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
     w.on('headercellclick', me.onHeaderCellClick, me);
   },
   /*
-   * @param {Object} grid
+   * @param {Fancy.Grid} grid
    * @param {Object} o
    */
   onHeaderCellClick: function(grid, o){
@@ -68,21 +68,21 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       return;
     }
 
-    var field = cellEl.select('.fancy-field');
+    var field = cellEl.select('.' + Fancy.fieldCls);
     if(field.length > 0 && field.item(0).within(target) === true){
        return;
     }
 
-    if(cellEl.hasClass('fancy-grid-column-resizer') || w.startResizing){
+    if(cellEl.hasCls(w.columnResizerCls) || w.startResizing){
       return;
     }
 
     columns = w.getColumns(side);
 
-    if(cellEl.hasClass(clsASC)){
+    if(cellEl.hasCls(clsASC)){
       action = 'desc';
     }
-    else if(cellEl.hasClass(clsDESC)){
+    else if(cellEl.hasCls(clsDESC)){
       action = 'asc';
     }
     else{
@@ -94,6 +94,13 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
 
     me.sort(action, key, side, column, cellEl);
   },
+  /*
+   * @param {String} dir
+   * @param {String} index
+   * @param {String} side
+   * @param {Object} column
+   * @param {Object} cell
+   */
   sort: function(dir, index, side, column, cell){
     var me = this,
       w = me.widget,
@@ -129,10 +136,10 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
 
     switch(dir){
       case 'asc':
-        cell.addClass(clsASC);
+        cell.addCls(clsASC);
         break;
       case 'desc':
-        cell.addClass(clsDESC);
+        cell.addCls(clsDESC);
         break;
     }
 
@@ -194,10 +201,10 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
 
     switch(dir.toLocaleUpperCase()){
       case 'ASC':
-        cellEl.removeClass(clsDESC);
+        cellEl.removeCls(clsDESC);
         break;
       case 'DESC':
-        cellEl.removeClass(clsASC);
+        cellEl.removeCls(clsASC);
         break;
     }
 
@@ -221,13 +228,13 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
         key,
         index = cell.attr('index');
 
-      if(sideEl.hasClass('fancy-grid-center')){
+      if(sideEl.hasCls(w.centerCls)){
         side = 'center';
       }
-      else if(sideEl.hasClass('fancy-grid-left')){
+      else if(sideEl.hasCls(w.leftCls)){
         side = 'left';
       }
-      else if(sideEl.hasClass('fancy-grid-right')){
+      else if(sideEl.hasCls(w.rightCls)){
         side = 'right';
       }
 
@@ -252,13 +259,13 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
         key,
         index = cell.attr('index');
 
-      if(sideEl.hasClass('fancy-grid-center')){
+      if(sideEl.hasCls(w.centerCls)){
         side = 'center';
       }
-      else if(sideEl.hasClass('fancy-grid-left')){
+      else if(sideEl.hasCls(w.leftCls)){
         side = 'left';
       }
-      else if(sideEl.hasClass('fancy-grid-right')){
+      else if(sideEl.hasCls(w.rightCls)){
         side = 'right';
       }
 
@@ -272,8 +279,8 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       }
     }
 
-    cellToRemoveCls.removeClass(clsASC);
-    cellToRemoveCls.removeClass(clsDESC);
+    cellToRemoveCls.removeCls(clsASC);
+    cellToRemoveCls.removeCls(clsDESC);
   },
   /*
    *
@@ -284,7 +291,7 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       clsASC = w.clsASC,
       clsDESC = w.clsDESC;
 
-    w.el.select('.'+clsASC).removeClass(clsASC);
-    w.el.select('.'+clsDESC).removeClass(clsDESC);
+    w.el.select('.'+clsASC).removeCls(clsASC);
+    w.el.select('.'+clsDESC).removeCls(clsDESC);
   }
 });

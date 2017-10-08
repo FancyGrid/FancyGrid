@@ -4,12 +4,11 @@
  */
 var Fancy = {
   global: this,
-  cls: 'fancy',
   /**
    * The version of the framework
    * @type String
    */
-  version: '1.6.11',
+  version: '1.6.12',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -212,16 +211,21 @@ Fancy.each = function(arrayObject, fn){
 
   switch(type){
     case 'array':
+    case 'string':
       var i = 0,
         iL = arrayObject.length;
 
       for(;i<iL;i++){
-        fn(arrayObject[i], i, arrayObject);
+        if(fn(arrayObject[i], i, arrayObject) === true){
+          break;
+        }
       }
       break;
     case 'object':
       for(var p in arrayObject){
-        fn(arrayObject[p], p, arrayObject);
+        if(fn(arrayObject[p], p, arrayObject) === true){
+          break;
+        }
       }
       break;
   }
@@ -371,6 +375,19 @@ Fancy.apply(Fancy, {
     }
     return el.id;
   }
+});
+
+/**
+ * Apply base classnames for fast fetching
+ */
+Fancy.apply(Fancy, {
+  cls: 'fancy',
+  touchCls: 'fancy-touch',
+  gridCls: 'fancy-grid',
+  gridHeaderCls: 'fancy-grid-header',
+  fieldCls: 'fancy-field',
+  fieldEmptyCls: 'fancy-field-empty',
+  hiddenCls: 'fancy-display-none'
 });
 
 (function(){

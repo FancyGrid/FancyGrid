@@ -28,12 +28,12 @@ Fancy.define('Fancy.Tool', {
     me.style = me.style || {};
 
     me.render();
-    me.setOns();
+    me.ons();
   },
   /*
    *
    */
-  setOns: function(){
+  ons: function(){
     var me = this,
       el = me.el;
 

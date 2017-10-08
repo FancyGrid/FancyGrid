@@ -9,7 +9,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfig: function(config, originalConfig){
     var me = this;
@@ -53,6 +53,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @return {Object}
+   */
   copyColumns: function(config, originalConfig){
     if(config.columns){
       config.columns = Fancy.Array.copy(config.columns, true);
@@ -67,7 +72,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigScroll: function (config, originalConfig) {
     if(Fancy.isIE && originalConfig.nativeScroller !== false){
@@ -79,16 +84,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigSpark: function(config, originalConfig){
-    var me = this,
-      i = 0,
-      iL = config.columns.length;
+    var me = this;
 
-    for(;i<iL;i++){
-      var column = config.columns[i],
-        spark = column.sparkConfig;
+    Fancy.each(config.columns, function(column){
+      var spark = column.sparkConfig;
 
       if(spark && spark.legend){
         switch(spark.legend.type){
@@ -103,10 +105,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             break;
         }
       }
-    }
+    });
 
     return config;
   },
+  /*
+   * @private
+   * @param {String} title
+   * @param {Object} style
+   * @param {Object} column
+   * @return {Array}
+   */
   _generateLegendBar: function(title, indexes, style, column){
     var i = 0,
       iL = title.length,
@@ -119,23 +128,21 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     var legendFn = function(button){
       var grid = me,
-        indexOrder,
-        i = 0,
-        iL = me.columns.length;
+        indexOrder;
 
-      for(;i<iL;i++){
+      Fancy.each(me.columns, function(column, i){
         if(column.index === me.columns[i].index){
           indexOrder = i;
         }
-      }
+      });
 
-      if(!button.el.hasClass('fancy-legend-item-disabled') && title.length - 1 === disabled.length){
+      if(!button.hasCls('fancy-legend-item-disabled') && title.length - 1 === disabled.length){
         return;
       }
 
-      button.el.toggleClass('fancy-legend-item-disabled');
+      button.toggleCls('fancy-legend-item-disabled');
 
-      if(button.el.hasClass('fancy-legend-item-disabled')){
+      if(button.hasCls('fancy-legend-item-disabled')){
         disabled[button.index] = true;
         grid.disableLegend(indexOrder, button.index);
         disabled.length++;
@@ -172,23 +179,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigData: function(config, originalConfig){
-    var me = this;
-
     if(Fancy.isArray(config.data) && config.data.length === 0 && config.columns){
-      var fields = [],
-        i = 0,
-        iL = config.columns.length;
+      var fields = [];
 
-      for(;i<iL;i++){
-        var column = config.columns[i];
-
+      Fancy.each(config.columns, function(column){
         if(column.index){
           fields.push(column.index || column.key);
         }
-      }
+      });
 
       config.data = {
         fields: fields,
@@ -200,7 +201,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigLoadMask: function(config){
     config._plugins.push({
@@ -232,7 +233,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigDefaults: function(config){
     config.defaults = config.defaults || {};
@@ -241,67 +242,52 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.defaults.type = 'string';
     }
 
-    for(var p in config.defaults){
-      var i = 0,
-        iL = config.columns.length;
-
-      for(;i<iL;i++){
-        switch(config.columns[i].type){
+    Fancy.each(config.defaults, function(value, p){
+      Fancy.each(config.columns, function(column){
+        switch(column.type){
           case 'select':
           case 'order':
           case 'expand':
-            continue;
+            return;
             break;
         }
 
-        if(config.columns[i][p] === undefined){
-          config.columns[i][p] = config.defaults[p];
+        if(column[p] === undefined){
+          column[p] = config.defaults[p];
         }
-      }
-    }
+      });
+    });
 
     return config;
   },
   prepareConfigColumnMinMaxWidth: function(config){
-    var column,
-      i = 0,
-      iL = config.columns.length;
-
-    for(;i<iL;i++){
-      column = config.columns[i];
+    Fancy.each(config.columns, function(column){
       if(column.width === undefined && column.minWidth){
         column.width = column.minWidth;
       }
-    }
-
+    });
 
     return config;
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigCellTip: function(config){
-    var columns = config.columns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++) {
-      var column = columns[i];
-
+    Fancy.each(config.columns, function(column){
       if(column.cellTip){
         config._plugins.push({
           type: 'grid.celltip'
         });
-        break;
+        return true;
       }
-    }
+    });
 
     return config;
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigDD: function(config){
     if(config.gridToGrid){
@@ -318,7 +304,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigColumns: function(config){
     var columns = config.columns,
@@ -381,12 +367,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigColumnsWidth: function(config){
     var columns = config.columns,
-      i = 0,
-      iL = columns.length,
       width = config.width,
       columnsWithoutWidth = [],
       flexColumns = [],
@@ -410,8 +394,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       width -= 1;
     }
 
-    for(;i<iL;i++){
-      column = columns[i];
+    Fancy.each(columns, function(column, i){
+      if(column.flex){
+        config.hasFlexColumns = true;
+      }
 
       switch(column.type){
         case 'select':
@@ -449,6 +435,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       else if(Fancy.isNumber(column.width) ){
         width -= column.width;
       }
+    });
+
+    if(config.hasFlexColumns){
+      config._plugins.push({
+        type: 'grid.columnresizer'
+      });
     }
 
     if(hasLocked && hasRightLocked){
@@ -469,98 +461,75 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       defaultWidth = minWidth;
     }
 
-    i = 0;
-    iL = columnsWithoutWidth.length;
-
     var isOverFlow = false,
       _width = width;
-    
-    for(;i<iL;i++){
-      column = columns[ columnsWithoutWidth[i] ];
+
+    Fancy.each(columnsWithoutWidth, function(value){
+      column = columns[value];
       if(column.flex === undefined){
         _width -= defaultWidth;
       }
-    }
+    });
 
     if(flexTotal){
-      i = 0;
-      iL = flexColumns.length;
-
-      for(;i<iL;i++){
+      Fancy.each(flexColumns, function(column){
         _width -= (_width/flexTotal) * column.flex;
-      }
+      });
     }
 
     if(_width < 0){
       isOverFlow = true;
     }
 
-    i = 0;
-    iL = columnsWithoutWidth.length;
-
-    for(;i<iL;i++){
-      column = columns[ columnsWithoutWidth[i] ];
+    Fancy.each(columnsWithoutWidth, function(value){
+      column = columns[value];
       if(column.flex === undefined){
         column.width = defaultWidth;
         width -= defaultWidth;
       }
-    }
+    });
 
     if(flexTotal){
-      i = 0;
-      iL = flexColumns.length;
-
-      for(;i<iL;i++){
-        column = columns[flexColumns[i]];
+      Fancy.each(flexColumns, function(value){
+        column = columns[value];
         if(isOverFlow){
           column.width = defaultWidth * column.flex;
         }
         else {
           column.width = (width / flexTotal) * column.flex;
         }
-      }
+      });
     }
 
     return config;
   },
   /*
    * @param {Object} column
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigActionRender: function(column){
     return function(o){
-      var items = column.items || [],
-        i = 0,
-        iL = items.length;
-
-      for(;i<iL;i++){
-        var item = items[i],
-          itemText = item.text || '',
+      Fancy.each(column.items, function(item){
+        var itemText = item.text || '',
           style = Fancy.styleToString(item.style),
           cls = item.cls || '';
 
         o.value += [
           '<div class="fancy-grid-column-action-item '+cls+'" style="' + style + '">',
-            itemText,
+          itemText,
           '</div>'
         ].join(" ");
-      }
+      });
 
       return o;
     }
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigSmartIndex: function(config){
-    var columns = config.columns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
+    Fancy.each(config.columns, function(column){
       if(/\+|\-|\/|\*|\[|\./.test(column.index)){
         var smartIndex = column.index;
 
@@ -568,7 +537,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'xAxis.categories':
           case 'yAxis.categories':
           case 'zAxis.categories':
-            continue;
+            return;
             break;
         }
 
@@ -585,13 +554,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         smartIndex = 'return ' + smartIndex + ';';
         column.smartIndexFn = new Function('data', smartIndex);
       }
-    }
+    });
 
     return config;
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigActionColumn: function(config){
     var me = this,
@@ -713,7 +682,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigWidgetColumn: function(config){
     var columns = config.columns,
@@ -725,7 +694,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.widget){
         column.render = function(o){
-          var fieldEl = o.cell.select('.fancy-field'),
+          var fieldEl = o.cell.select('.' + Fancy.fieldCls),
             field,
             renderTo = o.cell.dom,
             column = o.column;
@@ -834,7 +803,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigSorting: function(config){
     var defaults = config.defaults || {};
@@ -847,24 +816,19 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       return config;
     }
 
-    var i = 0,
-      iL = config.columns.length;
-
-    for(;i<iL;i++){
-      var column = config.columns[i];
-
+    Fancy.each(config.columns, function(column){
       if(column.sortable){
         config._plugins.push({
           type: 'grid.sorter'
         });
       }
-    }
+    });
 
     return config;
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigSelection: function(config){
     var initSelection = false,
@@ -919,7 +883,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigEdit: function(config){
     var defaults = config.defaults || {},
@@ -951,12 +915,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
     }
 
-    var i = 0,
-      iL = config.columns.length;
-
-    for(;i<iL;i++){
-      var column = config.columns[i];
-
+    Fancy.each(config.columns, function(column){
       if(column.index === undefined && column.key === undefined){
         column.editable = false;
       }
@@ -984,13 +943,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           type: 'grid.celledit'
         });
       }
-    }
+    });
 
     return config;
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigExpander: function(config){
     if(config.expander){
@@ -1013,7 +972,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigGrouping: function(config){
     if(config.grouping){
@@ -1030,6 +989,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
   prepareConfigSummary: function(config){
     if(config.summary){
       var summaryConfig = config.summary;
@@ -1049,12 +1012,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigFilter: function(config){
     var columns = config.columns,
-      i = 0,
-      iL = columns.length,
       isFilterable = false,
       isHeaderFilter = false,
       /*
@@ -1074,8 +1035,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       Fancy.apply(filterConfig, config.filter);
     }
 
-    for(;i<iL;i++) {
-      var column = columns[i];
+    Fancy.each(columns, function(column){
       if(column.filter){
         isFilterable = true;
         if(column.filter.header){
@@ -1086,7 +1046,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           }
         }
       }
-    }
+    });
 
     filterConfig.header = isHeaderFilter;
     filterConfig.groupHeader = isInGroupHeader;
@@ -1099,7 +1059,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigSearch: function(config){
     var searchConfig = {
@@ -1119,7 +1079,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigGroupHeader: function(config){
     var columns = config.columns,
@@ -1129,14 +1089,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       isGrouped = false,
       _columns = [];
 
-    for(;i<iL;i++){
-      var column = columns[i];
-
+    Fancy.each(columns, function(column){
       if(column.columns){
         isGrouped = true;
         groups.push(column);
       }
-    }
+    });
 
     if(isGrouped){
       i = 0;
@@ -1188,7 +1146,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigPaging: function(config, originalConfig){
     var me = this,
@@ -1233,6 +1191,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
+  /*
+   * @param {Object|Boolean} paging
+   * @param {Object} lang
+   * @return {Array}
+   */
   generatePagingBar: function(paging, lang){
     var me = this,
       bar = [],
@@ -1406,7 +1369,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigColumnsResizer: function(config){
     var defaults = config.defaults || {};
@@ -1419,25 +1382,21 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       return config;
     }
 
-    var columns = [].concat(config.columns).concat(config.leftColumns).concat(config.rightColumns),
-      i = 0,
-      iL = columns.length;
+    var columns = [].concat(config.columns).concat(config.leftColumns).concat(config.rightColumns);
 
-    for(;i<iL;i++){
-      var column = columns[i];
-
+    Fancy.each(columns, function(column){
       if(column.resizable){
         config._plugins.push({
           type: 'grid.columnresizer'
         });
       }
-    }
+    });
 
     return config;
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigTBar: function(config){
     var me = this,
@@ -1465,15 +1424,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             if(tbar[i].handler === undefined){
               tbar[i].disabled = true;
               tbar[i].handler = function(){
-                var items = me.getSelection(),
-                  i = 0,
-                  iL = items.length;
-
-                for(;i<iL;i++){
-                  var item = items[i];
-
+                Fancy.each(me.getSelection(), function(item){
                   me.remove(item);
-                }
+                });
 
                 me.selection.clearSelection();
               };
@@ -1482,7 +1435,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 render: function(){
                   var me = this;
                   setTimeout(function(){
-                    var grid = Fancy.getWidget( me.el.parent().parent().parent().select('.fancy-grid').dom.id );
+                    var grid = Fancy.getWidget( me.el.parent().parent().parent().select('.' + Fancy.gridCls).dom.id );
 
                     grid.on('select', function(){
                       var selection = grid.getSelection();
@@ -1510,7 +1463,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigChart: function(config){
     var data = config.data,
@@ -1527,12 +1480,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         toChart: data.items? true: (data.proxy? true: false)
       });
 
-      var i = 0,
-        iL = chart.length;
-
-      for(;i<iL;i++){
-        var _chart = chart[i],
-          type = _chart.type;
+      Fancy.each(chart, function(_chart){
+        var type = _chart.type;
 
         switch(type){
           case 'highchart':
@@ -1547,7 +1496,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           default:
             throw new Error('[FancyGrid Error] - type of chart ' + type + ' does not exist');
         }
-      }
+      });
     }
 
     return config;
@@ -1555,7 +1504,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Object} config
    * @param {Object} originalConfig
-   * @returns {Object}
+   * @return {Object}
    */
   prepareConfigSize: function(config, originalConfig){
     var renderTo = config.renderTo,
@@ -1572,18 +1521,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
     else if(config.width === 'fit'){
-      var columns = config.columns,
-        i = 0,
-        iL = columns.length,
-        width = 0,
+      var width = 0,
         hasLocked = false;
 
-      for(;i<iL;i++){
-        width += columns[i].width;
-        if(columns[i].locked){
+      Fancy.each(config.columns, function(column){
+        width += column.width;
+        if(column.locked){
           hasLocked = true;
         }
-      }
+      });
 
       if(config.title || config.subTitle){
         width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];

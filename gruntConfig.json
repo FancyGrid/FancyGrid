@@ -1,6 +1,6 @@
 {
   "name": "FancyGrid",
-  "version": "1.6.11",
+  "version": "1.6.12",
   "license": "All of the code within the FancyGrid software is developed and copyrighted by FancyGrid, Inc., and may not be copied,\nreplicated, or used in any other software or application without prior permission from FancyGrid. All usage must coincide with the\nFancyGrid End User License Agreement which can be requested by email at support@fancygrid.com.",
   "mfiles": [{
     "name": "core built js",
@@ -45,6 +45,9 @@
     "name": "grouping",
     "path": "./client/modules/grouping.js"
   },{
+    "name": "summary",
+    "path": "./client/modules/summary.js"
+  },{
     "name": "filter",
     "path": "./client/modules/filter.js"
   },{
@@ -66,6 +69,9 @@
     "name": "menu",
     "path": "./client/modules/menu.js"
   },{
+    "name": "summary",
+    "path": "./client/modules/summary.js"
+  },{
     "name": "grid",
     "path": "./client/modules/grid.js"
   }],
@@ -73,7 +79,7 @@
     "path": "./src/js/core/Fancy.js"
   },{
     "path": "./src/js/core/full.js",
-    "ignore":true
+    "ignore": true
   },{
     "path": "./src/js/core/theme.js"
   },{
@@ -84,8 +90,7 @@
     "path": "./src/js/core/types/Object.js"
   },{
     "path": "./src/js/core/types/Date.js",
-    "module": "date",
-    "ignore":true
+    "module": "date"
   },{
     "path": "./src/js/core/types/Number.js"
   },{
@@ -102,85 +107,65 @@
     "path": "./src/js/data/Data.js"
   },{
     "path": "./src/js/data/Model.js"
-
   },{
     "path": "./src/js/widgets/PluginManager.js"
   },{
     "path": "./src/js/widgets/WidgetManager.js"
   },{
     "path": "./src/js/util/Event.js"
-
   },{
     "path": "./src/js/data/mixins/Paging.js",
-    "module": "paging",
-    "ignore":true
+    "module": "paging"
   },{
     "path": "./src/js/data/mixins/Proxy.js",
-    "module": "server data",
-    "ignore":true
+    "module": "server data"
   },{
     "path": "./src/js/data/mixins/Rest.js",
-    "module": "server data",
-    "ignore":true
+    "module": "server data"
   },{
     "path": "./src/js/data/mixins/Reader.js",
-    "module": "server data",
-    "ignore":true
+    "module": "server data"
   },{
     "path": "./src/js/data/mixins/Writer.js",
-    "module": "server data",
-    "ignore":true
+    "module": "server data"
   },{
     "path": "./src/js/data/mixins/Sort.js",
-    "module": "sort",
-    "ignore":true
+    "module": "sort"
   },{
     "path": "./src/js/data/mixins/Edit.js"
   },{
     "path": "./src/js/data/mixins/Grouping.js",
-    "module": "grouping",
-    "ignore":true
+    "module": "grouping"
   },{
     "path": "./src/js/data/mixins/Filter.js",
-    "module": "filter",
-    "ignore":true
+    "module": "filter"
   },{
     "path": "./src/js/data/mixins/Dirty.js"
   },{
     "path": "./src/js/data/Store.js"
-
   },{
     "path": "./src/js/adapter/jquery.js"
-
   },{
     "path": "./src/js/dom/core.js",
-    "module": "dom",
-    "ignore":true
+    "module": "dom"
   },{
     "path": "./src/js/dom/event.js",
-    "module": "dom",
-    "ignore":true
+    "module": "dom"
   },{
     "path": "./src/js/dom/fx.js",
-    "module": "dom",
-    "ignore":true
+    "module": "dom"
   },{
     "path": "./src/js/dom/fx_methods.js",
-    "module": "dom",
-    "ignore":true
+    "module": "dom"
   },{
     "path": "./src/js/dom/ajax.js",
-    "module": "ajax",
-    "ignore":true
-    
-  
+    "module": "ajax"
   },{
     "path": "./src/js/i18n/en.js"
   },{
     "path": "./src/js/app/Controller.js"
   },{
     "path": "./src/js/dd/DD.js"
-
   },{
     "path": "./src/js/widgets/Widget.js"
   },{
@@ -210,23 +195,19 @@
     "path": "./src/js/widgets/panel/Tab.js"
   },{
     "path": "./src/js/widgets/tab/Tab.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/toolbar/Bar.js"
   },{
     "path": "./src/js/widgets/toolbar/Separator.js"
   },{
     "path": "./src/js/widgets/toolbar/Text.js"
-
   },{
     "path": "./src/js/widgets/form/mixins/Form.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/form/mixins/PrepareConfig.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/form/Form.js"
   },{
@@ -237,12 +218,10 @@
     "path": "./src/js/widgets/field/Number.js"
   },{
     "path": "./src/js/widgets/field/Date.js",
-    "module": "date",
-    "ignore":true
+    "module": "date"
   },{
     "path": "./src/js/widgets/field/DateRange.js",
-    "module": "date",
-    "ignore":true
+    "module": "date"
   },{
     "path": "./src/js/widgets/field/Text.js"
   },{
@@ -261,25 +240,20 @@
     "path": "./src/js/widgets/field/SegButton.js"
   },{
     "path": "./src/js/widgets/field/Line.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/field/Set.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/field/Tab.js"
   },{
     "path": "./src/js/widgets/field/HTML.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/field/ReCaptcha.js",
-    "module": "form",
-    "ignore":true
+    "module": "form"
   },{
     "path": "./src/js/widgets/field/Radio.js"
-    
   },{
     "path": "./src/js/util/valid/VType.js"
   },{
@@ -295,7 +269,6 @@
   },{
     "path": "./src/js/widgets/grid/mixins/Grid.js",
     "module": "grid"
-  
   },{
     "path": "./src/js/widgets/grid/Grid.js"
   },{
@@ -306,12 +279,10 @@
     "module": "grid"
   },{
     "path": "./src/js/widgets/grid/plugins/Sorter.js",
-    "module": "sort",
-    "ignore":true
+    "module": "sort"
   },{
     "path": "./src/js/widgets/grid/plugins/Paging.js",
-    "module": "paging",
-     "ignore":true
+    "module": "paging"
   },{
     "path": "./src/js/widgets/grid/plugins/LoadMask.js",
     "module": "grid"
@@ -320,56 +291,46 @@
     "module": "grid"
   },{
     "path": "./src/js/widgets/grid/plugins/ChartIntegration.js",
-    "module": "chart integration",
-    "ignore":true
+    "module": "chart integration"
   },{
     "path": "./src/js/widgets/grid/plugins/HighChart.js",
-    "module": "chart integration",
-     "ignore":true
-
+    "module": "chart integration"
   },{
     "path": "./src/js/widgets/grid/plugins/Edit.js",
-    "module": "edit",
-    "ignore":true
+    "module": "edit"
   },{
     "path": "./src/js/widgets/grid/plugins/CellEdit.js",
-    "module": "edit",
-     "ignore":true
+    "module": "edit"
   },{
     "path": "./src/js/widgets/grid/plugins/RowEdit.js",
-    "module": "edit",
-     "ignore":true
+    "module": "edit"
   },{
     "path": "./src/js/widgets/grid/plugins/Selection.js",
-    "module": "selection",
-    "ignore":true
+    "module": "selection"
   },{
     "path": "./src/js/widgets/grid/plugins/Expander.js",
-    "module": "expander",
-    "ignore":true
+    "module": "expander"
   },{
     "path": "./src/js/widgets/grid/plugins/GroupHeader.js",
-    "module": "grouped-header",
-    "ignore":true
+    "module": "grouped-header"
 
   },{
 	"path": "./src/js/widgets/grid/plugins/Grouping.js",
-    "module": "grouping",
-    "ignore":true
- },{
+    "module": "grouping"
+  },{
+	"path": "./src/js/widgets/grid/plugins/Summary.js",
+    "module": "summary"
+  },{
 	"path": "./src/js/widgets/grid/plugins/CellTip.js"
   },{
     "path": "./src/js/widgets/grid/plugins/Filter.js",
-    "module": "filter",
-    "ignore":true
+    "module": "filter"
   },{
     "path": "./src/js/widgets/grid/plugins/Search.js",
-    "module": "filter",
-    "ignore":true
+    "module": "filter"
   },{
     "path": "./src/js/widgets/grid/plugins/GridToGrid.js",
-    "module": "dd",
-    "ignore":true
+    "module": "dd"
   },{
     "path": "./src/js/widgets/grid/plugins/Licence.js",
     "module": "grid"
@@ -387,36 +348,27 @@
     "module": "grid"
   },{
     "path": "./src/js/widgets/picker/Date.js",
-    "module": "date",
-    "ignore":true
+    "module": "date"
   },{
     "path": "./src/js/widgets/picker/Month.js",
-    "module": "date",
-    "ignore":true
+    "module": "date"
   },{
     "path": "./src/js/spark/ProgressDonut.js",
-    "module": "spark",
-    "ignore":true
+    "module": "spark"
   },{
     "path": "./src/js/spark/GrossLoss.js",
-    "module": "spark",
-    "ignore":true
+    "module": "spark"
   },{
     "path": "./src/js/spark/ProgressBar.js",
-    "module": "spark",
-    "ignore":true
+    "module": "spark"
   },{
     "path": "./src/js/spark/HBar.js",
-    "module": "spark",
-    "ignore":true
-  
+    "module": "spark"
   },{
     "path": "./src/js/widgets/tooltip/ToolTip.js"
   },{
     "path": "./src/js/touch/fastclick.js",
-    "module": "touch",
-     "ignore":true
-    
+    "module": "touch"
   },{
     "path": "./src/js/widgets/Component.js"
   }]

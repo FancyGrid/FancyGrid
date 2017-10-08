@@ -41,7 +41,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
    *
    */
   ons: function(){},
-  fieldCls: 'fancy fancy-field fancy-field-empty',
+  fieldCls: Fancy.fieldCls + ' ' + Fancy.fieldEmptyCls,
   width: 100,
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',

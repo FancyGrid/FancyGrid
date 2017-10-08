@@ -35,7 +35,7 @@ Fancy.define('Fancy.Data', {
   },
   /*
    * @param {String|Number} key
-   * @returns {*}
+   * @return {*}
    */
   get: function(key){
     return this.map[key];

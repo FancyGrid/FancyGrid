@@ -60,8 +60,7 @@ Fancy.define('Fancy.Bar', {
     if(!me.el){
       var el = Fancy.get(document.createElement('div'));
 
-      el.addClass(me.widgetCls);
-      el.addClass(me.cls);
+      el.addCls(me.widgetCls, me.cls);
       el.update(me.text);
 
       me.el = Fancy.get(me.renderTo.appendChild(el.dom));
@@ -72,7 +71,7 @@ Fancy.define('Fancy.Bar', {
     }
 
     var containerEl = Fancy.get(document.createElement('div'));
-    containerEl.addClass(me.containerCls);
+    containerEl.addCls(me.containerCls);
 
     me.containerEl = Fancy.get(me.el.dom.appendChild(containerEl.dom));
   },
@@ -153,6 +152,7 @@ Fancy.define('Fancy.Bar', {
   },
   /*
    * @param {Object} item
+   * @return {Object}
    */
   renderItem: function(item){
     var me = this,
@@ -342,7 +342,7 @@ Fancy.define('Fancy.Bar', {
 
         item.events = item.events.concat([{
           enter: function(field, value){
-            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.fancy-grid').attr('id') );
+            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id') );
             //this.search(['name', 'surname', 'position'], value);
             //this.search(value);
             //this.search(['a', 'b', 'c']);
@@ -351,7 +351,7 @@ Fancy.define('Fancy.Bar', {
         }, {
           key: function (field, value) {
             var me = this,
-              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.fancy-grid').attr('id'));
+              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id'));
 
             if (!me.autoEnterTime) {
               me.autoEnterTime = new Date();
@@ -389,7 +389,7 @@ Fancy.define('Fancy.Bar', {
 
             field.el.on('click', function(e){
               var toShow = false,
-                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.fancy-grid').attr('id')),
+                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id')),
                 columns = grid.columns || [],
                 leftColumns = grid.leftColumns || [],
                 rightColumns = grid.rightColumns || [],
@@ -650,18 +650,15 @@ Fancy.define('Fancy.Bar', {
    */
   getItemsWidth: function(){
     var me = this,
-      i = 0,
-      iL = me.items.length,
       width = 0;
 
-    for(;i<iL;i++){
-      var item = me.items[i];
+    Fancy.each(me.items, function (item){
       width += item.el.width();
       width += parseInt(item.el.css('margin-left'));
       width += parseInt(item.el.css('margin-right'));
       width += parseInt(item.el.css('padding-right'));
       width += parseInt(item.el.css('padding-left'));
-    }
+    });
 
     return width;
   },
@@ -791,23 +788,25 @@ Fancy.define('Fancy.Bar', {
     }
   },
   /*
-   *
+   * @param {Object} field
+   * @param {Object} e
    */
   onTabLastInput: function(field, e){
     var me = this,
-      grid = Fancy.getWidget(me.el.parent().select('.fancy-grid').attr('id'));
+      grid = Fancy.getWidget(me.el.parent().select('.' + Fancy.gridCls).attr('id')),
+      cellCls = grid.cellCls;
 
     //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
     e.preventDefault();
 
     if(grid.leftColumns.length){
       setTimeout(function(){
-        grid.leftBody.el.select('.fancy-grid-cell').item(0).dom.click();
+        grid.leftBody.el.select('.' + cellCls).item(0).dom.click();
       }, 100);
     }
     else{
       setTimeout(function(){
-        grid.body.el.select('.fancy-grid-cell').item(0).dom.click();
+        grid.body.el.select('.' + cellCls).item(0).dom.click();
       }, 100);
     }
   }

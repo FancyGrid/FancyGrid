@@ -82,7 +82,7 @@ Fancy.define('Fancy.grid.Body', {
 			renderTo,
 			el = Fancy.get(document.createElement('div'));
 
-		el.addClass(me.cls);
+		el.addCls(me.cls);
     renderTo = w.el.select('.fancy-grid-' + me.side).dom;
 		me.el = Fancy.get(renderTo.appendChild(el.dom));
 	},
@@ -513,6 +513,9 @@ Fancy.define('Fancy.grid.Body', {
     me.el.un('mouseenter', me.onColumnMouseEnter, me, columnSelector);
     me.el.un('mouseleave', me.onColumnMouseLeave, me, columnSelector);
   },
+  /*
+   * @param {Number} orderIndex
+   */
   hideColumn: function(orderIndex){
     var me = this,
       w = me.widget,
@@ -532,6 +535,9 @@ Fancy.define('Fancy.grid.Body', {
       _column.css('left', left);
     }
   },
+  /*
+   * @param {Number} orderIndex
+   */
   showColumn: function(orderIndex){
     var me = this,
       w = me.widget,
@@ -553,6 +559,9 @@ Fancy.define('Fancy.grid.Body', {
       _column.css('left', left);
     }
   },
+  /*
+   * @param {Number} orderIndex
+   */
   removeColumn: function(orderIndex){
     var me = this,
       w = me.widget,
@@ -573,6 +582,10 @@ Fancy.define('Fancy.grid.Body', {
       _column.css('left', left);
     }
   },
+  /*
+   * @param {Number} index
+   * @param {Object} column
+   */
   insertColumn: function(index, column){
     var me = this,
       w = me.widget,
@@ -603,26 +616,26 @@ Fancy.define('Fancy.grid.Body', {
       _column.attr('index', i + 1);
     }
 
-    el.addClass(columnCls);
+    el.addCls(columnCls);
     el.attr('grid', w.id);
 
     if(column.index === '$selected'){
-      el.addClass(columnSelectCls);
+      el.addCls(columnSelectCls);
     }
     else{
       switch(column.type){
         case 'order':
-          el.addClass(columnOrderCls);
+          el.addCls(columnOrderCls);
           break;
       }
     }
 
     if(column.cls){
-      el.addClass(column.cls);
+      el.addCls(column.cls);
     }
 
     if(column.type === 'text'){
-      el.addClass(columnTextCls);
+      el.addCls(columnTextCls);
     }
 
     el.css({
@@ -639,7 +652,7 @@ Fancy.define('Fancy.grid.Body', {
         case 'string':
         case 'text':
         case 'number':
-          el.addClass(columnWithEllipsisCls);
+          el.addCls(columnWithEllipsisCls);
           break;
       }
     }

@@ -22,6 +22,10 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
   cellTrackOver: true,
   cellStylingCls: ['fancy-month-picker-cell-active'],
   activeCellCls: 'fancy-month-picker-cell-active',
+  pickerCls: 'fancy-month-picker',
+  buttonBackCls: 'fancy-picker-button-back',
+  buttonNextCls: 'fancy-picker-button-next',
+  actionButtonsCls: 'fancy-month-picker-action-buttons',
   defaults: {
     type: 'string',
     width: 76,
@@ -60,7 +64,7 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
     me.addEvents('changedate');
     me.on('cellclick', me.onCellClick, me);
 
-    me.panel.addClass('fancy-month-picker');
+    me.panel.addCls(me.pickerCls);
   },
   /*
    *
@@ -199,13 +203,13 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
 
     tbar.push('side');
     tbar.push({
-      cls: 'fancy-picker-button-back',
+      cls: me.buttonBackCls,
       handler: me.onBackClick,
       scope: me
     });
 
     tbar.push({
-      cls: 'fancy-picker-button-next',
+      cls: me.buttonNextCls,
       handler: me.onNextClick,
       scope: me
     });
@@ -222,7 +226,7 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
 
     bbar.push({
       type: 'wrapper',
-      cls: 'fancy-month-picker-action-buttons',
+      cls: me.actionButtonsCls,
       items: [{
         text: lang.date.ok,
         handler: me.onClickOk,
@@ -323,8 +327,8 @@ Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
       month = o.rowIndex + o.columnIndex * 6;
     }
 
-    body.el.select('.' + activeCellCls).removeClass(activeCellCls);
-    cell.addClass(activeCellCls);
+    body.el.select('.' + activeCellCls).removeCls(activeCellCls);
+    cell.addCls(activeCellCls);
 
     if(_date > 28){
       _date = 1;

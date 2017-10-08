@@ -6,6 +6,9 @@
   Fancy.define('Fancy.datepicker.Manager', {
     singleton: true,
     opened: [],
+    /*
+     * @param {Object} picker
+     */
     add: function (picker) {
       this.hide();
 
@@ -45,7 +48,14 @@
     cellStylingCls: ['fancy-date-picker-cell-out-range', 'fancy-date-picker-cell-today', 'fancy-date-picker-cell-active'],
     activeCellCls: 'fancy-date-picker-cell-active',
     todayCellCls: 'fancy-date-picker-cell-today',
+    pickerDateCls: 'fancy-date-picker',
     outRangeCellCls: 'fancy-date-picker-cell-out-range',
+    buttonBackCls: 'fancy-picker-button-back',
+    buttonDateCls: 'fancy-picker-button-date',
+    buttonDateWrapperCls: 'fancy-picker-button-date-wrapper',
+    buttonNextCls: 'fancy-picker-button-next',
+    buttonTodayCls: 'fancy-picker-button-today',
+    buttonTodayWrapperCls: 'fancy-picker-button-today-wrapper',
     defaults: {
       type: 'string',
       width: 44,
@@ -88,7 +98,7 @@
       me.on('update', me.onUpdate, me);
       me.on('cellclick', me.onCellClick, me);
 
-      me.addClass('fancy-date-picker');
+      me.addCls(me.pickerDateCls);
       me.el.on('mousewheel', me.onMouseWheel, me);
 
       me.panel.el.on('mousedown', me.onMouseDown, me);
@@ -159,6 +169,7 @@
       var me = this,
         format = me.format,
         days = format.days,
+        outRangeCellCls = me.outRangeCellCls,
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
@@ -172,13 +183,13 @@
         switch (o.rowIndex) {
           case 0:
             if (Number(o.value) > 20) {
-              o.cls += ' fancy-date-picker-cell-out-range';
+              o.cls += ' ' + outRangeCellCls;
             }
             break;
           case 4:
           case 5:
             if (Number(o.value) < 15) {
-              o.cls += ' fancy-date-picker-cell-out-range';
+              o.cls += ' ' + outRangeCellCls;
             }
             break;
         }
@@ -236,7 +247,7 @@
       i = 0;
       iL = startDay;
 
-      for (; i < iL; i++) {
+      for(;i<iL;i++){
         columns.push({
           index: dayIndexes[i],
           title: days[i][0].toLocaleUpperCase(),
@@ -372,27 +383,26 @@
         tbar = [];
 
       tbar.push({
-        cls: 'fancy-picker-button-back',
+        cls: me.buttonBackCls,
         handler: me.onBackClick,
         scope: me,
         style: {}
       });
 
       tbar.push({
-        cls: 'fancy-picker-button-date',
+        cls: me.buttonDateCls,
         wrapper: {
-          cls: 'fancy-picker-button-date-wrapper'
+          cls: me.buttonDateWrapperCls
         },
         handler: me.onDateClick,
         scope: me,
         text: '                       '
-        //text: '     '
       });
 
       tbar.push('side');
 
       tbar.push({
-        cls: 'fancy-picker-button-next',
+        cls: me.buttonNextCls,
         handler: me.onNextClick,
         scope: me
       });
@@ -408,9 +418,9 @@
 
       bbar.push({
         text: me.format.today,
-        cls: 'fancy-picker-button-today',
+        cls: me.buttonTodayCls,
         wrapper: {
-          cls: 'fancy-picker-button-today-wrapper'
+          cls: me.buttonTodayWrapperCls
         },
         handler: me.onClickToday,
         scope: me
@@ -518,13 +528,13 @@
 
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
-      me.el.select('.' + activeCellCls).removeClass(activeCellCls);
+      me.el.select('.' + activeCellCls).removeCls(activeCellCls);
 
-      cell.addClass(activeCellCls);
+      cell.addCls(activeCellCls);
 
       me.fire('changedate', me.date);
 
-      if (cell.hasClass(me.outRangeCellCls)) {
+      if (cell.hasCls(me.outRangeCellCls)) {
         day = Number(o.value);
         if (o.rowIndex < 3) {
           if (month === 0) {
@@ -646,7 +656,7 @@
       }
     },
     /*
-     *
+     * @param {Object} e
      */
     onMouseDown: function (e) {
       e.preventDefault();

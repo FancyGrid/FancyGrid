@@ -60,21 +60,21 @@ Fancy.define('Fancy.Panel', {
   barContainer: true,
   theme: 'default',
   tpl: [
-    '<div style="height:{titleHeight}px;" class="fancy-panel-header fancy-display-none">',
+    '<div style="height:{titleHeight}px;" class="fancy-panel-header {hiddenCls}">',
       '{titleImg}',
       '<div class="fancy-panel-header-text">{title}</div>',
       '<div class="fancy-panel-header-tools"></div>',
     '</div>',
-    '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header fancy-display-none">',
+    '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header {hiddenCls}">',
       '<div class="fancy-panel-sub-header-text">{subTitle}</div>',
     '</div>',
     '<div class="fancy-panel-body">',
-      '<div class="fancy-panel-tbar fancy-display-none" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-sub-tbar fancy-display-none" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-tbar {hiddenCls}" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-sub-tbar {hiddenCls}" style="height:{barHeight}px;"></div>',
       '<div class="fancy-panel-body-inner"></div>',
-      '<div class="fancy-panel-bbar fancy-display-none" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-buttons fancy-display-none" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-footer fancy-display-none" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-bbar {hiddenCls}" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-buttons {hiddenCls}" style="height:{barHeight}px;"></div>',
+      '<div class="fancy-panel-footer {hiddenCls}" style="height:{barHeight}px;"></div>',
     '</div>'
   ],
   /*
@@ -87,7 +87,7 @@ Fancy.define('Fancy.Panel', {
       minusHeight = 0,
       titleHeight = me.titleHeight,
       subTitleHeight = me.subTitleHeight,
-      displayNoneCls = 'fancy-display-none';
+      displayNoneCls = Fancy.hiddenCls;
 
     if( me.window === true ){
       el.css({
@@ -97,16 +97,16 @@ Fancy.define('Fancy.Panel', {
     }
 
     if(me.frame === false){
-      el.addClass('fancy-panel-noframe');
+      el.addCls('fancy-panel-noframe');
     }
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
     if( me.theme !== 'default' ){
-      el.addClass('fancy-theme-' + me.theme);
+      el.addCls('fancy-theme-' + me.theme);
     }
 
     if( me.shadow ){
-      el.addClass('fancy-panel-shadow');
+      el.addCls('fancy-panel-shadow');
     }
 
     el.css({
@@ -147,7 +147,8 @@ Fancy.define('Fancy.Panel', {
       titleHeight: titleHeight,
       subTitleHeight: subTitleHeight,
       title: titleText,
-      subTitle: subTitleText
+      subTitle: subTitleText,
+      hiddenCls: Fancy.hiddenCls
     }));
 
     if(Fancy.isObject(me.title)){
@@ -156,7 +157,7 @@ Fancy.define('Fancy.Panel', {
       }
 
       if(me.title.cls){
-        el.select('.fancy-panel-header').addClass(me.title.cls);
+        el.select('.fancy-panel-header').addCls(me.title.cls);
       }
 
       if(me.title.tools){
@@ -170,12 +171,12 @@ Fancy.define('Fancy.Panel', {
       }
 
       if(me.subTitle.cls){
-        el.select('.fancy-panel-sub-header').addClass(me.subTitle.cls);
+        el.select('.fancy-panel-sub-header').addCls(me.subTitle.cls);
       }
     }
 
     if(me.title){
-      el.select('.fancy-panel-header').removeClass(displayNoneCls);
+      el.select('.fancy-panel-header').removeCls(displayNoneCls);
     }
     else{
       el.select('.fancy-panel-body').css('border-top-width', '0px');
@@ -183,27 +184,27 @@ Fancy.define('Fancy.Panel', {
 
     if(me.subTitle){
       el.select('.fancy-panel-body').css('border-top-width', '0px');
-      el.select('.fancy-panel-sub-header').removeClass(displayNoneCls);
+      el.select('.fancy-panel-sub-header').removeCls(displayNoneCls);
     }
 
     if(me.tbar){
-      el.select('.fancy-panel-tbar').removeClass(displayNoneCls);
+      el.select('.fancy-panel-tbar').removeCls(displayNoneCls);
     }
 
     if(me.subTBar){
-      el.select('.fancy-panel-sub-tbar').removeClass(displayNoneCls);
+      el.select('.fancy-panel-sub-tbar').removeCls(displayNoneCls);
     }
 
     if(me.bbar){
-      el.select('.fancy-panel-bbar').removeClass(displayNoneCls);
+      el.select('.fancy-panel-bbar').removeCls(displayNoneCls);
     }
 
     if(me.buttons){
-      el.select('.fancy-panel-buttons').removeClass(displayNoneCls);
+      el.select('.fancy-panel-buttons').removeCls(displayNoneCls);
     }
 
     if(me.footer){
-      el.select('.fancy-panel-footer').removeClass(displayNoneCls);
+      el.select('.fancy-panel-footer').removeCls(displayNoneCls);
     }
 
     me.el = renderTo.dom.appendChild(el.dom);
@@ -249,21 +250,10 @@ Fancy.define('Fancy.Panel', {
       return;
     }
 
-    var i = 0,
-      iL = tools.length;
-
-    for(;i<iL;i++){
-      me.tools[i].renderTo = me.el.select('.fancy-panel-header-tools').dom;
-      me.tools[i] = new Fancy.Tool(me.tools[i], me.scope || me);
-    }
-  },
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
-
-    me.tpl = new Fancy.Template(me.tpl);
+    Fancy.each(tools, function(tool, i){
+      tool.renderTo = me.el.select('.fancy-panel-header-tools').dom;
+      me.tools[i] = new Fancy.Tool(tool, me.scope || me);
+    });
   },
   /*
    *
@@ -439,15 +429,11 @@ Fancy.define('Fancy.Panel', {
 
     Fancy.select('.fancy-modal').css('display', 'none');
 
-    var items = me.items || [],
-      i = 0,
-      iL = items.length;
-
-    for(;i<iL;i++){
-      if(me.items[i].type === 'combo'){
-        me.items[i].hideList();
+    Fancy.each(me.items || [], function(item){
+      if(item.type === 'combo'){
+        item.hideList();
       }
-    }
+    });
   },
   /*
    * @param {String} value
@@ -509,13 +495,16 @@ Fancy.define('Fancy.Panel', {
 
     me.items[0].setHeight(value, false);
   },
+  /*
+   *
+   */
   setActiveWindowWatcher: function(){
     var me = this;
 
     me.el.on('click', function(e){
       var targetEl = Fancy.get(e.target);
 
-      if(targetEl.hasClass('fancy-field-picker-button')){
+      if(targetEl.hasCls('fancy-field-picker-button')){
         return;
       }
 

@@ -1,48 +1,7 @@
 /*
  * @class Fancy.grid.plugin.Summary
  * @extend Fancy.Plugin
- *
  */
-Fancy.define('Fancy.Summary',{
-  singleton: true,
-  count: function(values){
-    return values.length;
-  },
-  sum: function(values){
-    var i = 0,
-      iL = values.length,
-      value = 0;
-
-    if(Fancy.isArray(values[0])){
-      value = [];
-      for (;i<iL;i++){
-        var j = 0,
-          jL = values[i].length;
-
-        for(;j<jL;j++){
-          if(value[j] === undefined){
-            value[j] = 0;
-          }
-
-          value[j] += values[i][j];
-        }
-      }
-    }
-    else {
-      for (; i < iL; i++) {
-        value += values[i];
-      }
-    }
-
-    return value;
-  },
-  min: function(values){
-    return Math.min.apply(this, values);
-  },
-  max: function(values){
-    return Math.max.apply(this, values);
-  }
-});
 
 Fancy.define('Fancy.grid.plugin.Summary', {
   extend: Fancy.Plugin,
@@ -97,6 +56,9 @@ Fancy.define('Fancy.grid.plugin.Summary', {
       w.on('changepage', me.onChangePage, me);
     }
   },
+  /*
+   *
+   */
   render: function(){
     var me = this,
       w = me.widget,
@@ -141,29 +103,29 @@ Fancy.define('Fancy.grid.plugin.Summary', {
       rightBody.el[method](el.dom);
     }
   },
+  /*
+   * @param {String} side
+   * @return {Fancy.Element}
+   */
   generateRow: function(side){
     var me = this,
       w = me.widget,
+      cellCls = w.cellCls,
+      cellInnerCls = w.cellInnerCls,
       cellHeight = w.cellHeight,
-      columns = w.getColumns(side),
       columnsWidth = w.getColumnsWidth(side),
       clsSummaryRow = w.clsSummaryRow,
       clsSummaryContainer = w.clsSummaryContainer,
-      el = Fancy.get(document.createElement('div'));
-
-    var i = 0,
-      iL = columns.length,
+      el = Fancy.get(document.createElement('div')),
       cells = '';
 
-    for(;i<iL;i++){
-      var column = columns[i];
-
+    Fancy.each(w.getColumns(side), function(column){
       cells += [
-        '<div style="width:'+column.width+'px;height:'+ cellHeight +'px;" class="fancy-grid-cell">',
-          '<div class="fancy-grid-cell-inner"></div>',
+        '<div style="width:'+column.width+'px;height:'+ cellHeight +'px;" class="' + cellCls + '">',
+          '<div class="' + cellInnerCls + '"></div>',
         '</div>'
       ].join("");
-    }
+    });
 
     var inner = [
       '<div style="position: relative;" class="'+clsSummaryRow+'">',
@@ -174,9 +136,9 @@ Fancy.define('Fancy.grid.plugin.Summary', {
     el.update(inner);
 
     el.css('width', columnsWidth + 'columnsWidth');
-    el.addClass(clsSummaryContainer);
+    el.addCls(clsSummaryContainer);
     if(me.position === 'bottom'){
-      el.addClass('fancy-grid-summary-row-bottom');
+      el.addCls('fancy-grid-summary-row-bottom');
     }
 
     return el;
@@ -190,11 +152,17 @@ Fancy.define('Fancy.grid.plugin.Summary', {
 
     me.plusScroll = me.groups.length * w.groupRowHeight;
   },
+  /*
+   * @param {Number} value
+   */
   scrollLeft: function(value){
     var me = this;
 
     me.el.firstChild().css('left', value);
   },
+  /*
+   *
+   */
   update: function(){
     var me = this,
       w = me.widget;
@@ -208,6 +176,10 @@ Fancy.define('Fancy.grid.plugin.Summary', {
       me.updateSide('right');
     }
   },
+  /*
+   * @param {String} side
+   * @return {Fancy.Element}
+   */
   getEl: function (side) {
     var me = this;
 
@@ -222,26 +194,24 @@ Fancy.define('Fancy.grid.plugin.Summary', {
         return me.el;
     }
   },
+  /*
+   * @param {String} side
+   */
   updateSide: function(side){
     var me = this,
       w = me.widget,
       body = w.body,
       s = w.store,
-      columns = w.getColumns(side),
-      cellInners = me.getEl(side).select('.fancy-grid-cell-inner'),
-      i = 0,
-      iL = columns.length,
+      cellInners = me.getEl(side).select('.' + w.cellInnerCls),
       dataProperty = 'data';
 
     if(me.sumDisplayed){
       dataProperty = 'dataView';
     }
 
-    for(;i<iL;i++){
-      var column = columns[i];
-
+    Fancy.each(w.getColumns(side), function(column, i){
       if(!column.summary){
-        continue;
+        return;
       }
 
       var columnIndex = column.index,
@@ -253,10 +223,10 @@ Fancy.define('Fancy.grid.plugin.Summary', {
 
       switch(Fancy.typeOf(column.summary)){
         case 'string':
-          value = Fancy.Summary[column.summary](columnValues);
+          value = Fancy.Array[column.summary](columnValues);
           break;
         case 'object':
-          value = Fancy.Summary[column.summary.type](columnValues);
+          value = Fancy.Array[column.summary.type](columnValues);
           if(column.summary.fn){
             value = column.summary.fn(value);
           }
@@ -271,8 +241,11 @@ Fancy.define('Fancy.grid.plugin.Summary', {
       }
 
       cellInners.item(i).update(value);
-    }
+    });
   },
+  /*
+   *
+   */
   onColumnResize: function(){
     var me = this,
       w = me.widget;
@@ -287,24 +260,20 @@ Fancy.define('Fancy.grid.plugin.Summary', {
       me.updateSizes('right');
     }
   },
+  /*
+   * @param {String} side
+   */
   updateSizes: function(side){
     var me = this,
       w = me.widget,
       el = me.getEl(side),
-      cells = el.select('.fancy-grid-cell'),
-      columns = w.getColumns(side),
-      i = 0,
-      iL = columns.length,
+      cells = el.select('.' + w.cellCls),
       totalWidth = 0;
 
-    for(;i<iL;i++){
-      var column = columns[i],
-        cell = cells.item(i);
-
+    Fancy.each(w.getColumns(side), function (column, i) {
       totalWidth += column.width;
-
-      cell.css('width', column.width + 'px');
-    }
+      cells.item(i).css('width', column.width + 'px');
+    });
 
     el.firstChild().css('width', totalWidth);
 
@@ -320,6 +289,9 @@ Fancy.define('Fancy.grid.plugin.Summary', {
         break;
     }
   },
+  /*
+   *
+   */
   calcOffSets: function(){
     var me = this,
       w = me.widget;
@@ -337,23 +309,32 @@ Fancy.define('Fancy.grid.plugin.Summary', {
         break;
     }
   },
+  /*
+   * @param {Number} index
+   * @param {String} side
+   */
   removeColumn: function(index, side){
     var me = this,
+      w = me.widget,
       el = me.getEl(side),
-      cells = el.select('.fancy-grid-cell'),
+      cells = el.select('.' + w.cellCls),
       cell = cells.item(index);
 
     cell.destroy();
 
     me.updateSizes(side);
   },
+  /*
+   * @param {Number} index
+   * @param {String} side
+   */
   insertColumn: function(index, side){
     var me = this,
       w = me.widget,
       columns = w.getColumns(side),
       column = columns[index],
       el = me.getEl(side),
-      cells = el.select('.fancy-grid-cell'),
+      cells = el.select('.' + w.cellCls),
       cell = cells.item(index - 1),
       newCell = Fancy.get(document.createElement('div'));
 
@@ -366,8 +347,8 @@ Fancy.define('Fancy.grid.plugin.Summary', {
       height: w.cellHeight
     });
 
-    newCell.addClass(w.cellCls);
-    newCell.update('<div class="fancy-grid-cell-inner"></div>');
+    newCell.addCls(w.cellCls);
+    newCell.update('<div class="' + w.cellInnerCls + '"></div>');
 
     if(index === 0){
       cell.before(newCell.dom);
@@ -379,6 +360,9 @@ Fancy.define('Fancy.grid.plugin.Summary', {
     me.updateSizes(side);
     me.updateSide(side);
   },
+  /*
+   *
+   */
   onChangePage: function(){
     var me = this;
 

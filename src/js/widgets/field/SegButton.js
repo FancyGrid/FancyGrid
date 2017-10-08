@@ -53,10 +53,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
     '</div>',
-    //'<div class="fancy-field-text fancy-button">',
     '<div class="fancy-field-text">',
-      //'<div class="fancy-button-image"></div>',
-      //'<a class="fancy-button-text">{buttonText}</a>',
     '</div>',
     '<div class="fancy-clearfix"></div>'
   ],
@@ -100,14 +97,9 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    */
   get: function(){
     var me = this,
-      items = me.items,
-      i = 0,
-      iL = items.length,
       pressed = [];
 
-    for(;i<iL;i++){
-      var item = items[i];
-
+    Fancy.each(me.items, function (item, i) {
       if(item.pressed){
         if(item.value){
           pressed.push(item.value);
@@ -116,23 +108,20 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
           pressed.push(i);
         }
       }
-    }
+    });
 
     return pressed.toString();
   },
   /*
-   *
+   * @param {Boolean} [fire]
    */
   clear: function(fire){
-    var me = this,
-      items = me.items,
-      i = 0,
-      iL = items.length;
+    var me = this;
 
     if(me.allowToggle){
-      for(;i<iL;i++){
-        items[i].setPressed(false, fire);
-      }
+      Fancy.each(me.items, function (item){
+        item.setPressed(false, fire);
+      });
     }
   }
 });

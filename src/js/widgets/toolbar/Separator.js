@@ -30,7 +30,7 @@ Fancy.define('Fancy.Separator', {
     var me = this,
       el = Fancy.get(document.createElement('div'));
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
     el.update('<div></div>');
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));

@@ -157,7 +157,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     }, 200);
   },
   /*
-   *
+   * @param {String} barType
    */
   updateBar: function(barType){
     var me = this,

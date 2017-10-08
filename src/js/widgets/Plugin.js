@@ -21,5 +21,17 @@ Fancy.define('Fancy.Plugin', {
 
     me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
+  },
+  /*
+   *
+   */
+  initTpl: function(){
+    var me = this;
+
+    if(!me.tpl){
+      return;
+    }
+
+    me.tpl = new Fancy.Template(me.tpl);
   }
 });

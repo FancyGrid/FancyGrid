@@ -74,30 +74,23 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   changeOrderByGroups: function(groups, by){
     var me = this,
       grouped = {},
-      i = 0,
-      iL = groups.length,
-      item,
       data = [];
 
-    for(;i<iL;i++){
-      grouped[groups[i]] = [];
+    Fancy.each(groups, function(group){
+      grouped[group] = [];
+    });
+
+    if(Fancy.isArray(me.data)){
+      Fancy.each(me.data, function(item){
+        var group = item.data[by];
+
+        grouped[group].push(item);
+      });
     }
 
-    i = 0;
-    iL = me.data.length;
-
-    for(;i<iL;i++){
-      item = me.data[i];
-      var group = item.data[by];
-
-      grouped[group].push(item);
-    }
-
-    i = 0;
-    iL = groups.length;
-    for(;i<iL;i++){
-      data = data.concat(grouped[ groups[i]]);
-    }
+    Fancy.each(groups, function (group){
+      data = data.concat(grouped[group]);
+    });
 
     me.grouping = {
       by: by
@@ -213,21 +206,10 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   /*
    *
    */
-  initTpl: function(){
-    var me = this;
-
-    if(!me.tpl){
-      return;
-    }
-
-    me.tpl = new Fancy.Template(me.tpl);
-  },
-  /*
-   *
-   */
   ons: function(){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      s = w.store;
 
     w.once('render', function(){
       me.renderGroupedRows();
@@ -238,10 +220,23 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       w.on('scroll', me.onScroll, me);
 
       w.on('columnresize', me.onColumnResize, me);
+
+      s.on('insert', me.onInsert, me);
+      s.on('remove', me.onRemove, me);
     });
   },
+  onInsert: function(){
+    var me = this;
+
+    me.reGroup();
+  },
+  onRemove: function(){
+    var me = this;
+
+    me.reGroup();
+  },
   /*
-   *
+   * @param {String} [dataProperty]
    */
   initGroups: function(dataProperty){
     var me = this,
@@ -257,17 +252,15 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
         dataProperty: dataProperty,
         groupMap: true
       }),
-      _groups = {},
-      i = 0,
-      iL = values.length;
+      _groups = {};
 
-    for(;i<iL;i++){
-      if(_groups[values[i]] === undefined){
-        _groups[values[i]] = 0;
+    Fancy.each(values, function(value){
+      if(_groups[value] === undefined){
+        _groups[value] = 0;
       }
 
-      _groups[values[i]]++;
-    }
+      _groups[value]++;
+    });
 
     var groups = [];
 
@@ -279,7 +272,8 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     me.groupsCounts = _groups;
   },
   /*
-   *
+   * @param {String|Number} id
+   * @return {String}
    */
   getGroupById: function (id) {
     var me = this,
@@ -289,7 +283,8 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     return s.groupMap[id];
   },
   /*
-   *
+   * @param {String} group
+   * @return {Number}
    */
   getGroupOrderIndex: function(group){
     var me = this,
@@ -349,15 +344,15 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       i = 0;
       iL = groups.length;
 
-      for(;i<iL;i++){
-        var upperGroup = groups[i].toLocaleUpperCase();
-        groupNameUpperCase[upperGroup] = groups[i];
+      Fancy.each(groups, function(group){
+        var upperGroup = group.toLocaleUpperCase();
+
+        groupNameUpperCase[upperGroup] = group;
         upperGroups.push(upperGroup);
-      }
+      });
 
       upperGroups = upperGroups.sort();
 
-      i = 0;
       for(;i<iL;i++){
         groups[i] = groupNameUpperCase[ upperGroups[i] ];
       }
@@ -381,9 +376,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   configParams: function(){
     var me = this,
       w = me.widget,
-      s = w.store,
-      i,
-      iL;
+      s = w.store;
 
     me.expanded = me.expanded || {};
     s.expanded = s.expanded || {};
@@ -392,16 +385,13 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       s.collapsed = true;
     }
     else{
-      i = 0;
-      iL = me.groups.length;
-
-      for(;i<iL;i++){
-        if( me.expanded[me.groups[i]] === undefined ) {
-          s.expanded[me.groups[i]] = true;
-          me.expanded[me.groups[i]] = true;
-          me._expanded[me.groups[i]] = true;
+      Fancy.each(me.groups, function(group){
+        if( me.expanded[group] === undefined ){
+          s.expanded[group] = true;
+          me.expanded[group] = true;
+          me._expanded[group] = true;
         }
-      }
+      });
     }
   },
   /*
@@ -413,17 +403,14 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       body = w.body,
       leftBody = w.leftBody,
       rightBody = w.rightBody,
-      i = 0,
-      iL = me.groups.length,
       width = w.getCenterFullWidth(),
       leftWidth = w.getLeftFullWidth(),
       rightWidth = w.getRightFullWidth(),
-      el;
+      el,
+      passedTop = 0;
 
-    var passedTop = 0;
-    for(;i<iL;i++){
-      var groupText = me.groups[i],
-        groupCount = me.groupsCounts[groupText];
+    Fancy.each(me.groups, function(groupText){
+      var groupCount = me.groupsCounts[groupText];
 
       if(leftWidth){
         el = me.generateGroupRow(groupText, groupCount, true, passedTop);
@@ -449,7 +436,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       if(me.collapsed){
         passedTop += w.groupRowHeight;
       }
-    }
+    });
   },
   /*
    *
@@ -514,7 +501,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       el = Fancy.get(document.createElement('div')),
       groupRowInnerCls = me.groupRowInnerCls;
 
-    el.addClass(clsGroupRow);
+    el.addCls(clsGroupRow);
     el.attr('group', groupText);
     if(addText){
       var text = me.tpl.getHTML({
@@ -526,7 +513,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
 
     if(me.collapsed){
       el.css('top', top + 'px');
-      el.addClass(w.clsCollapsedRow);
+      el.addCls(w.clsCollapsedRow);
     }
     else {
       el.css('top', '0px');
@@ -534,6 +521,9 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
 
     return el;
   },
+  /*
+   *
+   */
   insertGroupEls: function(){
     var me = this,
       w = me.widget,
@@ -572,9 +562,9 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       isCollapsed,
       group = rowEl.attr('group');
 
-    w.el.select('.'+ w.clsGroupRow + '[group="'+group+'"]').toggleClass(clsCollapsedRow);
+    w.el.select('.'+ w.clsGroupRow + '[group="'+group+'"]').toggleCls(clsCollapsedRow);
 
-    isCollapsed = rowEl.hasClass(clsCollapsedRow);
+    isCollapsed = rowEl.hasCls(clsCollapsedRow);
 
     if(isCollapsed){
       me.collapse(me.by, group);
@@ -640,17 +630,13 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   setPositions: function(){
     var me = this,
       w = me.widget,
-      i = 0,
-      iL = me.groups.length,
       top = -w.scroller.scrollTop || 0,
       clsGroupRow = w.clsGroupRow,
       leftRows = w.leftBody.el.select('.' + clsGroupRow),
       rows = w.body.el.select('.' + clsGroupRow),
       rightRows = w.rightBody.el.select('.' + clsGroupRow);
 
-    for(;i<iL;i++){
-      var groupName = me.groups[i];
-
+    Fancy.each(me.groups, function (groupName, i){
       if(leftRows.length) {
         leftRows.item(i).css('top', top + 'px');
       }
@@ -678,10 +664,11 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       if(me._expanded[groupName] === true){
         top += me.groupsCounts[groupName] * w.cellHeight;
       }
-    }
+    });
   },
   /*
-   *
+   * @param {Number} index
+   * @param {String} side
    */
   setCellsPosition: function(index, side) {
     var me = this,
@@ -819,17 +806,13 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       me._renderFirstTime = false;
     }
     else {
-      var i = 0,
-        iL = me.prevRows.length,
-        toClearMargins = [];
+      var toClearMargins = [];
 
-      for(;i<iL;i++){
-        var rowIndex = me.prevRows[i];
-
+      Fancy.each(me.prevRows, function(rowIndex){
         if( marginedRows[rowIndex] !== true ){
           toClearMargins.push(rowIndex);
         }
-      }
+      });
 
       me.clearMargins(toClearMargins);
     }
@@ -837,7 +820,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     me.prevRows = rows;
   },
   /*
-   * It is used for only collapse groups of grouping with row expander.
+   * It is used only to collapse groups of 'grouping row' with 'row expander'.
    */
   setExpanderCellsPosition: function(){
     var me = this,
@@ -851,17 +834,14 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       expandedGroups = w.expander.expandedGroups,
       groupsCounts = me.groupsCounts,
       dataItem,
-      j = 0,
-      jL = me.groups.length,
       top = w.groupRowHeight,
       rowIndex = 0,
       nextPlusTop = 0;
 
-    for(;j<jL;j++){
-      var groupName = me.groups[j];
-
+    Fancy.each(me.groups, function (groupName) {
       if(me._expanded[groupName] === true){
         var iL = rowIndex + groupsCounts[groupName];
+
         for(;rowIndex<iL;rowIndex++){
           dataItem = dataView[rowIndex];
           if(!dataItem){
@@ -880,33 +860,20 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
             nextPlusTop = parseInt(expandedItem.el.css('height'));
           }
 
-          var k = 0,
-            kL = w.columns.length;
-
-          for(;k<kL;k++){
-            cell = body.getCell(rowIndex, k);
+          Fancy.each(w.columns, function(column, i){
+            cell = body.getCell(rowIndex, i);
             cell.css('margin-top', top + 'px');
-          }
+          });
 
-          if(w.leftColumns){
-            var k = 0,
-              kL = w.leftColumns.length;
+          Fancy.each(w.leftColumns, function(column, i){
+            cell = leftBody.getCell(rowIndex, i);
+            cell.css('margin-top', top + 'px');
+          });
 
-            for(;k<kL;k++){
-              cell = leftBody.getCell(rowIndex, k);
-              cell.css('margin-top', top + 'px');
-            }
-          }
-
-          if(w.rightColumns){
-            var k = 0,
-              kL = w.rightColumns.length;
-
-            for(;k<kL;k++){
-              cell = rightBody.getCell(rowIndex, k);
-              cell.css('margin-top', top + 'px');
-            }
-          }
+          Fancy.each(w.rightColumns, function (column, i){
+            cell = rightBody.getCell(rowIndex, i);
+            cell.css('margin-top', top + 'px');
+          });
 
           top = 0;
         }
@@ -916,10 +883,10 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       else{
         top += w.groupRowHeight;
       }
-    }
+    });
   },
   /*
-   *
+   * @params {Array|undefined} rows
    */
   clearMargins: function(rows){
     var me = this,
@@ -933,50 +900,38 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       body = w.body,
       leftBody = w.leftBody,
       rightBody = w.rightBody,
-      i = 0,
-      j = 0,
-      iL = rows.length,
-      jL,
-      row,
       cell;
 
-    for(;i<iL;i++){
-      row = rows[i];
-      j = 0;
-      jL = w.columns.length;
-      for(;j<jL;j++){
+    Fancy.each(rows, function(row){
+      Fancy.each(w.columns, function(column, j){
         cell = body.getCell(row, j);
         if(cell.dom === undefined){
-          break;
+          return true;
         }
 
         cell.css('margin-top', '0px');
-      }
+      });
 
-      j = 0;
-      jL = w.leftColumns.length;
-      for(;j<jL;j++){
+      Fancy.each(w.leftColumns, function(column, j){
         cell = leftBody.getCell(row, j);
 
         if(cell.dom === undefined){
-          break;
+          return true;
         }
 
         cell.css('margin-top', '0px');
-      }
+      });
 
-      j = 0;
-      jL = w.rightColumns.length;
-      for(;j<jL;j++){
+      Fancy.each(w.rightColumns, function(column, j){
         cell = rightBody.getCell(row, j);
 
         if(cell.dom === undefined){
-          break;
+          return true;
         }
 
         cell.css('margin-top', '0px');
-      }
-    }
+      });
+    });
   },
   /*
    *
@@ -984,6 +939,9 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
   onColumnResize: function(){
     this.updateGroupRows();
   },
+  /*
+   *
+   */
   updateGroupRows: function(){
     var me = this,
       w = me.widget,
@@ -1011,15 +969,16 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     }
   },
   /*
-   *
+   * @param {Boolean} loaded
    */
   update: function(loaded){
     var me = this,
       w = me.widget,
       s = w.store;
 
-    if(!loaded && (s.loading === true || s.autoLoad === false)){
-      s.once('load', function(){
+    if(!loaded && (s.loading === true || s.autoLoad === false) && !s.data.length){
+      //s.once('load', function(){
+      s.on('load', function(){
         me.initGroups();
         me.initOrder();
         me.calcPlusScroll();
@@ -1031,29 +990,29 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
         me.renderGroupedRows();
         me.update(true);
       }, me);
-      return;
     }
-
-    me.setPositions();
-    w.update();
-    w.scroller.update();
-    me.setCellsPosition();
-    w.setSidesHeight();
+    else if(loaded && s.data.length && s.loadedTimes > 1){
+      me.reGroup();
+    }
+    else {
+      me.setPositions();
+      w.update();
+      w.scroller.update();
+      me.setCellsPosition();
+      w.setSidesHeight();
+    }
   },
   /*
    * @param {Number} rowIndex
+   * @return {Number}
    */
   getOffsetForRow: function(rowIndex){
     var me = this,
       w = me.widget,
-      i = 0,
-      iL = me.groups.length,
       top = 0,
       rows = 0;
 
-    for(;i<iL;i++){
-      var groupName = me.groups[i];
-
+    Fancy.each(me.groups, function (groupName) {
       top += w.groupRowHeight;
 
       if(me._expanded[groupName] === true){
@@ -1061,27 +1020,24 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       }
 
       if(rowIndex < rows){
-        break;
+        return true;
       }
-    }
+    });
 
     return top;
   },
   /*
    * @param {Number} rowIndex
+   * @return {Number}
    */
   getSpecialRowsUnder: function(rowIndex){
     var me = this,
       w = me.widget,
-      i = 0,
-      iL = me.groups.length,
       top = 0,
       rows = 0,
       rowsAfter = 0;
 
-    for(;i<iL;i++){
-      var groupName = me.groups[i];
-
+    Fancy.each(me.groups, function(groupName){
       if(rowIndex < rows){
         rowsAfter++;
       }
@@ -1091,11 +1047,13 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
       if(me._expanded[groupName] === true){
         rows += me.groupsCounts[groupName];
       }
-    }
+    });
 
     return rowsAfter;
   },
-  //TODO: write function
+  /*
+   *
+   */
   reGroup: function(){
     var me = this,
       w = me.widget,
@@ -1115,6 +1073,7 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
 
     me.removeGroupRows();
     me.removeCells();
+
     me.initGroups(dataProperty);
     if(s.remoteFilter){
       me.initOrder();
@@ -1124,6 +1083,9 @@ Fancy.define('Fancy.grid.plugin.Grouping', {
     me.renderGroupedRows();
     w.setSidesHeight();
   },
+  /*
+   * @param {Number} value
+   */
   scrollLeft: function(value){
     var me = this,
       w = me.widget,

@@ -83,7 +83,7 @@ Fancy.Collection.prototype = {
   },
   /*
    * @param {String|Number} key
-   * @returns {*}
+   * @return {*}
    */
   get: function(key){
     var me = this;

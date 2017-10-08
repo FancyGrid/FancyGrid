@@ -63,10 +63,10 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     width = renderTo.width();
     height = renderTo.height();
 
-    el.addClass(me.cls);
+    el.addCls(me.cls);
 
     if( w.theme !== 'default' ){
-      el.addClass('fancy-theme-' + w.theme);
+      el.addCls('fancy-theme-' + w.theme);
     }
 
     el.css({
@@ -120,7 +120,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     me.hideLoadMask();
   },
   /*
-   *
+   * @param {String} text
    */
   showLoadMask: function(text){
     var me = this,
@@ -143,6 +143,9 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       }
     }, 50);
   },
+  /*
+   *
+   */
   hideLoadMask: function(){
     var me = this;
 
