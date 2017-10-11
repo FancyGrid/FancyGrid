@@ -1,114 +1,114 @@
 var chalk = require('chalk'),
   good = chalk.green('Ok'),
-	bad = chalk.red("Bad");
+  bad = chalk.red("Bad");
 
 var tokens = {
-	generated: false
+  generated: false
 };
 
 module.exports = function(grunt){
-	require('time-grunt')(grunt);
+  require('time-grunt')(grunt);
 
-	grunt.registerMultiTask('build_standalone_file','Gets all files and builds them', function(){
-		var done = this.async();
+  grunt.registerMultiTask('build_standalone_file','Gets all files and builds them', function(){
+    var done = this.async();
 
-		this.files.forEach(function (process) {
-			grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
-			
-			var files = process.orig.src.filter(function (file) {
-				if (file.ignore === true) {
-					return false;
-				}
-				else {
-					if (!grunt.file.exists(file.path)) {
-						grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
-					}
-					return true;
-				}
-			}).map(function(file){
-				var fileContent = grunt.file.read(file.path);
-				grunt.log.writeln("  " + good + " " + file.path);
-				return fileContent;
-			}).join('\n');
-			
-			grunt.file.write(process.orig.dest, files);
-			grunt.log.writeln("  Successfully built " + chalk.cyan(process.orig.dest) + " " + chalk.bgYellow.black(":)"));
-			done();
-		});
-	});
+    this.files.forEach(function (process) {
+      grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
+      
+      var files = process.orig.src.filter(function (file) {
+        if (file.ignore === true) {
+          return false;
+        }
+        else {
+          if (!grunt.file.exists(file.path)) {
+            grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
+          }
+          return true;
+        }
+      }).map(function(file){
+        var fileContent = grunt.file.read(file.path);
+        grunt.log.writeln("  " + good + " " + file.path);
+        return fileContent;
+      }).join('\n');
+      
+      grunt.file.write(process.orig.dest, files);
+      grunt.log.writeln("  Successfully built " + chalk.cyan(process.orig.dest) + " " + chalk.bgYellow.black(":)"));
+      done();
+    });
+  });
   
   grunt.registerMultiTask('core', 'Gets core files and builds them', function(){
-		var done = this.async();
+    var done = this.async();
 
-		this.files.forEach(function (process) {
-			grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
-			
-			var files = process.orig.src.filter(function (file) {
-				if(file.module || file.ignore === true){
-					return false;
-				}
-				else {
-					if (!grunt.file.exists(file.path)) {
-						grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
-					}
-					return true;
-				}
-			}).map(function(file){
-				var fileContent = grunt.file.read(file.path);
-				grunt.log.writeln("  " + good + " " + file.path);
-				return fileContent;
-			}).join('\n');
-			
-			grunt.file.write(process.orig.dest, files);
-			grunt.log.writeln("  Successfully built " + chalk.cyan(process.orig.dest) + " " + chalk.bgYellow.black(":)"));
-			done();
-		});
-	});
+    this.files.forEach(function (process) {
+      grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
+      
+      var files = process.orig.src.filter(function (file) {
+        if(file.module || file.ignore === true){
+          return false;
+        }
+        else {
+          if (!grunt.file.exists(file.path)) {
+            grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
+          }
+          return true;
+        }
+      }).map(function(file){
+        var fileContent = grunt.file.read(file.path);
+        grunt.log.writeln("  " + good + " " + file.path);
+        return fileContent;
+      }).join('\n');
+      
+      grunt.file.write(process.orig.dest, files);
+      grunt.log.writeln("  Successfully built " + chalk.cyan(process.orig.dest) + " " + chalk.bgYellow.black(":)"));
+      done();
+    });
+  });
   
   grunt.registerMultiTask('fully','Built full version', function(){
-		var done = this.async();
+    var done = this.async();
 
-		this.files.forEach(function (process) {
-			var files = process.orig.src.filter(function (file) {
-				if (!grunt.file.exists(file.path)) {
-				  grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
-				}
-				return true;
-			}).map(function(file){
-				var fileContent = grunt.file.read(file.path);
-				grunt.log.writeln("  " + good + " " + file.path);
-				return fileContent;
-			}).join('\n');
-			
-			grunt.file.write(process.orig.dest[0], files);
+    this.files.forEach(function (process) {
+      var files = process.orig.src.filter(function (file) {
+        if (!grunt.file.exists(file.path)) {
+          grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
+        }
+        return true;
+      }).map(function(file){
+        var fileContent = grunt.file.read(file.path);
+        grunt.log.writeln("  " + good + " " + file.path);
+        return fileContent;
+      }).join('\n');
       
-			grunt.log.writeln("  Successfully full built ");
-			done();
-		});
-	});
+      grunt.file.write(process.orig.dest[0], files);
+      
+      grunt.log.writeln("  Successfully full built ");
+      done();
+    });
+  });
   
   grunt.registerMultiTask('myclean','Cleaning from not min files', function(){
-		var done = this.async();
+    var done = this.async();
     
-		this.files.forEach(function (process) {
-			grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
-			
-			var files = process.orig.src.map(function(file){
+    this.files.forEach(function (process) {
+      grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
+      
+      var files = process.orig.src.map(function(file){
         var fileContent = grunt.file.delete(file.path);
-				grunt.log.writeln("  " + good + " " + file.path);
-			}).join('\n');
-			
-			grunt.log.writeln("Not minified files were removed " + chalk.cyan(process.orig.dest));
-			done();
-		});
-	});
+        grunt.log.writeln("  " + good + " " + file.path);
+      }).join('\n');
+      
+      grunt.log.writeln("Not minified files were removed " + chalk.cyan(process.orig.dest));
+      done();
+    });
+  });
   
   /*
    angular directive
    */
   grunt.registerMultiTask('angular', 'AngularJS directive', function(){
     var done = this.async();
-	
+  
     var fileContent = grunt.file.read('./src/js/angular/fancygrid-angularjs.js');
     fileContent += '\n';
     fileContent += grunt.file.read('./src/js/angular/fancyform-angularjs.js');
@@ -120,64 +120,64 @@ module.exports = function(grunt){
   //Modules
   
   grunt.registerMultiTask('modules','Build modules', function(){
-		var done = this.async();
+    var done = this.async();
 
-		this.files.forEach(function (process) {
+    this.files.forEach(function (process) {
       var modulesCode = {};
-			
-			var files = process.orig.src.filter(function (file) {
-				if (file.module === undefined) {
-					return false;
-				}
-				else {
-					if (!grunt.file.exists(file.path)) {
-						grunt.fail.fatal("  " + bad + " "+file.path + chalk.red(" not found or does not exist!!!"));
-					}
+      
+      var files = process.orig.src.filter(function (file) {
+        if (file.module === undefined) {
+          return false;
+        }
+        else {
+          if (!grunt.file.exists(file.path)) {
+            grunt.fail.fatal("  " + bad + " "+file.path + chalk.red(" not found or does not exist!!!"));
+          }
           modulesCode[file.module] = '';
-					return true;
-				}
-			}).map(function(file){
-				var fileContent = grunt.file.read(file.path);
+          return true;
+        }
+      }).map(function(file){
+        var fileContent = grunt.file.read(file.path);
         modulesCode[file.module] += fileContent;
-				return fileContent;
-			}).join('\n');
+        return fileContent;
+      }).join('\n');
       
       for(var p in modulesCode){
         var moduleFileName = p.replace(/ /g, '-');
         grunt.file.write(process.orig.dest + moduleFileName + '.js', modulesCode[p]);
       }
       
-			done();
-		});
-	});
+      done();
+    });
+  });
   
   // PACK FILES
-	grunt.registerMultiTask('pack','Pack', function () {
-		var done = this.async();
+  grunt.registerMultiTask('pack','Pack', function () {
+    var done = this.async();
 
-		// Setup options
-		var options = this.options({
-			license: '',
-			version: ''
-		});
+    // Setup options
+    var options = this.options({
+      license: '',
+      version: ''
+    });
     
-		this.files.forEach(function (process) {
-			process.src.forEach(function (file) {
-				grunt.log.writeln(file);
-				var src = grunt.file.read(file),				
+    this.files.forEach(function (process) {
+      process.src.forEach(function (file) {
+        grunt.log.writeln(file);
+        var src = grunt.file.read(file),        
           packedContent = "/*\n"+options.license+"\n\nBuild: "+options.version+"\n*/\n\n";
         
         packedContent += src;
         
-				// Write the file to it's original path (overwriting it)
-				grunt.file.write(file, packedContent);
-			});
-			done();
-		});		
-	});
+        // Write the file to it's original path (overwriting it)
+        grunt.file.write(file, packedContent);
+      });
+      done();
+    });    
+  });
   
-	grunt.initConfig({
-		pkg: grunt.file.readJSON('gruntConfig.json'),
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('gruntConfig.json'),
     angular: {
       fancy: {
 
@@ -190,26 +190,26 @@ module.exports = function(grunt){
       }
     },
     core: {
-			fancy: {
-				src: "<%= pkg.files %>",
-				dest: "./fancygrid/fancy.js"
-			}
-		},
+      fancy: {
+        src: "<%= pkg.files %>",
+        dest: "./fancygrid/fancy.js"
+      }
+    },
     fully: {
       fancy: {
-				src: "<%= pkg.files %>",
-				dest: ["./fancygrid/fancy.full.js"]
-			}
+        src: "<%= pkg.files %>",
+        dest: ["./fancygrid/fancy.full.js"]
+      }
     },
     myclean: {
-			fancy: {
-				src: "<%= pkg.mfiles %>",
-				dest: "./fancygrid/modules/"
-			}
-		},
-		uglify: {
-			fancy: {
-				files: [{
+      fancy: {
+        src: "<%= pkg.mfiles %>",
+        dest: "./fancygrid/modules/"
+      }
+    },
+    uglify: {
+      fancy: {
+        files: [{
           "./fancygrid/fancy.min.js": ["./fancygrid/fancy.js"]
         },{
           "./fancygrid/fancy.full.min.js": ["./fancygrid/fancy.full.js"]
@@ -233,7 +233,7 @@ module.exports = function(grunt){
           "./fancygrid/modules/grouped-header.min.js": ["./fancygrid/modules/grouped-header.js"]
         },{
           "./fancygrid/modules/grouping.min.js": ["./fancygrid/modules/grouping.js"]
-		},{
+        },{
           "./fancygrid/modules/summary.min.js": ["./fancygrid/modules/summary.js"]
         },{
           "./fancygrid/modules/filter.min.js": ["./fancygrid/modules/filter.js"]
@@ -253,9 +253,11 @@ module.exports = function(grunt){
           "./fancygrid/modules/menu.min.js": ["./fancygrid/modules/menu.js"]
         },{
           "./fancygrid/modules/grid.min.js": ["./fancygrid/modules/grid.js"]
-				}]
-			},
-		},
+		},{
+          "./fancygrid/modules/exporter.min.js": ["./fancygrid/modules/exporter.js"]
+        }]
+      }
+    },
     compress: {
       fancy: {
         options: {
@@ -266,10 +268,10 @@ module.exports = function(grunt){
         files: [
           { src: './fancygrid/fancy.js' },
           { src: './fancygrid/fancy.min.js' },
-		  
+      
           { src: './fancygrid/fancy.full.js' },
           { src: './fancygrid/fancy.full.min.js' },
-		  
+      
           { src: './fancygrid/fancy.css' },
           { src: './fancygrid/fancy.min.css' },
           
@@ -280,7 +282,7 @@ module.exports = function(grunt){
         ]
       }
     },
-		pack: {
+    pack: {
       fancy: {
         options: {
           license: "<%= pkg.license %>",
@@ -292,7 +294,7 @@ module.exports = function(grunt){
           { src: './fancygrid/fancy.full.min.js' }
         ]
       }
-		},
+    },
     less: {
       fancy: {
         files: {
@@ -332,21 +334,21 @@ module.exports = function(grunt){
         regExp: false
       }
     }
-	});
+  });
 
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-less');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-image-embed');
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-image-embed');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.loadNpmTasks('grunt-bump');
 
-    grunt.registerTask('dev', ['less:fancy']);
+  grunt.registerTask('dev', ['less:fancy']);
   
-	grunt.registerTask('cl', [
-  	  'myclean:fancy'
-	]);
+  grunt.registerTask('cl', [
+      'myclean:fancy'
+  ]);
   
   //grunt.registerTask('packer', ['pack:fancy']);
   

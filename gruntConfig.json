@@ -371,5 +371,14 @@
     "module": "touch"
   },{
     "path": "./src/js/widgets/Component.js"
+  },{
+    "path": "./src/js/thirdparty/sheetjs/xlsx.full.min.js",
+	"module": "exporter"
+  },{
+    "path": "./src/js/thirdparty/sheetjs/Blob.js",
+	"module": "exporter"
+  },{
+    "path": "./src/js/thirdparty/sheetjs/FileSaver.js",
+	"module": "exporter"
   }]
 }
