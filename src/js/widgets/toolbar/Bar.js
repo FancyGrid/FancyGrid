@@ -342,7 +342,7 @@ Fancy.define('Fancy.Bar', {
 
         item.events = item.events.concat([{
           enter: function(field, value){
-            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id') );
+            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id') );
             //this.search(['name', 'surname', 'position'], value);
             //this.search(value);
             //this.search(['a', 'b', 'c']);
@@ -351,7 +351,7 @@ Fancy.define('Fancy.Bar', {
         }, {
           key: function (field, value) {
             var me = this,
-              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id'));
+              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id'));
 
             if (!me.autoEnterTime) {
               me.autoEnterTime = new Date();
@@ -389,7 +389,7 @@ Fancy.define('Fancy.Bar', {
 
             field.el.on('click', function(e){
               var toShow = false,
-                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.gridCls).attr('id')),
+                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id')),
                 columns = grid.columns || [],
                 leftColumns = grid.leftColumns || [],
                 rightColumns = grid.rightColumns || [],
@@ -793,7 +793,7 @@ Fancy.define('Fancy.Bar', {
    */
   onTabLastInput: function(field, e){
     var me = this,
-      grid = Fancy.getWidget(me.el.parent().select('.' + Fancy.gridCls).attr('id')),
+      grid = Fancy.getWidget(me.el.parent().select('.' + Fancy.GRID_CLS).attr('id')),
       cellCls = grid.cellCls;
 
     //NOTE: setTimeout to fix strange bug. It runs second second cell without it.

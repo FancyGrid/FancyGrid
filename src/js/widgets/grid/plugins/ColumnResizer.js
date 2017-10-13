@@ -6,6 +6,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   extend: Fancy.Plugin,
   ptype: 'grid.columnresizer',
   inWidgetName: 'columnresizer',
+  resizerLeftCls: 'fancy-grid-resizer-left',
+  resizerRightCls: 'fancy-grid-resizer-right',
   /*
    * @param {Object} config
    */
@@ -48,7 +50,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
   onCellMouseMove: function(grid, o){
     var me = this,
       w = me.widget,
-      fieldCls = Fancy.fieldCls,
+      FIELD_CLS = Fancy.FIELD_CLS,
       cellHeaderTriggerCls = w.cellHeaderTriggerCls,
       cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
       e = o.e,
@@ -60,7 +62,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
       triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
       triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
-      hasFieldInSide = Fancy.get(e.target).closest('.' + fieldCls).hasCls(fieldCls),
+      hasFieldInSide = Fancy.get(e.target).closest('.' + FIELD_CLS).hasCls(FIELD_CLS),
       triggerWidth = parseInt(triggerEl.css('width')),
       triggerImageWidth = parseInt(triggerImageEl.css('width')),
       _width = cellWidth,
@@ -162,7 +164,7 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       cellEl = Fancy.get(o.cell),
       offsetX = e.offsetX,
       cellWidth = cellEl.width(),
-      field = cellEl.select('.' + Fancy.fieldCls),
+      field = cellEl.select('.' + Fancy.FIELD_CLS),
       isInTrigger = target.hasCls(cellHeaderTriggerCls),
       isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
       triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
@@ -335,8 +337,8 @@ Fancy.define('Fancy.grid.plugin.ColumnResizer', {
       leftEl = Fancy.get( document.createElement('div')),
       rightEl = Fancy.get( document.createElement('div') );
 
-    leftEl.addCls('fancy-grid-resizer-left');
-    rightEl.addCls('fancy-grid-resizer-right');
+    leftEl.addCls(me.resizerLeftCls);
+    rightEl.addCls(me.resizerRightCls);
 
     me.leftEl = Fancy.get(w.el.dom.appendChild(leftEl.dom));
     me.rightEl = Fancy.get(w.el.dom.appendChild(rightEl.dom));

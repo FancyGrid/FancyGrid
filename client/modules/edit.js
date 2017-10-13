@@ -432,6 +432,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
       me.initEditorContainer();
       me.checkAutoInitEditors();
       w.on('scroll', me.onScroll, me);
+      w.on('nativescroll', me.onNativeScroll, me);
       w.on('docclick', me.onDocClick, me);
       w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
     });
@@ -902,6 +903,12 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
     this.hideEditor();
   },
   /*
+   *
+   */
+  onNativeScroll: function(){
+    this.hideEditor();
+  },
+  /*
    * @param {Object} field
    */
   onBlur: function(field){
@@ -1180,7 +1187,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       el = Fancy.get(renderTo.dom.appendChild(container.dom));
     }
     else{
-      var fieldEls = renderTo.select('.' + Fancy.fieldCls);
+      var fieldEls = renderTo.select('.' + Fancy.FIELD_CLS);
 
       i = order;
       iL = order + 1;
@@ -1391,18 +1398,19 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
    */
   setSizes: function(){
     var me = this,
-      w = me.widget;
+      w = me.widget,
+      cellCls = w.cellCls;
 
     if(w.leftColumns){
-      me._setSizes(w.leftBody.el.select('.fancy-grid-cell[index="0"]'), w.leftColumns, 'left');
+      me._setSizes(w.leftBody.el.select('.' + cellCls + '[index="0"]'), w.leftColumns, 'left');
     }
 
     if(w.columns){
-      me._setSizes(w.body.el.select('.fancy-grid-cell[index="0"]'), w.columns);
+      me._setSizes(w.body.el.select('.' + cellCls + '[index="0"]'), w.columns);
     }
 
     if(w.rightColumns){
-      me._setSizes(w.rightBody.el.select('.fancy-grid-cell[index="0"]'), w.rightColumns, 'right');
+      me._setSizes(w.rightBody.el.select('.' + cellCls + '[index="0"]'), w.rightColumns, 'right');
     }
 
     me.setElSize();
@@ -1883,7 +1891,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         break;
     }
 
-    field = Fancy.getWidget(body.el.select('.' + Fancy.fieldCls).item(index).attr('id'));
+    field = Fancy.getWidget(body.el.select('.' + Fancy.FIELD_CLS).item(index).attr('id'));
 
     return field;
   },
@@ -1893,22 +1901,22 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
   reSetColumnsEditorsLinks: function(){
     var me = this,
       w = me.widget,
-      fieldCls = Fancy.fieldCls,
+      FIELD_CLS = Fancy.FIELD_CLS,
       cells;
 
-    cells = w.body.el.select('.' + fieldCls);
+    cells = w.body.el.select('.' + FIELD_CLS);
 
     Fancy.each(w.columns, function(column, i){
       column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
     });
 
-    cells = w.leftBody.el.select('.' + fieldCls);
+    cells = w.leftBody.el.select('.' + FIELD_CLS);
 
     Fancy.each(w.leftColumns, function(column, i){
       column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
     });
 
-    cells = w.rightBody.el.select('.' + fieldCls);
+    cells = w.rightBody.el.select('.' + FIELD_CLS);
 
     Fancy.each(w.rightColumns, function(column, i){
       column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));

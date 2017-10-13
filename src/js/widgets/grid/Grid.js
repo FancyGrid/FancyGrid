@@ -25,13 +25,13 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   emptyText: '',
   prefix: 'fancy-grid-',
   cls: '',
-  widgetCls: Fancy.gridCls,
+  widgetCls: Fancy.GRID_CLS,
   // Cell cls-s
-  cellCls: 'fancy-grid-cell',
+  cellCls: Fancy.GRID_CELL_CLS,
   cellInnerCls: 'fancy-grid-cell-inner',
   cellEvenCls: 'fancy-grid-cell-even',
-  cellOverCls: 'fancy-grid-cell-over',
-  cellSelectedCls: 'fancy-grid-cell-selected',
+  cellOverCls: Fancy.GRID_CELL_OVER_CLS,
+  cellSelectedCls: Fancy.GRID_CELL_SELECTED_CLS,
   // Cell Header cls-s
   cellHeaderCls: 'fancy-grid-header-cell',
   cellHeaderSelectCls: 'fancy-grid-header-cell-select',
@@ -46,33 +46,34 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   clsASC: 'fancy-grid-column-sort-ASC',
   clsDESC: 'fancy-grid-column-sort-DESC',
   //Column cls-s
-  columnCls: 'fancy-grid-column',
-  columnOverCls: 'fancy-grid-column-over',
-  columnSelectedCls: 'fancy-grid-column-selected',
+  columnCls: Fancy.GRID_COLUMN_CLS,
+  columnOverCls: Fancy.GRID_COLUMN_OVER_CLS,
+  columnSelectedCls: Fancy.GRID_COLUMN_SELECTED_CLS,
   columnColorCls: 'fancy-grid-column-color',
   columnTextCls: 'fancy-grid-column-text',
   columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
   columnOrderCls: 'fancy-grid-column-order',
-  columnSelectCls: 'fancy-grid-column-select',
+  columnSelectCls: Fancy.GRID_COLUMN_SELECT_CLS,
   columnResizerCls: 'fancy-grid-column-resizer',
   //Column spark cls-s
-  clsSparkColumn: 'fancy-grid-column-sparkline',//TODO: rename to columnSparkCls
-  clsSparkColumnBullet: 'fancy-grid-column-sparkline-bullet',//TODO: rename to columnSparkBulletCls
-  clsSparkColumnCircle: 'fancy-grid-column-chart-circle',//TODO: rename to columnSparkCircleCls
-  clsSparkColumnDonutProgress: 'fancy-grid-column-spark-progress-donut',//TODO: rename to columnSparkDonutCls
-  clsColumnGrossLoss: 'fancy-grid-column-grossloss',//TODO: rename to columnGrossCls
-  clsColumnProgress: 'fancy-grid-column-progress',//TODO: rename to columnProgressCls
-  clsSparkColumnHBar: 'fancy-grid-column-h-bar',//TODO: rename to columnSparkHBarCls
+  columnSparkCls: 'fancy-grid-column-sparkline',
+  columnSparkBulletCls: 'fancy-grid-column-sparkline-bullet',
+  columnSparkCircleCls: 'fancy-grid-column-chart-circle',
+  columnSparkDonutProgressCls: 'fancy-grid-column-spark-progress-donut',
+  columnGrossLossCls: 'fancy-grid-column-grossloss',
+  columnProgressCls: 'fancy-grid-column-progress',
+  columnSparkHBarCls: 'fancy-grid-column-h-bar',
   //Row cls-s
   clsGroupRow: 'fancy-grid-group-row',//TODO: rename to rowGroupCls
   clsCollapsedRow: 'fancy-grid-group-row-collapsed',//TODO: rename to rowCollapsedCls
   clsSummaryContainer: 'fancy-grid-summary-container',//TODO: rename to ???
   clsSummaryRow: 'fancy-grid-summary-row',//TODO: rename to rowSummaryCls
+  rowSummaryBottomCls: 'fancy-grid-summary-row-bottom',
   rowEditCls: 'fancy-grid-row-edit',
   rowEditButtonCls: 'fancy-grid-row-edit-buttons',
 
   pseudoCellCls: 'fancy-grid-pseudo-cell',
-  rowOverCls: 'fancy-grid-cell-over',
+  rowOverCls: Fancy.GRID_ROW_OVER_CLS,
 
   expandRowCls: 'fancy-grid-expand-row',//TODO: rename to rowExpandCls
   expandRowOverCls: 'fancy-grid-expand-row-over',//TODO: rename to rowExpandOverCls
@@ -85,7 +86,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   leftCls: 'fancy-grid-left',
   rightCls: 'fancy-grid-right',
 
-  headerCls: Fancy.gridHeaderCls,
+  headerCls: Fancy.GRID_HEADER_CLS,
 
   header: true,
   shadow: true,
@@ -159,7 +160,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
-      'scroll',
+      'scroll', 'nativescroll',
       'remove',
       'set',
       'update',
@@ -236,6 +237,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.summary = true;
     }
 
+    if(me.exporter){
+      requiredModules.exporter = true;
+      requiredModules.excel = true;
+    }
+
     if(me.paging){
       requiredModules.paging = true;
     }
@@ -279,6 +285,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.summary){
       requiredModules['summary'] = true;
+    }
+
+    if(me.exporter){
+      requiredModules['exporter'] = true;
+      requiredModules['excel'] = true;
     }
 
     if(me.trackOver || me.columnTrackOver || me.cellTrackOver || me.selection){
@@ -442,7 +453,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
  * @param {String} id
  */
 FancyGrid.get = function(id){
-  var gridId = Fancy.get(id).select('.' + Fancy.gridCls).dom.id;
+  var gridId = Fancy.get(id).select('.' + Fancy.GRID_CLS).dom.id;
 
   return Fancy.getWidget(gridId);
 };

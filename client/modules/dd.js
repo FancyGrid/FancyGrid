@@ -201,7 +201,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
 
     var targetEl = Fancy.get(e.currentTarget);
     
-    me.dropGrid = Fancy.getWidget(targetEl.closest('.' + Fancy.gridCls).attr('id'));
+    me.dropGrid = Fancy.getWidget(targetEl.closest('.' + Fancy.GRID_CLS).attr('id'));
 
     if(me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false){
       me.dropOK = false;
@@ -293,7 +293,7 @@ Fancy.define('Fancy.grid.plugin.GridToGrid', {
       grid.el.addCls(me.dropHeaderMaskCls);
     }
     else{
-      grid.el.select('.fancy-grid-cell[index="'+(o.rowIndex - 1)+'"]').addCls(me.cellMaskCls);
+      grid.el.select('.' + grid.cellCls + '[index="'+(o.rowIndex - 1)+'"]').addCls(me.cellMaskCls);
     }
 
     if( me.cellMouseDown === false ){

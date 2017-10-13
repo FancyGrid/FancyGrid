@@ -68,7 +68,7 @@ Fancy.define('Fancy.grid.plugin.Sorter', {
       return;
     }
 
-    var field = cellEl.select('.' + Fancy.fieldCls);
+    var field = cellEl.select('.' + Fancy.FIELD_CLS);
     if(field.length > 0 && field.item(0).within(target) === true){
        return;
     }

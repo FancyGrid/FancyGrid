@@ -22,7 +22,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     this.Super('init', arguments);
   },
   checkedCls: 'fancy-switcher-on',
-  fieldCls: Fancy.fieldCls + ' fancy-field-switcher',
+  fieldCls: Fancy.FIELD_CLS + ' fancy-field-switcher',
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',

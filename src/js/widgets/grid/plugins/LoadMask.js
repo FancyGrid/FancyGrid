@@ -7,6 +7,9 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   ptype: 'grid.loadmask',
   inWidgetName: 'loadmask',
   cls: 'fancy-loadmask',
+  innerCls: 'fancy-loadmask-inner',
+  imageCls: 'fancy-loadmask-image',
+  textCls: 'fancy-loadmask-text',
   /*
    * @constructor
    * @param {Object} config
@@ -76,15 +79,15 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     });
 
     el.update([
-      '<div class="fancy-loadmask-inner">' +
-        '<div class="fancy-loadmask-image"></div>'+
-        '<div class="fancy-loadmask-text">' + lang.loadingText +'</div>'+
+      '<div class="'+me.innerCls+'">' +
+        '<div class="'+me.imageCls+'"></div>'+
+        '<div class="'+me.textCls+'">' + lang.loadingText +'</div>'+
       '</div>'
     ].join(' '));
 
     me.el = Fancy.get(renderTo.dom.appendChild(el.dom));
-    me.innerEl = me.el.select('.fancy-loadmask-inner');
-    me.textEl = me.el.select('.fancy-loadmask-text');
+    me.innerEl = me.el.select('.' + me.innerCls);
+    me.textEl = me.el.select('.'+me.textCls);
 
     var innerWidth = me.innerEl.width(),
       innerHeight = me.innerEl.height();

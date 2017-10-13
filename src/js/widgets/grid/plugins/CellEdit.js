@@ -37,6 +37,7 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
       me.initEditorContainer();
       me.checkAutoInitEditors();
       w.on('scroll', me.onScroll, me);
+      w.on('nativescroll', me.onNativeScroll, me);
       w.on('docclick', me.onDocClick, me);
       w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
     });
@@ -504,6 +505,12 @@ Fancy.define('Fancy.grid.plugin.CellEdit', {
    *
    */
   onScroll: function(){
+    this.hideEditor();
+  },
+  /*
+   *
+   */
+  onNativeScroll: function(){
     this.hideEditor();
   },
   /*

@@ -74,7 +74,7 @@ Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
   labelWidth: 60,
   value: false,
   checkedCls: 'fancy-field-radio-on',
-  fieldCls: Fancy.fieldCls + ' fancy-field-radio',
+  fieldCls: Fancy.FIELD_CLS + ' fancy-field-radio',
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',

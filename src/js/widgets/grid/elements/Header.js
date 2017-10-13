@@ -4,7 +4,7 @@
  */
 Fancy.define('Fancy.grid.Header', {
   extend: Fancy.Widget,
-  cls: Fancy.gridHeaderCls,
+  cls: Fancy.GRID_HEADER_CLS,
   mixins: [
     'Fancy.grid.header.mixin.Menu'
   ],

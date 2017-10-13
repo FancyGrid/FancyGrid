@@ -303,7 +303,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
 
         switch(column.type){
           case 'date':
-            var els = header.getCell(i).select('.' + Fancy.fieldCls),
+            var els = header.getCell(i).select('.' + Fancy.FIELD_CLS),
               fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
               fieldTo = Fancy.getWidget(els.item(1).attr('id'));
 
@@ -311,7 +311,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             fieldTo.clear();
             break;
           default:
-            var id = header.getCell(i).select('.' + Fancy.fieldCls).attr('id'),
+            var id = header.getCell(i).select('.' + Fancy.FIELD_CLS).attr('id'),
               field = Fancy.getWidget(id);
 
             if(sign){
@@ -353,7 +353,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
   },
   _addValuesInColumnFields: function(columns, header, index, value, sign){
     var i = 0,
-      fieldCls = Fancy.fieldCls,
+      FIELD_CLS = Fancy.FIELD_CLS,
       iL = columns.length,
       column;
 
@@ -362,7 +362,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
       if(column.index === index && column.filter && column.filter.header){
         switch(column.type){
           case 'date':
-            var els = header.getCell(i).select('.' + fieldCls),
+            var els = header.getCell(i).select('.' + FIELD_CLS),
               fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
               fieldTo = Fancy.getWidget(els.item(1).attr('id'));
 
@@ -370,7 +370,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
             fieldTo.clear();
             break;
           default:
-            var id = header.getCell(i).select('.' + fieldCls).attr('id'),
+            var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
               field = Fancy.getWidget(id),
               fieldValue = field.get(),
               splitted = field.get().split(',');
@@ -819,7 +819,7 @@ Fancy.define('Fancy.grid.plugin.Filter', {
   onColumnResize: function(grid, o){
     var cell = Fancy.get(o.cell),
       width = o.width,
-      fieldEl = cell.select('.' + Fancy.fieldCls),
+      fieldEl = cell.select('.' + Fancy.FIELD_CLS),
       field;
 
     if(fieldEl.length === 0){}

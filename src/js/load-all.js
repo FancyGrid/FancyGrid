@@ -1,7 +1,9 @@
 (function(){
+
   var dc = +new Date(),
-    pathToSrc = '/src/js/',
-    files = [
+    pathToSrc = '/src/js/';
+
+  var files = [
       pathToSrc + 'core/Fancy.js',
       pathToSrc + 'core/theme.js',
 
@@ -137,6 +139,7 @@
       pathToSrc + 'widgets/grid/plugins/Search.js', // search module
 
       pathToSrc + 'widgets/grid/plugins/GridToGrid.js', // dd module
+      pathToSrc + 'widgets/grid/plugins/Exporter.js', // export module
 
       pathToSrc + 'widgets/grid/plugins/Licence.js',
 
@@ -159,9 +162,14 @@
 
       pathToSrc + 'touch/fastclick.js', // touch module
 
-      pathToSrc + 'widgets/Component.js' // Component
-    ],
-    i = 0,
+      pathToSrc + 'widgets/Component.js', // Component
+
+      pathToSrc + "thirdparty/sheetjs/xlsx.full.min.js", // module exporter
+      pathToSrc + "thirdparty/sheetjs/Blob.js", // module exporter
+      pathToSrc + "thirdparty/sheetjs/FileSaver.js" // module exporter
+    ];
+
+  var i = 0,
     iL = files.length,
     dcUrl = '?_dc='+dc;
 

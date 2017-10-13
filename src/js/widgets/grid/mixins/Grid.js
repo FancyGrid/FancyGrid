@@ -75,16 +75,16 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
    */
   initTouch: function(){
     var me = this,
-      touchCls = Fancy.touchCls;
+      TOUCH_CLS = Fancy.TOUCH_CLS;
 
     if(Fancy.isTouch && window.FastClick){
       if(me.panel){
         FastClick.attach(me.panel.el.dom);
-        me.panel.addCls(touchCls);
+        me.panel.addCls(TOUCH_CLS);
       }
       else {
         FastClick.attach(me.el.dom);
-        me.addCls(touchCls);
+        me.addCls(TOUCH_CLS);
       }
     }
   },
@@ -696,7 +696,7 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
       plusScroll += me.expander.plusScroll;
     }
 
-    if(!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasCls(Fancy.hiddenCls)){}
+    if(!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasCls(Fancy.HIDDEN_CLS)){}
     else {
       scrollBottomHeight = me.scroller.cornerSize;
     }
@@ -2062,6 +2062,57 @@ Fancy.Mixin('Fancy.grid.mixin.Grid', {
           column.width = me.minColumnWidth;
         }
       }
+    }
+  },
+  /*
+   * @return {Array}
+   */
+  getDisplayedData: function(){
+    var me = this,
+      viewTotal = me.getViewTotal(),
+      data = [],
+      i = 0,
+      leftColumns = me.leftColumns,
+      columns = me.columns,
+      rightColumns = me.rightColumns;
+
+    for(;i<viewTotal;i++){
+      var rowData = [];
+
+      Fancy.each(leftColumns, function(column){
+        if(column.index === undefined){
+          return;
+        }
+        rowData.push(me.get(i, column.index));
+      });
+
+      Fancy.each(columns, function(column){
+        if(column.index === undefined){
+          return;
+        }
+        rowData.push(me.get(i, column.index));
+      });
+
+      Fancy.each(rightColumns, function(column){
+        if(column.index === undefined){
+          return;
+        }
+        rowData.push(me.get(i, column.index));
+      });
+
+      data.push(rowData);
+    }
+
+    return data;
+  },
+  /*
+   *
+   */
+  exportToExcel: function(){
+    var me = this;
+
+    if(me.exporter){
+      me.exporter.exportToExcel();
     }
   }
 });

@@ -152,5 +152,90 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     return result;
+  },
+  /*
+   * @param {String} [dataProperty]
+   * @return {Object}
+   */
+  initGroups: function(dataProperty){
+    var me = this,
+      w = me.widget,
+      grouping = w.grouping,
+      dataProperty = dataProperty || 'data',
+      by = grouping.by;
+
+    if(!by){
+      throw new Error('[FancyGrid Error] - not set by param in grouping');
+    }
+
+    var values = me.getColumnOriginalValues(by, {
+        dataProperty: dataProperty,
+        groupMap: true
+      }),
+      _groups = {};
+
+    Fancy.each(values, function(value){
+      if(_groups[value] === undefined){
+        _groups[value] = 0;
+      }
+
+      _groups[value]++;
+    });
+
+    var groups = [];
+
+    for(var p in _groups){
+      groups.push(p);
+    }
+
+    return {
+      groups: groups,
+      _groups: _groups
+    };
+  },
+  /*
+   *
+   */
+  orderDataByGroupOnStart: function(){
+    var me = this,
+      grouping = me.widget.grouping,
+      o = me.initGroups(),
+      groups = o.groups,
+      groupNameUpperCase = {},
+      upperGroups = [];
+
+    Fancy.each(groups, function(group){
+      var upperGroup = group.toLocaleUpperCase();
+
+      groupNameUpperCase[upperGroup] = group;
+      upperGroups.push(upperGroup);
+    });
+
+    upperGroups = upperGroups.sort();
+
+    var i = 0,
+      iL = groups.length;
+
+    for(;i<iL;i++){
+      groups[i] = groupNameUpperCase[ upperGroups[i] ];
+    }
+
+    me.changeOrderByGroups(groups, grouping.by);
+
+    me.expanded = {};
+    if(grouping.collapsed){
+      me.collapsed = true;
+    }
+    else{
+      Fancy.each(groups, function(group){
+        if( !grouping.expanded || grouping.expanded[group] === undefined ){
+          me.expanded[group] = true;
+        }
+      });
+    }
+
+    me.changeDataView({
+      doNotFired: true
+    });
   }
 });

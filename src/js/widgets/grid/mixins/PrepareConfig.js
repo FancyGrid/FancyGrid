@@ -39,6 +39,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigFilter(config);
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
+    config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
     config = me.prepareConfigWidgetColumn(config);
@@ -694,7 +695,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.widget){
         column.render = function(o){
-          var fieldEl = o.cell.select('.' + Fancy.fieldCls),
+          var fieldEl = o.cell.select('.' + Fancy.FIELD_CLS),
             field,
             renderTo = o.cell.dom,
             column = o.column;
@@ -1006,6 +1007,27 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       config._plugins.push(summaryConfig);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigExporter: function(config){
+    if(config.exporter){
+      var exporterConfig = config.exporter;
+
+      if(exporterConfig === true){
+        exporterConfig = {};
+      }
+
+      Fancy.apply(exporterConfig, {
+        type: 'grid.exporter'
+      });
+
+      config._plugins.push(exporterConfig);
     }
 
     return config;
@@ -1435,7 +1457,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 render: function(){
                   var me = this;
                   setTimeout(function(){
-                    var grid = Fancy.getWidget( me.el.parent().parent().parent().select('.' + Fancy.gridCls).dom.id );
+                    var grid = Fancy.getWidget( me.el.parent().parent().parent().select('.' + Fancy.GRID_CLS).dom.id );
 
                     grid.on('select', function(){
                       var selection = grid.getSelection();

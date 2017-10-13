@@ -138,7 +138,7 @@ Fancy.define('Fancy.grid.plugin.Summary', {
     el.css('width', columnsWidth + 'columnsWidth');
     el.addCls(clsSummaryContainer);
     if(me.position === 'bottom'){
-      el.addCls('fancy-grid-summary-row-bottom');
+      el.addCls(w.rowSummaryBottomCls);
     }
 
     return el;

@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.12',
+  version: '1.6.13',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -382,12 +382,42 @@ Fancy.apply(Fancy, {
  */
 Fancy.apply(Fancy, {
   cls: 'fancy',
-  touchCls: 'fancy-touch',
-  gridCls: 'fancy-grid',
-  gridHeaderCls: 'fancy-grid-header',
-  fieldCls: 'fancy-field',
-  fieldEmptyCls: 'fancy-field-empty',
-  hiddenCls: 'fancy-display-none'
+  TOUCH_CLS: 'fancy-touch',
+  HIDDEN_CLS: 'fancy-display-none',
+  CLEARFIX_CLS: 'fancy-clearfix',
+  /*
+   * Form cls-s
+   */
+  FIELD_CLS: 'fancy-field',
+  FIELD_LABEL_CLS: 'fancy-field-label',
+  FIELD_EMPTY_CLS: 'fancy-field-empty',
+  FIELD_TEXT_CLS: 'fancy-field-text',
+  FIELD_TEXT_INPUT_CLS: 'fancy-field-text-input',
+  FIELD_ERROR_CLS: 'fancy-field-error',
+  FIELD_SPIN_CLS: 'fancy-field-spin',
+  FIELD_SPIN_UP_CLS: 'fancy-field-spin-up',
+  FIELD_SPIN_DOWN_CLS: 'fancy-field-spin-down',
+  FIELD_CHECKBOX_CLS: 'fancy-field-checkbox',
+  FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
+  FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
+  FIELD_BUTTON_CLS: 'fancy-field-button',
+  /*
+   * Grid cls-s
+   */
+  GRID_CLS: 'fancy-grid',
+  GRID_HEADER_CLS: 'fancy-grid-header',
+  GRID_CELL_CLS: 'fancy-grid-cell',
+  GRID_CELL_OVER_CLS: 'fancy-grid-cell-over',
+  GRID_CELL_SELECTED_CLS: 'fancy-grid-cell-selected',
+  GRID_COLUMN_CLS: 'fancy-grid-column',
+  GRID_COLUMN_OVER_CLS: 'fancy-grid-column-over',
+  GRID_COLUMN_SELECT_CLS: 'fancy-grid-column-select',
+  GRID_COLUMN_SELECTED_CLS: 'fancy-grid-column-selected',
+  GRID_ROW_OVER_CLS: 'fancy-grid-cell-over',
+  /*
+   * Panel cls-s
+   */
+  PANEL_HEADER_CLS: 'fancy-panel-header'
 });
 
 (function(){

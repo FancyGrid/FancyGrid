@@ -927,7 +927,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL,
       _sparkConfig = column.sparkConfig || {};
 
-    columnDom.addCls(w.clsSparkColumn);
+    columnDom.addCls(w.columnSparkCls);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -951,7 +951,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       case 'bullet':
         widthName = 'width';
         sparkHeight -= 11;
-        columnDom.addCls(w.clsSparkColumnBullet);
+        columnDom.addCls(w.columnSparkBulletCls);
         break;
       case 'discrete':
         widthName = 'width';
@@ -1030,7 +1030,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       j,
       jL;
 
-    columnDom.addCls(w.clsSparkColumnDonutProgress);
+    columnDom.addCls(w.columnSparkDonutProgressCls);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -1106,7 +1106,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       j,
       jL;
 
-    columnDom.addCls(w.clsColumnGrossLoss);
+    columnDom.addCls(w.columnGrossLossCls);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -1182,7 +1182,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL,
       maxValue = 100;
 
-    columnDom.addCls(w.clsColumnProgress);
+    columnDom.addCls(w.columnProgressCls);
 
     if(rowIndex !== undefined){
       j = rowIndex;
@@ -1269,7 +1269,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       sparkConfig = column.sparkConfig || {},
       disabled = column.disabled || {};
 
-    columnDom.addCls(w.clsSparkColumnHBar);
+    columnDom.addCls(w.columnSparkHBarCls);
 
     var values = {},
       i = 0,
@@ -1433,7 +1433,7 @@ Fancy.grid.body.mixin.Updater.prototype = {
       jL,
       cellHeight = w.cellHeight - 4;
 
-    columnDom.addCls(w.clsSparkColumnCircle);
+    columnDom.addCls(w.columnSparkCircleCls);
 
     function pieChart(percentage, size) {
       //http://jsfiddle.net/da5LN/62/

@@ -46,6 +46,10 @@ Fancy.define('Fancy.Store', {
     }
 
     me.readSmartIndexes();
+
+    if(me.widget.grouping){
+      me.orderDataByGroupOnStart();
+    }
   },
   /*
    *
@@ -444,6 +448,9 @@ Fancy.define('Fancy.Store', {
 
     return values;
   },
+  /*
+   * @param {Object} [o]
+   */
   changeDataView: function(o){
     var me = this,
       o = o || {},

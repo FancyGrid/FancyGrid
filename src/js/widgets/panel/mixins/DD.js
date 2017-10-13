@@ -28,7 +28,7 @@ Fancy.Mixin('Fancy.panel.mixin.DD', {
 
     Fancy.DD.add({
       dragEl: me.el,
-      overEl: me.el.select('.fancy-panel-header').item(0)
+      overEl: me.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
     });
   }
 });

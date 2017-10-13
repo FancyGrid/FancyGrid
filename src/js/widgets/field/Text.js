@@ -41,7 +41,7 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
       me.css(me.style);
     }
   },
-  fieldCls: Fancy.fieldCls + ' fancy-field-field-text',
+  fieldCls: Fancy.FIELD_CLS + ' fancy-field-field-text',
   value: '',
   width: 100,
   emptyText: '',

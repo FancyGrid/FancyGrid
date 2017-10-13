@@ -181,7 +181,7 @@ Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
 
     me.input.dom.value = value;
   },
-  fieldCls: Fancy.fieldCls,
+  fieldCls: Fancy.FIELD_CLS,
   value: '',
   width: 100,
   emptyText: '',
