@@ -10,25 +10,19 @@ Fancy.define('Fancy.toolbar.Tab', {
    * @param scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-  
-    me.Super('init', arguments);
+    this.Super('init', arguments);
   },
-  cls: 'fancy fancy-button fancy-toolbar-tab',
+  cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
    *
    */
   render: function(){
-    var me = this;
-
-    me.Super('render', arguments);
+    this.Super('render', arguments);
   }
 });

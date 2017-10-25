@@ -15,19 +15,14 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -110,17 +105,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onBeforeLoad: function(){
-    var me = this;
-
-    me.showLoadMask();
+    this.showLoadMask();
   },
   /*
    *
    */
   onLoad: function(){
-    var me = this;
-
-    me.hideLoadMask();
+    this.hideLoadMask();
   },
   /*
    * @param {String} text
@@ -150,9 +141,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   hideLoadMask: function(){
-    var me = this;
-
-    me.loaded = true;
-    me.el.css('display', 'none');
+    this.loaded = true;
+    this.el.css('display', 'none');
   }
 });

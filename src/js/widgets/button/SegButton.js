@@ -9,11 +9,8 @@ Fancy.define('Fancy.SegButton', {
    * @param {Object} scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.scope = scope;
-
-    me.Super('const', arguments);
+    this.scope = scope;
+    this.Super('const', arguments);
   },
   /*
    *
@@ -31,7 +28,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  widgetCls: 'fancy-seg-button',
+  widgetCls: Fancy.SEG_BUTTON_CLS,
   cls: '',
   extraCls: '',
   text: '',

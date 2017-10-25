@@ -11,7 +11,7 @@ Fancy.define('Fancy.Widget', {
   constructor: function(config){
     var me = this;
 
-    Fancy.applyConfig(me, config || {});
+    Fancy.applyConfig(me, config);
 
     me.preInitControls();
     me.Super('const', arguments);

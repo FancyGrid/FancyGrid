@@ -9,11 +9,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    Fancy.applyConfig(me, config || {});
-
-    me.Super('const', arguments);
+    Fancy.applyConfig(this, config);
+    this.Super('const', arguments);
   },
   /*
    *

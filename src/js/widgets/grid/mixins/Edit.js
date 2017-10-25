@@ -40,9 +40,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {*} o
    */
   removeAt: function(o){
-    var me = this;
-
-    me.remove(o, true);
+    this.remove(o, true);
   },
   /*
    *

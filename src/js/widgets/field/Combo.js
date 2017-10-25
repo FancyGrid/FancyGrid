@@ -5,7 +5,19 @@
  * Note: because multiselection code became overcomplex
  */
 (function(){
-  Fancy.define('Fancy.combo.Manager', {
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+
+  F.define('Fancy.combo.Manager', {
     singleton: true,
     opened: [],
     add: function(combo){
@@ -14,7 +26,7 @@
       this.opened.push(combo);
     },
     hideLists: function(){
-      Fancy.each(this.opened, function(item){
+      F.each(this.opened, function(item){
         item.hideList();
       });
 
@@ -22,15 +34,15 @@
     }
   });
 
-  Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
+  F.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     type: 'field.combo',
     mixins: [
-      Fancy.form.field.Mixin
+      F.form.field.Mixin
     ],
-    extend: Fancy.Widget,
+    extend: F.Widget,
     selectedItemCls: 'fancy-combo-item-selected',
     focusedItemCls: 'fancy-combo-item-focused',
-    fieldCls: 'fancy fancy-field fancy-combo',
+    fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
     listRowHeight: 25,
@@ -44,26 +56,24 @@
     multiSelect: false,
     itemCheckBox: false,
     tpl: [
-      '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
         '{label}',
       '</div>',
-      '<div class="fancy-field-text">',
+      '<div class="' + FIELD_TEXT_CLS + '">',
         '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-          '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
           '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
         '</div>',
       '</div>',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-      '<div class="fancy-clearfix"></div>'
+      '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
     ],
     /*
      * @constructor
      */
     constructor: function () {
-      var me = this;
-
-      me.tags = me.tags || [];
-      me.Super('const', arguments);
+      this.tags = this.tags || [];
+      this.Super('const', arguments);
     },
     /*
      *
@@ -108,7 +118,7 @@
     loadListData: function () {
       var me = this;
 
-      if (!Fancy.isObject(me.data)) {
+      if (!F.isObject(me.data)) {
         return false;
       }
 
@@ -123,7 +133,7 @@
         readerRootProperty = proxy.reader.root;
       }
 
-      Fancy.Ajax({
+      F.Ajax({
         url: proxy.url,
         params: proxy.params || {},
         method: proxy.method || 'GET',
@@ -159,11 +169,11 @@
      * @return {Array}
      */
     configData: function (data) {
-      if (Fancy.isObject(data) || data.length === 0) {
+      if (F.isObject(data) || data.length === 0) {
         return data;
       }
 
-      if (!Fancy.isObject(data[0])) {
+      if (!F.isObject(data[0])) {
         var _data = [],
           i = 0,
           iL = data.length;
@@ -238,7 +248,7 @@
     onKeyDown: function (e) {
       var me = this,
         keyCode = e.keyCode,
-        key = Fancy.key;
+        key = F.key;
 
       switch (keyCode) {
         case key.ESC:
@@ -326,7 +336,7 @@
         list = me.list;
 
       if (list.css('display') === 'none') {
-        Fancy.combo.Manager.add(this);
+        F.combo.Manager.add(this);
         
         me.showList();
       }
@@ -347,7 +357,7 @@
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
         xy = [p.left, p.top + el.$dom.height()],
-        docEl = Fancy.get(document),
+        docEl = F.get(document),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
@@ -362,7 +372,7 @@
         left: xy[0] + 'px',
         top: xy[1] + 'px',
         width: me.getListWidth(),
-        "z-index": 2000 + Fancy.zIndex++
+        "z-index": 2000 + F.zIndex++
       });
 
       var index;
@@ -421,7 +431,7 @@
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
         xy = [p.left, p.top + el.$dom.height()],
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       me.hideList();
 
@@ -435,7 +445,7 @@
         top: xy[1] + 'px',
         //width: el.width(),
         width: me.getListWidth(),
-        "z-index": 2000 + Fancy.zIndex++
+        "z-index": 2000 + F.zIndex++
       });
 
       if (!me.docSpy2) {
@@ -470,7 +480,7 @@
       me.list.css('display', 'none');
 
       if (me.docSpy) {
-        var docEl = Fancy.get(document);
+        var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -488,7 +498,7 @@
       me.aheadList.css('display', 'none');
 
       if (me.docSpy) {
-        var docEl = Fancy.get(document);
+        var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -497,9 +507,7 @@
      * @param {Object} e
      */
     onInputMouseDown: function (e) {
-      var me = this;
-
-      if (me.editable === false) {
+      if (this.editable === false) {
         e.preventDefault();
       }
     },
@@ -531,10 +539,9 @@
      * @param {Object} e
      */
     onListItemOver: function (e) {
-      var me = this,
-        li = Fancy.get(e.target);
+      var li = F.get(e.target);
 
-      li.addCls(me.focusedItemCls);
+      li.addCls(this.focusedItemCls);
     },
     /*
      *
@@ -547,12 +554,12 @@
      */
     onListItemClick: function (e) {
       var me = this,
-        li = Fancy.get(e.currentTarget),
+        li = F.get(e.currentTarget),
         value = li.attr('value'),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      if (Fancy.nojQuery && value === 0) {
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
@@ -597,7 +604,7 @@
         valueStr = '',
         index;
 
-      if(me.multiSelect && !Fancy.isArray(value)){
+      if(me.multiSelect && !F.isArray(value)){
         if(value === -1){
           value = [];
         }
@@ -606,12 +613,12 @@
         }
       }
 
-      if(Fancy.isArray(value) && me.multiSelect){
+      if(F.isArray(value) && me.multiSelect){
         var displayedValues = [];
 
         me.valuesIndex.removeAll();
 
-        Fancy.each(value, function(v, i){
+        F.each(value, function(v, i){
           var _index = me.getIndex(v);
 
           if(_index === -1){
@@ -683,7 +690,7 @@
       var me = this,
         index = -1;
 
-      Fancy.each(me.values, function(value, i){
+      F.each(me.values, function(value, i){
         if( value === v ){
           index = i;
         }
@@ -746,8 +753,8 @@
      */
     render: function () {
       var me = this,
-        renderTo = Fancy.get(me.renderTo || document.body).dom,
-        el = Fancy.get(document.createElement('div')),
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div')),
         value = me.value,
         index = -1;
 
@@ -757,7 +764,7 @@
         value = '';
       }
       else {
-        if(me.multiSelect && Fancy.isArray(me.data) && me.data.length > 0){
+        if(me.multiSelect && F.isArray(me.data) && me.data.length > 0){
           value = '';
 
           me.valuesIndex.each(function(i, v){
@@ -785,7 +792,11 @@
       }
 
       me.fire('beforerender');
-      el.addCls(me.cls, me.fieldCls);
+      el.addCls(
+        F.cls,
+        me.cls,
+        me.fieldCls
+      );
 
       var labelWidth = '';
 
@@ -849,7 +860,7 @@
      */
     renderList: function () {
       var me = this,
-        list = Fancy.get(document.createElement('div')),
+        list = F.get(document.createElement('div')),
         listHtml = [
           '<ul style="position: relative;">'
         ];
@@ -858,7 +869,7 @@
         me.list.destroy();
       }
 
-      Fancy.each(me.data, function (row, i) {
+      F.each(me.data, function (row, i) {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -871,7 +882,7 @@
           displayValue = '&nbsp;';
         }
         else if (me.listItemTpl) {
-          var listTpl = new Fancy.Template(me.listItemTpl);
+          var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
 
@@ -938,7 +949,7 @@
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        Fancy.each(inputValue, function (v, i) {
+        F.each(inputValue, function (v, i) {
           if(inputSelection.start <= i){
             return true;
           }
@@ -951,7 +962,7 @@
         inputValue = splitted[passedCommas];
       }
 
-      Fancy.each(me.data, function (item){
+      F.each(me.data, function (item){
         if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
           aheadData.push(item);
         }
@@ -982,10 +993,10 @@
         presented = true;
       }
       else {
-        list = Fancy.get(document.createElement('div'));
+        list = F.get(document.createElement('div'));
       }
 
-      Fancy.each(me.aheadData, function (row, i) {
+      F.each(me.aheadData, function (row, i) {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -1017,7 +1028,7 @@
       });
 
       if (presented === false) {
-        list.addClass('fancy fancy-combo-result-list');
+        list.addClass(F.cls, 'fancy-combo-result-list');
         document.body.appendChild(list.dom);
         me.aheadList = list;
 
@@ -1405,10 +1416,10 @@
         value = me.value;
 
       me.values = [];
-      me.valuesIndex = new Fancy.Collection();
+      me.valuesIndex = new F.Collection();
 
       if(me.value !== undefined && value !== null && value !== ''){
-        if(Fancy.isArray(value)){
+        if(F.isArray(value)){
           me.values = value;
           me.value = value[0];
         }
@@ -1416,7 +1427,7 @@
           me.values = [me.value];
         }
 
-        Fancy.each(me.values, function(value){
+        F.each(me.values, function(value){
           me.valuesIndex.add(me.getIndex(value), value);
         });
       }
@@ -1451,7 +1462,7 @@
         values = value.split(','),
         _values = [];
 
-      Fancy.each(values, function(v){
+      F.each(values, function(v){
         var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
           _value = me.getValueKey(displayValue);
 

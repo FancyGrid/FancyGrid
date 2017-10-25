@@ -218,9 +218,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} e
    */
   onInputMouseDown: function(e){
-    var me = this;
-
-    if(me.editable === false){
+    if(this.editable === false){
       e.preventDefault();
     }
   },
@@ -287,10 +285,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    *
    */
   initListItems: function(){
-    var me = this;
-
-    if(me.itemCheckBox){
-      me.renderListCheckBoxes();
+    if(this.itemCheckBox){
+      this.renderListCheckBoxes();
     }
   },
   /*
@@ -534,9 +530,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    *
    */
   clear: function(){
-    var me = this;
-
-    me.set(-1, false);
+    this.set(-1, false);
   },
   /*
    *
@@ -703,10 +697,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} e
    */
   onEsc: function(field, e){
-    var me = this;
-
-    me.hideList();
-    me.hideAheadList();
+    this.hideList();
+    this.hideAheadList();
   },
   /*
    * @param {Object} field

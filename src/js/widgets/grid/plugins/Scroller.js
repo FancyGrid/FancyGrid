@@ -3,6 +3,9 @@
  * @extends Fancy.Plugin
  */
 (function(){
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
@@ -15,10 +18,12 @@
   var BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
   var RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
   var BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
-  var HIDDEN_CLS = Fancy.HIDDEN_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
 
-  Fancy.define('Fancy.grid.plugin.Scroller', {
-    extend: Fancy.Plugin,
+  F.define('Fancy.grid.plugin.Scroller', {
+    extend: F.Plugin,
     ptype: 'grid.scroller',
     inWidgetName: 'scroller',
     rightKnobDown: false,
@@ -27,23 +32,22 @@
     minBottomKnobWidth: 35,
     cornerSize: 12,
     /*
+     * @private
+     */
+    scrollLeft: 0,
+    /*
      * @constructor
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      me.Super('const', arguments);
+      this.Super('const', arguments);
     },
     /*
      *
      */
     init: function () {
-      var me = this;
-
-      me.Super('init', arguments);
-
-      me.ons();
+      this.Super('init', arguments);
+      this.ons();
     },
     /*
      *
@@ -51,7 +55,7 @@
     ons: function () {
       var me = this,
         w = me.widget,
-        mouseWheelEventName = Fancy.getMouseWheelEventName();
+        mouseWheelEventName = F.getMouseWheelEventName();
 
       w.once('render', function () {
         me.render();
@@ -66,6 +70,8 @@
 
         if (w.nativeScroller) {
           w.body.el.on('scroll', me.onNativeScrollBody, me);
+          w.leftBody.el.on('scroll', me.onNativeScrollLeftBody, me);
+          w.rightBody.el.on('scroll', me.onNativeScrollRightBody, me);
         }
       });
 
@@ -82,8 +88,8 @@
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = Fancy.get(document),
-        mouseWheelEventName = Fancy.getMouseWheelEventName();
+        docEl = F.get(document),
+        mouseWheelEventName = F.getMouseWheelEventName();
 
       docEl.un('mouseup', me.onMouseUpDoc, me);
       docEl.un('mousemove', me.onMouseMoveDoc, me);
@@ -95,7 +101,7 @@
       me.scrollBottomEl.un('mousedown', me.onMouseDownBottomSpin, me);
       me.scrollRightEl.un('mousedown', me.onMouseDownRightSpin, me);
 
-      if (Fancy.isTouch) {
+      if (F.isTouch) {
         leftBody.el.un('touchstart', me.onBodyTouchStart, me);
         leftBody.el.un('touchmove', me.onBodyTouchMove, me);
 
@@ -114,7 +120,7 @@
     onGridInit: function () {
       var me = this,
         w = me.widget,
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       me.setScrollBars();
       docEl.on('mouseup', me.onMouseUpDoc, me);
@@ -136,8 +142,8 @@
       var me = this,
         w = me.widget,
         body = w.body,
-        rightScrollEl = Fancy.get(document.createElement('div')),
-        bottomScrollEl = Fancy.get(document.createElement('div')),
+        rightScrollEl = F.get(document.createElement('div')),
+        bottomScrollEl = F.get(document.createElement('div')),
         right = 1;
 
       if (w.nativeScroller) {
@@ -157,10 +163,10 @@
           '<div class="' + BOTTOM_SCROLL_INNER_CLS + '"></div>'
         ].join(" "));
 
-        Fancy.get(body.el.append(rightScrollEl.dom));
+        F.get(body.el.append(rightScrollEl.dom));
         me.scrollRightEl = body.el.select('.fancy-scroll-right');
 
-        Fancy.get(body.el.append(bottomScrollEl.dom));
+        F.get(body.el.append(bottomScrollEl.dom));
         me.scrollBottomEl = body.el.select('.fancy-scroll-bottom');
       }
 
@@ -172,7 +178,7 @@
     onMouseWheel: function (e) {
       var me = this,
         w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e);
+        delta = F.getWheelDelta(e.originalEvent || e);
 
       if (me.isRightScrollable() == false) {
         return;
@@ -218,7 +224,7 @@
         me.initBottomScroll();
       }
 
-      if (Fancy.isTouch) {
+      if (F.isTouch) {
         me.initTouch();
       }
     },
@@ -231,7 +237,7 @@
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       leftBody.el.on('touchstart', me.onBodyTouchStart, me);
       leftBody.el.on('touchmove', me.onBodyTouchMove, me);
@@ -270,9 +276,7 @@
      *
      */
     onBodyTouchEnd: function () {
-      var me = this;
-
-      me.onMouseUpDoc();
+      this.onMouseUpDoc();
     },
     /*
      * @param {Object} e
@@ -319,7 +323,8 @@
     onMouseDownRightSpin: function (e) {
       var me = this;
 
-      if (Fancy.isTouch) {
+
+      if (F.isTouch) {
         return;
       }
 
@@ -383,7 +388,7 @@
         marginLeft;
 
       if (me.rightKnobDown) {
-        if (Fancy.isTouch) {
+        if (F.isTouch) {
           deltaY = me.mouseDownXY.y - y;
           marginTop = deltaY + me.rightKnobTop;
         }
@@ -411,7 +416,7 @@
       }
 
       if (me.bottomKnobDown) {
-        if (Fancy.isTouch) {
+        if (F.isTouch) {
           deltaX = me.mouseDownXY.x - x;
           deltaY = me.mouseDownXY.y - y;
           marginLeft = deltaX + me.bottomKnobLeft;
@@ -497,14 +502,13 @@
      *
      */
     isRightScrollable: function () {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
       if (w.nativeScroller) {
         return w.body.el.css('overflow-y') === 'scroll';
       }
 
-      return !me.scrollRightEl.hasCls(HIDDEN_CLS);
+      return !this.scrollRightEl.hasCls(HIDDEN_CLS);
     },
     /*
      *
@@ -707,28 +711,20 @@
      * @return {Number}
      */
     getScroll: function () {
-      var me = this,
-        w = me.widget;
-
-      return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('top')));
+      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
     },
     /*
      * @return {Number}
      */
     getBottomScroll: function () {
-      var me = this,
-        w = me.widget;
-
-      return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('left')));
+      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
     },
     /*
      *
      */
     update: function () {
-      var me = this;
-
-      me.setScrollBars();
-      me.checkScroll();
+      this.setScrollBars();
+      this.checkScroll();
     },
     /*
      *
@@ -740,9 +736,7 @@
      *
      */
     onColumnResize: function () {
-      var me = this;
-
-      me.setScrollBars();
+      this.setScrollBars();
     },
     /*
      *
@@ -768,7 +762,7 @@
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
-        cellEl = Fancy.get(cell),
+        cellEl = F.get(cell),
         columnEl = cellEl.parent(),
         rowIndex = Number(cellEl.attr('index')),
         columnIndex = Number(columnEl.attr('index')),
@@ -778,7 +772,7 @@
         bottomScroll = me.getBottomScroll(),
         bodyViewWidth = parseInt(w.body.el.css('width')),
         passedWidth = 0,
-        isCenterBody = columnEl.parent().parent().hasCls(w.centerCls);
+        isCenterBody = columnEl.parent().parent().hasCls(GRID_CENTER_CLS);
 
       if(w.nativeScroller){
         return;
@@ -833,27 +827,53 @@
         scrollTop = w.body.el.dom.scrollTop,
         scrollLeft = w.body.el.dom.scrollLeft;
 
-      if (w.header) {
+      if(w.header){
         w.header.scroll(-scrollLeft);
       }
 
-      if (w.leftBody) {
+      if (w.leftBody){
         w.leftBody.el.dom.scrollTop = scrollTop;
       }
 
-      if (w.rightBody) {
+      if (w.rightBody){
         w.rightBody.el.dom.scrollTop = scrollTop;
+      }
+
+      if(w.leftColumns.length && w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        w.body.el.dom.scrollTop = w.leftBody.el.dom.scrollTop;
+      }
+      else if(w.rightColumns.length && w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        w.body.el.dom.scrollTop = w.rightBody.el.dom.scrollTop;
       }
 
       w.fire('nativescroll');
     },
     /*
+     *
+     */
+    onNativeScrollLeftBody: function(){
+      var w = this.widget;
+
+      if(w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        this.onNativeScrollBody();
+      }
+    },
+    /*
+     *
+     */
+    onNativeScrollRightBody: function(){
+      var w = this.widget;
+
+      if(w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        this.onNativeScrollBody();
+      }
+    },
+    /*
      * @param {Object} e
      */
     onMouseWheelLeft: function (e) {
-      var me = this,
-        w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e),
+      var w = this.widget,
+        delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
       w.leftBody.el.dom.scrollTop -= scrollTop;
@@ -864,9 +884,8 @@
      * @param {Object} e
      */
     onMouseWheelRight: function (e) {
-      var me = this,
-        w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e),
+      var w = this.widget,
+        delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
       w.leftBody.el.dom.scrollTop -= scrollTop;
@@ -877,31 +896,22 @@
      *
      */
     onLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     },
     /*
      *
      */
     onRightLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     },
     /*
      *
      */
     onUnLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     }
   });
 

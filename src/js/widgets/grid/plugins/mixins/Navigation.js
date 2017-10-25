@@ -7,10 +7,8 @@ Fancy.Mixin('Fancy.grid.selection.mixin.Navigation', {
    *
    */
   initNavigation: function(){
-    var me = this;
-
-    me.addEvents('up', 'down', 'left', 'right');
-    me.onsNav();
+    this.addEvents('up', 'down', 'left', 'right');
+    this.onsNav();
   },
   /*
    *

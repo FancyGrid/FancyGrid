@@ -179,22 +179,18 @@ Fancy.Element.prototype = {
    * @param {String} newCls
    */
   replaceClass: function(oldCls, newCls){
-    var me = this;
-
-    me.$dom.removeClass(oldCls);
-    me.$dom.addClass(newCls);
+    this.$dom.removeClass(oldCls);
+    this.$dom.addClass(newCls);
   },
   /*
    * @param {String} tag
    * @return {Fancy.Element}
    */
   getByTag: function(tag){
-    var me = this;
-    return Fancy.get(me.$dom.find(tag)[0]);
+    return Fancy.get(this.$dom.find(tag)[0]);
   },
   getByClass: function(cls){
-    var me = this;
-    return me.$dom.find('.'+cls)[0];
+    return this.$dom.find('.'+cls)[0];
   },
   /*
    * @param {String} cls
@@ -206,16 +202,14 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   addCls: function(cls){
-    var me = this;
-
-    me.$dom.addClass(cls);
+    this.$dom.addClass(cls);
 
     if(arguments.length > 1){
       var i = 1,
         iL = arguments.length;
 
       for (;i<iL;i++){
-        me.addClass(arguments[i]);
+        this.addClass(arguments[i]);
       }
     }
   },
@@ -223,51 +217,39 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   removeClass: function(cls){
-    var me = this;
-
-    me.$dom.removeClass(cls);
+    this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    */
   removeCls: function(cls){
-    var me = this;
-
-    me.$dom.removeClass(cls);
+    this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
   hasClass: function(cls){
-    var me = this;
-
-    return me.$dom.hasClass(cls);
+    return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
   hasCls: function(cls){
-    var me = this;
-
-    return me.$dom.hasClass(cls);
+    return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    */
   toggleClass: function(cls){
-    var me = this;
-
-    me.$dom.toggleClass(cls);
+    this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} cls
    */
   toggleCls: function(cls){
-    var me = this;
-
-    me.$dom.toggleClass(cls);
+    this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} selector
@@ -295,7 +277,8 @@ Fancy.Element.prototype = {
         remove: function(){},
         css: function(){},
         each: function(){},
-        last: function(){}
+        last: function(){},
+        attr: function () {}
       };
     }
 

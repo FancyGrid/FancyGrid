@@ -14,12 +14,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -116,10 +112,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Boolean} [fire]
    */
   clear: function(fire){
-    var me = this;
-
-    if(me.allowToggle){
-      Fancy.each(me.items, function (item){
+    if(this.allowToggle){
+      Fancy.each(this.items, function (item){
         item.setPressed(false, fire);
       });
     }

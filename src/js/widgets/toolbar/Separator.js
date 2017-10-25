@@ -2,26 +2,20 @@
  * @class Fancy.Separator
  */
 Fancy.define('Fancy.Separator', {
-  cls: 'fancy-separator',
+  cls: Fancy.SEPARATOR_CLS,
   /*
    * @constructor
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.init();
+    Fancy.apply(this, config);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.render();
+    this.render();
   },
   /*
    *

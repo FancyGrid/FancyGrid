@@ -91,9 +91,8 @@ within in FancyGrid self
 */
 
 var each = function(fn){
-  var me = this,
-    i = 0,
-    els = me.els,
+  var i = 0,
+    els = this.els,
     iL = els.length;
   
   for(;i<iL;i++){
@@ -102,7 +101,7 @@ var each = function(fn){
 };
 
 var remove = function(){
-  var me = this,    
+  var me = this,
     parent = me.parent(false);
   
   me.unAll();
@@ -242,10 +241,8 @@ El.prototype = {
     return me.hasClass(className) ? me.removeClass(className) : me.addClass(className);
   },
   show: function(){
-    var me = this;
-    
-    me.removeAttr('display');
-    me.removeAttr('opacity');
+    this.removeAttr('display');
+    this.removeAttr('opacity');
   },
   prop: function(name){
     this[0].getAttribute(name);

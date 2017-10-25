@@ -13,12 +13,8 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -59,8 +55,6 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
    * @param {*} value
    */
   set: function(value){
-    var me = this;
-
-    me.el.select('.fancy-field-text-value').item(0).update(value);
+    this.el.select('.fancy-field-text-value').item(0).update(value);
   }
 });

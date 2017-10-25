@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.13',
+  version: '1.6.14',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -20,6 +20,10 @@ var Fancy = {
  * @param {Object} from The primary source of the properties.
  */
 Fancy.apply = function(to, from){
+  if(from === undefined){
+    return;
+  }
+
   for(var p in from){
     to[p] = from[p];
   }
@@ -385,12 +389,52 @@ Fancy.apply(Fancy, {
   TOUCH_CLS: 'fancy-touch',
   HIDDEN_CLS: 'fancy-display-none',
   CLEARFIX_CLS: 'fancy-clearfix',
+  MODAL_CLS: 'fancy-modal',
+  /*
+   * Panel cls-s
+   */
+  PANEL_CLS: 'fancy-panel',
+  PANEL_BODY_CLS: 'fancy-panel-body',
+  PANEL_BODY_INNER_CLS: 'fancy-panel-body-inner',
+  PANEL_GRID_INSIDE_CLS: 'fancy-panel-grid-inside',
+  PANEL_SHADOW_CLS: 'fancy-panel-shadow',
+  PANEL_SUB_HEADER_CLS: 'fancy-panel-sub-header',
+  PANEL_SUB_HEADER_TEXT_CLS: 'fancy-panel-sub-header-text',
+  PANEL_HEADER_CLS: 'fancy-panel-header',
+  PANEL_HEADER_IMG_CLS: 'fancy-panel-header-img',
+  PANEL_HEADER_TEXT_CLS: 'fancy-panel-header-text',
+  PANEL_HEADER_TOOLS_CLS: 'fancy-panel-header-tools',
+  PANEL_TBAR_CLS: 'fancy-panel-tbar',
+  PANEL_BBAR_CLS: 'fancy-panel-bbar',
+  PANEL_SUB_TBAR_CLS: 'fancy-panel-sub-tbar',
+  PANEL_BUTTONS_CLS: 'fancy-panel-buttons',
+  PANEL_NOFRAME_CLS: 'fancy-panel-noframe',
+  PANEL_FOOTER_CLS: 'fancy-panel-footer',
+  PANEL_TAB_CLS: 'fancy-panel-tab',
+  PANEL_DRAGGABLE_CLS: 'fancy-panel-draggable',
+  /*
+   * Bar cls-s
+   */
+  BAR_CLS: 'fancy-bar',
+  BAR_TEXT_CLS: 'fancy-bar-text',
+  BAR_CONTAINER_CLS: 'fancy-bar-container',
+  BAR_BUTTON_CLS: 'fancy-bar-button',
+  BAR_SEG_BUTTON_CLS: 'fancy-bar-seg-button',
+  BAR_LEFT_SCROLLER_CLS: 'fancy-bar-left-scroller',
+  BAR_RIGHT_SCROLLER_CLS: 'fancy-bar-right-scroller',
   /*
    * Form cls-s
+   */
+  FORM_CLS: 'fancy-form',
+  FORM_BODY_CLS: 'fancy-form-body',
+  /*
+   * Field cls-s
    */
   FIELD_CLS: 'fancy-field',
   FIELD_LABEL_CLS: 'fancy-field-label',
   FIELD_EMPTY_CLS: 'fancy-field-empty',
+  FIELD_BLANK_ERR_CLS: 'fancy-field-blank-err',
+  FIELD_NOT_VALID_CLS: 'fancy-field-not-valid',
   FIELD_TEXT_CLS: 'fancy-field-text',
   FIELD_TEXT_INPUT_CLS: 'fancy-field-text-input',
   FIELD_ERROR_CLS: 'fancy-field-error',
@@ -399,25 +443,165 @@ Fancy.apply(Fancy, {
   FIELD_SPIN_DOWN_CLS: 'fancy-field-spin-down',
   FIELD_CHECKBOX_CLS: 'fancy-field-checkbox',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
+  FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
   FIELD_BUTTON_CLS: 'fancy-field-button',
+  FIELD_TAB_CLS: 'fancy-field-tab',
+  FIELD_COMBO_CLS: 'fancy-combo',
+  FIELD_SEARCH_CLS: 'fancy-field-search',
+  FIELD_SEARCH_LIST_CLS: 'fancy-field-search-list',
+  FIELD_SEARCH_PARAMS_LINK_CLS: 'fancy-field-search-params-link',
+  FIELD_SEARCH_PARAMED_CLS: 'fancy-field-search-paramed',
+  FIELD_SEARCH_PARAMED_EMPTY_CLS: 'fancy-field-search-paramed-empty',
+  FIELD_PICKER_BUTTON_CLS: 'fancy-field-picker-button',
+  FIELD_LABEL_ALIGN_TOP_CLS: 'fancy-field-label-align-top',
+  FIELD_LABEL_ALIGN_RIGHT_CLS: 'fancy-field-label-align-right',
+  FIELD_TEXTAREA_CLS: 'fancy-textarea',
+  FIELD_TEXTAREA_TEXT_CLS: 'fancy-textarea-text',
+  FIELD_TEXTAREA_TEXT_INPUT_CLS: 'fancy-textarea-text-input',
+  FIELD_RADIO_CLS: 'fancy-field-radio',
+  FIELD_RADIO_COLUMN_CLS: 'fancy-field-radio-column',
+  FIELD_RADIO_ON_CLS: 'fancy-field-radio-on',
+  FIELD_RADIO_INPUT_CLS: 'fancy-field-radio-input',
+  FIELD_TAB_ACTIVE_CLS: 'fancy-field-tab-active',
   /*
    * Grid cls-s
    */
   GRID_CLS: 'fancy-grid',
+  GRID_UNSELECTABLE_CLS: 'fancy-grid-unselectable',
+  GRID_EMPTY_CLS: 'fancy-grid-empty-text',
+  GRID_LEFT_EMPTY_CLS: 'fancy-grid-left-empty',
+  GRID_RIGHT_EMPTY_CLS: 'fancy-grid-right-empty',
+  GRID_CENTER_CLS: 'fancy-grid-center',
+  GRID_LEFT_CLS: 'fancy-grid-left',
+  GRID_RIGHT_CLS: 'fancy-grid-right',
+  GRID_RESIZER_LEFT_CLS: 'fancy-grid-resizer-left',
+  GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
+  //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
+  GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',
+  GRID_HEADER_CELL_CONTAINER_CLS: 'fancy-grid-header-cell-container',
+  GRID_HEADER_CELL_TEXT_CLS: 'fancy-grid-header-cell-text',
+  GRID_HEADER_CELL_DOUBLE_CLS: 'fancy-grid-header-cell-double',
+  GRID_HEADER_CELL_TRIPLE_CLS: 'fancy-grid-header-cell-triple',
+  GRID_HEADER_CELL_TRIGGER_CLS: 'fancy-grid-header-cell-trigger',
+  GRID_HEADER_CELL_TRIGGER_IMAGE_CLS: 'fancy-grid-header-cell-trigger-image',
+  GRID_HEADER_CELL_TRIGGER_DISABLED_CLS: 'fancy-grid-header-cell-trigger-disabled',
+  GRID_HEADER_CELL_GROUP_LEVEL_1_CLS: 'fancy-grid-header-cell-group-level-1',
+  GRID_HEADER_CELL_GROUP_LEVEL_2_CLS: 'fancy-grid-header-cell-group-level-2',
+  GRID_HEADER_CELL_SELECT_CLS: 'fancy-grid-header-cell-select',
+  GRID_HEADER_CELL_TRIGGER_UP_CLS: 'fancy-grid-header-cell-trigger-up',
+  GRID_HEADER_CELL_TRIGGER_DOWN_CLS: 'fancy-grid-header-cell-trigger-down',
+  GRID_HEADER_COLUMN_TRIGGERED_CLS: 'fancy-gridf-header-column-triggered',
+  GRID_HEADER_CELL_FILTER_CLS: 'fancy-grid-header-filter-cell',
+  GRID_HEADER_CELL_FILTER_FULL_CLS: 'fancy-grid-header-filter-cell-full',
+  GRID_HEADER_CELL_FILTER_SMALL_CLS: 'fancy-grid-header-filter-cell-small',
+  //grid cell
   GRID_CELL_CLS: 'fancy-grid-cell',
+  GRID_CELL_INNER_CLS: 'fancy-grid-cell-inner',
   GRID_CELL_OVER_CLS: 'fancy-grid-cell-over',
   GRID_CELL_SELECTED_CLS: 'fancy-grid-cell-selected',
+  GRID_CELL_EVEN_CLS: 'fancy-grid-cell-even',
+  GRID_CELL_WRAPPER_CLS: 'fancy-grid-cell-wrapper',
+  GRID_CELL_DIRTY_CLS: 'fancy-grid-cell-dirty',
+  GRID_CELL_DIRTY_EL_CLS: 'fancy-grid-cell-dirty-el',
+  GRID_PSEUDO_CELL_CLS: 'fancy-grid-pseudo-cell',
+  //grid column
   GRID_COLUMN_CLS: 'fancy-grid-column',
   GRID_COLUMN_OVER_CLS: 'fancy-grid-column-over',
   GRID_COLUMN_SELECT_CLS: 'fancy-grid-column-select',
   GRID_COLUMN_SELECTED_CLS: 'fancy-grid-column-selected',
+  GRID_COLUMN_ELLIPSIS_CLS: 'fancy-grid-column-ellipsis',
+  GRID_COLUMN_ORDER_CLS: 'fancy-grid-column-order',
+  GRID_COLUMN_TEXT_CLS: 'fancy-grid-column-text',
+  GRID_COLUMN_SORT_ASC: 'fancy-grid-column-sort-ASC',
+  GRID_COLUMN_SORT_DESC: 'fancy-grid-column-sort-DESC',
+  GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
+  GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
+  //grid spark column
+  GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
+  GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
+  GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS: 'fancy-grid-column-spark-progress-donut',
+  GRID_COLUMN_CHART_CIRCLE_CLS: 'fancy-grid-column-chart-circle',
+  GRID_COLUMN_GROSSLOSS_CLS: 'fancy-grid-column-grossloss',
+  GRID_COLUMN_PROGRESS_CLS: 'fancy-grid-column-progress',
+  GRID_COLUMN_PROGRESS_BAR_CLS: 'fancy-grid-column-progress-bar',
+  GRID_COLUMN_H_BAR_CLS: 'fancy-grid-column-h-bar',
+  GRID_COLUMN_ACTION_ITEM_CLS: 'fancy-grid-column-action-item',
+  //grid row
   GRID_ROW_OVER_CLS: 'fancy-grid-cell-over',
+  GRID_ROW_EDIT_CLS: 'fancy-grid-row-edit',
+  GRID_ROW_EDIT_BUTTONS_CLS: 'fancy-grid-row-edit-buttons',
+  GRID_ROW_EDIT_BUTTON_UPDATE_CLS: 'fancy-edit-row-button-update',
+  GRID_ROW_EDIT_BUTTON_CANCEL_CLS: 'fancy-edit-row-button-cancel',
+  GRID_ROW_GROUP_CLS: 'fancy-grid-group-row',
+  GRID_ROW_GROUP_INNER_CLS: 'fancy-grid-group-row-inner',
+  GRID_ROW_GROUP_COLLAPSED_CLS: 'fancy-grid-group-row-collapsed',
+  GRID_ROW_SUMMARY_CLS: 'fancy-grid-summary-row',
+  GRID_ROW_SUMMARY_CONTAINER_CLS: 'fancy-grid-summary-container',
+  GRID_ROW_SUMMARY_BOTTOM_CLS: 'fancy-grid-summary-row-bottom',
+  GRID_ROW_EXPAND_CLS: 'fancy-grid-expand-row',
+  GRID_ROW_EXPAND_OVER_CLS: 'fancy-grid-expand-row-over',
+  GRID_ROW_EXPAND_SELECTED_CLS: 'fancy-grid-expand-row-selected',
+  //grid body
+  GRID_BODY_CLS: 'fancy-grid-body',
   /*
-   * Panel cls-s
+   * Menu cls-S
    */
-  PANEL_HEADER_CLS: 'fancy-panel-header'
+  MENU_CLS: 'fancy-menu',
+  MENU_ITEM_CLS: 'fancy-menu-item',
+  MENU_ITEM_IMAGE_CLS: 'fancy-menu-item-image',
+  MENU_ITEM_TEXT_CLS: 'fancy-menu-item-text',
+  MENU_ITEM_ACTIVE_CLS: 'fancy-menu-item-active',
+  MENU_ITEM_RIGHT_IMAGE_CLS: 'fancy-menu-item-right-image',
+  MENU_ITEM_EXPAND_CLS: 'fancy-menu-item-expand',
+  /*
+   * Tab cls-s
+   */
+  TAB_WRAPPER_CLS: 'fancy-tab-wrapper',
+  TAB_ACTIVE_WRAPPER_CLS: 'fancy-active-tab-wrapper',
+  TAB_TBAR_CLS: 'fancy-toolbar-tab',
+  TAB_TBAR_ACTIVE_CLS: 'fancy-toolbar-tab-active',
+  /*
+   * Button cls-s
+   */
+  BUTTON_CLS: 'fancy-button',
+  BUTTON_DISABLED_CLS: 'fancy-button-disabled',
+  BUTTON_PRESSED_CLS: 'fancy-button-pressed',
+  BUTTON_IMAGE_CLS: 'fancy-button-image',
+  BUTTON_IMAGE_COLOR_CLS: 'fancy-button-image-color',
+  BUTTON_TEXT_CLS: 'fancy-button-text',
+  BUTTON_DROP_CLS: 'fancy-button-drop',
+  SEG_BUTTON_CLS: 'fancy-seg-button',
+  /*
+   * Tooltip cls-s
+   */
+  TOOLTIP_CLS: 'fancy-tooltip',
+  TOOLTIP_INNER_CLS: 'fancy-tooltip-inner',
+  /*
+   * Other cls-s
+   */
+  SEPARATOR_CLS: 'fancy-separator',
+  FOOTER_STATUS_CLS: 'fancy-footer-status',
+  STATUS_SOURCE_TEXT_CLS: 'fancy-status-source-text',
+  STATUS_SOURCE_LINK_CLS: 'fancy-status-source-link',
+  FOOTER_SOURCE_CLS: 'fancy-footer-source',
+  /*
+   * Picker cls-s
+   */
+  PICKER_MONTH_CELL_ACTIVE_CLS: 'fancy-month-picker-cell-active',
+  PICKER_MONTH_CLS: 'fancy-month-picker',
+  PICKER_BUTTON_BACK_CLS: 'fancy-picker-button-back',
+  PICKER_BUTTON_NEXT_CLS: 'fancy-picker-button-next',
+  PICKER_MONTH_ACTION_BUTTONS_CLS: 'fancy-month-picker-action-buttons',
+  PICKER_DATE_CLS: 'fancy-date-picker',
+  PICKER_DATE_CELL_TODAY_CLS: 'fancy-date-picker-cell-today',
+  PICKER_DATE_CELL_ACTIVE_CLS: 'fancy-date-picker-cell-active',
+  PICKER_DATE_CELL_OUT_RANGE_CLS: 'fancy-date-picker-cell-out-range',
+  PICKER_BUTTON_DATE_CLS: 'fancy-picker-button-date',
+  PICKER_BUTTON_DATE_WRAPPER_CLS: 'fancy-picker-button-date-wrapper',
+  PICKER_BUTTON_TODAY_CLS: 'fancy-picker-button-today',
+  PICKER_BUTTON_TODAY_WRAPPER_CLS: 'fancy-picker-button-today-wrapper'
 });
 
 (function(){

@@ -11,19 +11,15 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
+    this.Super('init', arguments);
 
-    me.Super('init', arguments);
-
-    me.ons();
+    this.ons();
   },
   /*
    *

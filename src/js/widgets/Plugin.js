@@ -7,31 +7,26 @@ Fancy.define('Fancy.Plugin', {
    * @constructor {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
-
-    me.init();
+    this.Super('const', arguments);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.initId();
-    me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
+    this.initId();
+    this.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
   },
   /*
    *
    */
   initTpl: function(){
-    var me = this;
+    var tpl = this.tpl;
 
-    if(!me.tpl){
+    if(!tpl){
       return;
     }
 
-    me.tpl = new Fancy.Template(me.tpl);
+    this.tpl = new Fancy.Template(tpl);
   }
 });

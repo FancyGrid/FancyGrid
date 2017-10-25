@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.13',
+  version: '1.6.14',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -20,6 +20,10 @@ var Fancy = {
  * @param {Object} from The primary source of the properties.
  */
 Fancy.apply = function(to, from){
+  if(from === undefined){
+    return;
+  }
+
   for(var p in from){
     to[p] = from[p];
   }
@@ -385,12 +389,52 @@ Fancy.apply(Fancy, {
   TOUCH_CLS: 'fancy-touch',
   HIDDEN_CLS: 'fancy-display-none',
   CLEARFIX_CLS: 'fancy-clearfix',
+  MODAL_CLS: 'fancy-modal',
+  /*
+   * Panel cls-s
+   */
+  PANEL_CLS: 'fancy-panel',
+  PANEL_BODY_CLS: 'fancy-panel-body',
+  PANEL_BODY_INNER_CLS: 'fancy-panel-body-inner',
+  PANEL_GRID_INSIDE_CLS: 'fancy-panel-grid-inside',
+  PANEL_SHADOW_CLS: 'fancy-panel-shadow',
+  PANEL_SUB_HEADER_CLS: 'fancy-panel-sub-header',
+  PANEL_SUB_HEADER_TEXT_CLS: 'fancy-panel-sub-header-text',
+  PANEL_HEADER_CLS: 'fancy-panel-header',
+  PANEL_HEADER_IMG_CLS: 'fancy-panel-header-img',
+  PANEL_HEADER_TEXT_CLS: 'fancy-panel-header-text',
+  PANEL_HEADER_TOOLS_CLS: 'fancy-panel-header-tools',
+  PANEL_TBAR_CLS: 'fancy-panel-tbar',
+  PANEL_BBAR_CLS: 'fancy-panel-bbar',
+  PANEL_SUB_TBAR_CLS: 'fancy-panel-sub-tbar',
+  PANEL_BUTTONS_CLS: 'fancy-panel-buttons',
+  PANEL_NOFRAME_CLS: 'fancy-panel-noframe',
+  PANEL_FOOTER_CLS: 'fancy-panel-footer',
+  PANEL_TAB_CLS: 'fancy-panel-tab',
+  PANEL_DRAGGABLE_CLS: 'fancy-panel-draggable',
+  /*
+   * Bar cls-s
+   */
+  BAR_CLS: 'fancy-bar',
+  BAR_TEXT_CLS: 'fancy-bar-text',
+  BAR_CONTAINER_CLS: 'fancy-bar-container',
+  BAR_BUTTON_CLS: 'fancy-bar-button',
+  BAR_SEG_BUTTON_CLS: 'fancy-bar-seg-button',
+  BAR_LEFT_SCROLLER_CLS: 'fancy-bar-left-scroller',
+  BAR_RIGHT_SCROLLER_CLS: 'fancy-bar-right-scroller',
   /*
    * Form cls-s
+   */
+  FORM_CLS: 'fancy-form',
+  FORM_BODY_CLS: 'fancy-form-body',
+  /*
+   * Field cls-s
    */
   FIELD_CLS: 'fancy-field',
   FIELD_LABEL_CLS: 'fancy-field-label',
   FIELD_EMPTY_CLS: 'fancy-field-empty',
+  FIELD_BLANK_ERR_CLS: 'fancy-field-blank-err',
+  FIELD_NOT_VALID_CLS: 'fancy-field-not-valid',
   FIELD_TEXT_CLS: 'fancy-field-text',
   FIELD_TEXT_INPUT_CLS: 'fancy-field-text-input',
   FIELD_ERROR_CLS: 'fancy-field-error',
@@ -399,25 +443,165 @@ Fancy.apply(Fancy, {
   FIELD_SPIN_DOWN_CLS: 'fancy-field-spin-down',
   FIELD_CHECKBOX_CLS: 'fancy-field-checkbox',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
+  FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
   FIELD_BUTTON_CLS: 'fancy-field-button',
+  FIELD_TAB_CLS: 'fancy-field-tab',
+  FIELD_COMBO_CLS: 'fancy-combo',
+  FIELD_SEARCH_CLS: 'fancy-field-search',
+  FIELD_SEARCH_LIST_CLS: 'fancy-field-search-list',
+  FIELD_SEARCH_PARAMS_LINK_CLS: 'fancy-field-search-params-link',
+  FIELD_SEARCH_PARAMED_CLS: 'fancy-field-search-paramed',
+  FIELD_SEARCH_PARAMED_EMPTY_CLS: 'fancy-field-search-paramed-empty',
+  FIELD_PICKER_BUTTON_CLS: 'fancy-field-picker-button',
+  FIELD_LABEL_ALIGN_TOP_CLS: 'fancy-field-label-align-top',
+  FIELD_LABEL_ALIGN_RIGHT_CLS: 'fancy-field-label-align-right',
+  FIELD_TEXTAREA_CLS: 'fancy-textarea',
+  FIELD_TEXTAREA_TEXT_CLS: 'fancy-textarea-text',
+  FIELD_TEXTAREA_TEXT_INPUT_CLS: 'fancy-textarea-text-input',
+  FIELD_RADIO_CLS: 'fancy-field-radio',
+  FIELD_RADIO_COLUMN_CLS: 'fancy-field-radio-column',
+  FIELD_RADIO_ON_CLS: 'fancy-field-radio-on',
+  FIELD_RADIO_INPUT_CLS: 'fancy-field-radio-input',
+  FIELD_TAB_ACTIVE_CLS: 'fancy-field-tab-active',
   /*
    * Grid cls-s
    */
   GRID_CLS: 'fancy-grid',
+  GRID_UNSELECTABLE_CLS: 'fancy-grid-unselectable',
+  GRID_EMPTY_CLS: 'fancy-grid-empty-text',
+  GRID_LEFT_EMPTY_CLS: 'fancy-grid-left-empty',
+  GRID_RIGHT_EMPTY_CLS: 'fancy-grid-right-empty',
+  GRID_CENTER_CLS: 'fancy-grid-center',
+  GRID_LEFT_CLS: 'fancy-grid-left',
+  GRID_RIGHT_CLS: 'fancy-grid-right',
+  GRID_RESIZER_LEFT_CLS: 'fancy-grid-resizer-left',
+  GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
+  //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
+  GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',
+  GRID_HEADER_CELL_CONTAINER_CLS: 'fancy-grid-header-cell-container',
+  GRID_HEADER_CELL_TEXT_CLS: 'fancy-grid-header-cell-text',
+  GRID_HEADER_CELL_DOUBLE_CLS: 'fancy-grid-header-cell-double',
+  GRID_HEADER_CELL_TRIPLE_CLS: 'fancy-grid-header-cell-triple',
+  GRID_HEADER_CELL_TRIGGER_CLS: 'fancy-grid-header-cell-trigger',
+  GRID_HEADER_CELL_TRIGGER_IMAGE_CLS: 'fancy-grid-header-cell-trigger-image',
+  GRID_HEADER_CELL_TRIGGER_DISABLED_CLS: 'fancy-grid-header-cell-trigger-disabled',
+  GRID_HEADER_CELL_GROUP_LEVEL_1_CLS: 'fancy-grid-header-cell-group-level-1',
+  GRID_HEADER_CELL_GROUP_LEVEL_2_CLS: 'fancy-grid-header-cell-group-level-2',
+  GRID_HEADER_CELL_SELECT_CLS: 'fancy-grid-header-cell-select',
+  GRID_HEADER_CELL_TRIGGER_UP_CLS: 'fancy-grid-header-cell-trigger-up',
+  GRID_HEADER_CELL_TRIGGER_DOWN_CLS: 'fancy-grid-header-cell-trigger-down',
+  GRID_HEADER_COLUMN_TRIGGERED_CLS: 'fancy-gridf-header-column-triggered',
+  GRID_HEADER_CELL_FILTER_CLS: 'fancy-grid-header-filter-cell',
+  GRID_HEADER_CELL_FILTER_FULL_CLS: 'fancy-grid-header-filter-cell-full',
+  GRID_HEADER_CELL_FILTER_SMALL_CLS: 'fancy-grid-header-filter-cell-small',
+  //grid cell
   GRID_CELL_CLS: 'fancy-grid-cell',
+  GRID_CELL_INNER_CLS: 'fancy-grid-cell-inner',
   GRID_CELL_OVER_CLS: 'fancy-grid-cell-over',
   GRID_CELL_SELECTED_CLS: 'fancy-grid-cell-selected',
+  GRID_CELL_EVEN_CLS: 'fancy-grid-cell-even',
+  GRID_CELL_WRAPPER_CLS: 'fancy-grid-cell-wrapper',
+  GRID_CELL_DIRTY_CLS: 'fancy-grid-cell-dirty',
+  GRID_CELL_DIRTY_EL_CLS: 'fancy-grid-cell-dirty-el',
+  GRID_PSEUDO_CELL_CLS: 'fancy-grid-pseudo-cell',
+  //grid column
   GRID_COLUMN_CLS: 'fancy-grid-column',
   GRID_COLUMN_OVER_CLS: 'fancy-grid-column-over',
   GRID_COLUMN_SELECT_CLS: 'fancy-grid-column-select',
   GRID_COLUMN_SELECTED_CLS: 'fancy-grid-column-selected',
+  GRID_COLUMN_ELLIPSIS_CLS: 'fancy-grid-column-ellipsis',
+  GRID_COLUMN_ORDER_CLS: 'fancy-grid-column-order',
+  GRID_COLUMN_TEXT_CLS: 'fancy-grid-column-text',
+  GRID_COLUMN_SORT_ASC: 'fancy-grid-column-sort-ASC',
+  GRID_COLUMN_SORT_DESC: 'fancy-grid-column-sort-DESC',
+  GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
+  GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
+  //grid spark column
+  GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
+  GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
+  GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS: 'fancy-grid-column-spark-progress-donut',
+  GRID_COLUMN_CHART_CIRCLE_CLS: 'fancy-grid-column-chart-circle',
+  GRID_COLUMN_GROSSLOSS_CLS: 'fancy-grid-column-grossloss',
+  GRID_COLUMN_PROGRESS_CLS: 'fancy-grid-column-progress',
+  GRID_COLUMN_PROGRESS_BAR_CLS: 'fancy-grid-column-progress-bar',
+  GRID_COLUMN_H_BAR_CLS: 'fancy-grid-column-h-bar',
+  GRID_COLUMN_ACTION_ITEM_CLS: 'fancy-grid-column-action-item',
+  //grid row
   GRID_ROW_OVER_CLS: 'fancy-grid-cell-over',
+  GRID_ROW_EDIT_CLS: 'fancy-grid-row-edit',
+  GRID_ROW_EDIT_BUTTONS_CLS: 'fancy-grid-row-edit-buttons',
+  GRID_ROW_EDIT_BUTTON_UPDATE_CLS: 'fancy-edit-row-button-update',
+  GRID_ROW_EDIT_BUTTON_CANCEL_CLS: 'fancy-edit-row-button-cancel',
+  GRID_ROW_GROUP_CLS: 'fancy-grid-group-row',
+  GRID_ROW_GROUP_INNER_CLS: 'fancy-grid-group-row-inner',
+  GRID_ROW_GROUP_COLLAPSED_CLS: 'fancy-grid-group-row-collapsed',
+  GRID_ROW_SUMMARY_CLS: 'fancy-grid-summary-row',
+  GRID_ROW_SUMMARY_CONTAINER_CLS: 'fancy-grid-summary-container',
+  GRID_ROW_SUMMARY_BOTTOM_CLS: 'fancy-grid-summary-row-bottom',
+  GRID_ROW_EXPAND_CLS: 'fancy-grid-expand-row',
+  GRID_ROW_EXPAND_OVER_CLS: 'fancy-grid-expand-row-over',
+  GRID_ROW_EXPAND_SELECTED_CLS: 'fancy-grid-expand-row-selected',
+  //grid body
+  GRID_BODY_CLS: 'fancy-grid-body',
   /*
-   * Panel cls-s
+   * Menu cls-S
    */
-  PANEL_HEADER_CLS: 'fancy-panel-header'
+  MENU_CLS: 'fancy-menu',
+  MENU_ITEM_CLS: 'fancy-menu-item',
+  MENU_ITEM_IMAGE_CLS: 'fancy-menu-item-image',
+  MENU_ITEM_TEXT_CLS: 'fancy-menu-item-text',
+  MENU_ITEM_ACTIVE_CLS: 'fancy-menu-item-active',
+  MENU_ITEM_RIGHT_IMAGE_CLS: 'fancy-menu-item-right-image',
+  MENU_ITEM_EXPAND_CLS: 'fancy-menu-item-expand',
+  /*
+   * Tab cls-s
+   */
+  TAB_WRAPPER_CLS: 'fancy-tab-wrapper',
+  TAB_ACTIVE_WRAPPER_CLS: 'fancy-active-tab-wrapper',
+  TAB_TBAR_CLS: 'fancy-toolbar-tab',
+  TAB_TBAR_ACTIVE_CLS: 'fancy-toolbar-tab-active',
+  /*
+   * Button cls-s
+   */
+  BUTTON_CLS: 'fancy-button',
+  BUTTON_DISABLED_CLS: 'fancy-button-disabled',
+  BUTTON_PRESSED_CLS: 'fancy-button-pressed',
+  BUTTON_IMAGE_CLS: 'fancy-button-image',
+  BUTTON_IMAGE_COLOR_CLS: 'fancy-button-image-color',
+  BUTTON_TEXT_CLS: 'fancy-button-text',
+  BUTTON_DROP_CLS: 'fancy-button-drop',
+  SEG_BUTTON_CLS: 'fancy-seg-button',
+  /*
+   * Tooltip cls-s
+   */
+  TOOLTIP_CLS: 'fancy-tooltip',
+  TOOLTIP_INNER_CLS: 'fancy-tooltip-inner',
+  /*
+   * Other cls-s
+   */
+  SEPARATOR_CLS: 'fancy-separator',
+  FOOTER_STATUS_CLS: 'fancy-footer-status',
+  STATUS_SOURCE_TEXT_CLS: 'fancy-status-source-text',
+  STATUS_SOURCE_LINK_CLS: 'fancy-status-source-link',
+  FOOTER_SOURCE_CLS: 'fancy-footer-source',
+  /*
+   * Picker cls-s
+   */
+  PICKER_MONTH_CELL_ACTIVE_CLS: 'fancy-month-picker-cell-active',
+  PICKER_MONTH_CLS: 'fancy-month-picker',
+  PICKER_BUTTON_BACK_CLS: 'fancy-picker-button-back',
+  PICKER_BUTTON_NEXT_CLS: 'fancy-picker-button-next',
+  PICKER_MONTH_ACTION_BUTTONS_CLS: 'fancy-month-picker-action-buttons',
+  PICKER_DATE_CLS: 'fancy-date-picker',
+  PICKER_DATE_CELL_TODAY_CLS: 'fancy-date-picker-cell-today',
+  PICKER_DATE_CELL_ACTIVE_CLS: 'fancy-date-picker-cell-active',
+  PICKER_DATE_CELL_OUT_RANGE_CLS: 'fancy-date-picker-cell-out-range',
+  PICKER_BUTTON_DATE_CLS: 'fancy-picker-button-date',
+  PICKER_BUTTON_DATE_WRAPPER_CLS: 'fancy-picker-button-date-wrapper',
+  PICKER_BUTTON_TODAY_CLS: 'fancy-picker-button-today',
+  PICKER_BUTTON_TODAY_WRAPPER_CLS: 'fancy-picker-button-today-wrapper'
 });
 
 (function(){
@@ -1058,9 +1242,7 @@ Fancy.Collection.prototype = {
    * @return {*}
    */
   get: function(key){
-    var me = this;
-
-    return me.map[key];
+    return this.map[key];
   },
   /*
    *
@@ -1100,9 +1282,7 @@ Fancy.Template.prototype = {
    * @param {Array} values
    */
   getHTML: function(values){
-    var me = this;
-
-    return me.compiled(values);
+    return this.compiled(values);
   },
   /*
    * @return {Fancy.Template}
@@ -1610,10 +1790,8 @@ Fancy.define('Fancy.Data', {
    * @param {*} value
    */
   add: function(key, value){
-    var me = this;
-
-    me.map[key] = value;
-    me.length++;
+    this.map[key] = value;
+    this.length++;
   },
   /*
    * @param {String|Number} key
@@ -1726,8 +1904,7 @@ Fancy.define('Fancy.PluginManager', {
    * @constructor
    */
   constructor: function(){
-    var me = this;
-    me.ptypes = new Fancy.Data();
+    this.ptypes = new Fancy.Data();
   },
   /*
    * @param {String} ptype
@@ -1764,79 +1941,85 @@ Fancy.getPluginByType = function(ptype){
  * @class Fancy.WidgetManager
  * @singleton
  */
-Fancy.define('Fancy.WidgetManager', {
-  singleton: true,
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.wtypes = new Fancy.Data();
-    me.widgets = new Fancy.Data();
-  },
+  F.define('Fancy.WidgetManager', {
+    singleton: true,
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.wtypes = new F.Data();
+      this.widgets = new F.Data();
+    },
+    /*
+     * @param {String} wtype
+     * @param {Object} widget
+     */
+    addWidgetType: function (wtype, widget) {
+      widget.prototype.wtype = wtype;
+      this.wtypes.add(wtype, widget);
+    },
+    /*
+     * @param {String} wtype
+     * @return {Object}
+     */
+    getWidgetClassByType: function (wtype) {
+      return this.wtypes.get(wtype);
+    },
+    /*
+     * @param {String} id
+     * @param {Object} widget
+     */
+    addWidget: function (id, widget) {
+      this.widgets.add(id, widget);
+    },
+    /*
+     * @param {String} id
+     * @return {Object}
+     */
+    getWidget: function (id) {
+      return this.widgets.get(id);
+    }
+  });
+
+  var W = F.WidgetManager;
+
   /*
    * @param {String} wtype
    * @param {Object} widget
    */
-  addWidgetType: function(wtype, widget){
-    widget.prototype.wtype = wtype;
-    this.wtypes.add(wtype, widget);
-  },
+  F.addWidgetType = function (wtype, widget) {
+    W.addWidgetType(wtype, widget);
+  };
+
   /*
    * @param {String} wtype
    * @return {Object}
    */
-  getWidgetClassByType: function(wtype){
-    return this.wtypes.get(wtype);
-  },
+  F.getWidgetClassByType = function (wtype) {
+    return W.getWidgetClassByType(wtype);
+  };
+
   /*
    * @param {String} id
    * @param {Object} widget
    */
-  addWidget: function(id, widget){
-    this.widgets.add(id, widget);
-  },
+  F.addWidget = function (id, widget) {
+    W.addWidget(id, widget);
+  };
+
   /*
    * @param {String} id
-   * @return {Object}
+   * @return {Object} widget
    */
-  getWidget: function(id){
-    return this.widgets.get(id);
-  }
-});
+  F.getWidget = function (id) {
+    return W.getWidget(id);
+  };
 
-/*
- * @param {String} wtype
- * @param {Object} widget
- */
-Fancy.addWidgetType = function(wtype, widget){
-  Fancy.WidgetManager.addWidgetType(wtype, widget);
-};
-
-/*
- * @param {String} wtype
- * @return {Object}
- */
-Fancy.getWidgetClassByType = function(wtype){
-  return Fancy.WidgetManager.getWidgetClassByType(wtype);
-};
-
-/*
- * @param {String} id
- * @param {Object} widget
- */
-Fancy.addWidget = function(id, widget){
-  Fancy.WidgetManager.addWidget(id, widget);
-};
-
-/*
- * @param {String} id
- * @return {Object} widget
- */
-Fancy.getWidget = function(id){
-  return Fancy.WidgetManager.getWidget(id);
-};
+})();
 (function(){
 var seedFn = 0,
   fns = {};
@@ -2102,18 +2285,14 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
      * @constructor
      */
     constructor: function(){
-      var me = this;
-
-      me.Super('const', arguments);
-      me.init();
+      this.Super('const', arguments);
+      this.init();
     },
     /*
      *
      */
     init: function(){
-      var me = this;
-
-      me.addEvents('loaded');
+      this.addEvents('loaded');
     }
   });
 
@@ -2277,6 +2456,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       item = new model(o),
       index = me.addIndex;
 
+    me.fire('beforeinsert');
+
     delete me.addIndex;
     item.$index = index;
     me.data.splice(index, 0, item);
@@ -2369,19 +2550,15 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
    *
    */
   onDirtyRemove: function(store, id, record){
-    var me = this;
-
-    me.removed[id] = record.data;
-    me.removed.length++;
+    this.removed[id] = record.data;
+    this.removed.length++;
   },
   /*
    *
    */
   onDirtyInsert: function(store, o){
-    var me = this;
-
-    me.inserted[o.id] = o;
-    me.inserted.length++;
+    this.inserted[o.id] = o;
+    this.inserted.length++;
   }
 });
 /*
@@ -2454,7 +2631,7 @@ Fancy.define('Fancy.Store', {
       'beforesort', 'sort',
       'beforeload', 'load',
       'filter',
-      'insert',
+      'beforeinsert', 'insert',
       'servererror', 'serversuccess'
     );
     me.initId();
@@ -3341,22 +3518,18 @@ Fancy.Element.prototype = {
    * @param {String} newCls
    */
   replaceClass: function(oldCls, newCls){
-    var me = this;
-
-    me.$dom.removeClass(oldCls);
-    me.$dom.addClass(newCls);
+    this.$dom.removeClass(oldCls);
+    this.$dom.addClass(newCls);
   },
   /*
    * @param {String} tag
    * @return {Fancy.Element}
    */
   getByTag: function(tag){
-    var me = this;
-    return Fancy.get(me.$dom.find(tag)[0]);
+    return Fancy.get(this.$dom.find(tag)[0]);
   },
   getByClass: function(cls){
-    var me = this;
-    return me.$dom.find('.'+cls)[0];
+    return this.$dom.find('.'+cls)[0];
   },
   /*
    * @param {String} cls
@@ -3368,16 +3541,14 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   addCls: function(cls){
-    var me = this;
-
-    me.$dom.addClass(cls);
+    this.$dom.addClass(cls);
 
     if(arguments.length > 1){
       var i = 1,
         iL = arguments.length;
 
       for (;i<iL;i++){
-        me.addClass(arguments[i]);
+        this.addClass(arguments[i]);
       }
     }
   },
@@ -3385,51 +3556,39 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   removeClass: function(cls){
-    var me = this;
-
-    me.$dom.removeClass(cls);
+    this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    */
   removeCls: function(cls){
-    var me = this;
-
-    me.$dom.removeClass(cls);
+    this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
   hasClass: function(cls){
-    var me = this;
-
-    return me.$dom.hasClass(cls);
+    return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
   hasCls: function(cls){
-    var me = this;
-
-    return me.$dom.hasClass(cls);
+    return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    */
   toggleClass: function(cls){
-    var me = this;
-
-    me.$dom.toggleClass(cls);
+    this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} cls
    */
   toggleCls: function(cls){
-    var me = this;
-
-    me.$dom.toggleClass(cls);
+    this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} selector
@@ -3457,7 +3616,8 @@ Fancy.Element.prototype = {
         remove: function(){},
         css: function(){},
         each: function(){},
-        last: function(){}
+        last: function(){},
+        attr: function () {}
       };
     }
 
@@ -4258,21 +4418,15 @@ Fancy.define('Fancy.DD', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-    
-    me.Super('const', arguments);    
-
-    me.init();
+    this.Super('const', arguments);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-    
-    me.addEvents();
-    
-    me.els = {};
+    this.addEvents();
+    this.els = {};
   },
   /*
    * @param {Object} o
@@ -4318,10 +4472,9 @@ Fancy.define('Fancy.DD', {
    *
    */
   onMouseUp: function(){
-    var me = this,
-      doc = Fancy.get(document);
+    var doc = Fancy.get(document);
 
-    doc.un('mousemove', me.onMouseMove, me);
+    doc.un('mousemove', this.onMouseMove, this);
   },
   /*
    * @param {Object} e
@@ -4354,7 +4507,7 @@ Fancy.define('Fancy.Widget', {
   constructor: function(config){
     var me = this;
 
-    Fancy.applyConfig(me, config || {});
+    Fancy.applyConfig(me, config);
 
     me.preInitControls();
     me.Super('const', arguments);
@@ -4600,44 +4753,52 @@ Fancy.define('Fancy.Plugin', {
    * @constructor {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
-
-    me.init();
+    this.Super('const', arguments);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.initId();
-    me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
+    this.initId();
+    this.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
   },
   /*
    *
    */
   initTpl: function(){
-    var me = this;
+    var tpl = this.tpl;
 
-    if(!me.tpl){
+    if(!tpl){
       return;
     }
 
-    me.tpl = new Fancy.Template(me.tpl);
+    this.tpl = new Fancy.Template(tpl);
   }
 });
 
 (function() {
   var toggleGroups = {};
 
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var GRID_CLS = F.GRID_CLS;
+  var BUTTON_CLS = F.BUTTON_CLS;
+  var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
+  var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
+  var BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
+  var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
+  var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
+  var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+
   /**
    * @class Fancy.Button
    * @extends Fancy.Widget
    */
-  Fancy.define('Fancy.Button', {
-    extend: Fancy.Widget,
+  F.define('Fancy.Button', {
+    extend: F.Widget,
     minWidth: 30,
     /*
      * @constructor
@@ -4692,24 +4853,24 @@ Fancy.define('Fancy.Plugin', {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    widgetCls: 'fancy-button',
+    widgetCls: BUTTON_CLS,
     cls: '',
     extraCls: '',
-    disabledCls: 'fancy-button-disabled',
-    pressedCls: 'fancy-button-pressed',
-    buttonImageCls: 'fancy-button-image',
-    buttonImageColorCls: 'fancy-button-image-color',
-    textCls: 'fancy-button-text',
-    dropCls: 'fancy-button-drop',
+    disabledCls: BUTTON_DISABLED_CLS,
+    pressedCls: BUTTON_PRESSED_CLS,
+    buttonImageCls: BUTTON_IMAGE_CLS,
+    buttonImageColorCls: BUTTON_IMAGE_COLOR_CLS,
+    textCls: BUTTON_TEXT_CLS,
+    dropCls: BUTTON_DROP_CLS,
     text: '',
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
     pressed: false,
     tpl: [
-      '<div class="{buttonImageCls}"></div>',
-      '<a class="{textCls}">{text}</a>',
-      '<div class="{dropCls}" style="{dropDisplay}"></div>'
+      '<div class="' + BUTTON_IMAGE_CLS + '"></div>',
+      '<a class="' + BUTTON_TEXT_CLS + '">{text}</a>',
+      '<div class="' + BUTTON_DROP_CLS + '" style="{dropDisplay}"></div>'
     ],
     /*
      *
@@ -4717,7 +4878,7 @@ Fancy.define('Fancy.Plugin', {
     render: function(){
       var me = this,
         renderTo,
-        el = Fancy.get(document.createElement('div')),
+        el = F.get(document.createElement('div')),
         width = 0;
 
       me.fire('beforerender');
@@ -4726,7 +4887,7 @@ Fancy.define('Fancy.Plugin', {
         me.renderWrapper();
       }
 
-      renderTo = Fancy.get(me.renderTo || document.body).dom;
+      renderTo = F.get(me.renderTo || document.body).dom;
 
       if(me.width){
         width = me.width;
@@ -4738,7 +4899,7 @@ Fancy.define('Fancy.Plugin', {
       }
 
       if(me.imageColor){
-        me.imageCls = me.buttonImageColorCls;
+        me.imageCls = BUTTON_IMAGE_COLOR_CLS;
       }
 
       if(width < me.minWidth){
@@ -4755,14 +4916,14 @@ Fancy.define('Fancy.Plugin', {
       }
 
       el.addCls(
-        Fancy.cls,
+        F.cls,
         me.widgetCls,
         me.cls,
         me.extraCls
       );
 
       if (me.disabled) {
-        el.addCls(me.disabledCls);
+        el.addCls(BUTTON_DISABLED_CLS);
       }
 
       el.css({
@@ -4777,24 +4938,21 @@ Fancy.define('Fancy.Plugin', {
       el.css(me.style || {});
 
       el.update(me.tpl.getHTML({
-        text: me.text || '',
-        buttonImageCls: me.buttonImageCls,
-        textCls: me.textCls,
-        dropCls: me.dropCls
+        text: me.text || ''
       }));
 
       if(me.imageCls){
-        var imageEl = el.select('.' + me.buttonImageCls);
+        var imageEl = el.select('.' + BUTTON_IMAGE_CLS);
         if(me.imageColor){
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
-        if(Fancy.isString(me.imageCls)){
+        if(F.isString(me.imageCls)){
           imageEl.addCls(me.imageCls);
         }
       }
 
-      me.el = Fancy.get(renderTo.appendChild(el.dom));
+      me.el = F.get(renderTo.appendChild(el.dom));
 
       if (me.disabled) {
         me.disable();
@@ -4817,13 +4975,13 @@ Fancy.define('Fancy.Plugin', {
     renderWrapper: function(){
       var me = this,
         wrapper = me.wrapper,
-        renderTo = Fancy.get(me.renderTo || document.body).dom,
-        el = Fancy.get(document.createElement('div'));
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div'));
 
       el.css(wrapper.style || {});
       el.addCls(wrapper.cls || '');
 
-      me.wrapper = Fancy.get(renderTo.appendChild(el.dom));
+      me.wrapper = F.get(renderTo.appendChild(el.dom));
 
       me.renderTo = me.wrapper.dom;
     },
@@ -4831,9 +4989,7 @@ Fancy.define('Fancy.Plugin', {
      *
      */
     initToggle: function(){
-      var me = this;
-
-      if (!me.enableToggle) {
+      if (!this.enableToggle) {
         return false;
       }
     },
@@ -4841,11 +4997,10 @@ Fancy.define('Fancy.Plugin', {
      * @param {Boolean} value
      */
     setPressed: function(value, fire){
-      var me = this,
-        pressedCls = me.pressedCls;
+      var me = this;
 
       if (value) {
-        me.addCls(pressedCls);
+        me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
         if(me.toggleGroup){
@@ -4858,7 +5013,7 @@ Fancy.define('Fancy.Plugin', {
         }
       }
       else {
-        me.removeCls(pressedCls);
+        me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
       }
 
@@ -4887,7 +5042,7 @@ Fancy.define('Fancy.Plugin', {
 
       if(me.disabled !== true){
         if(handler){
-          if(Fancy.isString(handler)){
+          if(F.isString(handler)){
             handler = me.getHandler(handler);
           }
 
@@ -4914,7 +5069,7 @@ Fancy.define('Fancy.Plugin', {
      */
     getHandler: function(name){
       var me = this,
-        grid = Fancy.getWidget(me.el.parent().parent().select('.' + Fancy.GRID_CLS).attr('id'));
+        grid = F.getWidget(me.el.parent().parent().select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -4924,17 +5079,13 @@ Fancy.define('Fancy.Plugin', {
      *
      */
     onMouseDown: function(){
-      var me = this;
-
-      me.fire('mousedown');
+      this.fire('mousedown');
     },
     /*
      *
      */
     onMouseUp: function(){
-      var me = this;
-
-      me.fire('mouseup');
+      this.fire('mouseup');
     },
     /*
      * @param {Object} e
@@ -4958,7 +5109,7 @@ Fancy.define('Fancy.Plugin', {
         me.tooltip.destroy();
       }
 
-      me.tooltip = new Fancy.ToolTip({
+      me.tooltip = new F.ToolTip({
         text: me.tip
       });
 
@@ -4987,25 +5138,21 @@ Fancy.define('Fancy.Plugin', {
 
       me.css('width', ((parseInt(el.css('font-size')) + 2 ) * text.length) + parseInt(me.css('padding-right')) * 2 + 2  );
 
-      el.select('.fancy-button-text').update(text);
+      el.select('.' + BUTTON_TEXT_CLS).update(text);
     },
     /*
      *
      */
     disable: function(){
-      var me = this;
-
-      me.disabled = true;
-      me.addCls(me.disabledCls);
+      this.disabled = true;
+      this.addCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
     enable: function(){
-      var me = this;
-
-      me.disabled = false;
-      me.removeCls(me.disabledCls);
+      this.disabled = false;
+      this.removeCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
@@ -5030,11 +5177,8 @@ Fancy.define('Fancy.SegButton', {
    * @param {Object} scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.scope = scope;
-
-    me.Super('const', arguments);
+    this.scope = scope;
+    this.Super('const', arguments);
   },
   /*
    *
@@ -5052,7 +5196,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  widgetCls: 'fancy-seg-button',
+  widgetCls: Fancy.SEG_BUTTON_CLS,
   cls: '',
   extraCls: '',
   text: '',
@@ -5186,152 +5330,158 @@ Fancy.define('Fancy.toolbar.Tab', {
    * @param scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-  
-    me.Super('init', arguments);
+    this.Super('init', arguments);
   },
-  cls: 'fancy fancy-button fancy-toolbar-tab',
+  cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
    *
    */
   render: function(){
-    var me = this;
-
-    me.Super('render', arguments);
+    this.Super('render', arguments);
   }
 });
 /*
  * @mixin Fancy.panel.mixin.PrepareConfig
  */
-Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
-  /*
-   * @param {Object} config
-   * @param {Object} originalConfig
-   * @return {Object}
-   */
-  prepareConfigTheme: function(config, originalConfig){
-    var themeName = config.theme || originalConfig.theme,
-      themeConfig = Fancy.getTheme(themeName).config;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    if(Fancy.isObject(themeName)){
-      config.theme = themeName.name;
+  //CONSTANTS
+  var FOOTER_STATUS_CLS = F.FOOTER_STATUS_CLS;
+  var STATUS_SOURCE_TEXT_CLS = F.STATUS_SOURCE_TEXT_CLS;
+  var STATUS_SOURCE_LINK_CLS = F.STATUS_SOURCE_LINK_CLS;
+  var FOOTER_SOURCE_CLS = F.FOOTER_SOURCE_CLS;
+
+  Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
+    /*
+     * @param {Object} config
+     * @param {Object} originalConfig
+     * @return {Object}
+     */
+    prepareConfigTheme: function (config, originalConfig) {
+      var themeName = config.theme || originalConfig.theme,
+        themeConfig = Fancy.getTheme(themeName).config;
+
+      if (Fancy.isObject(themeName)) {
+        config.theme = themeName.name;
+      }
+
+      Fancy.applyIf(config, themeConfig);
+
+      return config;
+    },
+    //The same in grid
+    /*
+     * @param {Object} config
+     * @return {Object}
+     */
+    prepareConfigFooter: function (config) {
+      var footer = config.footer,
+        lang = config.lang;
+
+      if (footer) {
+        var bar = [];
+
+        if (Fancy.isString(footer.status)) {
+          bar.push({
+            type: 'text',
+            text: footer.status,
+            cls: FOOTER_STATUS_CLS
+          });
+        }
+
+        if (footer.status && footer.source) {
+          bar.push('side');
+        }
+
+        if (Fancy.isString(footer.source)) {
+          bar.push({
+            type: 'text',
+            text: footer.source,
+            cls: FOOTER_SOURCE_CLS
+          });
+        }
+        else if (Fancy.isObject(footer.source)) {
+          var text = footer.source.text,
+            sourceText = footer.source.sourceText || lang.sourceText;
+
+          if (footer.source.link) {
+            var link = footer.source.link;
+
+            link = link.replace('http://', '');
+            link = 'http://' + link;
+
+            text = '<span class="' + STATUS_SOURCE_TEXT_CLS + '">' + sourceText + '</span>: <a class="' + STATUS_SOURCE_LINK_CLS + '" href="' + link + '">' + text + '</a>';
+          }
+          else {
+            text = '<span>' + sourceText + ':</span> ' + text;
+          }
+
+          bar.push({
+            type: 'text',
+            text: text,
+            cls: FOOTER_SOURCE_CLS
+          });
+        }
+
+        config.footer = bar;
+      }
+
+      return config;
+    },
+    /*
+     * @param {Object} config
+     * @param {Object} originalConfig
+     * @return {Object}
+     */
+    prepareConfigLang: function (config, originalConfig) {
+      var i18n = originalConfig.i18n || config.i18n,
+        lang = Fancy.Object.copy(Fancy.i18n[i18n]);
+
+      if (config.lang) {
+        for (var p in config.lang) {
+          if (Fancy.isObject(config.lang[p]) === false) {
+            lang[p] = config.lang[p];
+          }
+        }
+
+        lang.paging = {};
+        if (config.lang.paging) {
+          Fancy.apply(lang.paging, config.lang.paging);
+        }
+
+        for (var p in config.lang.paging) {
+          if (p === 'paging') {
+            continue;
+          }
+
+          if (Fancy.isObject(p)) {
+            continue;
+          }
+
+          lang[p] = config.lang.paging[p];
+        }
+
+        lang.date = {};
+        if (config.lang.date) {
+          Fancy.apply(lang.date, config.lang.date);
+        }
+      }
+
+      config.lang = lang;
+
+      return config;
     }
+  });
 
-    Fancy.applyIf(config, themeConfig);
-
-    return config;
-  },
-  //The same in grid
-  /*
-   * @param {Object} config
-   * @return {Object}
-   */
-  prepareConfigFooter: function(config){
-    var footer = config.footer,
-      lang = config.lang;
-
-    if(footer){
-      var bar = [];
-
-      if(Fancy.isString(footer.status)){
-        bar.push({
-          type: 'text',
-          text: footer.status,
-          cls: 'fancy-footer-status'
-        });
-      }
-
-      if(footer.status && footer.source) {
-        bar.push('side');
-      }
-
-      if(Fancy.isString(footer.source)){
-        bar.push({
-          type: 'text',
-          text: footer.source,
-          cls: 'fancy-footer-source'
-        });
-      }
-      else if(Fancy.isObject(footer.source)){
-        var text = footer.source.text,
-          sourceText = footer.source.sourceText || lang.sourceText;
-
-        if(footer.source.link){
-          var link = footer.source.link;
-
-          link = link.replace('http://', '');
-          link = 'http://' + link;
-
-          text = '<span class="fancy-status-source-text">'+sourceText+'</span>: <a class="fancy-status-source-link" href="'+link+'">'+text+'</a>';
-        }
-        else{
-          text = '<span>'+sourceText+':</span> ' + text;
-        }
-
-        bar.push({
-          type: 'text',
-          text: text,
-          cls: 'fancy-footer-source'
-        });
-      }
-
-      config.footer = bar;
-    }
-
-    return config;
-  },
-  /*
-   * @param {Object} config
-   * @param {Object} originalConfig
-   * @return {Object}
-   */
-  prepareConfigLang:  function(config, originalConfig){
-    var i18n = originalConfig.i18n || config.i18n,
-      lang = Fancy.Object.copy(Fancy.i18n[i18n]);
-
-    if(config.lang) {
-      for(var p in config.lang){
-        if(Fancy.isObject(config.lang[p]) === false){
-          lang[p] = config.lang[p];
-        }
-      }
-
-      lang.paging = {};
-      if (config.lang.paging) {
-        Fancy.apply(lang.paging, config.lang.paging);
-      }
-
-      for (var p in config.lang.paging) {
-        if (p === 'paging') {
-          continue;
-        }
-
-        if (Fancy.isObject(p)) {
-          continue;
-        }
-
-        lang[p] = config.lang.paging[p];
-      }
-
-      lang.date = {};
-      if (config.lang.date) {
-        Fancy.apply(lang.date, config.lang.date);
-      }
-    }
-
-    config.lang = lang;
-
-    return config;
-  }
-});
+})();
 /*
  * @mixin Fancy.panel.mixin.methods
  */
@@ -5340,40 +5490,32 @@ Fancy.Mixin('Fancy.panel.mixin.methods', {
    * @param {String} value
    */
   setTitle: function(value){
-    var me = this;
-
-    if(me.panel){
-      me.panel.setTitle(value);
+    if(this.panel){
+      this.panel.setTitle(value);
     }
   },
   /*
    * @return {String}
    */
   getTitle: function(){
-    var me = this;
-
-    if(me.panel){
-      return me.panel.getTitle();
+    if(this.panel){
+      return this.panel.getTitle();
     }
   },
   /*
    * @param {String} value
    */
   setSubTitle: function(value){
-    var me = this;
-
-    if(me.panel){
-      me.panel.setSubTitle(value);
+    if(this.panel){
+      this.panel.setSubTitle(value);
     }
   },
   /*
    * @return {String}
    */
   getSubTitle: function(){
-    var me = this;
-
-    if(me.panel){
-      return me.panel.getSubTitle();
+    if(this.panel){
+      return this.panel.getSubTitle();
     }
   }
 });
@@ -5381,33 +5523,27 @@ Fancy.Mixin('Fancy.panel.mixin.methods', {
  * @mixin Fancy.panel.mixin.DD
  */
 Fancy.Mixin('Fancy.panel.mixin.DD', {
-  ddCls: 'fancy-panel-draggable',
+  ddCls: Fancy.PANEL_DRAGGABLE_CLS,
   /*
    *
    */
   initDD: function(){
-    var me = this;
-
-    me.addDDCls();
-    me.addDD();
+    this.addDDCls();
+    this.addDD();
   },
   /*
    *
    */
   addDDCls: function(){
-    var me = this;
-
-    me.el.addCls(me.ddCls);
+    this.el.addCls(this.ddCls);
   },
   /*
    *
    */
   addDD: function(){
-    var me = this;
-
     Fancy.DD.add({
-      dragEl: me.el,
-      overEl: me.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
+      dragEl: this.el,
+      overEl: this.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
     });
   }
 });
@@ -5589,14 +5725,34 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
  * @extends Fancy.Widget
  */
 (function () {
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
-  var PANEL_HEADER_CLS = Fancy.PANEL_HEADER_CLS;
-  var HIDDEN_CLS = Fancy.HIDDEN_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var MODAL_CLS = F.MODAL_CLS;
+  var PANEL_CLS = F.PANEL_CLS;
+  var PANEL_HEADER_CLS = F.PANEL_HEADER_CLS;
+  var PANEL_SUB_HEADER_TEXT_CLS = F.PANEL_SUB_HEADER_TEXT_CLS;
+  var PANEL_HEADER_TEXT_CLS = F.PANEL_HEADER_TEXT_CLS;
+  var PANEL_HEADER_TOOLS_CLS = F.PANEL_HEADER_TOOLS_CLS;
+  var PANEL_SUB_HEADER_CLS = F.PANEL_SUB_HEADER_CLS;
+  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
+  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  var PANEL_HEADER_IMG_CLS = F.PANEL_HEADER_IMG_CLS;
+  var PANEL_NOFRAME_CLS = F.PANEL_NOFRAME_CLS;
+  var PANEL_SHADOW_CLS = F.PANEL_SHADOW_CLS;
+  var PANEL_FOOTER_CLS = F.PANEL_FOOTER_CLS;
+  var FIELD_PICKER_BUTTON_CLS = F.FIELD_PICKER_BUTTON_CLS;
 
-  Fancy.define('Fancy.Panel', {
-    extend: Fancy.Widget,
+  F.define('Fancy.Panel', {
+    extend: F.Widget,
     barScrollEnabled: true,
     mixins: [
       'Fancy.panel.mixin.DD',
@@ -5606,12 +5762,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('constructor', arguments);
+      F.apply(this, config);
+      this.Super('constructor', arguments);
     },
     /*
      *
@@ -5636,8 +5788,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setActiveWindowWatcher();
       }
     },
-    cls: 'fancy-panel',
-    panelSubHeaderCls: 'fancy-panel-sub-header-text',
+    cls: PANEL_CLS,
     value: '',
     width: 300,
     height: 200,
@@ -5654,20 +5805,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     theme: 'default',
     tpl: [
       '<div style="height:{titleHeight}px;" class="'+PANEL_HEADER_CLS+' '+HIDDEN_CLS+'">',
-      '{titleImg}',
-      '<div class="fancy-panel-header-text">{title}</div>',
-      '<div class="fancy-panel-header-tools"></div>',
+        '{titleImg}',
+        '<div class="' + PANEL_HEADER_TEXT_CLS + '">{title}</div>',
+        '<div class="' + PANEL_HEADER_TOOLS_CLS + '"></div>',
       '</div>',
-      '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header '+HIDDEN_CLS+'">',
-        '<div class="fancy-panel-sub-header-text">{subTitle}</div>',
+      '<div style="height:{subTitleHeight}px;" class="' + PANEL_SUB_HEADER_CLS + ' '+HIDDEN_CLS+'">',
+        '<div class="' + PANEL_SUB_HEADER_TEXT_CLS + '">{subTitle}</div>',
       '</div>',
-      '<div class="fancy-panel-body">',
-      '<div class="fancy-panel-tbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-sub-tbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-body-inner"></div>',
-      '<div class="fancy-panel-bbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-buttons '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-footer '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+      '<div class="' + PANEL_BODY_CLS + '">',
+        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
+        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
     ],
     /*
@@ -5675,8 +5826,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      */
     render: function () {
       var me = this,
-        renderTo = Fancy.get(me.renderTo || document.body),
-        el = Fancy.get(document.createElement('div')),
+        renderTo = F.get(me.renderTo || document.body),
+        el = F.get(document.createElement('div')),
         minusHeight = 0,
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
@@ -5689,16 +5840,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.frame === false) {
-        el.addCls('fancy-panel-noframe');
+        el.addCls(PANEL_NOFRAME_CLS);
       }
 
-      el.addCls(Fancy.cls, me.cls);
+      el.addCls(F.cls, me.cls);
       if (me.theme !== 'default') {
         el.addCls('fancy-theme-' + me.theme);
       }
 
       if (me.shadow) {
-        el.addCls('fancy-panel-shadow');
+        el.addCls(PANEL_SHADOW_CLS);
       }
 
       el.css({
@@ -5713,24 +5864,24 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var titleText = '',
         subTitleText = '';
 
-      if (Fancy.isObject(me.title)) {
+      if (F.isObject(me.title)) {
         titleText = me.title.text
       }
-      else if (Fancy.isString(me.title)) {
+      else if (F.isString(me.title)) {
         titleText = me.title
       }
 
-      if (Fancy.isObject(me.subTitle)) {
+      if (F.isObject(me.subTitle)) {
         subTitleText = me.subTitle.text
       }
-      else if (Fancy.isString(me.subTitle)) {
+      else if (F.isString(me.subTitle)) {
         subTitleText = me.subTitle
       }
 
       var imgCls = '';
 
-      if (Fancy.isObject(me.title) && me.title.imgCls) {
-        imgCls = '<div class="fancy-panel-header-img ' + me.title.imgCls + '"></div>';
+      if (F.isObject(me.title) && me.title.imgCls) {
+        imgCls = '<div class="' + PANEL_HEADER_IMG_CLS + ' ' + me.title.imgCls + '"></div>';
       }
 
       el.update(me.tpl.getHTML({
@@ -5742,7 +5893,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         subTitle: subTitleText
       }));
 
-      if (Fancy.isObject(me.title)) {
+      if (F.isObject(me.title)) {
         if (me.title.style) {
           el.select('.' + PANEL_HEADER_CLS).css(me.title.style);
         }
@@ -5756,13 +5907,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         }
       }
 
-      if (Fancy.isObject(me.subTitle)) {
+      if (F.isObject(me.subTitle)) {
         if (me.subTitle.style) {
-          el.select('.fancy-panel-sub-header').css(me.subTitle.style);
+          el.select('.' + PANEL_SUB_HEADER_CLS).css(me.subTitle.style);
         }
 
         if (me.subTitle.cls) {
-          el.select('.fancy-panel-sub-header').addCls(me.subTitle.cls);
+          el.select('.' + PANEL_SUB_HEADER_CLS).addCls(me.subTitle.cls);
         }
       }
 
@@ -5770,40 +5921,40 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el.select('.' + PANEL_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
       else {
-        el.select('.fancy-panel-body').css('border-top-width', '0px');
+        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
       }
 
       if (me.subTitle) {
-        el.select('.fancy-panel-body').css('border-top-width', '0px');
-        el.select('.fancy-panel-sub-header').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
+        el.select('.' + PANEL_SUB_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.tbar) {
-        el.select('.fancy-panel-tbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.subTBar) {
-        el.select('.fancy-panel-sub-tbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_SUB_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.bbar) {
-        el.select('.fancy-panel-bbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.buttons) {
-        el.select('.fancy-panel-buttons').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BUTTONS_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.footer) {
-        el.select('.fancy-panel-footer').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
       me.el = renderTo.dom.appendChild(el.dom);
-      me.el = Fancy.get(me.el);
+      me.el = F.get(me.el);
 
       if (me.modal) {
-        if (Fancy.select('fancy-modal').length === 0) {
-          Fancy.get(document.body).append('<div class="fancy-modal" style="display: none;"></div>');
+        if (F.select(MODAL_CLS).length === 0) {
+          F.get(document.body).append('<div class="'+MODAL_CLS+'" style="display: none;"></div>');
         }
       }
 
@@ -5820,10 +5971,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     setHardBordersWidth: function () {
-      var me = this,
-        panelBodyBorders = me.panelBodyBorders;
+      var panelBodyBorders = this.panelBodyBorders;
 
-      me.el.select('.fancy-panel-body').css({
+      this.el.select('.' + PANEL_BODY_CLS).css({
         'border-top-width': panelBodyBorders[0],
         'border-right-width': panelBodyBorders[1],
         'border-bottom-width': panelBodyBorders[2],
@@ -5841,9 +5991,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         return;
       }
 
-      Fancy.each(tools, function (tool, i) {
-        tool.renderTo = me.el.select('.fancy-panel-header-tools').dom;
-        me.tools[i] = new Fancy.Tool(tool, me.scope || me);
+      F.each(tools, function (tool, i) {
+        tool.renderTo = me.el.select('.' + PANEL_HEADER_TOOLS_CLS).dom;
+        me.tools[i] = new F.Tool(tool, me.scope || me);
       });
     },
     /*
@@ -5864,8 +6014,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.bbar) {
-        me._bbar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-bbar'),
+        me._bbar = new F.Bar({
+          el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
           height: me.barHeight,
           barContainer: me.barContainer,
@@ -5878,8 +6028,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.buttons) {
-        me._buttons = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-buttons'),
+        me._buttons = new F.Bar({
+          el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -5891,8 +6041,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.tbar) {
-        me._tbar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-tbar'),
+        me._tbar = new F.Bar({
+          el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
           height: me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
@@ -5905,8 +6055,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.subTBar) {
-        me._subTBar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-sub-tbar'),
+        me._subTBar = new F.Bar({
+          el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
           height: me.barHeight,
           tabEdit: containsGrid,
@@ -5919,9 +6069,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.footer) {
-        me._footer = new Fancy.Bar({
+        me._footer = new F.Bar({
           disableScroll: true,
-          el: me.el.select('.fancy-panel-footer'),
+          el: me.el.select('.' + PANEL_FOOTER_CLS),
           items: me.footer,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -5937,20 +6087,17 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Number} y
      */
     showAt: function (x, y) {
-      var me = this;
-
-      me.css({
+      this.css({
         left: x + 'px',
         display: '',
-        'z-index': 1000 + Fancy.zIndex++
+        'z-index': 1000 + F.zIndex++
       });
 
       if (y !== undefined) {
-        me.css({
+        this.css({
           top: y + 'px'
         });
       }
-
     },
     /*
      *
@@ -5980,11 +6127,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._subTBar.checkScroll();
       }
 
-      var viewSize = Fancy.getViewSize(),
+      var viewSize = F.getViewSize(),
         height = me.el.height(),
         width = me.el.width(),
         xy = [],
-        scroll = Fancy.getScroll(),
+        scroll = F.getScroll(),
         scrollTop = scroll[0],
         scrollLeft = scroll[1];
 
@@ -6003,24 +6150,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         left: (xy[0] + scrollLeft) + 'px',
         top: (xy[1] + scrollTop) + 'px',
         display: '',
-        'z-index': 1000 + Fancy.zIndex++
+        'z-index': 1000 + F.zIndex++
       });
 
-      Fancy.select('.fancy-modal').css('display', '');
+      F.select('.' + MODAL_CLS).css('display', '');
     },
     /*
      *
      */
     hide: function () {
-      var me = this;
-
-      me.css({
+      this.css({
         display: 'none'
       });
 
-      Fancy.select('.fancy-modal').css('display', 'none');
+      F.select('.' + MODAL_CLS).css('display', 'none');
 
-      Fancy.each(me.items || [], function (item) {
+      F.each(this.items || [], function (item) {
         if (item.type === 'combo') {
           item.hideList();
         }
@@ -6030,61 +6175,45 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {String} value
      */
     setTitle: function (value) {
-      var me = this;
-
-      me.el.select('.fancy-panel-header-text').update(value);
+      this.el.select('.' + PANEL_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
     getTitle: function () {
-      var me = this;
-
-      return me.el.select('.fancy-panel-header-text').dom.innerHTML;
+      return this.el.select('.' + PANEL_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @param {String} value
      */
     setSubTitle: function (value) {
-      var me = this;
-
-      me.el.select('.' + me.panelSubHeaderCls).update(value);
+      this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
     getSubTitle: function () {
-      var me = this;
-
-      return me.el.select('.' + me.panelSubHeaderCls).dom.innerHTML;
+      return this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @return {Number}
      */
     getHeight: function () {
-      var me = this;
-
-      return parseInt(me.css('height'));
+      return parseInt(this.css('height'));
     },
     /*
      * @param {String} value
      */
     setWidth: function (value) {
       //TODO: Redo
-      var me = this;
-
-      //me.css('width', value);
-      me.items[0].setWidth(value);
+      this.items[0].setWidth(value);
     },
     /*
      * @param {Number} value
      */
     setHeight: function (value) {
-      var me = this;
-
-      me.css('height', value);
-
-      me.items[0].setHeight(value, false);
+      this.css('height', value);
+      this.items[0].setHeight(value, false);
     },
     /*
      *
@@ -6093,14 +6222,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var me = this;
 
       me.el.on('click', function (e) {
-        var targetEl = Fancy.get(e.target);
+        var targetEl = F.get(e.target);
 
-        if (targetEl.hasCls('fancy-field-picker-button')) {
+        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
           return;
         }
 
-        if (1000 + Fancy.zIndex - 1 > parseInt(me.css('z-index'))) {
-          me.css('z-index', 1000 + Fancy.zIndex++);
+        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
+          me.css('z-index', 1000 + F.zIndex++);
         }
       });
     }
@@ -6111,1175 +6240,1196 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
  * @class Fancy.Tool
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Tool', {
-  extend: Fancy.Widget,
-  /*
-   * @constructor
-   * @param {Object} config
-   * @param {Object} scope
-   */
-  constructor: function(config, scope){
-    var me = this;
+(function(){
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.scope = scope;
+  //CONSTANTS
+  var BUTTON_CLS = F.BUTTON_CLS;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define('Fancy.Tool', {
+    extend: F.Widget,
+    /*
+     * @constructor
+     * @param {Object} config
+     * @param {Object} scope
+     */
+    constructor: function (config, scope) {
+      this.scope = scope;
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
-    me.Super('init', arguments);
+      me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
+      me.Super('init', arguments);
 
-    me.style = me.style || {};
+      me.style = me.style || {};
 
-    me.render();
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      el = me.el;
+      me.render();
+      me.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      this.on('click', this.onClick, this);
+    },
+    cls: BUTTON_CLS,
+    text: '',
+    height: 28,
+    paddingTextWidth: 5,
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = document.createElement('div');
 
-    el.on('click', me.onClick, me);
-  },
-  cls: 'fancy fancy-button',
-  text: '',
-  height: 28,
-  paddingTextWidth: 5,
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = document.createElement('div');
+      me.fire('beforerender');
 
-    me.fire('beforerender');
+      el.className = 'fancy-tool-button';
+      el.innerHTML = me.text;
+      me.el = F.get(renderTo.appendChild(el));
 
-    el.className = 'fancy-tool-button';
-    el.innerHTML = me.text;
-    me.el = Fancy.get( renderTo.appendChild(el) );
+      me.fire('afterrender');
+      me.fire('render');
+    },
+    /*
+     *
+     */
+    onClick: function () {
+      var me = this;
 
-    me.fire('afterrender');
-    me.fire('render');
-  },
-  /*
-   *
-   */
-  onClick: function(){
-    var me = this;
-
-    me.fire('click');
-    if( me.handler ){
-      if( me.scope ){
-        me.handler.apply(me.scope, [me]);
+      me.fire('click');
+      if (me.handler) {
+        if (me.scope) {
+          me.handler.apply(me.scope, [me]);
+        }
+        else {
+          me.handler(me);
+        }
       }
-      else{
-        me.handler(me);
-      }
+    },
+    /*
+     * @param {String} value
+     */
+    setText: function (value) {
+      this.el.update(value)
     }
-  },
-  /*
-   * @param {String} value
-   */
-  setText: function(value){
-    var me = this;
+  });
 
-    me.el.update(value)
-  }
-});
+})();
 /**
  * @class Fancy.panel.Tab
  */
-Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
-  extend: Fancy.Panel,
-  /*
-   * @constructor
-   * @param config
-   * @param scope
-   */
-  constructor: function(config, scope){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.prepareConfigTheme(config);
+  //CONSTANTS
+  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  var TAB_WRAPPER_CLS = F.TAB_WRAPPER_CLS;
+  var TAB_ACTIVE_WRAPPER_CLS = F.TAB_ACTIVE_WRAPPER_CLS;
+  var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
+  var PANEL_TAB_CLS = F.PANEL_TAB_CLS;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
+    extend: F.Panel,
+    /*
+     * @constructor
+     * @param config
+     * @param scope
+     */
+    constructor: function (config, scope) {
+      this.prepareConfigTheme(config);
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.prepareTabs();
-    me.Super('init', arguments);
+      me.prepareTabs();
+      me.Super('init', arguments);
 
-    me.setActiveTab(me.activeTab);
-  },
-  tabWrapperCls: 'fancy-tab-wrapper',
-  activeTabWrapperCls: 'fancy-active-tab-wrapper',
-  activeTabTBarButtonCls: 'fancy-toolbar-tab-active',
-  activeTab: 0,
-  theme: 'default',
-  /*
-   *
-   */
-  render: function(){
-    var me = this;
+      me.setActiveTab(me.activeTab);
+    },
+    activeTab: 0,
+    theme: 'default',
+    /*
+     *
+     */
+    render: function () {
+      var me = this;
 
-    me.Super('render', arguments);
+      me.Super('render', arguments);
 
-    me.panelBodyEl = me.el.select('.fancy-panel-body-inner').item(0);
+      me.panelBodyEl = me.el.select('.' + PANEL_BODY_INNER_CLS).item(0);
 
-    me.setPanelBodySize();
+      me.setPanelBodySize();
 
-    me.renderTabWrappers();
+      me.renderTabWrappers();
 
-    if(!me.wrapped){
-      me.el.addCls('fancy-panel-grid-inside');
-    }
-    me.el.addCls('fancy-panel-tab');
-
-    me.rendered = true;
-  },
-  setPanelBodySize: function(){
-    var me = this,
-      height = me.height,
-      panelBodyBorders = me.panelBodyBorders;
-
-    if(me.title){
-      height -= me.titleHeight;
-    }
-
-    if(me.subTitle){
-      height -= me.subTitleHeight;
-      height += panelBodyBorders[2];
-    }
-
-    if(me.bbar){
-      height -= me.barHeight;
-    }
-
-    if(me.tbar){
-      height -= me.barHeight;
-    }
-
-    if(me.subTBar){
-      height -= me.barHeight;
-    }
-
-    if(me.buttons){
-      height -= me.barHeight;
-    }
-
-    if(me.footer){
-      height -= me.barHeight;
-    }
-
-    height -= panelBodyBorders[0] + panelBodyBorders[2];
-
-    me.panelBodyEl.css({
-      height: height
-    });
-
-    me.panelBodyHeight = height;
-    me.panelBodyWidth = me.width - panelBodyBorders[1] - panelBodyBorders[3];
-    //me.panelBodyWidth = me.width;
-  },
-  prepareConfigTheme: function(config){
-    var me = this,
-      themeName = config.theme || me.theme,
-      themeConfig = Fancy.getTheme(themeName).config,
-      wrapped = me.wrapped || config.wrapped;
-
-    if(wrapped){
-      config.panelBodyBorders = [0,0,0,0];
-      me.panelBodyBorders = [0,0,0,0];
-    }
-
-    Fancy.applyIf(config, themeConfig);
-    Fancy.apply(me, config);
-  },
-  prepareTabs: function(){
-    var me = this,
-      tabs = [],
-      i = 0,
-      iL = me.items.length;
-
-    for(;i<iL;i++){
-      var item = me.items[i],
-        tabConfig = {
-          type: 'tab'
-        };
-
-      if(item.tabTitle){
-        tabConfig.text = item.tabTitle;
+      if (!me.wrapped) {
+        me.el.addCls(PANEL_GRID_INSIDE_CLS);
       }
-      else if(item.title){
-        tabConfig.text = item.title;
-        delete item.title;
+      me.el.addCls(PANEL_TAB_CLS);
+
+      me.rendered = true;
+    },
+    setPanelBodySize: function () {
+      var me = this,
+        height = me.height,
+        panelBodyBorders = me.panelBodyBorders;
+
+      if (me.title) {
+        height -= me.titleHeight;
       }
 
-      tabConfig.handler = (function(i){
-        return function(){
-          me.setActiveTab(i);
+      if (me.subTitle) {
+        height -= me.subTitleHeight;
+        height += panelBodyBorders[2];
+      }
+
+      if (me.bbar) {
+        height -= me.barHeight;
+      }
+
+      if (me.tbar) {
+        height -= me.barHeight;
+      }
+
+      if (me.subTBar) {
+        height -= me.barHeight;
+      }
+
+      if (me.buttons) {
+        height -= me.barHeight;
+      }
+
+      if (me.footer) {
+        height -= me.barHeight;
+      }
+
+      height -= panelBodyBorders[0] + panelBodyBorders[2];
+
+      me.panelBodyEl.css({
+        height: height
+      });
+
+      me.panelBodyHeight = height;
+      me.panelBodyWidth = me.width - panelBodyBorders[1] - panelBodyBorders[3];
+      //me.panelBodyWidth = me.width;
+    },
+    prepareConfigTheme: function (config) {
+      var me = this,
+        themeName = config.theme || me.theme,
+        themeConfig = F.getTheme(themeName).config,
+        wrapped = me.wrapped || config.wrapped;
+
+      if (wrapped) {
+        config.panelBodyBorders = [0, 0, 0, 0];
+        me.panelBodyBorders = [0, 0, 0, 0];
+      }
+
+      F.applyIf(config, themeConfig);
+      F.apply(me, config);
+    },
+    prepareTabs: function () {
+      var me = this,
+        tabs = [],
+        i = 0,
+        iL = me.items.length;
+
+      for (; i < iL; i++) {
+        var item = me.items[i],
+          tabConfig = {
+            type: 'tab'
+          };
+
+        if (item.tabTitle) {
+          tabConfig.text = item.tabTitle;
         }
-      })(i);
+        else if (item.title) {
+          tabConfig.text = item.title;
+          delete item.title;
+        }
 
-      tabs.push(tabConfig);
-    }
+        tabConfig.handler = (function (i) {
+          return function () {
+            me.setActiveTab(i);
+          }
+        })(i);
 
-    me.tbar = tabs;
-    me.tabs = tabs;
-  },
-  renderTabWrappers: function(){
-    var me = this;
-
-    Fancy.each(me.items, function(item){
-      var el = Fancy.get( document.createElement('div') );
-
-      el.addCls(me.tabWrapperCls);
-
-      item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
-    });
-  },
-  setActiveTab: function(newActiveTab){
-    var me = this,
-      activeTabWrapperCls = me.activeTabWrapperCls,
-      tabs = me.el.select('.' + me.tabWrapperCls),
-      oldActiveTab = me.activeTab;
-
-    if(me.items.length === 0){
-      return;
-    }
-
-    tabs.item(me.activeTab).removeCls(activeTabWrapperCls);
-    me.activeTab = newActiveTab;
-
-    tabs.item(me.activeTab).addCls(activeTabWrapperCls);
-
-    var item = me.items[me.activeTab];
-
-    item.theme = me.theme;
-    item.wrapped = true;
-
-    item.width = me.panelBodyWidth;
-    item.height = me.panelBodyHeight;
-
-    if(!item.rendered){
-      switch(item.type){
-        case 'grid':
-          me.items[me.activeTab] = new FancyGrid(item);
-          break;
-        case 'tab':
-          me.items[me.activeTab] = new FancyTab(item);
-          break;
+        tabs.push(tabConfig);
       }
-    }
-    else{
+
+      me.tbar = tabs;
+      me.tabs = tabs;
+    },
+    renderTabWrappers: function () {
+      var me = this;
+
+      F.each(me.items, function (item) {
+        var el = F.get(document.createElement('div'));
+
+        el.addCls(TAB_WRAPPER_CLS);
+
+        item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
+      });
+    },
+    setActiveTab: function (newActiveTab) {
+      var me = this,
+        tabs = me.el.select('.' + TAB_WRAPPER_CLS),
+        oldActiveTab = me.activeTab;
+
+      if (me.items.length === 0) {
+        return;
+      }
+
+      tabs.item(me.activeTab).removeCls(TAB_ACTIVE_WRAPPER_CLS);
+      me.activeTab = newActiveTab;
+
+      tabs.item(me.activeTab).addCls(TAB_ACTIVE_WRAPPER_CLS);
+
+      var item = me.items[me.activeTab];
+
+      item.theme = me.theme;
+      item.wrapped = true;
+
+      item.width = me.panelBodyWidth;
+      item.height = me.panelBodyHeight;
+
+      if (!item.rendered) {
+        switch (item.type) {
+          case 'grid':
+            me.items[me.activeTab] = new FancyGrid(item);
+            break;
+          case 'tab':
+            me.items[me.activeTab] = new FancyTab(item);
+            break;
+        }
+      }
+      else {
+        me.setActiveItemWidth();
+        me.setActiveItemHeight();
+      }
+
+      if (me.tabs) {
+        me.tbar[oldActiveTab].removeCls(TAB_TBAR_ACTIVE_CLS);
+        me.tbar[me.activeTab].addCls(TAB_TBAR_ACTIVE_CLS);
+      }
+    },
+    /*
+     * @param {String} value
+     */
+    setWidth: function (value) {
+      var me = this;
+
+      me.width = value;
+
+      me.css('width', value);
+      me.setPanelBodySize();
+
       me.setActiveItemWidth();
+    },
+    /*
+     * @param {Number} value
+     */
+    setHeight: function (value) {
+      var me = this;
+
+      me.height = value;
+
+      me.css('height', value);
+      me.setPanelBodySize();
+
       me.setActiveItemHeight();
+    },
+    setActiveItemWidth: function () {
+      var me = this;
+
+      me.items[me.activeTab].setWidth(me.panelBodyWidth);
+    },
+    setActiveItemHeight: function () {
+      var me = this;
+
+      me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
     }
+  });
 
-    if(me.tabs){
-      me.tbar[oldActiveTab].removeCls(me.activeTabTBarButtonCls);
-      me.tbar[me.activeTab].addCls(me.activeTabTBarButtonCls);
-    }
-  },
-  /*
-   * @param {String} value
-   */
-  setWidth: function(value){
-    var me = this;
+  FancyTab.get = function (id) {
+    var tabId = F.get(id).select('.' + PANEL_TAB_CLS).dom.id;
 
-    me.width = value;
-
-    me.css('width', value);
-    me.setPanelBodySize();
-
-    me.setActiveItemWidth();
-  },
-  /*
-   * @param {Number} value
-   */
-  setHeight: function(value){
-    var me = this;
-
-    me.height = value;
-
-    me.css('height', value);
-    me.setPanelBodySize();
-
-    me.setActiveItemHeight();
-  },
-  setActiveItemWidth: function(){
-    var me = this;
-
-    me.items[me.activeTab].setWidth(me.panelBodyWidth);
-  },
-  setActiveItemHeight: function(){
-    var me = this;
-
-    me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
-  }
-});
-
-FancyTab.get = function(id){
-  var tabId = Fancy.get(id).select('.fancy-panel-tab').dom.id;
-
-  return Fancy.getWidget(tabId);
-};
-
-if(!Fancy.nojQuery && Fancy.$){
-  Fancy.$.fn.FancyTab = function(o){
-    o.renderTo = $(this.selector)[0].id;
-
-    return new FancyTab(o);
+    return F.getWidget(tabId);
   };
-}
+
+  if (!F.nojQuery && F.$) {
+    F.$.fn.FancyTab = function (o) {
+      o.renderTo = $(this.selector)[0].id;
+
+      return new FancyTab(o);
+    };
+  }
+
+})();
 /*
  * @class Fancy.Bar
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Bar', {
-  extend: Fancy.Widget,
-  widgetCls: 'fancy-bar',
-  containerCls: 'fancy-bar-container',
-  cls: '',
-  text: '',
-  floating: 'left',
-  sideRight: 0,
-  scrolled: 0,
-  tabOffSet: 5,
-  barScrollEnabled: true,
-  /*
-   * constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this,
-      config = config || {};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    Fancy.apply(me, config);
+  //CONSTANTS
+  var GRID_CLS = F.GRID_CLS;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-    me.init();
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  var BAR_CLS = F.BAR_CLS;
+  var BAR_CONTAINER_CLS = F.BAR_CONTAINER_CLS;
+  var BAR_BUTTON_CLS = F.BAR_BUTTON_CLS;
+  var BAR_SEG_BUTTON_CLS = F.BAR_SEG_BUTTON_CLS;
+  var BAR_LEFT_SCROLLER_CLS = F.BAR_LEFT_SCROLLER_CLS;
+  var BAR_RIGHT_SCROLLER_CLS = F.BAR_RIGHT_SCROLLER_CLS;
 
-    me.roles = {};
-    me.render();
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  var FIELD_SEARCH_CLS = F.FIELD_SEARCH_CLS;
+  var FIELD_SEARCH_LIST_CLS = F.FIELD_SEARCH_LIST_CLS;
+  var FIELD_SEARCH_PARAMS_LINK_CLS = F.FIELD_SEARCH_PARAMS_LINK_CLS;
+  var FIELD_SEARCH_PARAMED_CLS = F.FIELD_SEARCH_PARAMED_CLS;
+  var FIELD_SEARCH_PARAMED_EMPTY_CLS = F.FIELD_SEARCH_PARAMED_EMPTY_CLS;
 
-    if(me.barScrollEnabled){
-      me.initScroll();
-      setTimeout(function(){
-        me.checkScroll();
-      }, 50);
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this;
+  var PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
 
-    me.renderEl();
-    me.renderItems();
-    me.initTabEdit();
-  },
-  /*
-   *
-   */
-  renderEl: function(){
-    var me = this;
+  F.define('Fancy.Bar', {
+    extend: F.Widget,
+    widgetCls: BAR_CLS,
+    containerCls: BAR_CONTAINER_CLS,
+    cls: '',
+    text: '',
+    floating: 'left',
+    sideRight: 0,
+    scrolled: 0,
+    tabOffSet: 5,
+    barScrollEnabled: true,
+    /*
+     * constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      F.apply(this, config);
+      this.init();
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    if(!me.el){
-      var el = Fancy.get(document.createElement('div'));
+      me.roles = {};
+      me.render();
 
-      el.addCls(me.widgetCls, me.cls);
-      el.update(me.text);
-
-      me.el = Fancy.get(me.renderTo.appendChild(el.dom));
-
-      if(me.style){
-        me.el.css(me.style);
+      if (me.barScrollEnabled) {
+        me.initScroll();
+        setTimeout(function () {
+          me.checkScroll();
+        }, 50);
       }
-    }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this;
 
-    var containerEl = Fancy.get(document.createElement('div'));
-    containerEl.addCls(me.containerCls);
+      me.renderEl();
+      me.renderItems();
+      me.initTabEdit();
+    },
+    /*
+     *
+     */
+    renderEl: function () {
+      var me = this;
 
-    me.containerEl = Fancy.get(me.el.dom.appendChild(containerEl.dom));
-  },
-  /*
-   *
-   */
-  renderItems: function(){
-    var me = this,
-      containerEl = me.containerEl,
-      items = me.items || [],
-      i = 0,
-      iL = items.length,
-      isSide = false,
-      barItems = [],
-      sidePassed = iL - 1;
+      if (!me.el) {
+        var el = F.get(document.createElement('div'));
 
-    for(;i<iL;i++){
-      var item = items[i];
+        el.addCls(
+          me.widgetCls,
+          me.cls
+        );
 
-      if(isSide){
-        item = items[sidePassed];
-        sidePassed--;
-      }
+        el.update(me.text);
 
-      if(item.toggleGroup){
-        item.enableToggle = true;
+        me.el = F.get(me.renderTo.appendChild(el.dom));
+
+        if (me.style) {
+          me.el.css(me.style);
+        }
       }
 
-      if(Fancy.isObject(item)){
-        item.type = item.type || 'button';
+      var containerEl = F.get(document.createElement('div'));
+      containerEl.addCls(me.containerCls);
+
+      me.containerEl = F.get(me.el.dom.appendChild(containerEl.dom));
+    },
+    /*
+     *
+     */
+    renderItems: function () {
+      var me = this,
+        containerEl = me.containerEl,
+        items = me.items || [],
+        i = 0,
+        iL = items.length,
+        isSide = false,
+        barItems = [],
+        sidePassed = iL - 1;
+
+      for (; i < iL; i++) {
+        var item = items[i];
+
+        if (isSide) {
+          item = items[sidePassed];
+          sidePassed--;
+        }
+
+        if (item.toggleGroup) {
+          item.enableToggle = true;
+        }
+
+        if (F.isObject(item)) {
+          item.type = item.type || 'button';
+        }
+
+        if (isSide) {
+          me.floating = 'right';
+        }
+
+        //item.renderTo = el.dom;
+        item.renderTo = containerEl.dom;
+
+        switch (item) {
+          case '|':
+            var style = {
+              'float': me.floating,
+              'margin-right': '5px',
+              'margin-top': '6px',
+              'padding-left': '0px'
+            };
+
+            if (me.floating === 'right') {
+              F.applyIf(style, {
+                right: '1px',
+                position: 'absolute'
+              });
+            }
+
+            barItems.push(new F.Separator({
+              //renderTo: el.dom,
+              renderTo: containerEl.dom,
+              style: style
+            }));
+            continue;
+            break;
+          case 'side':
+            isSide = true;
+            continue;
+            break;
+          default:
+            if (isSide) {
+              barItems[sidePassed] = me.renderItem(item);
+            }
+            else {
+              barItems.push(me.renderItem(item));
+            }
+        }
       }
 
-      if (isSide) {
-        me.floating = 'right';
+      me.items = barItems;
+    },
+    /*
+     * @param {Object} item
+     * @return {Object}
+     */
+    renderItem: function (item) {
+      var me = this,
+        field,
+        containerEl = me.containerEl,
+        theme = me.theme;
+
+      item.style = item.style || {};
+      item.label = false;
+      item.padding = false;
+
+      F.applyIf(item.style, {
+        'float': me.floating
+      });
+
+      if (me.floating === 'right') {
+        F.applyIf(item.style, {
+          right: me.sideRight,
+          position: 'absolute'
+        });
       }
 
-      //item.renderTo = el.dom;
-      item.renderTo = containerEl.dom;
+      if (!item.scope && me.items) {
+        item.scope = me.items[0];
+      }
 
-      switch (item) {
-        case '|':
-          var style = {
-            'float': me.floating,
-            'margin-right': '5px',
-            'margin-top': '6px',
-            'padding-left': '0px'
-          };
-
-          if(me.floating === 'right'){
-            Fancy.applyIf(style, {
-              right: '1px',
-              position: 'absolute'
-            });
+      switch (item.type) {
+        case 'wrapper':
+          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS) {
+            containerEl.destroy();
+            containerEl = me.el;
           }
 
-          barItems.push(new Fancy.Separator({
-            //renderTo: el.dom,
-            renderTo: containerEl.dom,
-            style: style
-          }));
-          continue;
+          var renderTo = containerEl.append('<div class="' + (item.cls || '') + '"></div>').select('div').item(0),
+            i = 0,
+            iL = item.items.length,
+            _item,
+            width = 0;
+
+          for (; i < iL; i++) {
+            _item = item.items[i];
+
+            if (F.isObject(_item)) {
+              _item.type = _item.type || 'button';
+            }
+
+            _item.renderTo = renderTo.dom;
+            field = me.renderItem(_item);
+            var fieldEl = field.el;
+
+            if (i === iL - 1) {
+              fieldEl.css('margin-right', '0px');
+            }
+            else {
+              width += parseInt(fieldEl.css('margin-right'));
+            }
+
+            if (F.nojQuery) {
+              width += parseInt(fieldEl.width());
+              width += parseInt(fieldEl.css('margin-left'));
+            }
+            else {
+              width += parseInt(fieldEl.$dom.outerWidth());
+            }
+
+            width += parseInt(fieldEl.css('padding-left'));
+            width += parseInt(fieldEl.css('padding-right'));
+          }
+
+          renderTo.css('width', width);
+
           break;
-        case 'side':
-          isSide = true;
-          continue;
+        case undefined:
+        case 'button':
+          item.extraCls = BAR_BUTTON_CLS;
+
+          item.scope = me.scope;
+
+          field = new F.Button(item);
+          break;
+        case 'segbutton':
+          item.extraCls = BAR_SEG_BUTTON_CLS;
+
+          F.applyIf(item.style, {
+            'margin-right': '6px'
+          });
+
+          field = new F.SegButton(item);
+          break;
+        case 'tab':
+          field = new F.toolbar.Tab(item);
+          break;
+        case 'text':
+          F.applyIf(item.style, {
+            'margin-right': '10px',
+            'padding-left': '0px',
+            'padding-top': '11px'
+          });
+
+          F.apply(item, {
+            renderTo: containerEl.dom,
+            cls: item.cls || ''
+          });
+
+          field = new F.bar.Text(item);
+          break;
+        case 'combo':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 70
+          });
+
+          field = new F.Combo(item);
+          break;
+        case 'date':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 100
+          });
+
+          field = new F.DateField(item);
+
+          break;
+        case 'number':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 35
+          });
+
+          field = new F.NumberField(item);
+
+          break;
+        case 'switcher':
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 35
+          });
+
+          field = new F.Switcher(item);
+
+          break;
+        case 'string':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 100
+          });
+
+          field = new F.StringField(item);
+          break;
+        case 'search':
+          item.inputWidth = 18;
+
+          item.events = item.events || [];
+
+          item.events = item.events.concat([{
+            enter: function (field, value) {
+              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+              //this.search(['name', 'surname', 'position'], value);
+              //this.search(value);
+              //this.search(['a', 'b', 'c']);
+              grid.search(value);
+            }
+          }, {
+            key: function (field, value) {
+              var me = this,
+                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+
+              if (!me.autoEnterTime) {
+                me.autoEnterTime = new Date();
+              }
+
+              if (me.intervalAutoEnter) {
+                clearInterval(me.intervalAutoEnter);
+              }
+              delete me.intervalAutoEnter;
+
+              me.intervalAutoEnter = setInterval(function () {
+                var now = new Date();
+
+                if (now - me.autoEnterTime > 500) {
+                  clearInterval(me.intervalAutoEnter);
+                  delete me.intervalAutoEnter;
+                  value = field.getValue();
+
+                  grid.search(value);
+                }
+              }, 200);
+            }
+          }, {
+            render: function (field) {
+              var me = this,
+                isIn = false;
+
+              field.el.on('mouseenter', function () {
+                isIn = true;
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
+
+              field.el.on('mousedown', function (e) {
+                e.preventDefault();
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
+
+              field.el.on('click', function (e) {
+                var toShow = false,
+                  grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id')),
+                  columns = grid.columns || [],
+                  leftColumns = grid.leftColumns || [],
+                  rightColumns = grid.rightColumns || [],
+                  _columns = columns.concat(leftColumns).concat(rightColumns),
+                  items = [],
+                  i = 0,
+                  iL = _columns.length,
+                  height = 1;
+
+                for (; i < iL; i++) {
+                  var column = _columns[i],
+                    title = column.title;
+
+                  if (title === undefined) {
+                    title = '';
+                  }
+
+                  if (column.searchable === false) {
+                    continue;
+                  }
+
+                  switch (column.type) {
+                    case 'color':
+                    case 'combo':
+                    case 'date':
+                    case 'number':
+                    case 'string':
+                    case 'text':
+                    case 'currency':
+                      break;
+                    default:
+                      continue;
+                  }
+
+                  height += grid.fieldHeight;
+
+                  items.push({
+                    inputLabel: ' &nbsp;&nbsp;' + title,
+                    value: true,
+                    name: column.index
+                  });
+                }
+
+                if (!me.list) {
+                  me.list = new FancyForm({
+                    width: 150,
+                    height: height,
+                    theme: theme,
+                    defaults: {
+                      type: 'checkbox',
+                      label: false,
+                      style: {
+                        padding: '8px 16px 0px'
+                      }
+                    },
+                    items: items,
+                    cls: FIELD_SEARCH_LIST_CLS,
+                    events: [{
+                      set: function () {
+                        grid.searching.setKeys(me.list.get());
+                      }
+                    }, {
+                      init: function () {
+                        setTimeout(function () {
+                          var listEl = me.list.el;
+
+                          listEl.on('mouseenter', function () {
+                            isIn = true;
+                          });
+
+                          listEl.on('mouseleave', function () {
+                            isIn = false;
+                            setTimeout(function () {
+                              if (isIn === false) {
+                                if (me.list) {
+                                  listEl.css('display', 'none');
+                                }
+                              }
+                            }, 750);
+                          });
+
+                          var el = F.get(e.target),
+                            offset = el.offset(),
+                            fieldHeight = parseInt(field.el.css('height'));
+
+                          listEl.css({
+                            position: 'absolute',
+                            top: offset.top + fieldHeight + 20,
+                            left: offset.left
+                          });
+
+                          me.list.el.css('display', 'block');
+
+                          listEl.animate({
+                            duration: 200,
+                            top: offset.top + fieldHeight - 1
+                          });
+                        }, 50);
+                      }
+
+                    }]
+                  });
+                }
+                else if (me.list.el.css('display') !== 'none') {
+                  me.list.el.css('display', 'none');
+                  return;
+                }
+                else {
+                  toShow = true;
+                }
+
+                var el = F.get(e.target),
+                  offset = el.offset(),
+                  fieldHeight = parseInt(field.el.css('height'));
+
+                if (me.list && me.list.el) {
+                  me.list.css({
+                    position: 'absolute',
+                    top: offset.top + fieldHeight + 20,
+                    left: offset.left
+                  });
+
+                  if (toShow) {
+                    me.list.css('display', 'block');
+                  }
+
+                  me.list.el.animate({
+                    duration: 200,
+                    top: offset.top + fieldHeight - 1
+                  });
+                }
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
+
+              field.el.on('mouseleave', function () {
+                isIn = false;
+                setTimeout(function () {
+                  if (isIn === false) {
+                    if (me.list) {
+                      me.list.el.css('display', 'none');
+                    }
+                  }
+                }, 750);
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS)
+            }
+          }]);
+
+          F.applyIf(item.style, {
+            'float': me.floating,
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          var cls = FIELD_SEARCH_CLS;
+
+          if (item.paramsMenu) {
+            item.tpl = [
+              '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
+              '{label}',
+              '</div>',
+              '<div class="' + FIELD_TEXT_CLS + '">',
+              '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
+              '<div class="' + FIELD_SEARCH_PARAMS_LINK_CLS + '" style="">' + (item.paramsText || '&nbsp;') + '</div>',
+              '</div>',
+              '<div class="' + CLEARFIX_CLS + '"></div>'
+            ];
+
+            cls += ' ' + FIELD_SEARCH_PARAMED_CLS;
+            if (!item.paramsText) {
+              cls += ' ' + FIELD_SEARCH_PARAMED_EMPTY_CLS;
+            }
+          }
+
+          F.applyIf(item, {
+            padding: false,
+            width: 250,
+            cls: cls,
+            emptyText: 'Search'
+          });
+
+          field = new F.StringField(item);
           break;
         default:
-          if(isSide){
-            barItems[sidePassed] = me.renderItem(item);
-          }
-          else {
-            barItems.push( me.renderItem(item) );
-          }
       }
-    }
 
-    me.items = barItems;
-  },
-  /*
-   * @param {Object} item
-   * @return {Object}
-   */
-  renderItem: function(item){
-    var me = this,
-      field,
-      containerEl = me.containerEl,
-      theme = me.theme;
+      if (me.floating === 'right') {
+        me.sideRight += field.width;
+        me.sideRight += 7;
+      }
 
-    item.style = item.style || {};
-    item.label = false;
-    item.padding = false;
+      if (item.role) {
+        me.roles[item.role] = field;
+      }
 
-    Fancy.applyIf(item.style, {
-      'float': me.floating
-    });
+      return field;
+    },
+    /*
+     *
+     */
+    initScroll: function () {
+      var me = this;
 
-    if(me.floating === 'right'){
-      Fancy.applyIf(item.style, {
-        right: me.sideRight,
-        position: 'absolute'
+      me.leftScroller = new F.Button({
+        imageCls: true,
+        renderTo: me.el.dom,
+        cls: BAR_LEFT_SCROLLER_CLS,
+        height: me.height + 2,
+        minWidth: 20,
+        paddingTextWidth: 0,
+        imageWidth: 20,
+        width: 0,
+        text: false,
+        id: 'my',
+        style: {
+          position: 'absolute',
+          left: -1,
+          top: -1,
+          display: 'none'
+        },
+        listeners: [{
+          click: me.onPrevScrollClick,
+          scope: me
+        }]
       });
-    }
 
-    if(!item.scope && me.items){
-      item.scope = me.items[0];
-    }
+      me.rightScroller = new F.Button({
+        imageCls: true,
+        renderTo: me.el.dom,
+        cls: BAR_RIGHT_SCROLLER_CLS,
+        height: me.height + 2,
+        minWidth: 20,
+        paddingTextWidth: 0,
+        imageWidth: 20,
+        width: 0,
+        text: false,
+        style: {
+          position: 'absolute',
+          right: -1,
+          top: -1,
+          display: 'none'
+        },
+        listeners: [{
+          click: me.onNextScrollClick,
+          scope: me
+        }]
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    getBarWidth: function () {
+      return parseInt(this.el.css('width'));
+    },
+    /*
+     * @return {Number}
+     */
+    getItemsWidth: function () {
+      var width = 0;
 
-    switch(item.type){
-      case 'wrapper':
-        if(item.cls === 'fancy-month-picker-action-buttons'){
-          containerEl.destroy();
-          containerEl = me.el;
+      F.each(this.items, function (item) {
+        width += item.el.width();
+        width += parseInt(item.el.css('margin-left'));
+        width += parseInt(item.el.css('margin-right'));
+        width += parseInt(item.el.css('padding-right'));
+        width += parseInt(item.el.css('padding-left'));
+      });
+
+      return width;
+    },
+    /*
+     *
+     */
+    onPrevScrollClick: function () {
+      this.scrolled += 30;
+      this.applyScrollChanges();
+    },
+    /*
+     *
+     */
+    onNextScrollClick: function () {
+      this.scrolled -= 30;
+      this.applyScrollChanges();
+    },
+    /*
+     *
+     */
+    applyScrollChanges: function () {
+      var me = this,
+        itemsWidth = me.getItemsWidth(),
+        barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
+        scrollPath = itemsWidth - barWidth;
+
+      if (itemsWidth < barWidth) {
+        me.scrolled = 0;
+
+        me.leftScroller.el.hide();
+        me.rightScroller.el.hide();
+
+        me.containerEl.css('margin-left', '0px');
+
+        return;
+      }
+      else if (me.scrolled > 0) {
+        me.scrolled = 0;
+        me.leftScroller.disable();
+        me.rightScroller.enable();
+      }
+      else if (me.scrolled < -scrollPath) {
+        me.scrolled = -scrollPath;
+        me.leftScroller.enable();
+        me.rightScroller.disable();
+      }
+
+      me.leftScroller.el.show();
+      me.rightScroller.el.show();
+
+      me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
+    },
+    /*
+     *
+     */
+    onDocMouseUp: function () {
+      var me = this;
+
+      if (me.scrollInterval) {
+        clearTimeout(me.scrollInterval);
+        delete me.scrollInterval;
+      }
+    },
+    /*
+     *
+     */
+    checkScroll: function () {
+      var me = this,
+        itemsWidth = me.getItemsWidth(),
+        barWidth = me.getBarWidth();
+
+      if (me.disableScroll) {
+        return;
+      }
+
+      if (itemsWidth > barWidth) {
+        me.enableScroll();
+      }
+      else {
+        me.leftScroller.el.hide();
+        me.rightScroller.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    enableScroll: function () {
+      var me = this;
+
+      me.leftScroller.el.show();
+      me.rightScroller.el.show();
+
+      if (me.scrolled === 0) {
+        me.leftScroller.disable();
+        me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
+      }
+    },
+    /*
+     *
+     */
+    initTabEdit: function () {
+      var me = this;
+
+      if (!me.tabEdit) {
+        return;
+      }
+
+      var i = me.items.length - 1;
+
+      for (; i > -1; i--) {
+        var item = me.items[i];
+
+        switch (item.type) {
+          case 'number':
+          case 'string':
+          case 'date':
+            item.on('tab', me.onTabLastInput, me);
+            return;
+            break;
         }
-
-        var renderTo = containerEl.append('<div class="'+(item.cls || '')+'"></div>').select('div').item(0),
-          i = 0,
-          iL = item.items.length,
-          _item,
-          width = 0;
-
-        for(;i<iL;i++){
-          _item = item.items[i];
-
-          if(Fancy.isObject(_item)){
-            _item.type = _item.type || 'button';
-          }
-
-          _item.renderTo = renderTo.dom;
-          field = me.renderItem(_item);
-          var fieldEl = field.el;
-
-          if(i === iL - 1){
-            fieldEl.css('margin-right', '0px');
-          }
-          else{
-            width += parseInt(fieldEl.css('margin-right'));
-          }
-
-          if(Fancy.nojQuery){
-            width += parseInt(fieldEl.width());
-            width += parseInt(fieldEl.css('margin-left'));
-          }
-          else{
-            width += parseInt(fieldEl.$dom.outerWidth());
-          }
-
-          width += parseInt(fieldEl.css('padding-left'));
-          width += parseInt(fieldEl.css('padding-right'));
-        }
-
-        renderTo.css('width', width);
-
-        break;
-      case undefined:
-      case 'button':
-        item.extraCls = 'fancy-bar-button';
-
-        item.scope = me.scope;
-
-        field = new Fancy.Button(item);
-        break;
-      case 'segbutton':
-        item.extraCls = 'fancy-bar-seg-button';
-
-        Fancy.applyIf(item.style, {
-          'margin-right': '6px'
-        });
-
-        field = new Fancy.SegButton(item);
-        break;
-      case 'tab':
-        field = new Fancy.toolbar.Tab(item);
-        break;
-      case 'text':
-        Fancy.applyIf(item.style, {
-          'margin-right': '10px',
-          'padding-left': '0px',
-          'padding-top': '11px'
-        });
-
-        Fancy.apply(item, {
-          renderTo: containerEl.dom,
-          cls: item.cls || ''
-        });
-
-        field = new Fancy.bar.Text(item);
-        break;
-      case 'combo':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 70
-        });
-
-        field = new Fancy.Combo(item);
-        break;
-      case 'date':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 100
-        });
-
-        field = new Fancy.DateField(item);
-
-        break;
-      case 'number':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 35
-        });
-
-        field = new Fancy.NumberField(item);
-
-        break;
-      case 'switcher':
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 35
-        });
-
-        field = new Fancy.Switcher(item);
-
-        break;
-      case 'string':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 100
-        });
-
-        field = new Fancy.StringField(item);
-        break;
-      case 'search':
-        item.inputWidth = 18;
-
-        item.events = item.events || [];
-
-        item.events = item.events.concat([{
-          enter: function(field, value){
-            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id') );
-            //this.search(['name', 'surname', 'position'], value);
-            //this.search(value);
-            //this.search(['a', 'b', 'c']);
-            grid.search(value);
-          }
-        }, {
-          key: function (field, value) {
-            var me = this,
-              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id'));
-
-            if (!me.autoEnterTime) {
-              me.autoEnterTime = new Date();
-            }
-
-            if (me.intervalAutoEnter) {
-              clearInterval(me.intervalAutoEnter);
-            }
-            delete me.intervalAutoEnter;
-
-            me.intervalAutoEnter = setInterval(function () {
-              var now = new Date();
-
-              if (now - me.autoEnterTime > 500) {
-                clearInterval(me.intervalAutoEnter);
-                delete me.intervalAutoEnter;
-                value = field.getValue();
-
-                grid.search(value);
-              }
-            }, 200);
-          }
-        },{
-          render: function(field){
-            var me = this,
-              isIn = false;
-
-            field.el.on('mouseenter', function(){
-              isIn = true;
-            }, null, '.fancy-field-search-params-link');
-
-            field.el.on('mousedown', function(e){
-              e.preventDefault();
-            }, null, '.fancy-field-search-params-link');
-
-            field.el.on('click', function(e){
-              var toShow = false,
-                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id')),
-                columns = grid.columns || [],
-                leftColumns = grid.leftColumns || [],
-                rightColumns = grid.rightColumns || [],
-                _columns = columns.concat(leftColumns).concat(rightColumns),
-                items = [],
-                i = 0,
-                iL = _columns.length,
-                height = 1;
-
-              for(;i<iL;i++){
-                var column = _columns[i],
-                  title = column.title;
-
-                if(title === undefined){
-                  title = '';
-                }
-
-                if(column.searchable === false){
-                  continue;
-                }
-
-                switch(column.type){
-                  case 'color':
-                  case 'combo':
-                  case 'date':
-                  case 'number':
-                  case 'string':
-                  case 'text':
-                  case 'currency':
-                    break;
-                  default:
-                    continue;
-                }
-
-                height += grid.fieldHeight;
-
-                items.push({
-                  inputLabel: ' &nbsp;&nbsp;' + title,
-                  value: true,
-                  name: column.index
-                });
-              }
-
-              if(!me.list){
-                me.list = new FancyForm({
-                  width: 150,
-                  height: height,
-                  theme: theme,
-                  defaults: {
-                    type: 'checkbox',
-                    label: false,
-                    style: {
-                      padding: '8px 16px 0px'
-                    }
-                  },
-                  items: items,
-                  cls: 'fancy-field-search-list',
-                  events: [{
-                    set: function () {
-                      grid.searching.setKeys(me.list.get());
-                    }
-                  },{
-                    init: function(){
-                      setTimeout(function() {
-                        var listEl = me.list.el;
-
-                        listEl.on('mouseenter', function () {
-                          isIn = true;
-                        });
-
-                        listEl.on('mouseleave', function () {
-                          isIn = false;
-                          setTimeout(function () {
-                            if (isIn === false) {
-                              if (me.list) {
-                                listEl.css('display', 'none');
-                              }
-                            }
-                          }, 750);
-                        });
-
-                        var el = Fancy.get(e.target),
-                          offset = el.offset(),
-                          fieldHeight = parseInt(field.el.css('height'));
-
-                        listEl.css({
-                          position: 'absolute',
-                          top: offset.top + fieldHeight + 20,
-                          left: offset.left
-                        });
-
-                        me.list.el.css('display', 'block');
-
-                        listEl.animate({
-                          duration: 200,
-                          top: offset.top + fieldHeight - 1
-                        });
-                      },50);
-                    }
-
-                  }]
-                });
-              }
-              else if(me.list.el.css('display') !== 'none'){
-                me.list.el.css('display', 'none');
-                return;
-              }
-              else{
-                toShow = true;
-              }
-
-              var el = Fancy.get(e.target),
-                offset = el.offset(),
-                fieldHeight = parseInt(field.el.css('height'));
-
-              if(me.list && me.list.el){
-                me.list.css({
-                  position: 'absolute',
-                  top: offset.top + fieldHeight + 20,
-                  left: offset.left
-                });
-
-                if (toShow) {
-                  me.list.css('display', 'block');
-                }
-
-                me.list.el.animate({
-                  duration: 200,
-                  top: offset.top + fieldHeight - 1
-                });
-              }
-            }, null, '.fancy-field-search-params-link');
-
-            field.el.on('mouseleave', function(){
-              isIn = false;
-              setTimeout(function(){
-                if(isIn === false){
-                  if(me.list){
-                    me.list.el.css('display', 'none');
-                  }
-                }
-              }, 750);
-            }, null, '.fancy-field-search-params-link')
-          }
-        }]);
-
-        Fancy.applyIf(item.style, {
-          'float': me.floating,
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        var cls = 'fancy-field-search';
-
-        if(item.paramsMenu){
-          item.tpl = [
-            '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-            '{label}',
-            '</div>',
-            '<div class="fancy-field-text">',
-              '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
-              '<div class="fancy-field-search-params-link" style="">' + (item.paramsText || '&nbsp;') + '</div>',
-            '</div>',
-            '<div class="fancy-clearfix"></div>'
-          ];
-
-          cls += ' fancy-field-search-paramed';
-          if(!item.paramsText){
-            cls += ' fancy-field-search-paramed-empty';
-          }
-        }
-
-        Fancy.applyIf(item, {
-          padding: false,
-          width: 250,
-          cls: cls,
-          emptyText: 'Search'
-        });
-
-        field = new Fancy.StringField(item);
-        break;
-      default:
-    }
-
-    if(me.floating === 'right'){
-      me.sideRight += field.width;
-      me.sideRight += 7;
-    }
-
-    if(item.role){
-      me.roles[item.role] = field;
-    }
-
-    return field;
-  },
-  /*
-   *
-   */
-  initScroll: function(){
-    var me = this;
-
-    me.leftScroller = new Fancy.Button({
-      imageCls: true,
-      renderTo: me.el.dom,
-      cls: 'fancy-bar-left-scroller',
-      height: me.height + 2,
-      minWidth: 20,
-      paddingTextWidth: 0,
-      imageWidth: 20,
-      width: 0,
-      text: false,
-      id: 'my',
-      style: {
-        position: 'absolute',
-        left: -1,
-        top: -1,
-        display: 'none'
-      },
-      listeners: [{
-        click: me.onPrevScrollClick,
-        scope: me
-      }]
-    });
-
-    me.rightScroller = new Fancy.Button({
-      imageCls: true,
-      renderTo: me.el.dom,
-      cls: 'fancy-bar-right-scroller',
-      height: me.height + 2,
-      minWidth: 20,
-      paddingTextWidth: 0,
-      imageWidth: 20,
-      width: 0,
-      text: false,
-      style: {
-        position: 'absolute',
-        right: -1,
-        top: -1,
-        display: 'none'
-      },
-      listeners: [{
-        click: me.onNextScrollClick,
-        scope: me
-      }]
-    });
-  },
-  /*
-   * @return {Number}
-   */
-  getBarWidth: function(){
-    var me = this;
-
-    return parseInt(me.el.css('width'));
-  },
-  /*
-   * @return {Number}
-   */
-  getItemsWidth: function(){
-    var me = this,
-      width = 0;
-
-    Fancy.each(me.items, function (item){
-      width += item.el.width();
-      width += parseInt(item.el.css('margin-left'));
-      width += parseInt(item.el.css('margin-right'));
-      width += parseInt(item.el.css('padding-right'));
-      width += parseInt(item.el.css('padding-left'));
-    });
-
-    return width;
-  },
-  /*
-   *
-   */
-  onPrevScrollClick: function(){
-    var me = this;
-
-    me.scrolled += 30;
-
-    me.applyScrollChanges();
-  },
-  /*
-   *
-   */
-  onNextScrollClick: function(){
-    var me = this;
-
-    me.scrolled -= 30;
-
-    me.applyScrollChanges();
-  },
-  /*
-   *
-   */
-  applyScrollChanges: function(){
-    var me = this,
-      itemsWidth = me.getItemsWidth(),
-      barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
-      scrollPath = itemsWidth - barWidth;
-
-    if(itemsWidth < barWidth){
-      me.scrolled = 0;
-
-      me.leftScroller.el.hide();
-      me.rightScroller.el.hide();
-
-      me.containerEl.css('margin-left', '0px');
-
-      return;
-    }
-    else if(me.scrolled > 0){
-      me.scrolled = 0;
-      me.leftScroller.disable();
-      me.rightScroller.enable();
-    }
-    else if(me.scrolled < -scrollPath){
-      me.scrolled = -scrollPath;
-      me.leftScroller.enable();
-      me.rightScroller.disable();
-    }
-
-    me.leftScroller.el.show();
-    me.rightScroller.el.show();
-
-    me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
-  },
-  /*
-   *
-   */
-  onDocMouseUp: function () {
-    var me = this;
-
-    if(me.scrollInterval){
-      clearTimeout(me.scrollInterval);
-      delete me.scrollInterval;
-    }
-  },
-  /*
-   *
-   */
-  checkScroll: function(){
-    var me = this,
-      itemsWidth = me.getItemsWidth(),
-      barWidth = me.getBarWidth();
-
-    if(me.disableScroll){
-      return;
-    }
-
-    if(itemsWidth > barWidth){
-      me.enableScroll();
-    }
-    else{
-      me.leftScroller.el.hide();
-      me.rightScroller.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  enableScroll: function(){
-    var me = this;
-
-    me.leftScroller.el.show();
-    me.rightScroller.el.show();
-
-    if(me.scrolled === 0){
-      me.leftScroller.disable();
-      me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
-    }
-  },
-  /*
-   *
-   */
-  initTabEdit: function(){
-    var me = this;
-
-    if(!me.tabEdit){
-      return;
-    }
-
-    var i = me.items.length - 1;
-
-    for(;i>-1;i--){
-      var item = me.items[i];
-
-      switch(item.type){
-        case 'number':
-        case 'string':
-        case 'date':
-          item.on('tab', me.onTabLastInput, me);
-          return;
-          break;
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {Object} e
+     */
+    onTabLastInput: function (field, e) {
+      var me = this,
+        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id'));
+
+      //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
+      e.preventDefault();
+
+      if (grid.leftColumns.length) {
+        setTimeout(function () {
+          grid.leftBody.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+        }, 100);
+      }
+      else {
+        setTimeout(function () {
+          grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+        }, 100);
       }
     }
-  },
-  /*
-   * @param {Object} field
-   * @param {Object} e
-   */
-  onTabLastInput: function(field, e){
-    var me = this,
-      grid = Fancy.getWidget(me.el.parent().select('.' + Fancy.GRID_CLS).attr('id')),
-      cellCls = grid.cellCls;
+  });
 
-    //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
-    e.preventDefault();
-
-    if(grid.leftColumns.length){
-      setTimeout(function(){
-        grid.leftBody.el.select('.' + cellCls).item(0).dom.click();
-      }, 100);
-    }
-    else{
-      setTimeout(function(){
-        grid.body.el.select('.' + cellCls).item(0).dom.click();
-      }, 100);
-    }
-  }
-});
+})();
 /*
  * @class Fancy.Separator
  */
 Fancy.define('Fancy.Separator', {
-  cls: 'fancy-separator',
+  cls: Fancy.SEPARATOR_CLS,
   /*
    * @constructor
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.init();
+    Fancy.apply(this, config);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.render();
+    this.render();
   },
   /*
    *
@@ -7303,7 +7453,7 @@ Fancy.define('Fancy.Separator', {
  */
 Fancy.define('Fancy.bar.Text', {
   extend: Fancy.Widget,
-  widgetCls: 'fancy-bar-text',
+  widgetCls: Fancy.BAR_TEXT_CLS,
   cls: '',
   text: '',
   /*
@@ -7311,22 +7461,15 @@ Fancy.define('Fancy.bar.Text', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.render();
+    this.Super('init', arguments);
+    this.render();
   },
   /*
    *
@@ -7540,911 +7683,916 @@ if(!Fancy.nojQuery && Fancy.$){
     return new Fancy.Form(o);
   };
 }
-Fancy.ns('Fancy.form.field');
-
 /*
  * @mixin Fancy.form.field.Mixin
  */
-Fancy.form.field.Mixin = function(){};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-Fancy.form.field.Mixin.prototype = {
-  padding: '8px 8px 0px 8px',
-  inputHeight: 29,
-  labelHeight: 18,
-  failedValidCls: 'fancy-field-not-valid',
-  cls: '',
-  checkValidOnTyping: false,
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      el = me.el,
-      input = me.el.getByTag('input');
+  //CONSTANTS
+  var FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
+  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
 
-    me.input = input;
-    input.on('blur', me.onBlur, me);
-    input.on('focus', me.onFocus, me);
-    input.on('input', me.onInput, me);
-    input.on('keydown', me.onKeyDown, me);
-    el.on('mouseenter', me.onMouseOver, me);
-    el.on('mouseleave', me.onMouseOut, me);
-    me.on('key', me.onKey, me);
+  F.ns('Fancy.form.field');
 
-    if(me.tip){
-      el.on('mousemove', me.onMouseMove, me);
-    }
+  F.form.field.Mixin = function () {};
 
-    if(me.format && me.format.inputFn){
-      switch(me.value){
-        case '':
-        case undefined:
+  F.form.field.Mixin.prototype = {
+    padding: '8px 8px 0px 8px',
+    inputHeight: 29,
+    labelHeight: 18,
+    failedValidCls: FIELD_NOT_VALID_CLS,
+    cls: '',
+    checkValidOnTyping: false,
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        el = me.el,
+        input = me.el.getByTag('input');
+
+      me.input = input;
+      input.on('blur', me.onBlur, me);
+      input.on('focus', me.onFocus, me);
+      input.on('input', me.onInput, me);
+      input.on('keydown', me.onKeyDown, me);
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+      me.on('key', me.onKey, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
+
+      if (me.format && me.format.inputFn) {
+        switch (me.value) {
+          case '':
+          case undefined:
+            break;
+          default:
+            me.formatValue(me.value);
+        }
+        me.on('key', me.onKeyInputFn);
+      }
+
+      if (me.stopPropagation) {
+        el.on('mousedown', function (e) {
+          e.stopPropagation();
+        });
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {*} value
+     * @param {Object} e
+     */
+    onKeyInputFn: function (field, value, e) {
+      var keyCode = e.keyCode,
+        key = F.key;
+
+      switch (keyCode) {
+        case key.ENTER:
+        case key.ESC:
+        case key.LEFT:
+        case key.RIGHT:
+          return;
           break;
-        default:
-          me.formatValue(me.value);
       }
-      me.on('key', me.onKeyInputFn);
-    }
 
-    if(me.stopPropagation){
-      el.on('mousedown', function(e){
-        e.stopPropagation();
-      });
-    }
-  },
-  /*
-   * @param {Object} field
-   * @param {*} value
-   * @param {Object} e
-   */
-  onKeyInputFn: function(field, value, e){
-    var keyCode = e.keyCode,
-      key = Fancy.key;
+      this.formatValue(value);
+    },
+    /*
+     * @param {*} value
+     */
+    formatValue: function (value) {
+      value = this.format.inputFn(value);
+      this.input.dom.value = value;
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseOver: function (e) {
+      var me = this;
 
-    switch(keyCode){
-      case key.ENTER:
-      case key.ESC:
-      case key.LEFT:
-      case key.RIGHT:
-        return;
-        break;
-    }
+      me.fire('mouseover');
 
-    this.formatValue(value);
-  },
-  /*
-   * @param {*} value
-   */
-  formatValue: function(value){
-    var me = this;
-
-    value = me.format.inputFn(value);
-    me.input.dom.value = value;
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseOver: function(e){
-    var me = this;
-
-    me.fire('mouseover');
-
-    if(me.tip){
-      me.renderTip(e);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseOut: function(e){
-    var me = this;
-
-    me.fire('mouseout');
-
-    if(me.tip && me.tooltip){
-      me.tooltipToDestroy = true;
-      me.tooltip.destroy();
-      delete me.tooltip;
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = me.renderTo || document.body,
-      renderAfter = me.renderAfter,
-      renderBefore = me.renderBefore,
-      el = Fancy.get(document.createElement('div'));
-
-    if(Fancy.isString(renderTo)){
-      renderTo = document.getElementById(renderTo);
-      if(!renderTo){
-        renderTo = Fancy.select(renderTo).item(0);
+      if (me.tip) {
+        me.renderTip(e);
       }
-    }
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseOut: function (e) {
+      var me = this;
 
-    me.fire('beforerender');
+      me.fire('mouseout');
 
-    el.addCls(
-      Fancy.cls,
-      me.cls,
-      me.fieldCls
-    );
-
-    el.attr('id', me.id);
-
-    var labelWidth = '',
-      itemsHTML = '';
-
-    if (me.itemsHTML) {
-      itemsHTML = me.itemsHTML;
-    }
-
-    if (me.labelAlign === 'top' && me.label) {
-      //auto fixing of wrong labelWidth.
-      //will not fix right if user change color of label font-size to bigger
-      if (me.labelWidth < me.label.length * 7) {
-        me.labelWidth = (me.label.length + 2) * 7;
+      if (me.tip && me.tooltip) {
+        me.tooltipToDestroy = true;
+        me.tooltip.destroy();
+        delete me.tooltip;
       }
-    }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = me.renderTo || document.body,
+        renderAfter = me.renderAfter,
+        renderBefore = me.renderBefore,
+        el = F.get(document.createElement('div'));
 
-    if (me.labelWidth) {
-      labelWidth = 'width:' + me.labelWidth + 'px;';
-    }
+      if (F.isString(renderTo)) {
+        renderTo = document.getElementById(renderTo);
+        if (!renderTo) {
+          renderTo = F.select(renderTo).item(0);
+        }
+      }
 
-    var label = me.label;
+      me.fire('beforerender');
 
-    if (me.label === '') {
-      label = '&nbsp;';
-    }
-    else if (me.label === undefined) {
-      label = '&nbsp;';
-    }
-    else if (me.labelAlign !== 'right') {
-      label += ':';
-    }
-
-    var labelDisplay = '',
-      inputLabelDisplay = '',
-      inputLabel = '';
-
-    if (me.label === false) {
-      labelDisplay = 'display:none;';
-    }
-
-    if (!me.inputLabel) {
-      inputLabelDisplay = 'display:none;';
-    }
-    else {
-      inputLabel = me.inputLabel;
-    }
-
-    if (me.type === 'recaptcha') {
-      el.update( me.tpl.getHTML({
-          key: me.key
-        })
+      el.addCls(
+        F.cls,
+        me.cls,
+        me.fieldCls
       );
-    }
-    else{
-      el.update(
-        me.tpl.getHTML({
-          labelWidth: labelWidth,
-          label: label,
-          labelDisplay: labelDisplay,
-          inputLabelDisplay: inputLabelDisplay,
-          inputLabel: inputLabel,
-          emptyText: me.emptyText,
-          value: me.value,
-          height: me.height,
-          itemsHTML: itemsHTML,
-          errorTextStyle: '',
-          buttonText: me.buttonText
-        })
-      );
-    }
 
-    me.el = el;
-    me.setStyle();
-
-    if(me.renderId === true){
       el.attr('id', me.id);
-    }
 
-    if(renderAfter){
-      el = renderAfter.after(el.dom.outerHTML).next();
-    }
-    else if(renderBefore){
-      el = renderBefore.before(el.dom.outerHTML).prev();
-    }
-    else {
-      renderTo.appendChild(el.dom);
-    }
-    me.el = el;
+      var labelWidth = '',
+        itemsHTML = '';
 
-    if(me.type === 'textarea'){
-      me.input = me.el.getByTag('textarea');
-    }
-    else{
-      me.input = me.el.getByTag('input');
-    }
-
-    if(me.name) {
-      me.input.name = me.name;
-    }
-
-    me.setSize();
-
-    if( me.labelAlign === 'top' ){
-      me.el.addCls('fancy-field-label-align-top');
-      me.el.select('.fancy-field-text').css('float', 'none');
-    }
-    else if( me.labelAlign === 'right' ){
-      me.el.addCls('fancy-field-label-align-right');
-      switch (me.type){
-        case 'radio':
-          $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text:last'));
-          break;
-        case 'textarea':
-          $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-textarea-text'));
-          break;
-        default:
-          $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
+      if (me.itemsHTML) {
+        itemsHTML = me.itemsHTML;
       }
-    }
-    else if(me.type !== 'radio'){}
 
-    me.acceptedValue = me.value;
-    me.fire('afterrender');
-    me.fire('render');
-
-    if( me.type !== 'recaptcha' && me.type !== 'chat' ){
-      setTimeout(function(){
-        if( me.input && me.input.dom){
-          if( me.input.dom.value.length === 0 ){
-            if( me.prevColor === undefined ){
-              me.prevColor = me.input.css('color');
-            }
-
-            //me.input.css('color', 'grey');
-          }
+      if (me.labelAlign === 'top' && me.label) {
+        //auto fixing of wrong labelWidth.
+        //will not fix right if user change color of label font-size to bigger
+        if (me.labelWidth < me.label.length * 7) {
+          me.labelWidth = (me.label.length + 2) * 7;
         }
-      }, 1);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onKeyDown: function(e){
-    var me = this,
-      keyCode = e.keyCode,
-      key = Fancy.key;
-
-    if( me.type === 'number' ){
-      if( Fancy.Key.isNumControl(keyCode, e) === false ){
-        e.preventDefault();
-        e.stopPropagation();
-        return;
       }
-    }
 
-    switch(keyCode){
-      case key.TAB:
-        me.fire('tab', e);
-        break;
-      case key.ENTER:
-        me.fire('enter', me.getValue());
-        if( me.type !== 'textarea' ){
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        break;
-      case key.UP:
-        switch(me.type){
-          case 'number':
-          case 'field.number':
-            me.spinUp();
+      if (me.labelWidth) {
+        labelWidth = 'width:' + me.labelWidth + 'px;';
+      }
+
+      var label = me.label;
+
+      if (me.label === '') {
+        label = '&nbsp;';
+      }
+      else if (me.label === undefined) {
+        label = '&nbsp;';
+      }
+      else if (me.labelAlign !== 'right') {
+        label += ':';
+      }
+
+      var labelDisplay = '',
+        inputLabelDisplay = '',
+        inputLabel = '';
+
+      if (me.label === false) {
+        labelDisplay = 'display:none;';
+      }
+
+      if (!me.inputLabel) {
+        inputLabelDisplay = 'display:none;';
+      }
+      else {
+        inputLabel = me.inputLabel;
+      }
+
+      if (me.type === 'recaptcha') {
+        el.update(me.tpl.getHTML({
+            key: me.key
+          })
+        );
+      }
+      else {
+        el.update(
+          me.tpl.getHTML({
+            labelWidth: labelWidth,
+            label: label,
+            labelDisplay: labelDisplay,
+            inputLabelDisplay: inputLabelDisplay,
+            inputLabel: inputLabel,
+            emptyText: me.emptyText,
+            value: me.value,
+            height: me.height,
+            itemsHTML: itemsHTML,
+            errorTextStyle: '',
+            buttonText: me.buttonText
+          })
+        );
+      }
+
+      me.el = el;
+      me.setStyle();
+
+      if (me.renderId === true) {
+        el.attr('id', me.id);
+      }
+
+      if (renderAfter) {
+        el = renderAfter.after(el.dom.outerHTML).next();
+      }
+      else if (renderBefore) {
+        el = renderBefore.before(el.dom.outerHTML).prev();
+      }
+      else {
+        renderTo.appendChild(el.dom);
+      }
+      me.el = el;
+
+      if (me.type === 'textarea') {
+        me.input = me.el.getByTag('textarea');
+      }
+      else {
+        me.input = me.el.getByTag('input');
+      }
+
+      if (me.name) {
+        me.input.name = me.name;
+      }
+
+      me.setSize();
+
+      if (me.labelAlign === 'top') {
+        me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
+        me.el.select('.' + FIELD_TEXT_CLS).css('float', 'none');
+      }
+      else if (me.labelAlign === 'right') {
+        me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
+        switch (me.type) {
+          case 'radio':
+            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             break;
-        }
-
-        me.fire('up', me.getValue());
-
-        if( me.type !== 'textarea' ){
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        break;
-      case key.DOWN:
-        switch(me.type){
-          case 'number':
-          case 'field.number':
-            me.spinDown();
+          case 'textarea':
+            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
             break;
+          default:
+            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS));
         }
+      }
+      else if (me.type !== 'radio') {
+      }
 
-        me.fire('down', me.getValue());
+      me.acceptedValue = me.value;
+      me.fire('afterrender');
+      me.fire('render');
 
-        if( me.type !== 'textarea' ){
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        break;
-      case key.LEFT:
-        break;
-      case key.RIGHT:
-        e.stopPropagation();
-        break;
-      default:
-        setTimeout(function(){
-          if( me.input ){
-            if( me.input.dom.value.length === 0 ){
-              if( me.prevColor === undefined ){
+      if (me.type !== 'recaptcha' && me.type !== 'chat') {
+        setTimeout(function () {
+          if (me.input && me.input.dom) {
+            if (me.input.dom.value.length === 0) {
+              if (me.prevColor === undefined) {
                 me.prevColor = me.input.css('color');
               }
 
-              me.input.css('color', 'grey');
-            }
-            else{
-              if( me.prevColor ){
-                me.input.css('color', me.prevColor);
-              }
-              else{
-                me.input.css('color', ' ');
-              }
+              //me.input.css('color', 'grey');
             }
           }
         }, 1);
-    }
-
-    setTimeout(function(){
-      me.fire('key', me.input.dom.value, e);
-    }, 1);
-  },
-  /*
-   * @param {Object} me
-   * @param {*} value
-   */
-  onKey: function(me, value){
-    if(!me.isValid() || me.checkValidOnTyping){
-      me.validate(value);
-    }
-  },
-  /*
-   *
-   */
-  onBlur: function(){
-    var me = this;
-
-    me.fire('blur');
-
-    if(me.input){
-      return me.validate(me.input.dom.value);
-    }
-
-    return true;
-  },
-  /*
-   * @param {*} value
-   */
-  validate: function(value){
-    var me = this,
-      vtype = me.vtype;
-
-    if(vtype === undefined){
-      return true;
-    }
-    else{
-      var valid = Fancy.isValid(vtype, value);
-      if( valid !== true ){
-        me.errorText = new Fancy.Template(valid.text).getHTML(valid);
-        me.failedValid();
-
-        return false;
       }
-      else{
-        me.successValid();
+    },
+    /*
+     * @param {Object} e
+     */
+    onKeyDown: function (e) {
+      var me = this,
+        keyCode = e.keyCode,
+        key = F.key;
+
+      if (me.type === 'number') {
+        if (F.Key.isNumControl(keyCode, e) === false) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+
+      switch (keyCode) {
+        case key.TAB:
+          me.fire('tab', e);
+          break;
+        case key.ENTER:
+          me.fire('enter', me.getValue());
+          if (me.type !== 'textarea') {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case key.UP:
+          switch (me.type) {
+            case 'number':
+            case 'field.number':
+              me.spinUp();
+              break;
+          }
+
+          me.fire('up', me.getValue());
+
+          if (me.type !== 'textarea') {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case key.DOWN:
+          switch (me.type) {
+            case 'number':
+            case 'field.number':
+              me.spinDown();
+              break;
+          }
+
+          me.fire('down', me.getValue());
+
+          if (me.type !== 'textarea') {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case key.LEFT:
+          break;
+        case key.RIGHT:
+          e.stopPropagation();
+          break;
+        default:
+          setTimeout(function () {
+            if (me.input) {
+              if (me.input.dom.value.length === 0) {
+                if (me.prevColor === undefined) {
+                  me.prevColor = me.input.css('color');
+                }
+
+                me.input.css('color', 'grey');
+              }
+              else {
+                if (me.prevColor) {
+                  me.input.css('color', me.prevColor);
+                }
+                else {
+                  me.input.css('color', ' ');
+                }
+              }
+            }
+          }, 1);
+      }
+
+      setTimeout(function () {
+        me.fire('key', me.input.dom.value, e);
+      }, 1);
+    },
+    /*
+     * @param {Object} me
+     * @param {*} value
+     */
+    onKey: function (me, value) {
+      if (!me.isValid() || me.checkValidOnTyping) {
+        me.validate(value);
+      }
+    },
+    /*
+     *
+     */
+    onBlur: function () {
+      var me = this;
+
+      me.fire('blur');
+
+      if (me.input) {
+        return me.validate(me.input.dom.value);
+      }
+
+      return true;
+    },
+    /*
+     * @param {*} value
+     */
+    validate: function (value) {
+      var me = this,
+        vtype = me.vtype;
+
+      if (vtype === undefined) {
         return true;
       }
-    }
-  },
-  /*
-   *
-   */
-  isValid: function(){
-    var me = this;
+      else {
+        var valid = F.isValid(vtype, value);
+        if (valid !== true) {
+          me.errorText = new F.Template(valid.text).getHTML(valid);
+          me.failedValid();
 
-    return !me.hasCls(me.failedValidCls);
-  },
-  /*
-   *
-   */
-  onFocus: function(){
-    var me = this;
+          return false;
+        }
+        else {
+          me.successValid();
+          return true;
+        }
+      }
+    },
+    /*
+     *
+     */
+    isValid: function () {
+      return !this.hasCls(this.failedValidCls);
+    },
+    /*
+     *
+     */
+    onFocus: function () {
+      this.fire('focus');
+    },
+    /*
+     *
+     */
+    onInput: function () {
+      var me = this,
+        input = me.input,
+        value = me.getValue(),
+        oldValue = me.acceptedValue;
 
-    me.fire('focus');
-  },
-  /*
-   *
-   */
-  onInput: function(){
-    var me = this,
-      input = me.input,
-      value = me.getValue(),
-      oldValue = me.acceptedValue;
+      me.acceptedValue = me.get();
+      me.fire('input', value);
+      me.fire('change', value, oldValue);
+    },
+    /*
+     *
+     */
+    get: function () {
+      var me = this;
 
-    me.acceptedValue = me.get();
-    me.fire('input', value);
-    me.fire('change', value, oldValue);
-  },
-  /*
-   *
-   */
-  get: function(){
-    var me = this;
+      if (me.format) {
+        //Place of bugs
+        if (F.isString(me.format)) {
+        }
+        else if (F.isObject(me.format)) {
+          if (me.format.inputFn) {
+            if (me.type === 'number' || me.type === 'field.number') {
+              if (isNaN(parseFloat(me.value))) {
+                return me.value;
+              }
 
-    if(me.format){
-      //Place of bugs
-      if(Fancy.isString(me.format)){}
-      else if(Fancy.isObject(me.format)){
-        if(me.format.inputFn){
-          if(me.type === 'number' || me.type === 'field.number'){
-            if(isNaN(parseFloat(me.value))){
-              return me.value;
+              return Number(me.value);
             }
-
-            return Number(me.value);
           }
+        }
+        else {
+          return me.value;
+        }
+      }
+
+      return me.input.dom.value;
+    },
+    /*
+     *
+     */
+    getValue: function () {
+      return this.get();
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    set: function (value, onInput) {
+      var me = this;
+
+      me.value = value;
+
+      if (me.format && me.format.inputFn) {
+        me.formatValue(value);
+      }
+      else {
+        me.input.dom.value = value;
+      }
+
+      if (onInput !== false) {
+        me.onInput();
+      }
+
+      me.validate(value);
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    setValue: function (value, onInput) {
+      this.set(value, onInput);
+    },
+    /*
+     *
+     */
+    clear: function () {
+      this.set('');
+      this.clearValid();
+    },
+    /*
+     *
+     */
+    failedValid: function () {
+      var me = this;
+
+      if (me.hasCls(me.failedValidCls)) {
+        if (me.tooltip && me.errorText) {
+          me.tooltip.update(me.errorText);
         }
       }
       else {
-        return me.value;
+        if (!me.tooltip && me.errorText) {
+          me.showErrorTip();
+
+          me.el.on('mousemove', me.onMouseMove, me);
+          me.input.hover(function (e) {
+            if (me.errorText) {
+              me.showErrorTip();
+              me.tooltip.show(e.pageX + 15, e.pageY - 25);
+            }
+          }, function () {
+            me.hideErrorTip();
+          });
+        }
+
+        me.addCls(me.failedValidCls);
       }
-    }
+    },
+    clearValid: function () {
+      this.removeCls(this.failedValidCls);
+    },
+    /*
+     *
+     */
+    successValid: function () {
+      var me = this;
 
-    return me.input.dom.value;
-  },
-  /*
-   *
-   */
-  getValue: function(){
-    return this.get();
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  set: function(value, onInput){
-    var me = this;
+      me.removeCls(me.failedValidCls);
+      me.hideErrorTip();
+      delete me.errorText;
+    },
+    /*
+     *
+     */
+    showErrorTip: function () {
+      var me = this;
 
-    me.value = value;
-
-    if(me.format && me.format.inputFn){
-      me.formatValue(value);
-    }
-    else{
-      me.input.dom.value = value;
-    }
-
-    if(onInput !== false){
-      me.onInput();
-    }
-
-    me.validate(value);
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  setValue: function(value, onInput){
-    this.set(value, onInput);
-  },
-  /*
-   *
-   */
-  clear: function(){
-    var me = this;
-
-    me.set('');
-    me.clearValid();
-  },
-  /*
-   *
-   */
-  failedValid: function(){
-    var me = this;
-
-    if(me.hasCls(me.failedValidCls)){
-      if(me.tooltip && me.errorText){
-        me.tooltip.update(me.errorText);
+      if (!me.tooltip) {
+        me.tooltip = new F.ToolTip({
+          text: me.errorText
+        });
       }
-    }
-    else{
-      if(!me.tooltip && me.errorText){
-        me.showErrorTip();
+    },
+    /*
+     *
+     */
+    hideErrorTip: function () {
+      var me = this;
 
-        me.el.on('mousemove', me.onMouseMove, me);
-        me.input.hover(function(e){
-          if(me.errorText){
-            me.showErrorTip();
-            me.tooltip.show(e.pageX + 15, e.pageY - 25);
-          }
-        }, function(){
-          me.hideErrorTip();
+      if (me.tooltip) {
+        me.tooltip.destroy();
+        delete me.tooltip;
+      }
+    },
+    /*
+     * @param {Object} o
+     */
+    setInputSize: function (o) {
+      var me = this;
+
+      if (o.width) {
+        me.input.css('width', o.width);
+      }
+
+      if (o.height) {
+        me.input.css('height', o.height);
+      }
+    },
+    /*
+     *
+     */
+    focus: function () {
+      var me = this;
+
+      me.input.focus();
+      setTimeout(function () {
+        me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
+      }, 0);
+    },
+    /*
+     *
+     */
+    hide: function () {
+      var me = this;
+
+      me.fire('beforehide');
+      me.css('display', 'none');
+      me.fire('hide');
+    },
+    /*
+     *
+     */
+    show: function () {
+      this.css('display', 'block');
+    },
+    /*
+     * @param {Number|Object} width
+     * @param {Number} height
+     */
+    setSize: function (width, height) {
+      var me = this;
+
+      switch (me.type) {
+        case 'set':
+        case 'line':
+          return;
+          break;
+      }
+
+      if (width === undefined && height === undefined) {
+        width = me.width;
+        height = me.height;
+      }
+      else if (height === undefined) {
+        var o = width;
+        if (o.width) {
+          width = o.width;
+        }
+        else {
+          width = me.width;
+        }
+
+        if (o.height) {
+          height = o.height;
+        }
+        else {
+          height = me.height;
+        }
+      }
+
+      if (me.size) {
+        me.size({
+          width: width,
+          height: height
+        });
+
+        return;
+      }
+
+      if (width !== undefined) {
+        me.css('width', width);
+      }
+
+      if (me.labelAlign === 'top') {
+        me.css('height', height * 1.5);
+      }
+      else {
+        me.css('height', height);
+
+        if (me.label) {
+          me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);
+        }
+      }
+
+      me.setInputSize({
+        width: me.inputWidth,
+        height: me.inputHeight
+      });
+    },
+    /*
+     *
+     */
+    setStyle: function () {
+      var me = this,
+        style = me.style || {},
+        padding = me.padding;
+
+      if (padding) {
+        if (F.isNumber(padding)) {
+          padding = padding + 'px';
+        }
+        else if (F.isString(padding)) {
+        }
+
+        if (style.padding === undefined) {
+          style.padding = padding;
+        }
+      }
+      else {
+        style.padding = '0px';
+      }
+
+      if (me.hidden) {
+        me.css('display', 'none')
+      }
+
+      me.css(style);
+    },
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
+
+      if (me.tpl && F.isObject(me.tpl) === false) {
+        me.tpl = new F.Template(me.tpl);
+      }
+
+      me.calcSize();
+    },
+    /*
+     *
+     */
+    calcSize: function () {
+      var me = this,
+        inputWidth,
+        inputHeight = me.inputHeight,
+        padding = me.padding,
+        value,
+        value1,
+        value2,
+        value3;
+
+      if (F.isString(padding)) {
+        padding = padding.replace(/px/g, '');
+        padding = padding.split(' ');
+        switch (padding.length) {
+          case 1:
+            value = Number(padding[0]);
+            padding = [value, value, value, value];
+            break;
+          case 2:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+
+            padding = [value1, value2, value1, value2];
+            break;
+          case 3:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+            value3 = Number(padding[2]);
+
+            padding = [value1, value2, value3, value1];
+            break;
+          case 4:
+            padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
+            break;
+        }
+      }
+      else if (F.isNumber(padding)) {
+        padding = [padding, padding, padding, padding];
+      }
+      else if (padding === false) {
+        padding = [0, 0, 0, 0];
+      }
+
+      if (me.labelAlign === 'top') {
+        me.height *= 1.5;
+      }
+
+      inputWidth = me.width;
+
+      if (me.labelAlign !== 'top' && me.label) {
+        inputWidth -= me.labelWidth;
+      }
+
+      if (me.height === me.inputHeight && me.padding !== false) {
+        inputHeight -= padding[0] + padding[2];
+      }
+
+      if (me.type === 'radio' && !me.column) {
+        me.calcColumns();
+        if (me.rows !== 1) {
+          inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
+        }
+      }
+
+      me.inputHeight = inputHeight;
+      me.inputWidth = inputWidth - padding[1] - padding[3];
+      me.height = inputHeight + padding[0] + padding[2];
+    },
+    /*
+     * @param {Number} value
+     */
+    setWidth: function (value) {
+      var me = this;
+
+      me.width = value;
+      me.calcSize();
+
+      me.css('width', value);
+      me.setInputSize({
+        width: me.inputWidth
+      });
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseMove: function (e) {
+      var me = this;
+
+      delete me.tooltipToDestroy;
+
+      if (me.tip) {
+        me.renderTip(e);
+      }
+      else if (me.tooltip) {
+        me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    renderTip: function (e) {
+      var me = this,
+        value = '',
+        tpl = new F.Template(me.tip || me.tooltip);
+
+      if (me.getValue) {
+        value = me.getValue();
+      }
+
+      var text = tpl.getHTML({
+        value: value
+      });
+
+      if (me.tooltip) {
+        me.tooltip.update(text);
+      }
+      else {
+        me.tooltip = new F.ToolTip({
+          text: text
         });
       }
 
-      me.addCls(me.failedValidCls);
-    }
-  },
-  clearValid: function () {
-    var me = this;
-
-    me.removeCls(me.failedValidCls);
-  },
-  /*
-   *
-   */
-  successValid: function(){
-    var me = this;
-
-    me.removeCls(me.failedValidCls);
-    me.hideErrorTip();
-    delete me.errorText;
-  },
-  /*
-   *
-   */
-  showErrorTip: function(){
-    var me = this;
-
-    if(!me.tooltip){
-      me.tooltip = new Fancy.ToolTip({
-        text: me.errorText
-      });
-    }
-  },
-  /*
-   *
-   */
-  hideErrorTip: function(){
-    var me = this;
-
-    if(me.tooltip) {
-      me.tooltip.destroy();
-      delete me.tooltip;
-    }
-  },
-  /*
-   * @param {Object} o
-   */
-  setInputSize: function(o){
-    var me = this;
-
-    if(o.width) {
-      me.input.css('width', o.width);
-    }
-
-    if(o.height) {
-      me.input.css('height', o.height);
-    }
-  },
-  /*
-   *
-   */
-  focus: function(){
-    var me = this;
-
-    me.input.focus();
-    setTimeout(function(){
-      me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
-    }, 0);
-  },
-  /*
-   *
-   */
-  hide: function(){
-    var me = this;
-
-    me.fire('beforehide');
-    me.css('display', 'none');
-    me.fire('hide');
-  },
-  /*
-   *
-   */
-  show: function(){
-    var me = this;
-
-    me.css('display', 'block');
-  },
-  /*
-   * @param {Number|Object} width
-   * @param {Number} height
-   */
-  setSize: function(width, height){
-    var me = this;
-
-    switch(me.type){
-      case 'set':
-      case 'line':
-        return;
-        break;
-    }
-
-    if(width === undefined && height === undefined){
-      width = me.width;
-      height = me.height;
-    }
-    else if(height === undefined){
-      var o = width;
-      if(o.width){
-        width = o.width;
-      }
-      else{
-        width = me.width;
-      }
-
-      if(o.height){
-        height = o.height;
-      }
-      else{
-        height = me.height;
-      }
-    }
-
-    if(me.size){
-      me.size({
-        width: width,
-        height: height
-      });
-
-      return;
-    }
-
-    if(width !== undefined) {
-      me.css('width', width);
-    }
-
-    if(me.labelAlign === 'top'){
-      me.css('height', height * 1.5);
-    }
-    else{
-      me.css('height', height);
-
-      if(me.label){
-        me.el.select('.fancy-field-label').css('height', me.inputHeight);
-      }
-    }
-
-    me.setInputSize({
-      width: me.inputWidth,
-      height: me.inputHeight
-    });
-  },
-  /*
-   *
-   */
-  setStyle: function(){
-    var me = this,
-      style = me.style || {},
-      padding = me.padding;
-
-    if(padding){
-      if(Fancy.isNumber(padding)){
-        padding = padding + 'px';
-      }
-      else if(Fancy.isString(padding)){}
-
-      if(style.padding === undefined){
-        style.padding = padding;
-      }
-    }
-    else{
-      style.padding = '0px';
-    }
-
-    if(me.hidden){
-      me.css('display', 'none')
-    }
-
-    me.css(style);
-  },
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
-
-    if(me.tpl && Fancy.isObject(me.tpl) === false){
-      me.tpl = new Fancy.Template(me.tpl);
-    }
-
-    me.calcSize();
-  },
-  /*
-   *
-   */
-  calcSize: function(){
-    var me = this,
-      inputWidth,
-      inputHeight = me.inputHeight,
-      padding = me.padding,
-      value,
-      value1,
-      value2,
-      value3;
-
-    if(Fancy.isString(padding)){
-      padding = padding.replace(/px/g, '');
-      padding = padding.split(' ');
-      switch(padding.length){
-        case 1:
-          value = Number(padding[0]);
-          padding = [value, value, value, value];
-          break;
-        case 2:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-
-          padding = [value1, value2, value1, value2];
-          break;
-        case 3:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-          value3 = Number(padding[2]);
-
-          padding = [value1, value2, value3, value1];
-          break;
-        case 4:
-          padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
-          break;
-      }
-    }
-    else if(Fancy.isNumber(padding)){
-      padding = [padding, padding, padding, padding];
-    }
-    else if(padding === false){
-      padding = [0, 0, 0, 0];
-    }
-
-    if(me.labelAlign === 'top'){
-      me.height *= 1.5;
-    }
-
-    inputWidth = me.width;
-
-    if(me.labelAlign !== 'top' && me.label){
-      inputWidth -= me.labelWidth;
-    }
-
-    if(me.height === me.inputHeight && me.padding !== false){
-      inputHeight -= padding[0] + padding[2];
-    }
-
-    if(me.type === 'radio' && !me.column){
-      me.calcColumns();
-      if(me.rows !== 1) {
-        inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
-      }
-    }
-
-    me.inputHeight = inputHeight;
-    me.inputWidth = inputWidth -  padding[1] - padding[3];
-    me.height = inputHeight + padding[0] + padding[2];
-  },
-  /*
-   * @param {Number} value
-   */
-  setWidth: function(value){
-    var me = this;
-
-    me.width = value;
-    me.calcSize();
-
-    me.css('width', value);
-    me.setInputSize({
-      width: me.inputWidth
-    });
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseMove: function(e){
-    var me = this;
-
-    delete me.tooltipToDestroy;
-
-    if(me.tip){
-      me.renderTip(e);
-    }
-    else if(me.tooltip){
       me.tooltip.show(e.pageX + 15, e.pageY - 25);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  renderTip: function(e){
-    var me = this,
-      value = '',
-      tpl = new Fancy.Template(me.tip || me.tooltip);
+    },
+    /*
+     * @return {Object}
+     */
+    getInputSelection: function () {
+      var me = this,
+        start = 0,
+        end = 0,
+        normalizedValue,
+        range,
+        textInputRange,
+        len,
+        endRange,
+        el = me.input.dom;
 
-    if(me.getValue){
-      value = me.getValue();
-    }
+      if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+        start = el.selectionStart;
+        end = el.selectionEnd;
+      }
+      else {
+        range = document.selection.createRange();
 
-    var text = tpl.getHTML({
-      value: value
-    });
+        if (range && range.parentElement() == el) {
+          len = el.value.length;
+          normalizedValue = el.value.replace(/\r\n/g, "\n");
 
-    if(me.tooltip){
-      me.tooltip.update(text);
-    }
-    else {
-      me.tooltip = new Fancy.ToolTip({
-        text: text
-      });
-    }
+          // Create a working TextRange that lives only in the input
+          textInputRange = el.createTextRange();
+          textInputRange.moveToBookmark(range.getBookmark());
 
-    me.tooltip.show(e.pageX + 15, e.pageY - 25);
-  },
-  /*
-   * @return {Object}
-   */
-  getInputSelection: function(){
-    var me = this,
-      start = 0,
-      end = 0,
-      normalizedValue,
-      range,
-      textInputRange,
-      len,
-      endRange,
-      el = me.input.dom;
+          // Check if the start and end of the selection are at the very end
+          // of the input, since moveStart/moveEnd doesn't return what we want
+          // in those cases
+          endRange = el.createTextRange();
+          endRange.collapse(false);
 
-    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
-      start = el.selectionStart;
-      end = el.selectionEnd;
-    }
-    else {
-      range = document.selection.createRange();
-
-      if (range && range.parentElement() == el) {
-        len = el.value.length;
-        normalizedValue = el.value.replace(/\r\n/g, "\n");
-
-        // Create a working TextRange that lives only in the input
-        textInputRange = el.createTextRange();
-        textInputRange.moveToBookmark(range.getBookmark());
-
-        // Check if the start and end of the selection are at the very end
-        // of the input, since moveStart/moveEnd doesn't return what we want
-        // in those cases
-        endRange = el.createTextRange();
-        endRange.collapse(false);
-
-        if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
-          start = end = len;
-        } else {
-          start = -textInputRange.moveStart("character", -len);
-          start += normalizedValue.slice(0, start).split("\n").length - 1;
-
-          if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
-            end = len;
+          if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+            start = end = len;
           } else {
-            end = -textInputRange.moveEnd("character", -len);
-            end += normalizedValue.slice(0, end).split("\n").length - 1;
+            start = -textInputRange.moveStart("character", -len);
+            start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+            if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+              end = len;
+            } else {
+              end = -textInputRange.moveEnd("character", -len);
+              end += normalizedValue.slice(0, end).split("\n").length - 1;
+            }
           }
         }
       }
-    }
 
-    return {
-      start: start,
-      end: end
-    };
-  }
-};
+      return {
+        start: start,
+        end: end
+      };
+    }
+  };
+
+})();
 /*
  * @class Fancy.StringField
  * @extends Fancy.Widget
@@ -8460,12 +8608,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -8541,12 +8685,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('const', arguments);
+      Fancy.apply(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -8663,17 +8803,13 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Number} value
      */
     setMin: function (value) {
-      var me = this;
-
-      me.min = value;
+      this.min = value;
     },
     /*
      * @param {Number} value
      */
     setMax: function (value) {
-      var me = this;
-
-      me.max = value;
+      this.max = value;
     },
     /*
      *
@@ -8827,12 +8963,8 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -8873,9 +9005,7 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
    * @param {*} value
    */
   set: function(value){
-    var me = this;
-
-    me.el.select('.fancy-field-text-value').item(0).update(value);
+    this.el.select('.fancy-field-text-value').item(0).update(value);
   }
 });
 /*
@@ -8893,12 +9023,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -8937,227 +9063,239 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
  * @class Fancy.TextArea
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
-  mixins: [
-    Fancy.form.field.Mixin
-  ],
-  extend: Fancy.Widget,
-  type: 'field.textarea',
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_TEXTAREA_CLS = F.FIELD_TEXTAREA_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  var FIELD_TEXTAREA_TEXT_INPUT_CLS = F.FIELD_TEXTAREA_TEXT_INPUT_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
 
-    me.addEvents('change', 'key');
-    me.Super('init', arguments);
+  F.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
+    mixins: [
+      F.form.field.Mixin
+    ],
+    extend: F.Widget,
+    type: 'field.textarea',
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.preRender();
-    me.render();
+      me.addEvents('change', 'key');
+      me.Super('init', arguments);
 
-    me.ons();
-  },
-  fieldCls: 'fancy fancy-field fancy-textarea',
-  value: '',
-  width: 250,
-  height: 100,
-  labelWidth: 60,
-  inputWidth: 180,
-  minHeight: 100,
-  maxHeight: 210,
-  lineHeight: 12.5,
-  emptyText: '',
-  tpl: [
-    '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
+      me.preRender();
+      me.render();
+
+      me.ons();
+    },
+    fieldCls: FIELD_CLS + ' ' + FIELD_TEXTAREA_CLS,
+    value: '',
+    width: 250,
+    height: 100,
+    labelWidth: 60,
+    inputWidth: 180,
+    minHeight: 100,
+    maxHeight: 210,
+    lineHeight: 12.5,
+    emptyText: '',
+    tpl: [
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
       '{label}',
-    '</div>',
-    '<div class="fancy-textarea-text">',
-      //'<textarea autocomplete="off" placeholder="{emptyText}" type="text" class="fancy-textarea-text-input" style="{inputWidth}height:{height}px;">{value}</textarea>',
-      '<textarea autocomplete="off" placeholder="{emptyText}" type="text" class="fancy-textarea-text-input" style="{inputWidth}height:{inputHeight}px;">{value}</textarea>',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-    '</div>',
-    '<div class="fancy-clearfix"></div>'
-  ],
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      input = me.el.getByTag('textarea');
+      '</div>',
+      '<div class="' + FIELD_TEXTAREA_TEXT_CLS + '">',
+      '<textarea autocomplete="off" placeholder="{emptyText}" type="text" class="' + FIELD_TEXTAREA_TEXT_INPUT_CLS + '" style="{inputWidth}height:{inputHeight}px;">{value}</textarea>',
+      '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '</div>',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
+    ],
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        input = me.el.getByTag('textarea');
 
-    me.input = input;
-    input.on('blur', me.onBlur, me);
-    input.on('focus', me.onFocus, me);
-    input.on('input', me.onInput, me);
-    input.on('keydown', me.onKeyDown, me);
-    me.on('key', me.onKey, me);
+      me.input = input;
+      input.on('blur', me.onBlur, me);
+      input.on('focus', me.onFocus, me);
+      input.on('input', me.onInput, me);
+      input.on('keydown', me.onKeyDown, me);
+      me.on('key', me.onKey, me);
 
-    if( me.autoHeight ){
-      input.on('input', me.onChange, me);
-    }
-  },
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
+      if (me.autoHeight) {
+        input.on('input', me.onChange, me);
+      }
+    },
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
 
-    if(me.tpl) {
-      me.tpl = new Fancy.Template(me.tpl);
-    }
+      if (me.tpl) {
+        me.tpl = new F.Template(me.tpl);
+      }
 
-    me.initHeight();
-    me.calcSize();
-  },
-  /*
-   *
-   */
-  initHeight: function(){
-    var me = this,
-      height;
+      me.initHeight();
+      me.calcSize();
+    },
+    /*
+     *
+     */
+    initHeight: function () {
+      var me = this,
+        height;
 
-    if(me.height){
-      height = me.height;
-      if(me.maxHeight < me.height){
-        me.maxHeight = me.height;
-        setTimeout(function(){
+      if (me.height) {
+        height = me.height;
+        if (me.maxHeight < me.height) {
+          me.maxHeight = me.height;
+          setTimeout(function () {
+            me.input.css({
+              'overflow-y': 'scroll'
+            });
+          }, 1);
+        }
+      }
+      else if (me.value) {
+        var length = me.value.match(/\n/g);
+
+        if (length) {
+          length = length.length;
+        }
+        else {
+          length = 1;
+        }
+
+        height = length * me.lineHeight;
+      }
+      else {
+        height = me.height;
+      }
+
+      if (height < me.minHeight) {
+        height = me.minHeight;
+      }
+      else if (height > me.maxHeight) {
+        height = me.maxHeight;
+        setTimeout(function () {
           me.input.css({
             'overflow-y': 'scroll'
           });
         }, 1);
       }
-    }
-    else if(me.value){
-      var length = me.value.match(/\n/g);
 
-      if(length){
-        length = length.length;
+      me.height = height;
+      me.inputHeight = height;
+    },
+    /*
+     *
+     */
+    calcSize: function () {
+      var me = this,
+        inputWidth,
+        padding = me.padding,
+        value,
+        value1,
+        value2,
+        value3;
+
+      if (F.isString(padding)) {
+        padding = padding.replace(/px/g, '');
+        padding = padding.split(' ');
+        switch (padding.length) {
+          case 1:
+            value = Number(padding[0]);
+            padding = [value, value, value, value];
+            break;
+          case 2:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+
+            padding = [value1, value2, value1, value2];
+            break;
+          case 3:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+            value3 = Number(padding[2]);
+
+            padding = [value1, value2, value3, value1];
+            break;
+          case 4:
+            padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
+            break;
+        }
       }
-      else{
-        length = 1;
+      else if (F.isNumber(padding)) {
+        padding = [padding, padding, padding, padding];
+      }
+      else if (padding === false) {
+        padding = [0, 0, 0, 0];
       }
 
-      height = length * me.lineHeight;
-    }
-    else{
-      height = me.height;
-    }
+      if (me.labelAlign === 'top') {
+        me.inputHeight -= 40;
+      }
 
-    if( height < me.minHeight ){
-      height = me.minHeight;
-    }
-    else if(height > me.maxHeight){
-      height = me.maxHeight;
-      setTimeout(function(){
-        me.input.css({
+      inputWidth = me.width;
+
+      if (me.labelAlign !== 'top' && me.label) {
+        inputWidth -= me.labelWidth;
+      }
+
+      if (me.height === me.inputHeight && me.padding !== false) {
+        me.inputHeight -= padding[0] + padding[2];
+      }
+
+      me.inputWidth = inputWidth - padding[1] - padding[3];
+      me.height = me.inputHeight + padding[0] + padding[2];
+    },
+    /*
+     *
+     */
+    onChange: function () {
+      var me = this,
+        value = me.input.dom.value,
+        input = me.el.getByTag('textarea'),
+        height = value.match(/\n/g).length * me.lineHeight;
+
+      if (height < me.minHeight) {
+        height = me.minHeight;
+        input.css({
+          'overflow-y': 'hidden'
+        });
+      }
+      else if (height > me.maxHeight) {
+        height = me.maxHeight;
+        input.css({
           'overflow-y': 'scroll'
         });
-      }, 1);
-    }
-
-    me.height = height;
-    me.inputHeight = height;
-  },
-  /*
-   *
-   */
-  calcSize: function(){
-    var me = this,
-      inputWidth,
-      padding = me.padding,
-      value,
-      value1,
-      value2,
-      value3;
-
-    if(Fancy.isString(padding)){
-      padding = padding.replace(/px/g, '');
-      padding = padding.split(' ');
-      switch(padding.length){
-        case 1:
-          value = Number(padding[0]);
-          padding = [value, value, value, value];
-          break;
-        case 2:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-
-          padding = [value1, value2, value1, value2];
-          break;
-        case 3:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-          value3 = Number(padding[2]);
-
-          padding = [value1, value2, value3, value1];
-          break;
-        case 4:
-          padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
-          break;
       }
-    }
-    else if(Fancy.isNumber(padding)){
-      padding = [padding, padding, padding, padding];
-    }
-    else if(padding === false){
-      padding = [0, 0, 0, 0];
-    }
+      else {
+        input.css({
+          'overflow-y': 'hidden'
+        });
+      }
 
-    if(me.labelAlign === 'top'){
-      me.inputHeight -= 40;
+      me.height = height;
     }
+  });
 
-    inputWidth = me.width;
-
-    if(me.labelAlign !== 'top' && me.label){
-      inputWidth -= me.labelWidth;
-    }
-
-    if(me.height === me.inputHeight && me.padding !== false){
-      me.inputHeight -= padding[0] + padding[2];
-    }
-
-    me.inputWidth = inputWidth -  padding[1] - padding[3];
-    me.height = me.inputHeight + padding[0] + padding[2];
-  },
-  /*
-   *
-   */
-  onChange: function(){
-    var me = this,
-      value = me.input.dom.value,
-      input = me.el.getByTag('textarea'),
-      height = value.match(/\n/g).length * me.lineHeight;
-
-    if( height < me.minHeight ){
-      height = me.minHeight;
-      input.css({
-        'overflow-y': 'hidden'
-      });
-    }
-    else if(height > me.maxHeight){
-      height = me.maxHeight;
-      input.css({
-        'overflow-y': 'scroll'
-      });
-    }
-    else{
-      input.css({
-        'overflow-y': 'hidden'
-      });
-    }
-
-    me.height = height;
-  }
-});
+})();
 /*
  * @class Fancy.CheckBox
  * @extends Fancy.Widget
@@ -9173,6 +9311,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
   var FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
   var FIELD_INPUT_LABEL_CLS =  Fancy.FIELD_INPUT_LABEL_CLS;
+  var FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
 
   Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     mixins: [
@@ -9185,11 +9324,8 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      Fancy.applyConfig(me, config || {});
-
-      me.Super('const', arguments);
+      Fancy.applyConfig(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -9227,7 +9363,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
     value: false,
     editable: true,
     stopIfCTRL: false,
-    checkedCls: 'fancy-checkbox-on',
+    checkedCls: FIELD_CHECKBOX_ON_CLS,
     fieldCls: FIELD_CLS + ' ' + FIELD_CHECKBOX_CLS,
     tpl: [
       '<div class="'+FIELD_LABEL_CLS+'" style="{labelWidth}{labelDisplay}">',
@@ -9256,8 +9392,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      */
     onClick: function (e) {
       var me = this,
-        el = me.el,
-        checkedCls = me.checkedCls;
+        el = me.el;
 
       me.fire('beforechange');
 
@@ -9274,9 +9409,9 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
         return;
       }
 
-      el.toggleCls(checkedCls);
+      el.toggleCls(me.checkedCls);
       var oldValue = me.value;
-      me.value = el.hasCls(checkedCls);
+      me.value = el.hasCls(me.checkedCls);
       me.fire('change', me.value, oldValue);
     },
     /*
@@ -9292,19 +9427,18 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      */
     set: function (value, fire) {
       var me = this,
-        el = me.el,
-        checkedCls = me.checkedCls;
+        el = me.el;
 
       if (value === '') {
         value = false;
       }
 
       if (value === true || value === 1) {
-        el.addCls(checkedCls);
+        el.addCls(me.checkedCls);
         value = true;
       }
       else if (value === false || value === 0) {
-        el.removeClass(checkedCls);
+        el.removeClass(me.checkedCls);
         value = false;
       }
       else if (value === undefined) {
@@ -9330,9 +9464,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      * @return {*}
      */
     getValue: function () {
-      var me = this;
-
-      return me.value;
+      return this.value;
     },
     /*
      * @return {*}
@@ -9350,9 +9482,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      *
      */
     toggle: function () {
-      var me = this;
-
-      me.set(!me.value);
+      me.set(!this.value);
     }
   });
 
@@ -9368,11 +9498,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    Fancy.applyConfig(me, config || {});
-
-    me.Super('const', arguments);
+    Fancy.applyConfig(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -9401,7 +9528,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
  * Note: because multiselection code became overcomplex
  */
 (function(){
-  Fancy.define('Fancy.combo.Manager', {
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+
+  F.define('Fancy.combo.Manager', {
     singleton: true,
     opened: [],
     add: function(combo){
@@ -9410,7 +9549,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       this.opened.push(combo);
     },
     hideLists: function(){
-      Fancy.each(this.opened, function(item){
+      F.each(this.opened, function(item){
         item.hideList();
       });
 
@@ -9418,15 +9557,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     }
   });
 
-  Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
+  F.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     type: 'field.combo',
     mixins: [
-      Fancy.form.field.Mixin
+      F.form.field.Mixin
     ],
-    extend: Fancy.Widget,
+    extend: F.Widget,
     selectedItemCls: 'fancy-combo-item-selected',
     focusedItemCls: 'fancy-combo-item-focused',
-    fieldCls: 'fancy fancy-field fancy-combo',
+    fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
     listRowHeight: 25,
@@ -9440,26 +9579,24 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     multiSelect: false,
     itemCheckBox: false,
     tpl: [
-      '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
         '{label}',
       '</div>',
-      '<div class="fancy-field-text">',
+      '<div class="' + FIELD_TEXT_CLS + '">',
         '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-          '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
           '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
         '</div>',
       '</div>',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-      '<div class="fancy-clearfix"></div>'
+      '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
     ],
     /*
      * @constructor
      */
     constructor: function () {
-      var me = this;
-
-      me.tags = me.tags || [];
-      me.Super('const', arguments);
+      this.tags = this.tags || [];
+      this.Super('const', arguments);
     },
     /*
      *
@@ -9504,7 +9641,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     loadListData: function () {
       var me = this;
 
-      if (!Fancy.isObject(me.data)) {
+      if (!F.isObject(me.data)) {
         return false;
       }
 
@@ -9519,7 +9656,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         readerRootProperty = proxy.reader.root;
       }
 
-      Fancy.Ajax({
+      F.Ajax({
         url: proxy.url,
         params: proxy.params || {},
         method: proxy.method || 'GET',
@@ -9555,11 +9692,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @return {Array}
      */
     configData: function (data) {
-      if (Fancy.isObject(data) || data.length === 0) {
+      if (F.isObject(data) || data.length === 0) {
         return data;
       }
 
-      if (!Fancy.isObject(data[0])) {
+      if (!F.isObject(data[0])) {
         var _data = [],
           i = 0,
           iL = data.length;
@@ -9634,7 +9771,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     onKeyDown: function (e) {
       var me = this,
         keyCode = e.keyCode,
-        key = Fancy.key;
+        key = F.key;
 
       switch (keyCode) {
         case key.ESC:
@@ -9722,7 +9859,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         list = me.list;
 
       if (list.css('display') === 'none') {
-        Fancy.combo.Manager.add(this);
+        F.combo.Manager.add(this);
         
         me.showList();
       }
@@ -9743,7 +9880,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
         xy = [p.left, p.top + el.$dom.height()],
-        docEl = Fancy.get(document),
+        docEl = F.get(document),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
@@ -9758,7 +9895,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         left: xy[0] + 'px',
         top: xy[1] + 'px',
         width: me.getListWidth(),
-        "z-index": 2000 + Fancy.zIndex++
+        "z-index": 2000 + F.zIndex++
       });
 
       var index;
@@ -9817,7 +9954,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
         xy = [p.left, p.top + el.$dom.height()],
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       me.hideList();
 
@@ -9831,7 +9968,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         top: xy[1] + 'px',
         //width: el.width(),
         width: me.getListWidth(),
-        "z-index": 2000 + Fancy.zIndex++
+        "z-index": 2000 + F.zIndex++
       });
 
       if (!me.docSpy2) {
@@ -9866,7 +10003,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.list.css('display', 'none');
 
       if (me.docSpy) {
-        var docEl = Fancy.get(document);
+        var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -9884,7 +10021,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.aheadList.css('display', 'none');
 
       if (me.docSpy) {
-        var docEl = Fancy.get(document);
+        var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -9893,9 +10030,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} e
      */
     onInputMouseDown: function (e) {
-      var me = this;
-
-      if (me.editable === false) {
+      if (this.editable === false) {
         e.preventDefault();
       }
     },
@@ -9927,10 +10062,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} e
      */
     onListItemOver: function (e) {
-      var me = this,
-        li = Fancy.get(e.target);
+      var li = F.get(e.target);
 
-      li.addCls(me.focusedItemCls);
+      li.addCls(this.focusedItemCls);
     },
     /*
      *
@@ -9943,12 +10077,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     onListItemClick: function (e) {
       var me = this,
-        li = Fancy.get(e.currentTarget),
+        li = F.get(e.currentTarget),
         value = li.attr('value'),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      if (Fancy.nojQuery && value === 0) {
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
@@ -9993,7 +10127,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         valueStr = '',
         index;
 
-      if(me.multiSelect && !Fancy.isArray(value)){
+      if(me.multiSelect && !F.isArray(value)){
         if(value === -1){
           value = [];
         }
@@ -10002,12 +10136,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }
 
-      if(Fancy.isArray(value) && me.multiSelect){
+      if(F.isArray(value) && me.multiSelect){
         var displayedValues = [];
 
         me.valuesIndex.removeAll();
 
-        Fancy.each(value, function(v, i){
+        F.each(value, function(v, i){
           var _index = me.getIndex(v);
 
           if(_index === -1){
@@ -10079,7 +10213,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this,
         index = -1;
 
-      Fancy.each(me.values, function(value, i){
+      F.each(me.values, function(value, i){
         if( value === v ){
           index = i;
         }
@@ -10142,8 +10276,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     render: function () {
       var me = this,
-        renderTo = Fancy.get(me.renderTo || document.body).dom,
-        el = Fancy.get(document.createElement('div')),
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div')),
         value = me.value,
         index = -1;
 
@@ -10153,7 +10287,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         value = '';
       }
       else {
-        if(me.multiSelect && Fancy.isArray(me.data) && me.data.length > 0){
+        if(me.multiSelect && F.isArray(me.data) && me.data.length > 0){
           value = '';
 
           me.valuesIndex.each(function(i, v){
@@ -10181,7 +10315,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       me.fire('beforerender');
-      el.addCls(me.cls, me.fieldCls);
+      el.addCls(
+        F.cls,
+        me.cls,
+        me.fieldCls
+      );
 
       var labelWidth = '';
 
@@ -10245,7 +10383,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     renderList: function () {
       var me = this,
-        list = Fancy.get(document.createElement('div')),
+        list = F.get(document.createElement('div')),
         listHtml = [
           '<ul style="position: relative;">'
         ];
@@ -10254,7 +10392,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.list.destroy();
       }
 
-      Fancy.each(me.data, function (row, i) {
+      F.each(me.data, function (row, i) {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -10267,7 +10405,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           displayValue = '&nbsp;';
         }
         else if (me.listItemTpl) {
-          var listTpl = new Fancy.Template(me.listItemTpl);
+          var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
 
@@ -10334,7 +10472,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        Fancy.each(inputValue, function (v, i) {
+        F.each(inputValue, function (v, i) {
           if(inputSelection.start <= i){
             return true;
           }
@@ -10347,7 +10485,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         inputValue = splitted[passedCommas];
       }
 
-      Fancy.each(me.data, function (item){
+      F.each(me.data, function (item){
         if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
           aheadData.push(item);
         }
@@ -10378,10 +10516,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         presented = true;
       }
       else {
-        list = Fancy.get(document.createElement('div'));
+        list = F.get(document.createElement('div'));
       }
 
-      Fancy.each(me.aheadData, function (row, i) {
+      F.each(me.aheadData, function (row, i) {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -10413,7 +10551,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       if (presented === false) {
-        list.addClass('fancy fancy-combo-result-list');
+        list.addClass(F.cls, 'fancy-combo-result-list');
         document.body.appendChild(list.dom);
         me.aheadList = list;
 
@@ -10801,10 +10939,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         value = me.value;
 
       me.values = [];
-      me.valuesIndex = new Fancy.Collection();
+      me.valuesIndex = new F.Collection();
 
       if(me.value !== undefined && value !== null && value !== ''){
-        if(Fancy.isArray(value)){
+        if(F.isArray(value)){
           me.values = value;
           me.value = value[0];
         }
@@ -10812,7 +10950,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.values = [me.value];
         }
 
-        Fancy.each(me.values, function(value){
+        F.each(me.values, function(value){
           me.valuesIndex.add(me.getIndex(value), value);
         });
       }
@@ -10847,7 +10985,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         values = value.split(','),
         _values = [];
 
-      Fancy.each(values, function(v){
+      F.each(values, function(v){
         var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
           _value = me.getValueKey(displayValue);
 
@@ -10866,20 +11004,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
  * @extends Fancy.Widget
  */
 (function() {
+  //SHORTCUTS
+  var F = Fancy;
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
-  var FIELD_CLS = Fancy.FIELD_CLS;
-  var FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
-  var FIELD_BUTTON_CLS= Fancy.FIELD_BUTTON_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_BUTTON_CLS= F.FIELD_BUTTON_CLS;
 
-  Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
+  F.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     mixins: [
-      Fancy.form.field.Mixin
+      F.form.field.Mixin
     ],
-    extend: Fancy.Widget,
+    extend: F.Widget,
     type: 'field.button',
     pressed: false,
     /*
@@ -10887,12 +11027,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('const', arguments);
+      F.apply(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -10936,7 +11072,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     renderButton: function(){
       var me = this;
 
-      new Fancy.Button({
+      new F.Button({
         renderTo: me.el.select('.' + FIELD_TEXT_CLS).item(0).dom,
         text: me.buttonText,
         handler: function () {
@@ -10981,12 +11117,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -11083,10 +11215,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Boolean} [fire]
    */
   clear: function(fire){
-    var me = this;
-
-    if(me.allowToggle){
-      Fancy.each(me.items, function (item){
+    if(this.allowToggle){
+      Fancy.each(this.items, function (item){
         item.setPressed(false, fire);
       });
     }
@@ -11107,12 +11237,8 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -11158,221 +11284,233 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
  * @class Fancy.Radio
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
-  mixins: [
-    Fancy.form.field.Mixin
-  ],
-  extend: Fancy.Widget,
-  type: 'field.radio',
-  /*
-   * @private
-   */
-  radioRows: 1,
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_RADIO_CLS = F.FIELD_RADIO_CLS;
+  var FIELD_RADIO_COLUMN_CLS = F.FIELD_RADIO_COLUMN_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_RADIO_ON_CLS = F.FIELD_RADIO_ON_CLS;
+  var FIELD_RADIO_INPUT_CLS = F.FIELD_RADIO_INPUT_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
 
-    me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
-    me.Super('init', arguments);
+  F.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
+    mixins: [
+      F.form.field.Mixin
+    ],
+    extend: F.Widget,
+    type: 'field.radio',
+    /*
+     * @private
+     */
+    radioRows: 1,
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    var itemsHTML = '';
+      me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
+      me.Super('init', arguments);
 
-    if( me.column ){
-      me.cls += ' fancy-field-radio-column';
-      itemsHTML += '<div style="margin-left: '+ ( me.labelWidth )+'px;">';
-    }
+      var itemsHTML = '';
 
-    Fancy.each(me.items, function (item, i){
-      var marginLeft = '',
-        itemCls = 'fancy-field-text';
-
-      if( !me.column && i !== 0 ){
-        marginLeft = 'margin-left:10px;';
+      if (me.column) {
+        me.cls += ' ' + FIELD_RADIO_COLUMN_CLS;
+        itemsHTML += '<div style="margin-left: ' + ( me.labelWidth ) + 'px;">';
       }
 
-      if( item.value === me.value ){
-        itemCls += ' fancy-field-radio-on';
+      F.each(me.items, function (item, i) {
+        var marginLeft = '',
+          itemCls = FIELD_TEXT_CLS;
+
+        if (!me.column && i !== 0) {
+          marginLeft = 'margin-left:10px;';
+        }
+
+        if (item.value === me.value) {
+          itemCls += ' ' + FIELD_RADIO_ON_CLS;
+        }
+
+        itemsHTML += [
+          '<div class="' + itemCls + '" value=' + item.value + '>',
+          '<div class="' + FIELD_RADIO_INPUT_CLS + '" style="float:left;' + marginLeft + '"></div>',
+          '<div style="float:left;margin:7px 0 0 0;">' + item.text + '</div>',
+          '</div>'
+        ].join("");
+      });
+
+      if (me.column) {
+        itemsHTML += '</div>';
       }
 
-      itemsHTML += [
-        '<div class="'+itemCls+'" value='+item.value+'>',
-        '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
-        '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
-        '</div>'
-      ].join("");
-    });
+      me.itemsHTML = itemsHTML;
 
-    if( me.column ){
-      itemsHTML += '</div>';
-    }
+      me.preRender();
+      me.render();
+      me.setColumnsStyle();
+      me.acceptedValue = me.value;
+      me.set(me.value);
 
-    me.itemsHTML = itemsHTML;
+      me.ons();
+    },
+    labelText: '',
+    labelWidth: 60,
+    value: false,
+    checkedCls: FIELD_RADIO_ON_CLS,
+    fieldCls: FIELD_CLS + ' ' + FIELD_RADIO_CLS,
+    tpl: [
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
+        '{label}',
+        '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '</div>',
+        '{itemsHTML}',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
+    ],
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        el = this.el;
 
-    me.preRender();
-    me.render();
-    me.setColumnsStyle();
-    me.acceptedValue = me.value;
-    me.set(me.value);
+      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function () {
+        me.set(F.get(this).attr('value'));
+      });
 
-    me.ons();
-  },
-  labelText: '',
-  labelWidth: 60,
-  value: false,
-  checkedCls: 'fancy-field-radio-on',
-  fieldCls: Fancy.FIELD_CLS + ' fancy-field-radio',
-  tpl: [
-    '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-      '{label}',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-    '</div>',
-    '{itemsHTML}',
-    '<div class="fancy-clearfix"></div>'
-  ],
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      el = me.el;
+      el.on('mousedown', me.onMouseDown, me);
+    },
+    /*
+     *
+     */
+    onClick: function () {
+      var me = this,
+        checkedCls = me.checkedCls;
 
-    el.$dom.delegate('.fancy-field-text', 'click', function(){
-      me.set(Fancy.get(this).attr('value'));
-    });
+      me.addCls(checkedCls);
+      me.toggleCls(checkedCls);
 
-    el.on('mousedown', me.onMouseDown, me);
-  },
-  /*
-   *
-   */
-  onClick: function(){
-    var me = this,
-      checkedCls = me.checkedCls;
+      me.value = me.hasCls(checkedCls);
 
-    me.addCls(checkedCls);
-    me.toggleCls(checkedCls);
-
-    me.value = me.hasCls(checkedCls);
-
-    me.fire('change', me.value);
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseDown: function(e){
-
-    e.preventDefault();
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  set: function(value, fire){
-    var me = this,
-      el = me.el,
-      checkedCls = me.checkedCls,
-      radioEls = el.select('.fancy-field-text');
-
-    radioEls.removeCls(checkedCls);
-
-    el.select('[value='+value+']').addCls(checkedCls);
-
-    me.value = value;
-    if(fire !== false){
       me.fire('change', me.value);
-    }
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  setValue: function(value, onInput){
-    this.set(value, onInput);
-  },
-  /*
-   * @return {*} value
-   */
-  getValue: function(){
-    var me = this;
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseDown: function (e) {
 
-    return me.value;
-  },
-  /*
-   * @return {*} value
-   */
-  get: function(){
+      e.preventDefault();
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    set: function (value, fire) {
+      var me = this,
+        el = me.el,
+        checkedCls = me.checkedCls,
+        radioEls = el.select('.' + FIELD_TEXT_CLS);
 
-    return this.getValue();
-  },
-  /*
-   *
-   */
-  clear: function(){
-    this.set(false);
-  },
-  /*
-   *
-   */
-  calcColumns: function(){
-    var me = this,
-      maxChars = 0,
-      inputWidth = me.width;
+      radioEls.removeCls(checkedCls);
 
-    if(me.labelAlign !== 'top' && me.label){
-      inputWidth -= me.labelWidth;
-      inputWidth -= 20;
-    }
+      el.select('[value=' + value + ']').addCls(checkedCls);
 
-    Fancy.Array.each(me.items, function (item) {
-      if(item.text.length > maxChars){
-        maxChars = item.text.length;
+      me.value = value;
+      if (fire !== false) {
+        me.fire('change', me.value);
       }
-    });
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    setValue: function (value, onInput) {
+      this.set(value, onInput);
+    },
+    /*
+     * @return {*} value
+     */
+    getValue: function () {
+      return this.value;
+    },
+    /*
+     * @return {*} value
+     */
+    get: function () {
+      return this.getValue();
+    },
+    /*
+     *
+     */
+    clear: function () {
+      this.set(false);
+    },
+    /*
+     *
+     */
+    calcColumns: function () {
+      var me = this,
+        maxChars = 0,
+        inputWidth = me.width;
 
-    var columns = Math.floor(inputWidth/(maxChars * 7 + 30));
-
-    if(me.columns && me.columns <= columns){
-      columns = me.columns;
-    }
-    else{
-      me.columns = columns;
-    }
-
-    me.columnWidth = Math.ceil(inputWidth/columns);
-    me.rows = Math.ceil(me.items.length/columns);
-  },
-  /*
-   *
-   */
-  setColumnsStyle: function(){
-    var me = this;
-
-    if(!me.columns || me.rows === 1){
-      return;
-    }
-
-    var radioEls = me.el.select('.fancy-field-text'),
-      radioInputs = me.el.select('.fancy-field-text .fancy-field-radio-input');
-
-    radioEls.each(function(item, i){
-      if(i % me.columns === 0){
-        radioInputs.item(i).css('margin-left', '0px');
+      if (me.labelAlign !== 'top' && me.label) {
+        inputWidth -= me.labelWidth;
+        inputWidth -= 20;
       }
 
-      item.css('width', me.columnWidth);
-    });
-  }
-});
+      F.Array.each(me.items, function (item) {
+        if (item.text.length > maxChars) {
+          maxChars = item.text.length;
+        }
+      });
+
+      var columns = Math.floor(inputWidth / (maxChars * 7 + 30));
+
+      if (me.columns && me.columns <= columns) {
+        columns = me.columns;
+      }
+      else {
+        me.columns = columns;
+      }
+
+      me.columnWidth = Math.ceil(inputWidth / columns);
+      me.rows = Math.ceil(me.items.length / columns);
+    },
+    /*
+     *
+     */
+    setColumnsStyle: function () {
+      var me = this;
+
+      if (!me.columns || me.rows === 1) {
+        return;
+      }
+
+      var radioEls = me.el.select('.' + FIELD_TEXT_CLS),
+        radioInputs = me.el.select('.' + FIELD_TEXT_CLS + ' .' + FIELD_RADIO_INPUT_CLS);
+
+      radioEls.each(function (item, i) {
+        if (i % me.columns === 0) {
+          radioInputs.item(i).css('margin-left', '0px');
+        }
+
+        item.css('width', me.columnWidth);
+      });
+    }
+  });
+
+})();
 (function () {
 
   Fancy.vtypes = {};
@@ -11547,9 +11685,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {*} o
    */
   removeAt: function(o){
-    var me = this;
-
-    me.remove(o, true);
+    this.remove(o, true);
   },
   /*
    *
@@ -11738,68 +11874,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   prefix: 'fancy-grid-',
   cls: '',
   widgetCls: Fancy.GRID_CLS,
-  // Cell cls-s
-  cellCls: Fancy.GRID_CELL_CLS,
-  cellInnerCls: 'fancy-grid-cell-inner',
-  cellEvenCls: 'fancy-grid-cell-even',
-  cellOverCls: Fancy.GRID_CELL_OVER_CLS,
-  cellSelectedCls: Fancy.GRID_CELL_SELECTED_CLS,
-  // Cell Header cls-s
-  cellHeaderCls: 'fancy-grid-header-cell',
-  cellHeaderSelectCls: 'fancy-grid-header-cell-select',
-  cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
-  cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
-  cellHeaderTriggerCls: 'fancy-grid-header-cell-trigger',
-  cellHeaderTriggerImageCls: 'fancy-grid-header-cell-trigger-image',
-  cellHeaderGroupLevel1: 'fancy-grid-header-cell-group-level-1',
-  cellHeaderGroupLevel2: 'fancy-grid-header-cell-group-level-2',
-  filterHeaderCellCls: 'fancy-grid-header-filter-cell',//TODO: rename to cellHeaderFilterCls
-  //Column header cls-s sorting
-  clsASC: 'fancy-grid-column-sort-ASC',
-  clsDESC: 'fancy-grid-column-sort-DESC',
-  //Column cls-s
-  columnCls: Fancy.GRID_COLUMN_CLS,
-  columnOverCls: Fancy.GRID_COLUMN_OVER_CLS,
-  columnSelectedCls: Fancy.GRID_COLUMN_SELECTED_CLS,
-  columnColorCls: 'fancy-grid-column-color',
-  columnTextCls: 'fancy-grid-column-text',
-  columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
-  columnOrderCls: 'fancy-grid-column-order',
-  columnSelectCls: Fancy.GRID_COLUMN_SELECT_CLS,
-  columnResizerCls: 'fancy-grid-column-resizer',
-  //Column spark cls-s
-  columnSparkCls: 'fancy-grid-column-sparkline',
-  columnSparkBulletCls: 'fancy-grid-column-sparkline-bullet',
-  columnSparkCircleCls: 'fancy-grid-column-chart-circle',
-  columnSparkDonutProgressCls: 'fancy-grid-column-spark-progress-donut',
-  columnGrossLossCls: 'fancy-grid-column-grossloss',
-  columnProgressCls: 'fancy-grid-column-progress',
-  columnSparkHBarCls: 'fancy-grid-column-h-bar',
-  //Row cls-s
-  clsGroupRow: 'fancy-grid-group-row',//TODO: rename to rowGroupCls
-  clsCollapsedRow: 'fancy-grid-group-row-collapsed',//TODO: rename to rowCollapsedCls
-  clsSummaryContainer: 'fancy-grid-summary-container',//TODO: rename to ???
-  clsSummaryRow: 'fancy-grid-summary-row',//TODO: rename to rowSummaryCls
-  rowSummaryBottomCls: 'fancy-grid-summary-row-bottom',
-  rowEditCls: 'fancy-grid-row-edit',
-  rowEditButtonCls: 'fancy-grid-row-edit-buttons',
-
-  pseudoCellCls: 'fancy-grid-pseudo-cell',
-  rowOverCls: Fancy.GRID_ROW_OVER_CLS,
-
-  expandRowCls: 'fancy-grid-expand-row',//TODO: rename to rowExpandCls
-  expandRowOverCls: 'fancy-grid-expand-row-over',//TODO: rename to rowExpandOverCls
-  expandRowSelectedCls: 'fancy-grid-expand-row-selected', //TODO: rename to rowExpandSelectedCls
-
-  leftEmptyCls: 'fancy-grid-left-empty',
-  rightEmptyCls: 'fancy-grid-right-empty',
-
-  centerCls: 'fancy-grid-center',
-  leftCls: 'fancy-grid-left',
-  rightCls: 'fancy-grid-right',
-
-  headerCls: Fancy.GRID_HEADER_CLS,
-
   header: true,
   shadow: true,
   striped: true,
@@ -11872,6 +11946,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
+      'columndrag',
       'scroll', 'nativescroll',
       'remove',
       'set',
@@ -12158,6 +12233,62 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     me.fire('unlockcolumn');
+  },
+  /*
+   * @param {String} fromSide
+   * @param {String} toSide
+   * @param {Number} fromIndex
+   * @param {Number} toIndex
+   */
+  moveColumn: function (fromSide, toSide, fromIndex, toIndex) {
+    var me = this,
+      removedColumn;
+
+    if(fromSide === 'center'){
+      removedColumn = me.removeColumn(fromIndex, 'center');
+      switch(toSide){
+        case 'left':
+          me.insertColumn(removedColumn, toIndex, 'left', 'center');
+          break;
+        case 'right':
+          me.insertColumn(removedColumn, toIndex, 'right', 'center');
+          break;
+      }
+    }
+    else if(fromSide === 'left'){
+      removedColumn = me.removeColumn(fromIndex, 'left');
+      switch(toSide){
+        case 'center':
+          me.insertColumn(removedColumn, toIndex, 'center', 'left');
+          break;
+        case 'right':
+          me.insertColumn(removedColumn, toIndex, 'right', 'left');
+          break;
+      }
+    }
+    else if(fromSide === 'right'){
+      removedColumn = me.removeColumn(fromIndex, 'right');
+      switch(toSide){
+        case 'center':
+          me.insertColumn(removedColumn, toIndex, 'center', 'right');
+          break;
+        case 'left':
+          me.insertColumn(removedColumn, toIndex, 'left', 'right');
+          break;
+      }
+    }
+
+    if(me.groupheader){
+      me.header.fixGroupHeaderSizing();
+
+      if(me.leftColumns){
+        me.leftHeader.fixGroupHeaderSizing();
+      }
+
+      if(me.rightColumns){
+        me.rightHeader.fixGroupHeaderSizing();
+      }
+    }
   }
 });
 
@@ -12184,238 +12315,239 @@ if(!Fancy.nojQuery && Fancy.$){
  * @class Fancy.grid.plugin.CellTip
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.CellTip', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.celltip',
-  inWidgetName: 'celltip',
-  cellTip: '{value}',
-  stopped: true,
-  /*
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define('Fancy.grid.plugin.CellTip', {
+    extend: F.Plugin,
+    ptype: 'grid.celltip',
+    inWidgetName: 'celltip',
+    cellTip: '{value}',
+    stopped: true,
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document);
 
-    me.Super('init', arguments);
+      w.on('cellenter', me.onCellEnter, me);
+      w.on('cellleave', me.onCellLeave, me);
+      docEl.on('touchend', me.onTouchEnd, me);
+      docEl.on('mousemove', me.onDocMove, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellEnter: function (grid, o) {
+      var me = this,
+        column = o.column,
+        cellTip = me.cellTip,
+        e = o.e;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      docEl = Fancy.get(document);
-
-    w.on('cellenter', me.onCellEnter, me);
-    w.on('cellleave', me.onCellLeave, me);
-    docEl.on('touchend', me.onTouchEnd, me);
-    docEl.on('mousemove', me.onDocMove, me);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellEnter: function(grid, o){
-    var me = this,
-      column = o.column,
-      cellTip = me.cellTip,
-      e = o.e;
-
-    if(column.cellTip){
-      if(Fancy.isString(column.cellTip)){
-        cellTip = column.cellTip;
-      }
-      else if(Fancy.isFunction(column.cellTip)){
-        cellTip = column.cellTip(o);
-        if(cellTip === false){
-          return;
+      if (column.cellTip) {
+        if (F.isString(column.cellTip)) {
+          cellTip = column.cellTip;
         }
+        else if (F.isFunction(column.cellTip)) {
+          cellTip = column.cellTip(o);
+          if (cellTip === false) {
+            return;
+          }
+        }
+
+        var tpl = new F.Template(cellTip),
+          data = {
+            title: column.title,
+            value: o.value,
+            columnIndex: 0,
+            rowIndex: 0
+          };
+
+        me.stopped = false;
+        F.apply(data, o.data);
+
+        F.tip.update(tpl.getHTML(data));
+        F.tip.show(e.pageX + 15, e.pageY - 25);
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellLeave: function (grid, o) {
+      this.stopped = true;
+      F.tip.hide(1000);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onTouchEnd: function (grid, o) {
+      this.stopped = true;
+      F.tip.hide(1000);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMove: function (e) {
+      if (this.stopped === true) {
+        return;
       }
 
-      var tpl = new Fancy.Template(cellTip),
-        data = {
-          title: column.title,
-          value: o.value,
-          columnIndex: 0,
-          rowIndex:0
-        };
-
-      me.stopped = false;
-      Fancy.apply(data, o.data);
-
-      Fancy.tip.update(tpl.getHTML(data));
-      Fancy.tip.show(e.pageX + 15, e.pageY - 25);
+      F.tip.show(e.pageX + 15, e.pageY - 25);
     }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellLeave: function(grid, o){
-    this.stopped = true;
-    Fancy.tip.hide(1000);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onTouchEnd: function(grid, o){
-    this.stopped = true;
-    Fancy.tip.hide(1000);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMove: function(e){
-    if(this.stopped === true){
-      return;
-    }
+  });
 
-    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
-  }
-});
+})();
 /*
  * @class Fancy.ToolTip
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.ToolTip', {
-  extend: Fancy.Widget,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var TOOLTIP_CLS = F.TOOLTIP_CLS;
+  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
-    me.initTpl();
-    me.render();
-  },
-  tpl: [
-    '<div class="{innerCls}">{text}</div>'
-  ],
-  widgetCls: 'fancy-tooltip',
-  cls: '',
-  extraCls: '',
-  innerCls: 'fancy-tooltip-inner',
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = Fancy.get(document.createElement('div'));
+  F.define('Fancy.ToolTip', {
+    extend: F.Widget,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.initTpl();
+      this.render();
+    },
+    tpl: [
+      '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
+    ],
+    widgetCls: TOOLTIP_CLS,
+    cls: '',
+    extraCls: '',
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div'));
 
-    el.addCls(
-      Fancy.cls,
-      me.widgetCls,
-      me.cls,
-      me.extraCls
-    );
+      el.addCls(
+        F.cls,
+        me.widgetCls,
+        me.cls,
+        me.extraCls
+      );
 
-    el.update(me.tpl.getHTML({
-      text: me.text,
-      innerCls: me.innerCls
-    }));
+      el.update(me.tpl.getHTML({
+        text: me.text
+      }));
 
-    me.el = Fancy.get(renderTo.appendChild(el.dom));
-  },
-  /*
-   * @param {Number} x
-   * @param {Number} y
-   */
-  show: function(x, y){
-    var me = this;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     * @param {Number} x
+     * @param {Number} y
+     */
+    show: function (x, y) {
+      var me = this;
 
-    if(me.timeout){
-      clearInterval(me.timeout);
-      delete me.timeout;
-    }
+      if (me.timeout) {
+        clearInterval(me.timeout);
+        delete me.timeout;
+      }
 
-    if(me.css('display') === 'none'){
+      if (me.css('display') === 'none') {
+        me.css({
+          display: 'block'
+        });
+      }
+
       me.css({
-        display: 'block'
+        left: x,
+        top: y
+      });
+    },
+    /*
+     * @param {Number} [delay]
+     */
+    hide: function (delay) {
+      var me = this;
+
+      if (me.timeout) {
+        clearInterval(me.timeout);
+        delete me.timeout;
+      }
+
+      if (delay) {
+        me.timeout = setTimeout(function () {
+          me.el.hide();
+        }, delay);
+      }
+      else {
+        me.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      this.el.destroy();
+    },
+    /*
+     * @param {String} html
+     */
+    update: function (html) {
+      this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    }
+  });
+
+  F.tip = {
+    update: function (text) {
+      F.tip = new F.ToolTip({
+        text: text
+      });
+    },
+    show: function (x, y) {
+      F.tip = new F.ToolTip({
+        text: ' '
+      });
+      F.tip.show(x, y);
+    },
+    hide: function () {
+      F.tip = new F.ToolTip({
+        text: ' '
       });
     }
+  };
 
-    me.css({
-      left: x,
-      top: y
-    });
-  },
-  /*
-   * @param {Number} [delay]
-   */
-  hide: function(delay){
-    var me = this;
-
-    if(me.timeout){
-      clearInterval(me.timeout);
-      delete me.timeout;
-    }
-
-    if(delay){
-      me.timeout = setTimeout(function(){
-        me.el.hide();
-      }, delay);
-    }
-    else {
-      me.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this;
-
-    me.el.destroy();
-  },
-  /*
-   * @param {String} html
-   */
-  update: function(html){
-    var me = this;
-
-    me.el.select('.' + me.innerCls).update(html);
-  }
-});
-
-Fancy.tip = {
-  update: function(text){
-    Fancy.tip = new Fancy.ToolTip({
-      text: text
-    });
-  },
-  show: function(x, y){
-    Fancy.tip = new Fancy.ToolTip({
-      text: ' '
-    });
-    Fancy.tip.show(x, y);
-  },
-  hide: function(){
-    Fancy.tip = new Fancy.ToolTip({
-      text: ' '
-    });
-  }
-};
+})();
 /*
  *
  */

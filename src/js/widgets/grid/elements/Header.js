@@ -1,769 +1,948 @@
 /**
- * @class Fancy.Grid
+ * @class Fancy.grid.Header
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.grid.Header', {
-  extend: Fancy.Widget,
-  cls: Fancy.GRID_HEADER_CLS,
-  mixins: [
-    'Fancy.grid.header.mixin.Menu'
-  ],
-  cellTpl: [
-    '<div class="fancy-grid-header-cell {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
-      '<div class="fancy-grid-header-cell-container" style="height: {height};">',
-        '<span class="fancy-grid-header-cell-text">{columnName}</span>',
-        '<span class="fancy-grid-header-cell-trigger">',
-          '<div class="fancy-grid-header-cell-trigger-image"></div>',
-        '</span>',
-      '</div>',
-    '</div>'
-  ],
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_CONTAINER_CLS = F.GRID_HEADER_CELL_CONTAINER_CLS;
+  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
+  var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
+  var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.Header', {
+    extend: F.Widget,
+    cls: GRID_HEADER_CLS,
+    mixins: [
+      'Fancy.grid.header.mixin.Menu'
+    ],
+    cellTpl: [
+      '<div class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+        '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
+          '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
+          '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
+            '<div class="' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS + '"></div>',
+          '</span>',
+        '</div>',
+      '</div>'
+    ],
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.initTpl();
-    me.render();
+      me.Super('init', arguments);
 
-    me.renderHeaderCheckBox();
+      me.initTpl();
+      me.render();
 
-    me.setAlign();
-    me.setCellsPosition();
-    me.ons();
-  },
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
+      me.renderHeaderCheckBox();
 
-    me.cellTpl = new Fancy.Template(me.cellTpl);
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderCls = w.cellHeaderCls,
-      headerCellSelector = 'div.' + cellHeaderCls;
+      me.setAlign();
+      me.setCellsPosition();
+      me.ons();
+    },
+    /*
+     *
+     */
+    initTpl: function () {
+      this.cellTpl = new F.Template(this.cellTpl);
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        el = me.el,
+        headerCellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
-    w.on('render', me.onAfterRender, me);
-    me.el.on('click', me.onTriggerClick, me, 'span.' + cellHeaderTriggerCls);
-    me.el.on('click', me.onCellClick, me, headerCellSelector);
-    me.el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
-    me.el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
-    me.el.on('mousedown', me.onMouseDown, me);
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderSelectCls = w.cellHeaderSelectCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      columns = me.getColumns(),
-      renderTo,
-      el = Fancy.get(document.createElement('div')),
-      html = '',
-      i = 0,
-      iL = columns.length,
-      numRows = 1,
-      groups = {},
-      passedWidth = 0,
-      isFilterHeader = w.filter && w.filter.header,
-      cellFilterGroupType = 'full',
-      cellHeight = w.cellHeaderHeight;
+      w.on('render', me.onAfterRender, me);
+      el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
+      el.on('click', me.onCellClick, me, headerCellSelector);
+      el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
+      el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
+      el.on('mousedown', me.onMouseDown, me);
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        renderTo,
+        el = F.get(document.createElement('div')),
+        html = '',
+        i = 0,
+        iL = columns.length,
+        numRows = 1,
+        groups = {},
+        passedWidth = 0,
+        isFilterHeader = w.filter && w.filter.header,
+        cellFilterGroupType = 'full',
+        cellHeight = w.cellHeaderHeight;
 
-    if(w.groupheader){
-      if(isFilterHeader && !w.filter.groupHeader){
-        cellFilterGroupType = 'small';
-      }
-      else {
-        numRows = 2;
-      }
-    }
-
-    if(isFilterHeader){
-      numRows++;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i],
-        title = column.title || column.header,
-        height = cellHeight,
-        cls = '',
-        groupIndex = '';
-
-      if(numRows !== 1){
-        if(!column.grouping){
-          height = (numRows * cellHeight) + 'px';
+      if (w.groupheader) {
+        if (isFilterHeader && !w.filter.groupHeader) {
+          cellFilterGroupType = 'small';
         }
-        else{
-          if(!groups[column.grouping]){
-            groups[column.grouping] = {
-              width: 0,
-              title: column.grouping,
-              left: passedWidth
-            };
-          }
+        else {
+          numRows = 2;
+        }
+      }
 
-          if(isFilterHeader && w.filter.groupHeader){
-            height = (2 * cellHeight) + 'px';
+      if (isFilterHeader) {
+        numRows++;
+      }
+
+      for (; i < iL; i++) {
+        var column = columns[i],
+          title = column.title || column.header,
+          height = cellHeight,
+          cls = '',
+          groupIndex = '';
+
+        if (numRows !== 1) {
+          if (!column.grouping) {
+            height = (numRows * cellHeight) + 'px';
           }
           else {
-            height = cellHeight + 'px';
+            if (!groups[column.grouping]) {
+              groups[column.grouping] = {
+                width: 0,
+                title: column.grouping,
+                left: passedWidth
+              };
+            }
+
+            if (isFilterHeader && w.filter.groupHeader) {
+              height = (2 * cellHeight) + 'px';
+            }
+            else {
+              height = cellHeight + 'px';
+            }
+
+            if (!column.hidden) {
+              groups[column.grouping].width += column.width;
+            }
+
+            groupIndex = 'group-index="' + column.grouping + '"';
+
+            cls = GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
           }
+        }
 
-          if(!column.hidden){
-            groups[column.grouping].width += column.width;
+        passedWidth += column.width;
+
+        if (column.index === '$selected') {
+          cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
+        }
+
+        if (!column.menu) {
+          cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+        }
+
+        if (column.filter && column.filter.header) {
+          switch (cellFilterGroupType) {
+            case 'small':
+              cls += ' ' + GRID_HEADER_CELL_FILTER_SMALL_CLS;
+              break;
+            case 'full':
+              cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              break;
           }
+        }
 
-          groupIndex = 'group-index="' + column.grouping + '"';
+        html += me.cellTpl.getHTML({
+          cls: cls,
+          columnName: title,
+          columnWidth: column.width,
+          index: i,
+          height: height,
+          left: 'initial',
+          groupIndex: groupIndex,
+          display: column.hidden ? 'none' : ''
+        });
+      }
 
-          cls = cellHeaderGroupLevel1;
+      el.css({
+        height: cellHeight * numRows + 'px',
+        width: me.getColumnsWidth()
+      });
+
+      el.addCls(me.cls);
+
+      if (w.groupheader) {
+        el.addCls('fancy-grid-header-grouped');
+        html += me.getGroupingCellsHTML(groups);
+      }
+
+      el.update(html);
+
+      renderTo = w.el.select('.fancy-grid-' + me.side).dom;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     * @param {Number} index
+     * @param {Object} column
+     */
+    insertCell: function (index, column) {
+      var me = this,
+        w = me.widget,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        columns = me.getColumns(),
+        cls = '',
+        title = column.title || column.header,
+        cellHeight = parseInt(cells.item(0).css('height')),
+        groupIndex = '',
+        left = 0;
+
+      if (w.groupheader) {
+        cellHeight = w.cellHeight * 2;
+        var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+        //BUG: possible bug for dragging column
+        if (index !== w.columns.length - 1) {
+          groupUpCells.each(function (cell) {
+            var left = parseInt(cell.css('left') || 0) + column.width;
+
+            cell.css('left', left);
+          });
         }
       }
 
-      passedWidth += column.width;
-
-      if(column.index === '$selected'){
-        cls += ' ' + cellHeaderSelectCls;
+      if (column.index === '$selected') {
+        cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
       }
 
-      if(!column.menu){
-        cls += ' fancy-grid-header-cell-trigger-disabled';
+      if (!column.menu) {
+        cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
       }
 
-      if(column.filter && column.filter.header){
-        switch(cellFilterGroupType){
-          case 'small':
-            cls += ' fancy-grid-header-filter-cell-small';
-            break;
-          case 'full':
-            cls += ' fancy-grid-header-filter-cell-full';
-            break;
-        }
+      var j = 0,
+        jL = index;
+
+      for (; j < jL; j++) {
+        left += columns[j].width;
       }
 
-      html += me.cellTpl.getHTML({
+      var i = index,
+        iL = columns.length - 1;
+
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          _left = parseInt(_cell.css('left') || 0) + column.width;
+
+        _cell.css('left', _left);
+      }
+
+      var cellHTML = me.cellTpl.getHTML({
         cls: cls,
         columnName: title,
         columnWidth: column.width,
-        index: i,
-        height: height,
-        left: 'initial',
-        groupIndex: groupIndex,
-        display: column.hidden? 'none': ''
+        index: index,
+        height: String(cellHeight) + 'px',
+        left: String(left) + 'px',
+        groupIndex: groupIndex
       });
-    }
 
-    el.css({
-      height: cellHeight * numRows + 'px',
-      width: me.getColumnsWidth()
-    });
+      if (index === 0 && cells.length) {
+        F.get(cells.item(0).before(cellHTML));
+      }
+      else if (index !== 0 && cells.length) {
+        if(index === cells.length) {
+          me.el.append(cellHTML);
+        }
+        else{
+          F.get(cells.item(index).before(cellHTML));
+        }
+      }
 
-    el.addCls(me.cls);
+      me.css('width', parseInt(me.css('width')) + column.width);
+    },
+    /*
+     *
+     */
+    setAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length;
 
-    if(w.groupheader){
-      el.addCls('fancy-grid-header-grouped');
-      html += me.getGroupingCellsHTML(groups);
-    }
+      for (; i < iL; i++) {
+        var column = columns[i];
 
-    el.update(html);
+        if (column.align) {
+          me.getDomCell(i).css('text-align', column.align);
+        }
+      }
+    },
+    onAfterRender: function () {},
+    /*
+     *
+     */
+    setCellsPosition: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        cellsWidth = 0,
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS);
 
-    renderTo = w.el.select('.fancy-grid-' + me.side).dom;
-    me.el = Fancy.get(renderTo.appendChild(el.dom));
-  },
-  /*
-   * @param {Number} index
-   * @param {Object} column
-   */
-  insertCell: function(index, column){
-    var me = this,
-      w = me.widget,
-      cellHeaderSelectCls = w.cellHeaderSelectCls,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.' + cellHeaderCls + ':not(.' + cellHeaderGroupLevel2 + ')'),
-      columns = me.getColumns(),
-      cls = '',
-      title = column.title || column.header,
-      cellHeight = parseInt(cells.item(0).css('height')),
-      groupIndex = '',
-      left = 0;
+      cellsWidth += me.scrollLeft || 0;
 
-    if(w.groupheader){
-      cellHeight = w.cellHeight * 2;
-      var groupUpCells = me.el.select('.' + cellHeaderGroupLevel2);
+      F.each(columns, function (column, i) {
+        var cellEl = cellsDom.item(i),
+          top = '0px';
 
-      //BUG: possible bug for dragging column
-      if(index !== w.columns.length - 1){
-        groupUpCells.each(function(cell){
-          var left = parseInt(cell.css('left') || 0) + column.width;
+        if (column.grouping) {
+          top = w.cellHeaderHeight + 'px';
+        }
 
-          cell.css('left', left);
+        cellEl.css({
+          top: top,
+          left: cellsWidth + 'px'
+        });
+
+        if (!column.hidden) {
+          cellsWidth += column.width;
+        }
+      });
+
+      if (w.groupheader) {
+        var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+        groupCells.each(function (groupCell) {
+          var groupName = groupCell.attr('index');
+
+          var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
+            groupCellLeft = underGroupCells.item(0).css('left'),
+            groupCellWidth = 0;
+
+          F.each(columns, function (column) {
+            if (column.grouping === groupName && !column.hidden) {
+              groupCellWidth += column.width;
+            }
+          });
+
+          groupCell.css('left', groupCellLeft);
+          groupCell.css('width', groupCellWidth);
         });
       }
-    }
+    },
+    /*
+     *
+     */
+    fixGroupHeaderSizing: function () {
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        columns = me.getColumns(),
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS),
+        left = w.scroller.scrollLeft,
+        groups = {},
+        groupsWidth = {},
+        groupsLeft = {},
+        rows = me.calcRows();
 
-    if(column.index === '$selected'){
-      cls += ' ' + cellHeaderSelectCls;
-    }
+      F.each(columns, function (column, i) {
+        var cell = cellsDom.item(i),
+          grouping = column.grouping,
+          top = '0px',
+          height = CELL_HEADER_HEIGHT * rows;
 
-    if(!column.menu){
-      cls += ' fancy-grid-header-cell-trigger-disabled';
-    }
+        groups[grouping] = true;
 
-    var j = 0,
-      jL = index;
+        if(grouping){
+          if(groupsWidth[grouping] === undefined){
+            groupsWidth[grouping] = column.width;
+            groupsLeft[grouping] = left;
+          }
+          else{
+            groupsWidth[grouping] += column.width;
+          }
 
-    for(;j<jL;j++){
-      left += columns[j].width;
-    }
+          cell.addCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
+          top = CELL_HEADER_HEIGHT + 'px';
+          height = CELL_HEADER_HEIGHT;
 
-    var i = index,
-      iL = columns.length - 1;
+          if(column.filter && column.filter.header){
+            height = CELL_HEADER_HEIGHT * 2;
+            setTimeout(function () {
+              cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
+            }, 30);
+          }
+        }
+        else{
+          cell.removeCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
+          if(column.filter && column.filter.header){
+            setTimeout(function () {
+              cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+            }, 30);
+            cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+          }
+        }
 
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        _left = parseInt(_cell.css('left') || 0) + column.width;
+        if(w.groupheader && height === CELL_HEADER_HEIGHT && !grouping && !column.filter){
+          height = CELL_HEADER_HEIGHT * 2;
+        }
 
-      _cell.css('left', _left);
-    }
+        //TODO: case for ungroup all cells over column drag with filtering
 
-    var cellHTML = me.cellTpl.getHTML({
-      cls: cls,
-      columnName: title,
-      columnWidth: column.width,
-      index: index,
-      height: String(cellHeight) + 'px',
-      left: String(left) + 'px',
-      groupIndex: groupIndex
-    });
+        cell.css({
+          top: top,
+          height: height
+        });
 
-    if(index === 0 && cells.length){
-      Fancy.get(cells.item(0).before(cellHTML));
-    }
-    else if(index !== 0 && cells.length){
-      me.el.append(cellHTML);
-    }
-
-    me.css('width', parseInt(me.css('width')) + column.width);
-  },
-  /*
-   *
-   */
-  setAlign: function(){
-    var me = this,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++) {
-      var column = columns[i];
-
-      if(column.align){
-        me.getDomCell(i).css('text-align', column.align);
-      }
-    }
-  },
-  onAfterRender: function(){},
-  /*
-   *
-   */
-  setCellsPosition: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cellHeaderCls = w.cellHeaderCls,
-      columns = me.getColumns(),
-      cellsWidth = 0,
-      cellsDom = me.el.select('.' + cellHeaderCls);
-
-    cellsWidth += me.scrollLeft || 0;
-
-    Fancy.each(columns, function(column, i){
-      var cellEl = cellsDom.item(i),
-        top = '0px';
-
-      if(column.grouping){
-        top = w.cellHeaderHeight + 'px';
-      }
-
-      cellEl.css({
-        top: top,
-        left: cellsWidth + 'px'
+        left += column.width;
       });
 
-      if(!column.hidden){
+      for(var p in groupsWidth){
+        var groupCell = me.el.select('[index="'+p+'"]');
+
+        groupCell.css({
+          left: groupsLeft[p],
+          width: groupsWidth[p]
+        });
+      }
+
+      var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+      groupCells.each(function (cell) {
+        var groupName = cell.attr('index');
+
+        if(!groups[groupName]){
+          cell.destroy();
+        }
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    getColumnsWidth: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cellsWidth = 0,
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
         cellsWidth += column.width;
       }
-    });
 
-    if(w.groupheader){
-      var groupCells = me.el.select('.' + cellHeaderGroupLevel2);
+      return cellsWidth;
+    },
+    /*
+     * @return {Array}
+     */
+    getColumns: function () {
+      var me = this,
+        w = me.widget,
+        columns;
 
-      groupCells.each(function(groupCell){
-        var groupName = groupCell.attr('index');
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
+          break;
+      }
 
-        var underGroupCells = me.el.select('[group-index="'+groupName+'"]'),
-          groupCellLeft = underGroupCells.item(0).css('left'),
-          groupCellWidth = 0;
+      return columns;
+    },
+    /*
+     * @param {Number} index
+     * @return {Fancy.Element}
+     */
+    getDomCell: function (index) {
+      return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellClick: function (e) {
+      var me = this,
+        w = me.widget,
+        columndrag = w.columndrag,
+        cell = e.currentTarget,
+        target = F.get(e.target),
+        index = parseInt(F.get(cell).attr('index'));
 
-        Fancy.each(columns, function (column){
-          if(column.grouping === groupName && !column.hidden){
-            groupCellWidth += column.width;
-          }
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
+
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS)) {
+        return
+      }
+
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)) {
+        return
+      }
+
+      if (F.get(cell).hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)) {
+        return;
+      }
+
+      w.fire('headercellclick', {
+        e: e,
+        side: me.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = e.currentTarget,
+        cellEl = F.get(cell),
+        isGroupCell = cellEl.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS),
+        index = parseInt(F.get(cell).attr('index'));
+
+      if (isGroupCell) {
+        return;
+      }
+
+      w.fire('headercellmousemove', {
+        e: e,
+        side: me.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Event} e
+     */
+    onMouseDown: function (e) {
+      var targetEl = F.get(e.target);
+
+      if (targetEl.prop("tagName") === 'INPUT') {
+      }
+      else {
+        e.preventDefault();
+      }
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellMouseDown: function (e) {
+      var w = this.widget,
+        cell = e.currentTarget,
+        index = parseInt(F.get(cell).attr('index'));
+
+      w.fire('headercellmousedown', {
+        e: e,
+        side: this.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Number} value
+     */
+    scroll: function (value) {
+      this.scrollLeft = value;
+      this.setCellsPosition();
+    },
+    /*
+     * @param {Array} groups
+     * @return {String}
+     */
+    getGroupingCellsHTML: function (groups) {
+      var me = this,
+        w = me.widget,
+        html = '';
+
+      F.each(groups, function (group, p) {
+        html += me.cellTpl.getHTML({
+          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
+          columnName: group.title,
+          columnWidth: group.width,
+          index: p,
+          height: w.cellHeaderHeight + 'px',
+          left: group.left + 'px',
+          groupIndex: ''
         });
-
-        groupCell.css('left', groupCellLeft);
-        groupCell.css('width', groupCellWidth);
       });
-    }
-  },
-  /*
-   * @return {Number}
-   */
-  getColumnsWidth: function(){
-    var me = this,
-      columns = me.getColumns(),
-      cellsWidth = 0,
-      i = 0,
-      iL = columns.length;
 
-    for(;i<iL;i++){
-      var column = columns[i];
+      return html;
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        el = me.el,
+        cellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
-      cellsWidth += column.width;
-    }
+      el.un('click', me.onCellClick, me, cellSelector);
+      el.un('mousemove', me.onCellMouseMove, me, cellSelector);
+      el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+      el.un('mousedown', me.onMouseDown, me);
+    },
+    /*
+     * @param {Number} index
+     * @return {Fancy.Element}
+     */
+    getCell: function (index) {
+      return this.el.select('.' + GRID_HEADER_CELL_CLS + '[index="' + index + '"]');
+    },
+    /*
+     * @param {Event} e
+     */
+    onTriggerClick: function (e) {
+      var me = this,
+        target = F.get(e.currentTarget),
+        cell = target.parent().parent(),
+        index = parseInt(cell.attr('index')),
+        columns = me.getColumns(),
+        column = columns[index];
 
-    return cellsWidth;
-  },
-  /*
-   * @return {Array}
-   */
-  getColumns: function(){
-    var me = this,
-      w = me.widget,
-      columns;
+      e.stopPropagation();
 
-    switch(me.side){
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
+      me.showMenu(cell, index, column, columns);
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    hideCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = orderIndex + 1,
+        iL = cells.length,
+        columns = me.getColumns();
 
-    return columns;
-  },
-  /*
-   * @param {Number} index
-   * @return {Fancy.Element}
-   */
-  getDomCell: function(index){
-    var me = this,
-      w = me.widget;
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
 
-    return me.el.select('.' + w.cellHeaderCls).item(index);
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellClick: function(e){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      cell = e.currentTarget,
-      target = Fancy.get(e.target),
-      index = parseInt(Fancy.get(cell).attr('index'));
+        groupCell.css('width', groupCellWidth - cellWidth);
+      }
 
-    if(target.hasCls(cellHeaderTriggerCls)){
-      return
-    }
+      cell.hide();
 
-    if(target.hasCls(cellHeaderTriggerImageCls)){
-      return
-    }
+      var groups = {};
 
-    if(Fancy.get(cell).hasCls(cellHeaderGroupLevel2)){
-      return;
-    }
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) - cellWidth,
+          column = columns[i];
 
-    w.fire('headercellclick', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellMouseMove: function(e){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cell = e.currentTarget,
-      cellEl = Fancy.get(cell),
-      isGroupCell = cellEl.hasCls(cellHeaderGroupLevel2),
-      index = parseInt(Fancy.get(cell).attr('index'));
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
+        }
 
-    if(isGroupCell){
-      return;
-    }
+        _cell.css('left', left);
+      }
 
-    w.fire('headercellmousemove', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Event} e
-   */
-  onMouseDown: function(e){
-    var targetEl = Fancy.get(e.target);
+      F.each(groups, function (group, p) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
 
-    if(targetEl.prop("tagName") === 'INPUT'){}
-    else {
-      e.preventDefault();
-    }
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellMouseDown: function(e){
-    var me = this,
-      w = me.widget,
-      cell = e.currentTarget,
-      index = parseInt(Fancy.get(cell).attr('index'));
-
-    w.fire('headercellmousedown', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Number} value
-   */
-  scroll: function(value){
-    var me = this;
-
-    me.scrollLeft = value;
-    me.setCellsPosition();
-  },
-  /*
-   * @param {Array} groups
-   * @return {String}
-   */
-  getGroupingCellsHTML: function(groups){
-    var me = this,
-      w = me.widget,
-      html = '';
-
-    Fancy.each(groups, function(group, p){
-      html += me.cellTpl.getHTML({
-        cls: w.cellHeaderGroupLevel2,
-        columnName: group.title,
-        columnWidth: group.width,
-        index: p,
-        height: w.cellHeaderHeight + 'px',
-        left: group.left + 'px',
-        groupIndex: ''
+        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
       });
-    });
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth,
+        i = orderIndex + 1,
+        iL = cells.length,
+        columns = me.getColumns();
 
-    return html;
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      w = me.widget,
-      cellSelector = 'div.' + w.cellHeaderCls;
+      cell.show();
 
-    me.el.un('click', me.onCellClick, me, cellSelector);
-    me.el.un('mousemove', me.onCellMouseMove, me, cellSelector);
-    me.el.un('mousedown', me.onCellMouseDown, me, cellSelector);
-    me.el.un('mousedown', me.onMouseDown, me);
-  },
-  /*
-   * @param {Number} index
-   * @return {Fancy.Element}
-   */
-  getCell: function(index){
-    var me = this,
-      w = me.widget;
+      cellWidth = parseInt(cell.css('width'));
 
-    return me.el.select('.' + w.cellHeaderCls + '[index="'+index+'"]');
-  },
-  /*
-   * @param {Event} e
-   */
-  onTriggerClick: function(e){
-    var me = this,
-      target = Fancy.get(e.currentTarget),
-      cell = target.parent().parent(),
-      index = parseInt(cell.attr('index')),
-      columns = me.getColumns(),
-      column = columns[index];
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
 
-    e.stopPropagation();
+        groupCell.css('width', groupCellWidth + cellWidth);
+      }
 
-    me.showMenu(cell, index, column, columns);
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  hideCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.'+cellHeaderGroupLevel2+')'),
-      cell = cells.item(orderIndex),
-      cellWidth = parseInt(cell.css('width')),
-      i = orderIndex + 1,
-      iL = cells.length,
-      columns = me.getColumns();
+      var groups = {};
 
-    if(cell.hasCls(cellHeaderGroupLevel1)){
-      var groupIndex = cell.attr('group-index'),
-        groupCell = me.el.select('.'+cellHeaderGroupLevel2+'[index="'+groupIndex+'"]').item(0),
-        groupCellWidth = parseInt(groupCell.css('width'));
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) + cellWidth,
+          column = columns[i];
 
-      groupCell.css('width', groupCellWidth - cellWidth);
-    }
-
-    cell.hide();
-
-    var groups = {};
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) - cellWidth,
-        column = columns[i];
-
-      if(column.grouping){
-        if(columns[orderIndex].grouping !== column.grouping){
-          groups[column.grouping] = true;
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
         }
+        _cell.css('left', left);
       }
 
-      _cell.css('left', left);
-    }
+      for (var p in groups) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    removeCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = orderIndex + 1,
+        iL = cells.length,
+        groupCells = {},
+        isGroupCell = false;
 
-    Fancy.each(groups, function(group, p){
-      var groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+p+'"]').item(0);
+      if (cell.attr('group-index')) {
+        isGroupCell = cell.attr('group-index');
+        groupCells[isGroupCell] = true;
+      }
 
-      groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-    });
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  showCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.' + cellHeaderGroupLevel2 + ')'),
-      cell = cells.item(orderIndex),
-      cellWidth,
-      i = orderIndex + 1,
-      iL = cells.length,
-      columns = me.getColumns();
+      cell.destroy();
 
-    cell.show();
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) - cellWidth;
 
-    cellWidth = parseInt(cell.css('width'));
-
-    if(cell.hasCls(cellHeaderGroupLevel1)){
-      var groupIndex = cell.attr('group-index'),
-        groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+groupIndex+'"]').item(0),
-        groupCellWidth = parseInt(groupCell.css('width'));
-
-      groupCell.css('width', groupCellWidth + cellWidth);
-    }
-
-    var groups = {};
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) + cellWidth,
-        column = columns[i];
-
-      if(column.grouping){
-        if(columns[orderIndex].grouping !== column.grouping){
-          groups[column.grouping] = true;
+        if (_cell.attr('group-index')) {
+          groupCells[_cell.attr('group-index')] = true;
         }
-      }
-      _cell.css('left', left);
-    }
 
-    for(var p in groups){
-      var groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+p+'"]').item(0);
-      groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  removeCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.' + cellHeaderGroupLevel2 + ')'),
-      cell = cells.item(orderIndex),
-      cellWidth = parseInt(cell.css('width')),
-      i = orderIndex + 1,
-      iL = cells.length,
-      groupCells = {},
-      isGroupCell = false;
+        _cell.attr('index', i - 1);
 
-    if(cell.attr('group-index')){
-      isGroupCell = cell.attr('group-index');
-      groupCells[isGroupCell] = true;
-    }
-
-    cell.destroy();
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) - cellWidth;
-
-      if(_cell.attr('group-index')){
-        groupCells[_cell.attr('group-index')] = true;
+        _cell.css('left', left);
       }
 
-      _cell.attr('index', i - 1);
+      for (var p in groupCells) {
+        var groupCell = me.el.select('[index="' + p + '"]'),
+          newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
+          newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
 
-      _cell.css('left', left);
-    }
+        if (isGroupCell && groupCell) {
+          groupCell.css('width', newCellWidth);
 
-    for(var p in groupCells){
-      var groupCell = me.el.select('[index="'+p+'"]'),
-        newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
-        newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
-
-      if(isGroupCell){
-        groupCell.css('width', newCellWidth);
-
-        if(groupCell.attr('index') !== isGroupCell){
+          if (groupCell.attr('index') !== isGroupCell) {
+            groupCell.css('left', newCellLeft);
+          }
+        }
+        else {
           groupCell.css('left', newCellLeft);
         }
       }
-      else{
-        groupCell.css('left', newCellLeft);
-      }
-    }
 
-    if(isGroupCell){
-      if( me.el.select('[group-index="'+isGroupCell+'"]').length === 0 ){
-        var groupCell = me.el.select('[index="'+isGroupCell+'"]');
+      if (isGroupCell) {
+        if (me.el.select('[group-index="' + isGroupCell + '"]').length === 0) {
+          var groupCell = me.el.select('[index="' + isGroupCell + '"]');
 
-        groupCell.destroy();
-      }
-    }
-
-    if(me.side !== 'center'){
-      me.css('width', parseInt(me.css('width')) - cellWidth);
-    }
-  },
-  /*
-   *
-   */
-  renderHeaderCheckBox: function(){
-    var me = this,
-      w = me.widget,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length,
-      cells = me.el.select('.' + w.cellHeaderCls + ':not(.' + w.cellHeaderGroupLevel2 + ')');
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.headerCheckBox === true){
-        var cell = cells.item(i),
-          headerCellContainer = cell.firstChild(),
-          textEl = cell.select('.fancy-grid-header-cell-text'),
-          text = textEl.dom.innerHTML,
-          label = !text ? false : text,
-          labelWidth = 0;
-
-        cell.addCls('fancy-grid-header-cell-checkbox');
-        textEl.update('');
-
-        if(label.length){
-          labelWidth = label.width * 15;
+          groupCell.destroy();
         }
-
-        column.headerCheckBox = new Fancy.CheckBox({
-          renderTo: headerCellContainer.dom,
-          renderId: true,
-          labelWidth: labelWidth,
-          value: false,
-          label: label,
-          labelAlign: 'right',
-          style: {
-            padding: '0px',
-            display: 'inline-block'
-          },
-          events: [{
-            change: function(checkbox, value){
-              var i = 0,
-                iL = w.getViewTotal();
-
-              for(;i<iL;i++){
-                w.set(i, column.index, value);
-              }
-            }
-          }]
-        });
       }
-    }
-  },
-  /*
-   *
-   */
-  reSetIndexes: function(){
-    var me = this,
-      w = me.widget,
-      cells = me.el.select('.'+w.cellHeaderCls+':not(.' + w.cellHeaderGroupLevel2 + ')');
 
-    cells.each(function(cell, i) {
-      cell.attr('index', i);
-    })
-  }
-});
+      if (me.side !== 'center') {
+        me.css('width', parseInt(me.css('width')) - cellWidth);
+      }
+    },
+    /*
+     *
+     */
+    renderHeaderCheckBox: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.headerCheckBox === true) {
+          var cell = cells.item(i),
+            headerCellContainer = cell.firstChild(),
+            textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
+            text = textEl.dom.innerHTML,
+            label = !text ? false : text,
+            labelWidth = 0;
+
+          cell.addCls('fancy-grid-header-cell-checkbox');
+          textEl.update('');
+
+          if (label.length) {
+            labelWidth = label.width * 15;
+          }
+
+          column.headerCheckBox = new F.CheckBox({
+            renderTo: headerCellContainer.dom,
+            renderId: true,
+            labelWidth: labelWidth,
+            value: false,
+            label: label,
+            labelAlign: 'right',
+            style: {
+              padding: '0px',
+              display: 'inline-block'
+            },
+            events: [{
+              change: function (checkbox, value) {
+                var i = 0,
+                  iL = w.getViewTotal();
+
+                for (; i < iL; i++) {
+                  w.set(i, column.index, value);
+                }
+              }
+            }]
+          });
+        }
+      }
+    },
+    /*
+     *
+     */
+    reSetIndexes: function () {
+      var cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function (cell, i) {
+        cell.attr('index', i);
+      })
+    },
+    /*
+     *
+     */
+    reSetGroupIndexes: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function (cell, i) {
+        var column = columns[i],
+          grouping = column.grouping;
+
+        if(cell.attr('group-index') && !grouping){
+          cell.removeAttr('group-index');
+        }
+        else if(grouping && cell.attr('group-index') !== grouping){
+          cell.attr('group-index', grouping);
+        }
+      });
+    },
+    /*
+     *
+     */
+
+    /*
+     *
+     */
+    updateTitles: function(){
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function (column, i) {
+        me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"] .' + GRID_HEADER_CELL_TEXT_CLS).update(column.title || '');
+      });
+    },
+    /*
+     *
+     */
+    updateCellsSizes: function(){
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        left = -w.scroller.scrollLeft || 0;
+
+      F.each(columns, function (column, i){
+        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
+
+        cell.css({
+          width: column.width,
+          left: left
+        });
+
+        left += column.width;
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    calcRows: function(){
+      var me = this,
+        w = me.widget,
+        columns = w.columns.concat(w.leftColumns).concat(w.rightColumns),
+        rows = 1;
+
+      Fancy.each(columns, function(column){
+         if(column.grouping){
+           if(rows < 2){
+             rows = 2;
+           }
+
+           if(column.filter && column.filter.header){
+             if(rows < 3){
+               rows = 3;
+             }
+           }
+         }
+
+        if(column.filter && column.filter.header){
+          if(rows < 2){
+            rows = 2;
+          }
+        }
+      });
+
+      return rows;
+    },
+    /*
+     *
+     */
+    reSetColumnsAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i){
+        var column = columns[i];
+
+        cell.css('text-align', column.align || '');
+      });
+    }
+  });
+
+})();

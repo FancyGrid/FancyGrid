@@ -3,14 +3,34 @@
  * @extends Fancy.Widget
  */
 (function () {
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
-  var PANEL_HEADER_CLS = Fancy.PANEL_HEADER_CLS;
-  var HIDDEN_CLS = Fancy.HIDDEN_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var MODAL_CLS = F.MODAL_CLS;
+  var PANEL_CLS = F.PANEL_CLS;
+  var PANEL_HEADER_CLS = F.PANEL_HEADER_CLS;
+  var PANEL_SUB_HEADER_TEXT_CLS = F.PANEL_SUB_HEADER_TEXT_CLS;
+  var PANEL_HEADER_TEXT_CLS = F.PANEL_HEADER_TEXT_CLS;
+  var PANEL_HEADER_TOOLS_CLS = F.PANEL_HEADER_TOOLS_CLS;
+  var PANEL_SUB_HEADER_CLS = F.PANEL_SUB_HEADER_CLS;
+  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
+  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  var PANEL_HEADER_IMG_CLS = F.PANEL_HEADER_IMG_CLS;
+  var PANEL_NOFRAME_CLS = F.PANEL_NOFRAME_CLS;
+  var PANEL_SHADOW_CLS = F.PANEL_SHADOW_CLS;
+  var PANEL_FOOTER_CLS = F.PANEL_FOOTER_CLS;
+  var FIELD_PICKER_BUTTON_CLS = F.FIELD_PICKER_BUTTON_CLS;
 
-  Fancy.define('Fancy.Panel', {
-    extend: Fancy.Widget,
+  F.define('Fancy.Panel', {
+    extend: F.Widget,
     barScrollEnabled: true,
     mixins: [
       'Fancy.panel.mixin.DD',
@@ -20,12 +40,8 @@
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('constructor', arguments);
+      F.apply(this, config);
+      this.Super('constructor', arguments);
     },
     /*
      *
@@ -50,8 +66,7 @@
         me.setActiveWindowWatcher();
       }
     },
-    cls: 'fancy-panel',
-    panelSubHeaderCls: 'fancy-panel-sub-header-text',
+    cls: PANEL_CLS,
     value: '',
     width: 300,
     height: 200,
@@ -68,20 +83,20 @@
     theme: 'default',
     tpl: [
       '<div style="height:{titleHeight}px;" class="'+PANEL_HEADER_CLS+' '+HIDDEN_CLS+'">',
-      '{titleImg}',
-      '<div class="fancy-panel-header-text">{title}</div>',
-      '<div class="fancy-panel-header-tools"></div>',
+        '{titleImg}',
+        '<div class="' + PANEL_HEADER_TEXT_CLS + '">{title}</div>',
+        '<div class="' + PANEL_HEADER_TOOLS_CLS + '"></div>',
       '</div>',
-      '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header '+HIDDEN_CLS+'">',
-        '<div class="fancy-panel-sub-header-text">{subTitle}</div>',
+      '<div style="height:{subTitleHeight}px;" class="' + PANEL_SUB_HEADER_CLS + ' '+HIDDEN_CLS+'">',
+        '<div class="' + PANEL_SUB_HEADER_TEXT_CLS + '">{subTitle}</div>',
       '</div>',
-      '<div class="fancy-panel-body">',
-      '<div class="fancy-panel-tbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-sub-tbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-body-inner"></div>',
-      '<div class="fancy-panel-bbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-buttons '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-footer '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+      '<div class="' + PANEL_BODY_CLS + '">',
+        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
+        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
     ],
     /*
@@ -89,8 +104,8 @@
      */
     render: function () {
       var me = this,
-        renderTo = Fancy.get(me.renderTo || document.body),
-        el = Fancy.get(document.createElement('div')),
+        renderTo = F.get(me.renderTo || document.body),
+        el = F.get(document.createElement('div')),
         minusHeight = 0,
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
@@ -103,16 +118,16 @@
       }
 
       if (me.frame === false) {
-        el.addCls('fancy-panel-noframe');
+        el.addCls(PANEL_NOFRAME_CLS);
       }
 
-      el.addCls(Fancy.cls, me.cls);
+      el.addCls(F.cls, me.cls);
       if (me.theme !== 'default') {
         el.addCls('fancy-theme-' + me.theme);
       }
 
       if (me.shadow) {
-        el.addCls('fancy-panel-shadow');
+        el.addCls(PANEL_SHADOW_CLS);
       }
 
       el.css({
@@ -127,24 +142,24 @@
       var titleText = '',
         subTitleText = '';
 
-      if (Fancy.isObject(me.title)) {
+      if (F.isObject(me.title)) {
         titleText = me.title.text
       }
-      else if (Fancy.isString(me.title)) {
+      else if (F.isString(me.title)) {
         titleText = me.title
       }
 
-      if (Fancy.isObject(me.subTitle)) {
+      if (F.isObject(me.subTitle)) {
         subTitleText = me.subTitle.text
       }
-      else if (Fancy.isString(me.subTitle)) {
+      else if (F.isString(me.subTitle)) {
         subTitleText = me.subTitle
       }
 
       var imgCls = '';
 
-      if (Fancy.isObject(me.title) && me.title.imgCls) {
-        imgCls = '<div class="fancy-panel-header-img ' + me.title.imgCls + '"></div>';
+      if (F.isObject(me.title) && me.title.imgCls) {
+        imgCls = '<div class="' + PANEL_HEADER_IMG_CLS + ' ' + me.title.imgCls + '"></div>';
       }
 
       el.update(me.tpl.getHTML({
@@ -156,7 +171,7 @@
         subTitle: subTitleText
       }));
 
-      if (Fancy.isObject(me.title)) {
+      if (F.isObject(me.title)) {
         if (me.title.style) {
           el.select('.' + PANEL_HEADER_CLS).css(me.title.style);
         }
@@ -170,13 +185,13 @@
         }
       }
 
-      if (Fancy.isObject(me.subTitle)) {
+      if (F.isObject(me.subTitle)) {
         if (me.subTitle.style) {
-          el.select('.fancy-panel-sub-header').css(me.subTitle.style);
+          el.select('.' + PANEL_SUB_HEADER_CLS).css(me.subTitle.style);
         }
 
         if (me.subTitle.cls) {
-          el.select('.fancy-panel-sub-header').addCls(me.subTitle.cls);
+          el.select('.' + PANEL_SUB_HEADER_CLS).addCls(me.subTitle.cls);
         }
       }
 
@@ -184,40 +199,40 @@
         el.select('.' + PANEL_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
       else {
-        el.select('.fancy-panel-body').css('border-top-width', '0px');
+        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
       }
 
       if (me.subTitle) {
-        el.select('.fancy-panel-body').css('border-top-width', '0px');
-        el.select('.fancy-panel-sub-header').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
+        el.select('.' + PANEL_SUB_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.tbar) {
-        el.select('.fancy-panel-tbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.subTBar) {
-        el.select('.fancy-panel-sub-tbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_SUB_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.bbar) {
-        el.select('.fancy-panel-bbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.buttons) {
-        el.select('.fancy-panel-buttons').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BUTTONS_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.footer) {
-        el.select('.fancy-panel-footer').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
       me.el = renderTo.dom.appendChild(el.dom);
-      me.el = Fancy.get(me.el);
+      me.el = F.get(me.el);
 
       if (me.modal) {
-        if (Fancy.select('fancy-modal').length === 0) {
-          Fancy.get(document.body).append('<div class="fancy-modal" style="display: none;"></div>');
+        if (F.select(MODAL_CLS).length === 0) {
+          F.get(document.body).append('<div class="'+MODAL_CLS+'" style="display: none;"></div>');
         }
       }
 
@@ -234,10 +249,9 @@
      *
      */
     setHardBordersWidth: function () {
-      var me = this,
-        panelBodyBorders = me.panelBodyBorders;
+      var panelBodyBorders = this.panelBodyBorders;
 
-      me.el.select('.fancy-panel-body').css({
+      this.el.select('.' + PANEL_BODY_CLS).css({
         'border-top-width': panelBodyBorders[0],
         'border-right-width': panelBodyBorders[1],
         'border-bottom-width': panelBodyBorders[2],
@@ -255,9 +269,9 @@
         return;
       }
 
-      Fancy.each(tools, function (tool, i) {
-        tool.renderTo = me.el.select('.fancy-panel-header-tools').dom;
-        me.tools[i] = new Fancy.Tool(tool, me.scope || me);
+      F.each(tools, function (tool, i) {
+        tool.renderTo = me.el.select('.' + PANEL_HEADER_TOOLS_CLS).dom;
+        me.tools[i] = new F.Tool(tool, me.scope || me);
       });
     },
     /*
@@ -278,8 +292,8 @@
       }
 
       if (me.bbar) {
-        me._bbar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-bbar'),
+        me._bbar = new F.Bar({
+          el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
           height: me.barHeight,
           barContainer: me.barContainer,
@@ -292,8 +306,8 @@
       }
 
       if (me.buttons) {
-        me._buttons = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-buttons'),
+        me._buttons = new F.Bar({
+          el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -305,8 +319,8 @@
       }
 
       if (me.tbar) {
-        me._tbar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-tbar'),
+        me._tbar = new F.Bar({
+          el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
           height: me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
@@ -319,8 +333,8 @@
       }
 
       if (me.subTBar) {
-        me._subTBar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-sub-tbar'),
+        me._subTBar = new F.Bar({
+          el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
           height: me.barHeight,
           tabEdit: containsGrid,
@@ -333,9 +347,9 @@
       }
 
       if (me.footer) {
-        me._footer = new Fancy.Bar({
+        me._footer = new F.Bar({
           disableScroll: true,
-          el: me.el.select('.fancy-panel-footer'),
+          el: me.el.select('.' + PANEL_FOOTER_CLS),
           items: me.footer,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -351,20 +365,17 @@
      * @param {Number} y
      */
     showAt: function (x, y) {
-      var me = this;
-
-      me.css({
+      this.css({
         left: x + 'px',
         display: '',
-        'z-index': 1000 + Fancy.zIndex++
+        'z-index': 1000 + F.zIndex++
       });
 
       if (y !== undefined) {
-        me.css({
+        this.css({
           top: y + 'px'
         });
       }
-
     },
     /*
      *
@@ -394,11 +405,11 @@
         me._subTBar.checkScroll();
       }
 
-      var viewSize = Fancy.getViewSize(),
+      var viewSize = F.getViewSize(),
         height = me.el.height(),
         width = me.el.width(),
         xy = [],
-        scroll = Fancy.getScroll(),
+        scroll = F.getScroll(),
         scrollTop = scroll[0],
         scrollLeft = scroll[1];
 
@@ -417,24 +428,22 @@
         left: (xy[0] + scrollLeft) + 'px',
         top: (xy[1] + scrollTop) + 'px',
         display: '',
-        'z-index': 1000 + Fancy.zIndex++
+        'z-index': 1000 + F.zIndex++
       });
 
-      Fancy.select('.fancy-modal').css('display', '');
+      F.select('.' + MODAL_CLS).css('display', '');
     },
     /*
      *
      */
     hide: function () {
-      var me = this;
-
-      me.css({
+      this.css({
         display: 'none'
       });
 
-      Fancy.select('.fancy-modal').css('display', 'none');
+      F.select('.' + MODAL_CLS).css('display', 'none');
 
-      Fancy.each(me.items || [], function (item) {
+      F.each(this.items || [], function (item) {
         if (item.type === 'combo') {
           item.hideList();
         }
@@ -444,61 +453,45 @@
      * @param {String} value
      */
     setTitle: function (value) {
-      var me = this;
-
-      me.el.select('.fancy-panel-header-text').update(value);
+      this.el.select('.' + PANEL_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
     getTitle: function () {
-      var me = this;
-
-      return me.el.select('.fancy-panel-header-text').dom.innerHTML;
+      return this.el.select('.' + PANEL_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @param {String} value
      */
     setSubTitle: function (value) {
-      var me = this;
-
-      me.el.select('.' + me.panelSubHeaderCls).update(value);
+      this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
     getSubTitle: function () {
-      var me = this;
-
-      return me.el.select('.' + me.panelSubHeaderCls).dom.innerHTML;
+      return this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @return {Number}
      */
     getHeight: function () {
-      var me = this;
-
-      return parseInt(me.css('height'));
+      return parseInt(this.css('height'));
     },
     /*
      * @param {String} value
      */
     setWidth: function (value) {
       //TODO: Redo
-      var me = this;
-
-      //me.css('width', value);
-      me.items[0].setWidth(value);
+      this.items[0].setWidth(value);
     },
     /*
      * @param {Number} value
      */
     setHeight: function (value) {
-      var me = this;
-
-      me.css('height', value);
-
-      me.items[0].setHeight(value, false);
+      this.css('height', value);
+      this.items[0].setHeight(value, false);
     },
     /*
      *
@@ -507,14 +500,14 @@
       var me = this;
 
       me.el.on('click', function (e) {
-        var targetEl = Fancy.get(e.target);
+        var targetEl = F.get(e.target);
 
-        if (targetEl.hasCls('fancy-field-picker-button')) {
+        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
           return;
         }
 
-        if (1000 + Fancy.zIndex - 1 > parseInt(me.css('z-index'))) {
-          me.css('z-index', 1000 + Fancy.zIndex++);
+        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
+          me.css('z-index', 1000 + F.zIndex++);
         }
       });
     }

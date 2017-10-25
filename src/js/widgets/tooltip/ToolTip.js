@@ -2,131 +2,131 @@
  * @class Fancy.ToolTip
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.ToolTip', {
-  extend: Fancy.Widget,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var TOOLTIP_CLS = F.TOOLTIP_CLS;
+  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
-    me.initTpl();
-    me.render();
-  },
-  tpl: [
-    '<div class="{innerCls}">{text}</div>'
-  ],
-  widgetCls: 'fancy-tooltip',
-  cls: '',
-  extraCls: '',
-  innerCls: 'fancy-tooltip-inner',
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = Fancy.get(document.createElement('div'));
+  F.define('Fancy.ToolTip', {
+    extend: F.Widget,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.initTpl();
+      this.render();
+    },
+    tpl: [
+      '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
+    ],
+    widgetCls: TOOLTIP_CLS,
+    cls: '',
+    extraCls: '',
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div'));
 
-    el.addCls(
-      Fancy.cls,
-      me.widgetCls,
-      me.cls,
-      me.extraCls
-    );
+      el.addCls(
+        F.cls,
+        me.widgetCls,
+        me.cls,
+        me.extraCls
+      );
 
-    el.update(me.tpl.getHTML({
-      text: me.text,
-      innerCls: me.innerCls
-    }));
+      el.update(me.tpl.getHTML({
+        text: me.text
+      }));
 
-    me.el = Fancy.get(renderTo.appendChild(el.dom));
-  },
-  /*
-   * @param {Number} x
-   * @param {Number} y
-   */
-  show: function(x, y){
-    var me = this;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     * @param {Number} x
+     * @param {Number} y
+     */
+    show: function (x, y) {
+      var me = this;
 
-    if(me.timeout){
-      clearInterval(me.timeout);
-      delete me.timeout;
-    }
+      if (me.timeout) {
+        clearInterval(me.timeout);
+        delete me.timeout;
+      }
 
-    if(me.css('display') === 'none'){
+      if (me.css('display') === 'none') {
+        me.css({
+          display: 'block'
+        });
+      }
+
       me.css({
-        display: 'block'
+        left: x,
+        top: y
+      });
+    },
+    /*
+     * @param {Number} [delay]
+     */
+    hide: function (delay) {
+      var me = this;
+
+      if (me.timeout) {
+        clearInterval(me.timeout);
+        delete me.timeout;
+      }
+
+      if (delay) {
+        me.timeout = setTimeout(function () {
+          me.el.hide();
+        }, delay);
+      }
+      else {
+        me.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      this.el.destroy();
+    },
+    /*
+     * @param {String} html
+     */
+    update: function (html) {
+      this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    }
+  });
+
+  F.tip = {
+    update: function (text) {
+      F.tip = new F.ToolTip({
+        text: text
+      });
+    },
+    show: function (x, y) {
+      F.tip = new F.ToolTip({
+        text: ' '
+      });
+      F.tip.show(x, y);
+    },
+    hide: function () {
+      F.tip = new F.ToolTip({
+        text: ' '
       });
     }
+  };
 
-    me.css({
-      left: x,
-      top: y
-    });
-  },
-  /*
-   * @param {Number} [delay]
-   */
-  hide: function(delay){
-    var me = this;
-
-    if(me.timeout){
-      clearInterval(me.timeout);
-      delete me.timeout;
-    }
-
-    if(delay){
-      me.timeout = setTimeout(function(){
-        me.el.hide();
-      }, delay);
-    }
-    else {
-      me.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this;
-
-    me.el.destroy();
-  },
-  /*
-   * @param {String} html
-   */
-  update: function(html){
-    var me = this;
-
-    me.el.select('.' + me.innerCls).update(html);
-  }
-});
-
-Fancy.tip = {
-  update: function(text){
-    Fancy.tip = new Fancy.ToolTip({
-      text: text
-    });
-  },
-  show: function(x, y){
-    Fancy.tip = new Fancy.ToolTip({
-      text: ' '
-    });
-    Fancy.tip.show(x, y);
-  },
-  hide: function(){
-    Fancy.tip = new Fancy.ToolTip({
-      text: ' '
-    });
-  }
-};
+})();

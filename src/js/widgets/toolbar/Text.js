@@ -3,7 +3,7 @@
  */
 Fancy.define('Fancy.bar.Text', {
   extend: Fancy.Widget,
-  widgetCls: 'fancy-bar-text',
+  widgetCls: Fancy.BAR_TEXT_CLS,
   cls: '',
   text: '',
   /*
@@ -11,22 +11,15 @@ Fancy.define('Fancy.bar.Text', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.render();
+    this.Super('init', arguments);
+    this.render();
   },
   /*
    *

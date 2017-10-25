@@ -19,9 +19,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -69,31 +67,24 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   onGridActivate: function(){
-    var me = this,
-      docEl = Fancy.get(document);
-
-    docEl.on('keydown', me.onKeyDown, me);
+    Fancy.get(document).on('keydown', this.onKeyDown, this);
   },
   /*
    *
    */
   onGridDeActivate: function(){
-    var me = this,
-      docEl = Fancy.get(document);
-
-    docEl.un('keydown', me.onKeyDown, me);
+    Fancy.get(document).un('keydown', this.onKeyDown, this);
   },
   /*
    * @param {Object} e
    */
   onKeyDown: function(e){
-    var me = this,
-      keyCode = e.keyCode,
+    var keyCode = e.keyCode,
       key = Fancy.key;
 
     switch(keyCode) {
       case key.TAB:
-        me.fire('tab', e);
+        this.fire('tab', e);
         break;
     }
   },
@@ -261,31 +252,25 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @return {String}
    */
   getClickEventName: function(){
-    var me = this;
-
-    if(me.clicksToEdit === 1){
-      return 'click';
-    }
-
-    if(me.clicksToEdit === 2){
-      return 'dblclick';
+    switch(this.clicksToEdit){
+      case 1:
+        return 'click';
+      case 2:
+        return 'dblclick';
     }
   },
   /*
    *
    */
   stopEditor: function(){
-    var me = this;
-
-    me.stopped = true;
+    this.stopped = true;
   },
   /*
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
   onClickCell: function(grid, o){
-    var me = this,
-      w = me.widget,
+    var w = this.widget,
       column = o.column;
 
     if(column.editable && column.type === 'checkbox' && w.celledit){
@@ -325,10 +310,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} o
    */
   onStoreSet: function(store, o){
-    var me = this,
-      w = me.widget;
-
-    w.updater.updateRow(o.rowIndex);
+    this.widget.updater.updateRow(o.rowIndex);
   },
   /*
    *
@@ -363,12 +345,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   onStoreCRUDDestroy: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    s.loadData();
-    me.clearDirty();
+    this.widget.store.loadData();
+    this.clearDirty();
   },
   /*
    *
@@ -387,10 +365,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Array} data
    */
   onCreate: function(store, data){
-    var me = this,
-      w = me.widget;
-
-    w.updater.update();
-    me.clearDirty();
+    this.widget.updater.update();
+    this.clearDirty();
   }
 });

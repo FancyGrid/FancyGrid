@@ -13,12 +13,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -92,8 +88,6 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
    * @return {String}
    */
   get: function(){
-    var me = this;
-
-    return me.el.firstChild().dom.innerHTML;
+    return this.el.firstChild().dom.innerHTML;
   }
 });

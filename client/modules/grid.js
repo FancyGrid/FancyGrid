@@ -312,10 +312,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       leftColumns = [],
       rightColumns = [],
       i = 0,
-      iL = columns.length;
+      iL = columns.length,
+      isDraggable = false;
 
     for(;i<iL;i++){
       var column = columns[i];
+
+      if(column.draggable){
+        isDraggable = true;
+      }
 
       switch(column.type){
         case 'select':
@@ -323,14 +328,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           this.multiSelect = true;
           columns[i].index = '$selected';
           columns[i].editable = true;
-
           break;
         case 'order':
           columns[i].editable = false;
           columns[i].sortable = false;
           columns[i].cellAlign = 'right';
-
-
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -359,6 +361,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL--;
         continue;
       }
+    }
+
+    if(isDraggable){
+      config._plugins.push({
+        type: 'grid.columndrag'
+      });
     }
 
     config.leftColumns = leftColumns;
@@ -1668,7 +1676,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   getActiveActionColumnItem: function(o){
     var cell = Fancy.get(o.cell),
       target = o.e.target,
-      actionEls = cell.select('.fancy-grid-column-action-item'),
+      actionEls = cell.select('.' + Fancy.GRID_COLUMN_ACTION_ITEM_CLS),
       i = 0,
       iL = actionEls.length;
 
@@ -1681,2121 +1689,2131 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 });/*
  * @mixin Fancy.grid.mixin.Grid
  */
-Fancy.Mixin('Fancy.grid.mixin.Grid', {
-  tpl: [
-    '<div class="{leftCls} {leftEmptyCls}"></div>',
-    '<div class="{centerCls}"></div>',
-    '<div class="{rightCls} {rightEmptyCls}"></div>',
-    '<div class="fancy-grid-editors"></div>'
-  ],
-  /*
-   *
-   */
-  initStore: function(){
-    var me = this,
-      fields = me.getFieldsFromData(me.data),
-      modelName = 'Fancy.model.'+Fancy.id(),
-      data = me.data,
-      remoteSort,
-      remoteFilter,
-      collapsed = false,
-      state = me.state;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    if(me.data.items){
-      data = me.data.items;
-    }
+  //CONSTANTS
+  var TOUCH_CLS = F.TOUCH_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
+  var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
+  var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
+  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  var GRID_BODY_CLS = F.GRID_BODY_CLS;
+  var PANEL_BODY_INNER_CLS =  F.PANEL_BODY_INNER_CLS;
+  var GRID_UNSELECTABLE_CLS = F.GRID_UNSELECTABLE_CLS;
+  var GRID_LEFT_EMPTY_CLS = F.GRID_LEFT_EMPTY_CLS;
+  var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
 
-    remoteSort = me.data.remoteSort;
-    remoteFilter = me.data.remoteFilter;
+  F.Mixin('Fancy.grid.mixin.Grid', {
+    tpl: [
+      '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
+      '<div class="' + GRID_CENTER_CLS + '"></div>',
+      '<div class="' + GRID_RIGHT_CLS + ' '+GRID_RIGHT_EMPTY_CLS+'"></div>',
+      '<div class="fancy-grid-editors"></div>'
+    ],
+    /*
+     *
+     */
+    initStore: function () {
+      var me = this,
+        fields = me.getFieldsFromData(me.data),
+        modelName = 'Fancy.model.' + F.id(),
+        data = me.data,
+        remoteSort,
+        remoteFilter,
+        collapsed = false,
+        state = me.state;
 
-    Fancy.define(modelName, {
-      extend: Fancy.Model,
-      fields: fields
-    });
-
-    if(me.grouping && me.grouping.collapsed !==  undefined){
-      collapsed = me.grouping.collapsed;
-    }
-
-    var storeConfig = {
-      widget: me,
-      model: modelName,
-      data: data,
-      paging: me.paging,
-      remoteSort: remoteSort,
-      remoteFilter: remoteFilter,
-      collapsed: collapsed,
-      multiSort: me.multiSort
-    };
-
-    if(state){
-      if(state.filters){
-        storeConfig.filters = state.filters;
+      if (me.data.items) {
+        data = me.data.items;
       }
-    }
 
-    if(data.pageSize){
-      storeConfig.pageSize = data.pageSize;
-    }
+      remoteSort = me.data.remoteSort;
+      remoteFilter = me.data.remoteFilter;
 
-    me.store = new Fancy.Store(storeConfig);
+      F.define(modelName, {
+        extend: F.Model,
+        fields: fields
+      });
 
-    me.model = modelName;
-    me.fields = fields;
-
-    if(me.store.filters){
-      setTimeout(function() {
-        me.filter.filters = me.store.filters;
-        me.filter.updateStoreFilters();
-      }, 1);
-    }
-  },
-  /*
-   *
-   */
-  initTouch: function(){
-    var me = this,
-      TOUCH_CLS = Fancy.TOUCH_CLS;
-
-    if(Fancy.isTouch && window.FastClick){
-      if(me.panel){
-        FastClick.attach(me.panel.el.dom);
-        me.panel.addCls(TOUCH_CLS);
+      if (me.grouping && me.grouping.collapsed !== undefined) {
+        collapsed = me.grouping.collapsed;
       }
-      else {
-        FastClick.attach(me.el.dom);
-        me.addCls(TOUCH_CLS);
+
+      var storeConfig = {
+        widget: me,
+        model: modelName,
+        data: data,
+        paging: me.paging,
+        remoteSort: remoteSort,
+        remoteFilter: remoteFilter,
+        collapsed: collapsed,
+        multiSort: me.multiSort
+      };
+
+      if (state) {
+        if (state.filters) {
+          storeConfig.filters = state.filters;
+        }
       }
-    }
-  },
-  /*
-   *
-   */
-  initElements: function(){
-    var me = this;
 
-    if( me.header !== false ){
+      if (data.pageSize) {
+        storeConfig.pageSize = data.pageSize;
+      }
 
-      me.leftHeader = new Fancy.grid.Header({
+      me.store = new F.Store(storeConfig);
+
+      me.model = modelName;
+      me.fields = fields;
+
+      if (me.store.filters) {
+        setTimeout(function () {
+          me.filter.filters = me.store.filters;
+          me.filter.updateStoreFilters();
+        }, 1);
+      }
+    },
+    /*
+     *
+     */
+    initTouch: function () {
+      var me = this;
+
+      if (F.isTouch && window.FastClick) {
+        if (me.panel) {
+          FastClick.attach(me.panel.el.dom);
+          me.panel.addCls(TOUCH_CLS);
+        }
+        else {
+          FastClick.attach(me.el.dom);
+          me.addCls(TOUCH_CLS);
+        }
+      }
+    },
+    /*
+     *
+     */
+    initElements: function () {
+      var me = this;
+
+      if (me.header !== false) {
+
+        me.leftHeader = new F.grid.Header({
+          widget: me,
+          side: 'left'
+        });
+
+        me.header = new F.grid.Header({
+          widget: me,
+          side: 'center'
+        });
+
+        me.rightHeader = new F.grid.Header({
+          widget: me,
+          side: 'right'
+        });
+      }
+
+      me.leftBody = new F.grid.Body({
         widget: me,
         side: 'left'
       });
 
-      me.header = new Fancy.grid.Header({
+      me.body = new F.grid.Body({
         widget: me,
         side: 'center'
       });
 
-      me.rightHeader = new Fancy.grid.Header({
+      me.rightBody = new F.grid.Body({
         widget: me,
         side: 'right'
       });
-    }
 
-    me.leftBody = new Fancy.grid.Body({
-      widget: me,
-      side: 'left'
-    });
+      me.leftEl = me.el.select('.' + GRID_LEFT_CLS);
+      me.centerEl = me.el.select('.' + GRID_CENTER_CLS);
+      me.rightEl = me.el.select('.' + GRID_RIGHT_CLS);
+    },
+    /*
+     * @param {Array} data
+     * @return {Array}
+     */
+    getFieldsFromData: function (data) {
+      var items = data.items || data;
 
-    me.body = new Fancy.grid.Body({
-      widget: me,
-      side: 'center'
-    });
+      if (data.fields) {
+        return data.fields;
+      }
 
-    me.rightBody = new Fancy.grid.Body({
-      widget: me,
-      side: 'right'
-    });
+      if (!items) {
+        throw new Error('FancyGrid Error 4: Data is empty and not set fields of data to build model');
+      }
 
-    me.leftEl = me.el.select('.' + me.leftCls);
-    me.centerEl = me.el.select('.' + me.centerCls);
-    me.rightEl = me.el.select('.' + me.rightCls);
-  },
-  /*
-   * @param {Array} data
-   * @return {Array}
-   */
-  getFieldsFromData: function(data){
-    var items = data.items || data;
+      var itemZero = items[0],
+        fields = [];
 
-    if( data.fields){
-      return data.fields;
-    }
+      for (var p in itemZero) {
+        fields.push(p);
+      }
 
-    if( !items ){
-      throw new Error('FancyGrid Error 4: Data is empty and not set fields of data to build model');
-    }
+      return fields;
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = me.renderTo || document.body,
+        el = F.get(document.createElement('div')),
+        panelBodyBorders = me.panelBodyBorders;
 
-    var itemZero = items[0],
-      fields = [];
+      el.addCls(
+        F.cls,
+        me.widgetCls,
+        me.cls
+      );
 
-    for(var p in itemZero){
-      fields.push(p);
-    }
+      el.attr('id', me.id);
 
-    return fields;
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = me.renderTo || document.body,
-      el = Fancy.get( document.createElement('div')),
-      panelBodyBorders = me.panelBodyBorders;
+      if (me.panel === undefined && me.shadow) {
+        el.addCls('fancy-panel-shadow');
+      }
 
-    el.addCls(
-      Fancy.cls,
-      me.widgetCls,
-      me.cls
-    );
+      if (me.columnLines === false) {
+        el.addCls('fancy-grid-disable-column-lines');
+      }
 
-    el.attr('id', me.id);
+      if (me.theme !== 'default' && !me.panel) {
+        el.addCls('fancy-theme-' + me.theme);
+      }
 
-    if(me.panel === undefined && me.shadow){
-      el.addCls('fancy-panel-shadow');
-    }
+      var panelBordersWidth = 0,
+        panelBorderHeight = 0;
 
-    if(me.columnLines === false){
-      el.addCls('fancy-grid-disable-column-lines');
-    }
+      if (me.panel) {
+        panelBordersWidth = panelBodyBorders[1] + panelBodyBorders[3];
+      }
 
-    if( me.theme !== 'default' && !me.panel){
-      el.addCls('fancy-theme-' + me.theme);
-    }
+      el.css({
+        width: (me.width - panelBordersWidth) + 'px',
+        height: (me.height - panelBorderHeight) + 'px'
+      });
 
-    var panelBordersWidth = 0,
-      panelBorderHeight = 0;
+      me.initTpl();
+      el.update(me.tpl.getHTML({}));
 
-    if(me.panel){
-      panelBordersWidth = panelBodyBorders[1] + panelBodyBorders[3];
-    }
+      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
 
-    el.css({
-      width: (me.width - panelBordersWidth) + 'px',
-      height: (me.height - panelBorderHeight) + 'px'
-    });
+      me.setHardBordersWidth();
 
-    me.initTpl();
-    el.update(me.tpl.getHTML({
-      leftEmptyCls: me.leftEmptyCls,
-      rightEmptyCls: me.rightEmptyCls,
-      centerCls: me.centerCls,
-      leftCls: me.leftCls,
-      rightCls: me.rightCls
-    }));
+      me.rendered = true;
+    },
+    /*
+     *
+     */
+    setHardBordersWidth: function () {
+      var me = this,
+        borders = me.panel ? me.gridBorders : me.gridWithoutPanelBorders;
 
-    me.el = Fancy.get(Fancy.get(renderTo).dom.appendChild(el.dom));
+      if (me.wrapped) {
+        borders = me.gridBorders;
+      }
 
-    me.setHardBordersWidth();
+      me.css({
+        'border-top-width': borders[0],
+        'border-right-width': borders[1],
+        'border-bottom-width': borders[2],
+        'border-left-width': borders[3]
+      })
+    },
+    /*
+     *
+     */
+    update: function () {
+      var me = this,
+        s = me.store;
 
-    me.rendered = true;
-  },
-  /*
-   *
-   */
-  setHardBordersWidth: function(){
-    var me = this,
-      borders = me.panel? me.gridBorders : me.gridWithoutPanelBorders;
+      if (s.loading) {
+        return;
+      }
 
-    if(me.wrapped){
-      borders = me.gridBorders;
-    }
+      me.updater.update();
+      me.fire('update');
 
-    me.css({
-      'border-top-width': borders[0],
-      'border-right-width': borders[1],
-      'border-bottom-width': borders[2],
-      'border-left-width': borders[3]
-    })
-  },
-  /*
-   *
-   */
-  update: function(){
-    var me = this,
-      s = me.store;
+      if (me.heightFit) {
+        me.fitHeight();
+      }
 
-    if(s.loading){
-      return;
-    }
+      me.setBodysHeight();
+    },
+    /*
+     * @param {String} side
+     * @return {Number}
+     */
+    getColumnsWidth: function (side) {
+      var me = this;
 
-    me.updater.update();
-    me.fire('update');
+      switch (side) {
+        case 'center':
+          return me.getCenterFullWidth();
+        case 'left':
+          return me.getLeftFullWidth();
+        case 'right':
+          return me.getRightFullWidth();
+      }
+    },
+    /*
+     *
+     */
+    setSides: function () {
+      var me = this,
+        leftColumns = me.leftColumns,
+        rightColumns = me.rightColumns,
+        leftWidth = me.getLeftFullWidth(),
+        centerWidth = me.getCenterFullWidth(),
+        rightWidth = me.getRightFullWidth(),
+        gridBorders = me.gridBorders,
+        panelBodyBorders = me.panelBodyBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders;
 
-    if(me.heightFit){
-      me.fitHeight();
-    }
+      if (leftColumns.length > 0) {
+        me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
+      }
 
-    me.setBodysHeight();
-  },
-  /*
-   * @param {String} side
-   * @return {Number}
-   */
-  getColumnsWidth: function(side){
-    var me = this;
+      if (rightColumns.length > 0) {
+        me.rightEl.removeCls(GRID_RIGHT_EMPTY_CLS);
+      }
 
-    switch(side){
-      case 'center':
-        return me.getCenterFullWidth();
-      case 'left':
-        return me.getLeftFullWidth();
-      case 'right':
-        return me.getRightFullWidth();
-    }
-  },
-  /*
-   *
-   */
-  setSides: function(){
-    var me = this,
-      centerCls = me.centerCls,
-      leftCls = me.leftCls,
-      rightCls = me.rightCls,
-      headerCls = me.headerCls,
-      leftColumns = me.leftColumns,
-      rightColumns = me.rightColumns,
-      leftWidth = me.getLeftFullWidth(),
-      centerWidth = me.getCenterFullWidth(),
-      rightWidth = me.getRightFullWidth(),
-      gridBorders = me.gridBorders,
-      panelBodyBorders = me.panelBodyBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders;
+      if (me.wrapped) {
+        centerWidth = me.width - gridBorders[1] - gridBorders[3];
+      }
+      else if (me.panel) {
+        centerWidth = me.width - gridBorders[1] - gridBorders[3] - panelBodyBorders[1] - panelBodyBorders[3];
+      }
+      else {
+        centerWidth = me.width - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
+      }
 
-    if(leftColumns.length > 0){
-      me.leftEl.removeCls(me.leftEmptyCls);
-    }
+      if (leftWidth === 0 && rightWidth === 0) {
+      }
+      else if (rightWidth === 0) {
+        centerWidth -= leftWidth;
+      }
+      else if (leftWidth === 0) {
+        centerWidth -= rightWidth;
+      }
+      else if (me.width > leftWidth + centerWidth + rightWidth) {
+        centerWidth -= leftWidth;
+      }
+      else {
+        centerWidth -= leftWidth + rightWidth;
+      }
 
-    if(rightColumns.length > 0){
-      me.rightEl.removeCls(me.rightEmptyCls);
-    }
-
-    if(me.wrapped){
-      centerWidth = me.width - gridBorders[1] - gridBorders[3];
-    }
-    else if(me.panel){
-      centerWidth = me.width - gridBorders[1] - gridBorders[3] - panelBodyBorders[1] - panelBodyBorders[3];
-    }
-    else{
-      centerWidth = me.width - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
-    }
-
-    if(leftWidth === 0 && rightWidth === 0){}
-    else if(rightWidth === 0){
-      centerWidth -= leftWidth;
-    }
-    else if(leftWidth === 0){
-      centerWidth -= rightWidth;
-    }
-    else if(me.width > leftWidth + centerWidth + rightWidth){
-      centerWidth -= leftWidth;
-    }
-    else{
-      centerWidth -= leftWidth + rightWidth;
-    }
-
-    me.leftEl.css({
-      width: leftWidth + 'px'
-    });
-
-    me.centerEl.css({
-      left: leftWidth + 'px',
-      width: centerWidth + 'px'
-    });
-
-    if( me.header ) {
-      me.el.select('.' + leftCls + ' .' + headerCls).css({
+      me.leftEl.css({
         width: leftWidth + 'px'
       });
 
-      me.el.select('.' + centerCls + ' .' + headerCls).css({
+      me.centerEl.css({
+        left: leftWidth + 'px',
         width: centerWidth + 'px'
       });
-    }
 
-    me.el.select('.' + centerCls + ' .fancy-grid-body').css({
-      width: centerWidth + 'px'
-    });
+      if (me.header) {
+        me.el.select('.' + GRID_LEFT_CLS + ' .' + GRID_HEADER_CLS).css({
+          width: leftWidth + 'px'
+        });
 
-    if(me.width > leftWidth + centerWidth + rightWidth) {
+        me.el.select('.' + GRID_CENTER_CLS + ' .' + GRID_HEADER_CLS).css({
+          width: centerWidth + 'px'
+        });
+      }
+
+      me.el.select('.' + GRID_CENTER_CLS + ' .' + GRID_BODY_CLS).css({
+        width: centerWidth + 'px'
+      });
+
+      if (me.width > leftWidth + centerWidth + rightWidth) {
+        me.rightEl.css({
+          right: '0px'
+        });
+      }
+      else {
+        me.rightEl.css({
+          left: '',
+          right: '0px'
+        });
+      }
+
       me.rightEl.css({
-        right: '0px'
+        width: rightWidth
       });
-    }
-    else {
-      me.rightEl.css({
-        left: '',
-        right: '0px'
-      });
-    }
 
-    me.rightEl.css({
-      width: rightWidth
-    });
+      if (me.header) {
+        me.el.select('.' + GRID_RIGHT_CLS + ' .' + GRID_HEADER_CLS).css({
+          width: rightWidth + 'px'
+        });
+      }
 
-    if( me.header ) {
-      me.el.select('.' + rightCls + ' .' + headerCls).css({
-        width: rightWidth + 'px'
-      });
-    }
+      me.startWidths = {
+        center: centerWidth,
+        left: leftWidth,
+        right: rightWidth
+      };
+    },
+    /*
+     *
+     */
+    setColumnsPosition: function () {
+      var me = this;
 
-    me.startWidths = {
-      center: centerWidth,
-      left: leftWidth,
-      right: rightWidth
-    };
-  },
-  /*
-   *
-   */
-  setColumnsPosition: function(){
-    var me = this;
+      me.body.setColumnsPosition();
+      me.leftBody.setColumnsPosition();
+      me.rightBody.setColumnsPosition();
+    },
+    /*
+     *
+     */
+    setSidesHeight: function () {
+      var me = this,
+        s = me.store,
+        height = 1,
+        cellHeaderHeight = me.cellHeaderHeight;
 
-    me.body.setColumnsPosition();
-    me.leftBody.setColumnsPosition();
-    me.rightBody.setColumnsPosition();
-  },
-  /*
-   *
-   */
-  setSidesHeight: function(){
-    var me = this,
-      s = me.store,
-      height = 1,
-      cellHeaderHeight = me.cellHeaderHeight;
-
-    if (me.header !== false) {
-      height += cellHeaderHeight;
-      if(me.filter && me.filter.header){
-        if(me.groupheader){
-          if(me.filter.groupHeader){
+      if (me.header !== false) {
+        height += cellHeaderHeight;
+        if (me.filter && me.filter.header) {
+          if (me.groupheader) {
+            if (me.filter.groupHeader) {
+              height += cellHeaderHeight;
+            }
+          }
+          else {
             height += cellHeaderHeight;
           }
         }
-        else{
-          height += cellHeaderHeight;
+
+        if (me.groupheader) {
+          if (!(me.filter && me.filter.header)) {
+            height += cellHeaderHeight;
+          }
+          else {
+            height += cellHeaderHeight;
+          }
         }
       }
 
-      if(me.groupheader){
-        if(!(me.filter && me.filter.header)){
-          height += cellHeaderHeight;
-        }
-        else{
-          height += cellHeaderHeight;
-        }
+      if (me.grouping) {
+        height += me.grouping.groups.length * me.groupRowHeight;
       }
-    }
 
-    if(me.grouping){
-      height += me.grouping.groups.length * me.groupRowHeight;
-    }
+      if (me.expander) {
+        height += me.expander.plusHeight;
+      }
 
-    if(me.expander){
-      height += me.expander.plusHeight;
-    }
+      if (me.summary) {
+        height += me.summary.topOffSet;
+      }
 
-    if(me.summary){
-      height += me.summary.topOffSet;
-    }
+      height += s.getLength() * me.cellHeight - 1;
 
-    height += s.getLength() * me.cellHeight - 1;
+      if (me.paging && me.summary && me.summary.position === 'bottom') {
+        height = me.height;
+      }
 
-    if(me.paging && me.summary && me.summary.position === 'bottom'){
-      height = me.height;
-    }
+      me.leftEl.css({
+        height: height + 'px'
+      });
 
-    me.leftEl.css({
-      height: height + 'px'
-    });
+      me.centerEl.css({
+        height: height + 'px'
+      });
 
-    me.centerEl.css({
-      height: height + 'px'
-    });
+      me.rightEl.css({
+        height: height + 'px'
+      });
+    },
+    /*
+     *
+     */
+    setBodysHeight: function () {
+      var me = this;
 
-    me.rightEl.css({
-      height: height + 'px'
-    });
-  },
-  /*
-   *
-   */
-  setBodysHeight: function () {
-    var me = this;
+      me.body.setHeight();
+      me.leftBody.setHeight();
+      me.rightBody.setHeight();
+    },
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
 
-    me.body.setHeight();
-    me.leftBody.setHeight();
-    me.rightBody.setHeight();
-  },
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
+      if (me.title || me.subTitle || me.tbar || me.bbar || me.buttons || me.panel) {
+        me.renderPanel();
+      }
+    },
+    /*
+     *
+     */
+    renderPanel: function () {
+      var me = this,
+        panelConfig = {
+          renderTo: me.renderTo,
+          title: me.title,
+          subTitle: me.subTitle,
+          width: me.width,
+          height: me.height,
+          titleHeight: me.titleHeight,
+          subTitleHeight: me.subTitleHeight,
+          barHeight: me.barHeight,
+          theme: me.theme,
+          shadow: me.shadow,
+          style: me.style || {},
+          window: me.window,
+          modal: me.modal,
+          frame: me.frame,
+          items: [me],
+          draggable: me.draggable,
+          resizable: me.resizable,
+          minWidth: me.minWidth,
+          minHeight: me.minHeight,
+          panelBodyBorders: me.panelBodyBorders,
+          barContainer: me.barContainer,
+          barScrollEnabled: me.barScrollEnabled
+        },
+        panelBodyBorders = me.panelBodyBorders;
 
-    if( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel ){
-      me.renderPanel();
-    }
-  },
-  /*
-   *
-   */
-  renderPanel: function(){
-    var me = this,
-      panelConfig = {
-        renderTo: me.renderTo,
-        title: me.title,
-        subTitle: me.subTitle,
-        width: me.width,
-        height: me.height,
-        titleHeight: me.titleHeight,
-        subTitleHeight: me.subTitleHeight,
-        barHeight: me.barHeight,
-        theme: me.theme,
-        shadow: me.shadow,
-        style: me.style || {},
-        window: me.window,
-        modal: me.modal,
-        frame: me.frame,
-        items: [me],
-        draggable: me.draggable,
-        resizable: me.resizable,
-        minWidth: me.minWidth,
-        minHeight: me.minHeight,
-        panelBodyBorders: me.panelBodyBorders,
-        barContainer: me.barContainer,
-        barScrollEnabled: me.barScrollEnabled
-      },
-      panelBodyBorders = me.panelBodyBorders;
+      if (me.bbar) {
+        panelConfig.bbar = me.bbar;
+        me.height -= me.barHeight;
+      }
 
-    if(me.bbar){
-      panelConfig.bbar = me.bbar;
-      me.height -= me.barHeight;
-    }
+      if (me.tbar) {
+        panelConfig.tbar = me.tbar;
+        me.height -= me.barHeight;
+      }
 
-    if(me.tbar){
-      panelConfig.tbar = me.tbar;
-      me.height -= me.barHeight;
-    }
+      if (me.subTBar) {
+        panelConfig.subTBar = me.subTBar;
+        me.height -= me.barHeight;
+      }
 
-    if(me.subTBar){
-      panelConfig.subTBar = me.subTBar;
-      me.height -= me.barHeight;
-    }
+      if (me.buttons) {
+        panelConfig.buttons = me.buttons;
+        me.height -= me.barHeight;
+      }
 
-    if(me.buttons){
-      panelConfig.buttons = me.buttons;
-      me.height -= me.barHeight;
-    }
+      if (me.footer) {
+        panelConfig.footer = me.footer;
+        me.height -= me.barHeight;
+      }
 
-    if(me.footer){
-      panelConfig.footer = me.footer;
-      me.height -= me.barHeight;
-    }
+      me.panel = new F.Panel(panelConfig);
 
-    me.panel = new Fancy.Panel(panelConfig);
+      me.bbar = me.panel.bbar;
+      me.tbar = me.panel.tbar;
+      me.subTBar = me.panel.subTBar;
+      me.buttons = me.panel.buttons;
 
-    me.bbar = me.panel.bbar;
-    me.tbar = me.panel.tbar;
-    me.subTBar = me.panel.subTBar;
-    me.buttons = me.panel.buttons;
+      if (!me.wrapped) {
+        me.panel.addCls('fancy-panel-grid-inside');
+      }
 
-    if(!me.wrapped){
-      me.panel.addCls('fancy-panel-grid-inside');
-    }
+      if (me.title) {
+        me.height -= me.titleHeight;
+      }
 
-    if(me.title) {
-      me.height -= me.titleHeight;
-    }
+      if (me.subTitle) {
+        me.height -= me.subTitleHeight;
+        me.height += panelBodyBorders[2];
+      }
 
-    if(me.subTitle) {
-      me.height -= me.subTitleHeight;
-      me.height += panelBodyBorders[2];
-    }
+      me.height -= panelBodyBorders[0] + panelBodyBorders[2];
 
-    me.height -= panelBodyBorders[0] + panelBodyBorders[2];
+      me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
+    },
+    /*
+     * @return {Number}
+     */
+    getBodyHeight: function () {
+      var me = this,
+        height = me.height,
+        rows = 1,
+        gridBorders = me.gridBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders;
 
-    me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
-  },
-  /*
-   * @return {Number}
-   */
-  getBodyHeight: function(){
-    var me = this,
-      height = me.height,
-      rows = 1,
-      gridBorders = me.gridBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders;
+      if (me.groupheader) {
+        rows = 2;
+      }
 
-    if(me.groupheader){
-      rows = 2;
-    }
-
-    if(me.filter && me.filter.header){
-      if(me.groupheader) {
-        if(me.filter.groupHeader){
+      if (me.filter && me.filter.header) {
+        if (me.groupheader) {
+          if (me.filter.groupHeader) {
+            rows++;
+          }
+        }
+        else {
           rows++;
         }
       }
-      else{
-        rows++;
+
+      if (me.header !== false) {
+        height -= me.cellHeaderHeight * rows;
       }
-    }
 
-    if( me.header !== false ){
-      height -= me.cellHeaderHeight * rows;
-    }
+      if (me.panel) {
+        height -= gridBorders[0] + gridBorders[2];
+      }
+      else {
+        height -= gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2];
+      }
 
-    if(me.panel){
-      height -= gridBorders[0] + gridBorders[2];
-    }
-    else{
-      height -= gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2];
-    }
+      if (me.summary) {
+        height -= me.summary.topOffSet;
+        height -= me.summary.bottomOffSet;
+      }
 
-    if(me.summary){
-      height -= me.summary.topOffSet;
-      height -= me.summary.bottomOffSet;
-    }
+      return height;
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        store = me.store,
+        docEl = F.get(document);
 
-    return height;
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      store = me.store,
-      docEl = Fancy.get(document);
+      store.on('change', me.onChangeStore, me);
+      store.on('set', me.onSetStore, me);
+      store.on('remove', me.onRemoveStore, me);
+      store.on('beforesort', me.onBeforeSortStore, me);
+      store.on('sort', me.onSortStore, me);
+      store.on('beforeload', me.onBeforeLoadStore, me);
+      store.on('load', me.onLoadStore, me);
+      docEl.on('mouseup', me.onDocMouseUp, me);
+      docEl.on('click', me.onDocClick, me);
+      docEl.on('mousemove', me.onDocMove, me);
+      store.on('servererror', me.onServerError, me);
+      store.on('serversuccess', me.onServerSuccess, me);
 
-    store.on('change', me.onChangeStore, me);
-    store.on('set', me.onSetStore, me);
-    store.on('remove', me.onRemoveStore, me);
-    store.on('beforesort', me.onBeforeSortStore, me);
-    store.on('sort', me.onSortStore, me);
-    store.on('beforeload', me.onBeforeLoadStore, me);
-    store.on('load', me.onLoadStore, me);
-    docEl.on('mouseup', me.onDocMouseUp, me);
-    docEl.on('click', me.onDocClick, me);
-    docEl.on('mousemove', me.onDocMove, me);
-    store.on('servererror', me.onServerError, me);
-    store.on('serversuccess', me.onServerSuccess, me);
+      if (me.responsive) {
+        F.$(window).bind('resize', function () {
+          me.onWindowResize()
+        });
+      }
 
-    if(me.responsive){
-      Fancy.$(window).bind('resize', function(){
-        me.onWindowResize()
-      });
-    }
+      me.on('activate', me.onActivate, me);
+      me.on('deactivate', me.onDeActivate, me);
+    },
+    /*
+     * @param {Object} grid
+     * @param {String} errorTitle
+     * @param {String} errorText
+     * @param {Object} request
+     */
+    onServerError: function (grid, errorTitle, errorText, request) {
+      this.fire('servererror', errorTitle, errorText, request);
+    },
+    /*
+     * @param {Object} grid
+     * @param {Array} data
+     * @param {Object} request
+     */
+    onServerSuccess: function (grid, data, request) {
+      this.fire('serversuccess', data, request);
+    },
+    /*
+     *
+     */
+    onChangeStore: function () {
+      this.update();
+    },
+    /*
+     * @param {Object} store
+     */
+    onBeforeLoadStore: function (store) {
+      this.fire('beforeload');
+    },
+    /*
+     * @param {Object} store
+     * @param {String} id
+     * @param {Fancy.Model} record
+     */
+    onRemoveStore: function (store, id, record) {
+      var me = this;
 
-    me.on('activate', me.onActivate, me);
-    me.on('deactivate', me.onDeActivate, me);
-  },
-  /*
-   * @param {Object} grid
-   * @param {String} errorTitle
-   * @param {String} errorText
-   * @param {Object} request
-   */
-  onServerError: function (grid, errorTitle, errorText, request) {
-    this.fire('servererror', errorTitle, errorText, request);
-  },
-  /*
-   * @param {Object} grid
-   * @param {Array} data
-   * @param {Object} request
-   */
-  onServerSuccess: function (grid, data, request) {
-    this.fire('serversuccess', data, request);
-  },
-  /*
-   *
-   */
-  onChangeStore: function(){
-    this.update();
-  },
-  /*
-   * @param {Object} store
-   */
-  onBeforeLoadStore: function(store){
-    this.fire('beforeload');
-  },
-  /*
-   * @param {Object} store
-   * @param {String} id
-   * @param {Fancy.Model} record
-   */
-  onRemoveStore: function(store, id, record){
-    var me = this;
+      me.fire('remove', id, record);
+    },
+    /*
+     * @param {Object} store
+     */
+    onLoadStore: function (store) {
+      this.fire('load');
+    },
+    /*
+     * @param {Object} store
+     * @param {Object} o
+     */
+    onSetStore: function (store, o) {
+      var me = this;
 
-    me.fire('remove', id, record);
-  },
-  /*
-   * @param {Object} store
-   */
-  onLoadStore: function(store){
-    this.fire('load');
-  },
-  /*
-   * @param {Object} store
-   * @param {Object} o
-   */
-  onSetStore: function(store, o){
-    var me = this;
+      me.fire('set', o);
+    },
+    /*
+     * @param {Object} store
+     * @param {Object} o
+     */
+    onBeforeSortStore: function (store, o) {
+      this.fire('beforesort', o);
+    },
+    /*
+     * @param {Object} store
+     * @param {Object} o
+     */
+    onSortStore: function (store, o) {
+      this.fire('sort', o);
+    },
+    /*
+     * @return {Number}
+     */
+    getCellsViewHeight: function () {
+      var me = this,
+        s = me.store,
+        plusScroll = 0,
+        scrollBottomHeight = 0;
 
-    me.fire('set', o);
-  },
-  /*
-   * @param {Object} store
-   * @param {Object} o
-   */
-  onBeforeSortStore: function(store, o){
-    this.fire('beforesort', o);
-  },
-  /*
-   * @param {Object} store
-   * @param {Object} o
-   */
-  onSortStore: function(store, o){
-    this.fire('sort', o);
-  },
-  /*
-   * @return {Number}
-   */
-  getCellsViewHeight: function(){
-    var me = this,
-      s = me.store,
-      plusScroll = 0,
-      scrollBottomHeight = 0;
+      if (me.grouping) {
+        plusScroll += me.grouping.plusScroll;
+      }
 
-    if(me.grouping){
-      plusScroll += me.grouping.plusScroll;
-    }
+      if (me.expander) {
+        plusScroll += me.expander.plusScroll;
+      }
 
-    if(me.expander){
-      plusScroll += me.expander.plusScroll;
-    }
+      if (!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasCls(HIDDEN_CLS)) {
+      }
+      else {
+        scrollBottomHeight = me.scroller.cornerSize;
+      }
 
-    if(!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasCls(Fancy.HIDDEN_CLS)){}
-    else {
-      scrollBottomHeight = me.scroller.cornerSize;
-    }
+      return (me.cellHeight) * s.dataView.length + scrollBottomHeight + plusScroll;
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMouseUp: function (e) {
+      this.fire('docmouseup');
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocClick: function (e) {
+      this.fire('docclick', e);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMove: function (e) {
+      this.fire('docmove', e);
+    },
+    /*
+     * @return {Number}
+     */
+    getCenterViewWidth: function () {
+      //Realization could be reason of bug
+      var me = this,
+        elWidth = me.centerEl.width();
 
-    return (me.cellHeight) * s.dataView.length + scrollBottomHeight + plusScroll;
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMouseUp: function(e){
-    this.fire('docmouseup');
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocClick: function(e){
-    this.fire('docclick', e);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMove: function(e){
-    this.fire('docmove', e);
-  },
-  /*
-   * @return {Number}
-   */
-  getCenterViewWidth: function(){
-    //Realization could be reason of bug
-    var me = this,
-      elWidth = me.centerEl.width();
+      if (elWidth === 0) {
+        var columnsWidth = 0,
+          columns = me.columns,
+          i = 0,
+          iL = columns.length;
 
-    if(elWidth === 0){
-      var columnsWidth = 0,
+        for (; i < iL; i++) {
+          var column = columns[i];
+          if (!column.hidden) {
+            columnsWidth += column.width;
+          }
+        }
+
+        return columnsWidth;
+      }
+
+      return elWidth;
+    },
+    /*
+     * @return {Number}
+     */
+    getCenterFullWidth: function () {
+      var me = this,
+        centerColumnsWidths = 0,
         columns = me.columns,
         i = 0,
         iL = columns.length;
 
-      for(;i<iL;i++){
+      for (; i < iL; i++) {
         var column = columns[i];
-        if(!column.hidden){
-          columnsWidth += column.width;
+        if (!column.hidden) {
+          centerColumnsWidths += column.width;
         }
       }
 
-      return columnsWidth;
-    }
-
-    return elWidth;
-  },
-  /*
-   * @return {Number}
-   */
-  getCenterFullWidth: function(){
-    var me = this,
-      centerColumnsWidths = 0,
-      columns = me.columns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-      if(!column.hidden){
-        centerColumnsWidths += column.width;
-      }
-    }
-
-    return centerColumnsWidths;
-  },
-  /*
-   * @return {Number}
-   */
-  getLeftFullWidth: function(){
-    var me = this,
-      width = 0,
-      columns = me.leftColumns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-      if(!column.hidden){
-        width += column.width;
-      }
-    }
-
-    return width;
-  },
-  /*
-   * @return {Number}
-   */
-  getRightFullWidth: function(){
-    var me = this,
-      width = 0,
-      columns = me.rightColumns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-      if(!column.hidden){
-        width += column.width;
-      }
-    }
-
-    return width;
-  },
-  /*
-   * @param {String} side
-   * @return {Array}
-   */
-  getColumns: function(side){
-    var me = this,
-      columns;
-
-    switch(side){
-      case 'left':
-        columns = me.leftColumns;
-        break;
-      case 'center':
-        columns = me.columns;
-        break;
-      case 'right':
-        columns = me.rightColumns;
-        break;
-    }
-
-    return columns;
-  },
-  /*
-   * @param {String} side
-   * @return {Fancy.grid.Body}
-   */
-  getBody: function(side){
-    var me = this,
-      body;
-
-    switch(side){
-      case 'left':
-        body= me.leftBody;
-        break;
-      case 'center':
-        body = me.body;
-        break;
-      case 'right':
-        body = me.rightBody;
-        break;
-    }
-
-    return body;
-  },
-  /*
-   * @param {String} side
-   * @return {Fancy.grid.Header}
-   */
-  getHeader: function(side){
-    var me = this,
-      header;
-
-    switch(side){
-      case 'left':
-        header = me.leftHeader;
-        break;
-      case 'center':
-        header = me.header;
-        break;
-      case 'right':
-        header = me.rightHeader;
-        break;
-    }
-
-    return header;
-  },
-  /*
-   * @param {Number} rowIndex
-   * @return {Array}
-   */
-  getDomRow: function(rowIndex){
-    var me = this,
-      leftBody = me.leftBody,
-      body = me.body,
-      rightBody = me.rightBody,
-      leftColumns = me.leftColumns,
-      columns = me.columns,
-      rightColumns = me.rightColumns,
-      i = 0,
-      iL = leftColumns.length,
-      cells = [];
-
-    for(;i<iL;i++) {
-      cells.push( leftBody.getDomCell(rowIndex, i) );
-    }
-
-    i = 0;
-    iL = columns.length;
-    for(;i<iL;i++) {
-      cells.push( body.getDomCell(rowIndex, i) );
-    }
-
-    i = 0;
-    iL = rightColumns.length;
-    for(;i<iL;i++) {
-      cells.push( rightBody.getDomCell(rowIndex, i) );
-    }
-
-    return cells;
-  },
-  /*
-   *
-   */
-  initTextSelection: function(){
-    var me = this,
-      body = me.body,
-      leftBody = me.leftBody,
-      rightBody = me.rightBody;
-
-    if(me.textSelection === false) {
-      me.addCls('fancy-grid-unselectable');
-
-      var fn = function(e){
-        var targetEl = Fancy.get(e.target);
-        if(targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')){
-          return;
-        }
-
-        e.preventDefault();
-      };
-
-      body.el.on('mousedown', fn);
-      leftBody.el.on('mousedown', fn);
-      rightBody.el.on('mousedown', fn);
-    }
-  },
-  /*
-   * @param {String} type
-   * @param {*} value
-   */
-  setTrackOver: function(type, value){
-    var me = this;
-
-    switch(type){
-      case 'cell':
-        me.cellTrackOver = value;
-        break;
-      case 'column':
-        me.columnTrackOver = value;
-        break;
-      case 'row':
-        me.trackOver = value;
-        break;
-    }
-  },
-  /*
-   * @param {String} type
-   */
-  setSelModel: function(type){
-    var me = this,
-      selection = me.selection;
-
-    selection.cell = false;
-    selection.cells = false;
-    selection.row = false;
-    selection.rows = false;
-    selection.column = false;
-    selection.columns = false;
-    selection[type] = true;
-
-    if(type === 'rows'){
-      me.multiSelect = true;
-    }
-    else{
-      me.multiSelect = false;
-    }
-
-    selection.clearSelection();
-  },
-  /*
-   * @param {Boolean} [returnModel]
-   * @return {Array}
-   */
-  getSelection: function(returnModel){
-    var me = this;
-
-    return me.selection.getSelection(returnModel);
-  },
-  /*
-   *
-   */
-  clearSelection: function(){
-    var me = this,
-      selection = me.selection;
-
-    selection.clearSelection();
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      docEl = Fancy.get(document);
-
-    docEl.un('mouseup', me.onDocMouseUp, me);
-    docEl.un('click', me.onDocClick, me);
-    docEl.un('mousemove', me.onDocMove, me);
-
-    me.body.destroy();
-    me.leftBody.destroy();
-    me.rightBody.destroy();
-
-    me.header.destroy();
-    me.leftHeader.destroy();
-    me.rightHeader.destroy();
-
-    me.scroller.destroy();
-
-    me.el.destroy();
-
-    if(me.panel){
-      me.panel.el.destroy();
-    }
-  },
-  /*
-   *
-   */
-  showAt: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.showAt.apply(me.panel, arguments);
-    }
-  },
-  /*
-   *
-   */
-  show: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.show.apply(me.panel, arguments);
-    }
-    else{
-      me.el.show();
-    }
-  },
-  /*
-   *
-   */
-  hide: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.hide.apply(me.panel, arguments);
-    }
-    else{
-      me.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  initDateColumn: function(){
-    var me = this;
-
-    var prepareColumns = function(columns){
-      var i = 0,
+      return centerColumnsWidths;
+    },
+    /*
+     * @return {Number}
+     */
+    getLeftFullWidth: function () {
+      var me = this,
+        width = 0,
+        columns = me.leftColumns,
+        i = 0,
         iL = columns.length;
 
-      for(;i<iL;i++){
+      for (; i < iL; i++) {
         var column = columns[i];
-
-        if(column.type === 'date'){
-          column.format = column.format || {};
-
-          var format = {
-            type: 'date'
-          };
-
-          Fancy.applyIf(format, me.lang.date);
-
-          Fancy.applyIf(column.format, format);
-        }
-      }
-
-      return columns;
-    };
-
-    me.columns = prepareColumns(me.columns);
-    me.leftColumns = prepareColumns(me.leftColumns);
-    me.rightColumns = prepareColumns(me.rightColumns);
-  },
-  /*
-   *
-   */
-  stopEditor: function(){
-    var me = this;
-
-    me.edit.stopEditor();
-  },
-  /*
-   * @param {String} id
-   * @return {Fancy.Model}
-   */
-  getById: function(id){
-    var me = this;
-
-    return me.store.getById(id);
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} key
-   * @return {Fancy.Model}
-   */
-  get: function(rowIndex, key){
-    var me = this,
-      store = me.store;
-
-    if(key !== undefined){
-      return store.get(rowIndex, key);
-    }
-    else if(rowIndex === undefined){
-      return store.get();
-    }
-
-    return store.getItem(rowIndex);
-  },
-  /*
-   * @return {Number}
-   */
-  getTotal: function(){
-    return this.store.getTotal();
-  },
-  /*
-   * @return {Number}
-   */
-  getViewTotal: function(){
-    return this.store.getLength();
-  },
-  /*
-   * @return {Array}
-   */
-  getDataView: function(){
-    return this.store.getDataView();
-  },
-  /*
-   * @return {Array}
-   */
-  getData: function(){
-    return this.store.getData();
-  },
-  /*
-   * @param {Number} rowIndex
-   */
-  selectRow: function(rowIndex){
-    var me = this;
-
-    me.selection.selectRow(rowIndex);
-  },
-  /*
-   * @param {String} key
-   */
-  selectColumn: function(key){
-    var me = this,
-      side,
-      columnIndex,
-      leftColumns = me.leftColumns || [],
-      columns = me.columns || [],
-      rightColumns = me.rightColumns || [];
-
-    var isInSide = function(columns){
-      var i = 0,
-        iL = columns.length;
-
-      for(;i<iL;i++){
-        var column = columns[i];
-        if(column.index === key || column.key === key){
-          columnIndex = i;
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    if(isInSide(leftColumns)) {
-      side = 'left';
-    }
-    else if(isInSide(columns)) {
-      side = 'center';
-    }
-    else if(isInSide(rightColumns)){
-      side = 'right';
-    }
-
-    if(side){
-      me.selection.selectColumns(columnIndex, side);
-    }
-  },
-  /*
-   * @param {String} key
-   * @return {Object}
-   */
-  getColumnByIndex: function(key){
-    var me = this,
-      leftColumns = me.leftColumns || [],
-      columns = me.columns || [],
-      rightColumns = me.rightColumns || [],
-      _columns = leftColumns.concat(columns).concat(rightColumns),
-      i = 0,
-      iL = _columns.length;
-
-    for(;i<iL;i++){
-      var column = _columns[i];
-      if(column.index === key || column.key === key){
-        return column;
-      }
-    }
-  },
-  /*
-   *
-   */
-  load: function(){
-    var me = this;
-
-    me.store.loadData();
-  },
-  /*
-   *
-   */
-  save: function(){
-    var me = this;
-
-    me.store.save();
-  },
-  /*
-   *
-   */
-  onWindowResize: function(){
-    var me = this,
-      renderTo = me.renderTo,
-      el;
-
-    if(me.panel){
-      renderTo = me.panel.renderTo;
-
-      el = Fancy.get(renderTo);
-      me.setWidth(parseInt(el.width()));
-    }
-
-    me.setBodysHeight();
-  },
-  /*
-   * @param {Number} width
-   */
-  setWidth: function(width){
-    var me = this,
-      el = me.el,
-      gridBorders = me.gridBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders,
-      panelBodyBorders = me.panelBodyBorders,
-      body = me.body,
-      header = me.header;
-
-    me.scroller.scroll(0,0);
-
-    var calcColumnsWidth = function(columns){
-      var i = 0,
-        iL = columns.length,
-        width = 0;
-
-      for(;i<iL;i++){
-        var column = columns[i];
-
-        if(!column.hidden){
-          width += columns[i].width;
+        if (!column.hidden) {
+          width += column.width;
         }
       }
 
       return width;
-    };
+    },
+    /*
+     * @return {Number}
+     */
+    getRightFullWidth: function () {
+      var me = this,
+        width = 0,
+        columns = me.rightColumns,
+        i = 0,
+        iL = columns.length;
 
-    var leftColumnWidth = calcColumnsWidth(me.leftColumns),
-      rightColumnWidth = calcColumnsWidth(me.rightColumns),
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3],
-      gridWidth;
+      for (; i < iL; i++) {
+        var column = columns[i];
+        if (!column.hidden) {
+          width += column.width;
+        }
+      }
 
-    if(me.wrapped){
-      gridWidth = width;
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth;
+      return width;
+    },
+    /*
+     * @param {String} side
+     * @return {Array}
+     */
+    getColumns: function (side) {
+      var me = this,
+        columns;
 
-      newCenterWidth -= gridBorders[1] + gridBorders[3];
+      switch (side) {
+        case 'left':
+          columns = me.leftColumns;
+          break;
+        case 'center':
+          columns = me.columns;
+          break;
+        case 'right':
+          columns = me.rightColumns;
+          break;
+      }
 
-      me.css({
-        width: gridWidth
-      });
-    }
-    else if(me.panel){
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
-      me.panel.el.width(width);
+      return columns;
+    },
+    /*
+     * @param {String} side
+     * @return {Fancy.grid.Body}
+     */
+    getBody: function (side) {
+      var me = this,
+        body;
 
-      newCenterWidth -= gridBorders[1] + gridBorders[3];
+      switch (side) {
+        case 'left':
+          body = me.leftBody;
+          break;
+        case 'center':
+          body = me.body;
+          break;
+        case 'right':
+          body = me.rightBody;
+          break;
+      }
 
-      gridWidth = width - panelBodyBorders[1] - panelBodyBorders[3];
+      return body;
+    },
+    /*
+     * @param {String} side
+     * @return {Fancy.grid.Header}
+     */
+    getHeader: function (side) {
+      var me = this,
+        header;
 
-      me.css({
-        width: gridWidth
-      });
-    }
-    else{
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
+      switch (side) {
+        case 'left':
+          header = me.leftHeader;
+          break;
+        case 'center':
+          header = me.header;
+          break;
+        case 'right':
+          header = me.rightHeader;
+          break;
+      }
 
-      el.css('width', width);
-    }
+      return header;
+    },
+    /*
+     * @param {Number} rowIndex
+     * @return {Array}
+     */
+    getDomRow: function (rowIndex) {
+      var me = this,
+        leftBody = me.leftBody,
+        body = me.body,
+        rightBody = me.rightBody,
+        leftColumns = me.leftColumns,
+        columns = me.columns,
+        rightColumns = me.rightColumns,
+        i = 0,
+        iL = leftColumns.length,
+        cells = [];
 
-    if(newCenterWidth < 100){
-      newCenterWidth = 100;
-    }
+      for (; i < iL; i++) {
+        cells.push(leftBody.getDomCell(rowIndex, i));
+      }
 
-    el.select('.' + me.centerCls).css('width', newCenterWidth);
+      i = 0;
+      iL = columns.length;
+      for (; i < iL; i++) {
+        cells.push(body.getDomCell(rowIndex, i));
+      }
 
-    header.css('width', newCenterWidth);
-    body.css('width', newCenterWidth);
+      i = 0;
+      iL = rightColumns.length;
+      for (; i < iL; i++) {
+        cells.push(rightBody.getDomCell(rowIndex, i));
+      }
 
-    if(me.hasFlexColumns){
-      me.reCalcColumnsWidth();
-      me.columnresizer.updateColumnsWidth();
-    }
+      return cells;
+    },
+    /*
+     *
+     */
+    initTextSelection: function () {
+      var me = this,
+        body = me.body,
+        leftBody = me.leftBody,
+        rightBody = me.rightBody;
 
-    me.scroller.setScrollBars();
-  },
-  /*
-   * @return {Number}
-   */
-  getWidth: function(){
-    var me = this,
-      value;
+      if (me.textSelection === false) {
+        me.addCls(GRID_UNSELECTABLE_CLS);
 
-    if(me.panel){
-      value = parseInt( me.panel.css('width') );
-    }
-    else{
-      value = parseInt( me.css('width') );
-    }
+        var fn = function (e) {
+          var targetEl = F.get(e.target);
+          if (targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')) {
+            return;
+          }
 
-    return value;
-  },
-  /*
-   * @return {Number}
-   */
-  getHeight: function () {
-    var me = this,
-      value;
+          e.preventDefault();
+        };
 
-    if(me.panel){
-      value = parseInt( me.panel.css('height') );
-    }
-    else{
-      value = parseInt( me.css('height') );
-    }
+        body.el.on('mousedown', fn);
+        leftBody.el.on('mousedown', fn);
+        rightBody.el.on('mousedown', fn);
+      }
+    },
+    /*
+     * @param {String} type
+     * @param {*} value
+     */
+    setTrackOver: function (type, value) {
+      var me = this;
 
-    return value;
-  },
-  /*
-   * @param {Number} value
-   * @param {Number} changePanelHeight
-   */
-  setHeight: function(value, changePanelHeight){
-    var me = this,
-      gridBorders = me.gridBorders,
-      panelBodyBorders = me.panelBodyBorders;
+      switch (type) {
+        case 'cell':
+          me.cellTrackOver = value;
+          break;
+        case 'column':
+          me.columnTrackOver = value;
+          break;
+        case 'row':
+          me.trackOver = value;
+          break;
+      }
+    },
+    /*
+     * @param {String} type
+     */
+    setSelModel: function (type) {
+      var me = this,
+        selection = me.selection;
 
-    if(me.panel && changePanelHeight !== false){
-      me.panel.setHeight(value);
-    }
+      selection.cell = false;
+      selection.cells = false;
+      selection.row = false;
+      selection.rows = false;
+      selection.column = false;
+      selection.columns = false;
+      selection[type] = true;
 
-    if(me.title){
-      value -= me.titleHeight;
-    }
+      if (type === 'rows') {
+        me.multiSelect = true;
+      }
+      else {
+        me.multiSelect = false;
+      }
 
-    if(me.subTitle){
-      value -= me.subTitleHeight;
-    }
+      selection.clearSelection();
+    },
+    /*
+     * @param {Boolean} [returnModel]
+     * @return {Array}
+     */
+    getSelection: function (returnModel) {
+      var me = this;
 
-    if(me.footer){
-      value -= me.barHeight;
-    }
+      return me.selection.getSelection(returnModel);
+    },
+    /*
+     *
+     */
+    clearSelection: function () {
+      var me = this,
+        selection = me.selection;
 
-    if(me.bbar){
-      value -= me.barHeight;
-    }
+      selection.clearSelection();
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        docEl = F.get(document);
 
-    if(me.tbar){
-      value -= me.barHeight;
-    }
+      docEl.un('mouseup', me.onDocMouseUp, me);
+      docEl.un('click', me.onDocClick, me);
+      docEl.un('mousemove', me.onDocMove, me);
 
-    if(me.subTBar){
-      value -= me.barHeight;
-    }
+      me.body.destroy();
+      me.leftBody.destroy();
+      me.rightBody.destroy();
 
-    if(me.buttons){
-      value -= me.barHeight;
-    }
+      me.header.destroy();
+      me.leftHeader.destroy();
+      me.rightHeader.destroy();
 
-    var bodyHeight = value;
+      me.scroller.destroy();
 
-    if(me.header){
-      bodyHeight -= me.cellHeaderHeight;
-      if(me.groupheader){
+      me.el.destroy();
+
+      if (me.panel) {
+        me.panel.el.destroy();
+      }
+    },
+    /*
+     *
+     */
+    showAt: function () {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.showAt.apply(me.panel, arguments);
+      }
+    },
+    /*
+     *
+     */
+    show: function () {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.show.apply(me.panel, arguments);
+      }
+      else {
+        me.el.show();
+      }
+    },
+    /*
+     *
+     */
+    hide: function () {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.hide.apply(me.panel, arguments);
+      }
+      else {
+        me.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    initDateColumn: function () {
+      var me = this;
+
+      var prepareColumns = function (columns) {
+        var i = 0,
+          iL = columns.length;
+
+        for (; i < iL; i++) {
+          var column = columns[i];
+
+          if (column.type === 'date') {
+            column.format = column.format || {};
+
+            var format = {
+              type: 'date'
+            };
+
+            F.applyIf(format, me.lang.date);
+
+            F.applyIf(column.format, format);
+          }
+        }
+
+        return columns;
+      };
+
+      me.columns = prepareColumns(me.columns);
+      me.leftColumns = prepareColumns(me.leftColumns);
+      me.rightColumns = prepareColumns(me.rightColumns);
+    },
+    /*
+     *
+     */
+    stopEditor: function () {
+      var me = this;
+
+      me.edit.stopEditor();
+    },
+    /*
+     * @param {String} id
+     * @return {Fancy.Model}
+     */
+    getById: function (id) {
+      var me = this;
+
+      return me.store.getById(id);
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} key
+     * @return {Fancy.Model}
+     */
+    get: function (rowIndex, key) {
+      var me = this,
+        store = me.store;
+
+      if (key !== undefined) {
+        return store.get(rowIndex, key);
+      }
+      else if (rowIndex === undefined) {
+        return store.get();
+      }
+
+      return store.getItem(rowIndex);
+    },
+    /*
+     * @return {Number}
+     */
+    getTotal: function () {
+      return this.store.getTotal();
+    },
+    /*
+     * @return {Number}
+     */
+    getViewTotal: function () {
+      return this.store.getLength();
+    },
+    /*
+     * @return {Array}
+     */
+    getDataView: function () {
+      return this.store.getDataView();
+    },
+    /*
+     * @return {Array}
+     */
+    getData: function () {
+      return this.store.getData();
+    },
+    /*
+     * @param {Number} rowIndex
+     */
+    selectRow: function (rowIndex) {
+      var me = this;
+
+      me.selection.selectRow(rowIndex);
+    },
+    /*
+     * @param {String} key
+     */
+    selectColumn: function (key) {
+      var me = this,
+        side,
+        columnIndex,
+        leftColumns = me.leftColumns || [],
+        columns = me.columns || [],
+        rightColumns = me.rightColumns || [];
+
+      var isInSide = function (columns) {
+        var i = 0,
+          iL = columns.length;
+
+        for (; i < iL; i++) {
+          var column = columns[i];
+          if (column.index === key || column.key === key) {
+            columnIndex = i;
+            return true;
+          }
+        }
+
+        return false;
+      };
+
+      if (isInSide(leftColumns)) {
+        side = 'left';
+      }
+      else if (isInSide(columns)) {
+        side = 'center';
+      }
+      else if (isInSide(rightColumns)) {
+        side = 'right';
+      }
+
+      if (side) {
+        me.selection.selectColumns(columnIndex, side);
+      }
+    },
+    /*
+     * @param {String} key
+     * @return {Object}
+     */
+    getColumnByIndex: function (key) {
+      var me = this,
+        leftColumns = me.leftColumns || [],
+        columns = me.columns || [],
+        rightColumns = me.rightColumns || [],
+        _columns = leftColumns.concat(columns).concat(rightColumns),
+        i = 0,
+        iL = _columns.length;
+
+      for (; i < iL; i++) {
+        var column = _columns[i];
+        if (column.index === key || column.key === key) {
+          return column;
+        }
+      }
+    },
+    /*
+     *
+     */
+    load: function () {
+      var me = this;
+
+      me.store.loadData();
+    },
+    /*
+     *
+     */
+    save: function () {
+      var me = this;
+
+      me.store.save();
+    },
+    /*
+     *
+     */
+    onWindowResize: function () {
+      var me = this,
+        renderTo = me.renderTo,
+        el;
+
+      if (me.panel) {
+        renderTo = me.panel.renderTo;
+
+        el = F.get(renderTo);
+        me.setWidth(parseInt(el.width()));
+      }
+
+      me.setBodysHeight();
+    },
+    /*
+     * @param {Number} width
+     */
+    setWidth: function (width) {
+      var me = this,
+        el = me.el,
+        gridBorders = me.gridBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+        panelBodyBorders = me.panelBodyBorders,
+        body = me.body,
+        header = me.header;
+
+      me.scroller.scroll(0, 0);
+
+      var calcColumnsWidth = function (columns) {
+        var i = 0,
+          iL = columns.length,
+          width = 0;
+
+        for (; i < iL; i++) {
+          var column = columns[i];
+
+          if (!column.hidden) {
+            width += columns[i].width;
+          }
+        }
+
+        return width;
+      };
+
+      var leftColumnWidth = calcColumnsWidth(me.leftColumns),
+        rightColumnWidth = calcColumnsWidth(me.rightColumns),
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3],
+        gridWidth;
+
+      if (me.wrapped) {
+        gridWidth = width;
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth;
+
+        newCenterWidth -= gridBorders[1] + gridBorders[3];
+
+        me.css({
+          width: gridWidth
+        });
+      }
+      else if (me.panel) {
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
+        me.panel.el.width(width);
+
+        newCenterWidth -= gridBorders[1] + gridBorders[3];
+
+        gridWidth = width - panelBodyBorders[1] - panelBodyBorders[3];
+
+        me.css({
+          width: gridWidth
+        });
+      }
+      else {
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
+
+        el.css('width', width);
+      }
+
+      if (newCenterWidth < 100) {
+        newCenterWidth = 100;
+      }
+
+      el.select('.' + GRID_CENTER_CLS).css('width', newCenterWidth);
+
+      header.css('width', newCenterWidth);
+      body.css('width', newCenterWidth);
+
+      if (me.hasFlexColumns) {
+        me.reCalcColumnsWidth();
+        me.columnresizer.updateColumnsWidth();
+      }
+
+      me.scroller.setScrollBars();
+    },
+    /*
+     * @return {Number}
+     */
+    getWidth: function () {
+      var me = this,
+        value;
+
+      if (me.panel) {
+        value = parseInt(me.panel.css('width'));
+      }
+      else {
+        value = parseInt(me.css('width'));
+      }
+
+      return value;
+    },
+    /*
+     * @return {Number}
+     */
+    getHeight: function () {
+      var me = this,
+        value;
+
+      if (me.panel) {
+        value = parseInt(me.panel.css('height'));
+      }
+      else {
+        value = parseInt(me.css('height'));
+      }
+
+      return value;
+    },
+    /*
+     * @param {Number} value
+     * @param {Number} changePanelHeight
+     */
+    setHeight: function (value, changePanelHeight) {
+      var me = this,
+        gridBorders = me.gridBorders,
+        panelBodyBorders = me.panelBodyBorders;
+
+      if (me.panel && changePanelHeight !== false) {
+        me.panel.setHeight(value);
+      }
+
+      if (me.title) {
+        value -= me.titleHeight;
+      }
+
+      if (me.subTitle) {
+        value -= me.subTitleHeight;
+      }
+
+      if (me.footer) {
+        value -= me.barHeight;
+      }
+
+      if (me.bbar) {
+        value -= me.barHeight;
+      }
+
+      if (me.tbar) {
+        value -= me.barHeight;
+      }
+
+      if (me.subTBar) {
+        value -= me.barHeight;
+      }
+
+      if (me.buttons) {
+        value -= me.barHeight;
+      }
+
+      var bodyHeight = value;
+
+      if (me.header) {
         bodyHeight -= me.cellHeaderHeight;
-      }
-    }
-
-    if(me.panel){
-      bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
-    }
-
-    bodyHeight -= gridBorders[0] + gridBorders[2];
-
-    if(me.body){
-      me.body.css('height', bodyHeight);
-    }
-
-    if(me.leftBody){
-      me.leftBody.css('height', bodyHeight);
-    }
-
-    if(me.rightBody){
-      me.rightBody.css('height', bodyHeight);
-    }
-
-    me.el.css('height', value);
-    me.height = value;
-
-    me.scroller.update();
-  },
-  /*
-   * @param {String} key
-   * @param {*} value
-   * @return {Array}
-   */
-  find: function(key, value){
-    return this.store.find(key, value);
-  },
-  /*
-   * @param {String} key
-   * @param {*} value
-   * @return {Array}
-   */
-  findItem: function(key, value){
-    return this.store.findItem(key, value);
-  },
-  /*
-   * @param {Function} fn
-   * @param {Object} scope
-   */
-  each: function(fn, scope){
-    this.store.each(fn, scope);
-  },
-  /*
-   *
-   */
-  onActivate: function(){
-    var me = this,
-      doc = Fancy.get(document);
-
-    setTimeout(function(){
-      doc.on('click', me.onDeactivateClick, me);
-    }, 100);
-  },
-  /*
-   *
-   */
-  onDeActivate: function(){
-    var me = this,
-      doc = Fancy.get(document);
-
-    me.activated = false;
-    doc.un('click', me.onDeactivateClick, me);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDeactivateClick: function(e){
-    var me = this,
-      i = 0,
-      iL = 20,
-      parent = Fancy.get(e.target);
-
-    for(;i<iL;i++){
-      if(!parent.dom){
-        return;
+        if (me.groupheader) {
+          bodyHeight -= me.cellHeaderHeight;
+        }
       }
 
-      if(!parent.dom.tagName || parent.dom.tagName.toLocaleLowerCase() === 'body'){
-        me.fire('deactivate');
-        return;
+      if (me.panel) {
+        bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
       }
 
-      if(parent.hasCls(me.widgetCls)){
-        return;
+      bodyHeight -= gridBorders[0] + gridBorders[2];
+
+      if (me.body) {
+        me.body.css('height', bodyHeight);
       }
 
-      parent = parent.parent();
-    }
-  },
-  /*
-   * @param {Array} keys
-   * @param {Array} values
-   */
-  search: function(keys, values){
-    var me = this;
-
-    me.searching.search(keys, values);
-  },
-  /*
-   *
-   */
-  stopSelection: function(){
-    var me = this;
-
-    if(me.selection){
-      me.selection.stopSelection();
-    }
-  },
-  /*
-   * @param {Boolean} value
-   */
-  enableSelection: function(value){
-    var me = this;
-
-    if(me.selection){
-      me.selection.enableSelection(value);
-    }
-  },
-  /*
-   * @param {String} side
-   * @param {Number} index
-   */
-  hideColumn: function(side, index){
-    var me = this,
-      body = me.getBody(side),
-      header = me.getHeader(side),
-      columns = me.getColumns(side),
-      orderIndex,
-      i = 0,
-      iL = columns.length,
-      column,
-      centerEl = me.centerEl,
-      leftEl = me.leftEl,
-      leftHeader = me.leftHeader,
-      rightEl = me.rightEl,
-      rightHeader = me.rightHeader;
-
-    for(;i<iL;i++){
-      column = columns[i];
-
-      if(column.index === index){
-        orderIndex = i;
-        column.hidden = true;
-        break;
-      }
-    }
-
-    header.hideCell(orderIndex);
-    body.hideColumn(orderIndex);
-
-    if(me.rowedit){
-      me.rowedit.hideField(orderIndex, side);
-    }
-
-    switch(side){
-      case 'left':
-        leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
-        leftHeader.css('width', parseInt(leftHeader.css('width')) - column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        me.body.css('width', parseInt(me.body.css('width')) + column.width);
-        me.header.css('width', parseInt(me.header.css('width')) + column.width);
-        break;
-      case 'right':
-        rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
-        rightHeader.css('width', parseInt(rightHeader.css('width')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        me.body.css('width', parseInt(me.body.css('width')) + column.width);
-        me.header.css('width', parseInt(me.header.css('width')) + column.width);
-        break;
-    }
-  },
-  /*
-   * @param {String} side
-   * @param {Number} index
-   */
-  showColumn: function(side, index){
-    var me = this,
-      body = me.getBody(side),
-      header = me.getHeader(side),
-      columns = me.getColumns(side),
-      orderIndex,
-      i = 0,
-      iL = columns.length,
-      column,
-      centerEl = me.centerEl,
-      leftEl = me.leftEl,
-      leftHeader = me.leftHeader,
-      rightEl = me.rightEl,
-      rightHeader = me.rightHeader;
-
-    for(;i<iL;i++){
-      column = columns[i];
-
-      if(column.index === index){
-        orderIndex = i;
-        column.hidden = false;
-        break;
-      }
-    }
-
-    header.showCell(orderIndex);
-    body.showColumn(orderIndex);
-
-    if(me.rowedit){
-      me.rowedit.showField(orderIndex, side);
-    }
-
-    switch(side){
-      case 'left':
-        leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
-        leftHeader.css('width', parseInt(leftHeader.css('width')) + column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        me.body.css('width', parseInt(me.body.css('width')) - column.width);
-        me.header.css('width', parseInt(me.header.css('width')) - column.width);
-        break;
-      case 'right':
-        rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
-        rightHeader.css('width', parseInt(rightHeader.css('width')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        me.body.css('width', parseInt(me.body.css('width')) - column.width);
-        me.header.css('width', parseInt(me.header.css('width')) - column.width);
-        break;
-    }
-  },
-  /*
-   * @param {Number} indexOrder
-   * @param {String} side
-   * @return {Object}
-   */
-  removeColumn: function(indexOrder, side){
-    var me = this,
-      leftEl = me.leftEl,
-      leftHeader = me.leftHeader,
-      leftBody = me.leftBody,
-      centerEl = me.centerEl,
-      body = me.body,
-      header = me.header,
-      rightEl = me.rightEl,
-      rightBody = me.rightBody,
-      rightHeader = me.rightHeader,
-      column;
-
-    switch(side){
-      case 'left':
-        column = me.leftColumns[indexOrder];
-        me.leftColumns.splice(indexOrder, 1);
-        leftHeader.removeCell(indexOrder);
-        leftHeader.reSetIndexes();
-        leftBody.removeColumn(indexOrder);
-        leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        body.css('width', parseInt(body.css('width')) + column.width);
-        header.css('width', parseInt(header.css('width')) + column.width);
-        break;
-      case 'center':
-        column = me.columns[indexOrder];
-        me.columns.splice(indexOrder, 1);
-        header.removeCell(indexOrder);
-        header.reSetIndexes();
-        body.removeColumn(indexOrder);
-        break;
-      case 'right':
-        column = me.rightColumns[indexOrder];
-        me.rightColumns.splice(indexOrder, 1);
-        rightHeader.removeCell(indexOrder);
-        rightHeader.reSetIndexes();
-        rightBody.removeColumn(indexOrder);
-        rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        header.css('width', parseInt(header.css('width')) + column.width);
-        body.css('width', parseInt(body.css('width')) + column.width);
-        break;
-    }
-
-    if(column.grouping){
-      delete column.grouping;
-    }
-
-    if(me.summary){
-      me.summary.removeColumn(indexOrder, side);
-    }
-
-    return column;
-  },
-  /*
-   * @param {Object} column
-   * @param {Number} index
-   * @param {String} side
-   * @param {String} fromSide
-   */
-  insertColumn: function(column, index, side, fromSide){
-    var me = this,
-      leftEl = me.leftEl,
-      leftBody = me.leftBody,
-      leftHeader = me.leftHeader,
-      centerEl = me.centerEl,
-      body = me.body,
-      header = me.header,
-      rightEl = me.rightEl,
-      rightBody = me.rightBody,
-      rightHeader = me.rightHeader;
-
-    side = side || 'center';
-
-    switch(side){
-      case 'center':
-        me.columns.splice(index, 0, column);
-        header.insertCell(index, column);
-        header.reSetIndexes();
-        body.insertColumn(index, column);
-        break;
-      case 'left':
-        me.leftColumns.splice(index, 0, column);
-        leftHeader.insertCell(index, column);
-        leftHeader.reSetIndexes();
-        leftBody.insertColumn(index, column);
-        leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
-        body.el.css('width', parseInt(body.el.css('width')) - column.width);
-        header.el.css('width', parseInt(header.el.css('width')) - column.width);
-        break;
-      case 'right':
-        me.rightColumns.splice(index, 0, column);
-        rightHeader.insertCell(index, column);
-        rightHeader.reSetIndexes();
-        rightBody.insertColumn(index, column);
-        rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        body.css('width', parseInt(body.css('width')) - column.width);
-        header.css('width', parseInt(header.css('width')) - column.width);
-        break;
-    }
-
-    if(column.menu){
-      column.menu = true;
-    }
-
-    if(me.grouping){
-      me.grouping.updateGroupRows();
-      me.grouping.setCellsPosition(index, side);
-    }
-
-    if(column.rowEditor){
-      if(side === 'left'){
-        index--;
+      if (me.leftBody) {
+        me.leftBody.css('height', bodyHeight);
       }
 
-      me.rowedit.moveEditor(column, index, side, fromSide);
-    }
+      if (me.rightBody) {
+        me.rightBody.css('height', bodyHeight);
+      }
 
-    if(me.summary){
-      me.summary.insertColumn(index, side);
-    }
+      me.el.css('height', value);
+      me.height = value;
 
-    me.header.destroyMenus();
-    me.leftHeader.destroyMenus();
-    me.rightHeader.destroyMenus();
-  },
-  /*
-   * @param {Number} orderIndex
-   * @param {String} legend
-   */
-  disableLegend: function(orderIndex, legend){
-    var me = this;
+      me.scroller.update();
+    },
+    /*
+     * @param {String} key
+     * @param {*} value
+     * @return {Array}
+     */
+    find: function (key, value) {
+      return this.store.find(key, value);
+    },
+    /*
+     * @param {String} key
+     * @param {*} value
+     * @return {Array}
+     */
+    findItem: function (key, value) {
+      return this.store.findItem(key, value);
+    },
+    /*
+     * @param {Function} fn
+     * @param {Object} scope
+     */
+    each: function (fn, scope) {
+      this.store.each(fn, scope);
+    },
+    /*
+     *
+     */
+    onActivate: function () {
+      var me = this,
+        doc = F.get(document);
 
-    me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
-    me.columns[orderIndex].disabled[legend] = true;
+      setTimeout(function () {
+        doc.on('click', me.onDeactivateClick, me);
+      }, 100);
+    },
+    /*
+     *
+     */
+    onDeActivate: function () {
+      var me = this,
+        doc = F.get(document);
 
-    me.body.updateRows(undefined, orderIndex);
-  },
-  /*
-   * @param {Number} orderIndex
-   * @param {String} legend
-   */
-  enableLegend: function(orderIndex, legend){
-    var me = this;
+      me.activated = false;
+      doc.un('click', me.onDeactivateClick, me);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDeactivateClick: function (e) {
+      var me = this,
+        i = 0,
+        iL = 20,
+        parent = F.get(e.target);
 
-    me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
-    delete me.columns[orderIndex].disabled[legend];
+      for (; i < iL; i++) {
+        if (!parent.dom) {
+          return;
+        }
 
-    me.body.updateRows(undefined, orderIndex);
-  },
-  /*
-   *
-   */
-  fitHeight: function(){
-    var me = this,
-      s = me.store,
-      panelBodyBorders = me.panelBodyBorders,
-      gridBorders = me.gridBorders,
-      height = s.getLength() * me.cellHeight;
+        if (!parent.dom.tagName || parent.dom.tagName.toLocaleLowerCase() === 'body') {
+          me.fire('deactivate');
+          return;
+        }
 
-    if(me.title){
-      height += me.titleHeight;
-    }
+        if (parent.hasCls(me.widgetCls)) {
+          return;
+        }
 
-    if(me.tbar){
-      height += me.barHeight;
-    }
+        parent = parent.parent();
+      }
+    },
+    /*
+     * @param {Array} keys
+     * @param {Array} values
+     */
+    search: function (keys, values) {
+      var me = this;
 
-    if(me.bbar){
-      height += me.barHeight;
-    }
+      me.searching.search(keys, values);
+    },
+    /*
+     *
+     */
+    stopSelection: function () {
+      var me = this;
 
-    if(me.buttons){
-      height += me.barHeight;
-    }
+      if (me.selection) {
+        me.selection.stopSelection();
+      }
+    },
+    /*
+     * @param {Boolean} value
+     */
+    enableSelection: function (value) {
+      var me = this;
 
-    if(me.subTBar){
-      height += me.barHeight;
-    }
+      if (me.selection) {
+        me.selection.enableSelection(value);
+      }
+    },
+    /*
+     * @param {String} side
+     * @param {Number} index
+     */
+    hideColumn: function (side, index) {
+      var me = this,
+        body = me.getBody(side),
+        header = me.getHeader(side),
+        columns = me.getColumns(side),
+        orderIndex,
+        i = 0,
+        iL = columns.length,
+        column,
+        centerEl = me.centerEl,
+        leftEl = me.leftEl,
+        leftHeader = me.leftHeader,
+        rightEl = me.rightEl,
+        rightHeader = me.rightHeader;
 
-    if(me.footer){
-      height += me.barHeight;
-    }
+      for (; i < iL; i++) {
+        column = columns[i];
 
-    if(me.header !== false){
-      height += me.cellHeaderHeight;
-      if(me.filter && me.filter.header){
+        if (column.index === index) {
+          orderIndex = i;
+          column.hidden = true;
+          break;
+        }
+      }
+
+      header.hideCell(orderIndex);
+      body.hideColumn(orderIndex);
+
+      if (me.rowedit) {
+        me.rowedit.hideField(orderIndex, side);
+      }
+
+      switch (side) {
+        case 'left':
+          leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
+          leftHeader.css('width', parseInt(leftHeader.css('width')) - column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          me.body.css('width', parseInt(me.body.css('width')) + column.width);
+          me.header.css('width', parseInt(me.header.css('width')) + column.width);
+          break;
+        case 'right':
+          rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
+          rightHeader.css('width', parseInt(rightHeader.css('width')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          me.body.css('width', parseInt(me.body.css('width')) + column.width);
+          me.header.css('width', parseInt(me.header.css('width')) + column.width);
+          break;
+      }
+    },
+    /*
+     * @param {String} side
+     * @param {Number} index
+     */
+    showColumn: function (side, index) {
+      var me = this,
+        body = me.getBody(side),
+        header = me.getHeader(side),
+        columns = me.getColumns(side),
+        orderIndex,
+        i = 0,
+        iL = columns.length,
+        column,
+        centerEl = me.centerEl,
+        leftEl = me.leftEl,
+        leftHeader = me.leftHeader,
+        rightEl = me.rightEl,
+        rightHeader = me.rightHeader;
+
+      for (; i < iL; i++) {
+        column = columns[i];
+
+        if (column.index === index) {
+          orderIndex = i;
+          column.hidden = false;
+          break;
+        }
+      }
+
+      header.showCell(orderIndex);
+      body.showColumn(orderIndex);
+
+      if (me.rowedit) {
+        me.rowedit.showField(orderIndex, side);
+      }
+
+      switch (side) {
+        case 'left':
+          leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          leftHeader.css('width', parseInt(leftHeader.css('width')) + column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          me.body.css('width', parseInt(me.body.css('width')) - column.width);
+          me.header.css('width', parseInt(me.header.css('width')) - column.width);
+          break;
+        case 'right':
+          rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
+          rightHeader.css('width', parseInt(rightHeader.css('width')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          me.body.css('width', parseInt(me.body.css('width')) - column.width);
+          me.header.css('width', parseInt(me.header.css('width')) - column.width);
+          break;
+      }
+    },
+    /*
+     * @param {Number} indexOrder
+     * @param {String} side
+     * @return {Object}
+     */
+    removeColumn: function (indexOrder, side) {
+      var me = this,
+        leftEl = me.leftEl,
+        leftHeader = me.leftHeader,
+        leftBody = me.leftBody,
+        centerEl = me.centerEl,
+        body = me.body,
+        header = me.header,
+        rightEl = me.rightEl,
+        rightBody = me.rightBody,
+        rightHeader = me.rightHeader,
+        column;
+
+      switch (side) {
+        case 'left':
+          column = me.leftColumns[indexOrder];
+          me.leftColumns.splice(indexOrder, 1);
+          leftHeader.removeCell(indexOrder);
+          leftHeader.reSetIndexes();
+          leftBody.removeColumn(indexOrder);
+          leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          body.css('width', parseInt(body.css('width')) + column.width);
+          header.css('width', parseInt(header.css('width')) + column.width);
+          break;
+        case 'center':
+          column = me.columns[indexOrder];
+          me.columns.splice(indexOrder, 1);
+          header.removeCell(indexOrder);
+          header.reSetIndexes();
+          body.removeColumn(indexOrder);
+          break;
+        case 'right':
+          column = me.rightColumns[indexOrder];
+          me.rightColumns.splice(indexOrder, 1);
+          rightHeader.removeCell(indexOrder);
+          rightHeader.reSetIndexes();
+          rightBody.removeColumn(indexOrder);
+          rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          header.css('width', parseInt(header.css('width')) + column.width);
+          body.css('width', parseInt(body.css('width')) + column.width);
+          break;
+      }
+
+      if (column.grouping) {
+        delete column.grouping;
+      }
+
+      if (me.summary) {
+        me.summary.removeColumn(indexOrder, side);
+      }
+
+      return column;
+    },
+    /*
+     * @param {Object} column
+     * @param {Number} index
+     * @param {String} side
+     * @param {String} fromSide
+     */
+    insertColumn: function (column, index, side, fromSide) {
+      var me = this,
+        leftEl = me.leftEl,
+        leftBody = me.leftBody,
+        leftHeader = me.leftHeader,
+        centerEl = me.centerEl,
+        body = me.body,
+        header = me.header,
+        rightEl = me.rightEl,
+        rightBody = me.rightBody,
+        rightHeader = me.rightHeader;
+
+      side = side || 'center';
+
+      switch (side) {
+        case 'center':
+          me.columns.splice(index, 0, column);
+          header.insertCell(index, column);
+          header.reSetIndexes();
+          body.insertColumn(index, column);
+          break;
+        case 'left':
+          me.leftColumns.splice(index, 0, column);
+          leftHeader.insertCell(index, column);
+          leftHeader.reSetIndexes();
+          leftBody.insertColumn(index, column);
+          leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
+          body.el.css('width', parseInt(body.el.css('width')) - column.width);
+          header.el.css('width', parseInt(header.el.css('width')) - column.width);
+          break;
+        case 'right':
+          me.rightColumns.splice(index, 0, column);
+          rightHeader.insertCell(index, column);
+          rightHeader.reSetIndexes();
+          rightBody.insertColumn(index, column);
+          rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          body.css('width', parseInt(body.css('width')) - column.width);
+          header.css('width', parseInt(header.css('width')) - column.width);
+          break;
+      }
+
+      if (column.menu) {
+        column.menu = true;
+      }
+
+      if (me.grouping) {
+        me.grouping.updateGroupRows();
+        me.grouping.setCellsPosition(index, side);
+      }
+
+      if (column.rowEditor) {
+        if (side === 'left') {
+          index--;
+        }
+
+        me.rowedit.moveEditor(column, index, side, fromSide);
+      }
+
+      if (me.summary) {
+        me.summary.insertColumn(index, side);
+      }
+
+      me.header.destroyMenus();
+      me.leftHeader.destroyMenus();
+      me.rightHeader.destroyMenus();
+    },
+    /*
+     * @param {Number} orderIndex
+     * @param {String} legend
+     */
+    disableLegend: function (orderIndex, legend) {
+      var me = this;
+
+      me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
+      me.columns[orderIndex].disabled[legend] = true;
+
+      me.body.updateRows(undefined, orderIndex);
+    },
+    /*
+     * @param {Number} orderIndex
+     * @param {String} legend
+     */
+    enableLegend: function (orderIndex, legend) {
+      var me = this;
+
+      me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
+      delete me.columns[orderIndex].disabled[legend];
+
+      me.body.updateRows(undefined, orderIndex);
+    },
+    /*
+     *
+     */
+    fitHeight: function () {
+      var me = this,
+        s = me.store,
+        panelBodyBorders = me.panelBodyBorders,
+        gridBorders = me.gridBorders,
+        height = s.getLength() * me.cellHeight;
+
+      if (me.title) {
+        height += me.titleHeight;
+      }
+
+      if (me.tbar) {
+        height += me.barHeight;
+      }
+
+      if (me.bbar) {
+        height += me.barHeight;
+      }
+
+      if (me.buttons) {
+        height += me.barHeight;
+      }
+
+      if (me.subTBar) {
+        height += me.barHeight;
+      }
+
+      if (me.footer) {
+        height += me.barHeight;
+      }
+
+      if (me.header !== false) {
         height += me.cellHeaderHeight;
-      }
-    }
-
-    if( me.panel ){
-      height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
-    }
-    else{
-      height += gridBorders[0] + gridBorders[2];
-    }
-
-    me.setHeight(height);
-  },
-  /*
-   * @param {String} index
-   * @param {Mixed} value
-   * @param {String} sign
-   */
-  addFilter: function(index, value, sign){
-    var me = this,
-      filter = me.filter.filters[index],
-      sign = sign || '';
-
-    if(filter === undefined){
-      filter = {};
-    }
-
-    if(Fancy.isDate(value)){
-      var format = this.getColumnByIndex(index).format;
-
-      filter['type'] = 'date';
-      filter['format'] = format;
-      value = Number(value);
-    }
-
-    if(value === ''){
-      delete filter[sign];
-    }
-    else{
-      filter[sign] = value;
-    }
-
-    me.filter.filters[index] = filter;
-    me.filter.updateStoreFilters();
-
-    me.filter.addValuesInColumnFields(index, value, sign);
-  },
-  /*
-   * @param {String} [index]
-   * @param {String} [sign]
-   */
-  clearFilter: function(index, sign){
-    var me = this,
-      s = me.store;
-
-    if(index === undefined){
-      me.filter.filters = {};
-      s.filters = {};
-    }
-    else if(sign === undefined){
-      me.filter.filters[index] = {};
-      s.filters[index] = {};
-    }
-    else{
-      if(me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign]){
-        delete me.filter.filters[index][sign];
-        delete s.filters[index][sign];
-      }
-    }
-
-    s.changeDataView();
-    me.update();
-
-    if(me.filter){
-      me.filter.clearColumnsFields(index, sign);
-    }
-  },
-  /*
-   * @param {String} text
-   */
-  showLoadMask: function(text){
-    this.loadmask.showLoadMask(text);
-  },
-  /*
-   *
-   */
-  hideLoadMask: function(){
-    this.loadmask.hideLoadMask();
-  },
-  /*
-   *
-   */
-  prevPage: function(){
-    this.paging.prevPage();
-  },
-  /*
-   *
-   */
-  nextPage: function(){
-    this.paging.nextPage();
-  },
-  /*
-   * @param {Number} value
-   */
-  setPage: function(value){
-    value--;
-    if(value < 0){
-      value = 0;
-    }
-
-    this.paging.setPage(value);
-  },
-  /*
-   *
-   */
-  firstPage: function(){
-    this.paging.firstPage();
-  },
-  /*
-   *
-   */
-  lastPage: function(){
-    this.paging.lastPage();
-  },
-  /*
-   * @param {Number} value
-   */
-  setPageSize: function(value){
-    this.paging.setPageSize(value);
-  },
-  /*
-   * @return {Number}
-   */
-  getPage: function(){
-    return this.store.showPage + 1;
-  },
-  /*
-   * @return {Number}
-   */
-  getPages: function(){
-    return this.store.pages;
-  },
-  /*
-   * @return {Number}
-   */
-  getPageSize: function(){
-    return this.store.pageSize;
-  },
-  /*
-   *
-   */
-  refresh: function(){
-    this.paging.refresh();
-  },
-  /*
-   * @param {Number} x
-   * @param {Number} y
-   */
-  scroll: function(x, y){
-    var me = this,
-      scroller = me.scroller;
-
-    scroller.scroll(x, y);
-
-    scroller.scrollBottomKnob();
-    scroller.scrollRightKnob();
-  },
-  /*
-   * @return {Array}
-   */
-  getDataFiltered: function(){
-    return this.store.filteredData;
-  },
-  /*
-   *
-   */
-  reCalcColumnsWidth: function(){
-    var me = this;
-
-    if(!me.hasFlexColumns) {
-      return;
-    }
-
-    var scroller = me.scroller,
-      viewWidth = me.getCenterViewWidth(),
-      columns = me.columns,
-      flex = 0,
-      i = 0,
-      iL = columns.length,
-      widthForFlex = viewWidth,
-      flexPerCent;
-
-    if(me.flexScrollSensitive !== false && scroller.isRightScrollable() && !scroller.nativeScroller){
-      widthForFlex -= me.bottomScrollHeight;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.flex){
-        flex += column.flex;
-      }
-      else{
-        widthForFlex -= column.width;
-      }
-    }
-
-    if(flex === 0){
-      return;
-    }
-
-    flexPerCent = widthForFlex/flex;
-
-    i = 0;
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.flex){
-        column.width = Math.floor(column.flex * flexPerCent);
-
-        if(column.minWidth && column.width < column.minWidth){
-          column.width = column.minWidth;
-        }
-        else if(column.width < me.minColumnWidth){
-          column.width = me.minColumnWidth;
+        if (me.filter && me.filter.header) {
+          height += me.cellHeaderHeight;
         }
       }
-    }
-  },
-  /*
-   * @return {Array}
-   */
-  getDisplayedData: function(){
-    var me = this,
-      viewTotal = me.getViewTotal(),
-      data = [],
-      i = 0,
-      leftColumns = me.leftColumns,
-      columns = me.columns,
-      rightColumns = me.rightColumns;
 
-    for(;i<viewTotal;i++){
-      var rowData = [];
+      if (me.panel) {
+        height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
+      }
+      else {
+        height += gridBorders[0] + gridBorders[2];
+      }
 
-      Fancy.each(leftColumns, function(column){
-        if(column.index === undefined){
-          return;
+      me.setHeight(height);
+    },
+    /*
+     * @param {String} index
+     * @param {Mixed} value
+     * @param {String} sign
+     */
+    addFilter: function (index, value, sign) {
+      var me = this,
+        filter = me.filter.filters[index],
+        sign = sign || '';
+
+      if (filter === undefined) {
+        filter = {};
+      }
+
+      if (F.isDate(value)) {
+        var format = this.getColumnByIndex(index).format;
+
+        filter['type'] = 'date';
+        filter['format'] = format;
+        value = Number(value);
+      }
+
+      if (value === '') {
+        delete filter[sign];
+      }
+      else {
+        filter[sign] = value;
+      }
+
+      me.filter.filters[index] = filter;
+      me.filter.updateStoreFilters();
+
+      me.filter.addValuesInColumnFields(index, value, sign);
+    },
+    /*
+     * @param {String} [index]
+     * @param {String} [sign]
+     */
+    clearFilter: function (index, sign) {
+      var me = this,
+        s = me.store;
+
+      if (index === undefined) {
+        me.filter.filters = {};
+        s.filters = {};
+      }
+      else if (sign === undefined) {
+        me.filter.filters[index] = {};
+        s.filters[index] = {};
+      }
+      else {
+        if (me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign]) {
+          delete me.filter.filters[index][sign];
+          delete s.filters[index][sign];
         }
-        rowData.push(me.get(i, column.index));
-      });
+      }
 
-      Fancy.each(columns, function(column){
-        if(column.index === undefined){
-          return;
+      s.changeDataView();
+      me.update();
+
+      if (me.filter) {
+        me.filter.clearColumnsFields(index, sign);
+      }
+    },
+    /*
+     * @param {String} text
+     */
+    showLoadMask: function (text) {
+      this.loadmask.showLoadMask(text);
+    },
+    /*
+     *
+     */
+    hideLoadMask: function () {
+      this.loadmask.hideLoadMask();
+    },
+    /*
+     *
+     */
+    prevPage: function () {
+      this.paging.prevPage();
+    },
+    /*
+     *
+     */
+    nextPage: function () {
+      this.paging.nextPage();
+    },
+    /*
+     * @param {Number} value
+     */
+    setPage: function (value) {
+      value--;
+      if (value < 0) {
+        value = 0;
+      }
+
+      this.paging.setPage(value);
+    },
+    /*
+     *
+     */
+    firstPage: function () {
+      this.paging.firstPage();
+    },
+    /*
+     *
+     */
+    lastPage: function () {
+      this.paging.lastPage();
+    },
+    /*
+     * @param {Number} value
+     */
+    setPageSize: function (value) {
+      this.paging.setPageSize(value);
+    },
+    /*
+     * @return {Number}
+     */
+    getPage: function () {
+      return this.store.showPage + 1;
+    },
+    /*
+     * @return {Number}
+     */
+    getPages: function () {
+      return this.store.pages;
+    },
+    /*
+     * @return {Number}
+     */
+    getPageSize: function () {
+      return this.store.pageSize;
+    },
+    /*
+     *
+     */
+    refresh: function () {
+      this.paging.refresh();
+    },
+    /*
+     * @param {Number} x
+     * @param {Number} y
+     */
+    scroll: function (x, y) {
+      var me = this,
+        scroller = me.scroller;
+
+      scroller.scroll(x, y);
+
+      scroller.scrollBottomKnob();
+      scroller.scrollRightKnob();
+    },
+    /*
+     * @return {Array}
+     */
+    getDataFiltered: function () {
+      return this.store.filteredData;
+    },
+    /*
+     *
+     */
+    reCalcColumnsWidth: function () {
+      var me = this;
+
+      if (!me.hasFlexColumns) {
+        return;
+      }
+
+      var scroller = me.scroller,
+        viewWidth = me.getCenterViewWidth(),
+        columns = me.columns,
+        flex = 0,
+        i = 0,
+        iL = columns.length,
+        widthForFlex = viewWidth,
+        flexPerCent;
+
+      if (me.flexScrollSensitive !== false && scroller.isRightScrollable() && !scroller.nativeScroller) {
+        widthForFlex -= me.bottomScrollHeight;
+      }
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.flex) {
+          flex += column.flex;
         }
-        rowData.push(me.get(i, column.index));
-      });
-
-      Fancy.each(rightColumns, function(column){
-        if(column.index === undefined){
-          return;
+        else {
+          widthForFlex -= column.width;
         }
-        rowData.push(me.get(i, column.index));
-      });
+      }
 
-      data.push(rowData);
+      if (flex === 0) {
+        return;
+      }
+
+      flexPerCent = widthForFlex / flex;
+
+      i = 0;
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.flex) {
+          column.width = Math.floor(column.flex * flexPerCent);
+
+          if (column.minWidth && column.width < column.minWidth) {
+            column.width = column.minWidth;
+          }
+          else if (column.width < me.minColumnWidth) {
+            column.width = me.minColumnWidth;
+          }
+        }
+      }
+    },
+    /*
+     * @return {Array}
+     */
+    getDisplayedData: function () {
+      var me = this,
+        viewTotal = me.getViewTotal(),
+        data = [],
+        i = 0,
+        leftColumns = me.leftColumns,
+        columns = me.columns,
+        rightColumns = me.rightColumns;
+
+      for (; i < viewTotal; i++) {
+        var rowData = [];
+
+        F.each(leftColumns, function (column) {
+          if (column.index === undefined) {
+            return;
+          }
+          rowData.push(me.get(i, column.index));
+        });
+
+        F.each(columns, function (column) {
+          if (column.index === undefined) {
+            return;
+          }
+          rowData.push(me.get(i, column.index));
+        });
+
+        F.each(rightColumns, function (column) {
+          if (column.index === undefined) {
+            return;
+          }
+          rowData.push(me.get(i, column.index));
+        });
+
+        data.push(rowData);
+      }
+
+      return data;
+    },
+    /*
+     *
+     */
+    exportToExcel: function () {
+      var me = this;
+
+      if (me.exporter) {
+        me.exporter.exportToExcel();
+      }
     }
+  });
 
-    return data;
-  },
-  /*
-   *
-   */
-  exportToExcel: function(){
-    var me = this;
-
-    if(me.exporter){
-      me.exporter.exportToExcel();
-    }
-  }
-});/*
+})();/*
  * @class Fancy.grid.plugin.Updater
  * @extends Fancy.Plugin
  */
@@ -3807,11 +3825,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
+    Fancy.applyConfig(this, config);
 
-    Fancy.applyConfig(me, config);
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -3821,8 +3837,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    *
    */
   update: function(){
-    var me = this,
-      w = me.widget;
+    var w = this.widget;
 
     w.leftBody.update();
     w.body.update();
@@ -3832,8 +3847,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {Number} rowIndex
    */
   updateRow: function(rowIndex){
-    var me = this,
-      w = me.widget;
+    var w = this.widget;
 
     w.leftBody.updateRows(rowIndex);
     w.body.updateRows(rowIndex);
@@ -3844,6 +3858,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
  * @extends Fancy.Plugin
  */
 (function(){
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
@@ -3856,10 +3873,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
   var BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
   var RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
   var BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
-  var HIDDEN_CLS = Fancy.HIDDEN_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
 
-  Fancy.define('Fancy.grid.plugin.Scroller', {
-    extend: Fancy.Plugin,
+  F.define('Fancy.grid.plugin.Scroller', {
+    extend: F.Plugin,
     ptype: 'grid.scroller',
     inWidgetName: 'scroller',
     rightKnobDown: false,
@@ -3868,23 +3887,22 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     minBottomKnobWidth: 35,
     cornerSize: 12,
     /*
+     * @private
+     */
+    scrollLeft: 0,
+    /*
      * @constructor
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      me.Super('const', arguments);
+      this.Super('const', arguments);
     },
     /*
      *
      */
     init: function () {
-      var me = this;
-
-      me.Super('init', arguments);
-
-      me.ons();
+      this.Super('init', arguments);
+      this.ons();
     },
     /*
      *
@@ -3892,7 +3910,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     ons: function () {
       var me = this,
         w = me.widget,
-        mouseWheelEventName = Fancy.getMouseWheelEventName();
+        mouseWheelEventName = F.getMouseWheelEventName();
 
       w.once('render', function () {
         me.render();
@@ -3907,6 +3925,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
         if (w.nativeScroller) {
           w.body.el.on('scroll', me.onNativeScrollBody, me);
+          w.leftBody.el.on('scroll', me.onNativeScrollLeftBody, me);
+          w.rightBody.el.on('scroll', me.onNativeScrollRightBody, me);
         }
       });
 
@@ -3923,8 +3943,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = Fancy.get(document),
-        mouseWheelEventName = Fancy.getMouseWheelEventName();
+        docEl = F.get(document),
+        mouseWheelEventName = F.getMouseWheelEventName();
 
       docEl.un('mouseup', me.onMouseUpDoc, me);
       docEl.un('mousemove', me.onMouseMoveDoc, me);
@@ -3936,7 +3956,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.scrollBottomEl.un('mousedown', me.onMouseDownBottomSpin, me);
       me.scrollRightEl.un('mousedown', me.onMouseDownRightSpin, me);
 
-      if (Fancy.isTouch) {
+      if (F.isTouch) {
         leftBody.el.un('touchstart', me.onBodyTouchStart, me);
         leftBody.el.un('touchmove', me.onBodyTouchMove, me);
 
@@ -3955,7 +3975,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onGridInit: function () {
       var me = this,
         w = me.widget,
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       me.setScrollBars();
       docEl.on('mouseup', me.onMouseUpDoc, me);
@@ -3977,8 +3997,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       var me = this,
         w = me.widget,
         body = w.body,
-        rightScrollEl = Fancy.get(document.createElement('div')),
-        bottomScrollEl = Fancy.get(document.createElement('div')),
+        rightScrollEl = F.get(document.createElement('div')),
+        bottomScrollEl = F.get(document.createElement('div')),
         right = 1;
 
       if (w.nativeScroller) {
@@ -3998,10 +4018,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           '<div class="' + BOTTOM_SCROLL_INNER_CLS + '"></div>'
         ].join(" "));
 
-        Fancy.get(body.el.append(rightScrollEl.dom));
+        F.get(body.el.append(rightScrollEl.dom));
         me.scrollRightEl = body.el.select('.fancy-scroll-right');
 
-        Fancy.get(body.el.append(bottomScrollEl.dom));
+        F.get(body.el.append(bottomScrollEl.dom));
         me.scrollBottomEl = body.el.select('.fancy-scroll-bottom');
       }
 
@@ -4013,7 +4033,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onMouseWheel: function (e) {
       var me = this,
         w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e);
+        delta = F.getWheelDelta(e.originalEvent || e);
 
       if (me.isRightScrollable() == false) {
         return;
@@ -4059,7 +4079,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         me.initBottomScroll();
       }
 
-      if (Fancy.isTouch) {
+      if (F.isTouch) {
         me.initTouch();
       }
     },
@@ -4072,7 +4092,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       leftBody.el.on('touchstart', me.onBodyTouchStart, me);
       leftBody.el.on('touchmove', me.onBodyTouchMove, me);
@@ -4111,9 +4131,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onBodyTouchEnd: function () {
-      var me = this;
-
-      me.onMouseUpDoc();
+      this.onMouseUpDoc();
     },
     /*
      * @param {Object} e
@@ -4160,7 +4178,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onMouseDownRightSpin: function (e) {
       var me = this;
 
-      if (Fancy.isTouch) {
+
+      if (F.isTouch) {
         return;
       }
 
@@ -4224,7 +4243,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         marginLeft;
 
       if (me.rightKnobDown) {
-        if (Fancy.isTouch) {
+        if (F.isTouch) {
           deltaY = me.mouseDownXY.y - y;
           marginTop = deltaY + me.rightKnobTop;
         }
@@ -4252,7 +4271,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       if (me.bottomKnobDown) {
-        if (Fancy.isTouch) {
+        if (F.isTouch) {
           deltaX = me.mouseDownXY.x - x;
           deltaY = me.mouseDownXY.y - y;
           marginLeft = deltaX + me.bottomKnobLeft;
@@ -4338,14 +4357,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     isRightScrollable: function () {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
       if (w.nativeScroller) {
         return w.body.el.css('overflow-y') === 'scroll';
       }
 
-      return !me.scrollRightEl.hasCls(HIDDEN_CLS);
+      return !this.scrollRightEl.hasCls(HIDDEN_CLS);
     },
     /*
      *
@@ -4548,28 +4566,20 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @return {Number}
      */
     getScroll: function () {
-      var me = this,
-        w = me.widget;
-
-      return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('top')));
+      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
     },
     /*
      * @return {Number}
      */
     getBottomScroll: function () {
-      var me = this,
-        w = me.widget;
-
-      return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('left')));
+      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
     },
     /*
      *
      */
     update: function () {
-      var me = this;
-
-      me.setScrollBars();
-      me.checkScroll();
+      this.setScrollBars();
+      this.checkScroll();
     },
     /*
      *
@@ -4581,9 +4591,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onColumnResize: function () {
-      var me = this;
-
-      me.setScrollBars();
+      this.setScrollBars();
     },
     /*
      *
@@ -4609,7 +4617,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
-        cellEl = Fancy.get(cell),
+        cellEl = F.get(cell),
         columnEl = cellEl.parent(),
         rowIndex = Number(cellEl.attr('index')),
         columnIndex = Number(columnEl.attr('index')),
@@ -4619,7 +4627,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bottomScroll = me.getBottomScroll(),
         bodyViewWidth = parseInt(w.body.el.css('width')),
         passedWidth = 0,
-        isCenterBody = columnEl.parent().parent().hasCls(w.centerCls);
+        isCenterBody = columnEl.parent().parent().hasCls(GRID_CENTER_CLS);
 
       if(w.nativeScroller){
         return;
@@ -4674,27 +4682,53 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         scrollTop = w.body.el.dom.scrollTop,
         scrollLeft = w.body.el.dom.scrollLeft;
 
-      if (w.header) {
+      if(w.header){
         w.header.scroll(-scrollLeft);
       }
 
-      if (w.leftBody) {
+      if (w.leftBody){
         w.leftBody.el.dom.scrollTop = scrollTop;
       }
 
-      if (w.rightBody) {
+      if (w.rightBody){
         w.rightBody.el.dom.scrollTop = scrollTop;
+      }
+
+      if(w.leftColumns.length && w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        w.body.el.dom.scrollTop = w.leftBody.el.dom.scrollTop;
+      }
+      else if(w.rightColumns.length && w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        w.body.el.dom.scrollTop = w.rightBody.el.dom.scrollTop;
       }
 
       w.fire('nativescroll');
     },
     /*
+     *
+     */
+    onNativeScrollLeftBody: function(){
+      var w = this.widget;
+
+      if(w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        this.onNativeScrollBody();
+      }
+    },
+    /*
+     *
+     */
+    onNativeScrollRightBody: function(){
+      var w = this.widget;
+
+      if(w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        this.onNativeScrollBody();
+      }
+    },
+    /*
      * @param {Object} e
      */
     onMouseWheelLeft: function (e) {
-      var me = this,
-        w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e),
+      var w = this.widget,
+        delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
       w.leftBody.el.dom.scrollTop -= scrollTop;
@@ -4705,9 +4739,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {Object} e
      */
     onMouseWheelRight: function (e) {
-      var me = this,
-        w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e),
+      var w = this.widget,
+        delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
       w.leftBody.el.dom.scrollTop -= scrollTop;
@@ -4718,31 +4751,22 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     },
     /*
      *
      */
     onRightLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     },
     /*
      *
      */
     onUnLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     }
   });
 
@@ -4763,19 +4787,14 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -4858,17 +4877,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onBeforeLoad: function(){
-    var me = this;
-
-    me.showLoadMask();
+    this.showLoadMask();
   },
   /*
    *
    */
   onLoad: function(){
-    var me = this;
-
-    me.hideLoadMask();
+    this.hideLoadMask();
   },
   /*
    * @param {String} text
@@ -4898,764 +4913,761 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   hideLoadMask: function(){
-    var me = this;
-
-    me.loaded = true;
-    me.el.css('display', 'none');
+    this.loaded = true;
+    this.el.css('display', 'none');
   }
 });/*
  * @class Fancy.grid.plugin.ColumnResizer
  * @extend Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.ColumnResizer', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.columnresizer',
-  inWidgetName: 'columnresizer',
-  resizerLeftCls: 'fancy-grid-resizer-left',
-  resizerRightCls: 'fancy-grid-resizer-right',
-  /*
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var G = F.get;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this,
-      w = me.widget;
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var GRID_RESIZER_LEFT_CLS = F.GRID_RESIZER_LEFT_CLS;
+  var GRID_RESIZER_RIGHT_CLS = F.GRID_RESIZER_RIGHT_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.ColumnResizer', {
+    extend: F.Plugin,
+    ptype: 'grid.columnresizer',
+    inWidgetName: 'columnresizer',
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
 
-    w.on('render', function() {
-      me.render();
-      me.ons();
-    });
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
+      me.Super('init', arguments);
 
-    w.on('headercellmousemove', me.onCellMouseMove, me);
-    w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
-    w.on('docclick', me.onDocClick, me);
-    w.on('docmove', me.onDocMove, me);
-    w.on('docmouseup', me.onDocMouseUp, me);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellMouseMove: function(grid, o){
-    var me = this,
-      w = me.widget,
-      FIELD_CLS = Fancy.FIELD_CLS,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      e = o.e,
-      cellEl = Fancy.get(o.cell),
-      offsetX = e.offsetX,
-      cellWidth = cellEl.width(),
-      target = Fancy.get(e.target),
-      isInTrigger = target.hasCls(cellHeaderTriggerCls),
-      isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
-      triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
-      triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
-      hasFieldInSide = Fancy.get(e.target).closest('.' + FIELD_CLS).hasCls(FIELD_CLS),
-      triggerWidth = parseInt(triggerEl.css('width')),
-      triggerImageWidth = parseInt(triggerImageEl.css('width')),
-      _width = cellWidth,
-      inOffsetX = 7;
+      w.on('render', function () {
+        me.render();
+        me.ons();
+      });
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    if(isInTrigger){
-      _width = triggerWidth;
-    }
+      w.on('headercellmousemove', me.onCellMouseMove, me);
+      w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
+      w.on('docclick', me.onDocClick, me);
+      w.on('docmove', me.onDocMove, me);
+      w.on('docmouseup', me.onDocMouseUp, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellMouseMove: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        e = o.e,
+        cellEl = G(o.cell),
+        offsetX = e.offsetX,
+        cellWidth = cellEl.width(),
+        target = G(e.target),
+        isInTrigger = target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS),
+        isInTriggerImage = target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS),
+        triggerEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0),
+        triggerImageEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS).item(0),
+        hasFieldInSide = G(e.target).closest('.' + FIELD_CLS).hasCls(FIELD_CLS),
+        triggerWidth = parseInt(triggerEl.css('width')),
+        triggerImageWidth = parseInt(triggerImageEl.css('width')),
+        _width = cellWidth,
+        inOffsetX = 7;
 
-    if(isInTriggerImage){
-      _width = triggerImageWidth;
-    }
-
-    if(w.startResizing){
-      return;
-    }
-
-    if(o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2){
-      inOffsetX += 2;
-    }
-
-    if(!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX){
-      if(me.isColumnResizable(o)){
-        if( !hasFieldInSide ){
-          me.addCellResizeCls(o.cell);
-        }
+      if (isInTrigger) {
+        _width = triggerWidth;
       }
-    }
-    else if(!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.side === 'center' && o.index === 0 && w.leftColumns.length){
-      o.side = 'left';
-      o.index = w.leftColumns.length - 1;
-      if(me.isColumnResizable(o)){
-        if( !hasFieldInSide ){
-          me.addCellResizeCls(o.cell);
-        }
+
+      if (isInTriggerImage) {
+        _width = triggerImageWidth;
       }
-    }
-    else if(!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0){
-      var isLeft = offsetX < inOffsetX;
 
-      if(me.isColumnResizable(o, isLeft)){
-        if( !hasFieldInSide ){
-          me.addCellResizeCls(o.cell);
-        }
-      }
-    }
-    else if((_width - offsetX)<inOffsetX){
-      if(isInTriggerImage){
-        if(triggerImageWidth - offsetX > 2){
-          me.removeCellResizeCls(o.cell);
-        }
-        else{
-          me.addCellResizeCls(o.cell);
-        }
-      }
-      else if(me.isColumnResizable(o)){
-        me.addCellResizeCls(o.cell);
-      }
-    }
-    else{
-      me.removeCellResizeCls(o.cell);
-    }
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  addCellResizeCls: function(cell){
-    var me = this,
-      w = me.widget,
-      columnResizerCls = w.columnResizerCls,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls;
-
-    Fancy.get(cell).addCls(columnResizerCls);
-    Fancy.get(cell).select('.' + cellHeaderTriggerCls).addCls(columnResizerCls);
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  removeCellResizeCls: function(cell){
-    var me = this,
-      w = me.widget,
-      columnResizerCls = w.columnResizerCls,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls;
-
-    Fancy.get(cell).removeClass(columnResizerCls);
-    Fancy.get(cell).select('.' + cellHeaderTriggerCls).item(0).removeClass(columnResizerCls);
-  },
-  /*
-   * @param {Object} e
-   * @param {Object} o
-   */
-  onHeaderCellMouseDown: function(e, o){
-    var me = this,
-      w = me.widget,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      e = o.e,
-      target = Fancy.get(e.target),
-      cellEl = Fancy.get(o.cell),
-      offsetX = e.offsetX,
-      cellWidth = cellEl.width(),
-      field = cellEl.select('.' + Fancy.FIELD_CLS),
-      isInTrigger = target.hasCls(cellHeaderTriggerCls),
-      isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
-      triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
-      triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
-      triggerWidth = parseInt(triggerEl.css('width')),
-      triggerImageWidth = parseInt(triggerImageEl.css('width')),
-      _width = cellWidth,
-      inOffsetX = 7;
-
-    if(isInTrigger){
-      _width = triggerWidth;
-    }
-
-    if(isInTriggerImage){
-      _width = triggerImageWidth;
-      return;
-    }
-
-    if(field.length > 0 && field.item(0).within(target.dom)){
-      return;
-    }
-
-    if(o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2){
-      inOffsetX += 2;
-    }
-
-    if(!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX){
-      w.startResizing = true;
-      me.cell = o.cell;
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index;
-      me.moveLeftResizer = true;
-    }
-    else if(offsetX < 7 && o.side === 'center' && o.index === 0 && w.leftColumns.length){
-      w.startResizing = true;
-      o.side = 'left';
-      o.index = w.leftColumns.length - 1;
-      me.cell = me.getCell(o);
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index;
-    }
-    else if(!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.index !== 0){
-      w.startResizing = true;
-      me.cell = me.getPrevCell(o);
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index - 1;
-    }
-    else if((_width - offsetX) < inOffsetX){
-      w.startResizing = true;
-      me.cell = o.cell;
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index;
-    }
-
-    if(w.startResizing){
-      me.isColumnResizable();
-    }
-  },
-  /*
-   * @param {Object} o
-   * @param {Boolean} isLeft
-   * @return {Boolean}
-   */
-  isColumnResizable: function(o, isLeft) {
-    var me = this,
-      w = me.widget,
-      columns,
-      column,
-      index;
-
-    if(o){
-      columns = w.getColumns(o.side);
-      index = o.index;
-      if(isLeft){
-        index--;
-      }
-      if(isNaN(index)){
+      if (w.startResizing) {
         return;
       }
-      column = columns[index];
-      return column.resizable === true;
-    }
-    else{
-      columns = w.getColumns(me.activeSide);
-      if (columns[me.columnIndex].resizable !== true) {
-        w.startResizing = false;
-        delete me.cell;
-        delete me.activeSide;
-        delete me.clientX;
-        delete me.columnIndex;
+
+      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
+        inOffsetX += 2;
       }
-    }
-  },
-  /*
-   * @return {Number}
-   */
-  getMinColumnWidth: function(){
-    var me = this,
-      w = me.widget,
-      minCellWidth = w.minCellWidth,
-      columns,
-      column;
 
-    if(me.columnIndex === undefined){
+      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX) {
+        if (me.isColumnResizable(o)) {
+          if (!hasFieldInSide) {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+      }
+      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.side === 'center' && o.index === 0 && w.leftColumns.length) {
+        o.side = 'left';
+        o.index = w.leftColumns.length - 1;
+        if (me.isColumnResizable(o)) {
+          if (!hasFieldInSide) {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+      }
+      else if (!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0) {
+        var isLeft = offsetX < inOffsetX;
+
+        if (me.isColumnResizable(o, isLeft)) {
+          if (!hasFieldInSide) {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+      }
+      else if ((_width - offsetX) < inOffsetX) {
+        if (isInTriggerImage) {
+          if (triggerImageWidth - offsetX > 2) {
+            me.removeCellResizeCls(o.cell);
+          }
+          else {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+        else if (me.isColumnResizable(o)) {
+          me.addCellResizeCls(o.cell);
+        }
+      }
+      else {
+        me.removeCellResizeCls(o.cell);
+      }
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    addCellResizeCls: function (cell) {
+      G(cell).addCls(GRID_COLUMN_RESIZER_CLS);
+      G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).addCls(GRID_COLUMN_RESIZER_CLS);
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    removeCellResizeCls: function (cell) {
+      G(cell).removeClass(GRID_COLUMN_RESIZER_CLS);
+      G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0).removeClass(GRID_COLUMN_RESIZER_CLS);
+    },
+    /*
+     * @param {Object} e
+     * @param {Object} o
+     */
+    onHeaderCellMouseDown: function (e, o) {
+      var me = this,
+        w = me.widget,
+        e = o.e,
+        target = G(e.target),
+        cellEl = G(o.cell),
+        offsetX = e.offsetX,
+        cellWidth = cellEl.width(),
+        field = cellEl.select('.' + FIELD_CLS),
+        isInTrigger = target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS),
+        isInTriggerImage = target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS),
+        triggerEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0),
+        triggerImageEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS).item(0),
+        triggerWidth = parseInt(triggerEl.css('width')),
+        triggerImageWidth = parseInt(triggerImageEl.css('width')),
+        _width = cellWidth,
+        inOffsetX = 7;
+
+      if (isInTrigger) {
+        _width = triggerWidth;
+      }
+
+      if (isInTriggerImage) {
+        _width = triggerImageWidth;
+        return;
+      }
+
+      if (field.length > 0 && field.item(0).within(target.dom)) {
+        return;
+      }
+
+      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
+        inOffsetX += 2;
+      }
+
+      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX) {
+        w.startResizing = true;
+        F.apply(me, {
+          cell: o.cell,
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index,
+          moveLeftResizer: true
+        });
+      }
+      else if (offsetX < 7 && o.side === 'center' && o.index === 0 && w.leftColumns.length) {
+        w.startResizing = true;
+        o.side = 'left';
+        o.index = w.leftColumns.length - 1;
+        F.apply(me, {
+          cell: me.getCell(o),
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index
+        });
+      }
+      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.index !== 0) {
+        w.startResizing = true;
+        F.apply(me, {
+          cell: me.getPrevCell(o),
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index - 1
+        });
+      }
+      else if ((_width - offsetX) < inOffsetX) {
+        w.startResizing = true;
+        F.apply(me, {
+          cell: o.cell,
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index
+        });
+      }
+
+      if (w.startResizing) {
+        me.isColumnResizable();
+      }
+    },
+    /*
+     * @param {Object} o
+     * @param {Boolean} isLeft
+     * @return {Boolean}
+     */
+    isColumnResizable: function (o, isLeft) {
+      var me = this,
+        w = me.widget,
+        columns,
+        column,
+        index;
+
+      if (o) {
+        columns = w.getColumns(o.side);
+        index = o.index;
+        if (isLeft) {
+          index--;
+        }
+        if (isNaN(index)) {
+          return;
+        }
+        column = columns[index];
+        return column.resizable === true;
+      }
+      else {
+        columns = w.getColumns(me.activeSide);
+        if (columns[me.columnIndex].resizable !== true) {
+          w.startResizing = false;
+          delete me.cell;
+          delete me.activeSide;
+          delete me.clientX;
+          delete me.columnIndex;
+        }
+      }
+    },
+    /*
+     * @return {Number}
+     */
+    getMinColumnWidth: function () {
+      var me = this,
+        w = me.widget,
+        minCellWidth = w.minCellWidth,
+        columns,
+        column;
+
+      if (me.columnIndex === undefined) {
+        return minCellWidth;
+      }
+
+      columns = w.getColumns(me.activeSide);
+      column = columns[me.columnIndex];
+
+      if (column.minWidth) {
+        return column.minWidth;
+      }
+
       return minCellWidth;
-    }
+    },
+    /*
+     * @return {Number|false}
+     */
+    getMaxColumnWidth: function () {
+      var me = this,
+        w = me.widget,
+        columns,
+        column;
 
-    columns = w.getColumns(me.activeSide);
-    column = columns[me.columnIndex];
+      if (me.columnIndex === undefined) {
+        return false;
+      }
 
-    if(column.minWidth){
-      return column.minWidth;
-    }
+      columns = w.getColumns(me.activeSide);
+      column = columns[me.columnIndex];
 
-    return minCellWidth;
-  },
-  /*
-   * @return {Number|false}
-   */
-  getMaxColumnWidth: function(){
-    var me = this,
-      w = me.widget,
-      columns,
-      column;
+      if (column.maxWidth) {
+        return column.maxWidth;
+      }
 
-    if(me.columnIndex === undefined){
       return false;
-    }
+    },
+    /*
+     *
+     */
+    onDocClick: function () {
+      this.widget.startResizing = false;
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} e
+     */
+    onDocMove: function (grid, e) {
+      if (this.widget.startResizing) {
+        this.moveResizeEls(e);
+      }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        leftEl = G(document.createElement('div')),
+        rightEl = G(document.createElement('div'));
 
-    columns = w.getColumns(me.activeSide);
-    column = columns[me.columnIndex];
+      leftEl.addCls(GRID_RESIZER_LEFT_CLS);
+      rightEl.addCls(GRID_RESIZER_RIGHT_CLS);
 
-    if(column.maxWidth){
-      return column.maxWidth;
-    }
+      me.leftEl = G(w.el.dom.appendChild(leftEl.dom));
+      me.rightEl = G(w.el.dom.appendChild(rightEl.dom));
+    },
+    /*
+     * @param {Object} e
+     */
+    moveResizeEls: function (e) {
+      var me = this,
+        w = me.widget,
+        cellEl = G(me.cell),
+        left = parseInt(cellEl.css('left')),
+        minWidth = me.getMinColumnWidth(),
+        maxWidth = me.getMaxColumnWidth();
 
-    return false;
-  },
-  /*
-   *
-   */
-  onDocClick: function(){
-    var me = this,
-      w = me.widget;
+      switch (me.activeSide) {
+        case 'left':
+          break;
+        case 'center':
+          left += parseInt(w.leftEl.css('width'));
+          break;
+        case 'right':
+          left += parseInt(w.leftEl.css('width'));
+          left += parseInt(w.centerEl.css('width'));
+          break;
+      }
 
-    w.startResizing = false;
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} e
-   */
-  onDocMove: function(grid, e){
-    var me = this,
-      w = me.widget;
+      var clientX = e.clientX,
+        deltaClientX = clientX - me.clientX,
+        cellWidth = cellEl.width() + deltaClientX;
 
-    if(w.startResizing){
-      me.moveResizeEls(e);
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget,
-      leftEl = Fancy.get( document.createElement('div')),
-      rightEl = Fancy.get( document.createElement('div') );
-
-    leftEl.addCls(me.resizerLeftCls);
-    rightEl.addCls(me.resizerRightCls);
-
-    me.leftEl = Fancy.get(w.el.dom.appendChild(leftEl.dom));
-    me.rightEl = Fancy.get(w.el.dom.appendChild(rightEl.dom));
-  },
-  /*
-   * @param {Object} e
-   */
-  moveResizeEls: function(e){
-    var me = this,
-      w = me.widget,
-      cellEl = Fancy.get(me.cell),
-      left = parseInt(cellEl.css('left')),
-      minWidth = me.getMinColumnWidth(),
-      maxWidth = me.getMaxColumnWidth();
-
-    switch(me.activeSide){
-      case 'left':
-        break;
-      case 'center':
-        left += parseInt(w.leftEl.css('width'));
-        break;
-      case 'right':
-        left += parseInt(w.leftEl.css('width'));
-        left += parseInt(w.centerEl.css('width'));
-        break;
-    }
-
-    var clientX = e.clientX,
-      deltaClientX = clientX - me.clientX,
-      cellWidth = cellEl.width() + deltaClientX;
-
-    if(cellWidth < minWidth){
-      cellWidth = minWidth;
-    }
-
-    if(maxWidth && cellWidth > maxWidth){
-      cellWidth = maxWidth;
-    }
-
-    me.deltaWidth = cellEl.width() - cellWidth;
-
-    if(me.moveLeftResizer){
-      deltaClientX = clientX - me.clientX;
-      cellWidth = cellEl.width() - deltaClientX;
-
-      if(cellWidth < minWidth){
+      if (cellWidth < minWidth) {
         cellWidth = minWidth;
+      }
+
+      if (maxWidth && cellWidth > maxWidth) {
+        cellWidth = maxWidth;
       }
 
       me.deltaWidth = cellEl.width() - cellWidth;
 
-      me.leftEl.css({
-        display: 'block',
-        left: left + deltaClientX + 'px'
-      });
+      if (me.moveLeftResizer) {
+        deltaClientX = clientX - me.clientX;
+        cellWidth = cellEl.width() - deltaClientX;
 
-      me.rightEl.css({
-        display: 'block',
-        left: (left + cellEl.width() - 1) + 'px'
-      });
-    }
-    else {
-      me.leftEl.css({
-        display: 'block',
-        left: left + 'px'
-      });
-
-      me.rightEl.css({
-        display: 'block',
-        left: left + cellWidth + 'px'
-      });
-    }
-
-    me.cellWidth = cellWidth;
-  },
-  /*
-   *
-   */
-  onDocMouseUp: function(){
-    var me = this,
-      w = me.widget;
-
-    if (w.startResizing === false) {
-      return;
-    }
-
-    me.leftEl.css({
-      display: 'none'
-    });
-
-    me.rightEl.css({
-      display: 'none'
-    });
-
-    me.fixSidesWidth();
-    w.startResizing = false;
-    me.moveLeftResizer = false;
-    delete me.cellWidth;
-  },
-  /*
-   *
-   */
-  fixSidesWidth: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      columnCls = w.columnCls,
-      cellWidth = me.cellWidth,
-      index = me.columnIndex,
-      delta = me.deltaWidth,
-      domColumns,
-      domHeaderCells,
-      leftEl = w.leftEl,
-      centerEl = w.centerEl,
-      rightEl = w.rightEl,
-      leftHeaderEl = w.leftHeader.el,
-      centerHeaderEl = w.header.el,
-      rightHeaderEl = w.rightHeader.el,
-      centerBodyEl = w.body.el,
-      groupMove = {},
-      ignoreGroupIndexes = {},
-      column,
-      newCenterWidth,
-      minCenterWidth = me.minCenterWidth;
-
-    if(cellWidth === undefined){
-      return;
-    }
-
-    var leftFix = 1;
-    if(Fancy.nojQuery){
-      leftFix = 0;
-    }
-
-    switch(me.activeSide){
-      case 'left':
-        newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
-
-        if(newCenterWidth < minCenterWidth){
-          return;
+        if (cellWidth < minWidth) {
+          cellWidth = minWidth;
         }
 
-        column = w.leftColumns[index];
+        me.deltaWidth = cellEl.width() - cellWidth;
 
-        w.leftColumns[me.columnIndex].width = cellWidth;
-        domColumns = w.leftBody.el.select('.' + columnCls);
-        domHeaderCells = w.leftHeader.el.select('.' + cellHeaderCls);
-        domColumns.item(index).css('width', cellWidth + 'px');
+        me.leftEl.css({
+          display: 'block',
+          left: left + deltaClientX + 'px'
+        });
 
-        var i = me.columnIndex + 1,
-          iL = domHeaderCells.length,
-          _i = 0,
-          _iL = i;
-
-        for(;_i<_iL;_i++){
-          var domHeaderCell = domHeaderCells.item(_i),
-            groupIndex = domHeaderCell.attr('group-index');
-
-          if(groupIndex){
-            ignoreGroupIndexes[groupIndex] = true;
-          }
-        }
-
-        for(;i<iL;i++){
-          var domColumnEl = domColumns.item(i),
-            domHeaderCell = domHeaderCells.item(i);
-
-          domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
-          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
-          else{
-            domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
-          }
-        }
-
-        leftEl.css('width', parseInt(leftEl.css('width')) - delta - leftFix);
-        leftHeaderEl.css('width', parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px');
-
-        if(w.columns.length){
-          centerEl.css('left', parseInt(centerEl.css('left')) - delta - leftFix);
-          centerEl.css('width', newCenterWidth);
-          centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
-          centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
-        }
-
-        break;
-      case 'center':
-        column = w.columns[index];
-        w.columns[me.columnIndex].width = cellWidth;
-        domColumns = w.body.el.select('.' + columnCls);
-        domHeaderCells = w.header.el.select('.' + cellHeaderCls);
-        domColumns.item(index).css('width', cellWidth + 'px');
-
-        var i = me.columnIndex + 1,
-          iL = domHeaderCells.length,
-          _i = 0,
-          _iL = i;
-
-        for(;_i<_iL;_i++){
-          var domHeaderCell = domHeaderCells.item(_i),
-            groupIndex = domHeaderCell.attr('group-index');
-
-          if(groupIndex){
-            ignoreGroupIndexes[groupIndex] = true;
-          }
-        }
-
-        for(;i<iL;i++){
-          var domColumnEl = domColumns.item(i),
-            domHeaderCell = domHeaderCells.item(i),
-            left = parseInt(domColumnEl.css('left')) - delta - leftFix,
-            _left = parseInt(domHeaderCell.css('left')) - delta - leftFix;
-
-          if(domHeaderCell.attr('group-index')){
-            groupMove[domHeaderCell.attr('group-index')] = {};
-          }
-
-          domColumnEl.css('left', left);
-
-          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
-          else{
-            domHeaderCell.css('left', _left);
-          }
-        }
-
-        break;
-      case 'right':
-        newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
-
-        if(newCenterWidth < minCenterWidth){
-          return;
-        }
-
-        column = w.rightColumns[index];
-
-        w.rightColumns[me.columnIndex].width = cellWidth;
-        domColumns = w.rightBody.el.select('.' + columnCls);
-        domHeaderCells = w.rightHeader.el.select('.' + cellHeaderCls);
-        domColumns.item(index).css('width', cellWidth + 'px');
-
-        var i = me.columnIndex + 1,
-          iL = domHeaderCells.length,
-          _i = 0,
-          _iL = i;
-
-        for(;_i<_iL;_i++){
-          var domHeaderCell = domHeaderCells.item(_i),
-            groupIndex = domHeaderCell.attr('group-index');
-
-          if(groupIndex){
-            ignoreGroupIndexes[groupIndex] = true;
-          }
-        }
-
-        for(;i<iL;i++){
-          var domColumnEl = domColumns.item(i),
-            domHeaderCell = domHeaderCells.item(i);
-
-          domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
-
-          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
-          else{
-            domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
-          }
-        }
-
-        rightEl.css('width', parseInt(rightEl.css('width')) - delta - leftFix);
-        rightHeaderEl.css('width', parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px');
-
-        if(w.columns.length){
-          centerEl.css('width', newCenterWidth);
-          centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
-          centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
-        }
-        break;
-    }
-
-    var cellEl = Fancy.get(me.cell),
-      groupName = cellEl.attr('group-index'),
-      groupCell;
-
-    cellEl.css('width', cellWidth + 'px');
-
-    if(groupName){
-      groupCell = w.el.select("[index='" + groupName + "']");
-      groupCell.css('width', parseInt(groupCell.css('width')) - delta - leftFix);
-    }
-    else {
-      for (var p in groupMove) {
-        groupCell = w.el.select("[index='" + p + "']");
-        groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+        me.rightEl.css({
+          display: 'block',
+          left: (left + cellEl.width() - 1) + 'px'
+        });
       }
-    }
+      else {
+        me.leftEl.css({
+          display: 'block',
+          left: left + 'px'
+        });
 
-    w.fire('columnresize', {
-      cell: cellEl.dom,
-      width: cellWidth
-    });
+        me.rightEl.css({
+          display: 'block',
+          left: left + cellWidth + 'px'
+        });
+      }
 
-    if(/sparkline/.test(column.type) ){
-      switch(me.activeSide) {
+      me.cellWidth = cellWidth;
+    },
+    /*
+     *
+     */
+    onDocMouseUp: function () {
+      var me = this,
+        w = me.widget;
+
+      if (w.startResizing === false) {
+        return;
+      }
+
+      me.leftEl.css({
+        display: 'none'
+      });
+
+      me.rightEl.css({
+        display: 'none'
+      });
+
+      me.fixSidesWidth();
+      w.startResizing = false;
+      me.moveLeftResizer = false;
+      delete me.cellWidth;
+    },
+    /*
+     *
+     */
+    fixSidesWidth: function () {
+      var me = this,
+        w = me.widget,
+        cellWidth = me.cellWidth,
+        index = me.columnIndex,
+        delta = me.deltaWidth,
+        domColumns,
+        domHeaderCells,
+        leftEl = w.leftEl,
+        centerEl = w.centerEl,
+        rightEl = w.rightEl,
+        leftHeaderEl = w.leftHeader.el,
+        centerHeaderEl = w.header.el,
+        rightHeaderEl = w.rightHeader.el,
+        centerBodyEl = w.body.el,
+        groupMove = {},
+        ignoreGroupIndexes = {},
+        column,
+        newCenterWidth,
+        minCenterWidth = me.minCenterWidth;
+
+      if (cellWidth === undefined) {
+        return;
+      }
+
+      var leftFix = 1;
+      if (F.nojQuery) {
+        leftFix = 0;
+      }
+
+      switch (me.activeSide) {
         case 'left':
-          w.leftBody.updateRows(undefined, index);
+          newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+
+          if (newCenterWidth < minCenterWidth) {
+            return;
+          }
+
+          column = w.leftColumns[index];
+
+          w.leftColumns[me.columnIndex].width = cellWidth;
+          domColumns = w.leftBody.el.select('.' + GRID_COLUMN_CLS);
+          domHeaderCells = w.leftHeader.el.select('.' + GRID_HEADER_CELL_CLS);
+          domColumns.item(index).css('width', cellWidth + 'px');
+
+          var i = me.columnIndex + 1,
+            iL = domHeaderCells.length,
+            _i = 0,
+            _iL = i;
+
+          for (; _i < _iL; _i++) {
+            var domHeaderCell = domHeaderCells.item(_i),
+              groupIndex = domHeaderCell.attr('group-index');
+
+            if (groupIndex) {
+              ignoreGroupIndexes[groupIndex] = true;
+            }
+          }
+
+          for (; i < iL; i++) {
+            var domColumnEl = domColumns.item(i),
+              domHeaderCell = domHeaderCells.item(i);
+
+            domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
+            }
+            else {
+              domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
+            }
+          }
+
+          leftEl.css('width', parseInt(leftEl.css('width')) - delta - leftFix);
+          leftHeaderEl.css('width', parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px');
+
+          if (w.columns.length) {
+            centerEl.css('left', parseInt(centerEl.css('left')) - delta - leftFix);
+            centerEl.css('width', newCenterWidth);
+            centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
+            centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
+          }
+
           break;
         case 'center':
-          w.body.updateRows(undefined, index);
+          column = w.columns[index];
+          w.columns[me.columnIndex].width = cellWidth;
+          domColumns = w.body.el.select('.' + GRID_COLUMN_CLS);
+          domHeaderCells = w.header.el.select('.' + GRID_HEADER_CELL_CLS);
+          domColumns.item(index).css('width', cellWidth + 'px');
+
+          var i = me.columnIndex + 1,
+            iL = domHeaderCells.length,
+            _i = 0,
+            _iL = i;
+
+          for (; _i < _iL; _i++) {
+            var domHeaderCell = domHeaderCells.item(_i),
+              groupIndex = domHeaderCell.attr('group-index');
+
+            if (groupIndex) {
+              ignoreGroupIndexes[groupIndex] = true;
+            }
+          }
+
+          for (; i < iL; i++) {
+            var domColumnEl = domColumns.item(i),
+              domHeaderCell = domHeaderCells.item(i),
+              left = parseInt(domColumnEl.css('left')) - delta - leftFix,
+              _left = parseInt(domHeaderCell.css('left')) - delta - leftFix;
+
+            if (domHeaderCell.attr('group-index')) {
+              groupMove[domHeaderCell.attr('group-index')] = {};
+            }
+
+            domColumnEl.css('left', left);
+
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
+            }
+            else {
+              domHeaderCell.css('left', _left);
+            }
+          }
+
           break;
         case 'right':
-          w.rightBody.updateRows(undefined, index);
+          newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+
+          if (newCenterWidth < minCenterWidth) {
+            return;
+          }
+
+          column = w.rightColumns[index];
+
+          w.rightColumns[me.columnIndex].width = cellWidth;
+          domColumns = w.rightBody.el.select('.' + GRID_COLUMN_CLS);
+          domHeaderCells = w.rightHeader.el.select('.' + GRID_HEADER_CELL_CLS);
+          domColumns.item(index).css('width', cellWidth + 'px');
+
+          var i = me.columnIndex + 1,
+            iL = domHeaderCells.length,
+            _i = 0,
+            _iL = i;
+
+          for (; _i < _iL; _i++) {
+            var domHeaderCell = domHeaderCells.item(_i),
+              groupIndex = domHeaderCell.attr('group-index');
+
+            if (groupIndex) {
+              ignoreGroupIndexes[groupIndex] = true;
+            }
+          }
+
+          for (; i < iL; i++) {
+            var domColumnEl = domColumns.item(i),
+              domHeaderCell = domHeaderCells.item(i);
+
+            domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
+
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
+            }
+            else {
+              domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
+            }
+          }
+
+          rightEl.css('width', parseInt(rightEl.css('width')) - delta - leftFix);
+          rightHeaderEl.css('width', parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px');
+
+          if (w.columns.length) {
+            centerEl.css('width', newCenterWidth);
+            centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
+            centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
+          }
           break;
       }
+
+      var cellEl = G(me.cell),
+        groupName = cellEl.attr('group-index'),
+        groupCell;
+
+      cellEl.css('width', cellWidth + 'px');
+
+      if (groupName) {
+        groupCell = w.el.select("[index='" + groupName + "']");
+        groupCell.css('width', parseInt(groupCell.css('width')) - delta - leftFix);
+      }
+      else {
+        for (var p in groupMove) {
+          groupCell = w.el.select("[index='" + p + "']");
+          groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+        }
+      }
+
+      w.fire('columnresize', {
+        cell: cellEl.dom,
+        width: cellWidth
+      });
+
+      if (/sparkline/.test(column.type)) {
+        switch (me.activeSide) {
+          case 'left':
+            w.leftBody.updateRows(undefined, index);
+            break;
+          case 'center':
+            w.body.updateRows(undefined, index);
+            break;
+          case 'right':
+            w.rightBody.updateRows(undefined, index);
+            break;
+        }
+      }
+    },
+    /*
+     * @param {Object} o
+     * @return {Fancy.Element}
+     */
+    getPrevCell: function (o) {
+      var me = this,
+        w = me.widget,
+        header;
+
+      switch (o.side) {
+        case 'left':
+          header = w.leftHeader;
+          break;
+        case 'center':
+          header = w.header;
+          break;
+        case 'right':
+          header = w.rightHeader;
+          break;
+      }
+
+      return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index - 1).dom;
+    },
+    /*
+     * @param {Object} o
+     * @return {HTMLElement}
+     */
+    getCell: function (o) {
+      var me = this,
+        w = me.widget,
+        header;
+
+      switch (o.side) {
+        case 'left':
+          header = w.leftHeader;
+          break;
+        case 'center':
+          header = w.header;
+          break;
+        case 'right':
+          header = w.rightHeader;
+          break;
+      }
+
+      return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index).dom;
+    },
+    /*
+     * @param {String} side
+     */
+    updateColumnsWidth: function (side) {
+      var me = this,
+        w = me.widget,
+        side = side || 'center',
+        header = w.getHeader(side),
+        columns = w.getColumns(side),
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        me.setColumnWidth(i, column.width, side);
+      }
+
+      header.setCellsPosition();
+    },
+    /*
+     * @param {Number} index
+     * @param {Number} width
+     * @param {String} side
+     */
+    setColumnWidth: function (index, width, side) {
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(side),
+        header = w.getHeader(side),
+        body = w.getBody(side),
+        columnEl = G(body.getDomColumn(index)),
+        headerCellEl = header.getCell(index),
+        nextHeaderCellEl,
+        nextColumnEl,
+        left = parseInt(columnEl.css('left'));
+
+      columnEl.css('width', width);
+      headerCellEl.css('width', width);
+
+      if (columns[index + 1]) {
+        left += width;
+
+        nextColumnEl = G(body.getDomColumn(index + 1));
+        nextColumnEl.css('left', left);
+
+        nextHeaderCellEl = header.getCell(index + 1);
+        nextHeaderCellEl.css('left', left);
+      }
     }
-  },
-  /*
-   * @param {Object} o
-   * @return {Fancy.Element}
-   */
-  getPrevCell: function(o){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      header;
+  });
 
-    switch(o.side){
-      case 'left':
-        header = w.leftHeader;
-        break;
-      case 'center':
-        header = w.header;
-        break;
-      case 'right':
-        header = w.rightHeader;
-        break;
-    }
-
-    return header.el.select('.' + cellHeaderCls).item(o.index - 1).dom;
-  },
-  /*
-   * @param {Object} o
-   * @return {HTMLElement}
-   */
-  getCell: function(o){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      header;
-
-    switch(o.side){
-      case 'left':
-        header = w.leftHeader;
-        break;
-      case 'center':
-        header = w.header;
-        break;
-      case 'right':
-        header = w.rightHeader;
-        break;
-    }
-
-    return header.el.select('.' + cellHeaderCls).item(o.index).dom;
-  },
-  /*
-   * @param {String} side
-   */
-  updateColumnsWidth: function(side){
-    var me = this,
-      w = me.widget,
-      side = side || 'center',
-      header = w.getHeader(side),
-      columns = w.getColumns(side),
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      me.setColumnWidth(i, column.width, side);
-    }
-
-    header.setCellsPosition();
-  },
-  /*
-   * @param {Number} index
-   * @param {Number} width
-   * @param {String} side
-   */
-  setColumnWidth: function(index, width, side){
-    var me = this,
-      w = me.widget,
-      columns = w.getColumns(side),
-      header = w.getHeader(side),
-      body = w.getBody(side),
-      columnEl = Fancy.get(body.getDomColumn(index)),
-      headerCellEl = header.getCell(index),
-      nextHeaderCellEl,
-      nextColumnEl,
-      left = parseInt(columnEl.css('left'));
-
-    columnEl.css('width', width);
-    headerCellEl.css('width', width);
-
-    if(columns[index + 1]){
-      left += width;
-
-      nextColumnEl = Fancy.get(body.getDomColumn(index + 1));
-      nextColumnEl.css('left', left);
-
-      nextHeaderCellEl = header.getCell(index + 1);
-      nextHeaderCellEl.css('left', left);
-    }
-  }
-});/*
+})();/*
  * @class Fancy.grid.plugin.Licence
  * @extends Fancy.Plugin
  */
@@ -5668,19 +5680,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -6091,3130 +6098,3404 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
     return md5(string, key, raw);
   }
-});Fancy.ns('Fancy.grid.body.mixin');
-
-/*
+});/*
  * @mixin Fancy.grid.body.mixin.Updater
  */
-Fancy.grid.body.mixin.Updater = function() {};
+(function() {
+  //SHORTCUTS
+  var F = Fancy;
 
-Fancy.grid.body.mixin.Updater.prototype = {
+  // CONSTANTS
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_CELL_EVEN_CLS = F.GRID_CELL_EVEN_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
+  var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
+  var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
+  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  var GRID_CELL_DIRTY_CLS = F.GRID_CELL_DIRTY_CLS;
+  var GRID_CELL_DIRTY_EL_CLS = F.GRID_CELL_DIRTY_EL_CLS;
+  var GRID_PSEUDO_CELL_CLS = F.GRID_PSEUDO_CELL_CLS;
+  var GRID_EMPTY_CLS =  F.GRID_EMPTY_CLS;
+  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
+  var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
+  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS =  F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
+  var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
+  var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
+  var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+
+  F.ns('Fancy.grid.body.mixin');
+
   /*
-   *
+   * @mixin Fancy.grid.body.mixin.Updater
    */
-  update: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
+  F.grid.body.mixin.Updater = function () {};
 
-    me.checkDomColumns();
+  F.grid.body.mixin.Updater.prototype = {
+    /*
+     *
+     */
+    update: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-    if(s.loading){
-      return;
-    }
+      me.checkDomColumns();
 
-    me.checkDomCells();
-    me.updateRows();
-
-    me.showEmptyText();
-  },
-  /*
-   *
-   */
-  checkDomColumns: function(){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columnTextCls = w.columnTextCls,
-      columnWithEllipsisCls = w.columnWithEllipsisCls,
-      columnOrderCls = w.columnOrderCls,
-      columnSelectCls = w.columnSelectCls,
-      numExistedColumn = me.el.select('.' + columnCls).length,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length;
-
-    if(iL <= numExistedColumn){
-      return;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i],
-        width = column.width,
-        el = Fancy.get(document.createElement('div'));
-
-      if(column.hidden){
-        el.css('display', 'none');
+      if (s.loading) {
+        return;
       }
 
-      el.addCls(columnCls);
-      el.attr('grid', w.id);
+      me.checkDomCells();
+      me.updateRows();
 
-      if(column.index === '$selected'){
-        el.addCls(columnSelectCls);
+      me.showEmptyText();
+    },
+    /*
+     *
+     */
+    checkDomColumns: function () {
+      var me = this,
+        w = me.widget,
+        numExistedColumn = me.el.select('.' + GRID_COLUMN_CLS).length,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length;
+
+      if (iL <= numExistedColumn) {
+        return;
       }
-      else{
-        switch(column.type){
-          case 'order':
-            el.addCls(columnOrderCls);
-            break;
+
+      for (; i < iL; i++) {
+        var column = columns[i],
+          width = column.width,
+          el = F.get(document.createElement('div'));
+
+        if (column.hidden) {
+          el.css('display', 'none');
         }
-      }
 
-      if(column.cls){
-        el.addCls(column.cls);
-      }
+        el.addCls(GRID_COLUMN_CLS);
+        el.attr('grid', w.id);
 
-      if(column.type === 'text'){
-        el.addCls(columnTextCls);
-      }
-
-      el.css({
-        width: width + 'px'
-      });
-      el.attr('index', i);
-
-      if(column.cellAlign){
-        el.css('text-align', column.cellAlign);
-      }
-
-      if(column.ellipsis === true){
-        switch(column.type){
-          case 'string':
-          case 'text':
-          case 'number':
-            el.addCls(columnWithEllipsisCls);
-            break;
+        if (column.index === '$selected') {
+          el.addCls(GRID_COLUMN_SELECT_CLS);
         }
-      }
+        else {
+          switch (column.type) {
+            case 'order':
+              el.addCls(GRID_COLUMN_ORDER_CLS);
+              break;
+          }
+        }
 
-      me.el.dom.appendChild(el.dom);
-    }
+        if (column.cls) {
+          el.addCls(column.cls);
+        }
 
-    me.fire('adddomcolumns');
-  },
-  /*
-   * @param {number} indexOrder
-   */
-  checkDomCells: function(indexOrder){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      s = w.store,
-      i = 0,
-      iL = s.dataView.length,
-      j = 0,
-      jL,
-      columns,
-      column;
+        if (column.type === 'text') {
+          el.addCls(GRID_COLUMN_TEXT_CLS);
+        }
 
-    switch(me.side){
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
-
-    jL = columns.length;
-
-    var columsDom = me.el.select('.'+columnCls),
-      dataLength = s.getLength(),
-      cellTpl = me.cellTpl;
-
-    if(w.cellWrapper){
-      cellTpl = me.cellWrapperTpl;
-    }
-
-    if(indexOrder !== undefined){
-      j = indexOrder;
-      jL = indexOrder;
-    }
-
-    for(;j<jL;j++){
-      column = columns[j];
-      var columnDom = columsDom.item(j);
-      i = 0;
-      var delta = dataLength - columnDom.select('.'+cellCls).length;
-      i = iL - delta;
-      for(;i<iL;i++){
-        var cellHTML = cellTpl.getHTML({});
-
-        var el = Fancy.get(document.createElement('div'));
         el.css({
-          height: w.cellHeight + 'px'
+          width: width + 'px'
         });
-        el.addCls(me.cellCls);
         el.attr('index', i);
 
-        if(i%2 !== 0 && w.striped){
-          el.addCls(w.cellEvenCls)
+        if (column.cellAlign) {
+          el.css('text-align', column.cellAlign);
         }
-        el.update(cellHTML);
-        columnDom.dom.appendChild(el.dom);
-      }
 
-      if(w.nativeScroller && (me.side === 'left' || me.side === 'right')){
-        columnDom.select('.' + me.pseudoCellCls).destroy();
-
-        var cellHTML = cellTpl.getHTML({
-          cellValue: '&nbsp;'
-        });
-
-        var el = Fancy.get(document.createElement('div'));
-        el.css({
-          height: w.cellHeight + 'px'
-        });
-        el.addCls(me.pseudoCellCls);
-
-        el.update(cellHTML);
-        columnDom.dom.appendChild(el.dom);
-      }
-    }
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {Number} columnIndex
-   */
-  updateRows: function(rowIndex, columnIndex) {
-    var me = this,
-      w = me.widget,
-      i = 0,
-      columns,
-      iL;
-
-    if (rowIndex === undefined) {
-      me.clearDirty();
-    }
-    else{
-      me.clearDirty(rowIndex);
-    }
-
-    switch (me.side) {
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
-
-    iL = columns.length;
-
-    if(columnIndex !== undefined){
-      i = columnIndex;
-      iL = columnIndex + 1;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      switch(column.type){
-        case 'string':
-        case 'number':
-        case 'combo':
-        case 'action':
-        case 'text':
-        case 'date':
-        case 'currency':
-          me.renderUniversal(i, rowIndex);
-          break;
-        case 'order':
-          me.renderOrder(i, rowIndex);
-          break;
-        case 'expand':
-          me.renderExpand(i, rowIndex);
-          break;
-        case 'select':
-          me.renderSelect(i, rowIndex);
-          break;
-        case 'color':
-          me.renderColor(i, rowIndex);
-          break;
-        case 'checkbox':
-          me.renderCheckbox(i, rowIndex);
-          break;
-        case 'image':
-          me.renderImage(i, rowIndex);
-          break;
-        case 'sparklineline':
-          me.renderSparkLine(i, rowIndex, 'line');
-          break;
-        case 'sparklinebar':
-          me.renderSparkLine(i, rowIndex, 'bar');
-          break;
-        case 'sparklinetristate':
-          me.renderSparkLine(i, rowIndex, 'tristate');
-          break;
-        case 'sparklinediscrete':
-          me.renderSparkLine(i, rowIndex, 'discrete');
-          break;
-        case 'sparklinebullet':
-          me.renderSparkLine(i, rowIndex, 'bullet');
-          break;
-        case 'sparklinepie':
-          me.renderSparkLine(i, rowIndex, 'pie');
-          break;
-        case 'sparklinebox':
-          me.renderSparkLine(i, rowIndex, 'box');
-          break;
-        case 'circle':
-          me.renderCircle(i, rowIndex);
-          break;
-        case 'progressdonut':
-          me.renderProgressDonut(i, rowIndex);
-          break;
-        case 'progressbar':
-          me.renderProgressBar(i, rowIndex);
-          break;
-        case 'hbar':
-          me.renderHBar(i, rowIndex);
-          break;
-        case 'grossloss':
-          me.renderGrossLoss(i, rowIndex);
-          break;
-        default:
-          throw new Error('[FancyGrid error] - not existed column type ' + column.type);
-          break;
-      }
-    }
-
-    me.removeNotUsedCells();
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderUniversal: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      lang = w.lang,
-      emptyValue = w.emptyValue,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key,
-      columsDom = me.el.select('.'+columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      currencySign = lang.currencySign;
-
-    if(column.key !== undefined){
-      key = column.key;
-    }
-    else if(column.index !== undefined){
-      key = column.index;
-    }
-    else{
-      key = column.type === 'action'? 'none' : undefined;
-    }
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        id = s.getId(j),
-        inner = cellsDomInner.item(j),
-        cell = cellsDom.item(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j),
-          inner: inner,
-          cell: cell
-        },
-        value,
-        dirty = false;
-
-      if(s.changed[o.id] && s.changed[o.id][column.index]){
-        dirty = true;
-      }
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      switch(column.type){
-        case 'currency':
-          if(value !== ''){
-            value = currencySign + value;
+        if (column.ellipsis === true) {
+          switch (column.type) {
+            case 'string':
+            case 'text':
+            case 'number':
+              el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
+              break;
           }
-          o.value = value;
+        }
+
+        me.el.dom.appendChild(el.dom);
+      }
+
+      me.fire('adddomcolumns');
+    },
+    /*
+     * @param {number} indexOrder
+     */
+    checkDomCells: function (indexOrder) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        i = 0,
+        iL = s.dataView.length,
+        j = 0,
+        jL,
+        columns,
+        column;
+
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
           break;
       }
 
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      jL = columns.length;
+
+      var columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        dataLength = s.getLength(),
+        cellTpl = me.cellTpl;
+
+      if (w.cellWrapper) {
+        cellTpl = me.cellWrapperTpl;
       }
 
-      switch(value){
-        case '':
-        case undefined:
-          value = emptyValue;
+      if (indexOrder !== undefined) {
+        j = indexOrder;
+        jL = indexOrder;
+      }
+
+      for (; j < jL; j++) {
+        column = columns[j];
+        var columnDom = columsDom.item(j);
+        i = 0;
+        var delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+        i = iL - delta;
+        for (; i < iL; i++) {
+          var cellHTML = cellTpl.getHTML({});
+
+          var el = F.get(document.createElement('div'));
+          el.css({
+            height: w.cellHeight + 'px'
+          });
+          el.addCls(GRID_CELL_CLS);
+          el.attr('index', i);
+
+          if (i % 2 !== 0 && w.striped) {
+            el.addCls(GRID_CELL_EVEN_CLS)
+          }
+          el.update(cellHTML);
+          columnDom.dom.appendChild(el.dom);
+        }
+
+        if (w.nativeScroller && (me.side === 'left' || me.side === 'right')) {
+          columnDom.select('.' + GRID_PSEUDO_CELL_CLS).destroy();
+
+          var cellHTML = cellTpl.getHTML({
+            cellValue: '&nbsp;'
+          });
+
+          var el = F.get(document.createElement('div'));
+          el.css({
+            height: w.cellHeight + 'px'
+          });
+          el.addCls(GRID_PSEUDO_CELL_CLS);
+
+          el.update(cellHTML);
+          columnDom.dom.appendChild(el.dom);
+        }
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {Number} columnIndex
+     */
+    updateRows: function (rowIndex, columnIndex) {
+      var me = this,
+        w = me.widget,
+        i = 0,
+        columns,
+        iL;
+
+      if (rowIndex === undefined) {
+        me.clearDirty();
+      }
+      else {
+        me.clearDirty(rowIndex);
+      }
+
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
           break;
       }
 
-      if(w.cellStylingCls){
-        me.clearCls(cell);
+      iL = columns.length;
+
+      if (columnIndex !== undefined) {
+        i = columnIndex;
+        iL = columnIndex + 1;
       }
 
-      if(o.cls){
-        cell.addCls(o.cls);
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        switch (column.type) {
+          case 'string':
+          case 'number':
+          case 'combo':
+          case 'action':
+          case 'text':
+          case 'date':
+          case 'currency':
+            me.renderUniversal(i, rowIndex);
+            break;
+          case 'order':
+            me.renderOrder(i, rowIndex);
+            break;
+          case 'expand':
+            me.renderExpand(i, rowIndex);
+            break;
+          case 'select':
+            me.renderSelect(i, rowIndex);
+            break;
+          case 'color':
+            me.renderColor(i, rowIndex);
+            break;
+          case 'checkbox':
+            me.renderCheckbox(i, rowIndex);
+            break;
+          case 'image':
+            me.renderImage(i, rowIndex);
+            break;
+          case 'sparklineline':
+            me.renderSparkLine(i, rowIndex, 'line');
+            break;
+          case 'sparklinebar':
+            me.renderSparkLine(i, rowIndex, 'bar');
+            break;
+          case 'sparklinetristate':
+            me.renderSparkLine(i, rowIndex, 'tristate');
+            break;
+          case 'sparklinediscrete':
+            me.renderSparkLine(i, rowIndex, 'discrete');
+            break;
+          case 'sparklinebullet':
+            me.renderSparkLine(i, rowIndex, 'bullet');
+            break;
+          case 'sparklinepie':
+            me.renderSparkLine(i, rowIndex, 'pie');
+            break;
+          case 'sparklinebox':
+            me.renderSparkLine(i, rowIndex, 'box');
+            break;
+          case 'circle':
+            me.renderCircle(i, rowIndex);
+            break;
+          case 'progressdonut':
+            me.renderProgressDonut(i, rowIndex);
+            break;
+          case 'progressbar':
+            me.renderProgressBar(i, rowIndex);
+            break;
+          case 'hbar':
+            me.renderHBar(i, rowIndex);
+            break;
+          case 'grossloss':
+            me.renderGrossLoss(i, rowIndex);
+            break;
+          default:
+            throw new Error('[FancyGrid error] - not existed column type ' + column.type);
+            break;
+        }
       }
 
-      if(dirty && w.dirtyEnabled){
-        me.enableCellDirty(cell);
+      me.removeNotUsedCells();
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderUniversal: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        emptyValue = w.emptyValue,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        currencySign = lang.currencySign;
+
+      if (column.key !== undefined) {
+        key = column.key;
+      }
+      else if (column.index !== undefined) {
+        key = column.index;
+      }
+      else {
+        key = column.type === 'action' ? 'none' : undefined;
       }
 
-      cell.css(o.style);
-
-      if(!o.column.widget){
-        inner.update(value);
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
       }
-    }
-  },
-  /*
-   * @param {Number} i
-   */
-  renderOrder: function(i){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      cellInnerCls = w.cellInnerCls,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + cellInnerCls),
-      j = 0,
-      jL = s.getLength(),
-      plusValue = 0;
-
-    if(w.paging){
-      plusValue += s.showPage * s.pageSize;
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        id = s.getId(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j)
-        },
-        value = j + 1 + plusValue;
-
-      o.value = value;
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      var cell = cellsDom.item(j);
-      if(w.cellStylingCls){
-        me.clearCls(cell);
-      }
-
-      if(o.cls){
-        cell.addCls(o.cls);
-      }
-
-      cell.css(o.style);
-      cellsDomInner.item(j).update(value);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderExpand: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++) {
-      var cellInnerEl = cellsDomInner.item(j),
-        checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-        checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0,
-        dataItem = w.get(j),
-        dataItemId = dataItem.id;
-
-      if(isCheckBoxInside === false){
-        new Fancy.CheckBox({
-          renderTo: cellsDomInner.item(j).dom,
-          renderId: true,
-          value: false,
-          label: false,
-          expander: true,
-          style: {
-            padding: '0px',
-            display: 'inline-block'
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          id = s.getId(j),
+          inner = cellsDomInner.item(j),
+          cell = cellsDom.item(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j),
+            inner: inner,
+            cell: cell
           },
-          events: [{
-            change: function(checkbox, value){
-              rowIndex = checkbox.el.parent().parent().attr('index');
+          value,
+          dirty = false;
 
-              if(value){
-                w.expander.expand(rowIndex);
-              }
-              else{
-                w.expander.collapse(rowIndex);
-              }
+        if (s.changed[o.id] && s.changed[o.id][column.index]) {
+          dirty = true;
+        }
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
+
+        switch (column.type) {
+          case 'currency':
+            if (value !== '') {
+              value = currencySign + value;
             }
-          }]
-        });
-      }
-      else{
-        checkBoxId = checkBox.dom.id;
-        checkBox = Fancy.getWidget(checkBoxId);
-
-        if(w.expander._expandedIds[dataItemId]){
-          checkBox.set(true, false);
+            o.value = value;
+            break;
         }
-        else{
-          checkBox.set(false, false);
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        switch (value) {
+          case '':
+          case undefined:
+            value = emptyValue;
+            break;
+        }
+
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        if (dirty && w.dirtyEnabled) {
+          me.enableCellDirty(cell);
+        }
+
+        cell.css(o.style);
+
+        if (!o.column.widget) {
+          inner.update(value);
         }
       }
-    }
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  clearCls: function(cell){
-    var me = this,
-      w = me.widget,
-      cellStylingCls = w.cellStylingCls,
-      i = 0,
-      iL = cellStylingCls.length;
+    },
+    /*
+     * @param {Number} i
+     */
+    renderOrder: function (i) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j = 0,
+        jL = s.getLength(),
+        plusValue = 0;
 
-    for(;i<iL;i++){
-      cell.removeCls(cellStylingCls[i]);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderColor: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
+      if (w.paging) {
+        plusValue += s.showPage * s.pageSize;
       }
 
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j)
+          },
+          value = j + 1 + plusValue;
+
+        o.value = value;
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        var cell = cellsDom.item(j);
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        cell.css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderExpand: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      o.value = value;
+      for (; j < jL; j++) {
+        var cellInnerEl = cellsDomInner.item(j),
+          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBoxId,
+          isCheckBoxInside = checkBox.length !== 0,
+          dataItem = w.get(j),
+          dataItemId = dataItem.id;
 
-      var cell = cellsDom.item(j);
-      cell.css(o.style);
-
-      var cellInner = cell.select('.' + w.cellInnerCls);
-      cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderCombo: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        o = {
-          rowIndex: j,
-          value: value,
-          style: {}
-        };
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-      cellsDomInner.item(j).update(value);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderCheckbox: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++) {
-      var data = s.get(j),
-        value = s.get(j, key),
-        cellInnerEl = cellsDomInner.item(j),
-        checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-        checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0,
-        dirty = false,
-        id = s.getId(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j),
-          value: value
-        };
-
-      if(s.changed[o.id] && s.changed[o.id][column.index]){
-        dirty = true;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      if(isCheckBoxInside === false){
-
-        if(!o.stopped){
-          var editable = true;
-
-          if(w.rowEdit){
-            editable = false;
-          }
-
-          cellsDomInner.item(j).update('');
-
-          new Fancy.CheckBox({
+        if (isCheckBoxInside === false) {
+          new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,
-            value: value,
+            value: false,
             label: false,
-            editable: editable,
+            expander: true,
             style: {
               padding: '0px',
               display: 'inline-block'
             },
             events: [{
-              beforechange: function(checkbox){
-                if(column.index === '$selected'){
-                  return;
-                }
+              change: function (checkbox, value) {
+                rowIndex = checkbox.el.parent().parent().attr('index');
 
-                if(column.editable !== true){
-                  checkbox.canceledChange = true;
+                if (value) {
+                  w.expander.expand(rowIndex);
                 }
-              }
-            },{
-              change: function(checkbox, value){
-                if(column.index === '$selected'){
-                  return;
+                else {
+                  w.expander.collapse(rowIndex);
                 }
-
-                w.celledit.checkBoxChangedValue = value;
               }
             }]
           });
         }
-        else{
-          cellsDomInner.item(j).update(value);
+        else {
+          checkBoxId = checkBox.dom.id;
+          checkBox = F.getWidget(checkBoxId);
+
+          if (w.expander._expandedIds[dataItemId]) {
+            checkBox.set(true, false);
+          }
+          else {
+            checkBox.set(false, false);
+          }
         }
       }
-      else{
-        checkBoxId = checkBox.dom.id;
-        checkBox = Fancy.getWidget(checkBoxId);
-        if(o.stopped){
-          checkBox.destroy();
-          cellsDomInner.item(j).update(value);
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    clearCls: function (cell) {
+      var w = this.widget;
+
+      F.each(w.cellStylingCls, function (cls) {
+        cell.removeCls(cls);
+      });
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderColor: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
         }
         else {
+          value = s.get(j, key);
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        o.value = value;
+
+        var cell = cellsDom.item(j);
+        cell.css(o.style);
+
+        var cellInner = cell.select('.' + GRID_CELL_INNER_CLS);
+        cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderCombo: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          o = {
+            rowIndex: j,
+            value: value,
+            style: {}
+          };
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        cellsDom.item(j).css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderCheckbox: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          value = s.get(j, key),
+          cellInnerEl = cellsDomInner.item(j),
+          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBoxId,
+          isCheckBoxInside = checkBox.length !== 0,
+          dirty = false,
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j),
+            value: value
+          };
+
+        if (s.changed[o.id] && s.changed[o.id][column.index]) {
+          dirty = true;
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        if (isCheckBoxInside === false) {
+
+          if (!o.stopped) {
+            var editable = true;
+
+            if (w.rowEdit) {
+              editable = false;
+            }
+
+            cellsDomInner.item(j).update('');
+
+            new F.CheckBox({
+              renderTo: cellsDomInner.item(j).dom,
+              renderId: true,
+              value: value,
+              label: false,
+              editable: editable,
+              style: {
+                padding: '0px',
+                display: 'inline-block'
+              },
+              events: [{
+                beforechange: function (checkbox) {
+                  if (column.index === '$selected') {
+                    return;
+                  }
+
+                  if (column.editable !== true) {
+                    checkbox.canceledChange = true;
+                  }
+                }
+              }, {
+                change: function (checkbox, value) {
+                  if (column.index === '$selected') {
+                    return;
+                  }
+
+                  w.celledit.checkBoxChangedValue = value;
+                }
+              }]
+            });
+          }
+          else {
+            cellsDomInner.item(j).update(value);
+          }
+        }
+        else {
+          checkBoxId = checkBox.dom.id;
+          checkBox = F.getWidget(checkBoxId);
+          if (o.stopped) {
+            checkBox.destroy();
+            cellsDomInner.item(j).update(value);
+          }
+          else {
+            checkBox.set(value, false);
+          }
+        }
+
+        if (dirty) {
+          var cell = cellsDom.item(j);
+          me.enableCellDirty(cell);
+        }
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderSelect: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          id = s.get(j, 'id'),
+          cellInnerEl = cellsDomInner.item(j),
+          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBoxId,
+          isCheckBoxInside = checkBox.length !== 0;
+
+        if (w.selection.memory) {
+          if (w.selection.memory.all && !w.selection.memory.except[id]) {
+            value = true;
+            w.selection.domSelectRow(j);
+          }
+          else if (w.selection.memory.selected[id]) {
+            value = true;
+            w.selection.domSelectRow(j);
+          }
+          else {
+            value = false;
+            w.selection.domDeSelectRow(j);
+          }
+        }
+
+        if (isCheckBoxInside === false) {
+          new F.CheckBox({
+            renderTo: cellsDomInner.item(j).dom,
+            renderId: true,
+            value: value,
+            label: false,
+            stopIfCTRL: true,
+            style: {
+              padding: '0px',
+              display: 'inline-block'
+            }
+          });
+        }
+        else {
+          checkBoxId = checkBox.dom.id;
+          checkBox = F.getWidget(checkBoxId);
           checkBox.set(value, false);
         }
       }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderImage: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
 
-      if(dirty){
-        var cell = cellsDom.item(j);
-        me.enableCellDirty(cell);
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
       }
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderSelect: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        id = s.get(j, 'id'),
-        cellInnerEl = cellsDomInner.item(j),
-        checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-        checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0;
-
-      if(w.selection.memory){
-        if( w.selection.memory.all && !w.selection.memory.except[id]){
-          value = true;
-          w.selection.domSelectRow(j);
-        }
-        else if(w.selection.memory.selected[id]){
-          value = true;
-          w.selection.domSelectRow(j);
-        }
-        else{
-          value = false;
-          w.selection.domDeSelectRow(j);
-        }
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      if(isCheckBoxInside === false){
-        new Fancy.CheckBox({
-          renderTo: cellsDomInner.item(j).dom,
-          renderId: true,
-          value: value,
-          label: false,
-          stopIfCTRL: true,
-          style: {
-            padding: '0px',
-            display: 'inline-block'
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          data = s.get(j),
+          o = {
+            rowIndex: j,
+            value: value,
+            data: data,
+            style: {}
+          },
+          attr = '';
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        if (o.attr) {
+          for (var p in o.attr) {
+            attr += p + '="' + o.attr[p] + '"';
           }
+        }
+
+        value = '<img ' + attr + ' src="' + o.value + '">';
+
+        cellsDom.item(j).css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     * @param {String} type
+     */
+    renderSparkLine: function (i, rowIndex, type) {
+      var me = this,
+        w = me.widget,
+        cellHeight = w.cellHeight,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columnWidth = column.width,
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        _sparkConfig = column.sparkConfig || {};
+
+      columnDom.addCls(GRID_COLUMN_SPARKLINE_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      var sparkHeight = cellHeight - 1,
+        sparkWidth = columnWidth - 20,
+        widthName;
+
+      switch (type) {
+        case 'line':
+        case 'pie':
+        case 'box':
+          widthName = 'width';
+          break;
+        case 'bullet':
+          widthName = 'width';
+          sparkHeight -= 11;
+          columnDom.addCls(GRID_COLUMN_SPARKLINE_BULLET_CLS);
+          break;
+        case 'discrete':
+          widthName = 'width';
+          sparkWidth = columnWidth;
+          sparkHeight -= 2;
+          break;
+        case 'bar':
+        case 'tristate':
+          widthName = 'barWidth';
+          break;
+      }
+
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          data = s.get(j),
+          o = {
+            rowIndex: j,
+            value: value,
+            data: data,
+            style: {}
+          };
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        if (F.isArray(column.values)) {
+          var k = 0,
+            kL = column.values.length;
+
+          value = [];
+
+          for (; k < kL; k++) {
+            value.push(s.get(j, column.values[k]));
+          }
+        }
+
+        cellsDom.item(j).css(o.style);
+        var innerDom = cellsDomInner.item(j).dom,
+          sparkConfig = {
+            type: type,
+            fillColor: 'transparent',
+            height: sparkHeight
+          };
+
+        F.apply(sparkConfig, _sparkConfig);
+
+        if (type === 'bar' || type === 'tristate') {
+          sparkWidth = columnWidth - 20;
+          sparkWidth = sparkWidth / value.length;
+        }
+
+        sparkConfig[widthName] = sparkWidth;
+
+        F.$(innerDom).sparkline(value, sparkConfig);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderProgressDonut: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      columnDom.addCls(GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        cellsDom.item(j).css(o.style);
+        var sparkConfig = column.sparkConfig || {},
+          renderTo = cellsDomInner.item(j).dom;
+
+        F.apply(sparkConfig, {
+          renderTo: renderTo,
+          value: value
         });
-      }
-      else{
-        checkBoxId = checkBox.dom.id;
-        checkBox = Fancy.getWidget(checkBoxId);
-        checkBox.set(value, false);
-      }
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderImage: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
 
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        data = s.get(j),
-        o = {
-          rowIndex: j,
-          value: value,
-          data: data,
-          style: {}
-        },
-        attr = '';
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      if(o.attr){
-        for(var p in o.attr){
-          attr += p + '="' + o.attr[p] + '"';
+        if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width) {
+          sparkConfig.size = w.cellHeaderHeight - 3 * 2;
         }
+
+        F.get(renderTo).update('');
+
+        new F.spark.ProgressDonut(sparkConfig);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderGrossLoss: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      columnDom.addCls(GRID_COLUMN_GROSSLOSS_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      value = '<img ' + attr + ' src="' + o.value + '">';
+      var sparkConfig = column.sparkConfig || {};
 
-      cellsDom.item(j).css(o.style);
-      cellsDomInner.item(j).update(value);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   * @param {String} type
-   */
-  renderSparkLine: function(i, rowIndex, type){
-    var me = this,
-      w = me.widget,
-      cellHeight = w.cellHeight,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      columnWidth = column.width,
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      _sparkConfig = column.sparkConfig || {};
-
-    columnDom.addCls(w.columnSparkCls);
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    var sparkHeight = cellHeight - 1,
-      sparkWidth = columnWidth - 20,
-      widthName;
-
-    switch(type){
-      case 'line':
-      case 'pie':
-      case 'box':
-        widthName = 'width';
-        break;
-      case 'bullet':
-        widthName = 'width';
-        sparkHeight -= 11;
-        columnDom.addCls(w.columnSparkBulletCls);
-        break;
-      case 'discrete':
-        widthName = 'width';
-        sparkWidth = columnWidth;
-        sparkHeight -= 2;
-        break;
-      case 'bar':
-      case 'tristate':
-        widthName = 'barWidth';
-        break;
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        data = s.get(j),
-        o = {
-          rowIndex: j,
-          value: value,
-          data: data,
-          style: {}
-        };
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      if (sparkConfig.showOnMax) {
+        sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
       }
 
-      if(Fancy.isArray(column.values)){
-        var k = 0,
-          kL = column.values.length;
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
 
-        value = [];
-
-        for(;k<kL;k++){
-          value.push(s.get(j, column.values[k]));
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
         }
-      }
+        else {
+          value = s.get(j, key);
+        }
 
-      cellsDom.item(j).css(o.style);
-      var innerDom = cellsDomInner.item(j).dom,
-        sparkConfig = {
-          type: type,
-          fillColor: 'transparent',
-          height: sparkHeight
-        };
+        o.value = value;
 
-      Fancy.apply(sparkConfig, _sparkConfig);
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
 
-      if( type === 'bar' || type === 'tristate' ){
-        sparkWidth = columnWidth - 20;
-        sparkWidth = sparkWidth/value.length;
-      }
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
 
-      sparkConfig[widthName] = sparkWidth;
+        cellsDom.item(j).css(o.style);
 
-      Fancy.$(innerDom).sparkline(value, sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderProgressDonut: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    columnDom.addCls(w.columnSparkDonutProgressCls);
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
+        F.apply(sparkConfig, {
+          renderTo: cellsDomInner.item(j).dom,
+          value: value,
           column: column
-        },
-        value;
+        });
 
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
+        new F.spark.GrossLoss(sparkConfig);
       }
-      else{
-        value = s.get(j, key);
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderProgressBar: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        maxValue = 100;
+
+      columnDom.addCls(GRID_COLUMN_PROGRESS_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
       }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-      var sparkConfig = column.sparkConfig || {},
-        renderTo = cellsDomInner.item(j).dom;
-
-      Fancy.apply(sparkConfig, {
-        renderTo: renderTo,
-        value: value
-      });
-
-      if(!sparkConfig.size && !sparkConfig.height && !sparkConfig.width){
-        sparkConfig.size = w.cellHeaderHeight - 3 * 2;
-      }
-
-      Fancy.get( renderTo ).update('');
-
-      new Fancy.spark.ProgressDonut(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderGrossLoss: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    columnDom.addCls(w.columnGrossLossCls);
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    var sparkConfig = column.sparkConfig || {};
-
-    if(sparkConfig.showOnMax){
-      sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
+      var sparkConfig = column.sparkConfig || {};
+      if (sparkConfig.percents === false) {
+        maxValue = Math.max.apply(Math, s.getColumnData(key));
       }
 
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
 
-      cellsDom.item(j).css(o.style);
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
 
-      Fancy.apply(sparkConfig, {
-        renderTo: cellsDomInner.item(j).dom,
-        value: value,
-        column: column
-      });
+        o.value = value;
 
-      new Fancy.spark.GrossLoss(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderProgressBar: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      maxValue = 100;
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
 
-    columnDom.addCls(w.columnProgressCls);
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
 
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
+        cellsDom.item(j).css(o.style);
 
-    var sparkConfig = column.sparkConfig || {};
-    if(sparkConfig.percents === false){
-      maxValue = Math.max.apply(Math, s.getColumnData(key) );
-    }
+        var _renderTo = F.get(cellsDomInner.item(j).dom);
 
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-
-      var _renderTo = Fancy.get(cellsDomInner.item(j).dom);
-
-      if(_renderTo.select('.fancy-grid-column-progress-bar').length){
-        var spark = Fancy.getWidget(_renderTo.select('.fancy-grid-column-progress-bar').item(0).attr('id'));
-        spark.value = value;
-        spark.maxValue = maxValue;
-        spark.update();
-        continue;
-      }
-
-      Fancy.apply(sparkConfig, {
-        renderTo: cellsDomInner.item(j).dom,
-        value: value,
-        column: column,
-        maxValue: maxValue
-      });
-
-      new Fancy.spark.ProgressBar(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderHBar: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.'+ w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      sparkConfig = column.sparkConfig || {},
-      disabled = column.disabled || {};
-
-    columnDom.addCls(w.columnSparkHBarCls);
-
-    var values = {},
-      i = 0,
-      iL,
-      kL,
-      maxItemValue = Number.MIN_VALUE;
-
-    if(Fancy.isArray(column.index)){
-      iL = column.index.length;
-      for(;i<iL;i++){
-        var _key = column.index[i];
-
-        if(disabled[_key]){
+        if (_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).length) {
+          var spark = F.getWidget(_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).item(0).attr('id'));
+          spark.value = value;
+          spark.maxValue = maxValue;
+          spark.update();
           continue;
         }
 
-        values[_key] = s.getColumnData(_key);
+        F.apply(sparkConfig, {
+          renderTo: cellsDomInner.item(j).dom,
+          value: value,
+          column: column,
+          maxValue: maxValue
+        });
 
-        var _maxItemValue = Math.max.apply(Math, values[_key]);
-        if(_maxItemValue > maxItemValue){
-          maxItemValue = _maxItemValue;
-        }
-
-        kL = values[_key].length;
+        new F.spark.ProgressBar(sparkConfig);
       }
-    }
-    else{
-      var data = s.getColumnData(column.index),
-        fields = [];
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderHBar: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        sparkConfig = column.sparkConfig || {},
+        disabled = column.disabled || {};
 
-      iL = data.length;
+      columnDom.addCls(GRID_COLUMN_H_BAR_CLS);
 
-      for(;i<iL;i++){
-        var n = 0,
-          nL = data[i].length;
+      var values = {},
+        i = 0,
+        iL,
+        kL,
+        maxItemValue = Number.MIN_VALUE;
 
-        for(;n<nL;n++){
-          if(disabled[n]){
+      if (F.isArray(column.index)) {
+        iL = column.index.length;
+        for (; i < iL; i++) {
+          var _key = column.index[i];
+
+          if (disabled[_key]) {
             continue;
           }
 
-          values[n] = values[n] || [];
-          values[n].push(data[i][n]);
+          values[_key] = s.getColumnData(_key);
+
+          var _maxItemValue = Math.max.apply(Math, values[_key]);
+          if (_maxItemValue > maxItemValue) {
+            maxItemValue = _maxItemValue;
+          }
+
+          kL = values[_key].length;
         }
-      }
-
-      for(var p in values){
-        var _maxItemValue = Math.max.apply(Math, values[p]);
-        fields.push(p);
-
-        if(_maxItemValue > maxItemValue){
-          maxItemValue = _maxItemValue;
-        }
-
-        kL = values[p].length;
-      }
-
-      if(!column.fields){
-        column.fields = fields;
-      }
-    }
-
-    var sum = [],
-      k = 0;
-
-    for(; k < kL; k++){
-      sum[k] = 0;
-      for (var p in values){
-        if(column.fields && disabled[column.index + '.' +p]){
-          continue;
-        }
-        else if(disabled[p]){
-          continue;
-        }
-
-        sum[k] += values[p][k];
-      }
-    }
-
-    maxValue = Math.max.apply(Math, sum);
-
-    sparkConfig.maxItemValue = maxItemValue;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-
-      var _renderTo = Fancy.get(cellsDomInner.item(j).dom);
-
-      if(_renderTo.select('.fancy-spark-hbar').length){
-        var spark = Fancy.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
-        spark.maxValue = maxValue;
-        spark.maxItemValue = maxItemValue;
-        spark.update(data);
-        continue;
-      }
-
-      Fancy.apply(sparkConfig, {
-        renderTo: cellsDomInner.item(j).dom,
-        value: value,
-        data: data,
-        column: column,
-        maxValue: maxValue,
-        height: w.cellHeight - 1
-      });
-
-      new Fancy.spark.HBar(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderCircle: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      cellHeight = w.cellHeight - 4;
-
-    columnDom.addCls(w.columnSparkCircleCls);
-
-    function pieChart(percentage, size) {
-      //http://jsfiddle.net/da5LN/62/
-
-      var svgns = "http://www.w3.org/2000/svg";
-      var chart = document.createElementNS(svgns, "svg:svg");
-      chart.setAttribute("width", size);
-      chart.setAttribute("height", size);
-      chart.setAttribute("viewBox", "0 0 " + size + " " + size);
-
-      var back = document.createElementNS(svgns, "circle");
-      back.setAttributeNS(null, "cx", size / 2);
-      back.setAttributeNS(null, "cy", size / 2);
-      back.setAttributeNS(null, "r",  size / 2);
-      var color = "#F0F0F0";
-      if (size > 50) {
-        color = "F0F0F0";
-      }
-
-      if(percentage < 0){
-        color = '#F9DDE0';
-      }
-
-      back.setAttributeNS(null, "fill", color);
-      chart.appendChild(back);
-
-      var path = document.createElementNS(svgns, "path");
-      var unit = (Math.PI *2) / 100;
-      var startangle = 0;
-      var endangle = percentage * unit - 0.001;
-      var x1 = (size / 2) + (size / 2) * Math.sin(startangle);
-      var y1 = (size / 2) - (size / 2) * Math.cos(startangle);
-      var x2 = (size / 2) + (size / 2) * Math.sin(endangle);
-      var y2 = (size / 2) - (size / 2) * Math.cos(endangle);
-      var big = 0;
-      if (endangle - startangle > Math.PI) {
-        big = 1;
-      }
-      var d = "M " + (size / 2) + "," + (size / 2) +
-        " L " + x1 + "," + y1 +
-        " A " + (size / 2) + "," + (size / 2) +
-        " 0 " + big + " 1 " +
-        x2 + "," + y2 +
-        " Z";
-
-      path.setAttribute("d", d); // Set this path
-      if(percentage < 0){
-        path.setAttribute("fill", '#EA7369');
       }
       else {
-        path.setAttribute("fill", '#44A4D3');
-      }
-      chart.appendChild(path);
+        var data = s.getColumnData(column.index),
+          fields = [];
 
-      var front = document.createElementNS(svgns, "circle");
-      front.setAttributeNS(null, "cx", (size / 2));
-      front.setAttributeNS(null, "cy", (size / 2));
-      front.setAttributeNS(null, "r",  (size * 0.25));
-      front.setAttributeNS(null, "fill", "#fff");
-      chart.appendChild(front);
-      return chart;
-    }
+        iL = data.length;
 
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
+        for (; i < iL; i++) {
+          var n = 0,
+            nL = data[i].length;
 
-    for(;j<jL;j++){
-      var value,
-        data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {}
-        };
+          for (; n < nL; n++) {
+            if (disabled[n]) {
+              continue;
+            }
 
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      var innerDom = cellsDomInner.item(j).dom;
-
-      if(innerDom.innerHTML === ''){
-
-        innerDom.appendChild(pieChart(value, cellHeight));
-      }
-    }
-  },
-  /*
-   *
-   */
-  removeNotUsedCells: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store,
-      columnsDom = me.el.select('.' + w.columnCls),
-      i = 0,
-      iL = columnsDom.length;
-
-    for(;i<iL;i++){
-      var columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select('.' + w.cellCls),
-        j = store.getLength(),
-        jL = cellsDom.length;
-
-      for(;j<jL;j++){
-        cellsDom.item(j).remove();
-      }
-    }
-  },
-  /*
-   * @param {String|Object} format
-   * @return {Function|String|Object}
-   */
-  getFormat: function(format){
-    var me = this,
-      w = me.widget,
-      lang = w.lang;
-
-    switch(format){
-      case 'number':
-        return function (value){
-          return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
-        };
-        break;
-      case 'date':
-        return function (value) {
-          var date = Fancy.Date.parse(value, lang.date.read, format.mode);
-          value = Fancy.Date.format(date, lang.date.write, format.mode);
-
-          return value;
-        };
-        break;
-    }
-
-    switch(format.type){
-      case 'date':
-        return function (value) {
-          if(value.length === 0){
-            return '';
+            values[n] = values[n] || [];
+            values[n].push(data[i][n]);
           }
-          var date = Fancy.Date.parse(value, format.read, format.mode);
-          value = Fancy.Date.format(date, format.write, undefined, format.mode);
-
-
-          return value;
-        };
-        break;
-    }
-
-    if(format.inputFn){
-      return format.inputFn;
-    }
-  },
-  /*
-   * @param {String} value
-   * @param {*} format
-   * @return {String}
-   */
-  format: function(value, format){
-    switch(Fancy.typeOf(format)){
-      case 'string':
-        value = this.getFormat(format)(value);
-        break;
-      case 'function':
-        value = format(value);
-        break;
-      case 'object':
-        if(format.inputFn){
-          value = format.inputFn(value);
         }
-        else{
+
+        for (var p in values) {
+          var _maxItemValue = Math.max.apply(Math, values[p]);
+          fields.push(p);
+
+          if (_maxItemValue > maxItemValue) {
+            maxItemValue = _maxItemValue;
+          }
+
+          kL = values[p].length;
+        }
+
+        if (!column.fields) {
+          column.fields = fields;
+        }
+      }
+
+      var sum = [],
+        k = 0;
+
+      for (; k < kL; k++) {
+        sum[k] = 0;
+        for (var p in values) {
+          if (column.fields && disabled[column.index + '.' + p]) {
+            continue;
+          }
+          else if (disabled[p]) {
+            continue;
+          }
+
+          sum[k] += values[p][k];
+        }
+      }
+
+      maxValue = Math.max.apply(Math, sum);
+
+      sparkConfig.maxItemValue = maxItemValue;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        cellsDom.item(j).css(o.style);
+
+        var _renderTo = F.get(cellsDomInner.item(j).dom);
+
+        if (_renderTo.select('.fancy-spark-hbar').length) {
+          var spark = F.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
+          spark.maxValue = maxValue;
+          spark.maxItemValue = maxItemValue;
+          spark.update(data);
+          continue;
+        }
+
+        F.apply(sparkConfig, {
+          renderTo: cellsDomInner.item(j).dom,
+          value: value,
+          data: data,
+          column: column,
+          maxValue: maxValue,
+          height: w.cellHeight - 1
+        });
+
+        new F.spark.HBar(sparkConfig);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderCircle: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        cellHeight = w.cellHeight - 4;
+
+      columnDom.addCls(GRID_COLUMN_CHART_CIRCLE_CLS);
+
+      function pieChart(percentage, size) {
+        //http://jsfiddle.net/da5LN/62/
+
+        var svgns = "http://www.w3.org/2000/svg";
+        var chart = document.createElementNS(svgns, "svg:svg");
+        chart.setAttribute("width", size);
+        chart.setAttribute("height", size);
+        chart.setAttribute("viewBox", "0 0 " + size + " " + size);
+
+        var back = document.createElementNS(svgns, "circle");
+        back.setAttributeNS(null, "cx", size / 2);
+        back.setAttributeNS(null, "cy", size / 2);
+        back.setAttributeNS(null, "r", size / 2);
+        var color = "#F0F0F0";
+        if (size > 50) {
+          color = "F0F0F0";
+        }
+
+        if (percentage < 0) {
+          color = '#F9DDE0';
+        }
+
+        back.setAttributeNS(null, "fill", color);
+        chart.appendChild(back);
+
+        var path = document.createElementNS(svgns, "path");
+        var unit = (Math.PI * 2) / 100;
+        var startangle = 0;
+        var endangle = percentage * unit - 0.001;
+        var x1 = (size / 2) + (size / 2) * Math.sin(startangle);
+        var y1 = (size / 2) - (size / 2) * Math.cos(startangle);
+        var x2 = (size / 2) + (size / 2) * Math.sin(endangle);
+        var y2 = (size / 2) - (size / 2) * Math.cos(endangle);
+        var big = 0;
+        if (endangle - startangle > Math.PI) {
+          big = 1;
+        }
+        var d = "M " + (size / 2) + "," + (size / 2) +
+          " L " + x1 + "," + y1 +
+          " A " + (size / 2) + "," + (size / 2) +
+          " 0 " + big + " 1 " +
+          x2 + "," + y2 +
+          " Z";
+
+        path.setAttribute("d", d); // Set this path
+        if (percentage < 0) {
+          path.setAttribute("fill", '#EA7369');
+        }
+        else {
+          path.setAttribute("fill", '#44A4D3');
+        }
+        chart.appendChild(path);
+
+        var front = document.createElementNS(svgns, "circle");
+        front.setAttributeNS(null, "cx", (size / 2));
+        front.setAttributeNS(null, "cy", (size / 2));
+        front.setAttributeNS(null, "r", (size * 0.25));
+        front.setAttributeNS(null, "fill", "#fff");
+        chart.appendChild(front);
+        return chart;
+      }
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var value,
+          data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {}
+          };
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        var innerDom = cellsDomInner.item(j).dom;
+
+        if (innerDom.innerHTML === '') {
+
+          innerDom.appendChild(pieChart(value, cellHeight));
+        }
+      }
+    },
+    /*
+     *
+     */
+    removeNotUsedCells: function () {
+      var me = this,
+        w = me.widget,
+        store = w.store,
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        i = 0,
+        iL = columnsDom.length;
+
+      for (; i < iL; i++) {
+        var columnDom = columnsDom.item(i),
+          cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+          j = store.getLength(),
+          jL = cellsDom.length;
+
+        for (; j < jL; j++) {
+          cellsDom.item(j).remove();
+        }
+      }
+    },
+    /*
+     * @param {String|Object} format
+     * @return {Function|String|Object}
+     */
+    getFormat: function (format) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang;
+
+      switch (format) {
+        case 'number':
+          return function (value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
+          };
+          break;
+        case 'date':
+          return function (value) {
+            var date = F.Date.parse(value, lang.date.read, format.mode);
+            value = F.Date.format(date, lang.date.write, format.mode);
+
+            return value;
+          };
+          break;
+      }
+
+      switch (format.type) {
+        case 'date':
+          return function (value) {
+            if (value.length === 0) {
+              return '';
+            }
+            var date = F.Date.parse(value, format.read, format.mode);
+            value = F.Date.format(date, format.write, undefined, format.mode);
+
+
+            return value;
+          };
+          break;
+      }
+
+      if (format.inputFn) {
+        return format.inputFn;
+      }
+    },
+    /*
+     * @param {String} value
+     * @param {*} format
+     * @return {String}
+     */
+    format: function (value, format) {
+      switch (F.typeOf(format)) {
+        case 'string':
           value = this.getFormat(format)(value);
-        }
+          break;
+        case 'function':
+          value = format(value);
+          break;
+        case 'object':
+          if (format.inputFn) {
+            value = format.inputFn(value);
+          }
+          else {
+            value = this.getFormat(format)(value);
+          }
 
-        break;
+          break;
+      }
+
+      return value;
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    enableCellDirty: function (cell) {
+      if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
+        return;
+      }
+
+      cell.addCls(GRID_CELL_DIRTY_CLS);
+      cell.append('<div class="' + GRID_CELL_DIRTY_EL_CLS + '"></div>');
+    },
+    /*
+     * @param {Number} rowIndex
+     */
+    clearDirty: function (rowIndex) {
+      var me = this;
+
+      if (rowIndex !== undefined) {
+        me.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + GRID_CELL_DIRTY_EL_CLS).destroy();
+        me.el.select('.' + GRID_CELL_DIRTY_CLS + '[index="' + rowIndex + '"]').removeCls(GRID_CELL_DIRTY_CLS);
+
+        return;
+      }
+
+      me.el.select('.' + GRID_CELL_DIRTY_EL_CLS).destroy();
+      me.el.select('.' + GRID_CELL_DIRTY_CLS).removeCls(GRID_CELL_DIRTY_CLS);
+    },
+    /*
+     *
+     */
+    showEmptyText: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      if (me.side !== 'center') {
+        return;
+      }
+
+      if (me.emptyTextEl) {
+        me.emptyTextEl.destroy();
+        delete me.emptyTextEl;
+      }
+
+      if (s.dataView.length === 0) {
+        var el = F.get(document.createElement('div'));
+
+        el.addCls(GRID_EMPTY_CLS);
+        el.update(w.emptyText);
+
+        me.emptyTextEl = F.get(me.el.dom.appendChild(el.dom));
+      }
     }
-    
-    return value;
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  enableCellDirty: function(cell){
-    if(cell.hasCls('fancy-grid-cell-dirty')){
-      return;
-    }
+  };
 
-    cell.addCls('fancy-grid-cell-dirty');
-    cell.append('<div class="fancy-grid-cell-dirty-el"></div>');
-  },
-  /*
-   * @param {Number} rowIndex
-   */
-  clearDirty: function(rowIndex){
-    var me = this;
-
-    if(rowIndex !== undefined){
-      me.el.select('.fancy-grid-cell[index="'+rowIndex+'"] .fancy-grid-cell-dirty-el').destroy();
-      me.el.select('.fancy-grid-cell-dirty[index="'+rowIndex+'"]').removeCls('fancy-grid-cell-dirty');
-
-      return;
-    }
-
-    me.el.select('.fancy-grid-cell-dirty-el').destroy();
-    me.el.select('.fancy-grid-cell-dirty').removeCls('fancy-grid-cell-dirty');
-  },
-  /*
-   *
-   */
-  showEmptyText: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    if(me.side !== 'center'){
-      return;
-    }
-
-    if(me.emptyTextEl){
-      me.emptyTextEl.destroy();
-      delete me.emptyTextEl;
-    }
-
-    if(s.dataView.length === 0){
-      var el = Fancy.get(document.createElement('div'));
-
-      el.addCls('fancy-grid-empty-text');
-      el.update(w.emptyText);
-
-      me.emptyTextEl = Fancy.get(me.el.dom.appendChild(el.dom));
-    }
-  }
-};/**
- * @class Fancy.Grid
+})();/**
+ * @class Fancy.grid.Body
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.grid.Body', {
-	extend: Fancy.Widget,
-  mixins: [
-    Fancy.grid.body.mixin.Updater
-  ],
-  cls: 'fancy-grid-body',
-  cellCls: 'fancy-grid-cell',
-  pseudoCellCls: 'fancy-grid-pseudo-cell',
-  cellTpl: [
-    '<div class="fancy-grid-cell-inner">{cellValue}</div>'
-  ],
-  cellWrapperTpl: [
-    '<div class="fancy-grid-cell-wrapper">',
-      '<div class="fancy-grid-cell-inner">{cellValue}</div>',
-    '</div>'
-  ],
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
-   * @constructor
-   * @param {Object} config
+   * Constants
    */
-	constructor: function(){
-		var me = this;
-		
-		me.Super('const', arguments);
-	},
-  /*
-   *
-   */
-	init: function(){
-		var me = this;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_BODY_CLS = F.GRID_BODY_CLS;
+  var GRID_CELL_WRAPPER_CLS = F.GRID_CELL_WRAPPER_CLS;
+  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
+  var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
+  var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
 
-    me.Super('init', arguments);
-    me.addEvents('adddomcolumns');
+  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
+  var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
+  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS =  F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
+  var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
+  var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
+  var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
 
-    me.initTpl();
-		me.render();
-		me.ons();
-	},
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
+  F.define('Fancy.grid.Body', {
+    extend: F.Widget,
+    mixins: [
+      F.grid.body.mixin.Updater
+    ],
+    cls: GRID_BODY_CLS,
+    cellTpl: [
+      '<div class="' + GRID_CELL_INNER_CLS + '">{cellValue}</div>'
+    ],
+    cellWrapperTpl: [
+      '<div class="' + GRID_CELL_WRAPPER_CLS + '">',
+      '<div class="' + GRID_CELL_INNER_CLS + '">{cellValue}</div>',
+      '</div>'
+    ],
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.cellTpl = new Fancy.Template(me.cellTpl);
-    me.cellWrapperTpl = new Fancy.Template(me.cellWrapperTpl);
-  },
-  /*
-   *
-   */
-	ons: function(){
-		var me = this,
-			w = me.widget,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls,
-      id = w.id;
-		
-		w.on('afterrender', me.onAfterRender, me);
+      me.Super('init', arguments);
+      me.addEvents('adddomcolumns');
 
-		var columnSelector = '.' + columnCls + '[grid="'+id+'"]',
-      cellSelector = columnSelector + ' div.' + cellCls;
+      me.initTpl();
+      me.render();
+      me.ons();
+    },
+    /*
+     *
+     */
+    initTpl: function () {
+      var me = this;
 
-    me.el.on('click', me.onCellClick, me, cellSelector);
-    me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
-    me.el.on('mouseenter', me.onCellMouseEnter, me, cellSelector);
-    me.el.on('mouseleave', me.onCellMouseLeave, me, cellSelector);
-    me.el.on('mousedown', me.onCellMouseDown, me, cellSelector);
+      me.cellTpl = new F.Template(me.cellTpl);
+      me.cellWrapperTpl = new F.Template(me.cellWrapperTpl);
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        id = w.id;
 
-    me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
-    me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
-	},
-  /*
-   *
-   */
-	render: function(){
-		var me = this,
-			w = me.widget,
-			renderTo,
-			el = Fancy.get(document.createElement('div'));
+      w.on('afterrender', me.onAfterRender, me);
 
-		el.addCls(me.cls);
-    renderTo = w.el.select('.fancy-grid-' + me.side).dom;
-		me.el = Fancy.get(renderTo.appendChild(el.dom));
-	},
-  /*
-   *
-   */
-	onAfterRender: function(){
-		var me = this;
+      var columnSelector = '.' + GRID_COLUMN_CLS + '[grid="' + id + '"]',
+        cellSelector = columnSelector + ' div.' + GRID_CELL_CLS;
 
-    me.update();
-    me.setHeight();
-	},
-  /*
-   * @param {Number} scrollLeft
-   */
-  setColumnsPosition: function(scrollLeft){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length,
-      columnsWidth = 0,
-      bodyDomColumns = me.el.select('.'+columnCls+'[grid="' + w.id + '"]'),
-      scrollLeft = scrollLeft || me.scrollLeft || 0;
+      me.el.on('click', me.onCellClick, me, cellSelector);
+      me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
+      me.el.on('mouseenter', me.onCellMouseEnter, me, cellSelector);
+      me.el.on('mouseleave', me.onCellMouseLeave, me, cellSelector);
+      me.el.on('mousedown', me.onCellMouseDown, me, cellSelector);
 
-    columnsWidth += scrollLeft;
+      me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
+      me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        renderTo,
+        el = F.get(document.createElement('div'));
 
-    for(;i<iL;i++) {
-      var column = columns[i],
-        columnEl = bodyDomColumns.item(i);
+      el.addCls(GRID_BODY_CLS);
+      renderTo = w.el.select('.fancy-grid-' + me.side).dom;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     *
+     */
+    onAfterRender: function () {
+      this.update();
+      this.setHeight();
+    },
+    /*
+     * @param {Number} scrollLeft
+     */
+    setColumnsPosition: function (scrollLeft) {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length,
+        columnsWidth = 0,
+        bodyDomColumns = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
+        scrollLeft = scrollLeft || me.scrollLeft || 0;
 
-      columnEl.css({
-        left: columnsWidth + 'px'
-      });
+      columnsWidth += scrollLeft;
 
-      if(!column.hidden){
-        columnsWidth += column.width;
+      for (; i < iL; i++) {
+        var column = columns[i],
+          columnEl = bodyDomColumns.item(i);
+
+        columnEl.css({
+          left: columnsWidth + 'px'
+        });
+
+        if (!column.hidden) {
+          columnsWidth += column.width;
+        }
       }
-    }
-  },
-  /*
-   * @param {Number} delta
-   * @return {Object}
-   */
-  wheelScroll: function(delta){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      knobOffSet = w.knobOffSet,
-      columnsDom = me.el.select('.'+columnCls+'[grid="' + w.id + '"]');
+    },
+    /*
+     * @param {Number} delta
+     * @return {Object}
+     */
+    wheelScroll: function (delta) {
+      var me = this,
+        w = me.widget,
+        knobOffSet = w.knobOffSet,
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
 
-    if(columnsDom.length === 0){
-      return;
-    }
+      if (columnsDom.length === 0) {
+        return;
+      }
 
-    var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
-      i = 0,
-      iL = columnsDom.length,
-      bodyViewHeight = w.getBodyHeight(),
-      cellsViewHeight = w.getCellsViewHeight(),
-      scrollRightPath = cellsViewHeight - bodyViewHeight + knobOffSet,
-      o = {
-        oldScroll: parseInt(columnsDom.item(0).css('top')),
-        newScroll: parseInt(columnsDom.item(0).css('top')) + 30 * delta,
-        deltaScroll: 30 * delta
+      var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
+        i = 0,
+        iL = columnsDom.length,
+        bodyViewHeight = w.getBodyHeight(),
+        cellsViewHeight = w.getCellsViewHeight(),
+        scrollRightPath = cellsViewHeight - bodyViewHeight + knobOffSet,
+        o = {
+          oldScroll: parseInt(columnsDom.item(0).css('top')),
+          newScroll: parseInt(columnsDom.item(0).css('top')) + 30 * delta,
+          deltaScroll: 30 * delta
+        };
+
+      for (; i < iL; i++) {
+        var columnEl = columnsDom.item(i),
+          topValue = parseInt(columnEl.css('top')) + 30 * delta;
+
+        if (topValue > 0) {
+          topValue = 0;
+          o.newScroll = 0;
+        }
+        else if (Math.abs(topValue) > scrollRightPath) {
+          topValue = -scrollRightPath - knobOffSet;
+          o.newScroll = topValue;
+        }
+
+        columnEl.css('top', topValue + 'px');
+      }
+
+      o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
+
+      return o;
+    },
+    /*
+     * @param {Number} y
+     * @param {Number} x
+     * @return {Object}
+     */
+    scroll: function (y, x) {
+      var me = this,
+        w = me.widget,
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
+        i = 0,
+        iL = columnsDom.length,
+        o = {};
+
+      if (y !== false && y !== null && y !== undefined) {
+        o.scrollTop = y;
+        for (; i < iL; i++) {
+          var columnEl = columnsDom.item(i);
+          columnEl.css('top', -y + 'px');
+        }
+      }
+
+      if (x !== false && x !== null && x !== undefined) {
+        o.scrollLeft = x;
+        if (w.header) {
+          w.header.scroll(x);
+        }
+        me.scrollLeft = x;
+        w.body.setColumnsPosition(x);
+
+        if (me.side === 'center') {
+          if (w.grouping) {
+            w.grouping.scrollLeft(x);
+          }
+
+          if (w.summary) {
+            w.summary.scrollLeft(x);
+          }
+        }
+      }
+
+      return o;
+    },
+    /*
+     *
+     */
+    setHeight: function () {
+      var height = this.widget.getBodyHeight();
+
+      this.css('height', height + 'px');
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellClick: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('cellclick', me.getEventParams(e));
+      w.fire('rowclick', me.getEventParams(e));
+      w.fire('columnclick', me.getColumnEventParams(e));
+      if (w.activated === false) {
+        w.activated = true;
+        w.fire('activate');
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellDblClick: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('celldblclick', me.getEventParams(e));
+      w.fire('rowdblclick', me.getEventParams(e));
+      w.fire('columndblclick', me.getColumnEventParams(e));
+    },
+    /*
+     * @param {Object} e
+     * @return {false|Object}
+     */
+    getEventParams: function (e) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        cell = e.currentTarget,
+        cellEl = F.get(e.currentTarget),
+        columnEl = cellEl.parent();
+
+      if (cellEl.parent().dom === undefined) {
+        return false;
+      }
+
+      if (s.getLength() === 0) {
+        return false;
+      }
+
+      var columnIndex = parseInt(columnEl.attr('index')),
+        rowIndex = parseInt(cellEl.attr('index')),
+        column = columns[columnIndex],
+        key = column.index || column.key,
+        value = s.get(rowIndex, key),
+        id = s.getId(rowIndex),
+        data = s.get(rowIndex),
+        item = s.getById(id);
+
+      if (column.smartIndexFn) {
+        value = column.smartIndexFn(data);
+      }
+
+      return {
+        e: e,
+        id: id,
+        side: me.side,
+        cell: cell,
+        column: column,
+        rowIndex: rowIndex,
+        columnIndex: columnIndex,
+        value: value,
+        data: data,
+        item: item
       };
+    },
+    /*
+     * @param {Object} e
+     * @return {Object}
+     */
+    getColumnEventParams: function (e) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        cellEl = F.get(e.currentTarget),
+        columnEl = cellEl.parent(),
+        columnIndex = parseInt(columnEl.attr('index')),
+        columns = me.getColumns(),
+        column = columns[columnIndex],
+        config = {
+          e: e,
+          side: me.side,
+          columnIndex: columnIndex,
+          column: column,
+          columnDom: columnEl.dom
+        };
 
-    for(;i<iL;i++){
-      var columnEl = columnsDom.item(i),
-        topValue = parseInt(columnEl.css('top')) + 30 * delta;
-
-      if(topValue > 0){
-        topValue = 0;
-        o.newScroll = 0;
+      if (w.columnClickData) {
+        config.data = s.getColumnData(column.index, column.smartIndexFn);
       }
-      else if(Math.abs(topValue) > scrollRightPath ){
-        topValue = -scrollRightPath - knobOffSet;
-        o.newScroll = topValue;
-      }
 
-      columnEl.css('top', topValue + 'px');
-    }
+      return config;
+    },
+    /*
+     * @param {Object} e
+     * @return {Object}
+     */
+    getColumnHoverEventParams: function (e) {
+      var me = this,
+        columnEl = F.get(e.currentTarget),
+        columnIndex = parseInt(columnEl.attr('index')),
+        columns = me.getColumns(),
+        column = columns[columnIndex];
 
-    o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
-
-    return o;
-  },
-  /*
-   * @param {Number} y
-   * @param {Number} x
-   * @return {Object}
-   */
-  scroll: function(y, x){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columnsDom = me.el.select('.'+columnCls+'[grid="'+w.id+'"]'),
-      i = 0,
-      iL = columnsDom.length,
-      o = {};
-
-    if(y !== false && y !== null && y !== undefined){
-      o.scrollTop = y;
-      for(;i<iL;i++){
-        var columnEl = columnsDom.item(i);
-        columnEl.css('top', -y + 'px');
-      }
-    }
-
-    if(x !== false && x !== null && x !== undefined) {
-      o.scrollLeft = x;
-      if (w.header) {
-        w.header.scroll(x);
-      }
-      me.scrollLeft = x;
-      w.body.setColumnsPosition(x);
-
-      if (me.side === 'center'){
-        if(w.grouping){
-          w.grouping.scrollLeft(x);
-        }
-
-        if(w.summary){
-          w.summary.scrollLeft(x);
-        }
-      }
-    }
-
-    return o;
-  },
-  /*
-   *
-   */
-  setHeight: function(){
-    var me = this,
-      w = me.widget,
-      height = w.getBodyHeight();
-
-    me.css('height', height + 'px');
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellClick: function(e){
-    var me = this,
-      w = me.widget;
-
-    w.fire('cellclick', me.getEventParams(e));
-    w.fire('rowclick', me.getEventParams(e));
-    w.fire('columnclick', me.getColumnEventParams(e));
-    if(w.activated === false){
-      w.activated = true;
-      w.fire('activate');
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellDblClick: function(e){
-    var me = this,
-      w = me.widget;
-
-    w.fire('celldblclick', me.getEventParams(e));
-    w.fire('rowdblclick', me.getEventParams(e));
-    w.fire('columndblclick', me.getColumnEventParams(e));
-  },
-  /*
-   * @param {Object} e
-   * @return {false|Object}
-   */
-  getEventParams: function(e){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      cell = e.currentTarget,
-      cellEl = Fancy.get(e.currentTarget),
-      columnEl = cellEl.parent();
-
-    if(cellEl.parent().dom === undefined){
-      return false;
-    }
-
-    if(s.getLength() === 0){
-      return false;
-    }
-
-    var columnIndex = parseInt(columnEl.attr('index')),
-      rowIndex = parseInt(cellEl.attr('index')),
-      column = columns[columnIndex],
-      key = column.index || column.key,
-      value = s.get(rowIndex, key),
-      id = s.getId(rowIndex),
-      data = s.get(rowIndex),
-      item = s.getById(id);
-
-    if(column.smartIndexFn){
-      value = column.smartIndexFn(data);
-    }
-
-    return {
-      e: e,
-      id: id,
-      side: me.side,
-      cell: cell,
-      column: column,
-      rowIndex: rowIndex,
-      columnIndex: columnIndex,
-      value: value,
-      data: data,
-      item: item
-    };
-  },
-  /*
-   * @param {Object} e
-   * @return {Object}
-   */
-  getColumnEventParams: function(e){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      cellEl = Fancy.get(e.currentTarget),
-      columnEl = cellEl.parent(),
-      columnIndex = parseInt(columnEl.attr('index')),
-      columns = me.getColumns(),
-      column = columns[columnIndex],
-      config = {
+      return {
         e: e,
         side: me.side,
         columnIndex: columnIndex,
         column: column,
         columnDom: columnEl.dom
       };
+    },
+    /*
+     * @return {Array}
+     */
+    getColumns: function () {
+      return this.widget.getColumns(this.side);
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
 
-    if(w.columnClickData){
-      config.data = s.getColumnData(column.index, column.smartIndexFn);
-    }
-
-    return config;
-  },
-  /*
-   * @param {Object} e
-   * @return {Object}
-   */
-  getColumnHoverEventParams: function(e){
-    var me = this,
-      columnEl = Fancy.get(e.currentTarget),
-      columnIndex = parseInt(columnEl.attr('index')),
-      columns = me.getColumns(),
-      column = columns[columnIndex];
-
-    return {
-      e: e,
-      side: me.side,
-      columnIndex: columnIndex,
-      column: column,
-      columnDom: columnEl.dom
-    };
-  },
-  /*
-   * @return {Array}
-   */
-  getColumns: function(){
-    var me = this,
-      w = me.widget;
-
-    return w.getColumns(me.side);
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellMouseEnter: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getEventParams(e),
-      prevCellOver = me.prevCellOver;
-
-    if(Fancy.nojQuery && prevCellOver){
-      if(me.fixZeptoBug){
-        if(params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
-          w.fire('cellleave', prevCellOver);
-          if(params.rowIndex !== prevCellOver.rowIndex){
-            w.fire('rowleave', prevCellOver);
+      if (F.nojQuery && prevCellOver) {
+        if (me.fixZeptoBug) {
+          if (params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side) {
+            w.fire('cellleave', prevCellOver);
+            if (params.rowIndex !== prevCellOver.rowIndex) {
+              w.fire('rowleave', prevCellOver);
+            }
           }
         }
       }
-    }
 
-    if(!prevCellOver){
-      w.fire('rowenter', params);
-    }
-    else{
-      if(params.rowIndex !== me.prevCellOver.rowIndex){
+      if (!prevCellOver) {
         w.fire('rowenter', params);
       }
-    }
+      else {
+        if (params.rowIndex !== me.prevCellOver.rowIndex) {
+          w.fire('rowenter', params);
+        }
+      }
 
-    w.fire('cellenter', params);
+      w.fire('cellenter', params);
 
-    me.prevCellOver = params;
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellMouseDown: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getEventParams(e),
-      columnParams = {
-        e: params.e,
-        side: params.side,
-        columnDom: Fancy.get(params.cell).parent().dom,
-        column: params.column,
-        columnIndex: params.columnIndex
-      };
+      me.prevCellOver = params;
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellMouseDown: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        columnParams = {
+          e: params.e,
+          side: params.side,
+          columnDom: F.get(params.cell).parent().dom,
+          column: params.column,
+          columnIndex: params.columnIndex
+        };
 
-    w.fire('beforecellmousedown', params);
-    w.fire('cellmousedown', params);
-    w.fire('columnmousedown', columnParams);
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellMouseLeave: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getEventParams(e),
-      prevCellOver = me.prevCellOver;
+      w.fire('beforecellmousedown', params);
+      w.fire('cellmousedown', params);
+      w.fire('columnmousedown', columnParams);
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellMouseLeave: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
 
-    if(Fancy.nojQuery){
-      if(prevCellOver === undefined){
+      if (F.nojQuery) {
+        if (prevCellOver === undefined) {
+          return;
+        }
+
+        me.fixZeptoBug = params;
         return;
       }
 
-      me.fixZeptoBug = params;
-      return;
-    }
+      w.fire('rowleave', prevCellOver);
+      w.fire('cellleave', prevCellOver);
+      delete me.prevCellOver;
+    },
+    /*
+     * @param {Object} e
+     */
+    onColumnMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getColumnHoverEventParams(e),
+        prevColumnOver = me.prevColumnOver;
 
-    w.fire('rowleave', prevCellOver);
-    w.fire('cellleave', prevCellOver);
-    delete me.prevCellOver;
-  },
-  /*
-   * @param {Object} e
-   */
-  onColumnMouseEnter: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getColumnHoverEventParams(e),
-      prevColumnOver = me.prevColumnOver;
-
-    if(!prevColumnOver){
-      w.fire('columnenter', params);
-    }
-    else if(me.prevCellOver){
-      if(params.rowIndex !== me.prevCellOver.rowIndex){
-        w.fire('rowenter', params);
+      if (!prevColumnOver) {
+        w.fire('columnenter', params);
       }
-    }
-
-    me.prevColumnOver = params;
-  },
-  /*
-   * @param {Object} e
-   */
-  onColumnMouseLeave: function(e){
-    var me = this,
-      w = me.widget;
-
-    w.fire('columnleave', me.prevColumnOver);
-    delete me.prevColumnOver;
-  },
-  /*
-   * @param {Number} row
-   * @param {Number} column
-   * @return {Fancy.Element}
-   */
-  getCell: function(row, column){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls;
-
-    return me.el.select('.'+columnCls+'[index="'+column+'"] .'+cellCls+'[index="'+row+'"]');
-  },
-  /*
-   * @param {Number} row
-   * @param {Number} column
-   * @return {HTMLElement}
-   */
-  getDomCell: function(row, column){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls;
-
-    return me.el.select('.'+columnCls+'[index="'+column+'"][grid="' + w.id + '"] .'+cellCls+'[index="'+row+'"]').dom;
-  },
-  /*
-   * @param {Number} index
-   * @return {HTMLElement}
-   */
-  getDomColumn: function(index){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls;
-
-    return me.el.select('.'+columnCls+'[index="'+index+'"][grid="' + w.id + '"]').dom;
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      cellSelector = 'div.'+cellCls,
-      columnSelector = 'div.'+columnCls;
-
-    me.el.un('click', me.onCellClick, me, cellSelector);
-    me.el.un('dblclick', me.onCellDblClick, me, cellSelector);
-    me.el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
-    me.el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
-    me.el.un('mousedown', me.onCellMouseDown, me, cellSelector);
-
-    me.el.un('mouseenter', me.onColumnMouseEnter, me, columnSelector);
-    me.el.un('mouseleave', me.onColumnMouseLeave, me, columnSelector);
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  hideColumn: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.el.select('.'+columnCls),
-      column = columns.item(orderIndex),
-      columnWidth = parseInt(column.css('width')),
-      i = orderIndex + 1,
-      iL = columns.length;
-
-    column.hide();
-
-    for(;i<iL;i++){
-      var _column = columns.item(i),
-        left = parseInt(_column.css('left')) - columnWidth;
-
-      _column.css('left', left);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  showColumn: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.el.select('.'+columnCls),
-      column = columns.item(orderIndex),
-      columnWidth,
-      i = orderIndex + 1,
-      iL = columns.length;
-
-    column.show();
-
-    columnWidth = parseInt(column.css('width'));
-
-    for(;i<iL;i++){
-      var _column = columns.item(i),
-        left = parseInt(_column.css('left')) + columnWidth;
-
-      _column.css('left', left);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  removeColumn: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.el.select('.'+columnCls),
-      column = columns.item(orderIndex),
-      columnWidth = parseInt(column.css('width')),
-      i = orderIndex + 1,
-      iL = columns.length;
-
-    column.destroy();
-
-    for(;i<iL;i++){
-      var _column = columns.item(i),
-        left = parseInt(_column.css('left')) - columnWidth;
-
-      _column.attr('index', i - 1);
-      _column.css('left', left);
-    }
-  },
-  /*
-   * @param {Number} index
-   * @param {Object} column
-   */
-  insertColumn: function(index, column){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columnWithEllipsisCls = w.columnWithEllipsisCls,
-      columnTextCls = w.columnTextCls,
-      columnOrderCls = w.columnOrderCls,
-      columnSelectCls = w.columnSelectCls,
-      _columns = me.getColumns(),
-      columns = me.el.select('.' + columnCls),
-      width = column.width,
-      el = Fancy.get(document.createElement('div')),
-      i = index,
-      iL = columns.length,
-      left = 0,
-      j = 0,
-      jL = index;
-
-    for(;j<jL;j++){
-      left += _columns[j].width;
-    }
-
-    for(;i<iL;i++){
-      var _column = columns.item(i);
-      left = parseInt(_column.css('left')) + column.width;
-
-      _column.css('left', left);
-      _column.attr('index', i + 1);
-    }
-
-    el.addCls(columnCls);
-    el.attr('grid', w.id);
-
-    if(column.index === '$selected'){
-      el.addCls(columnSelectCls);
-    }
-    else{
-      switch(column.type){
-        case 'order':
-          el.addCls(columnOrderCls);
-          break;
+      else if (me.prevCellOver) {
+        if (params.rowIndex !== me.prevCellOver.rowIndex) {
+          w.fire('rowenter', params);
+        }
       }
-    }
 
-    if(column.cls){
-      el.addCls(column.cls);
-    }
+      me.prevColumnOver = params;
+    },
+    /*
+     * @param {Object} e
+     */
+    onColumnMouseLeave: function (e) {
+      var me = this,
+        w = me.widget;
 
-    if(column.type === 'text'){
-      el.addCls(columnTextCls);
-    }
+      w.fire('columnleave', me.prevColumnOver);
+      delete me.prevColumnOver;
+    },
+    /*
+     * @param {Number} row
+     * @param {Number} column
+     * @return {Fancy.Element}
+     */
+    getCell: function (row, column) {
+      return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
+    },
+    /*
+     * @param {Number} row
+     * @param {Number} column
+     * @return {HTMLElement}
+     */
+    getDomCell: function (row, column) {
+      var me = this,
+        w = me.widget;
 
-    el.css({
-      width: width + 'px'
-    });
-    el.attr('index', index);
+      return me.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]').dom;
+    },
+    /*
+     * @param {Number} index
+     * @return {HTMLElement}
+     */
+    getDomColumn: function (index) {
+      var me = this,
+        w = me.widget;
 
-    if(column.cellAlign){
-      el.css('text-align', column.cellAlign);
-    }
+      return me.el.select('.' + GRID_COLUMN_CLS + '[index="' + index + '"][grid="' + w.id + '"]').dom;
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        el = me.el,
+        cellSelector = 'div.' + GRID_CELL_CLS,
+        columnSelector = 'div.' + GRID_COLUMN_CLS;
 
-    if(column.ellipsis === true){
-      switch(column.type){
-        case 'string':
-        case 'text':
-        case 'number':
-          el.addCls(columnWithEllipsisCls);
-          break;
+      el.un('click', me.onCellClick, me, cellSelector);
+      el.un('dblclick', me.onCellDblClick, me, cellSelector);
+      el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
+      el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
+      el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+
+      el.un('mouseenter', me.onColumnMouseEnter, me, columnSelector);
+      el.un('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    hideColumn: function (orderIndex) {
+      var me = this,
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        column = columns.item(orderIndex),
+        columnWidth = parseInt(column.css('width')),
+        i = orderIndex + 1,
+        iL = columns.length;
+
+      column.hide();
+
+      for (; i < iL; i++) {
+        var _column = columns.item(i),
+          left = parseInt(_column.css('left')) - columnWidth;
+
+        _column.css('left', left);
       }
-    }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showColumn: function (orderIndex) {
+      var me = this,
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        column = columns.item(orderIndex),
+        columnWidth,
+        i = orderIndex + 1,
+        iL = columns.length;
 
-    var scrolled = w.scroller.getScroll();
-    el.css('top', -scrolled);
+      column.show();
 
-    if(index === 0 && columns.length){
-      el.css('left', '0px');
-      me.el.dom.insertBefore(el.dom, columns.item(index).dom);
-    }
-    else if(index !== 0 && columns.length){
-      el.css('left', left + 'px');
-      me.el.dom.appendChild(el.dom);
-    }
+      columnWidth = parseInt(column.css('width'));
 
-    me.checkDomCells();
-    me.updateRows(undefined, index);
-  }
-});/**
- * @class Fancy.Grid
- * @extends Fancy.Widget
- */
-Fancy.define('Fancy.grid.Header', {
-  extend: Fancy.Widget,
-  cls: Fancy.GRID_HEADER_CLS,
-  mixins: [
-    'Fancy.grid.header.mixin.Menu'
-  ],
-  cellTpl: [
-    '<div class="fancy-grid-header-cell {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
-      '<div class="fancy-grid-header-cell-container" style="height: {height};">',
-        '<span class="fancy-grid-header-cell-text">{columnName}</span>',
-        '<span class="fancy-grid-header-cell-trigger">',
-          '<div class="fancy-grid-header-cell-trigger-image"></div>',
-        '</span>',
-      '</div>',
-    '</div>'
-  ],
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+      for (; i < iL; i++) {
+        var _column = columns.item(i),
+          left = parseInt(_column.css('left')) + columnWidth;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+        _column.css('left', left);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    removeColumn: function (orderIndex) {
+      var me = this,
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        column = columns.item(orderIndex),
+        columnWidth = parseInt(column.css('width')),
+        i = orderIndex + 1,
+        iL = columns.length;
 
-    me.Super('init', arguments);
+      column.destroy();
 
-    me.initTpl();
-    me.render();
+      for (; i < iL; i++) {
+        var _column = columns.item(i),
+          left = parseInt(_column.css('left')) - columnWidth;
 
-    me.renderHeaderCheckBox();
+        _column.attr('index', i - 1);
+        _column.css('left', left);
+      }
+    },
+    /*
+     * @param {Number} index
+     * @param {Object} column
+     */
+    insertColumn: function (index, column) {
+      var me = this,
+        w = me.widget,
+        _columns = me.getColumns(),
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        width = column.width,
+        el = F.get(document.createElement('div')),
+        i = index,
+        iL = columns.length,
+        left = 0,
+        j = 0,
+        jL = index,
+        passedLeft;
 
-    me.setAlign();
-    me.setCellsPosition();
-    me.ons();
-  },
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
+      for (; j < jL; j++) {
+        left += _columns[j].width;
+      }
 
-    me.cellTpl = new Fancy.Template(me.cellTpl);
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderCls = w.cellHeaderCls,
-      headerCellSelector = 'div.' + cellHeaderCls;
+      passedLeft = left;
 
-    w.on('render', me.onAfterRender, me);
-    me.el.on('click', me.onTriggerClick, me, 'span.' + cellHeaderTriggerCls);
-    me.el.on('click', me.onCellClick, me, headerCellSelector);
-    me.el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
-    me.el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
-    me.el.on('mousedown', me.onMouseDown, me);
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderSelectCls = w.cellHeaderSelectCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      columns = me.getColumns(),
-      renderTo,
-      el = Fancy.get(document.createElement('div')),
-      html = '',
-      i = 0,
-      iL = columns.length,
-      numRows = 1,
-      groups = {},
-      passedWidth = 0,
-      isFilterHeader = w.filter && w.filter.header,
-      cellFilterGroupType = 'full',
-      cellHeight = w.cellHeaderHeight;
+      for (; i < iL; i++) {
+        var _column = columns.item(i);
+        left = parseInt(_column.css('left')) + column.width;
 
-    if(w.groupheader){
-      if(isFilterHeader && !w.filter.groupHeader){
-        cellFilterGroupType = 'small';
+        _column.css('left', left);
+        _column.attr('index', i + 1);
+      }
+
+      el.addCls(GRID_COLUMN_CLS);
+      el.attr('grid', w.id);
+
+      if (column.index === '$selected') {
+        el.addCls(GRID_COLUMN_SELECT_CLS);
       }
       else {
-        numRows = 2;
-      }
-    }
-
-    if(isFilterHeader){
-      numRows++;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i],
-        title = column.title || column.header,
-        height = cellHeight,
-        cls = '',
-        groupIndex = '';
-
-      if(numRows !== 1){
-        if(!column.grouping){
-          height = (numRows * cellHeight) + 'px';
+        switch (column.type) {
+          case 'order':
+            el.addCls(GRID_COLUMN_ORDER_CLS);
+            break;
         }
-        else{
-          if(!groups[column.grouping]){
-            groups[column.grouping] = {
-              width: 0,
-              title: column.grouping,
-              left: passedWidth
-            };
-          }
+      }
 
-          if(isFilterHeader && w.filter.groupHeader){
-            height = (2 * cellHeight) + 'px';
+      if (column.cls) {
+        el.addCls(column.cls);
+      }
+
+      if (column.type === 'text') {
+        el.addCls(GRID_COLUMN_TEXT_CLS);
+      }
+
+      el.css({
+        width: width + 'px'
+      });
+      el.attr('index', index);
+
+      if (column.cellAlign) {
+        el.css('text-align', column.cellAlign);
+      }
+
+      if (column.ellipsis === true) {
+        switch (column.type) {
+          case 'string':
+          case 'text':
+          case 'number':
+            el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
+            break;
+        }
+      }
+
+      var scrolled = w.scroller.getScroll();
+      el.css('top', -scrolled);
+
+      if (index === 0 && columns.length) {
+        el.css('left', '0px');
+        me.el.dom.insertBefore(el.dom, columns.item(index).dom);
+      }
+      else if (index !== 0 && columns.length) {
+        if(index === columns.length){
+          el.css('left', left + 'px');
+          me.el.dom.appendChild(el.dom);
+        }
+        else {
+          el.css('left', passedLeft + 'px');
+          me.el.dom.insertBefore(el.dom, columns.item(index).dom);
+        }
+      }
+
+      me.checkDomCells();
+      me.updateRows(undefined, index);
+    },
+    reSetIndexes: function () {
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function (column, i) {
+        me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]').attr('index', i);
+      });
+    },
+    /*
+     *
+     */
+    clearColumnsStyles: function(){
+      var me = this,
+        cells = me.el.select('div.' + GRID_CELL_CLS);
+
+      cells.each(function(cell){
+        cell.css('color', '');
+        cell.css('background-color', '');
+      });
+    },
+    /*
+     *
+     */
+    updateColumnsSizes: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        left = -w.scroller.scrollLeft || 0;
+
+      F.each(columns, function (column, i) {
+        var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
+
+        el.css({
+          width: column.width,
+          left: left
+        });
+
+        left += column.width;
+      });
+    },
+    reSetColumnsAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+
+      columnEls.each(function(columnEl, i){
+        var column = columns[i];
+
+        columnEl.css('text-align', column.cellAlign || '');
+      });
+    },
+    reSetColumnsCls: function () {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+
+      columnEls.each(function(columnEl, i){
+        var column = columns[i],
+          clss = columnEl.attr('class').split(' ');
+
+        F.each(clss, function (cls) {
+          switch(cls){
+            case GRID_COLUMN_CLS:
+              break;
+            case column.cls:
+              break;
+            case spark[column.type]:
+              break;
+            default:
+              columnEl.removeCls(cls);
+          }
+        });
+      });
+    }
+  });
+
+  var spark = {
+    sparklineline: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebar: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinetristate: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinediscrete: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebullet: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinepie: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebox: GRID_COLUMN_SPARKLINE_CLS,
+    circle: GRID_COLUMN_CHART_CIRCLE_CLS,
+    progressdonut: GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS,
+    grossloss: GRID_COLUMN_GROSSLOSS_CLS,
+    progressbar: GRID_COLUMN_PROGRESS_CLS,
+    hbar: GRID_COLUMN_H_BAR_CLS
+  }
+
+})();/**
+ * @class Fancy.grid.Header
+ * @extends Fancy.Widget
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_CONTAINER_CLS = F.GRID_HEADER_CELL_CONTAINER_CLS;
+  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
+  var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
+  var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+
+  F.define('Fancy.grid.Header', {
+    extend: F.Widget,
+    cls: GRID_HEADER_CLS,
+    mixins: [
+      'Fancy.grid.header.mixin.Menu'
+    ],
+    cellTpl: [
+      '<div class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+        '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
+          '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
+          '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
+            '<div class="' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS + '"></div>',
+          '</span>',
+        '</div>',
+      '</div>'
+    ],
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
+
+      me.Super('init', arguments);
+
+      me.initTpl();
+      me.render();
+
+      me.renderHeaderCheckBox();
+
+      me.setAlign();
+      me.setCellsPosition();
+      me.ons();
+    },
+    /*
+     *
+     */
+    initTpl: function () {
+      this.cellTpl = new F.Template(this.cellTpl);
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        el = me.el,
+        headerCellSelector = 'div.' + GRID_HEADER_CELL_CLS;
+
+      w.on('render', me.onAfterRender, me);
+      el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
+      el.on('click', me.onCellClick, me, headerCellSelector);
+      el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
+      el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
+      el.on('mousedown', me.onMouseDown, me);
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        renderTo,
+        el = F.get(document.createElement('div')),
+        html = '',
+        i = 0,
+        iL = columns.length,
+        numRows = 1,
+        groups = {},
+        passedWidth = 0,
+        isFilterHeader = w.filter && w.filter.header,
+        cellFilterGroupType = 'full',
+        cellHeight = w.cellHeaderHeight;
+
+      if (w.groupheader) {
+        if (isFilterHeader && !w.filter.groupHeader) {
+          cellFilterGroupType = 'small';
+        }
+        else {
+          numRows = 2;
+        }
+      }
+
+      if (isFilterHeader) {
+        numRows++;
+      }
+
+      for (; i < iL; i++) {
+        var column = columns[i],
+          title = column.title || column.header,
+          height = cellHeight,
+          cls = '',
+          groupIndex = '';
+
+        if (numRows !== 1) {
+          if (!column.grouping) {
+            height = (numRows * cellHeight) + 'px';
           }
           else {
-            height = cellHeight + 'px';
+            if (!groups[column.grouping]) {
+              groups[column.grouping] = {
+                width: 0,
+                title: column.grouping,
+                left: passedWidth
+              };
+            }
+
+            if (isFilterHeader && w.filter.groupHeader) {
+              height = (2 * cellHeight) + 'px';
+            }
+            else {
+              height = cellHeight + 'px';
+            }
+
+            if (!column.hidden) {
+              groups[column.grouping].width += column.width;
+            }
+
+            groupIndex = 'group-index="' + column.grouping + '"';
+
+            cls = GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
           }
+        }
 
-          if(!column.hidden){
-            groups[column.grouping].width += column.width;
+        passedWidth += column.width;
+
+        if (column.index === '$selected') {
+          cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
+        }
+
+        if (!column.menu) {
+          cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+        }
+
+        if (column.filter && column.filter.header) {
+          switch (cellFilterGroupType) {
+            case 'small':
+              cls += ' ' + GRID_HEADER_CELL_FILTER_SMALL_CLS;
+              break;
+            case 'full':
+              cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              break;
           }
+        }
 
-          groupIndex = 'group-index="' + column.grouping + '"';
+        html += me.cellTpl.getHTML({
+          cls: cls,
+          columnName: title,
+          columnWidth: column.width,
+          index: i,
+          height: height,
+          left: 'initial',
+          groupIndex: groupIndex,
+          display: column.hidden ? 'none' : ''
+        });
+      }
 
-          cls = cellHeaderGroupLevel1;
+      el.css({
+        height: cellHeight * numRows + 'px',
+        width: me.getColumnsWidth()
+      });
+
+      el.addCls(me.cls);
+
+      if (w.groupheader) {
+        el.addCls('fancy-grid-header-grouped');
+        html += me.getGroupingCellsHTML(groups);
+      }
+
+      el.update(html);
+
+      renderTo = w.el.select('.fancy-grid-' + me.side).dom;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     * @param {Number} index
+     * @param {Object} column
+     */
+    insertCell: function (index, column) {
+      var me = this,
+        w = me.widget,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        columns = me.getColumns(),
+        cls = '',
+        title = column.title || column.header,
+        cellHeight = parseInt(cells.item(0).css('height')),
+        groupIndex = '',
+        left = 0;
+
+      if (w.groupheader) {
+        cellHeight = w.cellHeight * 2;
+        var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+        //BUG: possible bug for dragging column
+        if (index !== w.columns.length - 1) {
+          groupUpCells.each(function (cell) {
+            var left = parseInt(cell.css('left') || 0) + column.width;
+
+            cell.css('left', left);
+          });
         }
       }
 
-      passedWidth += column.width;
-
-      if(column.index === '$selected'){
-        cls += ' ' + cellHeaderSelectCls;
+      if (column.index === '$selected') {
+        cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
       }
 
-      if(!column.menu){
-        cls += ' fancy-grid-header-cell-trigger-disabled';
+      if (!column.menu) {
+        cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
       }
 
-      if(column.filter && column.filter.header){
-        switch(cellFilterGroupType){
-          case 'small':
-            cls += ' fancy-grid-header-filter-cell-small';
-            break;
-          case 'full':
-            cls += ' fancy-grid-header-filter-cell-full';
-            break;
-        }
+      var j = 0,
+        jL = index;
+
+      for (; j < jL; j++) {
+        left += columns[j].width;
       }
 
-      html += me.cellTpl.getHTML({
+      var i = index,
+        iL = columns.length - 1;
+
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          _left = parseInt(_cell.css('left') || 0) + column.width;
+
+        _cell.css('left', _left);
+      }
+
+      var cellHTML = me.cellTpl.getHTML({
         cls: cls,
         columnName: title,
         columnWidth: column.width,
-        index: i,
-        height: height,
-        left: 'initial',
-        groupIndex: groupIndex,
-        display: column.hidden? 'none': ''
+        index: index,
+        height: String(cellHeight) + 'px',
+        left: String(left) + 'px',
+        groupIndex: groupIndex
       });
-    }
 
-    el.css({
-      height: cellHeight * numRows + 'px',
-      width: me.getColumnsWidth()
-    });
+      if (index === 0 && cells.length) {
+        F.get(cells.item(0).before(cellHTML));
+      }
+      else if (index !== 0 && cells.length) {
+        if(index === cells.length) {
+          me.el.append(cellHTML);
+        }
+        else{
+          F.get(cells.item(index).before(cellHTML));
+        }
+      }
 
-    el.addCls(me.cls);
+      me.css('width', parseInt(me.css('width')) + column.width);
+    },
+    /*
+     *
+     */
+    setAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length;
 
-    if(w.groupheader){
-      el.addCls('fancy-grid-header-grouped');
-      html += me.getGroupingCellsHTML(groups);
-    }
+      for (; i < iL; i++) {
+        var column = columns[i];
 
-    el.update(html);
+        if (column.align) {
+          me.getDomCell(i).css('text-align', column.align);
+        }
+      }
+    },
+    onAfterRender: function () {},
+    /*
+     *
+     */
+    setCellsPosition: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        cellsWidth = 0,
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS);
 
-    renderTo = w.el.select('.fancy-grid-' + me.side).dom;
-    me.el = Fancy.get(renderTo.appendChild(el.dom));
-  },
-  /*
-   * @param {Number} index
-   * @param {Object} column
-   */
-  insertCell: function(index, column){
-    var me = this,
-      w = me.widget,
-      cellHeaderSelectCls = w.cellHeaderSelectCls,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.' + cellHeaderCls + ':not(.' + cellHeaderGroupLevel2 + ')'),
-      columns = me.getColumns(),
-      cls = '',
-      title = column.title || column.header,
-      cellHeight = parseInt(cells.item(0).css('height')),
-      groupIndex = '',
-      left = 0;
+      cellsWidth += me.scrollLeft || 0;
 
-    if(w.groupheader){
-      cellHeight = w.cellHeight * 2;
-      var groupUpCells = me.el.select('.' + cellHeaderGroupLevel2);
+      F.each(columns, function (column, i) {
+        var cellEl = cellsDom.item(i),
+          top = '0px';
 
-      //BUG: possible bug for dragging column
-      if(index !== w.columns.length - 1){
-        groupUpCells.each(function(cell){
-          var left = parseInt(cell.css('left') || 0) + column.width;
+        if (column.grouping) {
+          top = w.cellHeaderHeight + 'px';
+        }
 
-          cell.css('left', left);
+        cellEl.css({
+          top: top,
+          left: cellsWidth + 'px'
+        });
+
+        if (!column.hidden) {
+          cellsWidth += column.width;
+        }
+      });
+
+      if (w.groupheader) {
+        var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+        groupCells.each(function (groupCell) {
+          var groupName = groupCell.attr('index');
+
+          var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
+            groupCellLeft = underGroupCells.item(0).css('left'),
+            groupCellWidth = 0;
+
+          F.each(columns, function (column) {
+            if (column.grouping === groupName && !column.hidden) {
+              groupCellWidth += column.width;
+            }
+          });
+
+          groupCell.css('left', groupCellLeft);
+          groupCell.css('width', groupCellWidth);
         });
       }
-    }
+    },
+    /*
+     *
+     */
+    fixGroupHeaderSizing: function () {
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        columns = me.getColumns(),
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS),
+        left = w.scroller.scrollLeft,
+        groups = {},
+        groupsWidth = {},
+        groupsLeft = {},
+        rows = me.calcRows();
 
-    if(column.index === '$selected'){
-      cls += ' ' + cellHeaderSelectCls;
-    }
+      F.each(columns, function (column, i) {
+        var cell = cellsDom.item(i),
+          grouping = column.grouping,
+          top = '0px',
+          height = CELL_HEADER_HEIGHT * rows;
 
-    if(!column.menu){
-      cls += ' fancy-grid-header-cell-trigger-disabled';
-    }
+        groups[grouping] = true;
 
-    var j = 0,
-      jL = index;
+        if(grouping){
+          if(groupsWidth[grouping] === undefined){
+            groupsWidth[grouping] = column.width;
+            groupsLeft[grouping] = left;
+          }
+          else{
+            groupsWidth[grouping] += column.width;
+          }
 
-    for(;j<jL;j++){
-      left += columns[j].width;
-    }
+          cell.addCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
+          top = CELL_HEADER_HEIGHT + 'px';
+          height = CELL_HEADER_HEIGHT;
 
-    var i = index,
-      iL = columns.length - 1;
+          if(column.filter && column.filter.header){
+            height = CELL_HEADER_HEIGHT * 2;
+            setTimeout(function () {
+              cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
+            }, 30);
+          }
+        }
+        else{
+          cell.removeCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
+          if(column.filter && column.filter.header){
+            setTimeout(function () {
+              cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+            }, 30);
+            cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+          }
+        }
 
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        _left = parseInt(_cell.css('left') || 0) + column.width;
+        if(w.groupheader && height === CELL_HEADER_HEIGHT && !grouping && !column.filter){
+          height = CELL_HEADER_HEIGHT * 2;
+        }
 
-      _cell.css('left', _left);
-    }
+        //TODO: case for ungroup all cells over column drag with filtering
 
-    var cellHTML = me.cellTpl.getHTML({
-      cls: cls,
-      columnName: title,
-      columnWidth: column.width,
-      index: index,
-      height: String(cellHeight) + 'px',
-      left: String(left) + 'px',
-      groupIndex: groupIndex
-    });
+        cell.css({
+          top: top,
+          height: height
+        });
 
-    if(index === 0 && cells.length){
-      Fancy.get(cells.item(0).before(cellHTML));
-    }
-    else if(index !== 0 && cells.length){
-      me.el.append(cellHTML);
-    }
-
-    me.css('width', parseInt(me.css('width')) + column.width);
-  },
-  /*
-   *
-   */
-  setAlign: function(){
-    var me = this,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++) {
-      var column = columns[i];
-
-      if(column.align){
-        me.getDomCell(i).css('text-align', column.align);
-      }
-    }
-  },
-  onAfterRender: function(){},
-  /*
-   *
-   */
-  setCellsPosition: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cellHeaderCls = w.cellHeaderCls,
-      columns = me.getColumns(),
-      cellsWidth = 0,
-      cellsDom = me.el.select('.' + cellHeaderCls);
-
-    cellsWidth += me.scrollLeft || 0;
-
-    Fancy.each(columns, function(column, i){
-      var cellEl = cellsDom.item(i),
-        top = '0px';
-
-      if(column.grouping){
-        top = w.cellHeaderHeight + 'px';
-      }
-
-      cellEl.css({
-        top: top,
-        left: cellsWidth + 'px'
+        left += column.width;
       });
 
-      if(!column.hidden){
+      for(var p in groupsWidth){
+        var groupCell = me.el.select('[index="'+p+'"]');
+
+        groupCell.css({
+          left: groupsLeft[p],
+          width: groupsWidth[p]
+        });
+      }
+
+      var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+      groupCells.each(function (cell) {
+        var groupName = cell.attr('index');
+
+        if(!groups[groupName]){
+          cell.destroy();
+        }
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    getColumnsWidth: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cellsWidth = 0,
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
         cellsWidth += column.width;
       }
-    });
 
-    if(w.groupheader){
-      var groupCells = me.el.select('.' + cellHeaderGroupLevel2);
+      return cellsWidth;
+    },
+    /*
+     * @return {Array}
+     */
+    getColumns: function () {
+      var me = this,
+        w = me.widget,
+        columns;
 
-      groupCells.each(function(groupCell){
-        var groupName = groupCell.attr('index');
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
+          break;
+      }
 
-        var underGroupCells = me.el.select('[group-index="'+groupName+'"]'),
-          groupCellLeft = underGroupCells.item(0).css('left'),
-          groupCellWidth = 0;
+      return columns;
+    },
+    /*
+     * @param {Number} index
+     * @return {Fancy.Element}
+     */
+    getDomCell: function (index) {
+      return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellClick: function (e) {
+      var me = this,
+        w = me.widget,
+        columndrag = w.columndrag,
+        cell = e.currentTarget,
+        target = F.get(e.target),
+        index = parseInt(F.get(cell).attr('index'));
 
-        Fancy.each(columns, function (column){
-          if(column.grouping === groupName && !column.hidden){
-            groupCellWidth += column.width;
-          }
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
+
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS)) {
+        return
+      }
+
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)) {
+        return
+      }
+
+      if (F.get(cell).hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)) {
+        return;
+      }
+
+      w.fire('headercellclick', {
+        e: e,
+        side: me.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = e.currentTarget,
+        cellEl = F.get(cell),
+        isGroupCell = cellEl.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS),
+        index = parseInt(F.get(cell).attr('index'));
+
+      if (isGroupCell) {
+        return;
+      }
+
+      w.fire('headercellmousemove', {
+        e: e,
+        side: me.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Event} e
+     */
+    onMouseDown: function (e) {
+      var targetEl = F.get(e.target);
+
+      if (targetEl.prop("tagName") === 'INPUT') {
+      }
+      else {
+        e.preventDefault();
+      }
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellMouseDown: function (e) {
+      var w = this.widget,
+        cell = e.currentTarget,
+        index = parseInt(F.get(cell).attr('index'));
+
+      w.fire('headercellmousedown', {
+        e: e,
+        side: this.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Number} value
+     */
+    scroll: function (value) {
+      this.scrollLeft = value;
+      this.setCellsPosition();
+    },
+    /*
+     * @param {Array} groups
+     * @return {String}
+     */
+    getGroupingCellsHTML: function (groups) {
+      var me = this,
+        w = me.widget,
+        html = '';
+
+      F.each(groups, function (group, p) {
+        html += me.cellTpl.getHTML({
+          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
+          columnName: group.title,
+          columnWidth: group.width,
+          index: p,
+          height: w.cellHeaderHeight + 'px',
+          left: group.left + 'px',
+          groupIndex: ''
         });
-
-        groupCell.css('left', groupCellLeft);
-        groupCell.css('width', groupCellWidth);
       });
-    }
-  },
-  /*
-   * @return {Number}
-   */
-  getColumnsWidth: function(){
-    var me = this,
-      columns = me.getColumns(),
-      cellsWidth = 0,
-      i = 0,
-      iL = columns.length;
 
-    for(;i<iL;i++){
-      var column = columns[i];
+      return html;
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        el = me.el,
+        cellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
-      cellsWidth += column.width;
-    }
+      el.un('click', me.onCellClick, me, cellSelector);
+      el.un('mousemove', me.onCellMouseMove, me, cellSelector);
+      el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+      el.un('mousedown', me.onMouseDown, me);
+    },
+    /*
+     * @param {Number} index
+     * @return {Fancy.Element}
+     */
+    getCell: function (index) {
+      return this.el.select('.' + GRID_HEADER_CELL_CLS + '[index="' + index + '"]');
+    },
+    /*
+     * @param {Event} e
+     */
+    onTriggerClick: function (e) {
+      var me = this,
+        target = F.get(e.currentTarget),
+        cell = target.parent().parent(),
+        index = parseInt(cell.attr('index')),
+        columns = me.getColumns(),
+        column = columns[index];
 
-    return cellsWidth;
-  },
-  /*
-   * @return {Array}
-   */
-  getColumns: function(){
-    var me = this,
-      w = me.widget,
-      columns;
+      e.stopPropagation();
 
-    switch(me.side){
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
+      me.showMenu(cell, index, column, columns);
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    hideCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = orderIndex + 1,
+        iL = cells.length,
+        columns = me.getColumns();
 
-    return columns;
-  },
-  /*
-   * @param {Number} index
-   * @return {Fancy.Element}
-   */
-  getDomCell: function(index){
-    var me = this,
-      w = me.widget;
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
 
-    return me.el.select('.' + w.cellHeaderCls).item(index);
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellClick: function(e){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      cell = e.currentTarget,
-      target = Fancy.get(e.target),
-      index = parseInt(Fancy.get(cell).attr('index'));
+        groupCell.css('width', groupCellWidth - cellWidth);
+      }
 
-    if(target.hasCls(cellHeaderTriggerCls)){
-      return
-    }
+      cell.hide();
 
-    if(target.hasCls(cellHeaderTriggerImageCls)){
-      return
-    }
+      var groups = {};
 
-    if(Fancy.get(cell).hasCls(cellHeaderGroupLevel2)){
-      return;
-    }
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) - cellWidth,
+          column = columns[i];
 
-    w.fire('headercellclick', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellMouseMove: function(e){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cell = e.currentTarget,
-      cellEl = Fancy.get(cell),
-      isGroupCell = cellEl.hasCls(cellHeaderGroupLevel2),
-      index = parseInt(Fancy.get(cell).attr('index'));
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
+        }
 
-    if(isGroupCell){
-      return;
-    }
+        _cell.css('left', left);
+      }
 
-    w.fire('headercellmousemove', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Event} e
-   */
-  onMouseDown: function(e){
-    var targetEl = Fancy.get(e.target);
+      F.each(groups, function (group, p) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
 
-    if(targetEl.prop("tagName") === 'INPUT'){}
-    else {
-      e.preventDefault();
-    }
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellMouseDown: function(e){
-    var me = this,
-      w = me.widget,
-      cell = e.currentTarget,
-      index = parseInt(Fancy.get(cell).attr('index'));
-
-    w.fire('headercellmousedown', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Number} value
-   */
-  scroll: function(value){
-    var me = this;
-
-    me.scrollLeft = value;
-    me.setCellsPosition();
-  },
-  /*
-   * @param {Array} groups
-   * @return {String}
-   */
-  getGroupingCellsHTML: function(groups){
-    var me = this,
-      w = me.widget,
-      html = '';
-
-    Fancy.each(groups, function(group, p){
-      html += me.cellTpl.getHTML({
-        cls: w.cellHeaderGroupLevel2,
-        columnName: group.title,
-        columnWidth: group.width,
-        index: p,
-        height: w.cellHeaderHeight + 'px',
-        left: group.left + 'px',
-        groupIndex: ''
+        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
       });
-    });
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth,
+        i = orderIndex + 1,
+        iL = cells.length,
+        columns = me.getColumns();
 
-    return html;
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      w = me.widget,
-      cellSelector = 'div.' + w.cellHeaderCls;
+      cell.show();
 
-    me.el.un('click', me.onCellClick, me, cellSelector);
-    me.el.un('mousemove', me.onCellMouseMove, me, cellSelector);
-    me.el.un('mousedown', me.onCellMouseDown, me, cellSelector);
-    me.el.un('mousedown', me.onMouseDown, me);
-  },
-  /*
-   * @param {Number} index
-   * @return {Fancy.Element}
-   */
-  getCell: function(index){
-    var me = this,
-      w = me.widget;
+      cellWidth = parseInt(cell.css('width'));
 
-    return me.el.select('.' + w.cellHeaderCls + '[index="'+index+'"]');
-  },
-  /*
-   * @param {Event} e
-   */
-  onTriggerClick: function(e){
-    var me = this,
-      target = Fancy.get(e.currentTarget),
-      cell = target.parent().parent(),
-      index = parseInt(cell.attr('index')),
-      columns = me.getColumns(),
-      column = columns[index];
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
 
-    e.stopPropagation();
+        groupCell.css('width', groupCellWidth + cellWidth);
+      }
 
-    me.showMenu(cell, index, column, columns);
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  hideCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.'+cellHeaderGroupLevel2+')'),
-      cell = cells.item(orderIndex),
-      cellWidth = parseInt(cell.css('width')),
-      i = orderIndex + 1,
-      iL = cells.length,
-      columns = me.getColumns();
+      var groups = {};
 
-    if(cell.hasCls(cellHeaderGroupLevel1)){
-      var groupIndex = cell.attr('group-index'),
-        groupCell = me.el.select('.'+cellHeaderGroupLevel2+'[index="'+groupIndex+'"]').item(0),
-        groupCellWidth = parseInt(groupCell.css('width'));
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) + cellWidth,
+          column = columns[i];
 
-      groupCell.css('width', groupCellWidth - cellWidth);
-    }
-
-    cell.hide();
-
-    var groups = {};
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) - cellWidth,
-        column = columns[i];
-
-      if(column.grouping){
-        if(columns[orderIndex].grouping !== column.grouping){
-          groups[column.grouping] = true;
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
         }
+        _cell.css('left', left);
       }
 
-      _cell.css('left', left);
-    }
+      for (var p in groups) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    removeCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = orderIndex + 1,
+        iL = cells.length,
+        groupCells = {},
+        isGroupCell = false;
 
-    Fancy.each(groups, function(group, p){
-      var groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+p+'"]').item(0);
+      if (cell.attr('group-index')) {
+        isGroupCell = cell.attr('group-index');
+        groupCells[isGroupCell] = true;
+      }
 
-      groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-    });
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  showCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.' + cellHeaderGroupLevel2 + ')'),
-      cell = cells.item(orderIndex),
-      cellWidth,
-      i = orderIndex + 1,
-      iL = cells.length,
-      columns = me.getColumns();
+      cell.destroy();
 
-    cell.show();
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) - cellWidth;
 
-    cellWidth = parseInt(cell.css('width'));
-
-    if(cell.hasCls(cellHeaderGroupLevel1)){
-      var groupIndex = cell.attr('group-index'),
-        groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+groupIndex+'"]').item(0),
-        groupCellWidth = parseInt(groupCell.css('width'));
-
-      groupCell.css('width', groupCellWidth + cellWidth);
-    }
-
-    var groups = {};
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) + cellWidth,
-        column = columns[i];
-
-      if(column.grouping){
-        if(columns[orderIndex].grouping !== column.grouping){
-          groups[column.grouping] = true;
+        if (_cell.attr('group-index')) {
+          groupCells[_cell.attr('group-index')] = true;
         }
-      }
-      _cell.css('left', left);
-    }
 
-    for(var p in groups){
-      var groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+p+'"]').item(0);
-      groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  removeCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.' + cellHeaderGroupLevel2 + ')'),
-      cell = cells.item(orderIndex),
-      cellWidth = parseInt(cell.css('width')),
-      i = orderIndex + 1,
-      iL = cells.length,
-      groupCells = {},
-      isGroupCell = false;
+        _cell.attr('index', i - 1);
 
-    if(cell.attr('group-index')){
-      isGroupCell = cell.attr('group-index');
-      groupCells[isGroupCell] = true;
-    }
-
-    cell.destroy();
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) - cellWidth;
-
-      if(_cell.attr('group-index')){
-        groupCells[_cell.attr('group-index')] = true;
+        _cell.css('left', left);
       }
 
-      _cell.attr('index', i - 1);
+      for (var p in groupCells) {
+        var groupCell = me.el.select('[index="' + p + '"]'),
+          newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
+          newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
 
-      _cell.css('left', left);
-    }
+        if (isGroupCell && groupCell) {
+          groupCell.css('width', newCellWidth);
 
-    for(var p in groupCells){
-      var groupCell = me.el.select('[index="'+p+'"]'),
-        newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
-        newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
-
-      if(isGroupCell){
-        groupCell.css('width', newCellWidth);
-
-        if(groupCell.attr('index') !== isGroupCell){
+          if (groupCell.attr('index') !== isGroupCell) {
+            groupCell.css('left', newCellLeft);
+          }
+        }
+        else {
           groupCell.css('left', newCellLeft);
         }
       }
-      else{
-        groupCell.css('left', newCellLeft);
-      }
-    }
 
-    if(isGroupCell){
-      if( me.el.select('[group-index="'+isGroupCell+'"]').length === 0 ){
-        var groupCell = me.el.select('[index="'+isGroupCell+'"]');
+      if (isGroupCell) {
+        if (me.el.select('[group-index="' + isGroupCell + '"]').length === 0) {
+          var groupCell = me.el.select('[index="' + isGroupCell + '"]');
 
-        groupCell.destroy();
-      }
-    }
-
-    if(me.side !== 'center'){
-      me.css('width', parseInt(me.css('width')) - cellWidth);
-    }
-  },
-  /*
-   *
-   */
-  renderHeaderCheckBox: function(){
-    var me = this,
-      w = me.widget,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length,
-      cells = me.el.select('.' + w.cellHeaderCls + ':not(.' + w.cellHeaderGroupLevel2 + ')');
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.headerCheckBox === true){
-        var cell = cells.item(i),
-          headerCellContainer = cell.firstChild(),
-          textEl = cell.select('.fancy-grid-header-cell-text'),
-          text = textEl.dom.innerHTML,
-          label = !text ? false : text,
-          labelWidth = 0;
-
-        cell.addCls('fancy-grid-header-cell-checkbox');
-        textEl.update('');
-
-        if(label.length){
-          labelWidth = label.width * 15;
+          groupCell.destroy();
         }
-
-        column.headerCheckBox = new Fancy.CheckBox({
-          renderTo: headerCellContainer.dom,
-          renderId: true,
-          labelWidth: labelWidth,
-          value: false,
-          label: label,
-          labelAlign: 'right',
-          style: {
-            padding: '0px',
-            display: 'inline-block'
-          },
-          events: [{
-            change: function(checkbox, value){
-              var i = 0,
-                iL = w.getViewTotal();
-
-              for(;i<iL;i++){
-                w.set(i, column.index, value);
-              }
-            }
-          }]
-        });
       }
-    }
-  },
-  /*
-   *
-   */
-  reSetIndexes: function(){
-    var me = this,
-      w = me.widget,
-      cells = me.el.select('.'+w.cellHeaderCls+':not(.' + w.cellHeaderGroupLevel2 + ')');
 
-    cells.each(function(cell, i) {
-      cell.attr('index', i);
-    })
-  }
-});
+      if (me.side !== 'center') {
+        me.css('width', parseInt(me.css('width')) - cellWidth);
+      }
+    },
+    /*
+     *
+     */
+    renderHeaderCheckBox: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.headerCheckBox === true) {
+          var cell = cells.item(i),
+            headerCellContainer = cell.firstChild(),
+            textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
+            text = textEl.dom.innerHTML,
+            label = !text ? false : text,
+            labelWidth = 0;
+
+          cell.addCls('fancy-grid-header-cell-checkbox');
+          textEl.update('');
+
+          if (label.length) {
+            labelWidth = label.width * 15;
+          }
+
+          column.headerCheckBox = new F.CheckBox({
+            renderTo: headerCellContainer.dom,
+            renderId: true,
+            labelWidth: labelWidth,
+            value: false,
+            label: label,
+            labelAlign: 'right',
+            style: {
+              padding: '0px',
+              display: 'inline-block'
+            },
+            events: [{
+              change: function (checkbox, value) {
+                var i = 0,
+                  iL = w.getViewTotal();
+
+                for (; i < iL; i++) {
+                  w.set(i, column.index, value);
+                }
+              }
+            }]
+          });
+        }
+      }
+    },
+    /*
+     *
+     */
+    reSetIndexes: function () {
+      var cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function (cell, i) {
+        cell.attr('index', i);
+      })
+    },
+    /*
+     *
+     */
+    reSetGroupIndexes: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function (cell, i) {
+        var column = columns[i],
+          grouping = column.grouping;
+
+        if(cell.attr('group-index') && !grouping){
+          cell.removeAttr('group-index');
+        }
+        else if(grouping && cell.attr('group-index') !== grouping){
+          cell.attr('group-index', grouping);
+        }
+      });
+    },
+    /*
+     *
+     */
+
+    /*
+     *
+     */
+    updateTitles: function(){
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function (column, i) {
+        me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"] .' + GRID_HEADER_CELL_TEXT_CLS).update(column.title || '');
+      });
+    },
+    /*
+     *
+     */
+    updateCellsSizes: function(){
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        left = -w.scroller.scrollLeft || 0;
+
+      F.each(columns, function (column, i){
+        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
+
+        cell.css({
+          width: column.width,
+          left: left
+        });
+
+        left += column.width;
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    calcRows: function(){
+      var me = this,
+        w = me.widget,
+        columns = w.columns.concat(w.leftColumns).concat(w.rightColumns),
+        rows = 1;
+
+      Fancy.each(columns, function(column){
+         if(column.grouping){
+           if(rows < 2){
+             rows = 2;
+           }
+
+           if(column.filter && column.filter.header){
+             if(rows < 3){
+               rows = 3;
+             }
+           }
+         }
+
+        if(column.filter && column.filter.header){
+          if(rows < 2){
+            rows = 2;
+          }
+        }
+      });
+
+      return rows;
+    },
+    /*
+     *
+     */
+    reSetColumnsAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i){
+        var column = columns[i];
+
+        cell.css('text-align', column.align || '');
+      });
+    }
+  });
+
+})();

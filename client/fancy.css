@@ -1541,6 +1541,32 @@
   margin-right: 4px;
 }
 /*
+ column-drag.less
+*/
+.fancy-drag-cell {
+  transition: none !important;
+}
+.fancy-drag-hint-top {
+  background: url(images/default/col-drag-top.png) no-repeat center top transparent;
+  width: 9px;
+  height: 11px;
+  position: absolute;
+  line-height: 0;
+  font-size: 0;
+  overflow: hidden;
+  z-index: 4;
+}
+.fancy-drag-hint-bottom {
+  background: url(images/default/col-drag-bottom.png) no-repeat center top transparent;
+  width: 9px;
+  height: 11px;
+  position: absolute;
+  line-height: 0;
+  font-size: 0;
+  overflow: hidden;
+  z-index: 4;
+}
+/*
  sparkline.less
 */
 .fancy-grid-column-sparkline canvas,
@@ -2391,6 +2417,12 @@ vml {
 }
 .fancy-theme-gray .fancy-scroll-bottom-inner {
   background-color: #B5B9C4;
+}
+.fancy-theme-gray.fancy-drag-hint-top {
+  background-image: url(images/sand/col-drag-top.png);
+}
+.fancy-theme-gray.fancy-drag-hint-bottom {
+  background-image: url(images/sand/col-drag-bottom.png);
 }
 .fancy-theme-gray.fancy-panel-grid-inside {
   border-bottom: 0 solid #ddd;
@@ -3265,6 +3297,12 @@ vml {
 }
 .fancy-theme-sand.fancy-field-search-list .fancy-field:hover .fancy-field-input-label {
   color: #fff;
+}
+.fancy-theme-sand.fancy-drag-hint-top {
+  background-image: url(images/sand/col-drag-top.png);
+}
+.fancy-theme-sand.fancy-drag-hint-bottom {
+  background-image: url(images/sand/col-drag-bottom.png);
 }
 .fancy-theme-sand.fancy-panel .fancy-month-picker .fancy-picker-button-next {
   margin-left: 15px;

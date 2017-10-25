@@ -76,7 +76,15 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = indexValue != value;
             break;
           case '':
-            passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
+            value = String(value).toLocaleLowerCase();
+            indexValue = String(indexValue).toLocaleLowerCase();
+
+            value = value.replace(/\(/g, 'bracketleft');
+            value = value.replace(/\)/g, 'bracketright');
+            indexValue = indexValue.replace(/\(/g, 'bracketleft');
+            indexValue = indexValue.replace(/\)/g, 'bracketright');
+
+            passed = new RegExp(value).test(indexValue);
             break;
           case '*':
             passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());

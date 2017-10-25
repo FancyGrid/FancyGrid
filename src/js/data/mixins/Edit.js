@@ -157,6 +157,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       item = new model(o),
       index = me.addIndex;
 
+    me.fire('beforeinsert');
+
     delete me.addIndex;
     item.$index = index;
     me.data.splice(index, 0, item);

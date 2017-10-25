@@ -67,18 +67,14 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
    *
    */
   onDirtyRemove: function(store, id, record){
-    var me = this;
-
-    me.removed[id] = record.data;
-    me.removed.length++;
+    this.removed[id] = record.data;
+    this.removed.length++;
   },
   /*
    *
    */
   onDirtyInsert: function(store, o){
-    var me = this;
-
-    me.inserted[o.id] = o;
-    me.inserted.length++;
+    this.inserted[o.id] = o;
+    this.inserted.length++;
   }
 });

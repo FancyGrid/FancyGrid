@@ -1,12 +1,25 @@
 (function() {
   var toggleGroups = {};
 
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var GRID_CLS = F.GRID_CLS;
+  var BUTTON_CLS = F.BUTTON_CLS;
+  var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
+  var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
+  var BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
+  var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
+  var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
+  var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+
   /**
    * @class Fancy.Button
    * @extends Fancy.Widget
    */
-  Fancy.define('Fancy.Button', {
-    extend: Fancy.Widget,
+  F.define('Fancy.Button', {
+    extend: F.Widget,
     minWidth: 30,
     /*
      * @constructor
@@ -61,24 +74,24 @@
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    widgetCls: 'fancy-button',
+    widgetCls: BUTTON_CLS,
     cls: '',
     extraCls: '',
-    disabledCls: 'fancy-button-disabled',
-    pressedCls: 'fancy-button-pressed',
-    buttonImageCls: 'fancy-button-image',
-    buttonImageColorCls: 'fancy-button-image-color',
-    textCls: 'fancy-button-text',
-    dropCls: 'fancy-button-drop',
+    disabledCls: BUTTON_DISABLED_CLS,
+    pressedCls: BUTTON_PRESSED_CLS,
+    buttonImageCls: BUTTON_IMAGE_CLS,
+    buttonImageColorCls: BUTTON_IMAGE_COLOR_CLS,
+    textCls: BUTTON_TEXT_CLS,
+    dropCls: BUTTON_DROP_CLS,
     text: '',
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
     pressed: false,
     tpl: [
-      '<div class="{buttonImageCls}"></div>',
-      '<a class="{textCls}">{text}</a>',
-      '<div class="{dropCls}" style="{dropDisplay}"></div>'
+      '<div class="' + BUTTON_IMAGE_CLS + '"></div>',
+      '<a class="' + BUTTON_TEXT_CLS + '">{text}</a>',
+      '<div class="' + BUTTON_DROP_CLS + '" style="{dropDisplay}"></div>'
     ],
     /*
      *
@@ -86,7 +99,7 @@
     render: function(){
       var me = this,
         renderTo,
-        el = Fancy.get(document.createElement('div')),
+        el = F.get(document.createElement('div')),
         width = 0;
 
       me.fire('beforerender');
@@ -95,7 +108,7 @@
         me.renderWrapper();
       }
 
-      renderTo = Fancy.get(me.renderTo || document.body).dom;
+      renderTo = F.get(me.renderTo || document.body).dom;
 
       if(me.width){
         width = me.width;
@@ -107,7 +120,7 @@
       }
 
       if(me.imageColor){
-        me.imageCls = me.buttonImageColorCls;
+        me.imageCls = BUTTON_IMAGE_COLOR_CLS;
       }
 
       if(width < me.minWidth){
@@ -124,14 +137,14 @@
       }
 
       el.addCls(
-        Fancy.cls,
+        F.cls,
         me.widgetCls,
         me.cls,
         me.extraCls
       );
 
       if (me.disabled) {
-        el.addCls(me.disabledCls);
+        el.addCls(BUTTON_DISABLED_CLS);
       }
 
       el.css({
@@ -146,24 +159,21 @@
       el.css(me.style || {});
 
       el.update(me.tpl.getHTML({
-        text: me.text || '',
-        buttonImageCls: me.buttonImageCls,
-        textCls: me.textCls,
-        dropCls: me.dropCls
+        text: me.text || ''
       }));
 
       if(me.imageCls){
-        var imageEl = el.select('.' + me.buttonImageCls);
+        var imageEl = el.select('.' + BUTTON_IMAGE_CLS);
         if(me.imageColor){
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
-        if(Fancy.isString(me.imageCls)){
+        if(F.isString(me.imageCls)){
           imageEl.addCls(me.imageCls);
         }
       }
 
-      me.el = Fancy.get(renderTo.appendChild(el.dom));
+      me.el = F.get(renderTo.appendChild(el.dom));
 
       if (me.disabled) {
         me.disable();
@@ -186,13 +196,13 @@
     renderWrapper: function(){
       var me = this,
         wrapper = me.wrapper,
-        renderTo = Fancy.get(me.renderTo || document.body).dom,
-        el = Fancy.get(document.createElement('div'));
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div'));
 
       el.css(wrapper.style || {});
       el.addCls(wrapper.cls || '');
 
-      me.wrapper = Fancy.get(renderTo.appendChild(el.dom));
+      me.wrapper = F.get(renderTo.appendChild(el.dom));
 
       me.renderTo = me.wrapper.dom;
     },
@@ -200,9 +210,7 @@
      *
      */
     initToggle: function(){
-      var me = this;
-
-      if (!me.enableToggle) {
+      if (!this.enableToggle) {
         return false;
       }
     },
@@ -210,11 +218,10 @@
      * @param {Boolean} value
      */
     setPressed: function(value, fire){
-      var me = this,
-        pressedCls = me.pressedCls;
+      var me = this;
 
       if (value) {
-        me.addCls(pressedCls);
+        me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
         if(me.toggleGroup){
@@ -227,7 +234,7 @@
         }
       }
       else {
-        me.removeCls(pressedCls);
+        me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
       }
 
@@ -256,7 +263,7 @@
 
       if(me.disabled !== true){
         if(handler){
-          if(Fancy.isString(handler)){
+          if(F.isString(handler)){
             handler = me.getHandler(handler);
           }
 
@@ -283,7 +290,7 @@
      */
     getHandler: function(name){
       var me = this,
-        grid = Fancy.getWidget(me.el.parent().parent().select('.' + Fancy.GRID_CLS).attr('id'));
+        grid = F.getWidget(me.el.parent().parent().select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -293,17 +300,13 @@
      *
      */
     onMouseDown: function(){
-      var me = this;
-
-      me.fire('mousedown');
+      this.fire('mousedown');
     },
     /*
      *
      */
     onMouseUp: function(){
-      var me = this;
-
-      me.fire('mouseup');
+      this.fire('mouseup');
     },
     /*
      * @param {Object} e
@@ -327,7 +330,7 @@
         me.tooltip.destroy();
       }
 
-      me.tooltip = new Fancy.ToolTip({
+      me.tooltip = new F.ToolTip({
         text: me.tip
       });
 
@@ -356,25 +359,21 @@
 
       me.css('width', ((parseInt(el.css('font-size')) + 2 ) * text.length) + parseInt(me.css('padding-right')) * 2 + 2  );
 
-      el.select('.fancy-button-text').update(text);
+      el.select('.' + BUTTON_TEXT_CLS).update(text);
     },
     /*
      *
      */
     disable: function(){
-      var me = this;
-
-      me.disabled = true;
-      me.addCls(me.disabledCls);
+      this.disabled = true;
+      this.addCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
     enable: function(){
-      var me = this;
-
-      me.disabled = false;
-      me.removeCls(me.disabledCls);
+      this.disabled = false;
+      this.removeCls(BUTTON_DISABLED_CLS);
     },
     /*
      *

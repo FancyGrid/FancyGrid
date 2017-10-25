@@ -9,11 +9,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
    * @param {Object} o
    */
   constructor: function(o){
-    var me = this;
-
-    Fancy.apply(me, o);
-    
-    me.init();
+    Fancy.apply(this, o);
+    this.init();
   },
   /*
    *
@@ -67,18 +64,14 @@ Fancy.define('Fancy.spark.GrossLoss', {
    *
    */
   onMouseLeave: function(){
-    var me = this;
-
-    me.tooltip.destroy();
+    this.tooltip.destroy();
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    var me = this;
-
-    me.tooltip.el.css('display', 'block');
-    me.tooltip.show(e.pageX + 15, e.pageY - 25);
+    this.tooltip.el.css('display', 'block');
+    this.tooltip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *

@@ -10,9 +10,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *

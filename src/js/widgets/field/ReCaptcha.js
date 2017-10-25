@@ -13,12 +13,8 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *

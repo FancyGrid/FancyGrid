@@ -312,10 +312,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       leftColumns = [],
       rightColumns = [],
       i = 0,
-      iL = columns.length;
+      iL = columns.length,
+      isDraggable = false;
 
     for(;i<iL;i++){
       var column = columns[i];
+
+      if(column.draggable){
+        isDraggable = true;
+      }
 
       switch(column.type){
         case 'select':
@@ -323,14 +328,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           this.multiSelect = true;
           columns[i].index = '$selected';
           columns[i].editable = true;
-
           break;
         case 'order':
           columns[i].editable = false;
           columns[i].sortable = false;
           columns[i].cellAlign = 'right';
-
-
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -359,6 +361,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL--;
         continue;
       }
+    }
+
+    if(isDraggable){
+      config._plugins.push({
+        type: 'grid.columndrag'
+      });
     }
 
     config.leftColumns = leftColumns;

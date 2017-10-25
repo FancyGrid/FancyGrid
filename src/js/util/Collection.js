@@ -86,9 +86,7 @@ Fancy.Collection.prototype = {
    * @return {*}
    */
   get: function(key){
-    var me = this;
-
-    return me.map[key];
+    return this.map[key];
   },
   /*
    *

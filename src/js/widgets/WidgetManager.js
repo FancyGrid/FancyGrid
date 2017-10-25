@@ -2,76 +2,82 @@
  * @class Fancy.WidgetManager
  * @singleton
  */
-Fancy.define('Fancy.WidgetManager', {
-  singleton: true,
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.wtypes = new Fancy.Data();
-    me.widgets = new Fancy.Data();
-  },
+  F.define('Fancy.WidgetManager', {
+    singleton: true,
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.wtypes = new F.Data();
+      this.widgets = new F.Data();
+    },
+    /*
+     * @param {String} wtype
+     * @param {Object} widget
+     */
+    addWidgetType: function (wtype, widget) {
+      widget.prototype.wtype = wtype;
+      this.wtypes.add(wtype, widget);
+    },
+    /*
+     * @param {String} wtype
+     * @return {Object}
+     */
+    getWidgetClassByType: function (wtype) {
+      return this.wtypes.get(wtype);
+    },
+    /*
+     * @param {String} id
+     * @param {Object} widget
+     */
+    addWidget: function (id, widget) {
+      this.widgets.add(id, widget);
+    },
+    /*
+     * @param {String} id
+     * @return {Object}
+     */
+    getWidget: function (id) {
+      return this.widgets.get(id);
+    }
+  });
+
+  var W = F.WidgetManager;
+
   /*
    * @param {String} wtype
    * @param {Object} widget
    */
-  addWidgetType: function(wtype, widget){
-    widget.prototype.wtype = wtype;
-    this.wtypes.add(wtype, widget);
-  },
+  F.addWidgetType = function (wtype, widget) {
+    W.addWidgetType(wtype, widget);
+  };
+
   /*
    * @param {String} wtype
    * @return {Object}
    */
-  getWidgetClassByType: function(wtype){
-    return this.wtypes.get(wtype);
-  },
+  F.getWidgetClassByType = function (wtype) {
+    return W.getWidgetClassByType(wtype);
+  };
+
   /*
    * @param {String} id
    * @param {Object} widget
    */
-  addWidget: function(id, widget){
-    this.widgets.add(id, widget);
-  },
+  F.addWidget = function (id, widget) {
+    W.addWidget(id, widget);
+  };
+
   /*
    * @param {String} id
-   * @return {Object}
+   * @return {Object} widget
    */
-  getWidget: function(id){
-    return this.widgets.get(id);
-  }
-});
+  F.getWidget = function (id) {
+    return W.getWidget(id);
+  };
 
-/*
- * @param {String} wtype
- * @param {Object} widget
- */
-Fancy.addWidgetType = function(wtype, widget){
-  Fancy.WidgetManager.addWidgetType(wtype, widget);
-};
-
-/*
- * @param {String} wtype
- * @return {Object}
- */
-Fancy.getWidgetClassByType = function(wtype){
-  return Fancy.WidgetManager.getWidgetClassByType(wtype);
-};
-
-/*
- * @param {String} id
- * @param {Object} widget
- */
-Fancy.addWidget = function(id, widget){
-  Fancy.WidgetManager.addWidget(id, widget);
-};
-
-/*
- * @param {String} id
- * @return {Object} widget
- */
-Fancy.getWidget = function(id){
-  return Fancy.WidgetManager.getWidget(id);
-};
+})();

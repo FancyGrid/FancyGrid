@@ -115,6 +115,7 @@
       pathToSrc + 'widgets/grid/plugins/Paging.js', // paging module
       pathToSrc + 'widgets/grid/plugins/LoadMask.js',
       pathToSrc + 'widgets/grid/plugins/ColumnResizer.js',
+      pathToSrc + 'widgets/grid/plugins/ColumnDrag.js', // column drag module
       pathToSrc + 'widgets/grid/plugins/ChartIntegration.js', // chart integration module
       pathToSrc + 'widgets/grid/plugins/HighChart.js', // chart integration module
 

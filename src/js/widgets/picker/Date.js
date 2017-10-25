@@ -2,8 +2,23 @@
  * @class Fancy.DatePicker
  */
 (function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var D = F.Date;
 
-  Fancy.define('Fancy.datepicker.Manager', {
+  //CONSTANTS
+  var PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
+  var PICKER_DATE_CLS = F.PICKER_DATE_CLS;
+  var PICKER_DATE_CELL_TODAY_CLS = F.PICKER_DATE_CELL_TODAY_CLS;
+  var PICKER_DATE_CELL_OUT_RANGE_CLS = F.PICKER_DATE_CELL_OUT_RANGE_CLS;
+  var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
+  var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
+  var PICKER_BUTTON_DATE_CLS = F.PICKER_BUTTON_DATE_CLS;
+  var PICKER_BUTTON_DATE_WRAPPER_CLS = F.PICKER_BUTTON_DATE_WRAPPER_CLS;
+  var PICKER_BUTTON_TODAY_CLS = F.PICKER_BUTTON_TODAY_CLS;
+  var PICKER_BUTTON_TODAY_WRAPPER_CLS = F.PICKER_BUTTON_TODAY_WRAPPER_CLS;
+
+  F.define('Fancy.datepicker.Manager', {
     singleton: true,
     opened: [],
     /*
@@ -11,12 +26,10 @@
      */
     add: function (picker) {
       this.hide();
-
       this.opened.push(picker);
     },
     hide: function () {
-      var me = this,
-        opened = me.opened,
+      var opened = this.opened,
         i = 0,
         iL = opened.length;
 
@@ -24,17 +37,17 @@
         opened[i].hide();
       }
 
-      me.opened = [];
+      this.opened = [];
     }
   });
 
-  Fancy.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
-    extend: Fancy.Grid,
+  F.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
+    extend: F.Grid,
     type: 'datepicker',
     mixins: [
       'Fancy.grid.mixin.Grid',
-      Fancy.panel.mixin.PrepareConfig,
-      Fancy.panel.mixin.methods,
+      F.panel.mixin.PrepareConfig,
+      F.panel.mixin.methods,
       'Fancy.grid.mixin.PrepareConfig',
       'Fancy.grid.mixin.ActionColumn',
       'Fancy.grid.mixin.Edit'
@@ -45,17 +58,17 @@
     //panelBorderWidth: 0,
     i18n: 'en',
     cellTrackOver: true,
-    cellStylingCls: ['fancy-date-picker-cell-out-range', 'fancy-date-picker-cell-today', 'fancy-date-picker-cell-active'],
-    activeCellCls: 'fancy-date-picker-cell-active',
-    todayCellCls: 'fancy-date-picker-cell-today',
-    pickerDateCls: 'fancy-date-picker',
-    outRangeCellCls: 'fancy-date-picker-cell-out-range',
-    buttonBackCls: 'fancy-picker-button-back',
-    buttonDateCls: 'fancy-picker-button-date',
-    buttonDateWrapperCls: 'fancy-picker-button-date-wrapper',
-    buttonNextCls: 'fancy-picker-button-next',
-    buttonTodayCls: 'fancy-picker-button-today',
-    buttonTodayWrapperCls: 'fancy-picker-button-today-wrapper',
+    cellStylingCls: [PICKER_DATE_CELL_OUT_RANGE_CLS, PICKER_DATE_CELL_TODAY_CLS, PICKER_DATE_CELL_ACTIVE_CLS],
+    activeCellCls: PICKER_DATE_CELL_ACTIVE_CLS,
+    todayCellCls: PICKER_DATE_CELL_TODAY_CLS,
+    pickerDateCls: PICKER_DATE_CLS,
+    outRangeCellCls: PICKER_DATE_CELL_OUT_RANGE_CLS,
+    buttonBackCls: PICKER_BUTTON_BACK_CLS,
+    buttonDateCls: PICKER_BUTTON_DATE_CLS,
+    buttonDateWrapperCls: PICKER_BUTTON_DATE_WRAPPER_CLS,
+    buttonNextCls: PICKER_BUTTON_NEXT_CLS,
+    buttonTodayCls: PICKER_BUTTON_TODAY_CLS,
+    buttonTodayWrapperCls: PICKER_BUTTON_TODAY_WRAPPER_CLS,
     defaults: {
       type: 'string',
       width: 44,
@@ -70,10 +83,9 @@
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
+      var me = this;
 
-      Fancy.apply(me, config);
+      F.apply(me, config);
 
       me.initFormat();
       me.initColumns();
@@ -98,7 +110,7 @@
       me.on('update', me.onUpdate, me);
       me.on('cellclick', me.onCellClick, me);
 
-      me.addCls(me.pickerDateCls);
+      me.addCls(PICKER_DATE_CLS);
       me.el.on('mousewheel', me.onMouseWheel, me);
 
       me.panel.el.on('mousedown', me.onMouseDown, me);
@@ -112,7 +124,7 @@
       if (me.format) {
       }
       else {
-        me.format = Fancy.i18n[me.i18n].date;
+        me.format = F.i18n[me.i18n].date;
       }
     },
     /*
@@ -121,11 +133,11 @@
     initMonthPicker: function () {
       var me = this;
 
-      if (!Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULELOAD !== false && ( me.monthPicker || !Fancy.modules['grid'] )) {
+      if (!F.fullBuilt && F.MODULELOAD !== false && F.MODULELOAD !== false && ( me.monthPicker || !F.modules['grid'] )) {
         return;
       }
 
-      me.monthPicker = new Fancy.MonthPicker({
+      me.monthPicker = new F.MonthPicker({
         date: me.date,
         renderTo: me.panel.el.dom,
         style: {
@@ -146,9 +158,7 @@
      *
      */
     initData: function () {
-      var me = this;
-
-      me.data = me.setData();
+      this.data = this.setData();
     },
     /*
      *
@@ -169,11 +179,10 @@
       var me = this,
         format = me.format,
         days = format.days,
-        outRangeCellCls = me.outRangeCellCls,
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = Fancy.Date.dayIndexes,
+        dayIndexes = D.dayIndexes,
         columns = [],
         today = new Date();
 
@@ -183,13 +192,13 @@
         switch (o.rowIndex) {
           case 0:
             if (Number(o.value) > 20) {
-              o.cls += ' ' + outRangeCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
           case 4:
           case 5:
             if (Number(o.value) < 15) {
-              o.cls += ' ' + outRangeCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
         }
@@ -201,16 +210,16 @@
           if (o.value === today.getDate()) {
             if (o.rowIndex === 0) {
               if (o.value < 20) {
-                o.cls += ' ' + me.todayCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
             else if (o.rowIndex === 4 || o.rowIndex === 5) {
               if (o.value > 20) {
-                o.cls += ' ' + me.todayCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
             else {
-              o.cls += ' ' + me.todayCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
             }
           }
         }
@@ -219,16 +228,16 @@
           if (o.value === date.getDate()) {
             if (o.rowIndex === 0) {
               if (o.value < 20) {
-                o.cls += ' ' + me.activeCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
             else if (o.rowIndex === 4 || o.rowIndex === 5) {
               if (o.value > 20) {
-                o.cls += ' ' + me.activeCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
             else {
-              o.cls += ' ' + me.activeCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
             }
           }
         }
@@ -268,7 +277,7 @@
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = Fancy.Date.dayIndexes;
+        dayIndexes = D.dayIndexes;
 
       for (; i < iL; i++) {
         fields.push(dayIndexes[i]);
@@ -291,8 +300,8 @@
         format = me.format,
         startDay = format.startDay,
         date = me.showDate,
-        daysInMonth = Fancy.Date.getDaysInMonth(date),
-        firstDayOfMonth = Fancy.Date.getFirstDayOfMonth(date),
+        daysInMonth = D.getDaysInMonth(date),
+        firstDayOfMonth = D.getFirstDayOfMonth(date),
         data = [],
         fields = me.getDataFields(),
         i = 0,
@@ -331,7 +340,7 @@
       }
 
       var prevDate = new Date(year, month, _date, hour, minute, second, millisecond),
-        prevDateDaysInMonth = Fancy.Date.getDaysInMonth(prevDate);
+        prevDateDaysInMonth = D.getDaysInMonth(prevDate);
 
       i = 7;
 
@@ -370,10 +379,8 @@
      *
      */
     initBars: function () {
-      var me = this;
-
-      me.initTBar();
-      me.initBBar();
+      this.initTBar();
+      this.initBBar();
     },
     /*
      *
@@ -383,16 +390,16 @@
         tbar = [];
 
       tbar.push({
-        cls: me.buttonBackCls,
+        cls: PICKER_BUTTON_BACK_CLS,
         handler: me.onBackClick,
         scope: me,
         style: {}
       });
 
       tbar.push({
-        cls: me.buttonDateCls,
+        cls: PICKER_BUTTON_DATE_CLS,
         wrapper: {
-          cls: me.buttonDateWrapperCls
+          cls: PICKER_BUTTON_DATE_WRAPPER_CLS
         },
         handler: me.onDateClick,
         scope: me,
@@ -402,7 +409,7 @@
       tbar.push('side');
 
       tbar.push({
-        cls: me.buttonNextCls,
+        cls: PICKER_BUTTON_NEXT_CLS,
         handler: me.onNextClick,
         scope: me
       });
@@ -418,9 +425,9 @@
 
       bbar.push({
         text: me.format.today,
-        cls: me.buttonTodayCls,
+        cls: PICKER_BUTTON_TODAY_CLS,
         wrapper: {
-          cls: me.buttonTodayWrapperCls
+          cls: PICKER_BUTTON_TODAY_WRAPPER_CLS
         },
         handler: me.onClickToday,
         scope: me
@@ -489,7 +496,7 @@
      */
     onUpdate: function () {
       var me = this,
-        value = Fancy.Date.format(me.showDate, 'F Y', {
+        value = D.format(me.showDate, 'F Y', {
           date: me.format
         });
 
@@ -523,18 +530,17 @@
         second = date.getSeconds(),
         millisecond = date.getMilliseconds(),
         day,
-        activeCellCls = me.activeCellCls,
-        cell = Fancy.get(o.cell);
+        cell = F.get(o.cell);
 
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
-      me.el.select('.' + activeCellCls).removeCls(activeCellCls);
+      me.el.select('.' + PICKER_DATE_CELL_ACTIVE_CLS).removeCls(PICKER_DATE_CELL_ACTIVE_CLS);
 
-      cell.addCls(activeCellCls);
+      cell.addCls(PICKER_DATE_CELL_ACTIVE_CLS);
 
       me.fire('changedate', me.date);
 
-      if (cell.hasCls(me.outRangeCellCls)) {
+      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)) {
         day = Number(o.value);
         if (o.rowIndex < 3) {
           if (month === 0) {
@@ -568,14 +574,13 @@
      * @param {Object} e
      */
     onMouseWheel: function (e) {
-      var me = this,
-        delta = Fancy.getWheelDelta(e.originalEvent || e);
+      var delta = F.getWheelDelta(e.originalEvent || e);
 
       if (delta < 0) {
-        me.onBackClick();
+        this.onBackClick();
       }
       else {
-        me.onNextClick();
+        this.onNextClick();
       }
     },
     /*
@@ -587,7 +592,7 @@
       me.initMonthPicker();
 
       me.monthPicker.panel.css('display', 'block');
-      if (Fancy.$.fn.animate) {
+      if (F.$.fn.animate) {
         me.monthPicker.panel.el.animate({
           top: '0px'
         });
@@ -602,9 +607,7 @@
      *
      */
     onMonthCancelClick: function () {
-      var me = this;
-
-      me.hideMonthPicker();
+      this.hideMonthPicker();
     },
     /*
      *
@@ -639,10 +642,9 @@
      *
      */
     hideMonthPicker: function () {
-      var me = this,
-        el = me.monthPicker.panel.el;
+      var el = this.monthPicker.panel.el;
 
-      if (Fancy.$.fn.animate) {
+      if (F.$.fn.animate) {
         el.animate({
           top: '-' + el.css('height')
         }, {

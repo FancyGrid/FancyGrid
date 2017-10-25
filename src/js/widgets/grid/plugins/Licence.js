@@ -11,19 +11,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *

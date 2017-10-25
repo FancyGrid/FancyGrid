@@ -26,68 +26,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   prefix: 'fancy-grid-',
   cls: '',
   widgetCls: Fancy.GRID_CLS,
-  // Cell cls-s
-  cellCls: Fancy.GRID_CELL_CLS,
-  cellInnerCls: 'fancy-grid-cell-inner',
-  cellEvenCls: 'fancy-grid-cell-even',
-  cellOverCls: Fancy.GRID_CELL_OVER_CLS,
-  cellSelectedCls: Fancy.GRID_CELL_SELECTED_CLS,
-  // Cell Header cls-s
-  cellHeaderCls: 'fancy-grid-header-cell',
-  cellHeaderSelectCls: 'fancy-grid-header-cell-select',
-  cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
-  cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
-  cellHeaderTriggerCls: 'fancy-grid-header-cell-trigger',
-  cellHeaderTriggerImageCls: 'fancy-grid-header-cell-trigger-image',
-  cellHeaderGroupLevel1: 'fancy-grid-header-cell-group-level-1',
-  cellHeaderGroupLevel2: 'fancy-grid-header-cell-group-level-2',
-  filterHeaderCellCls: 'fancy-grid-header-filter-cell',//TODO: rename to cellHeaderFilterCls
-  //Column header cls-s sorting
-  clsASC: 'fancy-grid-column-sort-ASC',
-  clsDESC: 'fancy-grid-column-sort-DESC',
-  //Column cls-s
-  columnCls: Fancy.GRID_COLUMN_CLS,
-  columnOverCls: Fancy.GRID_COLUMN_OVER_CLS,
-  columnSelectedCls: Fancy.GRID_COLUMN_SELECTED_CLS,
-  columnColorCls: 'fancy-grid-column-color',
-  columnTextCls: 'fancy-grid-column-text',
-  columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
-  columnOrderCls: 'fancy-grid-column-order',
-  columnSelectCls: Fancy.GRID_COLUMN_SELECT_CLS,
-  columnResizerCls: 'fancy-grid-column-resizer',
-  //Column spark cls-s
-  columnSparkCls: 'fancy-grid-column-sparkline',
-  columnSparkBulletCls: 'fancy-grid-column-sparkline-bullet',
-  columnSparkCircleCls: 'fancy-grid-column-chart-circle',
-  columnSparkDonutProgressCls: 'fancy-grid-column-spark-progress-donut',
-  columnGrossLossCls: 'fancy-grid-column-grossloss',
-  columnProgressCls: 'fancy-grid-column-progress',
-  columnSparkHBarCls: 'fancy-grid-column-h-bar',
-  //Row cls-s
-  clsGroupRow: 'fancy-grid-group-row',//TODO: rename to rowGroupCls
-  clsCollapsedRow: 'fancy-grid-group-row-collapsed',//TODO: rename to rowCollapsedCls
-  clsSummaryContainer: 'fancy-grid-summary-container',//TODO: rename to ???
-  clsSummaryRow: 'fancy-grid-summary-row',//TODO: rename to rowSummaryCls
-  rowSummaryBottomCls: 'fancy-grid-summary-row-bottom',
-  rowEditCls: 'fancy-grid-row-edit',
-  rowEditButtonCls: 'fancy-grid-row-edit-buttons',
-
-  pseudoCellCls: 'fancy-grid-pseudo-cell',
-  rowOverCls: Fancy.GRID_ROW_OVER_CLS,
-
-  expandRowCls: 'fancy-grid-expand-row',//TODO: rename to rowExpandCls
-  expandRowOverCls: 'fancy-grid-expand-row-over',//TODO: rename to rowExpandOverCls
-  expandRowSelectedCls: 'fancy-grid-expand-row-selected', //TODO: rename to rowExpandSelectedCls
-
-  leftEmptyCls: 'fancy-grid-left-empty',
-  rightEmptyCls: 'fancy-grid-right-empty',
-
-  centerCls: 'fancy-grid-center',
-  leftCls: 'fancy-grid-left',
-  rightCls: 'fancy-grid-right',
-
-  headerCls: Fancy.GRID_HEADER_CLS,
-
   header: true,
   shadow: true,
   striped: true,
@@ -160,6 +98,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
+      'columndrag',
       'scroll', 'nativescroll',
       'remove',
       'set',
@@ -446,6 +385,62 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     me.fire('unlockcolumn');
+  },
+  /*
+   * @param {String} fromSide
+   * @param {String} toSide
+   * @param {Number} fromIndex
+   * @param {Number} toIndex
+   */
+  moveColumn: function (fromSide, toSide, fromIndex, toIndex) {
+    var me = this,
+      removedColumn;
+
+    if(fromSide === 'center'){
+      removedColumn = me.removeColumn(fromIndex, 'center');
+      switch(toSide){
+        case 'left':
+          me.insertColumn(removedColumn, toIndex, 'left', 'center');
+          break;
+        case 'right':
+          me.insertColumn(removedColumn, toIndex, 'right', 'center');
+          break;
+      }
+    }
+    else if(fromSide === 'left'){
+      removedColumn = me.removeColumn(fromIndex, 'left');
+      switch(toSide){
+        case 'center':
+          me.insertColumn(removedColumn, toIndex, 'center', 'left');
+          break;
+        case 'right':
+          me.insertColumn(removedColumn, toIndex, 'right', 'left');
+          break;
+      }
+    }
+    else if(fromSide === 'right'){
+      removedColumn = me.removeColumn(fromIndex, 'right');
+      switch(toSide){
+        case 'center':
+          me.insertColumn(removedColumn, toIndex, 'center', 'right');
+          break;
+        case 'left':
+          me.insertColumn(removedColumn, toIndex, 'left', 'right');
+          break;
+      }
+    }
+
+    if(me.groupheader){
+      me.header.fixGroupHeaderSizing();
+
+      if(me.leftColumns){
+        me.leftHeader.fixGroupHeaderSizing();
+      }
+
+      if(me.rightColumns){
+        me.rightHeader.fixGroupHeaderSizing();
+      }
+    }
   }
 });
 

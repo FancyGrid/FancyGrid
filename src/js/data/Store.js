@@ -68,7 +68,7 @@ Fancy.define('Fancy.Store', {
       'beforesort', 'sort',
       'beforeload', 'load',
       'filter',
-      'insert',
+      'beforeinsert', 'insert',
       'servererror', 'serversuccess'
     );
     me.initId();

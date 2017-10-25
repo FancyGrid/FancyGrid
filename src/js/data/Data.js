@@ -28,10 +28,8 @@ Fancy.define('Fancy.Data', {
    * @param {*} value
    */
   add: function(key, value){
-    var me = this;
-
-    me.map[key] = value;
-    me.length++;
+    this.map[key] = value;
+    this.length++;
   },
   /*
    * @param {String|Number} key

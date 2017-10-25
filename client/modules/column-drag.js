@@ -1,0 +1,1075 @@
+/*
+ * @class Fancy.grid.plugin.ColumnDrag
+ * @extend Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var DOC = F.get(document);
+
+  //CONSTANTS
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+
+  F.define('Fancy.grid.plugin.ColumnDrag', {
+    extend: F.Plugin,
+    ptype: 'grid.columndrag',
+    inWidgetName: 'columndrag',
+    activeSide: undefined,
+    activeCell: undefined,
+    activeIndex: undefined,
+    activeColumn: undefined,
+    inCell: undefined,
+    inIndex: undefined,
+    inSide: undefined,
+    ok: false,
+    status: 'none', //none/dragging
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
+
+      me.Super('init', arguments);
+
+      w.on('render', function(){
+        me.ons();
+        me.initHint();
+      });
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.on('mousedown', me.onMouseDownCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseDownCell: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = Fancy.get(e.currentTarget),
+        index = Number(cell.attr('index')),
+        side = me.getSideByCell(cell),
+        columns = w.getColumns(side),
+        column = columns[index];
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        return;
+      }
+
+      if(w.startResizing){
+        return;
+      }
+
+      if(column.draggable === false){
+        return;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.activeUnderGroup = true;
+      }
+
+      me.activeSide = side;
+      me.inSide = side;
+      me.activeCell = cell;
+      me.inCell = cell;
+      me.activeIndex = Number(cell.attr('index'));
+      me.inIndex = me.activeIndex;
+      me.activeColumn = columns[me.activeIndex];
+
+      me.mouseDownX = e.x;
+      me.mouseDownY = e.y;
+
+      DOC.once('mouseup', me.onMouseUp, me);
+      DOC.on('mousemove', me.onMouseMove, me);
+
+      w.el.on('mouseleave', me.onMouseLeave, me);
+      w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseLeave: function () {
+      this.hideHint();
+    },
+    onMouseUp: function () {
+      var me = this,
+        w = me.widget,
+        dragged = false;
+
+      DOC.un('mousemove', me.onMouseMove, me);
+
+      w.el.un('mouseleave', me.onMouseLeave, me);
+      w.el.un('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+
+      if(me.ok){
+        if(me.inSide === me.activeSide){
+          me.dragColumn(me.inSide);
+        }
+        else if(me.activeSide === 'center'){
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+        else{
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+
+        dragged = true;
+      }
+
+      delete me.inUpGroupCell;
+      delete me.inUnderGroup;
+      delete me.activeUnderGroup;
+      delete me.activeSide;
+      delete me.activeCell;
+      delete me.activeIndex;
+      delete me.activeIndex;
+      delete me.activeColumn;
+      delete me.mouseDownX;
+      delete me.mouseDownY;
+      me.ok = false;
+      delete me.okPosition;
+
+      if(me.tip){
+        me.tip.destroy();
+        delete me.tip;
+      }
+
+      if(me.status === 'dragging'){
+        setTimeout(function () {
+          me.status = 'none';
+          if(dragged) {
+            w.fire('columndrag');
+          }
+        }, 10);
+      }
+
+      me.hideHint();
+    },
+    onMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        x = e.x,
+        y = e.y,
+        columns = w.getColumns(me.activeSide);
+
+      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
+        //me.status = 'dragging';
+
+        me.tip = new Fancy.ToolTip({
+          text: me.activeColumn.title,
+          cls: 'fancy-drag-cell'
+        });
+
+        me.tip.el.css('display', 'block');
+      }
+      else if(!me.tip){
+        return;
+      }
+
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.tip.destroy();
+        return;
+      }
+
+      me.tip.show(e.pageX + 15, e.pageY + 15);
+    },
+    onMouseEnterCell: function(e){
+      var me = this,
+        cell = Fancy.get(e.currentTarget),
+        side = me.getSideByCell(cell);
+
+      me.hideHint();
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.inUnderGroup = true;
+      }
+      else{
+        delete me.inUnderGroup;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        me.inUpGroupCell = cell;
+      }
+      else{
+        delete me.inUpGroupCell;
+      }
+
+      me.inSide = side;
+      me.inCell = cell;
+      me.inIndex = Number(cell.attr('index'));
+    },
+    onMouseMoveCell: function(e){
+      var me = this,
+        w = me.widget,
+        cell = me.inCell,
+        cellWidth = parseInt(cell.css('width')),
+        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS),
+        targetEl = Fancy.get(e.target),
+        inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
+        fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
+        toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
+
+      me.status = 'dragging';
+
+      var columns = w.getColumns(me.activeSide);
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.ok = false;
+        me.hideHint();
+        return;
+      }
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd(),
+          startIndex = o.start,
+          endIndex = o.end;
+
+        if(me.activeSide !== me.inSide){
+          me.ok = true;
+          if(e.offsetX > cellWidth/2 || inTriggerEl){
+            me.showHint('right');
+          }
+          else{
+            me.showHint('left');
+          }
+        }
+        else{
+          if (e.offsetX > cellWidth / 2) {
+            if(me.activeIndex > endIndex && me.activeIndex - 1 === endIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            if(me.activeIndex < startIndex && me.activeIndex + 1 === startIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('left');
+            }
+          }
+        }
+      }
+      else if(me.activeSide !== me.inSide){
+        me.ok = true;
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.showHint('right');
+        }
+        else{
+          me.showHint('left');
+        }
+      }
+      else if(me.activeIndex === me.inIndex){
+        me.ok = false;
+      }
+      else if(me.activeIndex < me.inIndex){
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.ok = true;
+          me.showHint('right');
+        }
+        else{
+          if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
+            me.ok = true;
+            me.showHint('left');
+          }
+          else {
+            if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
+              me.ok = true;
+              me.showHint('left');
+            }
+            else{
+              me.ok = false;
+              me.hideHint();
+            }
+          }
+        }
+      }
+      else if(me.activeIndex > me.inIndex){
+        if(e.offsetX < cellWidth/2){
+          if(inTriggerEl){
+            if(fromGroup || toGroup){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
+              me.ok = false;
+              me.hideHint();
+            }
+            else{
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            me.ok = true;
+            me.showHint('left');
+          }
+        }
+        else{
+          if(e.offsetX > cellWidth/2){
+            if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else{
+              if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
+                me.ok = true;
+                me.showHint('right');
+              }
+              else{
+                me.ok = false;
+                me.hideHint();
+              }
+            }
+          }
+          else {
+            me.ok = false;
+            me.hideHint();
+          }
+        }
+      }
+    },
+    showHint: function(position){
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        cell = me.inCell,
+        topEl = me.topEl,
+        bottomEl = me.bottomEl,
+        o = cell.offset(),
+        cellWidth = parseInt(cell.css('width')),
+        cellHeight = parseInt(cell.css('height'));
+
+      me.okPosition = position;
+
+      topEl.removeCls(HIDDEN_CLS);
+      bottomEl.removeCls(HIDDEN_CLS);
+
+      var plusWidth = 0;
+
+      if(position === 'right'){
+        plusWidth += cellWidth;
+      }
+
+      topEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(topEl.css('width'))/2),
+        top: o.top - parseInt(topEl.css('height'))
+      });
+
+      var bottomTop = o.top + cellHeight;
+
+      if(me.inUpGroupCell){
+        var rows = w.header.calcRows();
+        bottomTop = o.top + rows * CELL_HEADER_HEIGHT;
+      }
+
+      bottomEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(bottomEl.css('width'))/2),
+        top: bottomTop
+      });
+    },
+    hideHint: function(){
+      var me = this;
+
+      me.topEl.addCls(HIDDEN_CLS);
+      me.bottomEl.addCls(HIDDEN_CLS);
+    },
+    initHint: function(){
+      var me = this,
+        w = me.widget,
+        themeCls = 'fancy-theme-' + w.theme,
+        renderTo = F.get(document.body).dom,
+        topEl = F.get(document.createElement('div')),
+        bottomEl = F.get(document.createElement('div'));
+
+      topEl.addCls('fancy-drag-hint-top', HIDDEN_CLS, themeCls);
+      bottomEl.addCls('fancy-drag-hint-bottom', HIDDEN_CLS, themeCls);
+
+      me.topEl = F.get(renderTo.appendChild(topEl.dom));
+      me.bottomEl = F.get(renderTo.appendChild(bottomEl.dom));
+    },
+    /*
+     * @param {String} side
+     */
+    dragColumn: function (side) {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(side),
+        body = w.getBody(side),
+        activeIndex = me.activeIndex,
+        inIndex = me.inIndex,
+        position = me.okPosition,
+        columns = w.getColumns(side),
+        column = columns[activeIndex],
+        rows = header.calcRows();
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd();
+
+        inIndex = o.start;
+
+        if(position === 'right'){
+          inIndex = o.end + 1;
+        }
+      }
+      else if(position === 'right'){
+        if(me.inUnderGroup){
+          var groupName = columns[inIndex].grouping,
+            nextColumn = columns[inIndex + 1];
+
+          if(nextColumn && nextColumn.grouping === groupName){
+            inIndex++;
+          }
+        }
+        else {
+          inIndex++;
+        }
+      }
+
+      if(w.groupheader){
+        var inColumn = columns[inIndex];
+
+        if(inColumn && inColumn.grouping && me.inUnderGroup){
+          column.grouping = inColumn.grouping;
+
+          if(column.filter && column.filter.header && rows < 3){
+            delete column.filter;
+          }
+        }
+        else{
+          delete column.grouping;
+        }
+      }
+
+      columns.splice(activeIndex, 1);
+
+      if(activeIndex<inIndex){
+        inIndex--;
+      }
+
+      columns.splice(inIndex, 0, column);
+
+      body.clearColumnsStyles();
+      header.updateTitles();
+      header.updateCellsSizes();
+      if(w.groupheader){
+        w.header.fixGroupHeaderSizing();
+        if(w.leftColumns){
+          w.leftHeader.fixGroupHeaderSizing();
+        }
+
+        if(w.rightColumns){
+          w.rightHeader.fixGroupHeaderSizing();
+        }
+
+        header.reSetGroupIndexes();
+      }
+
+      header.reSetColumnsAlign();
+      body.reSetColumnsAlign();
+      body.reSetColumnsCls();
+      body.updateColumnsSizes();
+      w.update();
+    },
+    /*
+     *
+     */
+    getSideByCell: function (cell) {
+      var me = this,
+        w = me.widget,
+        side;
+
+      if(w.centerEl.within(cell)){
+        side = 'center';
+      }
+      else if(w.leftEl.within(cell)){
+        side = 'left';
+      }
+      else if(w.rightEl.within(cell)){
+        side = 'right';
+      }
+
+      return side;
+    },
+    /*
+     * @return {Object}
+     */
+    getGroupStartEnd: function () {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(me.inSide),
+        groupName = me.inUpGroupCell.attr('index'),
+        inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
+        values = [];
+
+      inUpGroupCells.each(function(cell){
+        values.push(Number(cell.attr('index')));
+      });
+
+      return {
+        start: F.Array.min(values),
+        end: F.Array.max(values)
+      };
+    }
+  });
+
+})();/*
+ * @class Fancy.grid.plugin.ColumnDrag
+ * @extend Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var DOC = F.get(document);
+
+  //CONSTANTS
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+
+  F.define('Fancy.grid.plugin.ColumnDrag', {
+    extend: F.Plugin,
+    ptype: 'grid.columndrag',
+    inWidgetName: 'columndrag',
+    activeSide: undefined,
+    activeCell: undefined,
+    activeIndex: undefined,
+    activeColumn: undefined,
+    inCell: undefined,
+    inIndex: undefined,
+    inSide: undefined,
+    ok: false,
+    status: 'none', //none/dragging
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
+
+      me.Super('init', arguments);
+
+      w.on('render', function(){
+        me.ons();
+        me.initHint();
+      });
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.on('mousedown', me.onMouseDownCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseDownCell: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = Fancy.get(e.currentTarget),
+        index = Number(cell.attr('index')),
+        side = me.getSideByCell(cell),
+        columns = w.getColumns(side),
+        column = columns[index];
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        return;
+      }
+
+      if(w.startResizing){
+        return;
+      }
+
+      if(column.draggable === false){
+        return;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.activeUnderGroup = true;
+      }
+
+      me.activeSide = side;
+      me.inSide = side;
+      me.activeCell = cell;
+      me.inCell = cell;
+      me.activeIndex = Number(cell.attr('index'));
+      me.inIndex = me.activeIndex;
+      me.activeColumn = columns[me.activeIndex];
+
+      me.mouseDownX = e.x;
+      me.mouseDownY = e.y;
+
+      DOC.once('mouseup', me.onMouseUp, me);
+      DOC.on('mousemove', me.onMouseMove, me);
+
+      w.el.on('mouseleave', me.onMouseLeave, me);
+      w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseLeave: function () {
+      this.hideHint();
+    },
+    onMouseUp: function () {
+      var me = this,
+        w = me.widget,
+        dragged = false;
+
+      DOC.un('mousemove', me.onMouseMove, me);
+
+      w.el.un('mouseleave', me.onMouseLeave, me);
+      w.el.un('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+
+      if(me.ok){
+        if(me.inSide === me.activeSide){
+          me.dragColumn(me.inSide);
+        }
+        else if(me.activeSide === 'center'){
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+        else{
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+
+        dragged = true;
+      }
+
+      delete me.inUpGroupCell;
+      delete me.inUnderGroup;
+      delete me.activeUnderGroup;
+      delete me.activeSide;
+      delete me.activeCell;
+      delete me.activeIndex;
+      delete me.activeIndex;
+      delete me.activeColumn;
+      delete me.mouseDownX;
+      delete me.mouseDownY;
+      me.ok = false;
+      delete me.okPosition;
+
+      if(me.tip){
+        me.tip.destroy();
+        delete me.tip;
+      }
+
+      if(me.status === 'dragging'){
+        setTimeout(function () {
+          me.status = 'none';
+          if(dragged) {
+            w.fire('columndrag');
+          }
+        }, 10);
+      }
+
+      me.hideHint();
+    },
+    onMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        x = e.x,
+        y = e.y,
+        columns = w.getColumns(me.activeSide);
+
+      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
+        //me.status = 'dragging';
+
+        me.tip = new Fancy.ToolTip({
+          text: me.activeColumn.title,
+          cls: 'fancy-drag-cell'
+        });
+
+        me.tip.el.css('display', 'block');
+      }
+      else if(!me.tip){
+        return;
+      }
+
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.tip.destroy();
+        return;
+      }
+
+      me.tip.show(e.pageX + 15, e.pageY + 15);
+    },
+    onMouseEnterCell: function(e){
+      var me = this,
+        cell = Fancy.get(e.currentTarget),
+        side = me.getSideByCell(cell);
+
+      me.hideHint();
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.inUnderGroup = true;
+      }
+      else{
+        delete me.inUnderGroup;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        me.inUpGroupCell = cell;
+      }
+      else{
+        delete me.inUpGroupCell;
+      }
+
+      me.inSide = side;
+      me.inCell = cell;
+      me.inIndex = Number(cell.attr('index'));
+    },
+    onMouseMoveCell: function(e){
+      var me = this,
+        w = me.widget,
+        cell = me.inCell,
+        cellWidth = parseInt(cell.css('width')),
+        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS),
+        targetEl = Fancy.get(e.target),
+        inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
+        fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
+        toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
+
+      me.status = 'dragging';
+
+      var columns = w.getColumns(me.activeSide);
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.ok = false;
+        me.hideHint();
+        return;
+      }
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd(),
+          startIndex = o.start,
+          endIndex = o.end;
+
+        if(me.activeSide !== me.inSide){
+          me.ok = true;
+          if(e.offsetX > cellWidth/2 || inTriggerEl){
+            me.showHint('right');
+          }
+          else{
+            me.showHint('left');
+          }
+        }
+        else{
+          if (e.offsetX > cellWidth / 2) {
+            if(me.activeIndex > endIndex && me.activeIndex - 1 === endIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            if(me.activeIndex < startIndex && me.activeIndex + 1 === startIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('left');
+            }
+          }
+        }
+      }
+      else if(me.activeSide !== me.inSide){
+        me.ok = true;
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.showHint('right');
+        }
+        else{
+          me.showHint('left');
+        }
+      }
+      else if(me.activeIndex === me.inIndex){
+        me.ok = false;
+      }
+      else if(me.activeIndex < me.inIndex){
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.ok = true;
+          me.showHint('right');
+        }
+        else{
+          if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
+            me.ok = true;
+            me.showHint('left');
+          }
+          else {
+            if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
+              me.ok = true;
+              me.showHint('left');
+            }
+            else{
+              me.ok = false;
+              me.hideHint();
+            }
+          }
+        }
+      }
+      else if(me.activeIndex > me.inIndex){
+        if(e.offsetX < cellWidth/2){
+          if(inTriggerEl){
+            if(fromGroup || toGroup){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
+              me.ok = false;
+              me.hideHint();
+            }
+            else{
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            me.ok = true;
+            me.showHint('left');
+          }
+        }
+        else{
+          if(e.offsetX > cellWidth/2){
+            if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else{
+              if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
+                me.ok = true;
+                me.showHint('right');
+              }
+              else{
+                me.ok = false;
+                me.hideHint();
+              }
+            }
+          }
+          else {
+            me.ok = false;
+            me.hideHint();
+          }
+        }
+      }
+    },
+    showHint: function(position){
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        cell = me.inCell,
+        topEl = me.topEl,
+        bottomEl = me.bottomEl,
+        o = cell.offset(),
+        cellWidth = parseInt(cell.css('width')),
+        cellHeight = parseInt(cell.css('height'));
+
+      me.okPosition = position;
+
+      topEl.removeCls(HIDDEN_CLS);
+      bottomEl.removeCls(HIDDEN_CLS);
+
+      var plusWidth = 0;
+
+      if(position === 'right'){
+        plusWidth += cellWidth;
+      }
+
+      topEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(topEl.css('width'))/2),
+        top: o.top - parseInt(topEl.css('height'))
+      });
+
+      var bottomTop = o.top + cellHeight;
+
+      if(me.inUpGroupCell){
+        var rows = w.header.calcRows();
+        bottomTop = o.top + rows * CELL_HEADER_HEIGHT;
+      }
+
+      bottomEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(bottomEl.css('width'))/2),
+        top: bottomTop
+      });
+    },
+    hideHint: function(){
+      var me = this;
+
+      me.topEl.addCls(HIDDEN_CLS);
+      me.bottomEl.addCls(HIDDEN_CLS);
+    },
+    initHint: function(){
+      var me = this,
+        w = me.widget,
+        themeCls = 'fancy-theme-' + w.theme,
+        renderTo = F.get(document.body).dom,
+        topEl = F.get(document.createElement('div')),
+        bottomEl = F.get(document.createElement('div'));
+
+      topEl.addCls('fancy-drag-hint-top', HIDDEN_CLS, themeCls);
+      bottomEl.addCls('fancy-drag-hint-bottom', HIDDEN_CLS, themeCls);
+
+      me.topEl = F.get(renderTo.appendChild(topEl.dom));
+      me.bottomEl = F.get(renderTo.appendChild(bottomEl.dom));
+    },
+    /*
+     * @param {String} side
+     */
+    dragColumn: function (side) {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(side),
+        body = w.getBody(side),
+        activeIndex = me.activeIndex,
+        inIndex = me.inIndex,
+        position = me.okPosition,
+        columns = w.getColumns(side),
+        column = columns[activeIndex],
+        rows = header.calcRows();
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd();
+
+        inIndex = o.start;
+
+        if(position === 'right'){
+          inIndex = o.end + 1;
+        }
+      }
+      else if(position === 'right'){
+        if(me.inUnderGroup){
+          var groupName = columns[inIndex].grouping,
+            nextColumn = columns[inIndex + 1];
+
+          if(nextColumn && nextColumn.grouping === groupName){
+            inIndex++;
+          }
+        }
+        else {
+          inIndex++;
+        }
+      }
+
+      if(w.groupheader){
+        var inColumn = columns[inIndex];
+
+        if(inColumn && inColumn.grouping && me.inUnderGroup){
+          column.grouping = inColumn.grouping;
+
+          if(column.filter && column.filter.header && rows < 3){
+            delete column.filter;
+          }
+        }
+        else{
+          delete column.grouping;
+        }
+      }
+
+      columns.splice(activeIndex, 1);
+
+      if(activeIndex<inIndex){
+        inIndex--;
+      }
+
+      columns.splice(inIndex, 0, column);
+
+      body.clearColumnsStyles();
+      header.updateTitles();
+      header.updateCellsSizes();
+      if(w.groupheader){
+        w.header.fixGroupHeaderSizing();
+        if(w.leftColumns){
+          w.leftHeader.fixGroupHeaderSizing();
+        }
+
+        if(w.rightColumns){
+          w.rightHeader.fixGroupHeaderSizing();
+        }
+
+        header.reSetGroupIndexes();
+      }
+
+      header.reSetColumnsAlign();
+      body.reSetColumnsAlign();
+      body.reSetColumnsCls();
+      body.updateColumnsSizes();
+      w.update();
+    },
+    /*
+     *
+     */
+    getSideByCell: function (cell) {
+      var me = this,
+        w = me.widget,
+        side;
+
+      if(w.centerEl.within(cell)){
+        side = 'center';
+      }
+      else if(w.leftEl.within(cell)){
+        side = 'left';
+      }
+      else if(w.rightEl.within(cell)){
+        side = 'right';
+      }
+
+      return side;
+    },
+    /*
+     * @return {Object}
+     */
+    getGroupStartEnd: function () {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(me.inSide),
+        groupName = me.inUpGroupCell.attr('index'),
+        inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
+        values = [];
+
+      inUpGroupCells.each(function(cell){
+        values.push(Number(cell.attr('index')));
+      });
+
+      return {
+        start: F.Array.min(values),
+        end: F.Array.max(values)
+      };
+    }
+  });
+
+})();

@@ -12,19 +12,14 @@ Fancy.define('Fancy.grid.plugin.Paging', {
    * @param {Object} config
    */
   constructor: function(config) {
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -43,51 +38,31 @@ Fancy.define('Fancy.grid.plugin.Paging', {
    * @param {Number} value
    */
   setPageSize: function(value){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.setPageSize(value);
+    this.widget.store.setPageSize(value);
   },
   /*
    *
    */
   nextPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.nextPage();
+    this.widget.store.nextPage();
   },
   /*
    *
    */
   lastPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.lastPage();
+    this.widget.store.lastPage();
   },
   /*
    *
    */
   prevPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.prevPage();
+    this.widget.store.prevPage();
   },
   /*
    *
    */
   firstPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.firstPage();
+    this.widget.store.firstPage();
   },
   /*
    * @param {Fancy.Store} store

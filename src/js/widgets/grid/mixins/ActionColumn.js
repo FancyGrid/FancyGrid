@@ -41,7 +41,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   getActiveActionColumnItem: function(o){
     var cell = Fancy.get(o.cell),
       target = o.e.target,
-      actionEls = cell.select('.fancy-grid-column-action-item'),
+      actionEls = cell.select('.' + Fancy.GRID_COLUMN_ACTION_ITEM_CLS),
       i = 0,
       iL = actionEls.length;
 

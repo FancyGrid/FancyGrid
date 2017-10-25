@@ -10,11 +10,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
+    Fancy.applyConfig(this, config);
 
-    Fancy.applyConfig(me, config);
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -24,8 +22,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    *
    */
   update: function(){
-    var me = this,
-      w = me.widget;
+    var w = this.widget;
 
     w.leftBody.update();
     w.body.update();
@@ -35,8 +32,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {Number} rowIndex
    */
   updateRow: function(rowIndex){
-    var me = this,
-      w = me.widget;
+    var w = this.widget;
 
     w.leftBody.updateRows(rowIndex);
     w.body.updateRows(rowIndex);

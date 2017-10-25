@@ -3,20 +3,22 @@
  * @extends Fancy.Widget
  */
 (function() {
+  //SHORTCUTS
+  var F = Fancy;
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
-  var FIELD_CLS = Fancy.FIELD_CLS;
-  var FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
-  var FIELD_BUTTON_CLS= Fancy.FIELD_BUTTON_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_BUTTON_CLS= F.FIELD_BUTTON_CLS;
 
-  Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
+  F.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     mixins: [
-      Fancy.form.field.Mixin
+      F.form.field.Mixin
     ],
-    extend: Fancy.Widget,
+    extend: F.Widget,
     type: 'field.button',
     pressed: false,
     /*
@@ -24,12 +26,8 @@
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('const', arguments);
+      F.apply(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -73,7 +71,7 @@
     renderButton: function(){
       var me = this;
 
-      new Fancy.Button({
+      new F.Button({
         renderTo: me.el.select('.' + FIELD_TEXT_CLS).item(0).dom,
         text: me.buttonText,
         handler: function () {

@@ -11,21 +11,15 @@ Fancy.define('Fancy.DD', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-    
-    me.Super('const', arguments);    
-
-    me.init();
+    this.Super('const', arguments);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-    
-    me.addEvents();
-    
-    me.els = {};
+    this.addEvents();
+    this.els = {};
   },
   /*
    * @param {Object} o
@@ -71,10 +65,9 @@ Fancy.define('Fancy.DD', {
    *
    */
   onMouseUp: function(){
-    var me = this,
-      doc = Fancy.get(document);
+    var doc = Fancy.get(document);
 
-    doc.un('mousemove', me.onMouseMove, me);
+    doc.un('mousemove', this.onMouseMove, this);
   },
   /*
    * @param {Object} e

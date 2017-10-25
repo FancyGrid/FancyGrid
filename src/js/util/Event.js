@@ -263,18 +263,14 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
      * @constructor
      */
     constructor: function(){
-      var me = this;
-
-      me.Super('const', arguments);
-      me.init();
+      this.Super('const', arguments);
+      this.init();
     },
     /*
      *
      */
     init: function(){
-      var me = this;
-
-      me.addEvents('loaded');
+      this.addEvents('loaded');
     }
   });
 

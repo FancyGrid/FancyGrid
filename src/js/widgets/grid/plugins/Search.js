@@ -11,21 +11,17 @@ Fancy.define('Fancy.grid.plugin.Search', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.searches = {};
-    me.Super('const', arguments);
+    this.searches = {};
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
+    this.Super('init', arguments);
 
     //me.generateKeys();
-    me.ons();
+    this.ons();
   },
   /*
    *
@@ -88,8 +84,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
    *
    */
   updateStoreSearches: function(){
-    var me = this,
-      w = me.widget,
+    var w = this.widget,
       s = w.store;
 
     s.changeDataView();

@@ -8,8 +8,7 @@ Fancy.define('Fancy.PluginManager', {
    * @constructor
    */
   constructor: function(){
-    var me = this;
-    me.ptypes = new Fancy.Data();
+    this.ptypes = new Fancy.Data();
   },
   /*
    * @param {String} ptype

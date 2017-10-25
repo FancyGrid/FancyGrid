@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.13',
+  version: '1.6.14',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -20,6 +20,10 @@ var Fancy = {
  * @param {Object} from The primary source of the properties.
  */
 Fancy.apply = function(to, from){
+  if(from === undefined){
+    return;
+  }
+
   for(var p in from){
     to[p] = from[p];
   }
@@ -385,12 +389,52 @@ Fancy.apply(Fancy, {
   TOUCH_CLS: 'fancy-touch',
   HIDDEN_CLS: 'fancy-display-none',
   CLEARFIX_CLS: 'fancy-clearfix',
+  MODAL_CLS: 'fancy-modal',
+  /*
+   * Panel cls-s
+   */
+  PANEL_CLS: 'fancy-panel',
+  PANEL_BODY_CLS: 'fancy-panel-body',
+  PANEL_BODY_INNER_CLS: 'fancy-panel-body-inner',
+  PANEL_GRID_INSIDE_CLS: 'fancy-panel-grid-inside',
+  PANEL_SHADOW_CLS: 'fancy-panel-shadow',
+  PANEL_SUB_HEADER_CLS: 'fancy-panel-sub-header',
+  PANEL_SUB_HEADER_TEXT_CLS: 'fancy-panel-sub-header-text',
+  PANEL_HEADER_CLS: 'fancy-panel-header',
+  PANEL_HEADER_IMG_CLS: 'fancy-panel-header-img',
+  PANEL_HEADER_TEXT_CLS: 'fancy-panel-header-text',
+  PANEL_HEADER_TOOLS_CLS: 'fancy-panel-header-tools',
+  PANEL_TBAR_CLS: 'fancy-panel-tbar',
+  PANEL_BBAR_CLS: 'fancy-panel-bbar',
+  PANEL_SUB_TBAR_CLS: 'fancy-panel-sub-tbar',
+  PANEL_BUTTONS_CLS: 'fancy-panel-buttons',
+  PANEL_NOFRAME_CLS: 'fancy-panel-noframe',
+  PANEL_FOOTER_CLS: 'fancy-panel-footer',
+  PANEL_TAB_CLS: 'fancy-panel-tab',
+  PANEL_DRAGGABLE_CLS: 'fancy-panel-draggable',
+  /*
+   * Bar cls-s
+   */
+  BAR_CLS: 'fancy-bar',
+  BAR_TEXT_CLS: 'fancy-bar-text',
+  BAR_CONTAINER_CLS: 'fancy-bar-container',
+  BAR_BUTTON_CLS: 'fancy-bar-button',
+  BAR_SEG_BUTTON_CLS: 'fancy-bar-seg-button',
+  BAR_LEFT_SCROLLER_CLS: 'fancy-bar-left-scroller',
+  BAR_RIGHT_SCROLLER_CLS: 'fancy-bar-right-scroller',
   /*
    * Form cls-s
+   */
+  FORM_CLS: 'fancy-form',
+  FORM_BODY_CLS: 'fancy-form-body',
+  /*
+   * Field cls-s
    */
   FIELD_CLS: 'fancy-field',
   FIELD_LABEL_CLS: 'fancy-field-label',
   FIELD_EMPTY_CLS: 'fancy-field-empty',
+  FIELD_BLANK_ERR_CLS: 'fancy-field-blank-err',
+  FIELD_NOT_VALID_CLS: 'fancy-field-not-valid',
   FIELD_TEXT_CLS: 'fancy-field-text',
   FIELD_TEXT_INPUT_CLS: 'fancy-field-text-input',
   FIELD_ERROR_CLS: 'fancy-field-error',
@@ -399,25 +443,165 @@ Fancy.apply(Fancy, {
   FIELD_SPIN_DOWN_CLS: 'fancy-field-spin-down',
   FIELD_CHECKBOX_CLS: 'fancy-field-checkbox',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
+  FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
   FIELD_BUTTON_CLS: 'fancy-field-button',
+  FIELD_TAB_CLS: 'fancy-field-tab',
+  FIELD_COMBO_CLS: 'fancy-combo',
+  FIELD_SEARCH_CLS: 'fancy-field-search',
+  FIELD_SEARCH_LIST_CLS: 'fancy-field-search-list',
+  FIELD_SEARCH_PARAMS_LINK_CLS: 'fancy-field-search-params-link',
+  FIELD_SEARCH_PARAMED_CLS: 'fancy-field-search-paramed',
+  FIELD_SEARCH_PARAMED_EMPTY_CLS: 'fancy-field-search-paramed-empty',
+  FIELD_PICKER_BUTTON_CLS: 'fancy-field-picker-button',
+  FIELD_LABEL_ALIGN_TOP_CLS: 'fancy-field-label-align-top',
+  FIELD_LABEL_ALIGN_RIGHT_CLS: 'fancy-field-label-align-right',
+  FIELD_TEXTAREA_CLS: 'fancy-textarea',
+  FIELD_TEXTAREA_TEXT_CLS: 'fancy-textarea-text',
+  FIELD_TEXTAREA_TEXT_INPUT_CLS: 'fancy-textarea-text-input',
+  FIELD_RADIO_CLS: 'fancy-field-radio',
+  FIELD_RADIO_COLUMN_CLS: 'fancy-field-radio-column',
+  FIELD_RADIO_ON_CLS: 'fancy-field-radio-on',
+  FIELD_RADIO_INPUT_CLS: 'fancy-field-radio-input',
+  FIELD_TAB_ACTIVE_CLS: 'fancy-field-tab-active',
   /*
    * Grid cls-s
    */
   GRID_CLS: 'fancy-grid',
+  GRID_UNSELECTABLE_CLS: 'fancy-grid-unselectable',
+  GRID_EMPTY_CLS: 'fancy-grid-empty-text',
+  GRID_LEFT_EMPTY_CLS: 'fancy-grid-left-empty',
+  GRID_RIGHT_EMPTY_CLS: 'fancy-grid-right-empty',
+  GRID_CENTER_CLS: 'fancy-grid-center',
+  GRID_LEFT_CLS: 'fancy-grid-left',
+  GRID_RIGHT_CLS: 'fancy-grid-right',
+  GRID_RESIZER_LEFT_CLS: 'fancy-grid-resizer-left',
+  GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
+  //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
+  GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',
+  GRID_HEADER_CELL_CONTAINER_CLS: 'fancy-grid-header-cell-container',
+  GRID_HEADER_CELL_TEXT_CLS: 'fancy-grid-header-cell-text',
+  GRID_HEADER_CELL_DOUBLE_CLS: 'fancy-grid-header-cell-double',
+  GRID_HEADER_CELL_TRIPLE_CLS: 'fancy-grid-header-cell-triple',
+  GRID_HEADER_CELL_TRIGGER_CLS: 'fancy-grid-header-cell-trigger',
+  GRID_HEADER_CELL_TRIGGER_IMAGE_CLS: 'fancy-grid-header-cell-trigger-image',
+  GRID_HEADER_CELL_TRIGGER_DISABLED_CLS: 'fancy-grid-header-cell-trigger-disabled',
+  GRID_HEADER_CELL_GROUP_LEVEL_1_CLS: 'fancy-grid-header-cell-group-level-1',
+  GRID_HEADER_CELL_GROUP_LEVEL_2_CLS: 'fancy-grid-header-cell-group-level-2',
+  GRID_HEADER_CELL_SELECT_CLS: 'fancy-grid-header-cell-select',
+  GRID_HEADER_CELL_TRIGGER_UP_CLS: 'fancy-grid-header-cell-trigger-up',
+  GRID_HEADER_CELL_TRIGGER_DOWN_CLS: 'fancy-grid-header-cell-trigger-down',
+  GRID_HEADER_COLUMN_TRIGGERED_CLS: 'fancy-gridf-header-column-triggered',
+  GRID_HEADER_CELL_FILTER_CLS: 'fancy-grid-header-filter-cell',
+  GRID_HEADER_CELL_FILTER_FULL_CLS: 'fancy-grid-header-filter-cell-full',
+  GRID_HEADER_CELL_FILTER_SMALL_CLS: 'fancy-grid-header-filter-cell-small',
+  //grid cell
   GRID_CELL_CLS: 'fancy-grid-cell',
+  GRID_CELL_INNER_CLS: 'fancy-grid-cell-inner',
   GRID_CELL_OVER_CLS: 'fancy-grid-cell-over',
   GRID_CELL_SELECTED_CLS: 'fancy-grid-cell-selected',
+  GRID_CELL_EVEN_CLS: 'fancy-grid-cell-even',
+  GRID_CELL_WRAPPER_CLS: 'fancy-grid-cell-wrapper',
+  GRID_CELL_DIRTY_CLS: 'fancy-grid-cell-dirty',
+  GRID_CELL_DIRTY_EL_CLS: 'fancy-grid-cell-dirty-el',
+  GRID_PSEUDO_CELL_CLS: 'fancy-grid-pseudo-cell',
+  //grid column
   GRID_COLUMN_CLS: 'fancy-grid-column',
   GRID_COLUMN_OVER_CLS: 'fancy-grid-column-over',
   GRID_COLUMN_SELECT_CLS: 'fancy-grid-column-select',
   GRID_COLUMN_SELECTED_CLS: 'fancy-grid-column-selected',
+  GRID_COLUMN_ELLIPSIS_CLS: 'fancy-grid-column-ellipsis',
+  GRID_COLUMN_ORDER_CLS: 'fancy-grid-column-order',
+  GRID_COLUMN_TEXT_CLS: 'fancy-grid-column-text',
+  GRID_COLUMN_SORT_ASC: 'fancy-grid-column-sort-ASC',
+  GRID_COLUMN_SORT_DESC: 'fancy-grid-column-sort-DESC',
+  GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
+  GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
+  //grid spark column
+  GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
+  GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
+  GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS: 'fancy-grid-column-spark-progress-donut',
+  GRID_COLUMN_CHART_CIRCLE_CLS: 'fancy-grid-column-chart-circle',
+  GRID_COLUMN_GROSSLOSS_CLS: 'fancy-grid-column-grossloss',
+  GRID_COLUMN_PROGRESS_CLS: 'fancy-grid-column-progress',
+  GRID_COLUMN_PROGRESS_BAR_CLS: 'fancy-grid-column-progress-bar',
+  GRID_COLUMN_H_BAR_CLS: 'fancy-grid-column-h-bar',
+  GRID_COLUMN_ACTION_ITEM_CLS: 'fancy-grid-column-action-item',
+  //grid row
   GRID_ROW_OVER_CLS: 'fancy-grid-cell-over',
+  GRID_ROW_EDIT_CLS: 'fancy-grid-row-edit',
+  GRID_ROW_EDIT_BUTTONS_CLS: 'fancy-grid-row-edit-buttons',
+  GRID_ROW_EDIT_BUTTON_UPDATE_CLS: 'fancy-edit-row-button-update',
+  GRID_ROW_EDIT_BUTTON_CANCEL_CLS: 'fancy-edit-row-button-cancel',
+  GRID_ROW_GROUP_CLS: 'fancy-grid-group-row',
+  GRID_ROW_GROUP_INNER_CLS: 'fancy-grid-group-row-inner',
+  GRID_ROW_GROUP_COLLAPSED_CLS: 'fancy-grid-group-row-collapsed',
+  GRID_ROW_SUMMARY_CLS: 'fancy-grid-summary-row',
+  GRID_ROW_SUMMARY_CONTAINER_CLS: 'fancy-grid-summary-container',
+  GRID_ROW_SUMMARY_BOTTOM_CLS: 'fancy-grid-summary-row-bottom',
+  GRID_ROW_EXPAND_CLS: 'fancy-grid-expand-row',
+  GRID_ROW_EXPAND_OVER_CLS: 'fancy-grid-expand-row-over',
+  GRID_ROW_EXPAND_SELECTED_CLS: 'fancy-grid-expand-row-selected',
+  //grid body
+  GRID_BODY_CLS: 'fancy-grid-body',
   /*
-   * Panel cls-s
+   * Menu cls-S
    */
-  PANEL_HEADER_CLS: 'fancy-panel-header'
+  MENU_CLS: 'fancy-menu',
+  MENU_ITEM_CLS: 'fancy-menu-item',
+  MENU_ITEM_IMAGE_CLS: 'fancy-menu-item-image',
+  MENU_ITEM_TEXT_CLS: 'fancy-menu-item-text',
+  MENU_ITEM_ACTIVE_CLS: 'fancy-menu-item-active',
+  MENU_ITEM_RIGHT_IMAGE_CLS: 'fancy-menu-item-right-image',
+  MENU_ITEM_EXPAND_CLS: 'fancy-menu-item-expand',
+  /*
+   * Tab cls-s
+   */
+  TAB_WRAPPER_CLS: 'fancy-tab-wrapper',
+  TAB_ACTIVE_WRAPPER_CLS: 'fancy-active-tab-wrapper',
+  TAB_TBAR_CLS: 'fancy-toolbar-tab',
+  TAB_TBAR_ACTIVE_CLS: 'fancy-toolbar-tab-active',
+  /*
+   * Button cls-s
+   */
+  BUTTON_CLS: 'fancy-button',
+  BUTTON_DISABLED_CLS: 'fancy-button-disabled',
+  BUTTON_PRESSED_CLS: 'fancy-button-pressed',
+  BUTTON_IMAGE_CLS: 'fancy-button-image',
+  BUTTON_IMAGE_COLOR_CLS: 'fancy-button-image-color',
+  BUTTON_TEXT_CLS: 'fancy-button-text',
+  BUTTON_DROP_CLS: 'fancy-button-drop',
+  SEG_BUTTON_CLS: 'fancy-seg-button',
+  /*
+   * Tooltip cls-s
+   */
+  TOOLTIP_CLS: 'fancy-tooltip',
+  TOOLTIP_INNER_CLS: 'fancy-tooltip-inner',
+  /*
+   * Other cls-s
+   */
+  SEPARATOR_CLS: 'fancy-separator',
+  FOOTER_STATUS_CLS: 'fancy-footer-status',
+  STATUS_SOURCE_TEXT_CLS: 'fancy-status-source-text',
+  STATUS_SOURCE_LINK_CLS: 'fancy-status-source-link',
+  FOOTER_SOURCE_CLS: 'fancy-footer-source',
+  /*
+   * Picker cls-s
+   */
+  PICKER_MONTH_CELL_ACTIVE_CLS: 'fancy-month-picker-cell-active',
+  PICKER_MONTH_CLS: 'fancy-month-picker',
+  PICKER_BUTTON_BACK_CLS: 'fancy-picker-button-back',
+  PICKER_BUTTON_NEXT_CLS: 'fancy-picker-button-next',
+  PICKER_MONTH_ACTION_BUTTONS_CLS: 'fancy-month-picker-action-buttons',
+  PICKER_DATE_CLS: 'fancy-date-picker',
+  PICKER_DATE_CELL_TODAY_CLS: 'fancy-date-picker-cell-today',
+  PICKER_DATE_CELL_ACTIVE_CLS: 'fancy-date-picker-cell-active',
+  PICKER_DATE_CELL_OUT_RANGE_CLS: 'fancy-date-picker-cell-out-range',
+  PICKER_BUTTON_DATE_CLS: 'fancy-picker-button-date',
+  PICKER_BUTTON_DATE_WRAPPER_CLS: 'fancy-picker-button-date-wrapper',
+  PICKER_BUTTON_TODAY_CLS: 'fancy-picker-button-today',
+  PICKER_BUTTON_TODAY_WRAPPER_CLS: 'fancy-picker-button-today-wrapper'
 });
 
 (function(){
@@ -1928,9 +2112,7 @@ Fancy.Collection.prototype = {
    * @return {*}
    */
   get: function(key){
-    var me = this;
-
-    return me.map[key];
+    return this.map[key];
   },
   /*
    *
@@ -1970,9 +2152,7 @@ Fancy.Template.prototype = {
    * @param {Array} values
    */
   getHTML: function(values){
-    var me = this;
-
-    return me.compiled(values);
+    return this.compiled(values);
   },
   /*
    * @return {Fancy.Template}
@@ -2480,10 +2660,8 @@ Fancy.define('Fancy.Data', {
    * @param {*} value
    */
   add: function(key, value){
-    var me = this;
-
-    me.map[key] = value;
-    me.length++;
+    this.map[key] = value;
+    this.length++;
   },
   /*
    * @param {String|Number} key
@@ -2596,8 +2774,7 @@ Fancy.define('Fancy.PluginManager', {
    * @constructor
    */
   constructor: function(){
-    var me = this;
-    me.ptypes = new Fancy.Data();
+    this.ptypes = new Fancy.Data();
   },
   /*
    * @param {String} ptype
@@ -2634,79 +2811,85 @@ Fancy.getPluginByType = function(ptype){
  * @class Fancy.WidgetManager
  * @singleton
  */
-Fancy.define('Fancy.WidgetManager', {
-  singleton: true,
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.wtypes = new Fancy.Data();
-    me.widgets = new Fancy.Data();
-  },
+  F.define('Fancy.WidgetManager', {
+    singleton: true,
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.wtypes = new F.Data();
+      this.widgets = new F.Data();
+    },
+    /*
+     * @param {String} wtype
+     * @param {Object} widget
+     */
+    addWidgetType: function (wtype, widget) {
+      widget.prototype.wtype = wtype;
+      this.wtypes.add(wtype, widget);
+    },
+    /*
+     * @param {String} wtype
+     * @return {Object}
+     */
+    getWidgetClassByType: function (wtype) {
+      return this.wtypes.get(wtype);
+    },
+    /*
+     * @param {String} id
+     * @param {Object} widget
+     */
+    addWidget: function (id, widget) {
+      this.widgets.add(id, widget);
+    },
+    /*
+     * @param {String} id
+     * @return {Object}
+     */
+    getWidget: function (id) {
+      return this.widgets.get(id);
+    }
+  });
+
+  var W = F.WidgetManager;
+
   /*
    * @param {String} wtype
    * @param {Object} widget
    */
-  addWidgetType: function(wtype, widget){
-    widget.prototype.wtype = wtype;
-    this.wtypes.add(wtype, widget);
-  },
+  F.addWidgetType = function (wtype, widget) {
+    W.addWidgetType(wtype, widget);
+  };
+
   /*
    * @param {String} wtype
    * @return {Object}
    */
-  getWidgetClassByType: function(wtype){
-    return this.wtypes.get(wtype);
-  },
+  F.getWidgetClassByType = function (wtype) {
+    return W.getWidgetClassByType(wtype);
+  };
+
   /*
    * @param {String} id
    * @param {Object} widget
    */
-  addWidget: function(id, widget){
-    this.widgets.add(id, widget);
-  },
+  F.addWidget = function (id, widget) {
+    W.addWidget(id, widget);
+  };
+
   /*
    * @param {String} id
-   * @return {Object}
+   * @return {Object} widget
    */
-  getWidget: function(id){
-    return this.widgets.get(id);
-  }
-});
+  F.getWidget = function (id) {
+    return W.getWidget(id);
+  };
 
-/*
- * @param {String} wtype
- * @param {Object} widget
- */
-Fancy.addWidgetType = function(wtype, widget){
-  Fancy.WidgetManager.addWidgetType(wtype, widget);
-};
-
-/*
- * @param {String} wtype
- * @return {Object}
- */
-Fancy.getWidgetClassByType = function(wtype){
-  return Fancy.WidgetManager.getWidgetClassByType(wtype);
-};
-
-/*
- * @param {String} id
- * @param {Object} widget
- */
-Fancy.addWidget = function(id, widget){
-  Fancy.WidgetManager.addWidget(id, widget);
-};
-
-/*
- * @param {String} id
- * @return {Object} widget
- */
-Fancy.getWidget = function(id){
-  return Fancy.WidgetManager.getWidget(id);
-};
+})();
 (function(){
 var seedFn = 0,
   fns = {};
@@ -2972,18 +3155,14 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
      * @constructor
      */
     constructor: function(){
-      var me = this;
-
-      me.Super('const', arguments);
-      me.init();
+      this.Super('const', arguments);
+      this.init();
     },
     /*
      *
      */
     init: function(){
-      var me = this;
-
-      me.addEvents('loaded');
+      this.addEvents('loaded');
     }
   });
 
@@ -4569,6 +4748,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       item = new model(o),
       index = me.addIndex;
 
+    me.fire('beforeinsert');
+
     delete me.addIndex;
     item.$index = index;
     me.data.splice(index, 0, item);
@@ -4911,7 +5092,15 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = indexValue != value;
             break;
           case '':
-            passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
+            value = String(value).toLocaleLowerCase();
+            indexValue = String(indexValue).toLocaleLowerCase();
+
+            value = value.replace(/\(/g, 'bracketleft');
+            value = value.replace(/\)/g, 'bracketright');
+            indexValue = indexValue.replace(/\(/g, 'bracketleft');
+            indexValue = indexValue.replace(/\)/g, 'bracketright');
+
+            passed = new RegExp(value).test(indexValue);
             break;
           case '*':
             passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
@@ -5101,19 +5290,15 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
    *
    */
   onDirtyRemove: function(store, id, record){
-    var me = this;
-
-    me.removed[id] = record.data;
-    me.removed.length++;
+    this.removed[id] = record.data;
+    this.removed.length++;
   },
   /*
    *
    */
   onDirtyInsert: function(store, o){
-    var me = this;
-
-    me.inserted[o.id] = o;
-    me.inserted.length++;
+    this.inserted[o.id] = o;
+    this.inserted.length++;
   }
 });
 /*
@@ -5186,7 +5371,7 @@ Fancy.define('Fancy.Store', {
       'beforesort', 'sort',
       'beforeload', 'load',
       'filter',
-      'insert',
+      'beforeinsert', 'insert',
       'servererror', 'serversuccess'
     );
     me.initId();
@@ -6073,22 +6258,18 @@ Fancy.Element.prototype = {
    * @param {String} newCls
    */
   replaceClass: function(oldCls, newCls){
-    var me = this;
-
-    me.$dom.removeClass(oldCls);
-    me.$dom.addClass(newCls);
+    this.$dom.removeClass(oldCls);
+    this.$dom.addClass(newCls);
   },
   /*
    * @param {String} tag
    * @return {Fancy.Element}
    */
   getByTag: function(tag){
-    var me = this;
-    return Fancy.get(me.$dom.find(tag)[0]);
+    return Fancy.get(this.$dom.find(tag)[0]);
   },
   getByClass: function(cls){
-    var me = this;
-    return me.$dom.find('.'+cls)[0];
+    return this.$dom.find('.'+cls)[0];
   },
   /*
    * @param {String} cls
@@ -6100,16 +6281,14 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   addCls: function(cls){
-    var me = this;
-
-    me.$dom.addClass(cls);
+    this.$dom.addClass(cls);
 
     if(arguments.length > 1){
       var i = 1,
         iL = arguments.length;
 
       for (;i<iL;i++){
-        me.addClass(arguments[i]);
+        this.addClass(arguments[i]);
       }
     }
   },
@@ -6117,51 +6296,39 @@ Fancy.Element.prototype = {
    * @param {String} cls
    */
   removeClass: function(cls){
-    var me = this;
-
-    me.$dom.removeClass(cls);
+    this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    */
   removeCls: function(cls){
-    var me = this;
-
-    me.$dom.removeClass(cls);
+    this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
   hasClass: function(cls){
-    var me = this;
-
-    return me.$dom.hasClass(cls);
+    return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
   hasCls: function(cls){
-    var me = this;
-
-    return me.$dom.hasClass(cls);
+    return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    */
   toggleClass: function(cls){
-    var me = this;
-
-    me.$dom.toggleClass(cls);
+    this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} cls
    */
   toggleCls: function(cls){
-    var me = this;
-
-    me.$dom.toggleClass(cls);
+    this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} selector
@@ -6189,7 +6356,8 @@ Fancy.Element.prototype = {
         remove: function(){},
         css: function(){},
         each: function(){},
-        last: function(){}
+        last: function(){},
+        attr: function () {}
       };
     }
 
@@ -8858,21 +9026,15 @@ Fancy.define('Fancy.DD', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-    
-    me.Super('const', arguments);    
-
-    me.init();
+    this.Super('const', arguments);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-    
-    me.addEvents();
-    
-    me.els = {};
+    this.addEvents();
+    this.els = {};
   },
   /*
    * @param {Object} o
@@ -8918,10 +9080,9 @@ Fancy.define('Fancy.DD', {
    *
    */
   onMouseUp: function(){
-    var me = this,
-      doc = Fancy.get(document);
+    var doc = Fancy.get(document);
 
-    doc.un('mousemove', me.onMouseMove, me);
+    doc.un('mousemove', this.onMouseMove, this);
   },
   /*
    * @param {Object} e
@@ -8954,7 +9115,7 @@ Fancy.define('Fancy.Widget', {
   constructor: function(config){
     var me = this;
 
-    Fancy.applyConfig(me, config || {});
+    Fancy.applyConfig(me, config);
 
     me.preInitControls();
     me.Super('const', arguments);
@@ -9200,44 +9361,52 @@ Fancy.define('Fancy.Plugin', {
    * @constructor {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
-
-    me.init();
+    this.Super('const', arguments);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.initId();
-    me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
+    this.initId();
+    this.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
   },
   /*
    *
    */
   initTpl: function(){
-    var me = this;
+    var tpl = this.tpl;
 
-    if(!me.tpl){
+    if(!tpl){
       return;
     }
 
-    me.tpl = new Fancy.Template(me.tpl);
+    this.tpl = new Fancy.Template(tpl);
   }
 });
 
 (function() {
   var toggleGroups = {};
 
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var GRID_CLS = F.GRID_CLS;
+  var BUTTON_CLS = F.BUTTON_CLS;
+  var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
+  var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
+  var BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
+  var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
+  var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
+  var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+
   /**
    * @class Fancy.Button
    * @extends Fancy.Widget
    */
-  Fancy.define('Fancy.Button', {
-    extend: Fancy.Widget,
+  F.define('Fancy.Button', {
+    extend: F.Widget,
     minWidth: 30,
     /*
      * @constructor
@@ -9292,24 +9461,24 @@ Fancy.define('Fancy.Plugin', {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    widgetCls: 'fancy-button',
+    widgetCls: BUTTON_CLS,
     cls: '',
     extraCls: '',
-    disabledCls: 'fancy-button-disabled',
-    pressedCls: 'fancy-button-pressed',
-    buttonImageCls: 'fancy-button-image',
-    buttonImageColorCls: 'fancy-button-image-color',
-    textCls: 'fancy-button-text',
-    dropCls: 'fancy-button-drop',
+    disabledCls: BUTTON_DISABLED_CLS,
+    pressedCls: BUTTON_PRESSED_CLS,
+    buttonImageCls: BUTTON_IMAGE_CLS,
+    buttonImageColorCls: BUTTON_IMAGE_COLOR_CLS,
+    textCls: BUTTON_TEXT_CLS,
+    dropCls: BUTTON_DROP_CLS,
     text: '',
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
     pressed: false,
     tpl: [
-      '<div class="{buttonImageCls}"></div>',
-      '<a class="{textCls}">{text}</a>',
-      '<div class="{dropCls}" style="{dropDisplay}"></div>'
+      '<div class="' + BUTTON_IMAGE_CLS + '"></div>',
+      '<a class="' + BUTTON_TEXT_CLS + '">{text}</a>',
+      '<div class="' + BUTTON_DROP_CLS + '" style="{dropDisplay}"></div>'
     ],
     /*
      *
@@ -9317,7 +9486,7 @@ Fancy.define('Fancy.Plugin', {
     render: function(){
       var me = this,
         renderTo,
-        el = Fancy.get(document.createElement('div')),
+        el = F.get(document.createElement('div')),
         width = 0;
 
       me.fire('beforerender');
@@ -9326,7 +9495,7 @@ Fancy.define('Fancy.Plugin', {
         me.renderWrapper();
       }
 
-      renderTo = Fancy.get(me.renderTo || document.body).dom;
+      renderTo = F.get(me.renderTo || document.body).dom;
 
       if(me.width){
         width = me.width;
@@ -9338,7 +9507,7 @@ Fancy.define('Fancy.Plugin', {
       }
 
       if(me.imageColor){
-        me.imageCls = me.buttonImageColorCls;
+        me.imageCls = BUTTON_IMAGE_COLOR_CLS;
       }
 
       if(width < me.minWidth){
@@ -9355,14 +9524,14 @@ Fancy.define('Fancy.Plugin', {
       }
 
       el.addCls(
-        Fancy.cls,
+        F.cls,
         me.widgetCls,
         me.cls,
         me.extraCls
       );
 
       if (me.disabled) {
-        el.addCls(me.disabledCls);
+        el.addCls(BUTTON_DISABLED_CLS);
       }
 
       el.css({
@@ -9377,24 +9546,21 @@ Fancy.define('Fancy.Plugin', {
       el.css(me.style || {});
 
       el.update(me.tpl.getHTML({
-        text: me.text || '',
-        buttonImageCls: me.buttonImageCls,
-        textCls: me.textCls,
-        dropCls: me.dropCls
+        text: me.text || ''
       }));
 
       if(me.imageCls){
-        var imageEl = el.select('.' + me.buttonImageCls);
+        var imageEl = el.select('.' + BUTTON_IMAGE_CLS);
         if(me.imageColor){
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
-        if(Fancy.isString(me.imageCls)){
+        if(F.isString(me.imageCls)){
           imageEl.addCls(me.imageCls);
         }
       }
 
-      me.el = Fancy.get(renderTo.appendChild(el.dom));
+      me.el = F.get(renderTo.appendChild(el.dom));
 
       if (me.disabled) {
         me.disable();
@@ -9417,13 +9583,13 @@ Fancy.define('Fancy.Plugin', {
     renderWrapper: function(){
       var me = this,
         wrapper = me.wrapper,
-        renderTo = Fancy.get(me.renderTo || document.body).dom,
-        el = Fancy.get(document.createElement('div'));
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div'));
 
       el.css(wrapper.style || {});
       el.addCls(wrapper.cls || '');
 
-      me.wrapper = Fancy.get(renderTo.appendChild(el.dom));
+      me.wrapper = F.get(renderTo.appendChild(el.dom));
 
       me.renderTo = me.wrapper.dom;
     },
@@ -9431,9 +9597,7 @@ Fancy.define('Fancy.Plugin', {
      *
      */
     initToggle: function(){
-      var me = this;
-
-      if (!me.enableToggle) {
+      if (!this.enableToggle) {
         return false;
       }
     },
@@ -9441,11 +9605,10 @@ Fancy.define('Fancy.Plugin', {
      * @param {Boolean} value
      */
     setPressed: function(value, fire){
-      var me = this,
-        pressedCls = me.pressedCls;
+      var me = this;
 
       if (value) {
-        me.addCls(pressedCls);
+        me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
         if(me.toggleGroup){
@@ -9458,7 +9621,7 @@ Fancy.define('Fancy.Plugin', {
         }
       }
       else {
-        me.removeCls(pressedCls);
+        me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
       }
 
@@ -9487,7 +9650,7 @@ Fancy.define('Fancy.Plugin', {
 
       if(me.disabled !== true){
         if(handler){
-          if(Fancy.isString(handler)){
+          if(F.isString(handler)){
             handler = me.getHandler(handler);
           }
 
@@ -9514,7 +9677,7 @@ Fancy.define('Fancy.Plugin', {
      */
     getHandler: function(name){
       var me = this,
-        grid = Fancy.getWidget(me.el.parent().parent().select('.' + Fancy.GRID_CLS).attr('id'));
+        grid = F.getWidget(me.el.parent().parent().select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -9524,17 +9687,13 @@ Fancy.define('Fancy.Plugin', {
      *
      */
     onMouseDown: function(){
-      var me = this;
-
-      me.fire('mousedown');
+      this.fire('mousedown');
     },
     /*
      *
      */
     onMouseUp: function(){
-      var me = this;
-
-      me.fire('mouseup');
+      this.fire('mouseup');
     },
     /*
      * @param {Object} e
@@ -9558,7 +9717,7 @@ Fancy.define('Fancy.Plugin', {
         me.tooltip.destroy();
       }
 
-      me.tooltip = new Fancy.ToolTip({
+      me.tooltip = new F.ToolTip({
         text: me.tip
       });
 
@@ -9587,25 +9746,21 @@ Fancy.define('Fancy.Plugin', {
 
       me.css('width', ((parseInt(el.css('font-size')) + 2 ) * text.length) + parseInt(me.css('padding-right')) * 2 + 2  );
 
-      el.select('.fancy-button-text').update(text);
+      el.select('.' + BUTTON_TEXT_CLS).update(text);
     },
     /*
      *
      */
     disable: function(){
-      var me = this;
-
-      me.disabled = true;
-      me.addCls(me.disabledCls);
+      this.disabled = true;
+      this.addCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
     enable: function(){
-      var me = this;
-
-      me.disabled = false;
-      me.removeCls(me.disabledCls);
+      this.disabled = false;
+      this.removeCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
@@ -9630,11 +9785,8 @@ Fancy.define('Fancy.SegButton', {
    * @param {Object} scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.scope = scope;
-
-    me.Super('const', arguments);
+    this.scope = scope;
+    this.Super('const', arguments);
   },
   /*
    *
@@ -9652,7 +9804,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  widgetCls: 'fancy-seg-button',
+  widgetCls: Fancy.SEG_BUTTON_CLS,
   cls: '',
   extraCls: '',
   text: '',
@@ -9786,29 +9938,34 @@ Fancy.define('Fancy.toolbar.Tab', {
    * @param scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-  
-    me.Super('init', arguments);
+    this.Super('init', arguments);
   },
-  cls: 'fancy fancy-button fancy-toolbar-tab',
+  cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
    *
    */
   render: function(){
-    var me = this;
-
-    me.Super('render', arguments);
+    this.Super('render', arguments);
   }
 });
 (function() {
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var MENU_CLS = F.MENU_CLS;
+  var MENU_ITEM_CLS = F.MENU_ITEM_CLS;
+  var MENU_ITEM_IMAGE_CLS =  F.MENU_ITEM_IMAGE_CLS;
+  var MENU_ITEM_TEXT_CLS = F.MENU_ITEM_TEXT_CLS;
+  var MENU_ITEM_ACTIVE_CLS = F.MENU_ITEM_ACTIVE_CLS;
+  var MENU_ITEM_RIGHT_IMAGE_CLS = F.MENU_ITEM_RIGHT_IMAGE_CLS;
+  var MENU_ITEM_EXPAND_CLS = F.MENU_ITEM_EXPAND_CLS;
 
   /**
    * @class Fancy.Menu
@@ -9822,11 +9979,8 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} scope
      */
     constructor: function (config, scope) {
-      var me = this;
-
-      Fancy.applyConfig(me, config || {});
-
-      me.Super('const', arguments);
+      Fancy.applyConfig(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -9848,16 +10002,14 @@ Fancy.define('Fancy.toolbar.Tab', {
       var me = this,
         el = me.el;
 
-      el.on('mousedown', me.onItemMouseDown, me, '.fancy-menu-item');
-      el.on('click', me.onItemClick, me, '.fancy-menu-item');
-      el.on('mouseenter', me.onItemEnter, me, '.fancy-menu-item');
-      el.on('mouseleave', me.onItemLeave, me, '.fancy-menu-item');
+      el.on('mousedown', me.onItemMouseDown, me, '.' + MENU_ITEM_CLS);
+      el.on('click', me.onItemClick, me, '.' + MENU_ITEM_CLS);
+      el.on('mouseenter', me.onItemEnter, me, '.' + MENU_ITEM_CLS);
+      el.on('mouseleave', me.onItemLeave, me, '.' + MENU_ITEM_CLS);
     },
-    widgetCls: 'fancy-menu',
-    itemCls: 'fancy-menu-item',
-    itemImageCls: 'fancy-menu-item-image',
-    itemContainerCls: 'fancy-menu-item-text',
-    activeItemCls: 'fancy-menu-item-active',
+    widgetCls: MENU_CLS,
+    itemCls: MENU_ITEM_CLS,
+    itemImageCls: MENU_ITEM_IMAGE_CLS,
     cls: '',
     extraCls: '',
     width: 142,
@@ -9903,13 +10055,12 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @return {Number}
      */
     getItemsHeight: function () {
-      var me = this,
-        height = 0,
+      var height = 0,
         i = 0,
-        iL = me.items.length;
+        iL = this.items.length;
 
       for (; i < iL; i++) {
-        height += me.itemHeight;
+        height += this.itemHeight;
       }
 
       return height;
@@ -9940,9 +10091,9 @@ Fancy.define('Fancy.toolbar.Tab', {
         }
 
         itemEl.update([
-          item.image === false ? '' : '<div class="fancy-menu-item-image ' + imageCls + '"></div>',
-          '<div class="fancy-menu-item-text"></div>',
-          '<div class="fancy-menu-item-right-image ' + (item.items ? 'fancy-menu-item-expand' : '') + '"></div>'
+          item.image === false ? '' : '<div class="'+MENU_ITEM_IMAGE_CLS+' ' + imageCls + '"></div>',
+          '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>',
+          '<div class="'+MENU_ITEM_RIGHT_IMAGE_CLS+' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>'
         ].join(""));
 
         if (item.image === false) {
@@ -9953,7 +10104,7 @@ Fancy.define('Fancy.toolbar.Tab', {
           case '':
             break;
           default:
-            itemEl.select('.fancy-menu-item-text').item(0).update(item.text || '');
+            itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
         }
 
         if(item.checked !== undefined){
@@ -9961,7 +10112,7 @@ Fancy.define('Fancy.toolbar.Tab', {
             label: false,
             theme: me.theme,
             padding: '1px 8px 0px',
-            renderTo: itemEl.select('.fancy-menu-item-image').item(0).dom,
+            renderTo: itemEl.select('.' + MENU_ITEM_IMAGE_CLS).item(0).dom,
             value: item.checked
           });
         }
@@ -10081,36 +10232,35 @@ Fancy.define('Fancy.toolbar.Tab', {
      *
      */
     hideAll: function(){
-      var me = this;
+      var parentMenu = this.parentMenu;
 
-      if(me.parentMenu && me.parentMenu.el.css('display') !== 'none'){
-        me.parentMenu.hide();
+      if(parentMenu && parentMenu.el.css('display') !== 'none'){
+        parentMenu.hide();
       }
 
-      me.hide();
+      this.hide();
     },
     /*
      * @param {Number} index
      */
     activateItem: function (index) {
-      var me = this,
-        item = me.items[index];
+      var item = this.items[index];
 
-      me.activeItem = item;
-      item.el.addCls(me.activeItemCls);
+      this.activeItem = item;
+      item.el.addCls(MENU_ITEM_ACTIVE_CLS);
     },
     /*
      *
      */
     deActivateItem: function () {
-      var me = this;
+      var activeItem = this;
 
-      if (!me.activeItem) {
+      if (!activeItem) {
         return;
       }
 
-      me.activeItem.el.removeClass(me.activeItemCls);
-      delete me.activeItem;
+      activeItem.el.removeClass(MENU_ITEM_ACTIVE_CLS);
+      delete this.activeItem;
     },
     /*
      * @param {Object} e
@@ -10128,10 +10278,9 @@ Fancy.define('Fancy.toolbar.Tab', {
      *
      */
     init: function(){
-      var me = this,
-        docEl = Fancy.get(document);
+      var docEl = Fancy.get(document);
 
-      docEl.on('click', me.onDocClick, me);
+      docEl.on('click', this.onDocClick, this);
     },
     /*
      * @param {Object} menu
@@ -10163,7 +10312,7 @@ Fancy.define('Fancy.toolbar.Tab', {
           break;
         }
 
-        if( parentEl.hasCls('fancy-menu') ){
+        if( parentEl.hasCls(MENU_CLS) ){
           return;
         }
 
@@ -10180,127 +10329,139 @@ Fancy.define('Fancy.toolbar.Tab', {
 /*
  * @mixin Fancy.panel.mixin.PrepareConfig
  */
-Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
-  /*
-   * @param {Object} config
-   * @param {Object} originalConfig
-   * @return {Object}
-   */
-  prepareConfigTheme: function(config, originalConfig){
-    var themeName = config.theme || originalConfig.theme,
-      themeConfig = Fancy.getTheme(themeName).config;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    if(Fancy.isObject(themeName)){
-      config.theme = themeName.name;
+  //CONSTANTS
+  var FOOTER_STATUS_CLS = F.FOOTER_STATUS_CLS;
+  var STATUS_SOURCE_TEXT_CLS = F.STATUS_SOURCE_TEXT_CLS;
+  var STATUS_SOURCE_LINK_CLS = F.STATUS_SOURCE_LINK_CLS;
+  var FOOTER_SOURCE_CLS = F.FOOTER_SOURCE_CLS;
+
+  Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
+    /*
+     * @param {Object} config
+     * @param {Object} originalConfig
+     * @return {Object}
+     */
+    prepareConfigTheme: function (config, originalConfig) {
+      var themeName = config.theme || originalConfig.theme,
+        themeConfig = Fancy.getTheme(themeName).config;
+
+      if (Fancy.isObject(themeName)) {
+        config.theme = themeName.name;
+      }
+
+      Fancy.applyIf(config, themeConfig);
+
+      return config;
+    },
+    //The same in grid
+    /*
+     * @param {Object} config
+     * @return {Object}
+     */
+    prepareConfigFooter: function (config) {
+      var footer = config.footer,
+        lang = config.lang;
+
+      if (footer) {
+        var bar = [];
+
+        if (Fancy.isString(footer.status)) {
+          bar.push({
+            type: 'text',
+            text: footer.status,
+            cls: FOOTER_STATUS_CLS
+          });
+        }
+
+        if (footer.status && footer.source) {
+          bar.push('side');
+        }
+
+        if (Fancy.isString(footer.source)) {
+          bar.push({
+            type: 'text',
+            text: footer.source,
+            cls: FOOTER_SOURCE_CLS
+          });
+        }
+        else if (Fancy.isObject(footer.source)) {
+          var text = footer.source.text,
+            sourceText = footer.source.sourceText || lang.sourceText;
+
+          if (footer.source.link) {
+            var link = footer.source.link;
+
+            link = link.replace('http://', '');
+            link = 'http://' + link;
+
+            text = '<span class="' + STATUS_SOURCE_TEXT_CLS + '">' + sourceText + '</span>: <a class="' + STATUS_SOURCE_LINK_CLS + '" href="' + link + '">' + text + '</a>';
+          }
+          else {
+            text = '<span>' + sourceText + ':</span> ' + text;
+          }
+
+          bar.push({
+            type: 'text',
+            text: text,
+            cls: FOOTER_SOURCE_CLS
+          });
+        }
+
+        config.footer = bar;
+      }
+
+      return config;
+    },
+    /*
+     * @param {Object} config
+     * @param {Object} originalConfig
+     * @return {Object}
+     */
+    prepareConfigLang: function (config, originalConfig) {
+      var i18n = originalConfig.i18n || config.i18n,
+        lang = Fancy.Object.copy(Fancy.i18n[i18n]);
+
+      if (config.lang) {
+        for (var p in config.lang) {
+          if (Fancy.isObject(config.lang[p]) === false) {
+            lang[p] = config.lang[p];
+          }
+        }
+
+        lang.paging = {};
+        if (config.lang.paging) {
+          Fancy.apply(lang.paging, config.lang.paging);
+        }
+
+        for (var p in config.lang.paging) {
+          if (p === 'paging') {
+            continue;
+          }
+
+          if (Fancy.isObject(p)) {
+            continue;
+          }
+
+          lang[p] = config.lang.paging[p];
+        }
+
+        lang.date = {};
+        if (config.lang.date) {
+          Fancy.apply(lang.date, config.lang.date);
+        }
+      }
+
+      config.lang = lang;
+
+      return config;
     }
+  });
 
-    Fancy.applyIf(config, themeConfig);
-
-    return config;
-  },
-  //The same in grid
-  /*
-   * @param {Object} config
-   * @return {Object}
-   */
-  prepareConfigFooter: function(config){
-    var footer = config.footer,
-      lang = config.lang;
-
-    if(footer){
-      var bar = [];
-
-      if(Fancy.isString(footer.status)){
-        bar.push({
-          type: 'text',
-          text: footer.status,
-          cls: 'fancy-footer-status'
-        });
-      }
-
-      if(footer.status && footer.source) {
-        bar.push('side');
-      }
-
-      if(Fancy.isString(footer.source)){
-        bar.push({
-          type: 'text',
-          text: footer.source,
-          cls: 'fancy-footer-source'
-        });
-      }
-      else if(Fancy.isObject(footer.source)){
-        var text = footer.source.text,
-          sourceText = footer.source.sourceText || lang.sourceText;
-
-        if(footer.source.link){
-          var link = footer.source.link;
-
-          link = link.replace('http://', '');
-          link = 'http://' + link;
-
-          text = '<span class="fancy-status-source-text">'+sourceText+'</span>: <a class="fancy-status-source-link" href="'+link+'">'+text+'</a>';
-        }
-        else{
-          text = '<span>'+sourceText+':</span> ' + text;
-        }
-
-        bar.push({
-          type: 'text',
-          text: text,
-          cls: 'fancy-footer-source'
-        });
-      }
-
-      config.footer = bar;
-    }
-
-    return config;
-  },
-  /*
-   * @param {Object} config
-   * @param {Object} originalConfig
-   * @return {Object}
-   */
-  prepareConfigLang:  function(config, originalConfig){
-    var i18n = originalConfig.i18n || config.i18n,
-      lang = Fancy.Object.copy(Fancy.i18n[i18n]);
-
-    if(config.lang) {
-      for(var p in config.lang){
-        if(Fancy.isObject(config.lang[p]) === false){
-          lang[p] = config.lang[p];
-        }
-      }
-
-      lang.paging = {};
-      if (config.lang.paging) {
-        Fancy.apply(lang.paging, config.lang.paging);
-      }
-
-      for (var p in config.lang.paging) {
-        if (p === 'paging') {
-          continue;
-        }
-
-        if (Fancy.isObject(p)) {
-          continue;
-        }
-
-        lang[p] = config.lang.paging[p];
-      }
-
-      lang.date = {};
-      if (config.lang.date) {
-        Fancy.apply(lang.date, config.lang.date);
-      }
-    }
-
-    config.lang = lang;
-
-    return config;
-  }
-});
+})();
 /*
  * @mixin Fancy.panel.mixin.methods
  */
@@ -10309,40 +10470,32 @@ Fancy.Mixin('Fancy.panel.mixin.methods', {
    * @param {String} value
    */
   setTitle: function(value){
-    var me = this;
-
-    if(me.panel){
-      me.panel.setTitle(value);
+    if(this.panel){
+      this.panel.setTitle(value);
     }
   },
   /*
    * @return {String}
    */
   getTitle: function(){
-    var me = this;
-
-    if(me.panel){
-      return me.panel.getTitle();
+    if(this.panel){
+      return this.panel.getTitle();
     }
   },
   /*
    * @param {String} value
    */
   setSubTitle: function(value){
-    var me = this;
-
-    if(me.panel){
-      me.panel.setSubTitle(value);
+    if(this.panel){
+      this.panel.setSubTitle(value);
     }
   },
   /*
    * @return {String}
    */
   getSubTitle: function(){
-    var me = this;
-
-    if(me.panel){
-      return me.panel.getSubTitle();
+    if(this.panel){
+      return this.panel.getSubTitle();
     }
   }
 });
@@ -10350,33 +10503,27 @@ Fancy.Mixin('Fancy.panel.mixin.methods', {
  * @mixin Fancy.panel.mixin.DD
  */
 Fancy.Mixin('Fancy.panel.mixin.DD', {
-  ddCls: 'fancy-panel-draggable',
+  ddCls: Fancy.PANEL_DRAGGABLE_CLS,
   /*
    *
    */
   initDD: function(){
-    var me = this;
-
-    me.addDDCls();
-    me.addDD();
+    this.addDDCls();
+    this.addDD();
   },
   /*
    *
    */
   addDDCls: function(){
-    var me = this;
-
-    me.el.addCls(me.ddCls);
+    this.el.addCls(this.ddCls);
   },
   /*
    *
    */
   addDD: function(){
-    var me = this;
-
     Fancy.DD.add({
-      dragEl: me.el,
-      overEl: me.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
+      dragEl: this.el,
+      overEl: this.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
     });
   }
 });
@@ -10558,14 +10705,34 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
  * @extends Fancy.Widget
  */
 (function () {
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
-  var PANEL_HEADER_CLS = Fancy.PANEL_HEADER_CLS;
-  var HIDDEN_CLS = Fancy.HIDDEN_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var MODAL_CLS = F.MODAL_CLS;
+  var PANEL_CLS = F.PANEL_CLS;
+  var PANEL_HEADER_CLS = F.PANEL_HEADER_CLS;
+  var PANEL_SUB_HEADER_TEXT_CLS = F.PANEL_SUB_HEADER_TEXT_CLS;
+  var PANEL_HEADER_TEXT_CLS = F.PANEL_HEADER_TEXT_CLS;
+  var PANEL_HEADER_TOOLS_CLS = F.PANEL_HEADER_TOOLS_CLS;
+  var PANEL_SUB_HEADER_CLS = F.PANEL_SUB_HEADER_CLS;
+  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
+  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  var PANEL_HEADER_IMG_CLS = F.PANEL_HEADER_IMG_CLS;
+  var PANEL_NOFRAME_CLS = F.PANEL_NOFRAME_CLS;
+  var PANEL_SHADOW_CLS = F.PANEL_SHADOW_CLS;
+  var PANEL_FOOTER_CLS = F.PANEL_FOOTER_CLS;
+  var FIELD_PICKER_BUTTON_CLS = F.FIELD_PICKER_BUTTON_CLS;
 
-  Fancy.define('Fancy.Panel', {
-    extend: Fancy.Widget,
+  F.define('Fancy.Panel', {
+    extend: F.Widget,
     barScrollEnabled: true,
     mixins: [
       'Fancy.panel.mixin.DD',
@@ -10575,12 +10742,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('constructor', arguments);
+      F.apply(this, config);
+      this.Super('constructor', arguments);
     },
     /*
      *
@@ -10605,8 +10768,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setActiveWindowWatcher();
       }
     },
-    cls: 'fancy-panel',
-    panelSubHeaderCls: 'fancy-panel-sub-header-text',
+    cls: PANEL_CLS,
     value: '',
     width: 300,
     height: 200,
@@ -10623,20 +10785,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     theme: 'default',
     tpl: [
       '<div style="height:{titleHeight}px;" class="'+PANEL_HEADER_CLS+' '+HIDDEN_CLS+'">',
-      '{titleImg}',
-      '<div class="fancy-panel-header-text">{title}</div>',
-      '<div class="fancy-panel-header-tools"></div>',
+        '{titleImg}',
+        '<div class="' + PANEL_HEADER_TEXT_CLS + '">{title}</div>',
+        '<div class="' + PANEL_HEADER_TOOLS_CLS + '"></div>',
       '</div>',
-      '<div style="height:{subTitleHeight}px;" class="fancy-panel-sub-header '+HIDDEN_CLS+'">',
-        '<div class="fancy-panel-sub-header-text">{subTitle}</div>',
+      '<div style="height:{subTitleHeight}px;" class="' + PANEL_SUB_HEADER_CLS + ' '+HIDDEN_CLS+'">',
+        '<div class="' + PANEL_SUB_HEADER_TEXT_CLS + '">{subTitle}</div>',
       '</div>',
-      '<div class="fancy-panel-body">',
-      '<div class="fancy-panel-tbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-sub-tbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-body-inner"></div>',
-      '<div class="fancy-panel-bbar '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-buttons '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-      '<div class="fancy-panel-footer '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+      '<div class="' + PANEL_BODY_CLS + '">',
+        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
+        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
     ],
     /*
@@ -10644,8 +10806,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      */
     render: function () {
       var me = this,
-        renderTo = Fancy.get(me.renderTo || document.body),
-        el = Fancy.get(document.createElement('div')),
+        renderTo = F.get(me.renderTo || document.body),
+        el = F.get(document.createElement('div')),
         minusHeight = 0,
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
@@ -10658,16 +10820,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.frame === false) {
-        el.addCls('fancy-panel-noframe');
+        el.addCls(PANEL_NOFRAME_CLS);
       }
 
-      el.addCls(Fancy.cls, me.cls);
+      el.addCls(F.cls, me.cls);
       if (me.theme !== 'default') {
         el.addCls('fancy-theme-' + me.theme);
       }
 
       if (me.shadow) {
-        el.addCls('fancy-panel-shadow');
+        el.addCls(PANEL_SHADOW_CLS);
       }
 
       el.css({
@@ -10682,24 +10844,24 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var titleText = '',
         subTitleText = '';
 
-      if (Fancy.isObject(me.title)) {
+      if (F.isObject(me.title)) {
         titleText = me.title.text
       }
-      else if (Fancy.isString(me.title)) {
+      else if (F.isString(me.title)) {
         titleText = me.title
       }
 
-      if (Fancy.isObject(me.subTitle)) {
+      if (F.isObject(me.subTitle)) {
         subTitleText = me.subTitle.text
       }
-      else if (Fancy.isString(me.subTitle)) {
+      else if (F.isString(me.subTitle)) {
         subTitleText = me.subTitle
       }
 
       var imgCls = '';
 
-      if (Fancy.isObject(me.title) && me.title.imgCls) {
-        imgCls = '<div class="fancy-panel-header-img ' + me.title.imgCls + '"></div>';
+      if (F.isObject(me.title) && me.title.imgCls) {
+        imgCls = '<div class="' + PANEL_HEADER_IMG_CLS + ' ' + me.title.imgCls + '"></div>';
       }
 
       el.update(me.tpl.getHTML({
@@ -10711,7 +10873,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         subTitle: subTitleText
       }));
 
-      if (Fancy.isObject(me.title)) {
+      if (F.isObject(me.title)) {
         if (me.title.style) {
           el.select('.' + PANEL_HEADER_CLS).css(me.title.style);
         }
@@ -10725,13 +10887,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         }
       }
 
-      if (Fancy.isObject(me.subTitle)) {
+      if (F.isObject(me.subTitle)) {
         if (me.subTitle.style) {
-          el.select('.fancy-panel-sub-header').css(me.subTitle.style);
+          el.select('.' + PANEL_SUB_HEADER_CLS).css(me.subTitle.style);
         }
 
         if (me.subTitle.cls) {
-          el.select('.fancy-panel-sub-header').addCls(me.subTitle.cls);
+          el.select('.' + PANEL_SUB_HEADER_CLS).addCls(me.subTitle.cls);
         }
       }
 
@@ -10739,40 +10901,40 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el.select('.' + PANEL_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
       else {
-        el.select('.fancy-panel-body').css('border-top-width', '0px');
+        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
       }
 
       if (me.subTitle) {
-        el.select('.fancy-panel-body').css('border-top-width', '0px');
-        el.select('.fancy-panel-sub-header').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
+        el.select('.' + PANEL_SUB_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.tbar) {
-        el.select('.fancy-panel-tbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.subTBar) {
-        el.select('.fancy-panel-sub-tbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_SUB_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.bbar) {
-        el.select('.fancy-panel-bbar').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.buttons) {
-        el.select('.fancy-panel-buttons').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_BUTTONS_CLS).removeCls(HIDDEN_CLS);
       }
 
       if (me.footer) {
-        el.select('.fancy-panel-footer').removeCls(HIDDEN_CLS);
+        el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
       me.el = renderTo.dom.appendChild(el.dom);
-      me.el = Fancy.get(me.el);
+      me.el = F.get(me.el);
 
       if (me.modal) {
-        if (Fancy.select('fancy-modal').length === 0) {
-          Fancy.get(document.body).append('<div class="fancy-modal" style="display: none;"></div>');
+        if (F.select(MODAL_CLS).length === 0) {
+          F.get(document.body).append('<div class="'+MODAL_CLS+'" style="display: none;"></div>');
         }
       }
 
@@ -10789,10 +10951,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     setHardBordersWidth: function () {
-      var me = this,
-        panelBodyBorders = me.panelBodyBorders;
+      var panelBodyBorders = this.panelBodyBorders;
 
-      me.el.select('.fancy-panel-body').css({
+      this.el.select('.' + PANEL_BODY_CLS).css({
         'border-top-width': panelBodyBorders[0],
         'border-right-width': panelBodyBorders[1],
         'border-bottom-width': panelBodyBorders[2],
@@ -10810,9 +10971,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         return;
       }
 
-      Fancy.each(tools, function (tool, i) {
-        tool.renderTo = me.el.select('.fancy-panel-header-tools').dom;
-        me.tools[i] = new Fancy.Tool(tool, me.scope || me);
+      F.each(tools, function (tool, i) {
+        tool.renderTo = me.el.select('.' + PANEL_HEADER_TOOLS_CLS).dom;
+        me.tools[i] = new F.Tool(tool, me.scope || me);
       });
     },
     /*
@@ -10833,8 +10994,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.bbar) {
-        me._bbar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-bbar'),
+        me._bbar = new F.Bar({
+          el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
           height: me.barHeight,
           barContainer: me.barContainer,
@@ -10847,8 +11008,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.buttons) {
-        me._buttons = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-buttons'),
+        me._buttons = new F.Bar({
+          el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -10860,8 +11021,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.tbar) {
-        me._tbar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-tbar'),
+        me._tbar = new F.Bar({
+          el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
           height: me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
@@ -10874,8 +11035,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.subTBar) {
-        me._subTBar = new Fancy.Bar({
-          el: me.el.select('.fancy-panel-sub-tbar'),
+        me._subTBar = new F.Bar({
+          el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
           height: me.barHeight,
           tabEdit: containsGrid,
@@ -10888,9 +11049,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.footer) {
-        me._footer = new Fancy.Bar({
+        me._footer = new F.Bar({
           disableScroll: true,
-          el: me.el.select('.fancy-panel-footer'),
+          el: me.el.select('.' + PANEL_FOOTER_CLS),
           items: me.footer,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -10906,20 +11067,17 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Number} y
      */
     showAt: function (x, y) {
-      var me = this;
-
-      me.css({
+      this.css({
         left: x + 'px',
         display: '',
-        'z-index': 1000 + Fancy.zIndex++
+        'z-index': 1000 + F.zIndex++
       });
 
       if (y !== undefined) {
-        me.css({
+        this.css({
           top: y + 'px'
         });
       }
-
     },
     /*
      *
@@ -10949,11 +11107,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._subTBar.checkScroll();
       }
 
-      var viewSize = Fancy.getViewSize(),
+      var viewSize = F.getViewSize(),
         height = me.el.height(),
         width = me.el.width(),
         xy = [],
-        scroll = Fancy.getScroll(),
+        scroll = F.getScroll(),
         scrollTop = scroll[0],
         scrollLeft = scroll[1];
 
@@ -10972,24 +11130,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         left: (xy[0] + scrollLeft) + 'px',
         top: (xy[1] + scrollTop) + 'px',
         display: '',
-        'z-index': 1000 + Fancy.zIndex++
+        'z-index': 1000 + F.zIndex++
       });
 
-      Fancy.select('.fancy-modal').css('display', '');
+      F.select('.' + MODAL_CLS).css('display', '');
     },
     /*
      *
      */
     hide: function () {
-      var me = this;
-
-      me.css({
+      this.css({
         display: 'none'
       });
 
-      Fancy.select('.fancy-modal').css('display', 'none');
+      F.select('.' + MODAL_CLS).css('display', 'none');
 
-      Fancy.each(me.items || [], function (item) {
+      F.each(this.items || [], function (item) {
         if (item.type === 'combo') {
           item.hideList();
         }
@@ -10999,61 +11155,45 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {String} value
      */
     setTitle: function (value) {
-      var me = this;
-
-      me.el.select('.fancy-panel-header-text').update(value);
+      this.el.select('.' + PANEL_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
     getTitle: function () {
-      var me = this;
-
-      return me.el.select('.fancy-panel-header-text').dom.innerHTML;
+      return this.el.select('.' + PANEL_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @param {String} value
      */
     setSubTitle: function (value) {
-      var me = this;
-
-      me.el.select('.' + me.panelSubHeaderCls).update(value);
+      this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
     getSubTitle: function () {
-      var me = this;
-
-      return me.el.select('.' + me.panelSubHeaderCls).dom.innerHTML;
+      return this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @return {Number}
      */
     getHeight: function () {
-      var me = this;
-
-      return parseInt(me.css('height'));
+      return parseInt(this.css('height'));
     },
     /*
      * @param {String} value
      */
     setWidth: function (value) {
       //TODO: Redo
-      var me = this;
-
-      //me.css('width', value);
-      me.items[0].setWidth(value);
+      this.items[0].setWidth(value);
     },
     /*
      * @param {Number} value
      */
     setHeight: function (value) {
-      var me = this;
-
-      me.css('height', value);
-
-      me.items[0].setHeight(value, false);
+      this.css('height', value);
+      this.items[0].setHeight(value, false);
     },
     /*
      *
@@ -11062,14 +11202,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var me = this;
 
       me.el.on('click', function (e) {
-        var targetEl = Fancy.get(e.target);
+        var targetEl = F.get(e.target);
 
-        if (targetEl.hasCls('fancy-field-picker-button')) {
+        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
           return;
         }
 
-        if (1000 + Fancy.zIndex - 1 > parseInt(me.css('z-index'))) {
-          me.css('z-index', 1000 + Fancy.zIndex++);
+        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
+          me.css('z-index', 1000 + F.zIndex++);
         }
       });
     }
@@ -11080,338 +11220,346 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
  * @class Fancy.Tool
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Tool', {
-  extend: Fancy.Widget,
-  /*
-   * @constructor
-   * @param {Object} config
-   * @param {Object} scope
-   */
-  constructor: function(config, scope){
-    var me = this;
+(function(){
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.scope = scope;
+  //CONSTANTS
+  var BUTTON_CLS = F.BUTTON_CLS;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define('Fancy.Tool', {
+    extend: F.Widget,
+    /*
+     * @constructor
+     * @param {Object} config
+     * @param {Object} scope
+     */
+    constructor: function (config, scope) {
+      this.scope = scope;
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
-    me.Super('init', arguments);
+      me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
+      me.Super('init', arguments);
 
-    me.style = me.style || {};
+      me.style = me.style || {};
 
-    me.render();
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      el = me.el;
+      me.render();
+      me.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      this.on('click', this.onClick, this);
+    },
+    cls: BUTTON_CLS,
+    text: '',
+    height: 28,
+    paddingTextWidth: 5,
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = document.createElement('div');
 
-    el.on('click', me.onClick, me);
-  },
-  cls: 'fancy fancy-button',
-  text: '',
-  height: 28,
-  paddingTextWidth: 5,
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = document.createElement('div');
+      me.fire('beforerender');
 
-    me.fire('beforerender');
+      el.className = 'fancy-tool-button';
+      el.innerHTML = me.text;
+      me.el = F.get(renderTo.appendChild(el));
 
-    el.className = 'fancy-tool-button';
-    el.innerHTML = me.text;
-    me.el = Fancy.get( renderTo.appendChild(el) );
+      me.fire('afterrender');
+      me.fire('render');
+    },
+    /*
+     *
+     */
+    onClick: function () {
+      var me = this;
 
-    me.fire('afterrender');
-    me.fire('render');
-  },
-  /*
-   *
-   */
-  onClick: function(){
-    var me = this;
-
-    me.fire('click');
-    if( me.handler ){
-      if( me.scope ){
-        me.handler.apply(me.scope, [me]);
+      me.fire('click');
+      if (me.handler) {
+        if (me.scope) {
+          me.handler.apply(me.scope, [me]);
+        }
+        else {
+          me.handler(me);
+        }
       }
-      else{
-        me.handler(me);
-      }
+    },
+    /*
+     * @param {String} value
+     */
+    setText: function (value) {
+      this.el.update(value)
     }
-  },
-  /*
-   * @param {String} value
-   */
-  setText: function(value){
-    var me = this;
+  });
 
-    me.el.update(value)
-  }
-});
+})();
 /**
  * @class Fancy.panel.Tab
  */
-Fancy.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
-  extend: Fancy.Panel,
-  /*
-   * @constructor
-   * @param config
-   * @param scope
-   */
-  constructor: function(config, scope){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.prepareConfigTheme(config);
+  //CONSTANTS
+  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  var TAB_WRAPPER_CLS = F.TAB_WRAPPER_CLS;
+  var TAB_ACTIVE_WRAPPER_CLS = F.TAB_ACTIVE_WRAPPER_CLS;
+  var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
+  var PANEL_TAB_CLS = F.PANEL_TAB_CLS;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
+    extend: F.Panel,
+    /*
+     * @constructor
+     * @param config
+     * @param scope
+     */
+    constructor: function (config, scope) {
+      this.prepareConfigTheme(config);
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.prepareTabs();
-    me.Super('init', arguments);
+      me.prepareTabs();
+      me.Super('init', arguments);
 
-    me.setActiveTab(me.activeTab);
-  },
-  tabWrapperCls: 'fancy-tab-wrapper',
-  activeTabWrapperCls: 'fancy-active-tab-wrapper',
-  activeTabTBarButtonCls: 'fancy-toolbar-tab-active',
-  activeTab: 0,
-  theme: 'default',
-  /*
-   *
-   */
-  render: function(){
-    var me = this;
+      me.setActiveTab(me.activeTab);
+    },
+    activeTab: 0,
+    theme: 'default',
+    /*
+     *
+     */
+    render: function () {
+      var me = this;
 
-    me.Super('render', arguments);
+      me.Super('render', arguments);
 
-    me.panelBodyEl = me.el.select('.fancy-panel-body-inner').item(0);
+      me.panelBodyEl = me.el.select('.' + PANEL_BODY_INNER_CLS).item(0);
 
-    me.setPanelBodySize();
+      me.setPanelBodySize();
 
-    me.renderTabWrappers();
+      me.renderTabWrappers();
 
-    if(!me.wrapped){
-      me.el.addCls('fancy-panel-grid-inside');
-    }
-    me.el.addCls('fancy-panel-tab');
-
-    me.rendered = true;
-  },
-  setPanelBodySize: function(){
-    var me = this,
-      height = me.height,
-      panelBodyBorders = me.panelBodyBorders;
-
-    if(me.title){
-      height -= me.titleHeight;
-    }
-
-    if(me.subTitle){
-      height -= me.subTitleHeight;
-      height += panelBodyBorders[2];
-    }
-
-    if(me.bbar){
-      height -= me.barHeight;
-    }
-
-    if(me.tbar){
-      height -= me.barHeight;
-    }
-
-    if(me.subTBar){
-      height -= me.barHeight;
-    }
-
-    if(me.buttons){
-      height -= me.barHeight;
-    }
-
-    if(me.footer){
-      height -= me.barHeight;
-    }
-
-    height -= panelBodyBorders[0] + panelBodyBorders[2];
-
-    me.panelBodyEl.css({
-      height: height
-    });
-
-    me.panelBodyHeight = height;
-    me.panelBodyWidth = me.width - panelBodyBorders[1] - panelBodyBorders[3];
-    //me.panelBodyWidth = me.width;
-  },
-  prepareConfigTheme: function(config){
-    var me = this,
-      themeName = config.theme || me.theme,
-      themeConfig = Fancy.getTheme(themeName).config,
-      wrapped = me.wrapped || config.wrapped;
-
-    if(wrapped){
-      config.panelBodyBorders = [0,0,0,0];
-      me.panelBodyBorders = [0,0,0,0];
-    }
-
-    Fancy.applyIf(config, themeConfig);
-    Fancy.apply(me, config);
-  },
-  prepareTabs: function(){
-    var me = this,
-      tabs = [],
-      i = 0,
-      iL = me.items.length;
-
-    for(;i<iL;i++){
-      var item = me.items[i],
-        tabConfig = {
-          type: 'tab'
-        };
-
-      if(item.tabTitle){
-        tabConfig.text = item.tabTitle;
+      if (!me.wrapped) {
+        me.el.addCls(PANEL_GRID_INSIDE_CLS);
       }
-      else if(item.title){
-        tabConfig.text = item.title;
-        delete item.title;
+      me.el.addCls(PANEL_TAB_CLS);
+
+      me.rendered = true;
+    },
+    setPanelBodySize: function () {
+      var me = this,
+        height = me.height,
+        panelBodyBorders = me.panelBodyBorders;
+
+      if (me.title) {
+        height -= me.titleHeight;
       }
 
-      tabConfig.handler = (function(i){
-        return function(){
-          me.setActiveTab(i);
+      if (me.subTitle) {
+        height -= me.subTitleHeight;
+        height += panelBodyBorders[2];
+      }
+
+      if (me.bbar) {
+        height -= me.barHeight;
+      }
+
+      if (me.tbar) {
+        height -= me.barHeight;
+      }
+
+      if (me.subTBar) {
+        height -= me.barHeight;
+      }
+
+      if (me.buttons) {
+        height -= me.barHeight;
+      }
+
+      if (me.footer) {
+        height -= me.barHeight;
+      }
+
+      height -= panelBodyBorders[0] + panelBodyBorders[2];
+
+      me.panelBodyEl.css({
+        height: height
+      });
+
+      me.panelBodyHeight = height;
+      me.panelBodyWidth = me.width - panelBodyBorders[1] - panelBodyBorders[3];
+      //me.panelBodyWidth = me.width;
+    },
+    prepareConfigTheme: function (config) {
+      var me = this,
+        themeName = config.theme || me.theme,
+        themeConfig = F.getTheme(themeName).config,
+        wrapped = me.wrapped || config.wrapped;
+
+      if (wrapped) {
+        config.panelBodyBorders = [0, 0, 0, 0];
+        me.panelBodyBorders = [0, 0, 0, 0];
+      }
+
+      F.applyIf(config, themeConfig);
+      F.apply(me, config);
+    },
+    prepareTabs: function () {
+      var me = this,
+        tabs = [],
+        i = 0,
+        iL = me.items.length;
+
+      for (; i < iL; i++) {
+        var item = me.items[i],
+          tabConfig = {
+            type: 'tab'
+          };
+
+        if (item.tabTitle) {
+          tabConfig.text = item.tabTitle;
         }
-      })(i);
+        else if (item.title) {
+          tabConfig.text = item.title;
+          delete item.title;
+        }
 
-      tabs.push(tabConfig);
-    }
+        tabConfig.handler = (function (i) {
+          return function () {
+            me.setActiveTab(i);
+          }
+        })(i);
 
-    me.tbar = tabs;
-    me.tabs = tabs;
-  },
-  renderTabWrappers: function(){
-    var me = this;
-
-    Fancy.each(me.items, function(item){
-      var el = Fancy.get( document.createElement('div') );
-
-      el.addCls(me.tabWrapperCls);
-
-      item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
-    });
-  },
-  setActiveTab: function(newActiveTab){
-    var me = this,
-      activeTabWrapperCls = me.activeTabWrapperCls,
-      tabs = me.el.select('.' + me.tabWrapperCls),
-      oldActiveTab = me.activeTab;
-
-    if(me.items.length === 0){
-      return;
-    }
-
-    tabs.item(me.activeTab).removeCls(activeTabWrapperCls);
-    me.activeTab = newActiveTab;
-
-    tabs.item(me.activeTab).addCls(activeTabWrapperCls);
-
-    var item = me.items[me.activeTab];
-
-    item.theme = me.theme;
-    item.wrapped = true;
-
-    item.width = me.panelBodyWidth;
-    item.height = me.panelBodyHeight;
-
-    if(!item.rendered){
-      switch(item.type){
-        case 'grid':
-          me.items[me.activeTab] = new FancyGrid(item);
-          break;
-        case 'tab':
-          me.items[me.activeTab] = new FancyTab(item);
-          break;
+        tabs.push(tabConfig);
       }
-    }
-    else{
+
+      me.tbar = tabs;
+      me.tabs = tabs;
+    },
+    renderTabWrappers: function () {
+      var me = this;
+
+      F.each(me.items, function (item) {
+        var el = F.get(document.createElement('div'));
+
+        el.addCls(TAB_WRAPPER_CLS);
+
+        item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
+      });
+    },
+    setActiveTab: function (newActiveTab) {
+      var me = this,
+        tabs = me.el.select('.' + TAB_WRAPPER_CLS),
+        oldActiveTab = me.activeTab;
+
+      if (me.items.length === 0) {
+        return;
+      }
+
+      tabs.item(me.activeTab).removeCls(TAB_ACTIVE_WRAPPER_CLS);
+      me.activeTab = newActiveTab;
+
+      tabs.item(me.activeTab).addCls(TAB_ACTIVE_WRAPPER_CLS);
+
+      var item = me.items[me.activeTab];
+
+      item.theme = me.theme;
+      item.wrapped = true;
+
+      item.width = me.panelBodyWidth;
+      item.height = me.panelBodyHeight;
+
+      if (!item.rendered) {
+        switch (item.type) {
+          case 'grid':
+            me.items[me.activeTab] = new FancyGrid(item);
+            break;
+          case 'tab':
+            me.items[me.activeTab] = new FancyTab(item);
+            break;
+        }
+      }
+      else {
+        me.setActiveItemWidth();
+        me.setActiveItemHeight();
+      }
+
+      if (me.tabs) {
+        me.tbar[oldActiveTab].removeCls(TAB_TBAR_ACTIVE_CLS);
+        me.tbar[me.activeTab].addCls(TAB_TBAR_ACTIVE_CLS);
+      }
+    },
+    /*
+     * @param {String} value
+     */
+    setWidth: function (value) {
+      var me = this;
+
+      me.width = value;
+
+      me.css('width', value);
+      me.setPanelBodySize();
+
       me.setActiveItemWidth();
+    },
+    /*
+     * @param {Number} value
+     */
+    setHeight: function (value) {
+      var me = this;
+
+      me.height = value;
+
+      me.css('height', value);
+      me.setPanelBodySize();
+
       me.setActiveItemHeight();
+    },
+    setActiveItemWidth: function () {
+      var me = this;
+
+      me.items[me.activeTab].setWidth(me.panelBodyWidth);
+    },
+    setActiveItemHeight: function () {
+      var me = this;
+
+      me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
     }
+  });
 
-    if(me.tabs){
-      me.tbar[oldActiveTab].removeCls(me.activeTabTBarButtonCls);
-      me.tbar[me.activeTab].addCls(me.activeTabTBarButtonCls);
-    }
-  },
-  /*
-   * @param {String} value
-   */
-  setWidth: function(value){
-    var me = this;
+  FancyTab.get = function (id) {
+    var tabId = F.get(id).select('.' + PANEL_TAB_CLS).dom.id;
 
-    me.width = value;
-
-    me.css('width', value);
-    me.setPanelBodySize();
-
-    me.setActiveItemWidth();
-  },
-  /*
-   * @param {Number} value
-   */
-  setHeight: function(value){
-    var me = this;
-
-    me.height = value;
-
-    me.css('height', value);
-    me.setPanelBodySize();
-
-    me.setActiveItemHeight();
-  },
-  setActiveItemWidth: function(){
-    var me = this;
-
-    me.items[me.activeTab].setWidth(me.panelBodyWidth);
-  },
-  setActiveItemHeight: function(){
-    var me = this;
-
-    me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
-  }
-});
-
-FancyTab.get = function(id){
-  var tabId = Fancy.get(id).select('.fancy-panel-tab').dom.id;
-
-  return Fancy.getWidget(tabId);
-};
-
-if(!Fancy.nojQuery && Fancy.$){
-  Fancy.$.fn.FancyTab = function(o){
-    o.renderTo = $(this.selector)[0].id;
-
-    return new FancyTab(o);
+    return F.getWidget(tabId);
   };
-}
+
+  if (!F.nojQuery && F.$) {
+    F.$.fn.FancyTab = function (o) {
+      o.renderTo = $(this.selector)[0].id;
+
+      return new FancyTab(o);
+    };
+  }
+
+})();
 /**
  * @class Fancy.toolbar.Tab
  * @extends Fancy.Button
@@ -11424,865 +11572,872 @@ Fancy.define('Fancy.toolbar.Tab', {
    * @param scope
    */
   constructor: function(config, scope){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-  
-    me.Super('init', arguments);
+    this.Super('init', arguments);
   },
-  cls: 'fancy fancy-button fancy-toolbar-tab',
+  cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
    *
    */
   render: function(){
-    var me = this;
-
-    me.Super('render', arguments);
+    this.Super('render', arguments);
   }
 });
 /*
  * @class Fancy.Bar
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Bar', {
-  extend: Fancy.Widget,
-  widgetCls: 'fancy-bar',
-  containerCls: 'fancy-bar-container',
-  cls: '',
-  text: '',
-  floating: 'left',
-  sideRight: 0,
-  scrolled: 0,
-  tabOffSet: 5,
-  barScrollEnabled: true,
-  /*
-   * constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this,
-      config = config || {};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    Fancy.apply(me, config);
+  //CONSTANTS
+  var GRID_CLS = F.GRID_CLS;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-    me.init();
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  var BAR_CLS = F.BAR_CLS;
+  var BAR_CONTAINER_CLS = F.BAR_CONTAINER_CLS;
+  var BAR_BUTTON_CLS = F.BAR_BUTTON_CLS;
+  var BAR_SEG_BUTTON_CLS = F.BAR_SEG_BUTTON_CLS;
+  var BAR_LEFT_SCROLLER_CLS = F.BAR_LEFT_SCROLLER_CLS;
+  var BAR_RIGHT_SCROLLER_CLS = F.BAR_RIGHT_SCROLLER_CLS;
 
-    me.roles = {};
-    me.render();
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  var FIELD_SEARCH_CLS = F.FIELD_SEARCH_CLS;
+  var FIELD_SEARCH_LIST_CLS = F.FIELD_SEARCH_LIST_CLS;
+  var FIELD_SEARCH_PARAMS_LINK_CLS = F.FIELD_SEARCH_PARAMS_LINK_CLS;
+  var FIELD_SEARCH_PARAMED_CLS = F.FIELD_SEARCH_PARAMED_CLS;
+  var FIELD_SEARCH_PARAMED_EMPTY_CLS = F.FIELD_SEARCH_PARAMED_EMPTY_CLS;
 
-    if(me.barScrollEnabled){
-      me.initScroll();
-      setTimeout(function(){
-        me.checkScroll();
-      }, 50);
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this;
+  var PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
 
-    me.renderEl();
-    me.renderItems();
-    me.initTabEdit();
-  },
-  /*
-   *
-   */
-  renderEl: function(){
-    var me = this;
+  F.define('Fancy.Bar', {
+    extend: F.Widget,
+    widgetCls: BAR_CLS,
+    containerCls: BAR_CONTAINER_CLS,
+    cls: '',
+    text: '',
+    floating: 'left',
+    sideRight: 0,
+    scrolled: 0,
+    tabOffSet: 5,
+    barScrollEnabled: true,
+    /*
+     * constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      F.apply(this, config);
+      this.init();
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    if(!me.el){
-      var el = Fancy.get(document.createElement('div'));
+      me.roles = {};
+      me.render();
 
-      el.addCls(me.widgetCls, me.cls);
-      el.update(me.text);
-
-      me.el = Fancy.get(me.renderTo.appendChild(el.dom));
-
-      if(me.style){
-        me.el.css(me.style);
+      if (me.barScrollEnabled) {
+        me.initScroll();
+        setTimeout(function () {
+          me.checkScroll();
+        }, 50);
       }
-    }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this;
 
-    var containerEl = Fancy.get(document.createElement('div'));
-    containerEl.addCls(me.containerCls);
+      me.renderEl();
+      me.renderItems();
+      me.initTabEdit();
+    },
+    /*
+     *
+     */
+    renderEl: function () {
+      var me = this;
 
-    me.containerEl = Fancy.get(me.el.dom.appendChild(containerEl.dom));
-  },
-  /*
-   *
-   */
-  renderItems: function(){
-    var me = this,
-      containerEl = me.containerEl,
-      items = me.items || [],
-      i = 0,
-      iL = items.length,
-      isSide = false,
-      barItems = [],
-      sidePassed = iL - 1;
+      if (!me.el) {
+        var el = F.get(document.createElement('div'));
 
-    for(;i<iL;i++){
-      var item = items[i];
+        el.addCls(
+          me.widgetCls,
+          me.cls
+        );
 
-      if(isSide){
-        item = items[sidePassed];
-        sidePassed--;
-      }
+        el.update(me.text);
 
-      if(item.toggleGroup){
-        item.enableToggle = true;
+        me.el = F.get(me.renderTo.appendChild(el.dom));
+
+        if (me.style) {
+          me.el.css(me.style);
+        }
       }
 
-      if(Fancy.isObject(item)){
-        item.type = item.type || 'button';
+      var containerEl = F.get(document.createElement('div'));
+      containerEl.addCls(me.containerCls);
+
+      me.containerEl = F.get(me.el.dom.appendChild(containerEl.dom));
+    },
+    /*
+     *
+     */
+    renderItems: function () {
+      var me = this,
+        containerEl = me.containerEl,
+        items = me.items || [],
+        i = 0,
+        iL = items.length,
+        isSide = false,
+        barItems = [],
+        sidePassed = iL - 1;
+
+      for (; i < iL; i++) {
+        var item = items[i];
+
+        if (isSide) {
+          item = items[sidePassed];
+          sidePassed--;
+        }
+
+        if (item.toggleGroup) {
+          item.enableToggle = true;
+        }
+
+        if (F.isObject(item)) {
+          item.type = item.type || 'button';
+        }
+
+        if (isSide) {
+          me.floating = 'right';
+        }
+
+        //item.renderTo = el.dom;
+        item.renderTo = containerEl.dom;
+
+        switch (item) {
+          case '|':
+            var style = {
+              'float': me.floating,
+              'margin-right': '5px',
+              'margin-top': '6px',
+              'padding-left': '0px'
+            };
+
+            if (me.floating === 'right') {
+              F.applyIf(style, {
+                right: '1px',
+                position: 'absolute'
+              });
+            }
+
+            barItems.push(new F.Separator({
+              //renderTo: el.dom,
+              renderTo: containerEl.dom,
+              style: style
+            }));
+            continue;
+            break;
+          case 'side':
+            isSide = true;
+            continue;
+            break;
+          default:
+            if (isSide) {
+              barItems[sidePassed] = me.renderItem(item);
+            }
+            else {
+              barItems.push(me.renderItem(item));
+            }
+        }
       }
 
-      if (isSide) {
-        me.floating = 'right';
+      me.items = barItems;
+    },
+    /*
+     * @param {Object} item
+     * @return {Object}
+     */
+    renderItem: function (item) {
+      var me = this,
+        field,
+        containerEl = me.containerEl,
+        theme = me.theme;
+
+      item.style = item.style || {};
+      item.label = false;
+      item.padding = false;
+
+      F.applyIf(item.style, {
+        'float': me.floating
+      });
+
+      if (me.floating === 'right') {
+        F.applyIf(item.style, {
+          right: me.sideRight,
+          position: 'absolute'
+        });
       }
 
-      //item.renderTo = el.dom;
-      item.renderTo = containerEl.dom;
+      if (!item.scope && me.items) {
+        item.scope = me.items[0];
+      }
 
-      switch (item) {
-        case '|':
-          var style = {
-            'float': me.floating,
-            'margin-right': '5px',
-            'margin-top': '6px',
-            'padding-left': '0px'
-          };
-
-          if(me.floating === 'right'){
-            Fancy.applyIf(style, {
-              right: '1px',
-              position: 'absolute'
-            });
+      switch (item.type) {
+        case 'wrapper':
+          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS) {
+            containerEl.destroy();
+            containerEl = me.el;
           }
 
-          barItems.push(new Fancy.Separator({
-            //renderTo: el.dom,
-            renderTo: containerEl.dom,
-            style: style
-          }));
-          continue;
+          var renderTo = containerEl.append('<div class="' + (item.cls || '') + '"></div>').select('div').item(0),
+            i = 0,
+            iL = item.items.length,
+            _item,
+            width = 0;
+
+          for (; i < iL; i++) {
+            _item = item.items[i];
+
+            if (F.isObject(_item)) {
+              _item.type = _item.type || 'button';
+            }
+
+            _item.renderTo = renderTo.dom;
+            field = me.renderItem(_item);
+            var fieldEl = field.el;
+
+            if (i === iL - 1) {
+              fieldEl.css('margin-right', '0px');
+            }
+            else {
+              width += parseInt(fieldEl.css('margin-right'));
+            }
+
+            if (F.nojQuery) {
+              width += parseInt(fieldEl.width());
+              width += parseInt(fieldEl.css('margin-left'));
+            }
+            else {
+              width += parseInt(fieldEl.$dom.outerWidth());
+            }
+
+            width += parseInt(fieldEl.css('padding-left'));
+            width += parseInt(fieldEl.css('padding-right'));
+          }
+
+          renderTo.css('width', width);
+
           break;
-        case 'side':
-          isSide = true;
-          continue;
+        case undefined:
+        case 'button':
+          item.extraCls = BAR_BUTTON_CLS;
+
+          item.scope = me.scope;
+
+          field = new F.Button(item);
+          break;
+        case 'segbutton':
+          item.extraCls = BAR_SEG_BUTTON_CLS;
+
+          F.applyIf(item.style, {
+            'margin-right': '6px'
+          });
+
+          field = new F.SegButton(item);
+          break;
+        case 'tab':
+          field = new F.toolbar.Tab(item);
+          break;
+        case 'text':
+          F.applyIf(item.style, {
+            'margin-right': '10px',
+            'padding-left': '0px',
+            'padding-top': '11px'
+          });
+
+          F.apply(item, {
+            renderTo: containerEl.dom,
+            cls: item.cls || ''
+          });
+
+          field = new F.bar.Text(item);
+          break;
+        case 'combo':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 70
+          });
+
+          field = new F.Combo(item);
+          break;
+        case 'date':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 100
+          });
+
+          field = new F.DateField(item);
+
+          break;
+        case 'number':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 35
+          });
+
+          field = new F.NumberField(item);
+
+          break;
+        case 'switcher':
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 35
+          });
+
+          field = new F.Switcher(item);
+
+          break;
+        case 'string':
+          item.inputWidth = 18;
+
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          F.applyIf(item, {
+            width: 100
+          });
+
+          field = new F.StringField(item);
+          break;
+        case 'search':
+          item.inputWidth = 18;
+
+          item.events = item.events || [];
+
+          item.events = item.events.concat([{
+            enter: function (field, value) {
+              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+              //this.search(['name', 'surname', 'position'], value);
+              //this.search(value);
+              //this.search(['a', 'b', 'c']);
+              grid.search(value);
+            }
+          }, {
+            key: function (field, value) {
+              var me = this,
+                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+
+              if (!me.autoEnterTime) {
+                me.autoEnterTime = new Date();
+              }
+
+              if (me.intervalAutoEnter) {
+                clearInterval(me.intervalAutoEnter);
+              }
+              delete me.intervalAutoEnter;
+
+              me.intervalAutoEnter = setInterval(function () {
+                var now = new Date();
+
+                if (now - me.autoEnterTime > 500) {
+                  clearInterval(me.intervalAutoEnter);
+                  delete me.intervalAutoEnter;
+                  value = field.getValue();
+
+                  grid.search(value);
+                }
+              }, 200);
+            }
+          }, {
+            render: function (field) {
+              var me = this,
+                isIn = false;
+
+              field.el.on('mouseenter', function () {
+                isIn = true;
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
+
+              field.el.on('mousedown', function (e) {
+                e.preventDefault();
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
+
+              field.el.on('click', function (e) {
+                var toShow = false,
+                  grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id')),
+                  columns = grid.columns || [],
+                  leftColumns = grid.leftColumns || [],
+                  rightColumns = grid.rightColumns || [],
+                  _columns = columns.concat(leftColumns).concat(rightColumns),
+                  items = [],
+                  i = 0,
+                  iL = _columns.length,
+                  height = 1;
+
+                for (; i < iL; i++) {
+                  var column = _columns[i],
+                    title = column.title;
+
+                  if (title === undefined) {
+                    title = '';
+                  }
+
+                  if (column.searchable === false) {
+                    continue;
+                  }
+
+                  switch (column.type) {
+                    case 'color':
+                    case 'combo':
+                    case 'date':
+                    case 'number':
+                    case 'string':
+                    case 'text':
+                    case 'currency':
+                      break;
+                    default:
+                      continue;
+                  }
+
+                  height += grid.fieldHeight;
+
+                  items.push({
+                    inputLabel: ' &nbsp;&nbsp;' + title,
+                    value: true,
+                    name: column.index
+                  });
+                }
+
+                if (!me.list) {
+                  me.list = new FancyForm({
+                    width: 150,
+                    height: height,
+                    theme: theme,
+                    defaults: {
+                      type: 'checkbox',
+                      label: false,
+                      style: {
+                        padding: '8px 16px 0px'
+                      }
+                    },
+                    items: items,
+                    cls: FIELD_SEARCH_LIST_CLS,
+                    events: [{
+                      set: function () {
+                        grid.searching.setKeys(me.list.get());
+                      }
+                    }, {
+                      init: function () {
+                        setTimeout(function () {
+                          var listEl = me.list.el;
+
+                          listEl.on('mouseenter', function () {
+                            isIn = true;
+                          });
+
+                          listEl.on('mouseleave', function () {
+                            isIn = false;
+                            setTimeout(function () {
+                              if (isIn === false) {
+                                if (me.list) {
+                                  listEl.css('display', 'none');
+                                }
+                              }
+                            }, 750);
+                          });
+
+                          var el = F.get(e.target),
+                            offset = el.offset(),
+                            fieldHeight = parseInt(field.el.css('height'));
+
+                          listEl.css({
+                            position: 'absolute',
+                            top: offset.top + fieldHeight + 20,
+                            left: offset.left
+                          });
+
+                          me.list.el.css('display', 'block');
+
+                          listEl.animate({
+                            duration: 200,
+                            top: offset.top + fieldHeight - 1
+                          });
+                        }, 50);
+                      }
+
+                    }]
+                  });
+                }
+                else if (me.list.el.css('display') !== 'none') {
+                  me.list.el.css('display', 'none');
+                  return;
+                }
+                else {
+                  toShow = true;
+                }
+
+                var el = F.get(e.target),
+                  offset = el.offset(),
+                  fieldHeight = parseInt(field.el.css('height'));
+
+                if (me.list && me.list.el) {
+                  me.list.css({
+                    position: 'absolute',
+                    top: offset.top + fieldHeight + 20,
+                    left: offset.left
+                  });
+
+                  if (toShow) {
+                    me.list.css('display', 'block');
+                  }
+
+                  me.list.el.animate({
+                    duration: 200,
+                    top: offset.top + fieldHeight - 1
+                  });
+                }
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
+
+              field.el.on('mouseleave', function () {
+                isIn = false;
+                setTimeout(function () {
+                  if (isIn === false) {
+                    if (me.list) {
+                      me.list.el.css('display', 'none');
+                    }
+                  }
+                }, 750);
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS)
+            }
+          }]);
+
+          F.applyIf(item.style, {
+            'float': me.floating,
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          var cls = FIELD_SEARCH_CLS;
+
+          if (item.paramsMenu) {
+            item.tpl = [
+              '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
+              '{label}',
+              '</div>',
+              '<div class="' + FIELD_TEXT_CLS + '">',
+              '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
+              '<div class="' + FIELD_SEARCH_PARAMS_LINK_CLS + '" style="">' + (item.paramsText || '&nbsp;') + '</div>',
+              '</div>',
+              '<div class="' + CLEARFIX_CLS + '"></div>'
+            ];
+
+            cls += ' ' + FIELD_SEARCH_PARAMED_CLS;
+            if (!item.paramsText) {
+              cls += ' ' + FIELD_SEARCH_PARAMED_EMPTY_CLS;
+            }
+          }
+
+          F.applyIf(item, {
+            padding: false,
+            width: 250,
+            cls: cls,
+            emptyText: 'Search'
+          });
+
+          field = new F.StringField(item);
           break;
         default:
-          if(isSide){
-            barItems[sidePassed] = me.renderItem(item);
-          }
-          else {
-            barItems.push( me.renderItem(item) );
-          }
       }
-    }
 
-    me.items = barItems;
-  },
-  /*
-   * @param {Object} item
-   * @return {Object}
-   */
-  renderItem: function(item){
-    var me = this,
-      field,
-      containerEl = me.containerEl,
-      theme = me.theme;
+      if (me.floating === 'right') {
+        me.sideRight += field.width;
+        me.sideRight += 7;
+      }
 
-    item.style = item.style || {};
-    item.label = false;
-    item.padding = false;
+      if (item.role) {
+        me.roles[item.role] = field;
+      }
 
-    Fancy.applyIf(item.style, {
-      'float': me.floating
-    });
+      return field;
+    },
+    /*
+     *
+     */
+    initScroll: function () {
+      var me = this;
 
-    if(me.floating === 'right'){
-      Fancy.applyIf(item.style, {
-        right: me.sideRight,
-        position: 'absolute'
+      me.leftScroller = new F.Button({
+        imageCls: true,
+        renderTo: me.el.dom,
+        cls: BAR_LEFT_SCROLLER_CLS,
+        height: me.height + 2,
+        minWidth: 20,
+        paddingTextWidth: 0,
+        imageWidth: 20,
+        width: 0,
+        text: false,
+        id: 'my',
+        style: {
+          position: 'absolute',
+          left: -1,
+          top: -1,
+          display: 'none'
+        },
+        listeners: [{
+          click: me.onPrevScrollClick,
+          scope: me
+        }]
       });
-    }
 
-    if(!item.scope && me.items){
-      item.scope = me.items[0];
-    }
+      me.rightScroller = new F.Button({
+        imageCls: true,
+        renderTo: me.el.dom,
+        cls: BAR_RIGHT_SCROLLER_CLS,
+        height: me.height + 2,
+        minWidth: 20,
+        paddingTextWidth: 0,
+        imageWidth: 20,
+        width: 0,
+        text: false,
+        style: {
+          position: 'absolute',
+          right: -1,
+          top: -1,
+          display: 'none'
+        },
+        listeners: [{
+          click: me.onNextScrollClick,
+          scope: me
+        }]
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    getBarWidth: function () {
+      return parseInt(this.el.css('width'));
+    },
+    /*
+     * @return {Number}
+     */
+    getItemsWidth: function () {
+      var width = 0;
 
-    switch(item.type){
-      case 'wrapper':
-        if(item.cls === 'fancy-month-picker-action-buttons'){
-          containerEl.destroy();
-          containerEl = me.el;
+      F.each(this.items, function (item) {
+        width += item.el.width();
+        width += parseInt(item.el.css('margin-left'));
+        width += parseInt(item.el.css('margin-right'));
+        width += parseInt(item.el.css('padding-right'));
+        width += parseInt(item.el.css('padding-left'));
+      });
+
+      return width;
+    },
+    /*
+     *
+     */
+    onPrevScrollClick: function () {
+      this.scrolled += 30;
+      this.applyScrollChanges();
+    },
+    /*
+     *
+     */
+    onNextScrollClick: function () {
+      this.scrolled -= 30;
+      this.applyScrollChanges();
+    },
+    /*
+     *
+     */
+    applyScrollChanges: function () {
+      var me = this,
+        itemsWidth = me.getItemsWidth(),
+        barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
+        scrollPath = itemsWidth - barWidth;
+
+      if (itemsWidth < barWidth) {
+        me.scrolled = 0;
+
+        me.leftScroller.el.hide();
+        me.rightScroller.el.hide();
+
+        me.containerEl.css('margin-left', '0px');
+
+        return;
+      }
+      else if (me.scrolled > 0) {
+        me.scrolled = 0;
+        me.leftScroller.disable();
+        me.rightScroller.enable();
+      }
+      else if (me.scrolled < -scrollPath) {
+        me.scrolled = -scrollPath;
+        me.leftScroller.enable();
+        me.rightScroller.disable();
+      }
+
+      me.leftScroller.el.show();
+      me.rightScroller.el.show();
+
+      me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
+    },
+    /*
+     *
+     */
+    onDocMouseUp: function () {
+      var me = this;
+
+      if (me.scrollInterval) {
+        clearTimeout(me.scrollInterval);
+        delete me.scrollInterval;
+      }
+    },
+    /*
+     *
+     */
+    checkScroll: function () {
+      var me = this,
+        itemsWidth = me.getItemsWidth(),
+        barWidth = me.getBarWidth();
+
+      if (me.disableScroll) {
+        return;
+      }
+
+      if (itemsWidth > barWidth) {
+        me.enableScroll();
+      }
+      else {
+        me.leftScroller.el.hide();
+        me.rightScroller.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    enableScroll: function () {
+      var me = this;
+
+      me.leftScroller.el.show();
+      me.rightScroller.el.show();
+
+      if (me.scrolled === 0) {
+        me.leftScroller.disable();
+        me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
+      }
+    },
+    /*
+     *
+     */
+    initTabEdit: function () {
+      var me = this;
+
+      if (!me.tabEdit) {
+        return;
+      }
+
+      var i = me.items.length - 1;
+
+      for (; i > -1; i--) {
+        var item = me.items[i];
+
+        switch (item.type) {
+          case 'number':
+          case 'string':
+          case 'date':
+            item.on('tab', me.onTabLastInput, me);
+            return;
+            break;
         }
-
-        var renderTo = containerEl.append('<div class="'+(item.cls || '')+'"></div>').select('div').item(0),
-          i = 0,
-          iL = item.items.length,
-          _item,
-          width = 0;
-
-        for(;i<iL;i++){
-          _item = item.items[i];
-
-          if(Fancy.isObject(_item)){
-            _item.type = _item.type || 'button';
-          }
-
-          _item.renderTo = renderTo.dom;
-          field = me.renderItem(_item);
-          var fieldEl = field.el;
-
-          if(i === iL - 1){
-            fieldEl.css('margin-right', '0px');
-          }
-          else{
-            width += parseInt(fieldEl.css('margin-right'));
-          }
-
-          if(Fancy.nojQuery){
-            width += parseInt(fieldEl.width());
-            width += parseInt(fieldEl.css('margin-left'));
-          }
-          else{
-            width += parseInt(fieldEl.$dom.outerWidth());
-          }
-
-          width += parseInt(fieldEl.css('padding-left'));
-          width += parseInt(fieldEl.css('padding-right'));
-        }
-
-        renderTo.css('width', width);
-
-        break;
-      case undefined:
-      case 'button':
-        item.extraCls = 'fancy-bar-button';
-
-        item.scope = me.scope;
-
-        field = new Fancy.Button(item);
-        break;
-      case 'segbutton':
-        item.extraCls = 'fancy-bar-seg-button';
-
-        Fancy.applyIf(item.style, {
-          'margin-right': '6px'
-        });
-
-        field = new Fancy.SegButton(item);
-        break;
-      case 'tab':
-        field = new Fancy.toolbar.Tab(item);
-        break;
-      case 'text':
-        Fancy.applyIf(item.style, {
-          'margin-right': '10px',
-          'padding-left': '0px',
-          'padding-top': '11px'
-        });
-
-        Fancy.apply(item, {
-          renderTo: containerEl.dom,
-          cls: item.cls || ''
-        });
-
-        field = new Fancy.bar.Text(item);
-        break;
-      case 'combo':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 70
-        });
-
-        field = new Fancy.Combo(item);
-        break;
-      case 'date':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 100
-        });
-
-        field = new Fancy.DateField(item);
-
-        break;
-      case 'number':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 35
-        });
-
-        field = new Fancy.NumberField(item);
-
-        break;
-      case 'switcher':
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 35
-        });
-
-        field = new Fancy.Switcher(item);
-
-        break;
-      case 'string':
-        item.inputWidth = 18;
-
-        Fancy.applyIf(item.style, {
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        Fancy.applyIf(item, {
-          width: 100
-        });
-
-        field = new Fancy.StringField(item);
-        break;
-      case 'search':
-        item.inputWidth = 18;
-
-        item.events = item.events || [];
-
-        item.events = item.events.concat([{
-          enter: function(field, value){
-            var grid = Fancy.getWidget( field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id') );
-            //this.search(['name', 'surname', 'position'], value);
-            //this.search(value);
-            //this.search(['a', 'b', 'c']);
-            grid.search(value);
-          }
-        }, {
-          key: function (field, value) {
-            var me = this,
-              grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id'));
-
-            if (!me.autoEnterTime) {
-              me.autoEnterTime = new Date();
-            }
-
-            if (me.intervalAutoEnter) {
-              clearInterval(me.intervalAutoEnter);
-            }
-            delete me.intervalAutoEnter;
-
-            me.intervalAutoEnter = setInterval(function () {
-              var now = new Date();
-
-              if (now - me.autoEnterTime > 500) {
-                clearInterval(me.intervalAutoEnter);
-                delete me.intervalAutoEnter;
-                value = field.getValue();
-
-                grid.search(value);
-              }
-            }, 200);
-          }
-        },{
-          render: function(field){
-            var me = this,
-              isIn = false;
-
-            field.el.on('mouseenter', function(){
-              isIn = true;
-            }, null, '.fancy-field-search-params-link');
-
-            field.el.on('mousedown', function(e){
-              e.preventDefault();
-            }, null, '.fancy-field-search-params-link');
-
-            field.el.on('click', function(e){
-              var toShow = false,
-                grid = Fancy.getWidget(field.el.parent().parent().parent().parent().select('.' + Fancy.GRID_CLS).attr('id')),
-                columns = grid.columns || [],
-                leftColumns = grid.leftColumns || [],
-                rightColumns = grid.rightColumns || [],
-                _columns = columns.concat(leftColumns).concat(rightColumns),
-                items = [],
-                i = 0,
-                iL = _columns.length,
-                height = 1;
-
-              for(;i<iL;i++){
-                var column = _columns[i],
-                  title = column.title;
-
-                if(title === undefined){
-                  title = '';
-                }
-
-                if(column.searchable === false){
-                  continue;
-                }
-
-                switch(column.type){
-                  case 'color':
-                  case 'combo':
-                  case 'date':
-                  case 'number':
-                  case 'string':
-                  case 'text':
-                  case 'currency':
-                    break;
-                  default:
-                    continue;
-                }
-
-                height += grid.fieldHeight;
-
-                items.push({
-                  inputLabel: ' &nbsp;&nbsp;' + title,
-                  value: true,
-                  name: column.index
-                });
-              }
-
-              if(!me.list){
-                me.list = new FancyForm({
-                  width: 150,
-                  height: height,
-                  theme: theme,
-                  defaults: {
-                    type: 'checkbox',
-                    label: false,
-                    style: {
-                      padding: '8px 16px 0px'
-                    }
-                  },
-                  items: items,
-                  cls: 'fancy-field-search-list',
-                  events: [{
-                    set: function () {
-                      grid.searching.setKeys(me.list.get());
-                    }
-                  },{
-                    init: function(){
-                      setTimeout(function() {
-                        var listEl = me.list.el;
-
-                        listEl.on('mouseenter', function () {
-                          isIn = true;
-                        });
-
-                        listEl.on('mouseleave', function () {
-                          isIn = false;
-                          setTimeout(function () {
-                            if (isIn === false) {
-                              if (me.list) {
-                                listEl.css('display', 'none');
-                              }
-                            }
-                          }, 750);
-                        });
-
-                        var el = Fancy.get(e.target),
-                          offset = el.offset(),
-                          fieldHeight = parseInt(field.el.css('height'));
-
-                        listEl.css({
-                          position: 'absolute',
-                          top: offset.top + fieldHeight + 20,
-                          left: offset.left
-                        });
-
-                        me.list.el.css('display', 'block');
-
-                        listEl.animate({
-                          duration: 200,
-                          top: offset.top + fieldHeight - 1
-                        });
-                      },50);
-                    }
-
-                  }]
-                });
-              }
-              else if(me.list.el.css('display') !== 'none'){
-                me.list.el.css('display', 'none');
-                return;
-              }
-              else{
-                toShow = true;
-              }
-
-              var el = Fancy.get(e.target),
-                offset = el.offset(),
-                fieldHeight = parseInt(field.el.css('height'));
-
-              if(me.list && me.list.el){
-                me.list.css({
-                  position: 'absolute',
-                  top: offset.top + fieldHeight + 20,
-                  left: offset.left
-                });
-
-                if (toShow) {
-                  me.list.css('display', 'block');
-                }
-
-                me.list.el.animate({
-                  duration: 200,
-                  top: offset.top + fieldHeight - 1
-                });
-              }
-            }, null, '.fancy-field-search-params-link');
-
-            field.el.on('mouseleave', function(){
-              isIn = false;
-              setTimeout(function(){
-                if(isIn === false){
-                  if(me.list){
-                    me.list.el.css('display', 'none');
-                  }
-                }
-              }, 750);
-            }, null, '.fancy-field-search-params-link')
-          }
-        }]);
-
-        Fancy.applyIf(item.style, {
-          'float': me.floating,
-          'padding-left': '0px',
-          'margin-right': '8px',
-          'margin-top': '4px'
-        });
-
-        var cls = 'fancy-field-search';
-
-        if(item.paramsMenu){
-          item.tpl = [
-            '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-            '{label}',
-            '</div>',
-            '<div class="fancy-field-text">',
-              '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
-              '<div class="fancy-field-search-params-link" style="">' + (item.paramsText || '&nbsp;') + '</div>',
-            '</div>',
-            '<div class="fancy-clearfix"></div>'
-          ];
-
-          cls += ' fancy-field-search-paramed';
-          if(!item.paramsText){
-            cls += ' fancy-field-search-paramed-empty';
-          }
-        }
-
-        Fancy.applyIf(item, {
-          padding: false,
-          width: 250,
-          cls: cls,
-          emptyText: 'Search'
-        });
-
-        field = new Fancy.StringField(item);
-        break;
-      default:
-    }
-
-    if(me.floating === 'right'){
-      me.sideRight += field.width;
-      me.sideRight += 7;
-    }
-
-    if(item.role){
-      me.roles[item.role] = field;
-    }
-
-    return field;
-  },
-  /*
-   *
-   */
-  initScroll: function(){
-    var me = this;
-
-    me.leftScroller = new Fancy.Button({
-      imageCls: true,
-      renderTo: me.el.dom,
-      cls: 'fancy-bar-left-scroller',
-      height: me.height + 2,
-      minWidth: 20,
-      paddingTextWidth: 0,
-      imageWidth: 20,
-      width: 0,
-      text: false,
-      id: 'my',
-      style: {
-        position: 'absolute',
-        left: -1,
-        top: -1,
-        display: 'none'
-      },
-      listeners: [{
-        click: me.onPrevScrollClick,
-        scope: me
-      }]
-    });
-
-    me.rightScroller = new Fancy.Button({
-      imageCls: true,
-      renderTo: me.el.dom,
-      cls: 'fancy-bar-right-scroller',
-      height: me.height + 2,
-      minWidth: 20,
-      paddingTextWidth: 0,
-      imageWidth: 20,
-      width: 0,
-      text: false,
-      style: {
-        position: 'absolute',
-        right: -1,
-        top: -1,
-        display: 'none'
-      },
-      listeners: [{
-        click: me.onNextScrollClick,
-        scope: me
-      }]
-    });
-  },
-  /*
-   * @return {Number}
-   */
-  getBarWidth: function(){
-    var me = this;
-
-    return parseInt(me.el.css('width'));
-  },
-  /*
-   * @return {Number}
-   */
-  getItemsWidth: function(){
-    var me = this,
-      width = 0;
-
-    Fancy.each(me.items, function (item){
-      width += item.el.width();
-      width += parseInt(item.el.css('margin-left'));
-      width += parseInt(item.el.css('margin-right'));
-      width += parseInt(item.el.css('padding-right'));
-      width += parseInt(item.el.css('padding-left'));
-    });
-
-    return width;
-  },
-  /*
-   *
-   */
-  onPrevScrollClick: function(){
-    var me = this;
-
-    me.scrolled += 30;
-
-    me.applyScrollChanges();
-  },
-  /*
-   *
-   */
-  onNextScrollClick: function(){
-    var me = this;
-
-    me.scrolled -= 30;
-
-    me.applyScrollChanges();
-  },
-  /*
-   *
-   */
-  applyScrollChanges: function(){
-    var me = this,
-      itemsWidth = me.getItemsWidth(),
-      barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
-      scrollPath = itemsWidth - barWidth;
-
-    if(itemsWidth < barWidth){
-      me.scrolled = 0;
-
-      me.leftScroller.el.hide();
-      me.rightScroller.el.hide();
-
-      me.containerEl.css('margin-left', '0px');
-
-      return;
-    }
-    else if(me.scrolled > 0){
-      me.scrolled = 0;
-      me.leftScroller.disable();
-      me.rightScroller.enable();
-    }
-    else if(me.scrolled < -scrollPath){
-      me.scrolled = -scrollPath;
-      me.leftScroller.enable();
-      me.rightScroller.disable();
-    }
-
-    me.leftScroller.el.show();
-    me.rightScroller.el.show();
-
-    me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
-  },
-  /*
-   *
-   */
-  onDocMouseUp: function () {
-    var me = this;
-
-    if(me.scrollInterval){
-      clearTimeout(me.scrollInterval);
-      delete me.scrollInterval;
-    }
-  },
-  /*
-   *
-   */
-  checkScroll: function(){
-    var me = this,
-      itemsWidth = me.getItemsWidth(),
-      barWidth = me.getBarWidth();
-
-    if(me.disableScroll){
-      return;
-    }
-
-    if(itemsWidth > barWidth){
-      me.enableScroll();
-    }
-    else{
-      me.leftScroller.el.hide();
-      me.rightScroller.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  enableScroll: function(){
-    var me = this;
-
-    me.leftScroller.el.show();
-    me.rightScroller.el.show();
-
-    if(me.scrolled === 0){
-      me.leftScroller.disable();
-      me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
-    }
-  },
-  /*
-   *
-   */
-  initTabEdit: function(){
-    var me = this;
-
-    if(!me.tabEdit){
-      return;
-    }
-
-    var i = me.items.length - 1;
-
-    for(;i>-1;i--){
-      var item = me.items[i];
-
-      switch(item.type){
-        case 'number':
-        case 'string':
-        case 'date':
-          item.on('tab', me.onTabLastInput, me);
-          return;
-          break;
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {Object} e
+     */
+    onTabLastInput: function (field, e) {
+      var me = this,
+        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id'));
+
+      //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
+      e.preventDefault();
+
+      if (grid.leftColumns.length) {
+        setTimeout(function () {
+          grid.leftBody.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+        }, 100);
+      }
+      else {
+        setTimeout(function () {
+          grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+        }, 100);
       }
     }
-  },
-  /*
-   * @param {Object} field
-   * @param {Object} e
-   */
-  onTabLastInput: function(field, e){
-    var me = this,
-      grid = Fancy.getWidget(me.el.parent().select('.' + Fancy.GRID_CLS).attr('id')),
-      cellCls = grid.cellCls;
+  });
 
-    //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
-    e.preventDefault();
-
-    if(grid.leftColumns.length){
-      setTimeout(function(){
-        grid.leftBody.el.select('.' + cellCls).item(0).dom.click();
-      }, 100);
-    }
-    else{
-      setTimeout(function(){
-        grid.body.el.select('.' + cellCls).item(0).dom.click();
-      }, 100);
-    }
-  }
-});
+})();
 /*
  * @class Fancy.Separator
  */
 Fancy.define('Fancy.Separator', {
-  cls: 'fancy-separator',
+  cls: Fancy.SEPARATOR_CLS,
   /*
    * @constructor
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.init();
+    Fancy.apply(this, config);
+    this.init();
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.render();
+    this.render();
   },
   /*
    *
@@ -12306,7 +12461,7 @@ Fancy.define('Fancy.Separator', {
  */
 Fancy.define('Fancy.bar.Text', {
   extend: Fancy.Widget,
-  widgetCls: 'fancy-bar-text',
+  widgetCls: Fancy.BAR_TEXT_CLS,
   cls: '',
   text: '',
   /*
@@ -12314,22 +12469,15 @@ Fancy.define('Fancy.bar.Text', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.render();
+    this.Super('init', arguments);
+    this.render();
   },
   /*
    *
@@ -12364,947 +12512,966 @@ Fancy.define('Fancy.bar.Text', {
     return this.get();
   }
 });
-Fancy.Mixin('Fancy.form.mixin.Form', {
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+/*
+ * @mixin Fancy.form.mixin.Form
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.calcFieldSize();
-    me.Super('init', arguments);
+  //CONSTANTS
+  var MODAL_CLS = F.MODAL_CLS;
+  var FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
+  var FORM_CLS = F.FORM_CLS;
+  var FORM_BODY_CLS = F.FORM_BODY_CLS;
+  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  var PANEL_SHADOW_CLS =  F.PANEL_SHADOW_CLS;
+  var FIELD_BLANK_ERR_CLS = F.FIELD_BLANK_ERR_CLS;
+  var FIELD_TAB_CLS = F.FIELD_TAB_CLS;
+  var FIELD_TAB_ACTIVE_CLS = F.FIELD_TAB_ACTIVE_CLS;
+  var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
+  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var TAB_TBAR_CLS = F.TAB_TBAR_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
-    me.addEvents('init', 'set');
-    
-    if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
-      me.loadModules();
-      return;
-    }
+  F.Mixin('Fancy.form.mixin.Form', {
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.fire('beforerender');
+      me.calcFieldSize();
+      me.Super('init', arguments);
 
-    me.applyDefaults();
-    me.preRender();
-    me.render();
-    me.ons();
-    me.fire('init');
-  },
-  cls: '',
-  widgetCls: 'fancy-form',
-  value: '',
-  width: 200,
-  height: 300,
-  emptyText: '',
-  tpl: [
-    '<div class="fancy-form-body">',
-    '</div>'
-  ],
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
+      me.addEvents('init', 'set');
 
-    me.initRenderTo();
-
-    if( me.title || me.tbar || me.bbar || me.buttons ){
-      me.renderPanel();
-    }
-  },
-  /*
-   *
-   */
-  renderPanel: function(){
-    var me = this,
-      panelConfig = {
-        renderTo: me.renderTo,
-        title: me.title,
-        subTitle: me.subTitle,
-        subTitleHeight: me.subTitleHeight,
-        width: me.width,
-        height: me.height,
-        titleHeight: me.titleHeight,
-        barHeight: me.barHeight,
-        theme: me.theme,
-        shadow: me.shadow,
-        style: me.style || {},
-        window: me.window,
-        modal: me.modal,
-        frame: me.frame,
-        items: [me],
-        tabs: me.tabs,
-        draggable: me.draggable,
-        minWidth: me.minWidth,
-        minHeight: me.minHeight,
-        panelBodyBorders: me.panelBodyBorders,
-        resizable: me.resizable
-      };
-
-    if(me.tabs){
-      panelConfig.tbar = me.generateTabs();
-      me.height -= me.barHeight;
-    }
-
-    if(me.bbar){
-      panelConfig.bbar = me.bbar;
-      me.height -= me.barHeight;
-    }
-
-    if(me.tbar){
-      panelConfig.tbar = me.tbar;
-      me.height -= me.barHeight;
-    }
-
-    if(me.buttons){
-      panelConfig.buttons = me.buttons;
-      me.height -= me.barHeight;
-      panelConfig.buttons = me.buttons;
-    }
-
-    if(me.footer){
-      panelConfig.footer = me.footer;
-      me.height -= me.barHeight;
-    }
-
-    me.panel = new Fancy.Panel(panelConfig);
-
-    me.bbar = me.panel.bbar;
-    me.tbar = me.panel.tbar;
-    me.buttons = me.panel.buttons;
-
-    if(!me.wrapped){
-      me.panel.addCls('fancy-panel-grid-inside');
-    }
-
-    if(me.extraCls && me.panel){
-      me.panel.addCls(me.extraCls);
-    }
-
-    if(me.title) {
-      me.height -= me.titleHeight;
-    }
-
-    if(me.subTitle) {
-      me.height -= me.subTitleHeight;
-      me.height += me.panelBodyBorders[2];
-    }
-
-    //me.height -= me.panelBorderWidth;
-    me.height -= me.panelBodyBorders[0];
-
-    me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
-  },
-  /*
-   *
-   */
-  initRenderTo: function(){
-    var me = this,
-      renderTo = me.renderTo || document.body;
-
-    if(Fancy.isString(renderTo)){
-      renderTo = document.getElementById(renderTo);
-      if(!renderTo){
-        renderTo = Fancy.select(renderTo).item(0);
-      }
-    }
-
-    me.renderTo = renderTo;
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = me.renderTo,
-      el = Fancy.get( document.createElement('div') );
-
-    el.addCls(
-      me.cls,
-      Fancy.cls,
-      me.widgetCls
-    );
-
-    el.attr('id', me.id);
-
-    el.css({
-      width: me.width + 'px',
-      height: me.height + 'px'
-    });
-
-    el.update(me.tpl.join(' '));
-
-    me.el = Fancy.get(Fancy.get(renderTo).dom.appendChild(el.dom));
-
-    if(me.panel === undefined){
-      if(me.shadow){
-        el.addCls('fancy-panel-shadow');
+      if (F.fullBuilt !== true && F.MODULELOAD !== false && F.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true) {
+        me.loadModules();
+        return;
       }
 
-      if( me.theme !== 'default' ){
-        el.addCls('fancy-theme-' + me.theme);
+      me.fire('beforerender');
+
+      me.applyDefaults();
+      me.preRender();
+      me.render();
+      me.ons();
+      me.fire('init');
+    },
+    cls: '',
+    widgetCls: FORM_CLS,
+    value: '',
+    width: 200,
+    height: 300,
+    emptyText: '',
+    tpl: ['<div class="'+FORM_BODY_CLS+'"></div>'],
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
+
+      me.initRenderTo();
+
+      if (me.title || me.tbar || me.bbar || me.buttons) {
+        me.renderPanel();
       }
-    }
-
-    me._items = [];
-    me.renderItems();
-    me.items = me._items;
-    delete me._items;
-
-    if(me.tabs || me.tabbed) {
-      me.setActiveTab();
-    }
-
-    me.fire('afterrender');
-    me.fire('render');
-  },
-  /*
-   * @param {Array} tbar
-   */
-  generateTabs: function(){
-    var me = this,
-      tbar = [];
-
-    if(me.tabs){
-      var i = 0,
-        iL = me.tabs.length;
-
-      for(;i<iL;i++){
-        var tabConfig = {
-          type: 'tab'
+    },
+    /*
+     *
+     */
+    renderPanel: function () {
+      var me = this,
+        panelConfig = {
+          renderTo: me.renderTo,
+          title: me.title,
+          subTitle: me.subTitle,
+          subTitleHeight: me.subTitleHeight,
+          width: me.width,
+          height: me.height,
+          titleHeight: me.titleHeight,
+          barHeight: me.barHeight,
+          theme: me.theme,
+          shadow: me.shadow,
+          style: me.style || {},
+          window: me.window,
+          modal: me.modal,
+          frame: me.frame,
+          items: [me],
+          tabs: me.tabs,
+          draggable: me.draggable,
+          minWidth: me.minWidth,
+          minHeight: me.minHeight,
+          panelBodyBorders: me.panelBodyBorders,
+          resizable: me.resizable
         };
 
-        if( Fancy.isString(me.tabs[i]) ){
-          tabConfig.text = me.tabs[i];
-        }
-        else{
-          tabConfig = me.tabs[i];
-        }
-
-        me.tabs[i] = tabConfig;
-
-        if( me.tabs[i].handler === undefined ){
-          me.tabs[i].handler = (function(i){
-            return function(){
-              me.setActiveTab(i);
-            }
-          })(i);
-        }
-
-        tbar.push(me.tabs[i]);
-      }
-    }
-
-    return tbar;
-  },
-  /*
-   * @param {Number} newActiveTab
-   */
-  setActiveTab: function(newActiveTab){
-    var me = this,
-      tabs = me.el.select('.fancy-field-tab'),
-      oldActiveTab = me.el.select('.fancy-field-tab-active');
-
-    if( newActiveTab !== undefined ){
-      me.activeTab = newActiveTab;
-    }
-
-    if( me.activeTab === undefined ){
-      me.activeTab = 0;
-    }
-
-    oldActiveTab.removeCls('fancy-field-tab-active');
-    tabs.item(me.activeTab).addCls('fancy-field-tab-active');
-
-    if(me.tabs){
-      var toolbarTabs = me.panel.el.select('.fancy-panel-tbar .fancy-toolbar-tab');
-      toolbarTabs.removeCls('fancy-toolbar-tab-active');
-      toolbarTabs.item(me.activeTab).addCls('fancy-toolbar-tab-active');
-    }
-  },
-  /*
-   * @param {HTMLElement} renderTo
-   * @param {Array} [items]
-   */
-  renderItems: function(renderTo, items){
-    var me = this,
-      i = 0,
-      iL;
-
-    items = items || me.items;
-    iL = items.length;
-    renderTo = renderTo || me.el.getByClass('fancy-form-body');
-
-    for(;i<iL;i++){
-      var item = items[i],
-        field;
-
-      item.theme = me.theme;
-
-      switch(item.type){
-        case 'pass':
-        case 'password':
-          field = Fancy.form.field.String;
-          item.type = 'string';
-          item.isPassword = true;
-          break;
-        case 'hidden':
-          field = Fancy.form.field.String;
-          item.hidden = true;
-          break;
-        case 'line':
-        case 'row':
-          field = Fancy.form.field.Line;
-          item = me.applyDefaults(item);
-          break;
-        case 'set':
-        case 'fieldset':
-          item.form = me;
-          field = Fancy.form.field.Set;
-          item = me.applyDefaults(item);
-          break;
-        case 'tab':
-          field = Fancy.form.field.Tab;
-          item = me.applyDefaults(item);
-          break;
-        case 'string':
-        case undefined:
-          field = Fancy.form.field.String;
-          break;
-        case 'number':
-          field = Fancy.form.field.Number;
-          break;
-        case 'textarea':
-          field = Fancy.form.field.TextArea;
-          break;
-        case 'checkbox':
-          field = Fancy.form.field.CheckBox;
-          break;
-        case 'switcher':
-          field = Fancy.form.field.Switcher;
-          break;
-        case 'combo':
-          field = Fancy.form.field.Combo;
-          break;
-        case 'html':
-          field = Fancy.form.field.HTML;
-          break;
-        case 'radio':
-          field = Fancy.form.field.Radio;
-          break;
-        case 'date':
-          field = Fancy.form.field.Date;
-          break;
-        case 'recaptcha':
-          field = Fancy.form.field.ReCaptcha;
-          break;
-        case 'button':
-          field = Fancy.form.field.Button;
-          break;
-        case 'segbutton':
-          field = Fancy.form.field.SegButton;
-          break;
-        default:
-          throw new Error('type ' + item.type + ' is not set');
+      if (me.tabs) {
+        panelConfig.tbar = me.generateTabs();
+        me.height -= me.barHeight;
       }
 
-      item.renderTo = item.renderTo || renderTo;
-
-      var _item = new field(item);
-
-      switch(item.type){
-        case 'line':
-        case 'row':
-        case 'set':
-        case 'fieldset':
-        case 'tab':
-          me.renderItems(_item.el.select('.fancy-field-text').dom, _item.items);
-          break;
-        default:
-          me._items.push(_item);
+      if (me.bbar) {
+        panelConfig.bbar = me.bbar;
+        me.height -= me.barHeight;
       }
-    }
-  },
-  /*
-   * @param {Object} item
-   * @return {Object}
-   */
-  applyDefaults: function(item){
-    var me = this;
 
-    if(item === undefined){
-      var items = me.items,
+      if (me.tbar) {
+        panelConfig.tbar = me.tbar;
+        me.height -= me.barHeight;
+      }
+
+      if (me.buttons) {
+        panelConfig.buttons = me.buttons;
+        me.height -= me.barHeight;
+        panelConfig.buttons = me.buttons;
+      }
+
+      if (me.footer) {
+        panelConfig.footer = me.footer;
+        me.height -= me.barHeight;
+      }
+
+      me.panel = new F.Panel(panelConfig);
+
+      me.bbar = me.panel.bbar;
+      me.tbar = me.panel.tbar;
+      me.buttons = me.panel.buttons;
+
+      if (!me.wrapped) {
+        me.panel.addCls(PANEL_GRID_INSIDE_CLS);
+      }
+
+      if (me.extraCls && me.panel) {
+        me.panel.addCls(me.extraCls);
+      }
+
+      if (me.title) {
+        me.height -= me.titleHeight;
+      }
+
+      if (me.subTitle) {
+        me.height -= me.subTitleHeight;
+        me.height += me.panelBodyBorders[2];
+      }
+
+      //me.height -= me.panelBorderWidth;
+      me.height -= me.panelBodyBorders[0];
+
+      me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
+    },
+    /*
+     *
+     */
+    initRenderTo: function () {
+      var me = this,
+        renderTo = me.renderTo || document.body;
+
+      if (F.isString(renderTo)) {
+        renderTo = document.getElementById(renderTo);
+        if (!renderTo) {
+          renderTo = F.select(renderTo).item(0);
+        }
+      }
+
+      me.renderTo = renderTo;
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = me.renderTo,
+        el = F.get(document.createElement('div'));
+
+      el.addCls(
+        me.cls,
+        F.cls,
+        me.widgetCls
+      );
+
+      el.attr('id', me.id);
+
+      el.css({
+        width: me.width + 'px',
+        height: me.height + 'px'
+      });
+
+      el.update(me.tpl.join(' '));
+
+      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+
+      if (me.panel === undefined) {
+        if (me.shadow) {
+          el.addCls(PANEL_SHADOW_CLS);
+        }
+
+        if (me.theme !== 'default') {
+          el.addCls('fancy-theme-' + me.theme);
+        }
+      }
+
+      me._items = [];
+      me.renderItems();
+      me.items = me._items;
+      delete me._items;
+
+      if (me.tabs || me.tabbed) {
+        me.setActiveTab();
+      }
+
+      me.fire('afterrender');
+      me.fire('render');
+    },
+    /*
+     * @param {Array} tbar
+     */
+    generateTabs: function () {
+      var me = this,
+        tbar = [];
+
+      if (me.tabs) {
+        var i = 0,
+          iL = me.tabs.length;
+
+        for (; i < iL; i++) {
+          var tabConfig = {
+            type: 'tab'
+          };
+
+          if (F.isString(me.tabs[i])) {
+            tabConfig.text = me.tabs[i];
+          }
+          else {
+            tabConfig = me.tabs[i];
+          }
+
+          me.tabs[i] = tabConfig;
+
+          if (me.tabs[i].handler === undefined) {
+            me.tabs[i].handler = (function (i) {
+              return function () {
+                me.setActiveTab(i);
+              }
+            })(i);
+          }
+
+          tbar.push(me.tabs[i]);
+        }
+      }
+
+      return tbar;
+    },
+    /*
+     * @param {Number} newActiveTab
+     */
+    setActiveTab: function (newActiveTab) {
+      var me = this,
+        tabs = me.el.select('.' + FIELD_TAB_CLS),
+        oldActiveTab = me.el.select('.' + FIELD_TAB_ACTIVE_CLS);
+
+      if (newActiveTab !== undefined) {
+        me.activeTab = newActiveTab;
+      }
+
+      if (me.activeTab === undefined) {
+        me.activeTab = 0;
+      }
+
+      oldActiveTab.removeCls(FIELD_TAB_ACTIVE_CLS);
+      tabs.item(me.activeTab).addCls(FIELD_TAB_ACTIVE_CLS);
+
+      if (me.tabs) {
+        var toolbarTabs = me.panel.el.select('.' + PANEL_TBAR_CLS + ' .' + TAB_TBAR_CLS);
+        toolbarTabs.removeCls(TAB_TBAR_ACTIVE_CLS);
+        toolbarTabs.item(me.activeTab).addCls(TAB_TBAR_ACTIVE_CLS);
+      }
+    },
+    /*
+     * @param {HTMLElement} renderTo
+     * @param {Array} [items]
+     */
+    renderItems: function (renderTo, items) {
+      var me = this,
+        i = 0,
+        iL;
+
+      items = items || me.items;
+      iL = items.length;
+      renderTo = renderTo || me.el.getByClass(FORM_BODY_CLS);
+
+      for (; i < iL; i++) {
+        var item = items[i],
+          field;
+
+        item.theme = me.theme;
+
+        switch (item.type) {
+          case 'pass':
+          case 'password':
+            field = F.form.field.String;
+            item.type = 'string';
+            item.isPassword = true;
+            break;
+          case 'hidden':
+            field = F.form.field.String;
+            item.hidden = true;
+            break;
+          case 'line':
+          case 'row':
+            field = F.form.field.Line;
+            item = me.applyDefaults(item);
+            break;
+          case 'set':
+          case 'fieldset':
+            item.form = me;
+            field = F.form.field.Set;
+            item = me.applyDefaults(item);
+            break;
+          case 'tab':
+            field = F.form.field.Tab;
+            item = me.applyDefaults(item);
+            break;
+          case 'string':
+          case undefined:
+            field = F.form.field.String;
+            break;
+          case 'number':
+            field = F.form.field.Number;
+            break;
+          case 'textarea':
+            field = F.form.field.TextArea;
+            break;
+          case 'checkbox':
+            field = F.form.field.CheckBox;
+            break;
+          case 'switcher':
+            field = F.form.field.Switcher;
+            break;
+          case 'combo':
+            field = F.form.field.Combo;
+            break;
+          case 'html':
+            field = F.form.field.HTML;
+            break;
+          case 'radio':
+            field = F.form.field.Radio;
+            break;
+          case 'date':
+            field = F.form.field.Date;
+            break;
+          case 'recaptcha':
+            field = F.form.field.ReCaptcha;
+            break;
+          case 'button':
+            field = F.form.field.Button;
+            break;
+          case 'segbutton':
+            field = F.form.field.SegButton;
+            break;
+          default:
+            throw new Error('type ' + item.type + ' is not set');
+        }
+
+        item.renderTo = item.renderTo || renderTo;
+
+        var _item = new field(item);
+
+        switch (item.type) {
+          case 'line':
+          case 'row':
+          case 'set':
+          case 'fieldset':
+          case 'tab':
+            me.renderItems(_item.el.select('.' + FIELD_TEXT_CLS).dom, _item.items);
+            break;
+          default:
+            me._items.push(_item);
+        }
+      }
+    },
+    /*
+     * @param {Object} item
+     * @return {Object}
+     */
+    applyDefaults: function (item) {
+      var me = this;
+
+      if (item === undefined) {
+        var items = me.items,
           i = 0,
           iL = items.length,
           defaults = me.defaults || {};
 
-      for(;i<iL;i++){
-        Fancy.applyIf(items[i], defaults);
+        for (; i < iL; i++) {
+          F.applyIf(items[i], defaults);
+        }
+
+        return;
       }
 
-      return;
-    }
+      var j,
+        jL;
 
-    var j,
-      jL;
+      if (item.defaults) {
+        j = 0;
+        jL = item.items.length;
 
-    if (item.defaults) {
-      j = 0;
-      jL = item.items.length;
-
-      for (; j < jL; j++) {
-        Fancy.applyIf(item.items[j], item.defaults);
+        for (; j < jL; j++) {
+          F.applyIf(item.items[j], item.defaults);
+        }
       }
-    }
 
-    return item;
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this;
+      return item;
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this;
 
-    Fancy.each(me.items, function(item){
-      switch(item.type){
-        case 'line':
-        case 'row':
-          break;
-        case 'set':
-        case 'fieldset':
-          break;
-        case 'tab':
-        case 'button':
-        case 'segbutton':
-          break;
-        default:
-          item.on('change', me.onChange, me);
+      F.each(me.items, function (item) {
+        switch (item.type) {
+          case 'line':
+          case 'row':
+            break;
+          case 'set':
+          case 'fieldset':
+            break;
+          case 'tab':
+          case 'button':
+          case 'segbutton':
+            break;
+          default:
+            item.on('change', me.onChange, me);
+        }
+      });
+    },
+    /*
+     * @param {Object} field
+     * @param {*} value
+     * @param {*} oldValue
+     */
+    onChange: function (field, value, oldValue) {
+      this.fire('set', {
+        name: field.name,
+        value: value,
+        oldValue: oldValue
+      });
+    },
+    /*
+     * @param {String} name
+     * @return {Array|String|Number}
+     */
+    get: function (name) {
+      var me = this;
+
+      if (name) {
+        var value;
+        F.each(me.items, function (item) {
+          switch (item.type) {
+            case 'html':
+            case 'button':
+              return;
+              break;
+          }
+
+          if (item.name === name) {
+            value = item.get();
+            return true;
+          }
+        });
+        return value;
       }
-    });
-  },
-  /*
-   * @param {Object} field
-   * @param {*} value
-   * @param {*} oldValue
-   */
-  onChange: function(field, value, oldValue){
-    var me = this;
+      else {
+        var values = {};
 
-    me.fire('set', {
-      name: field.name,
-      value: value,
-      oldValue: oldValue
-    });
-  },
-  /*
-   * @param {String} name
-   * @return {Array|String|Number}
-   */
-  get: function(name){
-    var me = this;
+        F.each(me.items, function (item) {
+          switch (item.type) {
+            case 'html':
+            case 'button':
+              return;
+              break;
+          }
 
-    if( name ){
-      var value;
-      Fancy.each(me.items, function(item){
-        switch(item.type){
+          if (item.name === undefined) {
+            return;
+          }
+
+          values[item.name] = item.get();
+        });
+
+        return values;
+      }
+    },
+    /*
+     * @param {String} name
+     * @param {*} value
+     */
+    set: function (name, value) {
+      var me = this;
+
+      if (F.isObject(name)) {
+        for (var p in name) {
+          me.set(p, name[p]);
+        }
+        return;
+      }
+
+      if (name) {
+        F.each(me.items, function (item) {
+          if (item.name !== name) {
+            return;
+          }
+
+          item.set(value);
+        });
+        return value;
+      }
+    },
+    /*
+     * @param {Boolean} clear
+     */
+    clear: function (clear) {
+      var me = this;
+
+      F.each(me.items, function (item) {
+        switch (item.type) {
           case 'html':
+          case 'recaptcha':
           case 'button':
             return;
             break;
         }
 
-        if( item.name === name ){
-          value = item.get();
+        if (clear !== false) {
+          item.clear();
+        }
+
+        if (me.hasCls(FIELD_NOT_VALID_CLS)) {
+          me.removeCls(FIELD_NOT_VALID_CLS);
+          me.css('height', ( parseInt(me.css('height')) - 6) + 'px');
+        }
+        if (me.hasCls(FIELD_BLANK_ERR_CLS)) {
+          me.removeCls(FIELD_BLANK_ERR_CLS);
+          me.css('height', ( parseInt(me.css('height')) - 6) + 'px');
+        }
+
+        if (item.name && me.params && me.params[item.name]) {
+          delete me.params[item.name];
+        }
+      });
+    },
+    /*
+     * @param {Object} o
+     */
+    submit: function (o) {
+      var me = this,
+        o = o || {},
+        params = me.params || {};
+
+      me.params = me.params || {};
+
+      F.apply(me, o);
+
+      if (o.params) {
+        F.apply(params, me.params);
+        me.params = params;
+      }
+
+      me.clear(false);
+      if (me.valid() === false) {
+        return;
+      }
+
+      var values = me.get();
+
+      F.apply(me.params, values);
+
+      if (me.params.recaptcha === 'wait') {
+        me.submit(o);
+        return;
+      }
+
+      if (me.params.recaptcha === '') {
+        return;
+      }
+
+      me.params['g-recaptcha-response'] = me.params.recaptcha;
+      delete me.params.recaptcha;
+
+      F.Ajax(me);
+    },
+    /*
+     * @return {Boolean}
+     */
+    valid: function () {
+      var valid = true;
+
+      F.each(this.items, function (item) {
+        if (valid === true) {
+          valid = item.onBlur();
+        }
+        else {
+          item.onBlur();
+        }
+      });
+
+      return !!valid;
+    },
+    /*
+     * @param {String} name
+     * @return {Object}
+     */
+    getItem: function (name) {
+      var item = false;
+
+      F.each(this.items, function (_item) {
+        if (_item.name === name) {
+          item = _item;
           return true;
         }
       });
-      return value;
-    }
-    else{
-      var values = {};
 
-      Fancy.each(me.items, function(item){
-        switch(item.type){
-          case 'html':
-          case 'button':
-            return;
-            break;
-        }
+      return item;
+    },
+    /*
+     *
+     */
+    showAt: function () {
+      var panel = this.panel;
 
-        if(item.name === undefined){
-          return;
-        }
-
-        values[item.name] = item.get();
-      });
-
-      return values;
-    }
-  },
-  /*
-   * @param {String} name
-   * @param {*} value
-   */
-  set: function(name, value){
-    var me = this;
-
-    if(Fancy.isObject(name)){
-      for(var p in name){
-        me.set(p, name[p]);
+      if (panel) {
+        panel.showAt.apply(panel, arguments);
       }
-      return;
-    }
+    },
+    /*
+     *
+     */
+    show: function () {
+      var panel = this.panel;
 
-    if( name ){
-      Fancy.each(me.items, function(item){
-        if( item.name !== name ){
-          return;
-        }
-        
-        item.set(value);
-      });
-      return value;
-    }
-  },
-  /*
-   * @param {Boolean} clear
-   */
-  clear: function(clear){
-    var me = this;
+      if (panel) {
+        panel.show.apply(panel, arguments);
+      }
+      else {
+        this.el.show();
+      }
+    },
+    /*
+     *
+     */
+    hide: function () {
+      var me = this;
 
-    Fancy.each(me.items, function(item){
-      switch(item.type){
-        case 'html':
-        case 'recaptcha':
-        case 'button':
-          return;
-          break;
+      if (me.panel) {
+        me.panel.css({
+          display: 'none'
+        });
+      }
+      else {
+        me.css({
+          display: 'none'
+        });
       }
 
-      if( clear !== false ){
-        item.clear();
+      var modal = F.select('.' + MODAL_CLS);
+
+      if (modal.dom) {
+        modal.css('display', 'none');
       }
 
-      if( me.hasCls('fancy-field-not-valid') ){
-        me.removeCls('fancy-field-not-valid');
-        me.css('height', ( parseInt( me.css('height') ) - 6) + 'px');
-      }
-      if( me.hasCls('fancy-field-blank-err') ){
-        me.removeCls('fancy-field-blank-err');
-        me.css('height', ( parseInt( me.css('height') ) - 6) + 'px');
-      }
-
-      if( item.name && me.params && me.params[item.name] ){
-        delete me.params[item.name];
-      }
-    });
-  },
-  /*
-   * @param {Object} o
-   */
-  submit: function(o){
-    var me = this,
-      o = o || {},
-      params = me.params || {};
-
-    me.params = me.params || {};
-
-    Fancy.apply(me, o);
-
-    if( o.params ){
-      Fancy.apply(params, me.params);
-      me.params = params;
-    }
-
-    me.clear(false);
-    if( me.valid() === false ){
-      return;
-    }
-
-    var values = me.get();
-
-    Fancy.apply(me.params, values);
-
-    if(me.params.recaptcha === 'wait'){
-      me.submit(o);
-      return;
-    }
-
-    if( me.params.recaptcha === '' ){
-      return;
-    }
-
-    me.params['g-recaptcha-response'] = me.params.recaptcha;
-    delete me.params.recaptcha;
-
-    Fancy.Ajax(me);
-  },
-  /*
-   * @return {Boolean}
-   */
-  valid: function(){
-    var me = this,
-      valid = true;
-
-    Fancy.each(me.items, function(item){
-      if( valid === true ){
-        valid = item.onBlur();
-      }
-      else{
-        item.onBlur();
-      }
-    });
-
-    return !!valid;
-  },
-  /*
-   * @param {String} name
-   * @return {Object}
-   */
-  getItem: function(name){
-    var me= this,
-      item = false;
-
-    Fancy.each(me.items, function(_item){
-      if( _item.name === name ){
-        item = _item;
-        return true;
-      }
-    });
-
-    return item;
-  },
-  /*
-   *
-   */
-  showAt: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.showAt.apply(me.panel, arguments);
-    }
-  },
-  /*
-   *
-   */
-  show: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.show.apply(me.panel, arguments);
-    }
-    else{
-      me.el.show();
-    }
-  },
-  /*
-   *
-   */
-  hide: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.css({
-        display: 'none'
-      });
-    }
-    else{
-      me.css({
-        display: 'none'
-      });
-    }
-
-    var modal = Fancy.select('.fancy-modal');
-
-    if(modal.dom){
-      modal.css('display', 'none');
-    }
-
-    var i = 0,
+      var i = 0,
         iL = me.items.length;
 
-    for(;i<iL;i++){
-      if(me.items[i].type === 'combo'){
-        me.items[i].hideList();
+      for (; i < iL; i++) {
+        if (me.items[i].type === 'combo') {
+          me.items[i].hideList();
+        }
       }
-    }
-  },
-  /*
-   * @param {Number} height
-   */
-  setHeight: function(height){
-    var me = this;
+    },
+    /*
+     * @param {Number} height
+     */
+    setHeight: function (height) {
+      var me = this;
 
-    if(me.panel){
-      me.panel.css('height', height);
+      if (me.panel) {
+        me.panel.css('height', height);
 
-      if(me.buttons){
-        height -= me.barHeight;
+        if (me.buttons) {
+          height -= me.barHeight;
+        }
+
+        if (me.bbar) {
+          height -= me.barHeight;
+        }
+
+        if (me.tbar || me.tabs) {
+          height -= me.barHeight;
+        }
+
+        if (me.title) {
+          height -= me.titleHeight;
+        }
+
+        height -= me.panelBodyBorders[0];
+        height -= me.panelBodyBorders[2];
       }
 
-      if(me.bbar){
-        height -= me.barHeight;
+      me.css('height', height);
+    },
+    /*
+     * TODO:
+     */
+    setWidth: function () {
+    },
+    /*
+     * @return {Number}
+     */
+    getHeight: function () {
+      var panel = this.panel;
+
+      if (panel) {
+        return panel.getHeight();
       }
 
-      if(me.tbar || me.tabs){
-        height -= me.barHeight;
-      }
+      return parseInt(this.css('height'));
+    },
+    /*
+     *
+     */
+    calcFieldSize: function () {
+      var me = this,
+        width = me.width,
+        defaults = me.defaults || {},
+        labelWidth,
+        maxLabelNumber = me.maxLabelNumber;
 
-      if(me.title){
-        height -= me.titleHeight;
-      }
+      defaults.width = width - me.panelBorderWidth * 2;
 
-      height -= me.panelBodyBorders[0];
-      height -= me.panelBodyBorders[2];
-    }
-
-    me.css('height', height);
-  },
-  /*
-   * TODO:
-   */
-  setWidth: function(){},
-  /*
-   * @return {Number}
-   */
-  getHeight: function(){
-    var me = this;
-
-    if(me.panel){
-      return me.panel.getHeight();
-    }
-
-    return parseInt(me.css('height'));
-  },
-  /*
-   *
-   */
-  calcFieldSize: function(){
-    var me = this,
-      width = me.width,
-      defaults = me.defaults || {},
-      labelWidth,
-      maxLabelNumber = me.maxLabelNumber;
-
-    defaults.width = width - me.panelBorderWidth * 2;
-
-    Fancy.each(me.items, function(item){
-      switch(item.type){
-        case 'set':
-        case 'tab':
-          if(item.type === 'tab'){
-            me.tabbed = true;
-          }
-
-          var minusWidth = item.type === 'set'? 62:20;
-
-          Fancy.each(item.items, function(_item){
-            if(_item.width === undefined){
-              _item.width = width - minusWidth;
+      F.each(me.items, function (item) {
+        switch (item.type) {
+          case 'set':
+          case 'tab':
+            if (item.type === 'tab') {
+              me.tabbed = true;
             }
 
-            if(_item.label && _item.label.length > maxLabelNumber){
-              maxLabelNumber = _item.label.length;
-            }
-          });
+            var minusWidth = item.type === 'set' ? 62 : 20;
 
-          item.defaults = item.defaults || {};
-          item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
-
-          break;
-        case 'line':
-          var numOfFields = item.items.length,
-            isWidthInit = false,
-            averageWidth = (width - 8 - 8 - 8)/numOfFields;
-
-          Fancy.each(item.items, function(_item){
-            _item.width = averageWidth;
-            if(_item.labelWidth || _item.inputWidth){
-              isWidthInit = true;
-            }
-          });
-
-          if(isWidthInit === false){
-            Fancy.each(item.items, function(_item){
-              if(_item.labelAlign === 'top'){
-                _item.labelWidth = averageWidth;
+            F.each(item.items, function (_item) {
+              if (_item.width === undefined) {
+                _item.width = width - minusWidth;
               }
-              else{
-                //Bad bug fix
-                _item.labelWidth = 100;
+
+              if (_item.label && _item.label.length > maxLabelNumber) {
+                maxLabelNumber = _item.label.length;
               }
             });
-          }
 
-          item.defaults = item.defaults || {};
-          if(item.defaults.labelWidth === undefined){
-            item.defaults.labelWidth = me.labelWidth;
-          }
-          break;
-        default:
-          if(item.label && item.label.length > maxLabelNumber){
-            maxLabelNumber = item.label.length;
-          }
-      }
-    });
+            item.defaults = item.defaults || {};
+            item.defaults.labelWidth = item.defaults.labelWidth || (maxLabelNumber + 1) * 8;
 
-    maxLabelNumber++;
+            break;
+          case 'line':
+            var numOfFields = item.items.length,
+              isWidthInit = false,
+              averageWidth = (width - 8 - 8 - 8) / numOfFields;
 
-    labelWidth = maxLabelNumber * 6;
-    if(labelWidth < 80){
-      labelWidth = 80;
-    }
+            F.each(item.items, function (_item) {
+              _item.width = averageWidth;
+              if (_item.labelWidth || _item.inputWidth) {
+                isWidthInit = true;
+              }
+            });
 
-    defaults.labelWidth = labelWidth;
+            if (isWidthInit === false) {
+              F.each(item.items, function (_item) {
+                if (_item.labelAlign === 'top') {
+                  _item.labelWidth = averageWidth;
+                }
+                else {
+                  //Bad bug fix
+                  _item.labelWidth = 100;
+                }
+              });
+            }
 
-    if(me.inputWidth){
-      defaults.inputWidth = me.inputWidth;
-    }
+            item.defaults = item.defaults || {};
+            if (item.defaults.labelWidth === undefined) {
+              item.defaults.labelWidth = me.labelWidth;
+            }
+            break;
+          default:
+            if (item.label && item.label.length > maxLabelNumber) {
+              maxLabelNumber = item.label.length;
+            }
+        }
+      });
 
-    me.defaults = defaults;
-  },
-  /*
-   *
-   */
-  destroy: function() {
-    var me = this;
+      maxLabelNumber++;
 
-    me.el.destroy();
-
-    if(me.panel){
-      me.panel.el.destroy();
-    }
-  },
-  /*
-   * @param {Function} fn
-   * @param {Object} scope
-   */
-  each: function(fn, scope){
-    var me = this,
-      items = me.items,
-      i = 0,
-      iL = items.length;
-
-    if(scope){
-      for(;i<iL;i++){
-        fn.apply(this, [items[i]]);
-      }
-    }
-    else{
-      for(;i<iL;i++){
-        fn(items[i]);
-      }
-    }
-  },
-  /*
-   *
-   */
-  loadModules: function(){
-    var me = this,
-      existedModules = Fancy.modules || {},
-      requiredModules = {},
-      fields = me.items || [];
-
-    Fancy.modules = existedModules;
-
-    if(Fancy.nojQuery){
-      requiredModules.dom = true;
-    }
-
-    if(Fancy.isTouch){
-      requiredModules.touch = true;
-    }
-
-    var i = 0,
-      iL = fields.length;
-
-    for(;i<iL;i++){
-      var field = fields[i];
-      if(field.type === 'date'){
-        requiredModules.grid = true;
-        requiredModules.selection = true;
-        requiredModules.date = true;
+      labelWidth = maxLabelNumber * 6;
+      if (labelWidth < 80) {
+        labelWidth = 80;
       }
 
-      if(field.items){
-        var j = 0,
-          jL = field.items.length;
+      defaults.labelWidth = labelWidth;
 
-        for(;j<jL;j++) {
-          var _field = field.items[j];
+      if (me.inputWidth) {
+        defaults.inputWidth = me.inputWidth;
+      }
 
-          if(_field.type === 'date'){
-            requiredModules.grid = true;
-            requiredModules.selection = true;
-            requiredModules.date = true;
+      me.defaults = defaults;
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this;
+
+      me.el.destroy();
+
+      if (me.panel) {
+        me.panel.el.destroy();
+      }
+    },
+    /*
+     * @param {Function} fn
+     * @param {Object} scope
+     */
+    each: function (fn, scope) {
+      var me = this,
+        items = me.items,
+        i = 0,
+        iL = items.length;
+
+      if (scope) {
+        for (; i < iL; i++) {
+          fn.apply(this, [items[i]]);
+        }
+      }
+      else {
+        for (; i < iL; i++) {
+          fn(items[i]);
+        }
+      }
+    },
+    /*
+     *
+     */
+    loadModules: function () {
+      var me = this,
+        existedModules = F.modules || {},
+        requiredModules = {},
+        fields = me.items || [];
+
+      F.modules = existedModules;
+
+      if (F.nojQuery) {
+        requiredModules.dom = true;
+      }
+
+      if (F.isTouch) {
+        requiredModules.touch = true;
+      }
+
+      var i = 0,
+        iL = fields.length;
+
+      for (; i < iL; i++) {
+        var field = fields[i];
+        if (field.type === 'date') {
+          requiredModules.grid = true;
+          requiredModules.selection = true;
+          requiredModules.date = true;
+        }
+
+        if (field.items) {
+          var j = 0,
+            jL = field.items.length;
+
+          for (; j < jL; j++) {
+            var _field = field.items[j];
+
+            if (_field.type === 'date') {
+              requiredModules.grid = true;
+              requiredModules.selection = true;
+              requiredModules.date = true;
+            }
           }
         }
       }
-    }
 
-    me.neededModules = {
-      length: 0
-    };
+      me.neededModules = {
+        length: 0
+      };
 
-    for(var p in requiredModules){
-      if(Fancy.modules[p] === undefined) {
-        me.neededModules[p] = true;
-        me.neededModules.length++;
+      for (var p in requiredModules) {
+        if (F.modules[p] === undefined) {
+          me.neededModules[p] = true;
+          me.neededModules.length++;
+        }
       }
-    }
 
-    if(me.neededModules.length === 0){
-      me.neededModules = true;
-      me.init();
-      return;
-    }
-
-    var onLoad = function(name){
-      delete me.neededModules[name];
-      me.neededModules.length--;
-
-      if(me.neededModules.length === 0){
+      if (me.neededModules.length === 0) {
         me.neededModules = true;
         me.init();
-      }
-    };
-
-    for(var p in me.neededModules){
-      if(p === 'length'){
-        continue;
+        return;
       }
 
-      Fancy.loadModule(p, onLoad);
+      var onLoad = function (name) {
+        delete me.neededModules[name];
+        me.neededModules.length--;
+
+        if (me.neededModules.length === 0) {
+          me.neededModules = true;
+          me.init();
+        }
+      };
+
+      for (var p in me.neededModules) {
+        if (p === 'length') {
+          continue;
+        }
+
+        F.loadModule(p, onLoad);
+      }
+    },
+    /*
+     *
+     */
+    prevTab: function () {
+      var me = this;
+
+      me.activeTab--;
+      if (me.activeTab < 0) {
+        me.activeTab = 0;
+      }
+
+      me.setActiveTab();
+    },
+    /*
+     *
+     */
+    nextTab: function () {
+      var me = this,
+        tabNumber = me.el.select('.' + FIELD_TAB_CLS).length;
+
+      me.activeTab++;
+
+      if (me.activeTab >= tabNumber) {
+        me.activeTab = tabNumber - 1;
+      }
+
+      me.setActiveTab();
     }
-  },
-  /*
-   *
-   */
-  prevTab: function(){
-    var me = this;
+  });
 
-    me.activeTab--;
-    if( me.activeTab < 0 ){
-      me.activeTab = 0;
-    }
-
-    me.setActiveTab();
-  },
-  /*
-   *
-   */
-  nextTab: function(){
-    var me = this,
-      tabNumber = me.el.select('.fancy-field-tab').length;
-
-    me.activeTab++;
-
-    if( me.activeTab >= tabNumber ){
-      me.activeTab = tabNumber - 1;
-    }
-
-    me.setActiveTab();
-  }
-});
+})();
 /*
  * @mixin Fancy.form.mixin.PrepareConfig
  */
@@ -13553,911 +13720,916 @@ if(!Fancy.nojQuery && Fancy.$){
     return new Fancy.Form(o);
   };
 }
-Fancy.ns('Fancy.form.field');
-
 /*
  * @mixin Fancy.form.field.Mixin
  */
-Fancy.form.field.Mixin = function(){};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-Fancy.form.field.Mixin.prototype = {
-  padding: '8px 8px 0px 8px',
-  inputHeight: 29,
-  labelHeight: 18,
-  failedValidCls: 'fancy-field-not-valid',
-  cls: '',
-  checkValidOnTyping: false,
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      el = me.el,
-      input = me.el.getByTag('input');
+  //CONSTANTS
+  var FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
+  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
 
-    me.input = input;
-    input.on('blur', me.onBlur, me);
-    input.on('focus', me.onFocus, me);
-    input.on('input', me.onInput, me);
-    input.on('keydown', me.onKeyDown, me);
-    el.on('mouseenter', me.onMouseOver, me);
-    el.on('mouseleave', me.onMouseOut, me);
-    me.on('key', me.onKey, me);
+  F.ns('Fancy.form.field');
 
-    if(me.tip){
-      el.on('mousemove', me.onMouseMove, me);
-    }
+  F.form.field.Mixin = function () {};
 
-    if(me.format && me.format.inputFn){
-      switch(me.value){
-        case '':
-        case undefined:
+  F.form.field.Mixin.prototype = {
+    padding: '8px 8px 0px 8px',
+    inputHeight: 29,
+    labelHeight: 18,
+    failedValidCls: FIELD_NOT_VALID_CLS,
+    cls: '',
+    checkValidOnTyping: false,
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        el = me.el,
+        input = me.el.getByTag('input');
+
+      me.input = input;
+      input.on('blur', me.onBlur, me);
+      input.on('focus', me.onFocus, me);
+      input.on('input', me.onInput, me);
+      input.on('keydown', me.onKeyDown, me);
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+      me.on('key', me.onKey, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
+
+      if (me.format && me.format.inputFn) {
+        switch (me.value) {
+          case '':
+          case undefined:
+            break;
+          default:
+            me.formatValue(me.value);
+        }
+        me.on('key', me.onKeyInputFn);
+      }
+
+      if (me.stopPropagation) {
+        el.on('mousedown', function (e) {
+          e.stopPropagation();
+        });
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {*} value
+     * @param {Object} e
+     */
+    onKeyInputFn: function (field, value, e) {
+      var keyCode = e.keyCode,
+        key = F.key;
+
+      switch (keyCode) {
+        case key.ENTER:
+        case key.ESC:
+        case key.LEFT:
+        case key.RIGHT:
+          return;
           break;
-        default:
-          me.formatValue(me.value);
       }
-      me.on('key', me.onKeyInputFn);
-    }
 
-    if(me.stopPropagation){
-      el.on('mousedown', function(e){
-        e.stopPropagation();
-      });
-    }
-  },
-  /*
-   * @param {Object} field
-   * @param {*} value
-   * @param {Object} e
-   */
-  onKeyInputFn: function(field, value, e){
-    var keyCode = e.keyCode,
-      key = Fancy.key;
+      this.formatValue(value);
+    },
+    /*
+     * @param {*} value
+     */
+    formatValue: function (value) {
+      value = this.format.inputFn(value);
+      this.input.dom.value = value;
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseOver: function (e) {
+      var me = this;
 
-    switch(keyCode){
-      case key.ENTER:
-      case key.ESC:
-      case key.LEFT:
-      case key.RIGHT:
-        return;
-        break;
-    }
+      me.fire('mouseover');
 
-    this.formatValue(value);
-  },
-  /*
-   * @param {*} value
-   */
-  formatValue: function(value){
-    var me = this;
-
-    value = me.format.inputFn(value);
-    me.input.dom.value = value;
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseOver: function(e){
-    var me = this;
-
-    me.fire('mouseover');
-
-    if(me.tip){
-      me.renderTip(e);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseOut: function(e){
-    var me = this;
-
-    me.fire('mouseout');
-
-    if(me.tip && me.tooltip){
-      me.tooltipToDestroy = true;
-      me.tooltip.destroy();
-      delete me.tooltip;
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = me.renderTo || document.body,
-      renderAfter = me.renderAfter,
-      renderBefore = me.renderBefore,
-      el = Fancy.get(document.createElement('div'));
-
-    if(Fancy.isString(renderTo)){
-      renderTo = document.getElementById(renderTo);
-      if(!renderTo){
-        renderTo = Fancy.select(renderTo).item(0);
+      if (me.tip) {
+        me.renderTip(e);
       }
-    }
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseOut: function (e) {
+      var me = this;
 
-    me.fire('beforerender');
+      me.fire('mouseout');
 
-    el.addCls(
-      Fancy.cls,
-      me.cls,
-      me.fieldCls
-    );
-
-    el.attr('id', me.id);
-
-    var labelWidth = '',
-      itemsHTML = '';
-
-    if (me.itemsHTML) {
-      itemsHTML = me.itemsHTML;
-    }
-
-    if (me.labelAlign === 'top' && me.label) {
-      //auto fixing of wrong labelWidth.
-      //will not fix right if user change color of label font-size to bigger
-      if (me.labelWidth < me.label.length * 7) {
-        me.labelWidth = (me.label.length + 2) * 7;
+      if (me.tip && me.tooltip) {
+        me.tooltipToDestroy = true;
+        me.tooltip.destroy();
+        delete me.tooltip;
       }
-    }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = me.renderTo || document.body,
+        renderAfter = me.renderAfter,
+        renderBefore = me.renderBefore,
+        el = F.get(document.createElement('div'));
 
-    if (me.labelWidth) {
-      labelWidth = 'width:' + me.labelWidth + 'px;';
-    }
+      if (F.isString(renderTo)) {
+        renderTo = document.getElementById(renderTo);
+        if (!renderTo) {
+          renderTo = F.select(renderTo).item(0);
+        }
+      }
 
-    var label = me.label;
+      me.fire('beforerender');
 
-    if (me.label === '') {
-      label = '&nbsp;';
-    }
-    else if (me.label === undefined) {
-      label = '&nbsp;';
-    }
-    else if (me.labelAlign !== 'right') {
-      label += ':';
-    }
-
-    var labelDisplay = '',
-      inputLabelDisplay = '',
-      inputLabel = '';
-
-    if (me.label === false) {
-      labelDisplay = 'display:none;';
-    }
-
-    if (!me.inputLabel) {
-      inputLabelDisplay = 'display:none;';
-    }
-    else {
-      inputLabel = me.inputLabel;
-    }
-
-    if (me.type === 'recaptcha') {
-      el.update( me.tpl.getHTML({
-          key: me.key
-        })
+      el.addCls(
+        F.cls,
+        me.cls,
+        me.fieldCls
       );
-    }
-    else{
-      el.update(
-        me.tpl.getHTML({
-          labelWidth: labelWidth,
-          label: label,
-          labelDisplay: labelDisplay,
-          inputLabelDisplay: inputLabelDisplay,
-          inputLabel: inputLabel,
-          emptyText: me.emptyText,
-          value: me.value,
-          height: me.height,
-          itemsHTML: itemsHTML,
-          errorTextStyle: '',
-          buttonText: me.buttonText
-        })
-      );
-    }
 
-    me.el = el;
-    me.setStyle();
-
-    if(me.renderId === true){
       el.attr('id', me.id);
-    }
 
-    if(renderAfter){
-      el = renderAfter.after(el.dom.outerHTML).next();
-    }
-    else if(renderBefore){
-      el = renderBefore.before(el.dom.outerHTML).prev();
-    }
-    else {
-      renderTo.appendChild(el.dom);
-    }
-    me.el = el;
+      var labelWidth = '',
+        itemsHTML = '';
 
-    if(me.type === 'textarea'){
-      me.input = me.el.getByTag('textarea');
-    }
-    else{
-      me.input = me.el.getByTag('input');
-    }
-
-    if(me.name) {
-      me.input.name = me.name;
-    }
-
-    me.setSize();
-
-    if( me.labelAlign === 'top' ){
-      me.el.addCls('fancy-field-label-align-top');
-      me.el.select('.fancy-field-text').css('float', 'none');
-    }
-    else if( me.labelAlign === 'right' ){
-      me.el.addCls('fancy-field-label-align-right');
-      switch (me.type){
-        case 'radio':
-          $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text:last'));
-          break;
-        case 'textarea':
-          $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-textarea-text'));
-          break;
-        default:
-          $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
+      if (me.itemsHTML) {
+        itemsHTML = me.itemsHTML;
       }
-    }
-    else if(me.type !== 'radio'){}
 
-    me.acceptedValue = me.value;
-    me.fire('afterrender');
-    me.fire('render');
-
-    if( me.type !== 'recaptcha' && me.type !== 'chat' ){
-      setTimeout(function(){
-        if( me.input && me.input.dom){
-          if( me.input.dom.value.length === 0 ){
-            if( me.prevColor === undefined ){
-              me.prevColor = me.input.css('color');
-            }
-
-            //me.input.css('color', 'grey');
-          }
+      if (me.labelAlign === 'top' && me.label) {
+        //auto fixing of wrong labelWidth.
+        //will not fix right if user change color of label font-size to bigger
+        if (me.labelWidth < me.label.length * 7) {
+          me.labelWidth = (me.label.length + 2) * 7;
         }
-      }, 1);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onKeyDown: function(e){
-    var me = this,
-      keyCode = e.keyCode,
-      key = Fancy.key;
-
-    if( me.type === 'number' ){
-      if( Fancy.Key.isNumControl(keyCode, e) === false ){
-        e.preventDefault();
-        e.stopPropagation();
-        return;
       }
-    }
 
-    switch(keyCode){
-      case key.TAB:
-        me.fire('tab', e);
-        break;
-      case key.ENTER:
-        me.fire('enter', me.getValue());
-        if( me.type !== 'textarea' ){
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        break;
-      case key.UP:
-        switch(me.type){
-          case 'number':
-          case 'field.number':
-            me.spinUp();
+      if (me.labelWidth) {
+        labelWidth = 'width:' + me.labelWidth + 'px;';
+      }
+
+      var label = me.label;
+
+      if (me.label === '') {
+        label = '&nbsp;';
+      }
+      else if (me.label === undefined) {
+        label = '&nbsp;';
+      }
+      else if (me.labelAlign !== 'right') {
+        label += ':';
+      }
+
+      var labelDisplay = '',
+        inputLabelDisplay = '',
+        inputLabel = '';
+
+      if (me.label === false) {
+        labelDisplay = 'display:none;';
+      }
+
+      if (!me.inputLabel) {
+        inputLabelDisplay = 'display:none;';
+      }
+      else {
+        inputLabel = me.inputLabel;
+      }
+
+      if (me.type === 'recaptcha') {
+        el.update(me.tpl.getHTML({
+            key: me.key
+          })
+        );
+      }
+      else {
+        el.update(
+          me.tpl.getHTML({
+            labelWidth: labelWidth,
+            label: label,
+            labelDisplay: labelDisplay,
+            inputLabelDisplay: inputLabelDisplay,
+            inputLabel: inputLabel,
+            emptyText: me.emptyText,
+            value: me.value,
+            height: me.height,
+            itemsHTML: itemsHTML,
+            errorTextStyle: '',
+            buttonText: me.buttonText
+          })
+        );
+      }
+
+      me.el = el;
+      me.setStyle();
+
+      if (me.renderId === true) {
+        el.attr('id', me.id);
+      }
+
+      if (renderAfter) {
+        el = renderAfter.after(el.dom.outerHTML).next();
+      }
+      else if (renderBefore) {
+        el = renderBefore.before(el.dom.outerHTML).prev();
+      }
+      else {
+        renderTo.appendChild(el.dom);
+      }
+      me.el = el;
+
+      if (me.type === 'textarea') {
+        me.input = me.el.getByTag('textarea');
+      }
+      else {
+        me.input = me.el.getByTag('input');
+      }
+
+      if (me.name) {
+        me.input.name = me.name;
+      }
+
+      me.setSize();
+
+      if (me.labelAlign === 'top') {
+        me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
+        me.el.select('.' + FIELD_TEXT_CLS).css('float', 'none');
+      }
+      else if (me.labelAlign === 'right') {
+        me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
+        switch (me.type) {
+          case 'radio':
+            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             break;
-        }
-
-        me.fire('up', me.getValue());
-
-        if( me.type !== 'textarea' ){
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        break;
-      case key.DOWN:
-        switch(me.type){
-          case 'number':
-          case 'field.number':
-            me.spinDown();
+          case 'textarea':
+            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
             break;
+          default:
+            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS));
         }
+      }
+      else if (me.type !== 'radio') {
+      }
 
-        me.fire('down', me.getValue());
+      me.acceptedValue = me.value;
+      me.fire('afterrender');
+      me.fire('render');
 
-        if( me.type !== 'textarea' ){
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        break;
-      case key.LEFT:
-        break;
-      case key.RIGHT:
-        e.stopPropagation();
-        break;
-      default:
-        setTimeout(function(){
-          if( me.input ){
-            if( me.input.dom.value.length === 0 ){
-              if( me.prevColor === undefined ){
+      if (me.type !== 'recaptcha' && me.type !== 'chat') {
+        setTimeout(function () {
+          if (me.input && me.input.dom) {
+            if (me.input.dom.value.length === 0) {
+              if (me.prevColor === undefined) {
                 me.prevColor = me.input.css('color');
               }
 
-              me.input.css('color', 'grey');
-            }
-            else{
-              if( me.prevColor ){
-                me.input.css('color', me.prevColor);
-              }
-              else{
-                me.input.css('color', ' ');
-              }
+              //me.input.css('color', 'grey');
             }
           }
         }, 1);
-    }
-
-    setTimeout(function(){
-      me.fire('key', me.input.dom.value, e);
-    }, 1);
-  },
-  /*
-   * @param {Object} me
-   * @param {*} value
-   */
-  onKey: function(me, value){
-    if(!me.isValid() || me.checkValidOnTyping){
-      me.validate(value);
-    }
-  },
-  /*
-   *
-   */
-  onBlur: function(){
-    var me = this;
-
-    me.fire('blur');
-
-    if(me.input){
-      return me.validate(me.input.dom.value);
-    }
-
-    return true;
-  },
-  /*
-   * @param {*} value
-   */
-  validate: function(value){
-    var me = this,
-      vtype = me.vtype;
-
-    if(vtype === undefined){
-      return true;
-    }
-    else{
-      var valid = Fancy.isValid(vtype, value);
-      if( valid !== true ){
-        me.errorText = new Fancy.Template(valid.text).getHTML(valid);
-        me.failedValid();
-
-        return false;
       }
-      else{
-        me.successValid();
+    },
+    /*
+     * @param {Object} e
+     */
+    onKeyDown: function (e) {
+      var me = this,
+        keyCode = e.keyCode,
+        key = F.key;
+
+      if (me.type === 'number') {
+        if (F.Key.isNumControl(keyCode, e) === false) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+
+      switch (keyCode) {
+        case key.TAB:
+          me.fire('tab', e);
+          break;
+        case key.ENTER:
+          me.fire('enter', me.getValue());
+          if (me.type !== 'textarea') {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case key.UP:
+          switch (me.type) {
+            case 'number':
+            case 'field.number':
+              me.spinUp();
+              break;
+          }
+
+          me.fire('up', me.getValue());
+
+          if (me.type !== 'textarea') {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case key.DOWN:
+          switch (me.type) {
+            case 'number':
+            case 'field.number':
+              me.spinDown();
+              break;
+          }
+
+          me.fire('down', me.getValue());
+
+          if (me.type !== 'textarea') {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case key.LEFT:
+          break;
+        case key.RIGHT:
+          e.stopPropagation();
+          break;
+        default:
+          setTimeout(function () {
+            if (me.input) {
+              if (me.input.dom.value.length === 0) {
+                if (me.prevColor === undefined) {
+                  me.prevColor = me.input.css('color');
+                }
+
+                me.input.css('color', 'grey');
+              }
+              else {
+                if (me.prevColor) {
+                  me.input.css('color', me.prevColor);
+                }
+                else {
+                  me.input.css('color', ' ');
+                }
+              }
+            }
+          }, 1);
+      }
+
+      setTimeout(function () {
+        me.fire('key', me.input.dom.value, e);
+      }, 1);
+    },
+    /*
+     * @param {Object} me
+     * @param {*} value
+     */
+    onKey: function (me, value) {
+      if (!me.isValid() || me.checkValidOnTyping) {
+        me.validate(value);
+      }
+    },
+    /*
+     *
+     */
+    onBlur: function () {
+      var me = this;
+
+      me.fire('blur');
+
+      if (me.input) {
+        return me.validate(me.input.dom.value);
+      }
+
+      return true;
+    },
+    /*
+     * @param {*} value
+     */
+    validate: function (value) {
+      var me = this,
+        vtype = me.vtype;
+
+      if (vtype === undefined) {
         return true;
       }
-    }
-  },
-  /*
-   *
-   */
-  isValid: function(){
-    var me = this;
+      else {
+        var valid = F.isValid(vtype, value);
+        if (valid !== true) {
+          me.errorText = new F.Template(valid.text).getHTML(valid);
+          me.failedValid();
 
-    return !me.hasCls(me.failedValidCls);
-  },
-  /*
-   *
-   */
-  onFocus: function(){
-    var me = this;
+          return false;
+        }
+        else {
+          me.successValid();
+          return true;
+        }
+      }
+    },
+    /*
+     *
+     */
+    isValid: function () {
+      return !this.hasCls(this.failedValidCls);
+    },
+    /*
+     *
+     */
+    onFocus: function () {
+      this.fire('focus');
+    },
+    /*
+     *
+     */
+    onInput: function () {
+      var me = this,
+        input = me.input,
+        value = me.getValue(),
+        oldValue = me.acceptedValue;
 
-    me.fire('focus');
-  },
-  /*
-   *
-   */
-  onInput: function(){
-    var me = this,
-      input = me.input,
-      value = me.getValue(),
-      oldValue = me.acceptedValue;
+      me.acceptedValue = me.get();
+      me.fire('input', value);
+      me.fire('change', value, oldValue);
+    },
+    /*
+     *
+     */
+    get: function () {
+      var me = this;
 
-    me.acceptedValue = me.get();
-    me.fire('input', value);
-    me.fire('change', value, oldValue);
-  },
-  /*
-   *
-   */
-  get: function(){
-    var me = this;
+      if (me.format) {
+        //Place of bugs
+        if (F.isString(me.format)) {
+        }
+        else if (F.isObject(me.format)) {
+          if (me.format.inputFn) {
+            if (me.type === 'number' || me.type === 'field.number') {
+              if (isNaN(parseFloat(me.value))) {
+                return me.value;
+              }
 
-    if(me.format){
-      //Place of bugs
-      if(Fancy.isString(me.format)){}
-      else if(Fancy.isObject(me.format)){
-        if(me.format.inputFn){
-          if(me.type === 'number' || me.type === 'field.number'){
-            if(isNaN(parseFloat(me.value))){
-              return me.value;
+              return Number(me.value);
             }
-
-            return Number(me.value);
           }
+        }
+        else {
+          return me.value;
+        }
+      }
+
+      return me.input.dom.value;
+    },
+    /*
+     *
+     */
+    getValue: function () {
+      return this.get();
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    set: function (value, onInput) {
+      var me = this;
+
+      me.value = value;
+
+      if (me.format && me.format.inputFn) {
+        me.formatValue(value);
+      }
+      else {
+        me.input.dom.value = value;
+      }
+
+      if (onInput !== false) {
+        me.onInput();
+      }
+
+      me.validate(value);
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    setValue: function (value, onInput) {
+      this.set(value, onInput);
+    },
+    /*
+     *
+     */
+    clear: function () {
+      this.set('');
+      this.clearValid();
+    },
+    /*
+     *
+     */
+    failedValid: function () {
+      var me = this;
+
+      if (me.hasCls(me.failedValidCls)) {
+        if (me.tooltip && me.errorText) {
+          me.tooltip.update(me.errorText);
         }
       }
       else {
-        return me.value;
+        if (!me.tooltip && me.errorText) {
+          me.showErrorTip();
+
+          me.el.on('mousemove', me.onMouseMove, me);
+          me.input.hover(function (e) {
+            if (me.errorText) {
+              me.showErrorTip();
+              me.tooltip.show(e.pageX + 15, e.pageY - 25);
+            }
+          }, function () {
+            me.hideErrorTip();
+          });
+        }
+
+        me.addCls(me.failedValidCls);
       }
-    }
+    },
+    clearValid: function () {
+      this.removeCls(this.failedValidCls);
+    },
+    /*
+     *
+     */
+    successValid: function () {
+      var me = this;
 
-    return me.input.dom.value;
-  },
-  /*
-   *
-   */
-  getValue: function(){
-    return this.get();
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  set: function(value, onInput){
-    var me = this;
+      me.removeCls(me.failedValidCls);
+      me.hideErrorTip();
+      delete me.errorText;
+    },
+    /*
+     *
+     */
+    showErrorTip: function () {
+      var me = this;
 
-    me.value = value;
-
-    if(me.format && me.format.inputFn){
-      me.formatValue(value);
-    }
-    else{
-      me.input.dom.value = value;
-    }
-
-    if(onInput !== false){
-      me.onInput();
-    }
-
-    me.validate(value);
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  setValue: function(value, onInput){
-    this.set(value, onInput);
-  },
-  /*
-   *
-   */
-  clear: function(){
-    var me = this;
-
-    me.set('');
-    me.clearValid();
-  },
-  /*
-   *
-   */
-  failedValid: function(){
-    var me = this;
-
-    if(me.hasCls(me.failedValidCls)){
-      if(me.tooltip && me.errorText){
-        me.tooltip.update(me.errorText);
+      if (!me.tooltip) {
+        me.tooltip = new F.ToolTip({
+          text: me.errorText
+        });
       }
-    }
-    else{
-      if(!me.tooltip && me.errorText){
-        me.showErrorTip();
+    },
+    /*
+     *
+     */
+    hideErrorTip: function () {
+      var me = this;
 
-        me.el.on('mousemove', me.onMouseMove, me);
-        me.input.hover(function(e){
-          if(me.errorText){
-            me.showErrorTip();
-            me.tooltip.show(e.pageX + 15, e.pageY - 25);
-          }
-        }, function(){
-          me.hideErrorTip();
+      if (me.tooltip) {
+        me.tooltip.destroy();
+        delete me.tooltip;
+      }
+    },
+    /*
+     * @param {Object} o
+     */
+    setInputSize: function (o) {
+      var me = this;
+
+      if (o.width) {
+        me.input.css('width', o.width);
+      }
+
+      if (o.height) {
+        me.input.css('height', o.height);
+      }
+    },
+    /*
+     *
+     */
+    focus: function () {
+      var me = this;
+
+      me.input.focus();
+      setTimeout(function () {
+        me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
+      }, 0);
+    },
+    /*
+     *
+     */
+    hide: function () {
+      var me = this;
+
+      me.fire('beforehide');
+      me.css('display', 'none');
+      me.fire('hide');
+    },
+    /*
+     *
+     */
+    show: function () {
+      this.css('display', 'block');
+    },
+    /*
+     * @param {Number|Object} width
+     * @param {Number} height
+     */
+    setSize: function (width, height) {
+      var me = this;
+
+      switch (me.type) {
+        case 'set':
+        case 'line':
+          return;
+          break;
+      }
+
+      if (width === undefined && height === undefined) {
+        width = me.width;
+        height = me.height;
+      }
+      else if (height === undefined) {
+        var o = width;
+        if (o.width) {
+          width = o.width;
+        }
+        else {
+          width = me.width;
+        }
+
+        if (o.height) {
+          height = o.height;
+        }
+        else {
+          height = me.height;
+        }
+      }
+
+      if (me.size) {
+        me.size({
+          width: width,
+          height: height
+        });
+
+        return;
+      }
+
+      if (width !== undefined) {
+        me.css('width', width);
+      }
+
+      if (me.labelAlign === 'top') {
+        me.css('height', height * 1.5);
+      }
+      else {
+        me.css('height', height);
+
+        if (me.label) {
+          me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);
+        }
+      }
+
+      me.setInputSize({
+        width: me.inputWidth,
+        height: me.inputHeight
+      });
+    },
+    /*
+     *
+     */
+    setStyle: function () {
+      var me = this,
+        style = me.style || {},
+        padding = me.padding;
+
+      if (padding) {
+        if (F.isNumber(padding)) {
+          padding = padding + 'px';
+        }
+        else if (F.isString(padding)) {
+        }
+
+        if (style.padding === undefined) {
+          style.padding = padding;
+        }
+      }
+      else {
+        style.padding = '0px';
+      }
+
+      if (me.hidden) {
+        me.css('display', 'none')
+      }
+
+      me.css(style);
+    },
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
+
+      if (me.tpl && F.isObject(me.tpl) === false) {
+        me.tpl = new F.Template(me.tpl);
+      }
+
+      me.calcSize();
+    },
+    /*
+     *
+     */
+    calcSize: function () {
+      var me = this,
+        inputWidth,
+        inputHeight = me.inputHeight,
+        padding = me.padding,
+        value,
+        value1,
+        value2,
+        value3;
+
+      if (F.isString(padding)) {
+        padding = padding.replace(/px/g, '');
+        padding = padding.split(' ');
+        switch (padding.length) {
+          case 1:
+            value = Number(padding[0]);
+            padding = [value, value, value, value];
+            break;
+          case 2:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+
+            padding = [value1, value2, value1, value2];
+            break;
+          case 3:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+            value3 = Number(padding[2]);
+
+            padding = [value1, value2, value3, value1];
+            break;
+          case 4:
+            padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
+            break;
+        }
+      }
+      else if (F.isNumber(padding)) {
+        padding = [padding, padding, padding, padding];
+      }
+      else if (padding === false) {
+        padding = [0, 0, 0, 0];
+      }
+
+      if (me.labelAlign === 'top') {
+        me.height *= 1.5;
+      }
+
+      inputWidth = me.width;
+
+      if (me.labelAlign !== 'top' && me.label) {
+        inputWidth -= me.labelWidth;
+      }
+
+      if (me.height === me.inputHeight && me.padding !== false) {
+        inputHeight -= padding[0] + padding[2];
+      }
+
+      if (me.type === 'radio' && !me.column) {
+        me.calcColumns();
+        if (me.rows !== 1) {
+          inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
+        }
+      }
+
+      me.inputHeight = inputHeight;
+      me.inputWidth = inputWidth - padding[1] - padding[3];
+      me.height = inputHeight + padding[0] + padding[2];
+    },
+    /*
+     * @param {Number} value
+     */
+    setWidth: function (value) {
+      var me = this;
+
+      me.width = value;
+      me.calcSize();
+
+      me.css('width', value);
+      me.setInputSize({
+        width: me.inputWidth
+      });
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseMove: function (e) {
+      var me = this;
+
+      delete me.tooltipToDestroy;
+
+      if (me.tip) {
+        me.renderTip(e);
+      }
+      else if (me.tooltip) {
+        me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    renderTip: function (e) {
+      var me = this,
+        value = '',
+        tpl = new F.Template(me.tip || me.tooltip);
+
+      if (me.getValue) {
+        value = me.getValue();
+      }
+
+      var text = tpl.getHTML({
+        value: value
+      });
+
+      if (me.tooltip) {
+        me.tooltip.update(text);
+      }
+      else {
+        me.tooltip = new F.ToolTip({
+          text: text
         });
       }
 
-      me.addCls(me.failedValidCls);
-    }
-  },
-  clearValid: function () {
-    var me = this;
-
-    me.removeCls(me.failedValidCls);
-  },
-  /*
-   *
-   */
-  successValid: function(){
-    var me = this;
-
-    me.removeCls(me.failedValidCls);
-    me.hideErrorTip();
-    delete me.errorText;
-  },
-  /*
-   *
-   */
-  showErrorTip: function(){
-    var me = this;
-
-    if(!me.tooltip){
-      me.tooltip = new Fancy.ToolTip({
-        text: me.errorText
-      });
-    }
-  },
-  /*
-   *
-   */
-  hideErrorTip: function(){
-    var me = this;
-
-    if(me.tooltip) {
-      me.tooltip.destroy();
-      delete me.tooltip;
-    }
-  },
-  /*
-   * @param {Object} o
-   */
-  setInputSize: function(o){
-    var me = this;
-
-    if(o.width) {
-      me.input.css('width', o.width);
-    }
-
-    if(o.height) {
-      me.input.css('height', o.height);
-    }
-  },
-  /*
-   *
-   */
-  focus: function(){
-    var me = this;
-
-    me.input.focus();
-    setTimeout(function(){
-      me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
-    }, 0);
-  },
-  /*
-   *
-   */
-  hide: function(){
-    var me = this;
-
-    me.fire('beforehide');
-    me.css('display', 'none');
-    me.fire('hide');
-  },
-  /*
-   *
-   */
-  show: function(){
-    var me = this;
-
-    me.css('display', 'block');
-  },
-  /*
-   * @param {Number|Object} width
-   * @param {Number} height
-   */
-  setSize: function(width, height){
-    var me = this;
-
-    switch(me.type){
-      case 'set':
-      case 'line':
-        return;
-        break;
-    }
-
-    if(width === undefined && height === undefined){
-      width = me.width;
-      height = me.height;
-    }
-    else if(height === undefined){
-      var o = width;
-      if(o.width){
-        width = o.width;
-      }
-      else{
-        width = me.width;
-      }
-
-      if(o.height){
-        height = o.height;
-      }
-      else{
-        height = me.height;
-      }
-    }
-
-    if(me.size){
-      me.size({
-        width: width,
-        height: height
-      });
-
-      return;
-    }
-
-    if(width !== undefined) {
-      me.css('width', width);
-    }
-
-    if(me.labelAlign === 'top'){
-      me.css('height', height * 1.5);
-    }
-    else{
-      me.css('height', height);
-
-      if(me.label){
-        me.el.select('.fancy-field-label').css('height', me.inputHeight);
-      }
-    }
-
-    me.setInputSize({
-      width: me.inputWidth,
-      height: me.inputHeight
-    });
-  },
-  /*
-   *
-   */
-  setStyle: function(){
-    var me = this,
-      style = me.style || {},
-      padding = me.padding;
-
-    if(padding){
-      if(Fancy.isNumber(padding)){
-        padding = padding + 'px';
-      }
-      else if(Fancy.isString(padding)){}
-
-      if(style.padding === undefined){
-        style.padding = padding;
-      }
-    }
-    else{
-      style.padding = '0px';
-    }
-
-    if(me.hidden){
-      me.css('display', 'none')
-    }
-
-    me.css(style);
-  },
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
-
-    if(me.tpl && Fancy.isObject(me.tpl) === false){
-      me.tpl = new Fancy.Template(me.tpl);
-    }
-
-    me.calcSize();
-  },
-  /*
-   *
-   */
-  calcSize: function(){
-    var me = this,
-      inputWidth,
-      inputHeight = me.inputHeight,
-      padding = me.padding,
-      value,
-      value1,
-      value2,
-      value3;
-
-    if(Fancy.isString(padding)){
-      padding = padding.replace(/px/g, '');
-      padding = padding.split(' ');
-      switch(padding.length){
-        case 1:
-          value = Number(padding[0]);
-          padding = [value, value, value, value];
-          break;
-        case 2:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-
-          padding = [value1, value2, value1, value2];
-          break;
-        case 3:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-          value3 = Number(padding[2]);
-
-          padding = [value1, value2, value3, value1];
-          break;
-        case 4:
-          padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
-          break;
-      }
-    }
-    else if(Fancy.isNumber(padding)){
-      padding = [padding, padding, padding, padding];
-    }
-    else if(padding === false){
-      padding = [0, 0, 0, 0];
-    }
-
-    if(me.labelAlign === 'top'){
-      me.height *= 1.5;
-    }
-
-    inputWidth = me.width;
-
-    if(me.labelAlign !== 'top' && me.label){
-      inputWidth -= me.labelWidth;
-    }
-
-    if(me.height === me.inputHeight && me.padding !== false){
-      inputHeight -= padding[0] + padding[2];
-    }
-
-    if(me.type === 'radio' && !me.column){
-      me.calcColumns();
-      if(me.rows !== 1) {
-        inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
-      }
-    }
-
-    me.inputHeight = inputHeight;
-    me.inputWidth = inputWidth -  padding[1] - padding[3];
-    me.height = inputHeight + padding[0] + padding[2];
-  },
-  /*
-   * @param {Number} value
-   */
-  setWidth: function(value){
-    var me = this;
-
-    me.width = value;
-    me.calcSize();
-
-    me.css('width', value);
-    me.setInputSize({
-      width: me.inputWidth
-    });
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseMove: function(e){
-    var me = this;
-
-    delete me.tooltipToDestroy;
-
-    if(me.tip){
-      me.renderTip(e);
-    }
-    else if(me.tooltip){
       me.tooltip.show(e.pageX + 15, e.pageY - 25);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  renderTip: function(e){
-    var me = this,
-      value = '',
-      tpl = new Fancy.Template(me.tip || me.tooltip);
+    },
+    /*
+     * @return {Object}
+     */
+    getInputSelection: function () {
+      var me = this,
+        start = 0,
+        end = 0,
+        normalizedValue,
+        range,
+        textInputRange,
+        len,
+        endRange,
+        el = me.input.dom;
 
-    if(me.getValue){
-      value = me.getValue();
-    }
+      if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+        start = el.selectionStart;
+        end = el.selectionEnd;
+      }
+      else {
+        range = document.selection.createRange();
 
-    var text = tpl.getHTML({
-      value: value
-    });
+        if (range && range.parentElement() == el) {
+          len = el.value.length;
+          normalizedValue = el.value.replace(/\r\n/g, "\n");
 
-    if(me.tooltip){
-      me.tooltip.update(text);
-    }
-    else {
-      me.tooltip = new Fancy.ToolTip({
-        text: text
-      });
-    }
+          // Create a working TextRange that lives only in the input
+          textInputRange = el.createTextRange();
+          textInputRange.moveToBookmark(range.getBookmark());
 
-    me.tooltip.show(e.pageX + 15, e.pageY - 25);
-  },
-  /*
-   * @return {Object}
-   */
-  getInputSelection: function(){
-    var me = this,
-      start = 0,
-      end = 0,
-      normalizedValue,
-      range,
-      textInputRange,
-      len,
-      endRange,
-      el = me.input.dom;
+          // Check if the start and end of the selection are at the very end
+          // of the input, since moveStart/moveEnd doesn't return what we want
+          // in those cases
+          endRange = el.createTextRange();
+          endRange.collapse(false);
 
-    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
-      start = el.selectionStart;
-      end = el.selectionEnd;
-    }
-    else {
-      range = document.selection.createRange();
-
-      if (range && range.parentElement() == el) {
-        len = el.value.length;
-        normalizedValue = el.value.replace(/\r\n/g, "\n");
-
-        // Create a working TextRange that lives only in the input
-        textInputRange = el.createTextRange();
-        textInputRange.moveToBookmark(range.getBookmark());
-
-        // Check if the start and end of the selection are at the very end
-        // of the input, since moveStart/moveEnd doesn't return what we want
-        // in those cases
-        endRange = el.createTextRange();
-        endRange.collapse(false);
-
-        if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
-          start = end = len;
-        } else {
-          start = -textInputRange.moveStart("character", -len);
-          start += normalizedValue.slice(0, start).split("\n").length - 1;
-
-          if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
-            end = len;
+          if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+            start = end = len;
           } else {
-            end = -textInputRange.moveEnd("character", -len);
-            end += normalizedValue.slice(0, end).split("\n").length - 1;
+            start = -textInputRange.moveStart("character", -len);
+            start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+            if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+              end = len;
+            } else {
+              end = -textInputRange.moveEnd("character", -len);
+              end += normalizedValue.slice(0, end).split("\n").length - 1;
+            }
           }
         }
       }
-    }
 
-    return {
-      start: start,
-      end: end
-    };
-  }
-};
+      return {
+        start: start,
+        end: end
+      };
+    }
+  };
+
+})();
 /*
  * @class Fancy.StringField
  * @extends Fancy.Widget
@@ -14473,12 +14645,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -14554,12 +14722,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('const', arguments);
+      Fancy.apply(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -14676,17 +14840,13 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Number} value
      */
     setMin: function (value) {
-      var me = this;
-
-      me.min = value;
+      this.min = value;
     },
     /*
      * @param {Number} value
      */
     setMax: function (value) {
-      var me = this;
-
-      me.max = value;
+      this.max = value;
     },
     /*
      *
@@ -14829,677 +14989,680 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
  * @class Fancy.DateField
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
-  mixins: [
-    Fancy.form.field.Mixin
-  ],
-  extend: Fancy.Widget,
-  type: 'field.date',
-  picker: true,
-  i18n: 'en',
-  theme: 'default',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this,
-      config = config || {};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var D = F.Date;
 
-    Fancy.apply(me, config);
+  //CONSTANTS
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
+    mixins: [
+      F.form.field.Mixin
+    ],
+    extend: F.Widget,
+    type: 'field.date',
+    picker: true,
+    i18n: 'en',
+    theme: 'default',
+    fieldCls: FIELD_CLS,
+    value: '',
+    width: 100,
+    emptyText: '',
+    tpl: [
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
+        '{label}',
+      '</div>',
+      '<div class="' + FIELD_TEXT_CLS + '">',
+        '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
+        '<div class="fancy-field-picker-button"></div>',
+        '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '</div>',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
+    ],
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      F.apply(this, config);
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'showpicker');
+      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'showpicker');
 
-    me.initFormat();
-    me.Super('init', arguments);
+      me.initFormat();
+      me.Super('init', arguments);
 
-    me.preRender();
-    me.render();
+      me.preRender();
+      me.render();
 
-    me.ons();
+      me.ons();
 
-    if( me.hidden ){
-      me.css('display', 'none');
-    }
-
-    if( me.style ){
-      me.css(me.style);
-    }
-
-    if(!Fancy.isDate(me.value)){
-      me.initDate();
-    }
-    me.changeInputValue();
-    me.initPicker();
-  },
-  /*
-   * @param {String} value
-   * @param {String} format
-   */
-  initDate: function(value, format){
-    var me = this;
-
-    if(value){
-      if(Fancy.typeOf(value) === 'date'){
-        me.date = value;
-        return;
+      if (me.hidden) {
+        me.css('display', 'none');
       }
 
-      var date;
-      if(format){
-        date = Fancy.Date.parse(value, format, me.format.mode);
-      }
-      else{
-        date = Fancy.Date.parse(value, me.format.read, me.format.mode);
+      if (me.style) {
+        me.css(me.style);
       }
 
-      if(date.toString === 'Invalid Date'){
-        date = Fancy.Date.parse(value, me.format.edit, me.format.mode);
+      if (!F.isDate(me.value)) {
+        me.initDate();
       }
+      me.changeInputValue();
+      me.initPicker();
+    },
+    /*
+     * @param {String} value
+     * @param {String} format
+     */
+    initDate: function (value, format) {
+      var me = this;
 
-      if(date.toString === 'Invalid Date'){
-        return;
-      }
-
-      me.date = date;
-      return;
-    }
-
-    switch(Fancy.typeOf(value)){
-      case 'date':
-        me.date = me.value;
-        break;
-      case 'undefined':
-      case 'string':
-        if(!me.value){
-          delete me.date;
+      if (value) {
+        if (F.typeOf(value) === 'date') {
+          me.date = value;
           return;
         }
-        me.date = Fancy.Date.parse(me.value, me.format.read, me.format.mode);
-        break;
-    }
-  },
-  /*
-   *
-   */
-  changeInputValue: function(){
-    var me = this;
 
-    if(Fancy.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date'){
-      me.input.dom.value = '';
-      return;
-    }
+        var date;
+        if (format) {
+          date = D.parse(value, format, me.format.mode);
+        }
+        else {
+          date = D.parse(value, me.format.read, me.format.mode);
+        }
 
-    var value = Fancy.Date.format(me.date, me.format.edit, undefined, me.format.mode);
+        if (date.toString === 'Invalid Date') {
+          date = D.parse(value, me.format.edit, me.format.mode);
+        }
 
-    if(me.format && me.format.inputFn){
-      value = me.format.inputFn( value );
-    }
+        if (date.toString === 'Invalid Date') {
+          return;
+        }
 
-    if(value === undefined){
-      value = '';
-    }
-
-    me.input.dom.value = value;
-
-    me.fire('change', value);
-  },
-  /*
-   *
-   */
-  initFormat: function(){
-    var me = this;
-
-    if(me.format){
-      if(Fancy.isObject(me.format)){
-        Fancy.applyIf(me.format, Fancy.i18n[me.i18n].date);
-      }
-    }
-    else{
-      me.format = Fancy.i18n[me.i18n].date;
-    }
-  },
-  /*
-   * @param {*} value
-   */
-  formatValue: function(value){
-    var me = this;
-
-    if(!me.value && value){
-      me.value = value;
-    }
-    else if(!value && me.value){
-      value = me.value;
-    }
-
-    if(!me.value){}
-    else if(Fancy.typeOf(me.value) === 'date'){
-      me.value = Fancy.Date.format(me.value, me.format.read, undefined, me.format.mode);
-      if(value === undefined){
-        var _date = Fancy.Date.parse(me.value, me.format.edit, me.format.mode);
-        value = Fancy.Date.format(_date, me.format.edit, undefined, me.format.mode);
-      }
-      me.acceptedValue = value;
-    }
-    else{
-      var date = Fancy.Date.parse(me.value, me.format.read, me.format.mode);
-      me.value = Fancy.Date.format(date, me.format.edit, undefined, me.format.mode);
-    }
-
-    if(me.format && me.format.inputFn){
-      value = me.format.inputFn(value);
-    }
-
-    if(value === undefined){
-      value = '';
-    }
-
-    if(/NaN/.test(value)){
-      value = '';
-    }
-
-    me.input.dom.value = value;
-  },
-  fieldCls: Fancy.FIELD_CLS,
-  value: '',
-  width: 100,
-  emptyText: '',
-  tpl: [
-    '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-    '{label}',
-    '</div>',
-    '<div class="fancy-field-text">',
-    '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
-    '<div class="fancy-field-picker-button"></div>',
-    '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-    '</div>',
-    '<div class="fancy-clearfix"></div>'
-  ],
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      input = me.el.getByTag('input');
-
-    me.input = input;
-    input.on('blur', me.onBlur, me);
-    input.on('focus', me.onFocus, me);
-    input.on('input', me.onInput, me);
-    input.on('keydown', me.onKeyDown, me);
-    me.on('key', me.onKey, me);
-    me.on('enter', me.onEnter, me);
-
-    me.on('beforehide', me.onBeforeHide, me);
-
-    if(me.format && me.format.inputFn){
-      me.on('key', me.onKeyInputFn);
-    }
-  },
-  /*
-   *
-   */
-  initPicker: function(){
-    var me = this;
-
-    if(me.picker === false){
-      return;
-    }
-
-    if(me.dateImage === false){
-      me.el.select('.fancy-field-picker-button').css('display', 'none');
-      me.input.on('click', me.onInputClick, me);
-    }
-    else {
-      me.pickerButton = me.el.select('.fancy-field-picker-button');
-      me.pickerButton.on('mousedown', me.onPickerButtonMouseDown, me);
-    }
-  },
-  /*
-   *
-   */
-  onInputClick: function(e){
-    var me = this;
-
-    e.preventDefault();
-
-    me.toggleShowPicker();
-  },
-  /*
-   * @param {Object} e
-   */
-  onPickerButtonMouseDown: function(e){
-    var me = this;
-
-    e.preventDefault();
-
-    me.toggleShowPicker();
-  },
-  /*
-   *
-   */
-  showPicker: function(){
-    var me = this,
-      el = me.el,
-      input = me.input,
-      docEl = Fancy.get(document);
-
-    if(me.picker === true){
-      me.renderPicker();
-    }
-
-    var offset = input.offset(),
-      x = offset.left,
-      y = offset.top + el.select('.fancy-field-text').height(),
-      date = me.date || new Date();
-
-    if(date.toString() === 'Invalid Date'){
-      date = new Date();
-    }
-
-    me.picker.setDate(date);
-
-    Fancy.datepicker.Manager.add(me.picker);
-
-    me.picker.showAt(x, y);
-
-    me.fire('showpicker');
-
-    if(!me.docSpy){
-      me.docSpy = true;
-      docEl.on('click', me.onDocClick, me);
-    }
-  },
-  /*
-   *
-   */
-  onDocClick: function(e){
-    var me = this,
-      datePicker = me.picker,
-      monthPicker = datePicker.monthPicker,
-      target = e.target;
-
-    if(target.tagName.toLocaleLowerCase() === 'input'){}
-    else if(Fancy.get(target).hasCls('fancy-field-picker-button')){}
-    else if( datePicker.panel.el.within(target) ){}
-    else if( monthPicker && monthPicker.panel.el.within(target) ){}
-    else{
-      me.hidePicker();
-    }
-  },
-  /*
-   *
-   */
-  hidePicker: function(){
-    var me = this;
-
-    if(me.picker !== false && me.picker.hide){
-      me.picker.hide();
-    }
-
-    if(me.docSpy){
-      var docEl = Fancy.get(document);
-      me.docSpy = false;
-      docEl.un('click', me.onDocClick, me);
-    }
-  },
-  /*
-   *
-   */
-  toggleShowPicker: function(){
-    var me = this;
-
-    if(me.picker === true){
-      me.showPicker();
-      return;
-    }
-
-    if(me.picker.panel.el.css('display') === 'none'){
-      me.showPicker();
-    }
-    else{
-      me.hidePicker();
-    }
-  },
-  /*
-   *
-   */
-  renderPicker: function() {
-    var me = this;
-
-    if (!Fancy.fullBuilt && !Fancy.modules['grid'] && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false) {
-      return;
-    }
-
-    me.picker = new Fancy.DatePicker({
-      window: true,
-      date: me.date,
-      format: me.format,
-      theme: me.theme,
-      events: [{
-        changedate: me.onPickerChangeDate,
-        scope: me
-      }]
-    });
-  },
-  /*
-   * @return {String}
-   */
-  get: function(){
-    var me = this;
-
-    if(me.input.dom.value === ''){
-      delete me.date;
-      delete me.value;
-
-      return '';
-    }
-
-    if(me.date){
-      return Fancy.Date.format(me.date, me.format.write, undefined, me.format.mode);
-    }
-    else{
-      return '';
-    }
-  },
-  /*
-   * @return {Date}
-   */
-  getDate: function(){
-    return this.date || '';
-  },
-  /*
-   *
-   */
-  onBeforeHide: function(){
-    var me = this;
-
-    me.hidePicker();
-  },
-  /*
-   * @param {Object} picker
-   * @param {Date} newDate
-   * @param {Boolean} hidePicker
-   */
-  onPickerChangeDate: function(picker, newDate, hidePicker){
-    var me = this;
-
-    if(hidePicker !== false){
-      me.picker.hide();
-    }
-
-    me.initDate(newDate);
-    me.changeInputValue();
-  },
-  /*
-   *
-   */
-  onInput: function(){
-    var me = this,
-      input = me.input,
-      value = input.dom.value,
-      oldValue = me.acceptedValue;
-
-    if(Fancy.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date'){
-      return;
-    }
-
-    me.initDate(value, me.format.edit);
-
-    me.fire('input', value);
-    me.fire('change', value, oldValue);
-  },
-  /*
-   * @return {Boolean}
-   */
-  isValid: function(){
-    var me = this;
-
-    return Fancy.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
-  },
-  /*
-   * @param {String|Date|Number} value
-   */
-  set: function(value){
-    var me = this;
-
-    switch(value){
-      case '':
-      case undefined:
-        delete me.value;
-        delete me.date;
-        me.changeInputValue();
+        me.date = date;
         return;
-        break;
-    }
+      }
 
-    me.initDate(value);
-    me.changeInputValue();
-  },
-  /*
-   * @param {*} oldValue
-   * @return {Boolean}
-   */
-  isEqual: function(oldValue){
-    var me = this,
-      oldDate = Fancy.Date.parse(oldValue, me.format.read, me.format.mode),
-      value = me.input.dom.value;
+      switch (F.typeOf(value)) {
+        case 'date':
+          me.date = me.value;
+          break;
+        case 'undefined':
+        case 'string':
+          if (!me.value) {
+            delete me.date;
+            return;
+          }
+          me.date = D.parse(me.value, me.format.read, me.format.mode);
+          break;
+      }
+    },
+    /*
+     *
+     */
+    changeInputValue: function () {
+      var me = this;
 
-    oldValue = Fancy.Date.format(oldDate, me.format.edit, undefined, me.format.mode);
+      if (F.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date') {
+        me.input.dom.value = '';
+        return;
+      }
 
-    return oldValue === value;
-  },
-  onEnter: function(){
-    var me = this,
-      input = me.input,
-      value = input.dom.value,
-      oldValue = me.acceptedValue;
+      var value = D.format(me.date, me.format.edit, undefined, me.format.mode);
 
-    if(value === ''){
-      me.initDate();
+      if (me.format && me.format.inputFn) {
+        value = me.format.inputFn(value);
+      }
+
+      if (value === undefined) {
+        value = '';
+      }
+
+      me.input.dom.value = value;
+
+      me.fire('change', value);
+    },
+    /*
+     *
+     */
+    initFormat: function () {
+      var me = this;
+
+      if (me.format) {
+        if (F.isObject(me.format)) {
+          F.applyIf(me.format, F.i18n[me.i18n].date);
+        }
+      }
+      else {
+        me.format = F.i18n[me.i18n].date;
+      }
+    },
+    /*
+     * @param {*} value
+     */
+    formatValue: function (value) {
+      var me = this;
+
+      if (!me.value && value) {
+        me.value = value;
+      }
+      else if (!value && me.value) {
+        value = me.value;
+      }
+
+      if (!me.value) {
+      }
+      else if (F.typeOf(me.value) === 'date') {
+        me.value = D.format(me.value, me.format.read, undefined, me.format.mode);
+        if (value === undefined) {
+          var _date = D.parse(me.value, me.format.edit, me.format.mode);
+          value = D.format(_date, me.format.edit, undefined, me.format.mode);
+        }
+        me.acceptedValue = value;
+      }
+      else {
+        var date = D.parse(me.value, me.format.read, me.format.mode);
+        me.value = D.format(date, me.format.edit, undefined, me.format.mode);
+      }
+
+      if (me.format && me.format.inputFn) {
+        value = me.format.inputFn(value);
+      }
+
+      if (value === undefined) {
+        value = '';
+      }
+
+      if (/NaN/.test(value)) {
+        value = '';
+      }
+
+      me.input.dom.value = value;
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        input = me.el.getByTag('input');
+
+      me.input = input;
+      input.on('blur', me.onBlur, me);
+      input.on('focus', me.onFocus, me);
+      input.on('input', me.onInput, me);
+      input.on('keydown', me.onKeyDown, me);
+      me.on('key', me.onKey, me);
+      me.on('enter', me.onEnter, me);
+
+      me.on('beforehide', me.onBeforeHide, me);
+
+      if (me.format && me.format.inputFn) {
+        me.on('key', me.onKeyInputFn);
+      }
+    },
+    /*
+     *
+     */
+    initPicker: function () {
+      var me = this;
+
+      if (me.picker === false) {
+        return;
+      }
+
+      if (me.dateImage === false) {
+        me.el.select('.fancy-field-picker-button').css('display', 'none');
+        me.input.on('click', me.onInputClick, me);
+      }
+      else {
+        me.pickerButton = me.el.select('.fancy-field-picker-button');
+        me.pickerButton.on('mousedown', me.onPickerButtonMouseDown, me);
+      }
+    },
+    /*
+     *
+     */
+    onInputClick: function (e) {
+      e.preventDefault();
+
+      this.toggleShowPicker();
+    },
+    /*
+     * @param {Object} e
+     */
+    onPickerButtonMouseDown: function (e) {
+      e.preventDefault();
+      this.toggleShowPicker();
+    },
+    /*
+     *
+     */
+    showPicker: function () {
+      var me = this,
+        el = me.el,
+        input = me.input,
+        docEl = F.get(document);
+
+      if (me.picker === true) {
+        me.renderPicker();
+      }
+
+      var offset = input.offset(),
+        x = offset.left,
+        y = offset.top + el.select('.' + FIELD_TEXT_CLS).height(),
+        date = me.date || new Date();
+
+      if (date.toString() === 'Invalid Date') {
+        date = new Date();
+      }
+
+      me.picker.setDate(date);
+
+      F.datepicker.Manager.add(me.picker);
+
+      me.picker.showAt(x, y);
+
+      me.fire('showpicker');
+
+      if (!me.docSpy) {
+        me.docSpy = true;
+        docEl.on('click', me.onDocClick, me);
+      }
+    },
+    /*
+     *
+     */
+    onDocClick: function (e) {
+      var me = this,
+        datePicker = me.picker,
+        monthPicker = datePicker.monthPicker,
+        target = e.target;
+
+      if (target.tagName.toLocaleLowerCase() === 'input') {
+      }
+      else if (F.get(target).hasCls('fancy-field-picker-button')) {
+      }
+      else if (datePicker.panel.el.within(target)) {
+      }
+      else if (monthPicker && monthPicker.panel.el.within(target)) {
+      }
+      else {
+        me.hidePicker();
+      }
+    },
+    /*
+     *
+     */
+    hidePicker: function () {
+      var me = this;
+
+      if (me.picker !== false && me.picker.hide) {
+        me.picker.hide();
+      }
+
+      if (me.docSpy) {
+        var docEl = F.get(document);
+        me.docSpy = false;
+        docEl.un('click', me.onDocClick, me);
+      }
+    },
+    /*
+     *
+     */
+    toggleShowPicker: function () {
+      var me = this;
+
+      if (me.picker === true) {
+        me.showPicker();
+        return;
+      }
+
+      if (me.picker.panel.el.css('display') === 'none') {
+        me.showPicker();
+      }
+      else {
+        me.hidePicker();
+      }
+    },
+    /*
+     *
+     */
+    renderPicker: function () {
+      var me = this;
+
+      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false) {
+        return;
+      }
+
+      me.picker = new F.DatePicker({
+        window: true,
+        date: me.date,
+        format: me.format,
+        theme: me.theme,
+        events: [{
+          changedate: me.onPickerChangeDate,
+          scope: me
+        }]
+      });
+    },
+    /*
+     * @return {String}
+     */
+    get: function () {
+      var me = this;
+
+      if (me.input.dom.value === '') {
+        delete me.date;
+        delete me.value;
+
+        return '';
+      }
+
+      if (me.date) {
+        return D.format(me.date, me.format.write, undefined, me.format.mode);
+      }
+      else {
+        return '';
+      }
+    },
+    /*
+     * @return {Date}
+     */
+    getDate: function () {
+      return this.date || '';
+    },
+    /*
+     *
+     */
+    onBeforeHide: function () {
+      this.hidePicker();
+    },
+    /*
+     * @param {Object} picker
+     * @param {Date} newDate
+     * @param {Boolean} hidePicker
+     */
+    onPickerChangeDate: function (picker, newDate, hidePicker) {
+      var me = this;
+
+      if (hidePicker !== false) {
+        me.picker.hide();
+      }
+
+      me.initDate(newDate);
+      me.changeInputValue();
+    },
+    /*
+     *
+     */
+    onInput: function () {
+      var me = this,
+        input = me.input,
+        value = input.dom.value,
+        oldValue = me.acceptedValue;
+
+      if (D.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
+        return;
+      }
+
+      me.initDate(value, me.format.edit);
 
       me.fire('input', value);
       me.fire('change', value, oldValue);
+    },
+    /*
+     * @return {Boolean}
+     */
+    isValid: function () {
+      var me = this;
+
+      return D.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
+    },
+    /*
+     * @param {String|Date|Number} value
+     */
+    set: function (value) {
+      var me = this;
+
+      switch (value) {
+        case '':
+        case undefined:
+          delete me.value;
+          delete me.date;
+          me.changeInputValue();
+          return;
+          break;
+      }
+
+      me.initDate(value);
+      me.changeInputValue();
+    },
+    /*
+     * @param {*} oldValue
+     * @return {Boolean}
+     */
+    isEqual: function (oldValue) {
+      var me = this,
+        oldDate = D.parse(oldValue, me.format.read, me.format.mode),
+        value = me.input.dom.value;
+
+      oldValue = D.format(oldDate, me.format.edit, undefined, me.format.mode);
+
+      return oldValue === value;
+    },
+    onEnter: function () {
+      var me = this,
+        input = me.input,
+        value = input.dom.value,
+        oldValue = me.acceptedValue;
+
+      if (value === '') {
+        me.initDate();
+
+        me.fire('input', value);
+        me.fire('change', value, oldValue);
+      }
     }
-  }
-});
+  });
+
+})();
 /*
  * @class Fancy.DateRangeField
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
-  extend: Fancy.Widget,
-  type: 'field.daterange',
-  picker: true,
-  format: 'm/d/Y',
-  dateImage: true,
-  theme: 'default',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this,
-      config = config || {};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var D = F.Date;
 
-    Fancy.apply(me, config);
+  F.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
+    extend: F.Widget,
+    type: 'field.daterange',
+    picker: true,
+    format: 'm/d/Y',
+    dateImage: true,
+    theme: 'default',
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function(config){
+      F.apply(this, config);
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+      me.addEvents('changedatefrom', 'changedateto', 'change');
 
-    me.addEvents('changedatefrom', 'changedateto', 'change');
+      me.preRender();
+      me.render();
+      me.initDateFields();
+    },
+    //Can not find where it is used. Maybe to remove
+    fieldCls: F.cls + ' fancy-date-range',
+    width: 100,
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = me.renderTo || document.body,
+        el = F.get(document.createElement('div'));
 
-    me.preRender();
-    me.render();
-    me.initDateFields();
-  },
-  fieldCls: 'fancy fancy-date-range',
-  width: 100,
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = me.renderTo || document.body,
-      el = Fancy.get( document.createElement('div') );
+      el.addCls(me.cls);
 
-    el.addCls(me.cls);
+      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+    },
+    /*
+     *
+     */
+    preRender: function () {
+    },
+    /*
+     *
+     */
+    initDateFields: function () {
+      var me = this,
+        theme = me.theme;
 
-    me.el = Fancy.get(Fancy.get(renderTo).dom.appendChild(el.dom));
-  },
-  /*
-   *
-   */
-  preRender: function(){},
-  /*
-   *
-   */
-  initDateFields: function(){
-    var me = this,
-      theme = me.theme;
+      me.dateField1 = new F.DateField({
+        renderTo: me.el.dom,
+        label: false,
+        dateImage: me.dateImage,
+        width: me.width / 2,
+        padding: false,
+        theme: theme,
+        style: {
+          position: 'absolute',
+          bottom: '2px',
+          left: '3px'
+        },
+        format: me.format,
+        events: [{
+          showpicker: me.onShowPicker1,
+          scope: me
+        }, {
+          change: me.onChangeDate1,
+          scope: me
+        }, {
+          focus: me.onFocus1,
+          scope: me
+        }, {
+          enter: me.onEnter,
+          scope: me
+        }]
+      });
 
-    me.dateField1 = new Fancy.DateField({
-      renderTo: me.el.dom,
-      label: false,
-      dateImage: me.dateImage,
-      width: me.width/2,
-      padding: false,
-      theme: theme,
-      style: {
-        position: 'absolute',
-        bottom: '2px',
-        left: '3px'
-      },
-      format: me.format,
-      events: [{
-        showpicker: me.onShowPicker1,
-        scope: me
-      },{
-        change: me.onChangeDate1,
-        scope: me
-      }, {
-        focus: me.onFocus1,
-        scope: me
-      },{
-        enter: me.onEnter,
-        scope: me
-      }]
-    });
+      me.dateField1.setInputSize({
+        width: me.width / 2
+      });
 
-    me.dateField1.setInputSize({
-      width: me.width/2
-    });
+      me.dateField2 = new F.DateField({
+        renderTo: me.el.dom,
+        label: false,
+        dateImage: me.dateImage,
+        width: me.width / 2,
+        padding: false,
+        theme: theme,
+        style: {
+          position: 'absolute',
+          bottom: '2px',
+          right: '2px'
+        },
+        format: me.format,
+        events: [{
+          showpicker: me.onShowPicker2,
+          scope: me
+        }, {
+          change: me.onChangeDate2,
+          scope: me
+        }, {
+          focus: me.onFocus2,
+          scope: me
+        }, {
+          keydown: me.onEnter,
+          scope: me
+        }]
+      });
 
-    me.dateField2 = new Fancy.DateField({
-      renderTo: me.el.dom,
-      label: false,
-      dateImage: me.dateImage,
-      width: me.width/2,
-      padding: false,
-      theme: theme,
-      style: {
-        position: 'absolute',
-        bottom: '2px',
-        right: '2px'
-      },
-      format: me.format,
-      events: [{
-        showpicker: me.onShowPicker2,
-        scope: me
-      }, {
-        change: me.onChangeDate2,
-        scope: me
-      },{
-        focus: me.onFocus2,
-        scope: me
-      },{
-        keydown: me.onEnter,
-        scope: me
-      }]
-    });
+      me.dateField2.setInputSize({
+        width: me.width / 2
+      });
 
-    me.dateField2.setInputSize({
-      width: me.width/2
-    });
+    },
+    /*
+     *
+     */
+    onFocus1: function () {
+      this.dateField2.hidePicker();
+    },
+    /*
+     *
+     */
+    onFocus2: function () {
+      this.dateField1.hidePicker();
+    },
+    /*
+     *
+     */
+    onShowPicker1: function () {
+      this.dateField2.hidePicker();
+    },
+    /*
+     *
+     */
+    onShowPicker2: function () {
+      this.dateField1.hidePicker();
+    },
+    /*
+     * @param {Object} field
+     * @param {Date} date
+     */
+    onChangeDate1: function (field, date) {
+      var me = this,
+        date = D.parse(date, field.format.edit, field.format.mode);
 
-  },
-  /*
-   *
-   */
-  onFocus1: function(){
-    var me = this;
+      me.fire('changedatefrom', date);
+      me.fire('change');
+    },
+    /*
+     * @param {Object} field
+     * @param {Date} date
+     */
+    onChangeDate2: function (field, date) {
+      var date = D.parse(date, field.format.edit, field.format.mode);
 
-    me.dateField2.hidePicker();
-  },
-  /*
-   *
-   */
-  onFocus2: function(){
-    var me = this;
+      this.fire('changedateto', date);
+      this.fire('change');
+    },
+    /*
+     *
+     */
+    onEnter: function () {
+      this.dateField1.hidePicker();
+      this.dateField2.hidePicker();
+    }
+  });
 
-    me.dateField1.hidePicker();
-  },
-  /*
-   *
-   */
-  onShowPicker1: function(){
-    var me = this;
-
-    me.dateField2.hidePicker();
-  },
-  /*
-   *
-   */
-  onShowPicker2: function(){
-    var me = this;
-
-    me.dateField1.hidePicker();
-  },
-  /*
-   * @param {Object} field
-   * @param {Date} date
-   */
-  onChangeDate1: function(field, date){
-    var me = this,
-      date = Fancy.Date.parse(date, field.format.edit, field.format.mode);
-
-    me.fire('changedatefrom', date);
-    me.fire('change');
-  },
-  /*
-   * @param {Object} field
-   * @param {Date} date
-   */
-  onChangeDate2: function(field, date){
-    var me = this,
-      date = Fancy.Date.parse(date, field.format.edit, field.format.mode);
-
-    me.fire('changedateto', date);
-    me.fire('change');
-  },
-  /*
-   *
-   */
-  onEnter: function(){
-    var me = this;
-
-    me.dateField1.hidePicker();
-    me.dateField2.hidePicker();
-  }
-});
+})();
 /*
  * @class Fancy.TextField
  * @extends Fancy.Widget
@@ -15515,12 +15678,8 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -15561,9 +15720,7 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
    * @param {*} value
    */
   set: function(value){
-    var me = this;
-
-    me.el.select('.fancy-field-text-value').item(0).update(value);
+    this.el.select('.fancy-field-text-value').item(0).update(value);
   }
 });
 /*
@@ -15581,12 +15738,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -15625,227 +15778,239 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
  * @class Fancy.TextArea
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
-  mixins: [
-    Fancy.form.field.Mixin
-  ],
-  extend: Fancy.Widget,
-  type: 'field.textarea',
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_TEXTAREA_CLS = F.FIELD_TEXTAREA_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  var FIELD_TEXTAREA_TEXT_INPUT_CLS = F.FIELD_TEXTAREA_TEXT_INPUT_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
 
-    me.addEvents('change', 'key');
-    me.Super('init', arguments);
+  F.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
+    mixins: [
+      F.form.field.Mixin
+    ],
+    extend: F.Widget,
+    type: 'field.textarea',
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.preRender();
-    me.render();
+      me.addEvents('change', 'key');
+      me.Super('init', arguments);
 
-    me.ons();
-  },
-  fieldCls: 'fancy fancy-field fancy-textarea',
-  value: '',
-  width: 250,
-  height: 100,
-  labelWidth: 60,
-  inputWidth: 180,
-  minHeight: 100,
-  maxHeight: 210,
-  lineHeight: 12.5,
-  emptyText: '',
-  tpl: [
-    '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
+      me.preRender();
+      me.render();
+
+      me.ons();
+    },
+    fieldCls: FIELD_CLS + ' ' + FIELD_TEXTAREA_CLS,
+    value: '',
+    width: 250,
+    height: 100,
+    labelWidth: 60,
+    inputWidth: 180,
+    minHeight: 100,
+    maxHeight: 210,
+    lineHeight: 12.5,
+    emptyText: '',
+    tpl: [
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
       '{label}',
-    '</div>',
-    '<div class="fancy-textarea-text">',
-      //'<textarea autocomplete="off" placeholder="{emptyText}" type="text" class="fancy-textarea-text-input" style="{inputWidth}height:{height}px;">{value}</textarea>',
-      '<textarea autocomplete="off" placeholder="{emptyText}" type="text" class="fancy-textarea-text-input" style="{inputWidth}height:{inputHeight}px;">{value}</textarea>',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-    '</div>',
-    '<div class="fancy-clearfix"></div>'
-  ],
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      input = me.el.getByTag('textarea');
+      '</div>',
+      '<div class="' + FIELD_TEXTAREA_TEXT_CLS + '">',
+      '<textarea autocomplete="off" placeholder="{emptyText}" type="text" class="' + FIELD_TEXTAREA_TEXT_INPUT_CLS + '" style="{inputWidth}height:{inputHeight}px;">{value}</textarea>',
+      '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '</div>',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
+    ],
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        input = me.el.getByTag('textarea');
 
-    me.input = input;
-    input.on('blur', me.onBlur, me);
-    input.on('focus', me.onFocus, me);
-    input.on('input', me.onInput, me);
-    input.on('keydown', me.onKeyDown, me);
-    me.on('key', me.onKey, me);
+      me.input = input;
+      input.on('blur', me.onBlur, me);
+      input.on('focus', me.onFocus, me);
+      input.on('input', me.onInput, me);
+      input.on('keydown', me.onKeyDown, me);
+      me.on('key', me.onKey, me);
 
-    if( me.autoHeight ){
-      input.on('input', me.onChange, me);
-    }
-  },
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
+      if (me.autoHeight) {
+        input.on('input', me.onChange, me);
+      }
+    },
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
 
-    if(me.tpl) {
-      me.tpl = new Fancy.Template(me.tpl);
-    }
+      if (me.tpl) {
+        me.tpl = new F.Template(me.tpl);
+      }
 
-    me.initHeight();
-    me.calcSize();
-  },
-  /*
-   *
-   */
-  initHeight: function(){
-    var me = this,
-      height;
+      me.initHeight();
+      me.calcSize();
+    },
+    /*
+     *
+     */
+    initHeight: function () {
+      var me = this,
+        height;
 
-    if(me.height){
-      height = me.height;
-      if(me.maxHeight < me.height){
-        me.maxHeight = me.height;
-        setTimeout(function(){
+      if (me.height) {
+        height = me.height;
+        if (me.maxHeight < me.height) {
+          me.maxHeight = me.height;
+          setTimeout(function () {
+            me.input.css({
+              'overflow-y': 'scroll'
+            });
+          }, 1);
+        }
+      }
+      else if (me.value) {
+        var length = me.value.match(/\n/g);
+
+        if (length) {
+          length = length.length;
+        }
+        else {
+          length = 1;
+        }
+
+        height = length * me.lineHeight;
+      }
+      else {
+        height = me.height;
+      }
+
+      if (height < me.minHeight) {
+        height = me.minHeight;
+      }
+      else if (height > me.maxHeight) {
+        height = me.maxHeight;
+        setTimeout(function () {
           me.input.css({
             'overflow-y': 'scroll'
           });
         }, 1);
       }
-    }
-    else if(me.value){
-      var length = me.value.match(/\n/g);
 
-      if(length){
-        length = length.length;
+      me.height = height;
+      me.inputHeight = height;
+    },
+    /*
+     *
+     */
+    calcSize: function () {
+      var me = this,
+        inputWidth,
+        padding = me.padding,
+        value,
+        value1,
+        value2,
+        value3;
+
+      if (F.isString(padding)) {
+        padding = padding.replace(/px/g, '');
+        padding = padding.split(' ');
+        switch (padding.length) {
+          case 1:
+            value = Number(padding[0]);
+            padding = [value, value, value, value];
+            break;
+          case 2:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+
+            padding = [value1, value2, value1, value2];
+            break;
+          case 3:
+            value1 = Number(padding[0]);
+            value2 = Number(padding[1]);
+            value3 = Number(padding[2]);
+
+            padding = [value1, value2, value3, value1];
+            break;
+          case 4:
+            padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
+            break;
+        }
       }
-      else{
-        length = 1;
+      else if (F.isNumber(padding)) {
+        padding = [padding, padding, padding, padding];
+      }
+      else if (padding === false) {
+        padding = [0, 0, 0, 0];
       }
 
-      height = length * me.lineHeight;
-    }
-    else{
-      height = me.height;
-    }
+      if (me.labelAlign === 'top') {
+        me.inputHeight -= 40;
+      }
 
-    if( height < me.minHeight ){
-      height = me.minHeight;
-    }
-    else if(height > me.maxHeight){
-      height = me.maxHeight;
-      setTimeout(function(){
-        me.input.css({
+      inputWidth = me.width;
+
+      if (me.labelAlign !== 'top' && me.label) {
+        inputWidth -= me.labelWidth;
+      }
+
+      if (me.height === me.inputHeight && me.padding !== false) {
+        me.inputHeight -= padding[0] + padding[2];
+      }
+
+      me.inputWidth = inputWidth - padding[1] - padding[3];
+      me.height = me.inputHeight + padding[0] + padding[2];
+    },
+    /*
+     *
+     */
+    onChange: function () {
+      var me = this,
+        value = me.input.dom.value,
+        input = me.el.getByTag('textarea'),
+        height = value.match(/\n/g).length * me.lineHeight;
+
+      if (height < me.minHeight) {
+        height = me.minHeight;
+        input.css({
+          'overflow-y': 'hidden'
+        });
+      }
+      else if (height > me.maxHeight) {
+        height = me.maxHeight;
+        input.css({
           'overflow-y': 'scroll'
         });
-      }, 1);
-    }
-
-    me.height = height;
-    me.inputHeight = height;
-  },
-  /*
-   *
-   */
-  calcSize: function(){
-    var me = this,
-      inputWidth,
-      padding = me.padding,
-      value,
-      value1,
-      value2,
-      value3;
-
-    if(Fancy.isString(padding)){
-      padding = padding.replace(/px/g, '');
-      padding = padding.split(' ');
-      switch(padding.length){
-        case 1:
-          value = Number(padding[0]);
-          padding = [value, value, value, value];
-          break;
-        case 2:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-
-          padding = [value1, value2, value1, value2];
-          break;
-        case 3:
-          value1 = Number(padding[0]);
-          value2 = Number(padding[1]);
-          value3 = Number(padding[2]);
-
-          padding = [value1, value2, value3, value1];
-          break;
-        case 4:
-          padding = [Number(padding[0]), Number(padding[1]), Number(padding[2]), Number(padding[3])];
-          break;
       }
-    }
-    else if(Fancy.isNumber(padding)){
-      padding = [padding, padding, padding, padding];
-    }
-    else if(padding === false){
-      padding = [0, 0, 0, 0];
-    }
+      else {
+        input.css({
+          'overflow-y': 'hidden'
+        });
+      }
 
-    if(me.labelAlign === 'top'){
-      me.inputHeight -= 40;
+      me.height = height;
     }
+  });
 
-    inputWidth = me.width;
-
-    if(me.labelAlign !== 'top' && me.label){
-      inputWidth -= me.labelWidth;
-    }
-
-    if(me.height === me.inputHeight && me.padding !== false){
-      me.inputHeight -= padding[0] + padding[2];
-    }
-
-    me.inputWidth = inputWidth -  padding[1] - padding[3];
-    me.height = me.inputHeight + padding[0] + padding[2];
-  },
-  /*
-   *
-   */
-  onChange: function(){
-    var me = this,
-      value = me.input.dom.value,
-      input = me.el.getByTag('textarea'),
-      height = value.match(/\n/g).length * me.lineHeight;
-
-    if( height < me.minHeight ){
-      height = me.minHeight;
-      input.css({
-        'overflow-y': 'hidden'
-      });
-    }
-    else if(height > me.maxHeight){
-      height = me.maxHeight;
-      input.css({
-        'overflow-y': 'scroll'
-      });
-    }
-    else{
-      input.css({
-        'overflow-y': 'hidden'
-      });
-    }
-
-    me.height = height;
-  }
-});
+})();
 /*
  * @class Fancy.CheckBox
  * @extends Fancy.Widget
@@ -15861,6 +16026,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
   var FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
   var FIELD_INPUT_LABEL_CLS =  Fancy.FIELD_INPUT_LABEL_CLS;
+  var FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
 
   Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     mixins: [
@@ -15873,11 +16039,8 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      Fancy.applyConfig(me, config || {});
-
-      me.Super('const', arguments);
+      Fancy.applyConfig(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -15915,7 +16078,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
     value: false,
     editable: true,
     stopIfCTRL: false,
-    checkedCls: 'fancy-checkbox-on',
+    checkedCls: FIELD_CHECKBOX_ON_CLS,
     fieldCls: FIELD_CLS + ' ' + FIELD_CHECKBOX_CLS,
     tpl: [
       '<div class="'+FIELD_LABEL_CLS+'" style="{labelWidth}{labelDisplay}">',
@@ -15944,8 +16107,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      */
     onClick: function (e) {
       var me = this,
-        el = me.el,
-        checkedCls = me.checkedCls;
+        el = me.el;
 
       me.fire('beforechange');
 
@@ -15962,9 +16124,9 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
         return;
       }
 
-      el.toggleCls(checkedCls);
+      el.toggleCls(me.checkedCls);
       var oldValue = me.value;
-      me.value = el.hasCls(checkedCls);
+      me.value = el.hasCls(me.checkedCls);
       me.fire('change', me.value, oldValue);
     },
     /*
@@ -15980,19 +16142,18 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      */
     set: function (value, fire) {
       var me = this,
-        el = me.el,
-        checkedCls = me.checkedCls;
+        el = me.el;
 
       if (value === '') {
         value = false;
       }
 
       if (value === true || value === 1) {
-        el.addCls(checkedCls);
+        el.addCls(me.checkedCls);
         value = true;
       }
       else if (value === false || value === 0) {
-        el.removeClass(checkedCls);
+        el.removeClass(me.checkedCls);
         value = false;
       }
       else if (value === undefined) {
@@ -16018,9 +16179,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      * @return {*}
      */
     getValue: function () {
-      var me = this;
-
-      return me.value;
+      return this.value;
     },
     /*
      * @return {*}
@@ -16038,9 +16197,7 @@ Fancy.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
      *
      */
     toggle: function () {
-      var me = this;
-
-      me.set(!me.value);
+      me.set(!this.value);
     }
   });
 
@@ -16056,11 +16213,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    Fancy.applyConfig(me, config || {});
-
-    me.Super('const', arguments);
+    Fancy.applyConfig(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -16089,7 +16243,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
  * Note: because multiselection code became overcomplex
  */
 (function(){
-  Fancy.define('Fancy.combo.Manager', {
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+
+  F.define('Fancy.combo.Manager', {
     singleton: true,
     opened: [],
     add: function(combo){
@@ -16098,7 +16264,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       this.opened.push(combo);
     },
     hideLists: function(){
-      Fancy.each(this.opened, function(item){
+      F.each(this.opened, function(item){
         item.hideList();
       });
 
@@ -16106,15 +16272,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     }
   });
 
-  Fancy.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
+  F.define(['Fancy.form.field.Combo', 'Fancy.Combo'], {
     type: 'field.combo',
     mixins: [
-      Fancy.form.field.Mixin
+      F.form.field.Mixin
     ],
-    extend: Fancy.Widget,
+    extend: F.Widget,
     selectedItemCls: 'fancy-combo-item-selected',
     focusedItemCls: 'fancy-combo-item-focused',
-    fieldCls: 'fancy fancy-field fancy-combo',
+    fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
     listRowHeight: 25,
@@ -16128,26 +16294,24 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     multiSelect: false,
     itemCheckBox: false,
     tpl: [
-      '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
         '{label}',
       '</div>',
-      '<div class="fancy-field-text">',
+      '<div class="' + FIELD_TEXT_CLS + '">',
         '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-          '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
           '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
         '</div>',
       '</div>',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-      '<div class="fancy-clearfix"></div>'
+      '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
     ],
     /*
      * @constructor
      */
     constructor: function () {
-      var me = this;
-
-      me.tags = me.tags || [];
-      me.Super('const', arguments);
+      this.tags = this.tags || [];
+      this.Super('const', arguments);
     },
     /*
      *
@@ -16192,7 +16356,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     loadListData: function () {
       var me = this;
 
-      if (!Fancy.isObject(me.data)) {
+      if (!F.isObject(me.data)) {
         return false;
       }
 
@@ -16207,7 +16371,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         readerRootProperty = proxy.reader.root;
       }
 
-      Fancy.Ajax({
+      F.Ajax({
         url: proxy.url,
         params: proxy.params || {},
         method: proxy.method || 'GET',
@@ -16243,11 +16407,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @return {Array}
      */
     configData: function (data) {
-      if (Fancy.isObject(data) || data.length === 0) {
+      if (F.isObject(data) || data.length === 0) {
         return data;
       }
 
-      if (!Fancy.isObject(data[0])) {
+      if (!F.isObject(data[0])) {
         var _data = [],
           i = 0,
           iL = data.length;
@@ -16322,7 +16486,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     onKeyDown: function (e) {
       var me = this,
         keyCode = e.keyCode,
-        key = Fancy.key;
+        key = F.key;
 
       switch (keyCode) {
         case key.ESC:
@@ -16410,7 +16574,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         list = me.list;
 
       if (list.css('display') === 'none') {
-        Fancy.combo.Manager.add(this);
+        F.combo.Manager.add(this);
         
         me.showList();
       }
@@ -16431,7 +16595,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
         xy = [p.left, p.top + el.$dom.height()],
-        docEl = Fancy.get(document),
+        docEl = F.get(document),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
@@ -16446,7 +16610,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         left: xy[0] + 'px',
         top: xy[1] + 'px',
         width: me.getListWidth(),
-        "z-index": 2000 + Fancy.zIndex++
+        "z-index": 2000 + F.zIndex++
       });
 
       var index;
@@ -16505,7 +16669,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
         xy = [p.left, p.top + el.$dom.height()],
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       me.hideList();
 
@@ -16519,7 +16683,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         top: xy[1] + 'px',
         //width: el.width(),
         width: me.getListWidth(),
-        "z-index": 2000 + Fancy.zIndex++
+        "z-index": 2000 + F.zIndex++
       });
 
       if (!me.docSpy2) {
@@ -16554,7 +16718,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.list.css('display', 'none');
 
       if (me.docSpy) {
-        var docEl = Fancy.get(document);
+        var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -16572,7 +16736,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.aheadList.css('display', 'none');
 
       if (me.docSpy) {
-        var docEl = Fancy.get(document);
+        var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -16581,9 +16745,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} e
      */
     onInputMouseDown: function (e) {
-      var me = this;
-
-      if (me.editable === false) {
+      if (this.editable === false) {
         e.preventDefault();
       }
     },
@@ -16615,10 +16777,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} e
      */
     onListItemOver: function (e) {
-      var me = this,
-        li = Fancy.get(e.target);
+      var li = F.get(e.target);
 
-      li.addCls(me.focusedItemCls);
+      li.addCls(this.focusedItemCls);
     },
     /*
      *
@@ -16631,12 +16792,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     onListItemClick: function (e) {
       var me = this,
-        li = Fancy.get(e.currentTarget),
+        li = F.get(e.currentTarget),
         value = li.attr('value'),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      if (Fancy.nojQuery && value === 0) {
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
@@ -16681,7 +16842,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         valueStr = '',
         index;
 
-      if(me.multiSelect && !Fancy.isArray(value)){
+      if(me.multiSelect && !F.isArray(value)){
         if(value === -1){
           value = [];
         }
@@ -16690,12 +16851,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }
 
-      if(Fancy.isArray(value) && me.multiSelect){
+      if(F.isArray(value) && me.multiSelect){
         var displayedValues = [];
 
         me.valuesIndex.removeAll();
 
-        Fancy.each(value, function(v, i){
+        F.each(value, function(v, i){
           var _index = me.getIndex(v);
 
           if(_index === -1){
@@ -16767,7 +16928,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this,
         index = -1;
 
-      Fancy.each(me.values, function(value, i){
+      F.each(me.values, function(value, i){
         if( value === v ){
           index = i;
         }
@@ -16830,8 +16991,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     render: function () {
       var me = this,
-        renderTo = Fancy.get(me.renderTo || document.body).dom,
-        el = Fancy.get(document.createElement('div')),
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div')),
         value = me.value,
         index = -1;
 
@@ -16841,7 +17002,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         value = '';
       }
       else {
-        if(me.multiSelect && Fancy.isArray(me.data) && me.data.length > 0){
+        if(me.multiSelect && F.isArray(me.data) && me.data.length > 0){
           value = '';
 
           me.valuesIndex.each(function(i, v){
@@ -16869,7 +17030,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       me.fire('beforerender');
-      el.addCls(me.cls, me.fieldCls);
+      el.addCls(
+        F.cls,
+        me.cls,
+        me.fieldCls
+      );
 
       var labelWidth = '';
 
@@ -16933,7 +17098,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     renderList: function () {
       var me = this,
-        list = Fancy.get(document.createElement('div')),
+        list = F.get(document.createElement('div')),
         listHtml = [
           '<ul style="position: relative;">'
         ];
@@ -16942,7 +17107,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.list.destroy();
       }
 
-      Fancy.each(me.data, function (row, i) {
+      F.each(me.data, function (row, i) {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -16955,7 +17120,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           displayValue = '&nbsp;';
         }
         else if (me.listItemTpl) {
-          var listTpl = new Fancy.Template(me.listItemTpl);
+          var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
 
@@ -17022,7 +17187,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        Fancy.each(inputValue, function (v, i) {
+        F.each(inputValue, function (v, i) {
           if(inputSelection.start <= i){
             return true;
           }
@@ -17035,7 +17200,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         inputValue = splitted[passedCommas];
       }
 
-      Fancy.each(me.data, function (item){
+      F.each(me.data, function (item){
         if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
           aheadData.push(item);
         }
@@ -17066,10 +17231,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         presented = true;
       }
       else {
-        list = Fancy.get(document.createElement('div'));
+        list = F.get(document.createElement('div'));
       }
 
-      Fancy.each(me.aheadData, function (row, i) {
+      F.each(me.aheadData, function (row, i) {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -17101,7 +17266,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       if (presented === false) {
-        list.addClass('fancy fancy-combo-result-list');
+        list.addClass(F.cls, 'fancy-combo-result-list');
         document.body.appendChild(list.dom);
         me.aheadList = list;
 
@@ -17489,10 +17654,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         value = me.value;
 
       me.values = [];
-      me.valuesIndex = new Fancy.Collection();
+      me.valuesIndex = new F.Collection();
 
       if(me.value !== undefined && value !== null && value !== ''){
-        if(Fancy.isArray(value)){
+        if(F.isArray(value)){
           me.values = value;
           me.value = value[0];
         }
@@ -17500,7 +17665,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.values = [me.value];
         }
 
-        Fancy.each(me.values, function(value){
+        F.each(me.values, function(value){
           me.valuesIndex.add(me.getIndex(value), value);
         });
       }
@@ -17535,7 +17700,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         values = value.split(','),
         _values = [];
 
-      Fancy.each(values, function(v){
+      F.each(values, function(v){
         var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
           _value = me.getValueKey(displayValue);
 
@@ -17554,20 +17719,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
  * @extends Fancy.Widget
  */
 (function() {
+  //SHORTCUTS
+  var F = Fancy;
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
-  var FIELD_CLS = Fancy.FIELD_CLS;
-  var FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
-  var FIELD_BUTTON_CLS= Fancy.FIELD_BUTTON_CLS;
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_BUTTON_CLS= F.FIELD_BUTTON_CLS;
 
-  Fancy.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
+  F.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     mixins: [
-      Fancy.form.field.Mixin
+      F.form.field.Mixin
     ],
-    extend: Fancy.Widget,
+    extend: F.Widget,
     type: 'field.button',
     pressed: false,
     /*
@@ -17575,12 +17742,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('const', arguments);
+      F.apply(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -17624,7 +17787,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     renderButton: function(){
       var me = this;
 
-      new Fancy.Button({
+      new F.Button({
         renderTo: me.el.select('.' + FIELD_TEXT_CLS).item(0).dom,
         text: me.buttonText,
         handler: function () {
@@ -17669,12 +17832,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -17771,10 +17930,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Boolean} [fire]
    */
   clear: function(fire){
-    var me = this;
-
-    if(me.allowToggle){
-      Fancy.each(me.items, function (item){
+    if(this.allowToggle){
+      Fancy.each(this.items, function (item){
         item.setPressed(false, fire);
       });
     }
@@ -17795,12 +17952,8 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -17864,12 +18017,8 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -18005,12 +18154,8 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -18067,12 +18212,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -18146,9 +18287,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
    * @return {String}
    */
   get: function(){
-    var me = this;
-
-    return me.el.firstChild().dom.innerHTML;
+    return this.el.firstChild().dom.innerHTML;
   }
 });
 /**
@@ -18166,12 +18305,8 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this,
-      config = config || {};
-
-    Fancy.apply(me, config);
-
-    me.Super('const', arguments);
+    Fancy.apply(this, config);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -18240,221 +18375,233 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
  * @class Fancy.Radio
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
-  mixins: [
-    Fancy.form.field.Mixin
-  ],
-  extend: Fancy.Widget,
-  type: 'field.radio',
-  /*
-   * @private
-   */
-  radioRows: 1,
-  /*
-   * @constructor
-   */
-  constructor: function(){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_RADIO_CLS = F.FIELD_RADIO_CLS;
+  var FIELD_RADIO_COLUMN_CLS = F.FIELD_RADIO_COLUMN_CLS;
+  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  var FIELD_RADIO_ON_CLS = F.FIELD_RADIO_ON_CLS;
+  var FIELD_RADIO_INPUT_CLS = F.FIELD_RADIO_INPUT_CLS;
+  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
 
-    me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
-    me.Super('init', arguments);
+  F.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
+    mixins: [
+      F.form.field.Mixin
+    ],
+    extend: F.Widget,
+    type: 'field.radio',
+    /*
+     * @private
+     */
+    radioRows: 1,
+    /*
+     * @constructor
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    var itemsHTML = '';
+      me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
+      me.Super('init', arguments);
 
-    if( me.column ){
-      me.cls += ' fancy-field-radio-column';
-      itemsHTML += '<div style="margin-left: '+ ( me.labelWidth )+'px;">';
-    }
+      var itemsHTML = '';
 
-    Fancy.each(me.items, function (item, i){
-      var marginLeft = '',
-        itemCls = 'fancy-field-text';
-
-      if( !me.column && i !== 0 ){
-        marginLeft = 'margin-left:10px;';
+      if (me.column) {
+        me.cls += ' ' + FIELD_RADIO_COLUMN_CLS;
+        itemsHTML += '<div style="margin-left: ' + ( me.labelWidth ) + 'px;">';
       }
 
-      if( item.value === me.value ){
-        itemCls += ' fancy-field-radio-on';
+      F.each(me.items, function (item, i) {
+        var marginLeft = '',
+          itemCls = FIELD_TEXT_CLS;
+
+        if (!me.column && i !== 0) {
+          marginLeft = 'margin-left:10px;';
+        }
+
+        if (item.value === me.value) {
+          itemCls += ' ' + FIELD_RADIO_ON_CLS;
+        }
+
+        itemsHTML += [
+          '<div class="' + itemCls + '" value=' + item.value + '>',
+          '<div class="' + FIELD_RADIO_INPUT_CLS + '" style="float:left;' + marginLeft + '"></div>',
+          '<div style="float:left;margin:7px 0 0 0;">' + item.text + '</div>',
+          '</div>'
+        ].join("");
+      });
+
+      if (me.column) {
+        itemsHTML += '</div>';
       }
 
-      itemsHTML += [
-        '<div class="'+itemCls+'" value='+item.value+'>',
-        '<div class="fancy-field-radio-input" style="float:left;'+marginLeft+'"></div>',
-        '<div style="float:left;margin:7px 0 0 0;">'+item.text+'</div>',
-        '</div>'
-      ].join("");
-    });
+      me.itemsHTML = itemsHTML;
 
-    if( me.column ){
-      itemsHTML += '</div>';
-    }
+      me.preRender();
+      me.render();
+      me.setColumnsStyle();
+      me.acceptedValue = me.value;
+      me.set(me.value);
 
-    me.itemsHTML = itemsHTML;
+      me.ons();
+    },
+    labelText: '',
+    labelWidth: 60,
+    value: false,
+    checkedCls: FIELD_RADIO_ON_CLS,
+    fieldCls: FIELD_CLS + ' ' + FIELD_RADIO_CLS,
+    tpl: [
+      '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
+        '{label}',
+        '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
+      '</div>',
+        '{itemsHTML}',
+      '<div class="' + CLEARFIX_CLS + '"></div>'
+    ],
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        el = this.el;
 
-    me.preRender();
-    me.render();
-    me.setColumnsStyle();
-    me.acceptedValue = me.value;
-    me.set(me.value);
+      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function () {
+        me.set(F.get(this).attr('value'));
+      });
 
-    me.ons();
-  },
-  labelText: '',
-  labelWidth: 60,
-  value: false,
-  checkedCls: 'fancy-field-radio-on',
-  fieldCls: Fancy.FIELD_CLS + ' fancy-field-radio',
-  tpl: [
-    '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
-      '{label}',
-      '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
-    '</div>',
-    '{itemsHTML}',
-    '<div class="fancy-clearfix"></div>'
-  ],
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      el = me.el;
+      el.on('mousedown', me.onMouseDown, me);
+    },
+    /*
+     *
+     */
+    onClick: function () {
+      var me = this,
+        checkedCls = me.checkedCls;
 
-    el.$dom.delegate('.fancy-field-text', 'click', function(){
-      me.set(Fancy.get(this).attr('value'));
-    });
+      me.addCls(checkedCls);
+      me.toggleCls(checkedCls);
 
-    el.on('mousedown', me.onMouseDown, me);
-  },
-  /*
-   *
-   */
-  onClick: function(){
-    var me = this,
-      checkedCls = me.checkedCls;
+      me.value = me.hasCls(checkedCls);
 
-    me.addCls(checkedCls);
-    me.toggleCls(checkedCls);
-
-    me.value = me.hasCls(checkedCls);
-
-    me.fire('change', me.value);
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseDown: function(e){
-
-    e.preventDefault();
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  set: function(value, fire){
-    var me = this,
-      el = me.el,
-      checkedCls = me.checkedCls,
-      radioEls = el.select('.fancy-field-text');
-
-    radioEls.removeCls(checkedCls);
-
-    el.select('[value='+value+']').addCls(checkedCls);
-
-    me.value = value;
-    if(fire !== false){
       me.fire('change', me.value);
-    }
-  },
-  /*
-   * @param {*} value
-   * @param {Boolean} onInput
-   */
-  setValue: function(value, onInput){
-    this.set(value, onInput);
-  },
-  /*
-   * @return {*} value
-   */
-  getValue: function(){
-    var me = this;
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseDown: function (e) {
 
-    return me.value;
-  },
-  /*
-   * @return {*} value
-   */
-  get: function(){
+      e.preventDefault();
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    set: function (value, fire) {
+      var me = this,
+        el = me.el,
+        checkedCls = me.checkedCls,
+        radioEls = el.select('.' + FIELD_TEXT_CLS);
 
-    return this.getValue();
-  },
-  /*
-   *
-   */
-  clear: function(){
-    this.set(false);
-  },
-  /*
-   *
-   */
-  calcColumns: function(){
-    var me = this,
-      maxChars = 0,
-      inputWidth = me.width;
+      radioEls.removeCls(checkedCls);
 
-    if(me.labelAlign !== 'top' && me.label){
-      inputWidth -= me.labelWidth;
-      inputWidth -= 20;
-    }
+      el.select('[value=' + value + ']').addCls(checkedCls);
 
-    Fancy.Array.each(me.items, function (item) {
-      if(item.text.length > maxChars){
-        maxChars = item.text.length;
+      me.value = value;
+      if (fire !== false) {
+        me.fire('change', me.value);
       }
-    });
+    },
+    /*
+     * @param {*} value
+     * @param {Boolean} onInput
+     */
+    setValue: function (value, onInput) {
+      this.set(value, onInput);
+    },
+    /*
+     * @return {*} value
+     */
+    getValue: function () {
+      return this.value;
+    },
+    /*
+     * @return {*} value
+     */
+    get: function () {
+      return this.getValue();
+    },
+    /*
+     *
+     */
+    clear: function () {
+      this.set(false);
+    },
+    /*
+     *
+     */
+    calcColumns: function () {
+      var me = this,
+        maxChars = 0,
+        inputWidth = me.width;
 
-    var columns = Math.floor(inputWidth/(maxChars * 7 + 30));
-
-    if(me.columns && me.columns <= columns){
-      columns = me.columns;
-    }
-    else{
-      me.columns = columns;
-    }
-
-    me.columnWidth = Math.ceil(inputWidth/columns);
-    me.rows = Math.ceil(me.items.length/columns);
-  },
-  /*
-   *
-   */
-  setColumnsStyle: function(){
-    var me = this;
-
-    if(!me.columns || me.rows === 1){
-      return;
-    }
-
-    var radioEls = me.el.select('.fancy-field-text'),
-      radioInputs = me.el.select('.fancy-field-text .fancy-field-radio-input');
-
-    radioEls.each(function(item, i){
-      if(i % me.columns === 0){
-        radioInputs.item(i).css('margin-left', '0px');
+      if (me.labelAlign !== 'top' && me.label) {
+        inputWidth -= me.labelWidth;
+        inputWidth -= 20;
       }
 
-      item.css('width', me.columnWidth);
-    });
-  }
-});
+      F.Array.each(me.items, function (item) {
+        if (item.text.length > maxChars) {
+          maxChars = item.text.length;
+        }
+      });
+
+      var columns = Math.floor(inputWidth / (maxChars * 7 + 30));
+
+      if (me.columns && me.columns <= columns) {
+        columns = me.columns;
+      }
+      else {
+        me.columns = columns;
+      }
+
+      me.columnWidth = Math.ceil(inputWidth / columns);
+      me.rows = Math.ceil(me.items.length / columns);
+    },
+    /*
+     *
+     */
+    setColumnsStyle: function () {
+      var me = this;
+
+      if (!me.columns || me.rows === 1) {
+        return;
+      }
+
+      var radioEls = me.el.select('.' + FIELD_TEXT_CLS),
+        radioInputs = me.el.select('.' + FIELD_TEXT_CLS + ' .' + FIELD_RADIO_INPUT_CLS);
+
+      radioEls.each(function (item, i) {
+        if (i % me.columns === 0) {
+          radioInputs.item(i).css('margin-left', '0px');
+        }
+
+        item.css('width', me.columnWidth);
+      });
+    }
+  });
+
+})();
 (function () {
 
   Fancy.vtypes = {};
@@ -18901,10 +19048,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       leftColumns = [],
       rightColumns = [],
       i = 0,
-      iL = columns.length;
+      iL = columns.length,
+      isDraggable = false;
 
     for(;i<iL;i++){
       var column = columns[i];
+
+      if(column.draggable){
+        isDraggable = true;
+      }
 
       switch(column.type){
         case 'select':
@@ -18912,14 +19064,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           this.multiSelect = true;
           columns[i].index = '$selected';
           columns[i].editable = true;
-
           break;
         case 'order':
           columns[i].editable = false;
           columns[i].sortable = false;
           columns[i].cellAlign = 'right';
-
-
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -18948,6 +19097,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL--;
         continue;
       }
+    }
+
+    if(isDraggable){
+      config._plugins.push({
+        type: 'grid.columndrag'
+      });
     }
 
     config.leftColumns = leftColumns;
@@ -20258,7 +20413,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   getActiveActionColumnItem: function(o){
     var cell = Fancy.get(o.cell),
       target = o.e.target,
-      actionEls = cell.select('.fancy-grid-column-action-item'),
+      actionEls = cell.select('.' + Fancy.GRID_COLUMN_ACTION_ITEM_CLS),
       i = 0,
       iL = actionEls.length;
 
@@ -20311,9 +20466,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {*} o
    */
   removeAt: function(o){
-    var me = this;
-
-    me.remove(o, true);
+    this.remove(o, true);
   },
   /*
    *
@@ -20477,2121 +20630,2131 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 /*
  * @mixin Fancy.grid.mixin.Grid
  */
-Fancy.Mixin('Fancy.grid.mixin.Grid', {
-  tpl: [
-    '<div class="{leftCls} {leftEmptyCls}"></div>',
-    '<div class="{centerCls}"></div>',
-    '<div class="{rightCls} {rightEmptyCls}"></div>',
-    '<div class="fancy-grid-editors"></div>'
-  ],
-  /*
-   *
-   */
-  initStore: function(){
-    var me = this,
-      fields = me.getFieldsFromData(me.data),
-      modelName = 'Fancy.model.'+Fancy.id(),
-      data = me.data,
-      remoteSort,
-      remoteFilter,
-      collapsed = false,
-      state = me.state;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    if(me.data.items){
-      data = me.data.items;
-    }
+  //CONSTANTS
+  var TOUCH_CLS = F.TOUCH_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
+  var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
+  var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
+  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  var GRID_BODY_CLS = F.GRID_BODY_CLS;
+  var PANEL_BODY_INNER_CLS =  F.PANEL_BODY_INNER_CLS;
+  var GRID_UNSELECTABLE_CLS = F.GRID_UNSELECTABLE_CLS;
+  var GRID_LEFT_EMPTY_CLS = F.GRID_LEFT_EMPTY_CLS;
+  var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
 
-    remoteSort = me.data.remoteSort;
-    remoteFilter = me.data.remoteFilter;
+  F.Mixin('Fancy.grid.mixin.Grid', {
+    tpl: [
+      '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
+      '<div class="' + GRID_CENTER_CLS + '"></div>',
+      '<div class="' + GRID_RIGHT_CLS + ' '+GRID_RIGHT_EMPTY_CLS+'"></div>',
+      '<div class="fancy-grid-editors"></div>'
+    ],
+    /*
+     *
+     */
+    initStore: function () {
+      var me = this,
+        fields = me.getFieldsFromData(me.data),
+        modelName = 'Fancy.model.' + F.id(),
+        data = me.data,
+        remoteSort,
+        remoteFilter,
+        collapsed = false,
+        state = me.state;
 
-    Fancy.define(modelName, {
-      extend: Fancy.Model,
-      fields: fields
-    });
-
-    if(me.grouping && me.grouping.collapsed !==  undefined){
-      collapsed = me.grouping.collapsed;
-    }
-
-    var storeConfig = {
-      widget: me,
-      model: modelName,
-      data: data,
-      paging: me.paging,
-      remoteSort: remoteSort,
-      remoteFilter: remoteFilter,
-      collapsed: collapsed,
-      multiSort: me.multiSort
-    };
-
-    if(state){
-      if(state.filters){
-        storeConfig.filters = state.filters;
+      if (me.data.items) {
+        data = me.data.items;
       }
-    }
 
-    if(data.pageSize){
-      storeConfig.pageSize = data.pageSize;
-    }
+      remoteSort = me.data.remoteSort;
+      remoteFilter = me.data.remoteFilter;
 
-    me.store = new Fancy.Store(storeConfig);
+      F.define(modelName, {
+        extend: F.Model,
+        fields: fields
+      });
 
-    me.model = modelName;
-    me.fields = fields;
-
-    if(me.store.filters){
-      setTimeout(function() {
-        me.filter.filters = me.store.filters;
-        me.filter.updateStoreFilters();
-      }, 1);
-    }
-  },
-  /*
-   *
-   */
-  initTouch: function(){
-    var me = this,
-      TOUCH_CLS = Fancy.TOUCH_CLS;
-
-    if(Fancy.isTouch && window.FastClick){
-      if(me.panel){
-        FastClick.attach(me.panel.el.dom);
-        me.panel.addCls(TOUCH_CLS);
+      if (me.grouping && me.grouping.collapsed !== undefined) {
+        collapsed = me.grouping.collapsed;
       }
-      else {
-        FastClick.attach(me.el.dom);
-        me.addCls(TOUCH_CLS);
+
+      var storeConfig = {
+        widget: me,
+        model: modelName,
+        data: data,
+        paging: me.paging,
+        remoteSort: remoteSort,
+        remoteFilter: remoteFilter,
+        collapsed: collapsed,
+        multiSort: me.multiSort
+      };
+
+      if (state) {
+        if (state.filters) {
+          storeConfig.filters = state.filters;
+        }
       }
-    }
-  },
-  /*
-   *
-   */
-  initElements: function(){
-    var me = this;
 
-    if( me.header !== false ){
+      if (data.pageSize) {
+        storeConfig.pageSize = data.pageSize;
+      }
 
-      me.leftHeader = new Fancy.grid.Header({
+      me.store = new F.Store(storeConfig);
+
+      me.model = modelName;
+      me.fields = fields;
+
+      if (me.store.filters) {
+        setTimeout(function () {
+          me.filter.filters = me.store.filters;
+          me.filter.updateStoreFilters();
+        }, 1);
+      }
+    },
+    /*
+     *
+     */
+    initTouch: function () {
+      var me = this;
+
+      if (F.isTouch && window.FastClick) {
+        if (me.panel) {
+          FastClick.attach(me.panel.el.dom);
+          me.panel.addCls(TOUCH_CLS);
+        }
+        else {
+          FastClick.attach(me.el.dom);
+          me.addCls(TOUCH_CLS);
+        }
+      }
+    },
+    /*
+     *
+     */
+    initElements: function () {
+      var me = this;
+
+      if (me.header !== false) {
+
+        me.leftHeader = new F.grid.Header({
+          widget: me,
+          side: 'left'
+        });
+
+        me.header = new F.grid.Header({
+          widget: me,
+          side: 'center'
+        });
+
+        me.rightHeader = new F.grid.Header({
+          widget: me,
+          side: 'right'
+        });
+      }
+
+      me.leftBody = new F.grid.Body({
         widget: me,
         side: 'left'
       });
 
-      me.header = new Fancy.grid.Header({
+      me.body = new F.grid.Body({
         widget: me,
         side: 'center'
       });
 
-      me.rightHeader = new Fancy.grid.Header({
+      me.rightBody = new F.grid.Body({
         widget: me,
         side: 'right'
       });
-    }
 
-    me.leftBody = new Fancy.grid.Body({
-      widget: me,
-      side: 'left'
-    });
+      me.leftEl = me.el.select('.' + GRID_LEFT_CLS);
+      me.centerEl = me.el.select('.' + GRID_CENTER_CLS);
+      me.rightEl = me.el.select('.' + GRID_RIGHT_CLS);
+    },
+    /*
+     * @param {Array} data
+     * @return {Array}
+     */
+    getFieldsFromData: function (data) {
+      var items = data.items || data;
 
-    me.body = new Fancy.grid.Body({
-      widget: me,
-      side: 'center'
-    });
+      if (data.fields) {
+        return data.fields;
+      }
 
-    me.rightBody = new Fancy.grid.Body({
-      widget: me,
-      side: 'right'
-    });
+      if (!items) {
+        throw new Error('FancyGrid Error 4: Data is empty and not set fields of data to build model');
+      }
 
-    me.leftEl = me.el.select('.' + me.leftCls);
-    me.centerEl = me.el.select('.' + me.centerCls);
-    me.rightEl = me.el.select('.' + me.rightCls);
-  },
-  /*
-   * @param {Array} data
-   * @return {Array}
-   */
-  getFieldsFromData: function(data){
-    var items = data.items || data;
+      var itemZero = items[0],
+        fields = [];
 
-    if( data.fields){
-      return data.fields;
-    }
+      for (var p in itemZero) {
+        fields.push(p);
+      }
 
-    if( !items ){
-      throw new Error('FancyGrid Error 4: Data is empty and not set fields of data to build model');
-    }
+      return fields;
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = me.renderTo || document.body,
+        el = F.get(document.createElement('div')),
+        panelBodyBorders = me.panelBodyBorders;
 
-    var itemZero = items[0],
-      fields = [];
+      el.addCls(
+        F.cls,
+        me.widgetCls,
+        me.cls
+      );
 
-    for(var p in itemZero){
-      fields.push(p);
-    }
+      el.attr('id', me.id);
 
-    return fields;
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = me.renderTo || document.body,
-      el = Fancy.get( document.createElement('div')),
-      panelBodyBorders = me.panelBodyBorders;
+      if (me.panel === undefined && me.shadow) {
+        el.addCls('fancy-panel-shadow');
+      }
 
-    el.addCls(
-      Fancy.cls,
-      me.widgetCls,
-      me.cls
-    );
+      if (me.columnLines === false) {
+        el.addCls('fancy-grid-disable-column-lines');
+      }
 
-    el.attr('id', me.id);
+      if (me.theme !== 'default' && !me.panel) {
+        el.addCls('fancy-theme-' + me.theme);
+      }
 
-    if(me.panel === undefined && me.shadow){
-      el.addCls('fancy-panel-shadow');
-    }
+      var panelBordersWidth = 0,
+        panelBorderHeight = 0;
 
-    if(me.columnLines === false){
-      el.addCls('fancy-grid-disable-column-lines');
-    }
+      if (me.panel) {
+        panelBordersWidth = panelBodyBorders[1] + panelBodyBorders[3];
+      }
 
-    if( me.theme !== 'default' && !me.panel){
-      el.addCls('fancy-theme-' + me.theme);
-    }
+      el.css({
+        width: (me.width - panelBordersWidth) + 'px',
+        height: (me.height - panelBorderHeight) + 'px'
+      });
 
-    var panelBordersWidth = 0,
-      panelBorderHeight = 0;
+      me.initTpl();
+      el.update(me.tpl.getHTML({}));
 
-    if(me.panel){
-      panelBordersWidth = panelBodyBorders[1] + panelBodyBorders[3];
-    }
+      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
 
-    el.css({
-      width: (me.width - panelBordersWidth) + 'px',
-      height: (me.height - panelBorderHeight) + 'px'
-    });
+      me.setHardBordersWidth();
 
-    me.initTpl();
-    el.update(me.tpl.getHTML({
-      leftEmptyCls: me.leftEmptyCls,
-      rightEmptyCls: me.rightEmptyCls,
-      centerCls: me.centerCls,
-      leftCls: me.leftCls,
-      rightCls: me.rightCls
-    }));
+      me.rendered = true;
+    },
+    /*
+     *
+     */
+    setHardBordersWidth: function () {
+      var me = this,
+        borders = me.panel ? me.gridBorders : me.gridWithoutPanelBorders;
 
-    me.el = Fancy.get(Fancy.get(renderTo).dom.appendChild(el.dom));
+      if (me.wrapped) {
+        borders = me.gridBorders;
+      }
 
-    me.setHardBordersWidth();
+      me.css({
+        'border-top-width': borders[0],
+        'border-right-width': borders[1],
+        'border-bottom-width': borders[2],
+        'border-left-width': borders[3]
+      })
+    },
+    /*
+     *
+     */
+    update: function () {
+      var me = this,
+        s = me.store;
 
-    me.rendered = true;
-  },
-  /*
-   *
-   */
-  setHardBordersWidth: function(){
-    var me = this,
-      borders = me.panel? me.gridBorders : me.gridWithoutPanelBorders;
+      if (s.loading) {
+        return;
+      }
 
-    if(me.wrapped){
-      borders = me.gridBorders;
-    }
+      me.updater.update();
+      me.fire('update');
 
-    me.css({
-      'border-top-width': borders[0],
-      'border-right-width': borders[1],
-      'border-bottom-width': borders[2],
-      'border-left-width': borders[3]
-    })
-  },
-  /*
-   *
-   */
-  update: function(){
-    var me = this,
-      s = me.store;
+      if (me.heightFit) {
+        me.fitHeight();
+      }
 
-    if(s.loading){
-      return;
-    }
+      me.setBodysHeight();
+    },
+    /*
+     * @param {String} side
+     * @return {Number}
+     */
+    getColumnsWidth: function (side) {
+      var me = this;
 
-    me.updater.update();
-    me.fire('update');
+      switch (side) {
+        case 'center':
+          return me.getCenterFullWidth();
+        case 'left':
+          return me.getLeftFullWidth();
+        case 'right':
+          return me.getRightFullWidth();
+      }
+    },
+    /*
+     *
+     */
+    setSides: function () {
+      var me = this,
+        leftColumns = me.leftColumns,
+        rightColumns = me.rightColumns,
+        leftWidth = me.getLeftFullWidth(),
+        centerWidth = me.getCenterFullWidth(),
+        rightWidth = me.getRightFullWidth(),
+        gridBorders = me.gridBorders,
+        panelBodyBorders = me.panelBodyBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders;
 
-    if(me.heightFit){
-      me.fitHeight();
-    }
+      if (leftColumns.length > 0) {
+        me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
+      }
 
-    me.setBodysHeight();
-  },
-  /*
-   * @param {String} side
-   * @return {Number}
-   */
-  getColumnsWidth: function(side){
-    var me = this;
+      if (rightColumns.length > 0) {
+        me.rightEl.removeCls(GRID_RIGHT_EMPTY_CLS);
+      }
 
-    switch(side){
-      case 'center':
-        return me.getCenterFullWidth();
-      case 'left':
-        return me.getLeftFullWidth();
-      case 'right':
-        return me.getRightFullWidth();
-    }
-  },
-  /*
-   *
-   */
-  setSides: function(){
-    var me = this,
-      centerCls = me.centerCls,
-      leftCls = me.leftCls,
-      rightCls = me.rightCls,
-      headerCls = me.headerCls,
-      leftColumns = me.leftColumns,
-      rightColumns = me.rightColumns,
-      leftWidth = me.getLeftFullWidth(),
-      centerWidth = me.getCenterFullWidth(),
-      rightWidth = me.getRightFullWidth(),
-      gridBorders = me.gridBorders,
-      panelBodyBorders = me.panelBodyBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders;
+      if (me.wrapped) {
+        centerWidth = me.width - gridBorders[1] - gridBorders[3];
+      }
+      else if (me.panel) {
+        centerWidth = me.width - gridBorders[1] - gridBorders[3] - panelBodyBorders[1] - panelBodyBorders[3];
+      }
+      else {
+        centerWidth = me.width - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
+      }
 
-    if(leftColumns.length > 0){
-      me.leftEl.removeCls(me.leftEmptyCls);
-    }
+      if (leftWidth === 0 && rightWidth === 0) {
+      }
+      else if (rightWidth === 0) {
+        centerWidth -= leftWidth;
+      }
+      else if (leftWidth === 0) {
+        centerWidth -= rightWidth;
+      }
+      else if (me.width > leftWidth + centerWidth + rightWidth) {
+        centerWidth -= leftWidth;
+      }
+      else {
+        centerWidth -= leftWidth + rightWidth;
+      }
 
-    if(rightColumns.length > 0){
-      me.rightEl.removeCls(me.rightEmptyCls);
-    }
-
-    if(me.wrapped){
-      centerWidth = me.width - gridBorders[1] - gridBorders[3];
-    }
-    else if(me.panel){
-      centerWidth = me.width - gridBorders[1] - gridBorders[3] - panelBodyBorders[1] - panelBodyBorders[3];
-    }
-    else{
-      centerWidth = me.width - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
-    }
-
-    if(leftWidth === 0 && rightWidth === 0){}
-    else if(rightWidth === 0){
-      centerWidth -= leftWidth;
-    }
-    else if(leftWidth === 0){
-      centerWidth -= rightWidth;
-    }
-    else if(me.width > leftWidth + centerWidth + rightWidth){
-      centerWidth -= leftWidth;
-    }
-    else{
-      centerWidth -= leftWidth + rightWidth;
-    }
-
-    me.leftEl.css({
-      width: leftWidth + 'px'
-    });
-
-    me.centerEl.css({
-      left: leftWidth + 'px',
-      width: centerWidth + 'px'
-    });
-
-    if( me.header ) {
-      me.el.select('.' + leftCls + ' .' + headerCls).css({
+      me.leftEl.css({
         width: leftWidth + 'px'
       });
 
-      me.el.select('.' + centerCls + ' .' + headerCls).css({
+      me.centerEl.css({
+        left: leftWidth + 'px',
         width: centerWidth + 'px'
       });
-    }
 
-    me.el.select('.' + centerCls + ' .fancy-grid-body').css({
-      width: centerWidth + 'px'
-    });
+      if (me.header) {
+        me.el.select('.' + GRID_LEFT_CLS + ' .' + GRID_HEADER_CLS).css({
+          width: leftWidth + 'px'
+        });
 
-    if(me.width > leftWidth + centerWidth + rightWidth) {
+        me.el.select('.' + GRID_CENTER_CLS + ' .' + GRID_HEADER_CLS).css({
+          width: centerWidth + 'px'
+        });
+      }
+
+      me.el.select('.' + GRID_CENTER_CLS + ' .' + GRID_BODY_CLS).css({
+        width: centerWidth + 'px'
+      });
+
+      if (me.width > leftWidth + centerWidth + rightWidth) {
+        me.rightEl.css({
+          right: '0px'
+        });
+      }
+      else {
+        me.rightEl.css({
+          left: '',
+          right: '0px'
+        });
+      }
+
       me.rightEl.css({
-        right: '0px'
+        width: rightWidth
       });
-    }
-    else {
-      me.rightEl.css({
-        left: '',
-        right: '0px'
-      });
-    }
 
-    me.rightEl.css({
-      width: rightWidth
-    });
+      if (me.header) {
+        me.el.select('.' + GRID_RIGHT_CLS + ' .' + GRID_HEADER_CLS).css({
+          width: rightWidth + 'px'
+        });
+      }
 
-    if( me.header ) {
-      me.el.select('.' + rightCls + ' .' + headerCls).css({
-        width: rightWidth + 'px'
-      });
-    }
+      me.startWidths = {
+        center: centerWidth,
+        left: leftWidth,
+        right: rightWidth
+      };
+    },
+    /*
+     *
+     */
+    setColumnsPosition: function () {
+      var me = this;
 
-    me.startWidths = {
-      center: centerWidth,
-      left: leftWidth,
-      right: rightWidth
-    };
-  },
-  /*
-   *
-   */
-  setColumnsPosition: function(){
-    var me = this;
+      me.body.setColumnsPosition();
+      me.leftBody.setColumnsPosition();
+      me.rightBody.setColumnsPosition();
+    },
+    /*
+     *
+     */
+    setSidesHeight: function () {
+      var me = this,
+        s = me.store,
+        height = 1,
+        cellHeaderHeight = me.cellHeaderHeight;
 
-    me.body.setColumnsPosition();
-    me.leftBody.setColumnsPosition();
-    me.rightBody.setColumnsPosition();
-  },
-  /*
-   *
-   */
-  setSidesHeight: function(){
-    var me = this,
-      s = me.store,
-      height = 1,
-      cellHeaderHeight = me.cellHeaderHeight;
-
-    if (me.header !== false) {
-      height += cellHeaderHeight;
-      if(me.filter && me.filter.header){
-        if(me.groupheader){
-          if(me.filter.groupHeader){
+      if (me.header !== false) {
+        height += cellHeaderHeight;
+        if (me.filter && me.filter.header) {
+          if (me.groupheader) {
+            if (me.filter.groupHeader) {
+              height += cellHeaderHeight;
+            }
+          }
+          else {
             height += cellHeaderHeight;
           }
         }
-        else{
-          height += cellHeaderHeight;
+
+        if (me.groupheader) {
+          if (!(me.filter && me.filter.header)) {
+            height += cellHeaderHeight;
+          }
+          else {
+            height += cellHeaderHeight;
+          }
         }
       }
 
-      if(me.groupheader){
-        if(!(me.filter && me.filter.header)){
-          height += cellHeaderHeight;
-        }
-        else{
-          height += cellHeaderHeight;
-        }
+      if (me.grouping) {
+        height += me.grouping.groups.length * me.groupRowHeight;
       }
-    }
 
-    if(me.grouping){
-      height += me.grouping.groups.length * me.groupRowHeight;
-    }
+      if (me.expander) {
+        height += me.expander.plusHeight;
+      }
 
-    if(me.expander){
-      height += me.expander.plusHeight;
-    }
+      if (me.summary) {
+        height += me.summary.topOffSet;
+      }
 
-    if(me.summary){
-      height += me.summary.topOffSet;
-    }
+      height += s.getLength() * me.cellHeight - 1;
 
-    height += s.getLength() * me.cellHeight - 1;
+      if (me.paging && me.summary && me.summary.position === 'bottom') {
+        height = me.height;
+      }
 
-    if(me.paging && me.summary && me.summary.position === 'bottom'){
-      height = me.height;
-    }
+      me.leftEl.css({
+        height: height + 'px'
+      });
 
-    me.leftEl.css({
-      height: height + 'px'
-    });
+      me.centerEl.css({
+        height: height + 'px'
+      });
 
-    me.centerEl.css({
-      height: height + 'px'
-    });
+      me.rightEl.css({
+        height: height + 'px'
+      });
+    },
+    /*
+     *
+     */
+    setBodysHeight: function () {
+      var me = this;
 
-    me.rightEl.css({
-      height: height + 'px'
-    });
-  },
-  /*
-   *
-   */
-  setBodysHeight: function () {
-    var me = this;
+      me.body.setHeight();
+      me.leftBody.setHeight();
+      me.rightBody.setHeight();
+    },
+    /*
+     *
+     */
+    preRender: function () {
+      var me = this;
 
-    me.body.setHeight();
-    me.leftBody.setHeight();
-    me.rightBody.setHeight();
-  },
-  /*
-   *
-   */
-  preRender: function(){
-    var me = this;
+      if (me.title || me.subTitle || me.tbar || me.bbar || me.buttons || me.panel) {
+        me.renderPanel();
+      }
+    },
+    /*
+     *
+     */
+    renderPanel: function () {
+      var me = this,
+        panelConfig = {
+          renderTo: me.renderTo,
+          title: me.title,
+          subTitle: me.subTitle,
+          width: me.width,
+          height: me.height,
+          titleHeight: me.titleHeight,
+          subTitleHeight: me.subTitleHeight,
+          barHeight: me.barHeight,
+          theme: me.theme,
+          shadow: me.shadow,
+          style: me.style || {},
+          window: me.window,
+          modal: me.modal,
+          frame: me.frame,
+          items: [me],
+          draggable: me.draggable,
+          resizable: me.resizable,
+          minWidth: me.minWidth,
+          minHeight: me.minHeight,
+          panelBodyBorders: me.panelBodyBorders,
+          barContainer: me.barContainer,
+          barScrollEnabled: me.barScrollEnabled
+        },
+        panelBodyBorders = me.panelBodyBorders;
 
-    if( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel ){
-      me.renderPanel();
-    }
-  },
-  /*
-   *
-   */
-  renderPanel: function(){
-    var me = this,
-      panelConfig = {
-        renderTo: me.renderTo,
-        title: me.title,
-        subTitle: me.subTitle,
-        width: me.width,
-        height: me.height,
-        titleHeight: me.titleHeight,
-        subTitleHeight: me.subTitleHeight,
-        barHeight: me.barHeight,
-        theme: me.theme,
-        shadow: me.shadow,
-        style: me.style || {},
-        window: me.window,
-        modal: me.modal,
-        frame: me.frame,
-        items: [me],
-        draggable: me.draggable,
-        resizable: me.resizable,
-        minWidth: me.minWidth,
-        minHeight: me.minHeight,
-        panelBodyBorders: me.panelBodyBorders,
-        barContainer: me.barContainer,
-        barScrollEnabled: me.barScrollEnabled
-      },
-      panelBodyBorders = me.panelBodyBorders;
+      if (me.bbar) {
+        panelConfig.bbar = me.bbar;
+        me.height -= me.barHeight;
+      }
 
-    if(me.bbar){
-      panelConfig.bbar = me.bbar;
-      me.height -= me.barHeight;
-    }
+      if (me.tbar) {
+        panelConfig.tbar = me.tbar;
+        me.height -= me.barHeight;
+      }
 
-    if(me.tbar){
-      panelConfig.tbar = me.tbar;
-      me.height -= me.barHeight;
-    }
+      if (me.subTBar) {
+        panelConfig.subTBar = me.subTBar;
+        me.height -= me.barHeight;
+      }
 
-    if(me.subTBar){
-      panelConfig.subTBar = me.subTBar;
-      me.height -= me.barHeight;
-    }
+      if (me.buttons) {
+        panelConfig.buttons = me.buttons;
+        me.height -= me.barHeight;
+      }
 
-    if(me.buttons){
-      panelConfig.buttons = me.buttons;
-      me.height -= me.barHeight;
-    }
+      if (me.footer) {
+        panelConfig.footer = me.footer;
+        me.height -= me.barHeight;
+      }
 
-    if(me.footer){
-      panelConfig.footer = me.footer;
-      me.height -= me.barHeight;
-    }
+      me.panel = new F.Panel(panelConfig);
 
-    me.panel = new Fancy.Panel(panelConfig);
+      me.bbar = me.panel.bbar;
+      me.tbar = me.panel.tbar;
+      me.subTBar = me.panel.subTBar;
+      me.buttons = me.panel.buttons;
 
-    me.bbar = me.panel.bbar;
-    me.tbar = me.panel.tbar;
-    me.subTBar = me.panel.subTBar;
-    me.buttons = me.panel.buttons;
+      if (!me.wrapped) {
+        me.panel.addCls('fancy-panel-grid-inside');
+      }
 
-    if(!me.wrapped){
-      me.panel.addCls('fancy-panel-grid-inside');
-    }
+      if (me.title) {
+        me.height -= me.titleHeight;
+      }
 
-    if(me.title) {
-      me.height -= me.titleHeight;
-    }
+      if (me.subTitle) {
+        me.height -= me.subTitleHeight;
+        me.height += panelBodyBorders[2];
+      }
 
-    if(me.subTitle) {
-      me.height -= me.subTitleHeight;
-      me.height += panelBodyBorders[2];
-    }
+      me.height -= panelBodyBorders[0] + panelBodyBorders[2];
 
-    me.height -= panelBodyBorders[0] + panelBodyBorders[2];
+      me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
+    },
+    /*
+     * @return {Number}
+     */
+    getBodyHeight: function () {
+      var me = this,
+        height = me.height,
+        rows = 1,
+        gridBorders = me.gridBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders;
 
-    me.renderTo = me.panel.el.select('.fancy-panel-body-inner').dom;
-  },
-  /*
-   * @return {Number}
-   */
-  getBodyHeight: function(){
-    var me = this,
-      height = me.height,
-      rows = 1,
-      gridBorders = me.gridBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders;
+      if (me.groupheader) {
+        rows = 2;
+      }
 
-    if(me.groupheader){
-      rows = 2;
-    }
-
-    if(me.filter && me.filter.header){
-      if(me.groupheader) {
-        if(me.filter.groupHeader){
+      if (me.filter && me.filter.header) {
+        if (me.groupheader) {
+          if (me.filter.groupHeader) {
+            rows++;
+          }
+        }
+        else {
           rows++;
         }
       }
-      else{
-        rows++;
+
+      if (me.header !== false) {
+        height -= me.cellHeaderHeight * rows;
       }
-    }
 
-    if( me.header !== false ){
-      height -= me.cellHeaderHeight * rows;
-    }
+      if (me.panel) {
+        height -= gridBorders[0] + gridBorders[2];
+      }
+      else {
+        height -= gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2];
+      }
 
-    if(me.panel){
-      height -= gridBorders[0] + gridBorders[2];
-    }
-    else{
-      height -= gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2];
-    }
+      if (me.summary) {
+        height -= me.summary.topOffSet;
+        height -= me.summary.bottomOffSet;
+      }
 
-    if(me.summary){
-      height -= me.summary.topOffSet;
-      height -= me.summary.bottomOffSet;
-    }
+      return height;
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        store = me.store,
+        docEl = F.get(document);
 
-    return height;
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      store = me.store,
-      docEl = Fancy.get(document);
+      store.on('change', me.onChangeStore, me);
+      store.on('set', me.onSetStore, me);
+      store.on('remove', me.onRemoveStore, me);
+      store.on('beforesort', me.onBeforeSortStore, me);
+      store.on('sort', me.onSortStore, me);
+      store.on('beforeload', me.onBeforeLoadStore, me);
+      store.on('load', me.onLoadStore, me);
+      docEl.on('mouseup', me.onDocMouseUp, me);
+      docEl.on('click', me.onDocClick, me);
+      docEl.on('mousemove', me.onDocMove, me);
+      store.on('servererror', me.onServerError, me);
+      store.on('serversuccess', me.onServerSuccess, me);
 
-    store.on('change', me.onChangeStore, me);
-    store.on('set', me.onSetStore, me);
-    store.on('remove', me.onRemoveStore, me);
-    store.on('beforesort', me.onBeforeSortStore, me);
-    store.on('sort', me.onSortStore, me);
-    store.on('beforeload', me.onBeforeLoadStore, me);
-    store.on('load', me.onLoadStore, me);
-    docEl.on('mouseup', me.onDocMouseUp, me);
-    docEl.on('click', me.onDocClick, me);
-    docEl.on('mousemove', me.onDocMove, me);
-    store.on('servererror', me.onServerError, me);
-    store.on('serversuccess', me.onServerSuccess, me);
+      if (me.responsive) {
+        F.$(window).bind('resize', function () {
+          me.onWindowResize()
+        });
+      }
 
-    if(me.responsive){
-      Fancy.$(window).bind('resize', function(){
-        me.onWindowResize()
-      });
-    }
+      me.on('activate', me.onActivate, me);
+      me.on('deactivate', me.onDeActivate, me);
+    },
+    /*
+     * @param {Object} grid
+     * @param {String} errorTitle
+     * @param {String} errorText
+     * @param {Object} request
+     */
+    onServerError: function (grid, errorTitle, errorText, request) {
+      this.fire('servererror', errorTitle, errorText, request);
+    },
+    /*
+     * @param {Object} grid
+     * @param {Array} data
+     * @param {Object} request
+     */
+    onServerSuccess: function (grid, data, request) {
+      this.fire('serversuccess', data, request);
+    },
+    /*
+     *
+     */
+    onChangeStore: function () {
+      this.update();
+    },
+    /*
+     * @param {Object} store
+     */
+    onBeforeLoadStore: function (store) {
+      this.fire('beforeload');
+    },
+    /*
+     * @param {Object} store
+     * @param {String} id
+     * @param {Fancy.Model} record
+     */
+    onRemoveStore: function (store, id, record) {
+      var me = this;
 
-    me.on('activate', me.onActivate, me);
-    me.on('deactivate', me.onDeActivate, me);
-  },
-  /*
-   * @param {Object} grid
-   * @param {String} errorTitle
-   * @param {String} errorText
-   * @param {Object} request
-   */
-  onServerError: function (grid, errorTitle, errorText, request) {
-    this.fire('servererror', errorTitle, errorText, request);
-  },
-  /*
-   * @param {Object} grid
-   * @param {Array} data
-   * @param {Object} request
-   */
-  onServerSuccess: function (grid, data, request) {
-    this.fire('serversuccess', data, request);
-  },
-  /*
-   *
-   */
-  onChangeStore: function(){
-    this.update();
-  },
-  /*
-   * @param {Object} store
-   */
-  onBeforeLoadStore: function(store){
-    this.fire('beforeload');
-  },
-  /*
-   * @param {Object} store
-   * @param {String} id
-   * @param {Fancy.Model} record
-   */
-  onRemoveStore: function(store, id, record){
-    var me = this;
+      me.fire('remove', id, record);
+    },
+    /*
+     * @param {Object} store
+     */
+    onLoadStore: function (store) {
+      this.fire('load');
+    },
+    /*
+     * @param {Object} store
+     * @param {Object} o
+     */
+    onSetStore: function (store, o) {
+      var me = this;
 
-    me.fire('remove', id, record);
-  },
-  /*
-   * @param {Object} store
-   */
-  onLoadStore: function(store){
-    this.fire('load');
-  },
-  /*
-   * @param {Object} store
-   * @param {Object} o
-   */
-  onSetStore: function(store, o){
-    var me = this;
+      me.fire('set', o);
+    },
+    /*
+     * @param {Object} store
+     * @param {Object} o
+     */
+    onBeforeSortStore: function (store, o) {
+      this.fire('beforesort', o);
+    },
+    /*
+     * @param {Object} store
+     * @param {Object} o
+     */
+    onSortStore: function (store, o) {
+      this.fire('sort', o);
+    },
+    /*
+     * @return {Number}
+     */
+    getCellsViewHeight: function () {
+      var me = this,
+        s = me.store,
+        plusScroll = 0,
+        scrollBottomHeight = 0;
 
-    me.fire('set', o);
-  },
-  /*
-   * @param {Object} store
-   * @param {Object} o
-   */
-  onBeforeSortStore: function(store, o){
-    this.fire('beforesort', o);
-  },
-  /*
-   * @param {Object} store
-   * @param {Object} o
-   */
-  onSortStore: function(store, o){
-    this.fire('sort', o);
-  },
-  /*
-   * @return {Number}
-   */
-  getCellsViewHeight: function(){
-    var me = this,
-      s = me.store,
-      plusScroll = 0,
-      scrollBottomHeight = 0;
+      if (me.grouping) {
+        plusScroll += me.grouping.plusScroll;
+      }
 
-    if(me.grouping){
-      plusScroll += me.grouping.plusScroll;
-    }
+      if (me.expander) {
+        plusScroll += me.expander.plusScroll;
+      }
 
-    if(me.expander){
-      plusScroll += me.expander.plusScroll;
-    }
+      if (!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasCls(HIDDEN_CLS)) {
+      }
+      else {
+        scrollBottomHeight = me.scroller.cornerSize;
+      }
 
-    if(!me.scroller.scrollBottomEl || me.scroller.scrollBottomEl.hasCls(Fancy.HIDDEN_CLS)){}
-    else {
-      scrollBottomHeight = me.scroller.cornerSize;
-    }
+      return (me.cellHeight) * s.dataView.length + scrollBottomHeight + plusScroll;
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMouseUp: function (e) {
+      this.fire('docmouseup');
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocClick: function (e) {
+      this.fire('docclick', e);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMove: function (e) {
+      this.fire('docmove', e);
+    },
+    /*
+     * @return {Number}
+     */
+    getCenterViewWidth: function () {
+      //Realization could be reason of bug
+      var me = this,
+        elWidth = me.centerEl.width();
 
-    return (me.cellHeight) * s.dataView.length + scrollBottomHeight + plusScroll;
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMouseUp: function(e){
-    this.fire('docmouseup');
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocClick: function(e){
-    this.fire('docclick', e);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMove: function(e){
-    this.fire('docmove', e);
-  },
-  /*
-   * @return {Number}
-   */
-  getCenterViewWidth: function(){
-    //Realization could be reason of bug
-    var me = this,
-      elWidth = me.centerEl.width();
+      if (elWidth === 0) {
+        var columnsWidth = 0,
+          columns = me.columns,
+          i = 0,
+          iL = columns.length;
 
-    if(elWidth === 0){
-      var columnsWidth = 0,
+        for (; i < iL; i++) {
+          var column = columns[i];
+          if (!column.hidden) {
+            columnsWidth += column.width;
+          }
+        }
+
+        return columnsWidth;
+      }
+
+      return elWidth;
+    },
+    /*
+     * @return {Number}
+     */
+    getCenterFullWidth: function () {
+      var me = this,
+        centerColumnsWidths = 0,
         columns = me.columns,
         i = 0,
         iL = columns.length;
 
-      for(;i<iL;i++){
+      for (; i < iL; i++) {
         var column = columns[i];
-        if(!column.hidden){
-          columnsWidth += column.width;
+        if (!column.hidden) {
+          centerColumnsWidths += column.width;
         }
       }
 
-      return columnsWidth;
-    }
-
-    return elWidth;
-  },
-  /*
-   * @return {Number}
-   */
-  getCenterFullWidth: function(){
-    var me = this,
-      centerColumnsWidths = 0,
-      columns = me.columns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-      if(!column.hidden){
-        centerColumnsWidths += column.width;
-      }
-    }
-
-    return centerColumnsWidths;
-  },
-  /*
-   * @return {Number}
-   */
-  getLeftFullWidth: function(){
-    var me = this,
-      width = 0,
-      columns = me.leftColumns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-      if(!column.hidden){
-        width += column.width;
-      }
-    }
-
-    return width;
-  },
-  /*
-   * @return {Number}
-   */
-  getRightFullWidth: function(){
-    var me = this,
-      width = 0,
-      columns = me.rightColumns,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-      if(!column.hidden){
-        width += column.width;
-      }
-    }
-
-    return width;
-  },
-  /*
-   * @param {String} side
-   * @return {Array}
-   */
-  getColumns: function(side){
-    var me = this,
-      columns;
-
-    switch(side){
-      case 'left':
-        columns = me.leftColumns;
-        break;
-      case 'center':
-        columns = me.columns;
-        break;
-      case 'right':
-        columns = me.rightColumns;
-        break;
-    }
-
-    return columns;
-  },
-  /*
-   * @param {String} side
-   * @return {Fancy.grid.Body}
-   */
-  getBody: function(side){
-    var me = this,
-      body;
-
-    switch(side){
-      case 'left':
-        body= me.leftBody;
-        break;
-      case 'center':
-        body = me.body;
-        break;
-      case 'right':
-        body = me.rightBody;
-        break;
-    }
-
-    return body;
-  },
-  /*
-   * @param {String} side
-   * @return {Fancy.grid.Header}
-   */
-  getHeader: function(side){
-    var me = this,
-      header;
-
-    switch(side){
-      case 'left':
-        header = me.leftHeader;
-        break;
-      case 'center':
-        header = me.header;
-        break;
-      case 'right':
-        header = me.rightHeader;
-        break;
-    }
-
-    return header;
-  },
-  /*
-   * @param {Number} rowIndex
-   * @return {Array}
-   */
-  getDomRow: function(rowIndex){
-    var me = this,
-      leftBody = me.leftBody,
-      body = me.body,
-      rightBody = me.rightBody,
-      leftColumns = me.leftColumns,
-      columns = me.columns,
-      rightColumns = me.rightColumns,
-      i = 0,
-      iL = leftColumns.length,
-      cells = [];
-
-    for(;i<iL;i++) {
-      cells.push( leftBody.getDomCell(rowIndex, i) );
-    }
-
-    i = 0;
-    iL = columns.length;
-    for(;i<iL;i++) {
-      cells.push( body.getDomCell(rowIndex, i) );
-    }
-
-    i = 0;
-    iL = rightColumns.length;
-    for(;i<iL;i++) {
-      cells.push( rightBody.getDomCell(rowIndex, i) );
-    }
-
-    return cells;
-  },
-  /*
-   *
-   */
-  initTextSelection: function(){
-    var me = this,
-      body = me.body,
-      leftBody = me.leftBody,
-      rightBody = me.rightBody;
-
-    if(me.textSelection === false) {
-      me.addCls('fancy-grid-unselectable');
-
-      var fn = function(e){
-        var targetEl = Fancy.get(e.target);
-        if(targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')){
-          return;
-        }
-
-        e.preventDefault();
-      };
-
-      body.el.on('mousedown', fn);
-      leftBody.el.on('mousedown', fn);
-      rightBody.el.on('mousedown', fn);
-    }
-  },
-  /*
-   * @param {String} type
-   * @param {*} value
-   */
-  setTrackOver: function(type, value){
-    var me = this;
-
-    switch(type){
-      case 'cell':
-        me.cellTrackOver = value;
-        break;
-      case 'column':
-        me.columnTrackOver = value;
-        break;
-      case 'row':
-        me.trackOver = value;
-        break;
-    }
-  },
-  /*
-   * @param {String} type
-   */
-  setSelModel: function(type){
-    var me = this,
-      selection = me.selection;
-
-    selection.cell = false;
-    selection.cells = false;
-    selection.row = false;
-    selection.rows = false;
-    selection.column = false;
-    selection.columns = false;
-    selection[type] = true;
-
-    if(type === 'rows'){
-      me.multiSelect = true;
-    }
-    else{
-      me.multiSelect = false;
-    }
-
-    selection.clearSelection();
-  },
-  /*
-   * @param {Boolean} [returnModel]
-   * @return {Array}
-   */
-  getSelection: function(returnModel){
-    var me = this;
-
-    return me.selection.getSelection(returnModel);
-  },
-  /*
-   *
-   */
-  clearSelection: function(){
-    var me = this,
-      selection = me.selection;
-
-    selection.clearSelection();
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      docEl = Fancy.get(document);
-
-    docEl.un('mouseup', me.onDocMouseUp, me);
-    docEl.un('click', me.onDocClick, me);
-    docEl.un('mousemove', me.onDocMove, me);
-
-    me.body.destroy();
-    me.leftBody.destroy();
-    me.rightBody.destroy();
-
-    me.header.destroy();
-    me.leftHeader.destroy();
-    me.rightHeader.destroy();
-
-    me.scroller.destroy();
-
-    me.el.destroy();
-
-    if(me.panel){
-      me.panel.el.destroy();
-    }
-  },
-  /*
-   *
-   */
-  showAt: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.showAt.apply(me.panel, arguments);
-    }
-  },
-  /*
-   *
-   */
-  show: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.show.apply(me.panel, arguments);
-    }
-    else{
-      me.el.show();
-    }
-  },
-  /*
-   *
-   */
-  hide: function(){
-    var me = this;
-
-    if(me.panel){
-      me.panel.hide.apply(me.panel, arguments);
-    }
-    else{
-      me.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  initDateColumn: function(){
-    var me = this;
-
-    var prepareColumns = function(columns){
-      var i = 0,
+      return centerColumnsWidths;
+    },
+    /*
+     * @return {Number}
+     */
+    getLeftFullWidth: function () {
+      var me = this,
+        width = 0,
+        columns = me.leftColumns,
+        i = 0,
         iL = columns.length;
 
-      for(;i<iL;i++){
+      for (; i < iL; i++) {
         var column = columns[i];
-
-        if(column.type === 'date'){
-          column.format = column.format || {};
-
-          var format = {
-            type: 'date'
-          };
-
-          Fancy.applyIf(format, me.lang.date);
-
-          Fancy.applyIf(column.format, format);
-        }
-      }
-
-      return columns;
-    };
-
-    me.columns = prepareColumns(me.columns);
-    me.leftColumns = prepareColumns(me.leftColumns);
-    me.rightColumns = prepareColumns(me.rightColumns);
-  },
-  /*
-   *
-   */
-  stopEditor: function(){
-    var me = this;
-
-    me.edit.stopEditor();
-  },
-  /*
-   * @param {String} id
-   * @return {Fancy.Model}
-   */
-  getById: function(id){
-    var me = this;
-
-    return me.store.getById(id);
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} key
-   * @return {Fancy.Model}
-   */
-  get: function(rowIndex, key){
-    var me = this,
-      store = me.store;
-
-    if(key !== undefined){
-      return store.get(rowIndex, key);
-    }
-    else if(rowIndex === undefined){
-      return store.get();
-    }
-
-    return store.getItem(rowIndex);
-  },
-  /*
-   * @return {Number}
-   */
-  getTotal: function(){
-    return this.store.getTotal();
-  },
-  /*
-   * @return {Number}
-   */
-  getViewTotal: function(){
-    return this.store.getLength();
-  },
-  /*
-   * @return {Array}
-   */
-  getDataView: function(){
-    return this.store.getDataView();
-  },
-  /*
-   * @return {Array}
-   */
-  getData: function(){
-    return this.store.getData();
-  },
-  /*
-   * @param {Number} rowIndex
-   */
-  selectRow: function(rowIndex){
-    var me = this;
-
-    me.selection.selectRow(rowIndex);
-  },
-  /*
-   * @param {String} key
-   */
-  selectColumn: function(key){
-    var me = this,
-      side,
-      columnIndex,
-      leftColumns = me.leftColumns || [],
-      columns = me.columns || [],
-      rightColumns = me.rightColumns || [];
-
-    var isInSide = function(columns){
-      var i = 0,
-        iL = columns.length;
-
-      for(;i<iL;i++){
-        var column = columns[i];
-        if(column.index === key || column.key === key){
-          columnIndex = i;
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    if(isInSide(leftColumns)) {
-      side = 'left';
-    }
-    else if(isInSide(columns)) {
-      side = 'center';
-    }
-    else if(isInSide(rightColumns)){
-      side = 'right';
-    }
-
-    if(side){
-      me.selection.selectColumns(columnIndex, side);
-    }
-  },
-  /*
-   * @param {String} key
-   * @return {Object}
-   */
-  getColumnByIndex: function(key){
-    var me = this,
-      leftColumns = me.leftColumns || [],
-      columns = me.columns || [],
-      rightColumns = me.rightColumns || [],
-      _columns = leftColumns.concat(columns).concat(rightColumns),
-      i = 0,
-      iL = _columns.length;
-
-    for(;i<iL;i++){
-      var column = _columns[i];
-      if(column.index === key || column.key === key){
-        return column;
-      }
-    }
-  },
-  /*
-   *
-   */
-  load: function(){
-    var me = this;
-
-    me.store.loadData();
-  },
-  /*
-   *
-   */
-  save: function(){
-    var me = this;
-
-    me.store.save();
-  },
-  /*
-   *
-   */
-  onWindowResize: function(){
-    var me = this,
-      renderTo = me.renderTo,
-      el;
-
-    if(me.panel){
-      renderTo = me.panel.renderTo;
-
-      el = Fancy.get(renderTo);
-      me.setWidth(parseInt(el.width()));
-    }
-
-    me.setBodysHeight();
-  },
-  /*
-   * @param {Number} width
-   */
-  setWidth: function(width){
-    var me = this,
-      el = me.el,
-      gridBorders = me.gridBorders,
-      gridWithoutPanelBorders = me.gridWithoutPanelBorders,
-      panelBodyBorders = me.panelBodyBorders,
-      body = me.body,
-      header = me.header;
-
-    me.scroller.scroll(0,0);
-
-    var calcColumnsWidth = function(columns){
-      var i = 0,
-        iL = columns.length,
-        width = 0;
-
-      for(;i<iL;i++){
-        var column = columns[i];
-
-        if(!column.hidden){
-          width += columns[i].width;
+        if (!column.hidden) {
+          width += column.width;
         }
       }
 
       return width;
-    };
+    },
+    /*
+     * @return {Number}
+     */
+    getRightFullWidth: function () {
+      var me = this,
+        width = 0,
+        columns = me.rightColumns,
+        i = 0,
+        iL = columns.length;
 
-    var leftColumnWidth = calcColumnsWidth(me.leftColumns),
-      rightColumnWidth = calcColumnsWidth(me.rightColumns),
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3],
-      gridWidth;
+      for (; i < iL; i++) {
+        var column = columns[i];
+        if (!column.hidden) {
+          width += column.width;
+        }
+      }
 
-    if(me.wrapped){
-      gridWidth = width;
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth;
+      return width;
+    },
+    /*
+     * @param {String} side
+     * @return {Array}
+     */
+    getColumns: function (side) {
+      var me = this,
+        columns;
 
-      newCenterWidth -= gridBorders[1] + gridBorders[3];
+      switch (side) {
+        case 'left':
+          columns = me.leftColumns;
+          break;
+        case 'center':
+          columns = me.columns;
+          break;
+        case 'right':
+          columns = me.rightColumns;
+          break;
+      }
 
-      me.css({
-        width: gridWidth
-      });
-    }
-    else if(me.panel){
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
-      me.panel.el.width(width);
+      return columns;
+    },
+    /*
+     * @param {String} side
+     * @return {Fancy.grid.Body}
+     */
+    getBody: function (side) {
+      var me = this,
+        body;
 
-      newCenterWidth -= gridBorders[1] + gridBorders[3];
+      switch (side) {
+        case 'left':
+          body = me.leftBody;
+          break;
+        case 'center':
+          body = me.body;
+          break;
+        case 'right':
+          body = me.rightBody;
+          break;
+      }
 
-      gridWidth = width - panelBodyBorders[1] - panelBodyBorders[3];
+      return body;
+    },
+    /*
+     * @param {String} side
+     * @return {Fancy.grid.Header}
+     */
+    getHeader: function (side) {
+      var me = this,
+        header;
 
-      me.css({
-        width: gridWidth
-      });
-    }
-    else{
-      newCenterWidth = width - leftColumnWidth - rightColumnWidth - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
+      switch (side) {
+        case 'left':
+          header = me.leftHeader;
+          break;
+        case 'center':
+          header = me.header;
+          break;
+        case 'right':
+          header = me.rightHeader;
+          break;
+      }
 
-      el.css('width', width);
-    }
+      return header;
+    },
+    /*
+     * @param {Number} rowIndex
+     * @return {Array}
+     */
+    getDomRow: function (rowIndex) {
+      var me = this,
+        leftBody = me.leftBody,
+        body = me.body,
+        rightBody = me.rightBody,
+        leftColumns = me.leftColumns,
+        columns = me.columns,
+        rightColumns = me.rightColumns,
+        i = 0,
+        iL = leftColumns.length,
+        cells = [];
 
-    if(newCenterWidth < 100){
-      newCenterWidth = 100;
-    }
+      for (; i < iL; i++) {
+        cells.push(leftBody.getDomCell(rowIndex, i));
+      }
 
-    el.select('.' + me.centerCls).css('width', newCenterWidth);
+      i = 0;
+      iL = columns.length;
+      for (; i < iL; i++) {
+        cells.push(body.getDomCell(rowIndex, i));
+      }
 
-    header.css('width', newCenterWidth);
-    body.css('width', newCenterWidth);
+      i = 0;
+      iL = rightColumns.length;
+      for (; i < iL; i++) {
+        cells.push(rightBody.getDomCell(rowIndex, i));
+      }
 
-    if(me.hasFlexColumns){
-      me.reCalcColumnsWidth();
-      me.columnresizer.updateColumnsWidth();
-    }
+      return cells;
+    },
+    /*
+     *
+     */
+    initTextSelection: function () {
+      var me = this,
+        body = me.body,
+        leftBody = me.leftBody,
+        rightBody = me.rightBody;
 
-    me.scroller.setScrollBars();
-  },
-  /*
-   * @return {Number}
-   */
-  getWidth: function(){
-    var me = this,
-      value;
+      if (me.textSelection === false) {
+        me.addCls(GRID_UNSELECTABLE_CLS);
 
-    if(me.panel){
-      value = parseInt( me.panel.css('width') );
-    }
-    else{
-      value = parseInt( me.css('width') );
-    }
+        var fn = function (e) {
+          var targetEl = F.get(e.target);
+          if (targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')) {
+            return;
+          }
 
-    return value;
-  },
-  /*
-   * @return {Number}
-   */
-  getHeight: function () {
-    var me = this,
-      value;
+          e.preventDefault();
+        };
 
-    if(me.panel){
-      value = parseInt( me.panel.css('height') );
-    }
-    else{
-      value = parseInt( me.css('height') );
-    }
+        body.el.on('mousedown', fn);
+        leftBody.el.on('mousedown', fn);
+        rightBody.el.on('mousedown', fn);
+      }
+    },
+    /*
+     * @param {String} type
+     * @param {*} value
+     */
+    setTrackOver: function (type, value) {
+      var me = this;
 
-    return value;
-  },
-  /*
-   * @param {Number} value
-   * @param {Number} changePanelHeight
-   */
-  setHeight: function(value, changePanelHeight){
-    var me = this,
-      gridBorders = me.gridBorders,
-      panelBodyBorders = me.panelBodyBorders;
+      switch (type) {
+        case 'cell':
+          me.cellTrackOver = value;
+          break;
+        case 'column':
+          me.columnTrackOver = value;
+          break;
+        case 'row':
+          me.trackOver = value;
+          break;
+      }
+    },
+    /*
+     * @param {String} type
+     */
+    setSelModel: function (type) {
+      var me = this,
+        selection = me.selection;
 
-    if(me.panel && changePanelHeight !== false){
-      me.panel.setHeight(value);
-    }
+      selection.cell = false;
+      selection.cells = false;
+      selection.row = false;
+      selection.rows = false;
+      selection.column = false;
+      selection.columns = false;
+      selection[type] = true;
 
-    if(me.title){
-      value -= me.titleHeight;
-    }
+      if (type === 'rows') {
+        me.multiSelect = true;
+      }
+      else {
+        me.multiSelect = false;
+      }
 
-    if(me.subTitle){
-      value -= me.subTitleHeight;
-    }
+      selection.clearSelection();
+    },
+    /*
+     * @param {Boolean} [returnModel]
+     * @return {Array}
+     */
+    getSelection: function (returnModel) {
+      var me = this;
 
-    if(me.footer){
-      value -= me.barHeight;
-    }
+      return me.selection.getSelection(returnModel);
+    },
+    /*
+     *
+     */
+    clearSelection: function () {
+      var me = this,
+        selection = me.selection;
 
-    if(me.bbar){
-      value -= me.barHeight;
-    }
+      selection.clearSelection();
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        docEl = F.get(document);
 
-    if(me.tbar){
-      value -= me.barHeight;
-    }
+      docEl.un('mouseup', me.onDocMouseUp, me);
+      docEl.un('click', me.onDocClick, me);
+      docEl.un('mousemove', me.onDocMove, me);
 
-    if(me.subTBar){
-      value -= me.barHeight;
-    }
+      me.body.destroy();
+      me.leftBody.destroy();
+      me.rightBody.destroy();
 
-    if(me.buttons){
-      value -= me.barHeight;
-    }
+      me.header.destroy();
+      me.leftHeader.destroy();
+      me.rightHeader.destroy();
 
-    var bodyHeight = value;
+      me.scroller.destroy();
 
-    if(me.header){
-      bodyHeight -= me.cellHeaderHeight;
-      if(me.groupheader){
+      me.el.destroy();
+
+      if (me.panel) {
+        me.panel.el.destroy();
+      }
+    },
+    /*
+     *
+     */
+    showAt: function () {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.showAt.apply(me.panel, arguments);
+      }
+    },
+    /*
+     *
+     */
+    show: function () {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.show.apply(me.panel, arguments);
+      }
+      else {
+        me.el.show();
+      }
+    },
+    /*
+     *
+     */
+    hide: function () {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.hide.apply(me.panel, arguments);
+      }
+      else {
+        me.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    initDateColumn: function () {
+      var me = this;
+
+      var prepareColumns = function (columns) {
+        var i = 0,
+          iL = columns.length;
+
+        for (; i < iL; i++) {
+          var column = columns[i];
+
+          if (column.type === 'date') {
+            column.format = column.format || {};
+
+            var format = {
+              type: 'date'
+            };
+
+            F.applyIf(format, me.lang.date);
+
+            F.applyIf(column.format, format);
+          }
+        }
+
+        return columns;
+      };
+
+      me.columns = prepareColumns(me.columns);
+      me.leftColumns = prepareColumns(me.leftColumns);
+      me.rightColumns = prepareColumns(me.rightColumns);
+    },
+    /*
+     *
+     */
+    stopEditor: function () {
+      var me = this;
+
+      me.edit.stopEditor();
+    },
+    /*
+     * @param {String} id
+     * @return {Fancy.Model}
+     */
+    getById: function (id) {
+      var me = this;
+
+      return me.store.getById(id);
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} key
+     * @return {Fancy.Model}
+     */
+    get: function (rowIndex, key) {
+      var me = this,
+        store = me.store;
+
+      if (key !== undefined) {
+        return store.get(rowIndex, key);
+      }
+      else if (rowIndex === undefined) {
+        return store.get();
+      }
+
+      return store.getItem(rowIndex);
+    },
+    /*
+     * @return {Number}
+     */
+    getTotal: function () {
+      return this.store.getTotal();
+    },
+    /*
+     * @return {Number}
+     */
+    getViewTotal: function () {
+      return this.store.getLength();
+    },
+    /*
+     * @return {Array}
+     */
+    getDataView: function () {
+      return this.store.getDataView();
+    },
+    /*
+     * @return {Array}
+     */
+    getData: function () {
+      return this.store.getData();
+    },
+    /*
+     * @param {Number} rowIndex
+     */
+    selectRow: function (rowIndex) {
+      var me = this;
+
+      me.selection.selectRow(rowIndex);
+    },
+    /*
+     * @param {String} key
+     */
+    selectColumn: function (key) {
+      var me = this,
+        side,
+        columnIndex,
+        leftColumns = me.leftColumns || [],
+        columns = me.columns || [],
+        rightColumns = me.rightColumns || [];
+
+      var isInSide = function (columns) {
+        var i = 0,
+          iL = columns.length;
+
+        for (; i < iL; i++) {
+          var column = columns[i];
+          if (column.index === key || column.key === key) {
+            columnIndex = i;
+            return true;
+          }
+        }
+
+        return false;
+      };
+
+      if (isInSide(leftColumns)) {
+        side = 'left';
+      }
+      else if (isInSide(columns)) {
+        side = 'center';
+      }
+      else if (isInSide(rightColumns)) {
+        side = 'right';
+      }
+
+      if (side) {
+        me.selection.selectColumns(columnIndex, side);
+      }
+    },
+    /*
+     * @param {String} key
+     * @return {Object}
+     */
+    getColumnByIndex: function (key) {
+      var me = this,
+        leftColumns = me.leftColumns || [],
+        columns = me.columns || [],
+        rightColumns = me.rightColumns || [],
+        _columns = leftColumns.concat(columns).concat(rightColumns),
+        i = 0,
+        iL = _columns.length;
+
+      for (; i < iL; i++) {
+        var column = _columns[i];
+        if (column.index === key || column.key === key) {
+          return column;
+        }
+      }
+    },
+    /*
+     *
+     */
+    load: function () {
+      var me = this;
+
+      me.store.loadData();
+    },
+    /*
+     *
+     */
+    save: function () {
+      var me = this;
+
+      me.store.save();
+    },
+    /*
+     *
+     */
+    onWindowResize: function () {
+      var me = this,
+        renderTo = me.renderTo,
+        el;
+
+      if (me.panel) {
+        renderTo = me.panel.renderTo;
+
+        el = F.get(renderTo);
+        me.setWidth(parseInt(el.width()));
+      }
+
+      me.setBodysHeight();
+    },
+    /*
+     * @param {Number} width
+     */
+    setWidth: function (width) {
+      var me = this,
+        el = me.el,
+        gridBorders = me.gridBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+        panelBodyBorders = me.panelBodyBorders,
+        body = me.body,
+        header = me.header;
+
+      me.scroller.scroll(0, 0);
+
+      var calcColumnsWidth = function (columns) {
+        var i = 0,
+          iL = columns.length,
+          width = 0;
+
+        for (; i < iL; i++) {
+          var column = columns[i];
+
+          if (!column.hidden) {
+            width += columns[i].width;
+          }
+        }
+
+        return width;
+      };
+
+      var leftColumnWidth = calcColumnsWidth(me.leftColumns),
+        rightColumnWidth = calcColumnsWidth(me.rightColumns),
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3],
+        gridWidth;
+
+      if (me.wrapped) {
+        gridWidth = width;
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth;
+
+        newCenterWidth -= gridBorders[1] + gridBorders[3];
+
+        me.css({
+          width: gridWidth
+        });
+      }
+      else if (me.panel) {
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
+        me.panel.el.width(width);
+
+        newCenterWidth -= gridBorders[1] + gridBorders[3];
+
+        gridWidth = width - panelBodyBorders[1] - panelBodyBorders[3];
+
+        me.css({
+          width: gridWidth
+        });
+      }
+      else {
+        newCenterWidth = width - leftColumnWidth - rightColumnWidth - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
+
+        el.css('width', width);
+      }
+
+      if (newCenterWidth < 100) {
+        newCenterWidth = 100;
+      }
+
+      el.select('.' + GRID_CENTER_CLS).css('width', newCenterWidth);
+
+      header.css('width', newCenterWidth);
+      body.css('width', newCenterWidth);
+
+      if (me.hasFlexColumns) {
+        me.reCalcColumnsWidth();
+        me.columnresizer.updateColumnsWidth();
+      }
+
+      me.scroller.setScrollBars();
+    },
+    /*
+     * @return {Number}
+     */
+    getWidth: function () {
+      var me = this,
+        value;
+
+      if (me.panel) {
+        value = parseInt(me.panel.css('width'));
+      }
+      else {
+        value = parseInt(me.css('width'));
+      }
+
+      return value;
+    },
+    /*
+     * @return {Number}
+     */
+    getHeight: function () {
+      var me = this,
+        value;
+
+      if (me.panel) {
+        value = parseInt(me.panel.css('height'));
+      }
+      else {
+        value = parseInt(me.css('height'));
+      }
+
+      return value;
+    },
+    /*
+     * @param {Number} value
+     * @param {Number} changePanelHeight
+     */
+    setHeight: function (value, changePanelHeight) {
+      var me = this,
+        gridBorders = me.gridBorders,
+        panelBodyBorders = me.panelBodyBorders;
+
+      if (me.panel && changePanelHeight !== false) {
+        me.panel.setHeight(value);
+      }
+
+      if (me.title) {
+        value -= me.titleHeight;
+      }
+
+      if (me.subTitle) {
+        value -= me.subTitleHeight;
+      }
+
+      if (me.footer) {
+        value -= me.barHeight;
+      }
+
+      if (me.bbar) {
+        value -= me.barHeight;
+      }
+
+      if (me.tbar) {
+        value -= me.barHeight;
+      }
+
+      if (me.subTBar) {
+        value -= me.barHeight;
+      }
+
+      if (me.buttons) {
+        value -= me.barHeight;
+      }
+
+      var bodyHeight = value;
+
+      if (me.header) {
         bodyHeight -= me.cellHeaderHeight;
-      }
-    }
-
-    if(me.panel){
-      bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
-    }
-
-    bodyHeight -= gridBorders[0] + gridBorders[2];
-
-    if(me.body){
-      me.body.css('height', bodyHeight);
-    }
-
-    if(me.leftBody){
-      me.leftBody.css('height', bodyHeight);
-    }
-
-    if(me.rightBody){
-      me.rightBody.css('height', bodyHeight);
-    }
-
-    me.el.css('height', value);
-    me.height = value;
-
-    me.scroller.update();
-  },
-  /*
-   * @param {String} key
-   * @param {*} value
-   * @return {Array}
-   */
-  find: function(key, value){
-    return this.store.find(key, value);
-  },
-  /*
-   * @param {String} key
-   * @param {*} value
-   * @return {Array}
-   */
-  findItem: function(key, value){
-    return this.store.findItem(key, value);
-  },
-  /*
-   * @param {Function} fn
-   * @param {Object} scope
-   */
-  each: function(fn, scope){
-    this.store.each(fn, scope);
-  },
-  /*
-   *
-   */
-  onActivate: function(){
-    var me = this,
-      doc = Fancy.get(document);
-
-    setTimeout(function(){
-      doc.on('click', me.onDeactivateClick, me);
-    }, 100);
-  },
-  /*
-   *
-   */
-  onDeActivate: function(){
-    var me = this,
-      doc = Fancy.get(document);
-
-    me.activated = false;
-    doc.un('click', me.onDeactivateClick, me);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDeactivateClick: function(e){
-    var me = this,
-      i = 0,
-      iL = 20,
-      parent = Fancy.get(e.target);
-
-    for(;i<iL;i++){
-      if(!parent.dom){
-        return;
+        if (me.groupheader) {
+          bodyHeight -= me.cellHeaderHeight;
+        }
       }
 
-      if(!parent.dom.tagName || parent.dom.tagName.toLocaleLowerCase() === 'body'){
-        me.fire('deactivate');
-        return;
+      if (me.panel) {
+        bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
       }
 
-      if(parent.hasCls(me.widgetCls)){
-        return;
+      bodyHeight -= gridBorders[0] + gridBorders[2];
+
+      if (me.body) {
+        me.body.css('height', bodyHeight);
       }
 
-      parent = parent.parent();
-    }
-  },
-  /*
-   * @param {Array} keys
-   * @param {Array} values
-   */
-  search: function(keys, values){
-    var me = this;
-
-    me.searching.search(keys, values);
-  },
-  /*
-   *
-   */
-  stopSelection: function(){
-    var me = this;
-
-    if(me.selection){
-      me.selection.stopSelection();
-    }
-  },
-  /*
-   * @param {Boolean} value
-   */
-  enableSelection: function(value){
-    var me = this;
-
-    if(me.selection){
-      me.selection.enableSelection(value);
-    }
-  },
-  /*
-   * @param {String} side
-   * @param {Number} index
-   */
-  hideColumn: function(side, index){
-    var me = this,
-      body = me.getBody(side),
-      header = me.getHeader(side),
-      columns = me.getColumns(side),
-      orderIndex,
-      i = 0,
-      iL = columns.length,
-      column,
-      centerEl = me.centerEl,
-      leftEl = me.leftEl,
-      leftHeader = me.leftHeader,
-      rightEl = me.rightEl,
-      rightHeader = me.rightHeader;
-
-    for(;i<iL;i++){
-      column = columns[i];
-
-      if(column.index === index){
-        orderIndex = i;
-        column.hidden = true;
-        break;
-      }
-    }
-
-    header.hideCell(orderIndex);
-    body.hideColumn(orderIndex);
-
-    if(me.rowedit){
-      me.rowedit.hideField(orderIndex, side);
-    }
-
-    switch(side){
-      case 'left':
-        leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
-        leftHeader.css('width', parseInt(leftHeader.css('width')) - column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        me.body.css('width', parseInt(me.body.css('width')) + column.width);
-        me.header.css('width', parseInt(me.header.css('width')) + column.width);
-        break;
-      case 'right':
-        rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
-        rightHeader.css('width', parseInt(rightHeader.css('width')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        me.body.css('width', parseInt(me.body.css('width')) + column.width);
-        me.header.css('width', parseInt(me.header.css('width')) + column.width);
-        break;
-    }
-  },
-  /*
-   * @param {String} side
-   * @param {Number} index
-   */
-  showColumn: function(side, index){
-    var me = this,
-      body = me.getBody(side),
-      header = me.getHeader(side),
-      columns = me.getColumns(side),
-      orderIndex,
-      i = 0,
-      iL = columns.length,
-      column,
-      centerEl = me.centerEl,
-      leftEl = me.leftEl,
-      leftHeader = me.leftHeader,
-      rightEl = me.rightEl,
-      rightHeader = me.rightHeader;
-
-    for(;i<iL;i++){
-      column = columns[i];
-
-      if(column.index === index){
-        orderIndex = i;
-        column.hidden = false;
-        break;
-      }
-    }
-
-    header.showCell(orderIndex);
-    body.showColumn(orderIndex);
-
-    if(me.rowedit){
-      me.rowedit.showField(orderIndex, side);
-    }
-
-    switch(side){
-      case 'left':
-        leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
-        leftHeader.css('width', parseInt(leftHeader.css('width')) + column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        me.body.css('width', parseInt(me.body.css('width')) - column.width);
-        me.header.css('width', parseInt(me.header.css('width')) - column.width);
-        break;
-      case 'right':
-        rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
-        rightHeader.css('width', parseInt(rightHeader.css('width')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        me.body.css('width', parseInt(me.body.css('width')) - column.width);
-        me.header.css('width', parseInt(me.header.css('width')) - column.width);
-        break;
-    }
-  },
-  /*
-   * @param {Number} indexOrder
-   * @param {String} side
-   * @return {Object}
-   */
-  removeColumn: function(indexOrder, side){
-    var me = this,
-      leftEl = me.leftEl,
-      leftHeader = me.leftHeader,
-      leftBody = me.leftBody,
-      centerEl = me.centerEl,
-      body = me.body,
-      header = me.header,
-      rightEl = me.rightEl,
-      rightBody = me.rightBody,
-      rightHeader = me.rightHeader,
-      column;
-
-    switch(side){
-      case 'left':
-        column = me.leftColumns[indexOrder];
-        me.leftColumns.splice(indexOrder, 1);
-        leftHeader.removeCell(indexOrder);
-        leftHeader.reSetIndexes();
-        leftBody.removeColumn(indexOrder);
-        leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        body.css('width', parseInt(body.css('width')) + column.width);
-        header.css('width', parseInt(header.css('width')) + column.width);
-        break;
-      case 'center':
-        column = me.columns[indexOrder];
-        me.columns.splice(indexOrder, 1);
-        header.removeCell(indexOrder);
-        header.reSetIndexes();
-        body.removeColumn(indexOrder);
-        break;
-      case 'right':
-        column = me.rightColumns[indexOrder];
-        me.rightColumns.splice(indexOrder, 1);
-        rightHeader.removeCell(indexOrder);
-        rightHeader.reSetIndexes();
-        rightBody.removeColumn(indexOrder);
-        rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-        header.css('width', parseInt(header.css('width')) + column.width);
-        body.css('width', parseInt(body.css('width')) + column.width);
-        break;
-    }
-
-    if(column.grouping){
-      delete column.grouping;
-    }
-
-    if(me.summary){
-      me.summary.removeColumn(indexOrder, side);
-    }
-
-    return column;
-  },
-  /*
-   * @param {Object} column
-   * @param {Number} index
-   * @param {String} side
-   * @param {String} fromSide
-   */
-  insertColumn: function(column, index, side, fromSide){
-    var me = this,
-      leftEl = me.leftEl,
-      leftBody = me.leftBody,
-      leftHeader = me.leftHeader,
-      centerEl = me.centerEl,
-      body = me.body,
-      header = me.header,
-      rightEl = me.rightEl,
-      rightBody = me.rightBody,
-      rightHeader = me.rightHeader;
-
-    side = side || 'center';
-
-    switch(side){
-      case 'center':
-        me.columns.splice(index, 0, column);
-        header.insertCell(index, column);
-        header.reSetIndexes();
-        body.insertColumn(index, column);
-        break;
-      case 'left':
-        me.leftColumns.splice(index, 0, column);
-        leftHeader.insertCell(index, column);
-        leftHeader.reSetIndexes();
-        leftBody.insertColumn(index, column);
-        leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
-        body.el.css('width', parseInt(body.el.css('width')) - column.width);
-        header.el.css('width', parseInt(header.el.css('width')) - column.width);
-        break;
-      case 'right':
-        me.rightColumns.splice(index, 0, column);
-        rightHeader.insertCell(index, column);
-        rightHeader.reSetIndexes();
-        rightBody.insertColumn(index, column);
-        rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
-        centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-        body.css('width', parseInt(body.css('width')) - column.width);
-        header.css('width', parseInt(header.css('width')) - column.width);
-        break;
-    }
-
-    if(column.menu){
-      column.menu = true;
-    }
-
-    if(me.grouping){
-      me.grouping.updateGroupRows();
-      me.grouping.setCellsPosition(index, side);
-    }
-
-    if(column.rowEditor){
-      if(side === 'left'){
-        index--;
+      if (me.leftBody) {
+        me.leftBody.css('height', bodyHeight);
       }
 
-      me.rowedit.moveEditor(column, index, side, fromSide);
-    }
+      if (me.rightBody) {
+        me.rightBody.css('height', bodyHeight);
+      }
 
-    if(me.summary){
-      me.summary.insertColumn(index, side);
-    }
+      me.el.css('height', value);
+      me.height = value;
 
-    me.header.destroyMenus();
-    me.leftHeader.destroyMenus();
-    me.rightHeader.destroyMenus();
-  },
-  /*
-   * @param {Number} orderIndex
-   * @param {String} legend
-   */
-  disableLegend: function(orderIndex, legend){
-    var me = this;
+      me.scroller.update();
+    },
+    /*
+     * @param {String} key
+     * @param {*} value
+     * @return {Array}
+     */
+    find: function (key, value) {
+      return this.store.find(key, value);
+    },
+    /*
+     * @param {String} key
+     * @param {*} value
+     * @return {Array}
+     */
+    findItem: function (key, value) {
+      return this.store.findItem(key, value);
+    },
+    /*
+     * @param {Function} fn
+     * @param {Object} scope
+     */
+    each: function (fn, scope) {
+      this.store.each(fn, scope);
+    },
+    /*
+     *
+     */
+    onActivate: function () {
+      var me = this,
+        doc = F.get(document);
 
-    me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
-    me.columns[orderIndex].disabled[legend] = true;
+      setTimeout(function () {
+        doc.on('click', me.onDeactivateClick, me);
+      }, 100);
+    },
+    /*
+     *
+     */
+    onDeActivate: function () {
+      var me = this,
+        doc = F.get(document);
 
-    me.body.updateRows(undefined, orderIndex);
-  },
-  /*
-   * @param {Number} orderIndex
-   * @param {String} legend
-   */
-  enableLegend: function(orderIndex, legend){
-    var me = this;
+      me.activated = false;
+      doc.un('click', me.onDeactivateClick, me);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDeactivateClick: function (e) {
+      var me = this,
+        i = 0,
+        iL = 20,
+        parent = F.get(e.target);
 
-    me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
-    delete me.columns[orderIndex].disabled[legend];
+      for (; i < iL; i++) {
+        if (!parent.dom) {
+          return;
+        }
 
-    me.body.updateRows(undefined, orderIndex);
-  },
-  /*
-   *
-   */
-  fitHeight: function(){
-    var me = this,
-      s = me.store,
-      panelBodyBorders = me.panelBodyBorders,
-      gridBorders = me.gridBorders,
-      height = s.getLength() * me.cellHeight;
+        if (!parent.dom.tagName || parent.dom.tagName.toLocaleLowerCase() === 'body') {
+          me.fire('deactivate');
+          return;
+        }
 
-    if(me.title){
-      height += me.titleHeight;
-    }
+        if (parent.hasCls(me.widgetCls)) {
+          return;
+        }
 
-    if(me.tbar){
-      height += me.barHeight;
-    }
+        parent = parent.parent();
+      }
+    },
+    /*
+     * @param {Array} keys
+     * @param {Array} values
+     */
+    search: function (keys, values) {
+      var me = this;
 
-    if(me.bbar){
-      height += me.barHeight;
-    }
+      me.searching.search(keys, values);
+    },
+    /*
+     *
+     */
+    stopSelection: function () {
+      var me = this;
 
-    if(me.buttons){
-      height += me.barHeight;
-    }
+      if (me.selection) {
+        me.selection.stopSelection();
+      }
+    },
+    /*
+     * @param {Boolean} value
+     */
+    enableSelection: function (value) {
+      var me = this;
 
-    if(me.subTBar){
-      height += me.barHeight;
-    }
+      if (me.selection) {
+        me.selection.enableSelection(value);
+      }
+    },
+    /*
+     * @param {String} side
+     * @param {Number} index
+     */
+    hideColumn: function (side, index) {
+      var me = this,
+        body = me.getBody(side),
+        header = me.getHeader(side),
+        columns = me.getColumns(side),
+        orderIndex,
+        i = 0,
+        iL = columns.length,
+        column,
+        centerEl = me.centerEl,
+        leftEl = me.leftEl,
+        leftHeader = me.leftHeader,
+        rightEl = me.rightEl,
+        rightHeader = me.rightHeader;
 
-    if(me.footer){
-      height += me.barHeight;
-    }
+      for (; i < iL; i++) {
+        column = columns[i];
 
-    if(me.header !== false){
-      height += me.cellHeaderHeight;
-      if(me.filter && me.filter.header){
+        if (column.index === index) {
+          orderIndex = i;
+          column.hidden = true;
+          break;
+        }
+      }
+
+      header.hideCell(orderIndex);
+      body.hideColumn(orderIndex);
+
+      if (me.rowedit) {
+        me.rowedit.hideField(orderIndex, side);
+      }
+
+      switch (side) {
+        case 'left':
+          leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
+          leftHeader.css('width', parseInt(leftHeader.css('width')) - column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          me.body.css('width', parseInt(me.body.css('width')) + column.width);
+          me.header.css('width', parseInt(me.header.css('width')) + column.width);
+          break;
+        case 'right':
+          rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
+          rightHeader.css('width', parseInt(rightHeader.css('width')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          me.body.css('width', parseInt(me.body.css('width')) + column.width);
+          me.header.css('width', parseInt(me.header.css('width')) + column.width);
+          break;
+      }
+    },
+    /*
+     * @param {String} side
+     * @param {Number} index
+     */
+    showColumn: function (side, index) {
+      var me = this,
+        body = me.getBody(side),
+        header = me.getHeader(side),
+        columns = me.getColumns(side),
+        orderIndex,
+        i = 0,
+        iL = columns.length,
+        column,
+        centerEl = me.centerEl,
+        leftEl = me.leftEl,
+        leftHeader = me.leftHeader,
+        rightEl = me.rightEl,
+        rightHeader = me.rightHeader;
+
+      for (; i < iL; i++) {
+        column = columns[i];
+
+        if (column.index === index) {
+          orderIndex = i;
+          column.hidden = false;
+          break;
+        }
+      }
+
+      header.showCell(orderIndex);
+      body.showColumn(orderIndex);
+
+      if (me.rowedit) {
+        me.rowedit.showField(orderIndex, side);
+      }
+
+      switch (side) {
+        case 'left':
+          leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          leftHeader.css('width', parseInt(leftHeader.css('width')) + column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          me.body.css('width', parseInt(me.body.css('width')) - column.width);
+          me.header.css('width', parseInt(me.header.css('width')) - column.width);
+          break;
+        case 'right':
+          rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
+          rightHeader.css('width', parseInt(rightHeader.css('width')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          me.body.css('width', parseInt(me.body.css('width')) - column.width);
+          me.header.css('width', parseInt(me.header.css('width')) - column.width);
+          break;
+      }
+    },
+    /*
+     * @param {Number} indexOrder
+     * @param {String} side
+     * @return {Object}
+     */
+    removeColumn: function (indexOrder, side) {
+      var me = this,
+        leftEl = me.leftEl,
+        leftHeader = me.leftHeader,
+        leftBody = me.leftBody,
+        centerEl = me.centerEl,
+        body = me.body,
+        header = me.header,
+        rightEl = me.rightEl,
+        rightBody = me.rightBody,
+        rightHeader = me.rightHeader,
+        column;
+
+      switch (side) {
+        case 'left':
+          column = me.leftColumns[indexOrder];
+          me.leftColumns.splice(indexOrder, 1);
+          leftHeader.removeCell(indexOrder);
+          leftHeader.reSetIndexes();
+          leftBody.removeColumn(indexOrder);
+          leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          body.css('width', parseInt(body.css('width')) + column.width);
+          header.css('width', parseInt(header.css('width')) + column.width);
+          break;
+        case 'center':
+          column = me.columns[indexOrder];
+          me.columns.splice(indexOrder, 1);
+          header.removeCell(indexOrder);
+          header.reSetIndexes();
+          body.removeColumn(indexOrder);
+          break;
+        case 'right':
+          column = me.rightColumns[indexOrder];
+          me.rightColumns.splice(indexOrder, 1);
+          rightHeader.removeCell(indexOrder);
+          rightHeader.reSetIndexes();
+          rightBody.removeColumn(indexOrder);
+          rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
+          header.css('width', parseInt(header.css('width')) + column.width);
+          body.css('width', parseInt(body.css('width')) + column.width);
+          break;
+      }
+
+      if (column.grouping) {
+        delete column.grouping;
+      }
+
+      if (me.summary) {
+        me.summary.removeColumn(indexOrder, side);
+      }
+
+      return column;
+    },
+    /*
+     * @param {Object} column
+     * @param {Number} index
+     * @param {String} side
+     * @param {String} fromSide
+     */
+    insertColumn: function (column, index, side, fromSide) {
+      var me = this,
+        leftEl = me.leftEl,
+        leftBody = me.leftBody,
+        leftHeader = me.leftHeader,
+        centerEl = me.centerEl,
+        body = me.body,
+        header = me.header,
+        rightEl = me.rightEl,
+        rightBody = me.rightBody,
+        rightHeader = me.rightHeader;
+
+      side = side || 'center';
+
+      switch (side) {
+        case 'center':
+          me.columns.splice(index, 0, column);
+          header.insertCell(index, column);
+          header.reSetIndexes();
+          body.insertColumn(index, column);
+          break;
+        case 'left':
+          me.leftColumns.splice(index, 0, column);
+          leftHeader.insertCell(index, column);
+          leftHeader.reSetIndexes();
+          leftBody.insertColumn(index, column);
+          leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
+          body.el.css('width', parseInt(body.el.css('width')) - column.width);
+          header.el.css('width', parseInt(header.el.css('width')) - column.width);
+          break;
+        case 'right':
+          me.rightColumns.splice(index, 0, column);
+          rightHeader.insertCell(index, column);
+          rightHeader.reSetIndexes();
+          rightBody.insertColumn(index, column);
+          rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
+          body.css('width', parseInt(body.css('width')) - column.width);
+          header.css('width', parseInt(header.css('width')) - column.width);
+          break;
+      }
+
+      if (column.menu) {
+        column.menu = true;
+      }
+
+      if (me.grouping) {
+        me.grouping.updateGroupRows();
+        me.grouping.setCellsPosition(index, side);
+      }
+
+      if (column.rowEditor) {
+        if (side === 'left') {
+          index--;
+        }
+
+        me.rowedit.moveEditor(column, index, side, fromSide);
+      }
+
+      if (me.summary) {
+        me.summary.insertColumn(index, side);
+      }
+
+      me.header.destroyMenus();
+      me.leftHeader.destroyMenus();
+      me.rightHeader.destroyMenus();
+    },
+    /*
+     * @param {Number} orderIndex
+     * @param {String} legend
+     */
+    disableLegend: function (orderIndex, legend) {
+      var me = this;
+
+      me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
+      me.columns[orderIndex].disabled[legend] = true;
+
+      me.body.updateRows(undefined, orderIndex);
+    },
+    /*
+     * @param {Number} orderIndex
+     * @param {String} legend
+     */
+    enableLegend: function (orderIndex, legend) {
+      var me = this;
+
+      me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
+      delete me.columns[orderIndex].disabled[legend];
+
+      me.body.updateRows(undefined, orderIndex);
+    },
+    /*
+     *
+     */
+    fitHeight: function () {
+      var me = this,
+        s = me.store,
+        panelBodyBorders = me.panelBodyBorders,
+        gridBorders = me.gridBorders,
+        height = s.getLength() * me.cellHeight;
+
+      if (me.title) {
+        height += me.titleHeight;
+      }
+
+      if (me.tbar) {
+        height += me.barHeight;
+      }
+
+      if (me.bbar) {
+        height += me.barHeight;
+      }
+
+      if (me.buttons) {
+        height += me.barHeight;
+      }
+
+      if (me.subTBar) {
+        height += me.barHeight;
+      }
+
+      if (me.footer) {
+        height += me.barHeight;
+      }
+
+      if (me.header !== false) {
         height += me.cellHeaderHeight;
-      }
-    }
-
-    if( me.panel ){
-      height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
-    }
-    else{
-      height += gridBorders[0] + gridBorders[2];
-    }
-
-    me.setHeight(height);
-  },
-  /*
-   * @param {String} index
-   * @param {Mixed} value
-   * @param {String} sign
-   */
-  addFilter: function(index, value, sign){
-    var me = this,
-      filter = me.filter.filters[index],
-      sign = sign || '';
-
-    if(filter === undefined){
-      filter = {};
-    }
-
-    if(Fancy.isDate(value)){
-      var format = this.getColumnByIndex(index).format;
-
-      filter['type'] = 'date';
-      filter['format'] = format;
-      value = Number(value);
-    }
-
-    if(value === ''){
-      delete filter[sign];
-    }
-    else{
-      filter[sign] = value;
-    }
-
-    me.filter.filters[index] = filter;
-    me.filter.updateStoreFilters();
-
-    me.filter.addValuesInColumnFields(index, value, sign);
-  },
-  /*
-   * @param {String} [index]
-   * @param {String} [sign]
-   */
-  clearFilter: function(index, sign){
-    var me = this,
-      s = me.store;
-
-    if(index === undefined){
-      me.filter.filters = {};
-      s.filters = {};
-    }
-    else if(sign === undefined){
-      me.filter.filters[index] = {};
-      s.filters[index] = {};
-    }
-    else{
-      if(me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign]){
-        delete me.filter.filters[index][sign];
-        delete s.filters[index][sign];
-      }
-    }
-
-    s.changeDataView();
-    me.update();
-
-    if(me.filter){
-      me.filter.clearColumnsFields(index, sign);
-    }
-  },
-  /*
-   * @param {String} text
-   */
-  showLoadMask: function(text){
-    this.loadmask.showLoadMask(text);
-  },
-  /*
-   *
-   */
-  hideLoadMask: function(){
-    this.loadmask.hideLoadMask();
-  },
-  /*
-   *
-   */
-  prevPage: function(){
-    this.paging.prevPage();
-  },
-  /*
-   *
-   */
-  nextPage: function(){
-    this.paging.nextPage();
-  },
-  /*
-   * @param {Number} value
-   */
-  setPage: function(value){
-    value--;
-    if(value < 0){
-      value = 0;
-    }
-
-    this.paging.setPage(value);
-  },
-  /*
-   *
-   */
-  firstPage: function(){
-    this.paging.firstPage();
-  },
-  /*
-   *
-   */
-  lastPage: function(){
-    this.paging.lastPage();
-  },
-  /*
-   * @param {Number} value
-   */
-  setPageSize: function(value){
-    this.paging.setPageSize(value);
-  },
-  /*
-   * @return {Number}
-   */
-  getPage: function(){
-    return this.store.showPage + 1;
-  },
-  /*
-   * @return {Number}
-   */
-  getPages: function(){
-    return this.store.pages;
-  },
-  /*
-   * @return {Number}
-   */
-  getPageSize: function(){
-    return this.store.pageSize;
-  },
-  /*
-   *
-   */
-  refresh: function(){
-    this.paging.refresh();
-  },
-  /*
-   * @param {Number} x
-   * @param {Number} y
-   */
-  scroll: function(x, y){
-    var me = this,
-      scroller = me.scroller;
-
-    scroller.scroll(x, y);
-
-    scroller.scrollBottomKnob();
-    scroller.scrollRightKnob();
-  },
-  /*
-   * @return {Array}
-   */
-  getDataFiltered: function(){
-    return this.store.filteredData;
-  },
-  /*
-   *
-   */
-  reCalcColumnsWidth: function(){
-    var me = this;
-
-    if(!me.hasFlexColumns) {
-      return;
-    }
-
-    var scroller = me.scroller,
-      viewWidth = me.getCenterViewWidth(),
-      columns = me.columns,
-      flex = 0,
-      i = 0,
-      iL = columns.length,
-      widthForFlex = viewWidth,
-      flexPerCent;
-
-    if(me.flexScrollSensitive !== false && scroller.isRightScrollable() && !scroller.nativeScroller){
-      widthForFlex -= me.bottomScrollHeight;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.flex){
-        flex += column.flex;
-      }
-      else{
-        widthForFlex -= column.width;
-      }
-    }
-
-    if(flex === 0){
-      return;
-    }
-
-    flexPerCent = widthForFlex/flex;
-
-    i = 0;
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.flex){
-        column.width = Math.floor(column.flex * flexPerCent);
-
-        if(column.minWidth && column.width < column.minWidth){
-          column.width = column.minWidth;
-        }
-        else if(column.width < me.minColumnWidth){
-          column.width = me.minColumnWidth;
+        if (me.filter && me.filter.header) {
+          height += me.cellHeaderHeight;
         }
       }
-    }
-  },
-  /*
-   * @return {Array}
-   */
-  getDisplayedData: function(){
-    var me = this,
-      viewTotal = me.getViewTotal(),
-      data = [],
-      i = 0,
-      leftColumns = me.leftColumns,
-      columns = me.columns,
-      rightColumns = me.rightColumns;
 
-    for(;i<viewTotal;i++){
-      var rowData = [];
+      if (me.panel) {
+        height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
+      }
+      else {
+        height += gridBorders[0] + gridBorders[2];
+      }
 
-      Fancy.each(leftColumns, function(column){
-        if(column.index === undefined){
-          return;
+      me.setHeight(height);
+    },
+    /*
+     * @param {String} index
+     * @param {Mixed} value
+     * @param {String} sign
+     */
+    addFilter: function (index, value, sign) {
+      var me = this,
+        filter = me.filter.filters[index],
+        sign = sign || '';
+
+      if (filter === undefined) {
+        filter = {};
+      }
+
+      if (F.isDate(value)) {
+        var format = this.getColumnByIndex(index).format;
+
+        filter['type'] = 'date';
+        filter['format'] = format;
+        value = Number(value);
+      }
+
+      if (value === '') {
+        delete filter[sign];
+      }
+      else {
+        filter[sign] = value;
+      }
+
+      me.filter.filters[index] = filter;
+      me.filter.updateStoreFilters();
+
+      me.filter.addValuesInColumnFields(index, value, sign);
+    },
+    /*
+     * @param {String} [index]
+     * @param {String} [sign]
+     */
+    clearFilter: function (index, sign) {
+      var me = this,
+        s = me.store;
+
+      if (index === undefined) {
+        me.filter.filters = {};
+        s.filters = {};
+      }
+      else if (sign === undefined) {
+        me.filter.filters[index] = {};
+        s.filters[index] = {};
+      }
+      else {
+        if (me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign]) {
+          delete me.filter.filters[index][sign];
+          delete s.filters[index][sign];
         }
-        rowData.push(me.get(i, column.index));
-      });
+      }
 
-      Fancy.each(columns, function(column){
-        if(column.index === undefined){
-          return;
+      s.changeDataView();
+      me.update();
+
+      if (me.filter) {
+        me.filter.clearColumnsFields(index, sign);
+      }
+    },
+    /*
+     * @param {String} text
+     */
+    showLoadMask: function (text) {
+      this.loadmask.showLoadMask(text);
+    },
+    /*
+     *
+     */
+    hideLoadMask: function () {
+      this.loadmask.hideLoadMask();
+    },
+    /*
+     *
+     */
+    prevPage: function () {
+      this.paging.prevPage();
+    },
+    /*
+     *
+     */
+    nextPage: function () {
+      this.paging.nextPage();
+    },
+    /*
+     * @param {Number} value
+     */
+    setPage: function (value) {
+      value--;
+      if (value < 0) {
+        value = 0;
+      }
+
+      this.paging.setPage(value);
+    },
+    /*
+     *
+     */
+    firstPage: function () {
+      this.paging.firstPage();
+    },
+    /*
+     *
+     */
+    lastPage: function () {
+      this.paging.lastPage();
+    },
+    /*
+     * @param {Number} value
+     */
+    setPageSize: function (value) {
+      this.paging.setPageSize(value);
+    },
+    /*
+     * @return {Number}
+     */
+    getPage: function () {
+      return this.store.showPage + 1;
+    },
+    /*
+     * @return {Number}
+     */
+    getPages: function () {
+      return this.store.pages;
+    },
+    /*
+     * @return {Number}
+     */
+    getPageSize: function () {
+      return this.store.pageSize;
+    },
+    /*
+     *
+     */
+    refresh: function () {
+      this.paging.refresh();
+    },
+    /*
+     * @param {Number} x
+     * @param {Number} y
+     */
+    scroll: function (x, y) {
+      var me = this,
+        scroller = me.scroller;
+
+      scroller.scroll(x, y);
+
+      scroller.scrollBottomKnob();
+      scroller.scrollRightKnob();
+    },
+    /*
+     * @return {Array}
+     */
+    getDataFiltered: function () {
+      return this.store.filteredData;
+    },
+    /*
+     *
+     */
+    reCalcColumnsWidth: function () {
+      var me = this;
+
+      if (!me.hasFlexColumns) {
+        return;
+      }
+
+      var scroller = me.scroller,
+        viewWidth = me.getCenterViewWidth(),
+        columns = me.columns,
+        flex = 0,
+        i = 0,
+        iL = columns.length,
+        widthForFlex = viewWidth,
+        flexPerCent;
+
+      if (me.flexScrollSensitive !== false && scroller.isRightScrollable() && !scroller.nativeScroller) {
+        widthForFlex -= me.bottomScrollHeight;
+      }
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.flex) {
+          flex += column.flex;
         }
-        rowData.push(me.get(i, column.index));
-      });
-
-      Fancy.each(rightColumns, function(column){
-        if(column.index === undefined){
-          return;
+        else {
+          widthForFlex -= column.width;
         }
-        rowData.push(me.get(i, column.index));
-      });
+      }
 
-      data.push(rowData);
+      if (flex === 0) {
+        return;
+      }
+
+      flexPerCent = widthForFlex / flex;
+
+      i = 0;
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.flex) {
+          column.width = Math.floor(column.flex * flexPerCent);
+
+          if (column.minWidth && column.width < column.minWidth) {
+            column.width = column.minWidth;
+          }
+          else if (column.width < me.minColumnWidth) {
+            column.width = me.minColumnWidth;
+          }
+        }
+      }
+    },
+    /*
+     * @return {Array}
+     */
+    getDisplayedData: function () {
+      var me = this,
+        viewTotal = me.getViewTotal(),
+        data = [],
+        i = 0,
+        leftColumns = me.leftColumns,
+        columns = me.columns,
+        rightColumns = me.rightColumns;
+
+      for (; i < viewTotal; i++) {
+        var rowData = [];
+
+        F.each(leftColumns, function (column) {
+          if (column.index === undefined) {
+            return;
+          }
+          rowData.push(me.get(i, column.index));
+        });
+
+        F.each(columns, function (column) {
+          if (column.index === undefined) {
+            return;
+          }
+          rowData.push(me.get(i, column.index));
+        });
+
+        F.each(rightColumns, function (column) {
+          if (column.index === undefined) {
+            return;
+          }
+          rowData.push(me.get(i, column.index));
+        });
+
+        data.push(rowData);
+      }
+
+      return data;
+    },
+    /*
+     *
+     */
+    exportToExcel: function () {
+      var me = this;
+
+      if (me.exporter) {
+        me.exporter.exportToExcel();
+      }
     }
+  });
 
-    return data;
-  },
-  /*
-   *
-   */
-  exportToExcel: function(){
-    var me = this;
-
-    if(me.exporter){
-      me.exporter.exportToExcel();
-    }
-  }
-});
+})();
 /**
  * @class Fancy.Grid
  * @extends Fancy.Widget
@@ -22620,68 +22783,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   prefix: 'fancy-grid-',
   cls: '',
   widgetCls: Fancy.GRID_CLS,
-  // Cell cls-s
-  cellCls: Fancy.GRID_CELL_CLS,
-  cellInnerCls: 'fancy-grid-cell-inner',
-  cellEvenCls: 'fancy-grid-cell-even',
-  cellOverCls: Fancy.GRID_CELL_OVER_CLS,
-  cellSelectedCls: Fancy.GRID_CELL_SELECTED_CLS,
-  // Cell Header cls-s
-  cellHeaderCls: 'fancy-grid-header-cell',
-  cellHeaderSelectCls: 'fancy-grid-header-cell-select',
-  cellHeaderDoubleCls: 'fancy-grid-header-cell-double',
-  cellHeaderTripleCls: 'fancy-grid-header-cell-triple',
-  cellHeaderTriggerCls: 'fancy-grid-header-cell-trigger',
-  cellHeaderTriggerImageCls: 'fancy-grid-header-cell-trigger-image',
-  cellHeaderGroupLevel1: 'fancy-grid-header-cell-group-level-1',
-  cellHeaderGroupLevel2: 'fancy-grid-header-cell-group-level-2',
-  filterHeaderCellCls: 'fancy-grid-header-filter-cell',//TODO: rename to cellHeaderFilterCls
-  //Column header cls-s sorting
-  clsASC: 'fancy-grid-column-sort-ASC',
-  clsDESC: 'fancy-grid-column-sort-DESC',
-  //Column cls-s
-  columnCls: Fancy.GRID_COLUMN_CLS,
-  columnOverCls: Fancy.GRID_COLUMN_OVER_CLS,
-  columnSelectedCls: Fancy.GRID_COLUMN_SELECTED_CLS,
-  columnColorCls: 'fancy-grid-column-color',
-  columnTextCls: 'fancy-grid-column-text',
-  columnWithEllipsisCls: 'fancy-grid-column-ellipsis',
-  columnOrderCls: 'fancy-grid-column-order',
-  columnSelectCls: Fancy.GRID_COLUMN_SELECT_CLS,
-  columnResizerCls: 'fancy-grid-column-resizer',
-  //Column spark cls-s
-  columnSparkCls: 'fancy-grid-column-sparkline',
-  columnSparkBulletCls: 'fancy-grid-column-sparkline-bullet',
-  columnSparkCircleCls: 'fancy-grid-column-chart-circle',
-  columnSparkDonutProgressCls: 'fancy-grid-column-spark-progress-donut',
-  columnGrossLossCls: 'fancy-grid-column-grossloss',
-  columnProgressCls: 'fancy-grid-column-progress',
-  columnSparkHBarCls: 'fancy-grid-column-h-bar',
-  //Row cls-s
-  clsGroupRow: 'fancy-grid-group-row',//TODO: rename to rowGroupCls
-  clsCollapsedRow: 'fancy-grid-group-row-collapsed',//TODO: rename to rowCollapsedCls
-  clsSummaryContainer: 'fancy-grid-summary-container',//TODO: rename to ???
-  clsSummaryRow: 'fancy-grid-summary-row',//TODO: rename to rowSummaryCls
-  rowSummaryBottomCls: 'fancy-grid-summary-row-bottom',
-  rowEditCls: 'fancy-grid-row-edit',
-  rowEditButtonCls: 'fancy-grid-row-edit-buttons',
-
-  pseudoCellCls: 'fancy-grid-pseudo-cell',
-  rowOverCls: Fancy.GRID_ROW_OVER_CLS,
-
-  expandRowCls: 'fancy-grid-expand-row',//TODO: rename to rowExpandCls
-  expandRowOverCls: 'fancy-grid-expand-row-over',//TODO: rename to rowExpandOverCls
-  expandRowSelectedCls: 'fancy-grid-expand-row-selected', //TODO: rename to rowExpandSelectedCls
-
-  leftEmptyCls: 'fancy-grid-left-empty',
-  rightEmptyCls: 'fancy-grid-right-empty',
-
-  centerCls: 'fancy-grid-center',
-  leftCls: 'fancy-grid-left',
-  rightCls: 'fancy-grid-right',
-
-  headerCls: Fancy.GRID_HEADER_CLS,
-
   header: true,
   shadow: true,
   striped: true,
@@ -22754,6 +22855,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
+      'columndrag',
       'scroll', 'nativescroll',
       'remove',
       'set',
@@ -23040,6 +23142,62 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     me.fire('unlockcolumn');
+  },
+  /*
+   * @param {String} fromSide
+   * @param {String} toSide
+   * @param {Number} fromIndex
+   * @param {Number} toIndex
+   */
+  moveColumn: function (fromSide, toSide, fromIndex, toIndex) {
+    var me = this,
+      removedColumn;
+
+    if(fromSide === 'center'){
+      removedColumn = me.removeColumn(fromIndex, 'center');
+      switch(toSide){
+        case 'left':
+          me.insertColumn(removedColumn, toIndex, 'left', 'center');
+          break;
+        case 'right':
+          me.insertColumn(removedColumn, toIndex, 'right', 'center');
+          break;
+      }
+    }
+    else if(fromSide === 'left'){
+      removedColumn = me.removeColumn(fromIndex, 'left');
+      switch(toSide){
+        case 'center':
+          me.insertColumn(removedColumn, toIndex, 'center', 'left');
+          break;
+        case 'right':
+          me.insertColumn(removedColumn, toIndex, 'right', 'left');
+          break;
+      }
+    }
+    else if(fromSide === 'right'){
+      removedColumn = me.removeColumn(fromIndex, 'right');
+      switch(toSide){
+        case 'center':
+          me.insertColumn(removedColumn, toIndex, 'center', 'right');
+          break;
+        case 'left':
+          me.insertColumn(removedColumn, toIndex, 'left', 'right');
+          break;
+      }
+    }
+
+    if(me.groupheader){
+      me.header.fixGroupHeaderSizing();
+
+      if(me.leftColumns){
+        me.leftHeader.fixGroupHeaderSizing();
+      }
+
+      if(me.rightColumns){
+        me.rightHeader.fixGroupHeaderSizing();
+      }
+    }
   }
 });
 
@@ -23074,11 +23232,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
+    Fancy.applyConfig(this, config);
 
-    Fancy.applyConfig(me, config);
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -23088,8 +23244,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    *
    */
   update: function(){
-    var me = this,
-      w = me.widget;
+    var w = this.widget;
 
     w.leftBody.update();
     w.body.update();
@@ -23099,8 +23254,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {Number} rowIndex
    */
   updateRow: function(rowIndex){
-    var me = this,
-      w = me.widget;
+    var w = this.widget;
 
     w.leftBody.updateRows(rowIndex);
     w.body.updateRows(rowIndex);
@@ -23112,6 +23266,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
  * @extends Fancy.Plugin
  */
 (function(){
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
@@ -23124,10 +23281,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
   var BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
   var RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
   var BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
-  var HIDDEN_CLS = Fancy.HIDDEN_CLS;
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
 
-  Fancy.define('Fancy.grid.plugin.Scroller', {
-    extend: Fancy.Plugin,
+  F.define('Fancy.grid.plugin.Scroller', {
+    extend: F.Plugin,
     ptype: 'grid.scroller',
     inWidgetName: 'scroller',
     rightKnobDown: false,
@@ -23136,23 +23295,22 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     minBottomKnobWidth: 35,
     cornerSize: 12,
     /*
+     * @private
+     */
+    scrollLeft: 0,
+    /*
      * @constructor
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      me.Super('const', arguments);
+      this.Super('const', arguments);
     },
     /*
      *
      */
     init: function () {
-      var me = this;
-
-      me.Super('init', arguments);
-
-      me.ons();
+      this.Super('init', arguments);
+      this.ons();
     },
     /*
      *
@@ -23160,7 +23318,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     ons: function () {
       var me = this,
         w = me.widget,
-        mouseWheelEventName = Fancy.getMouseWheelEventName();
+        mouseWheelEventName = F.getMouseWheelEventName();
 
       w.once('render', function () {
         me.render();
@@ -23175,6 +23333,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
         if (w.nativeScroller) {
           w.body.el.on('scroll', me.onNativeScrollBody, me);
+          w.leftBody.el.on('scroll', me.onNativeScrollLeftBody, me);
+          w.rightBody.el.on('scroll', me.onNativeScrollRightBody, me);
         }
       });
 
@@ -23191,8 +23351,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = Fancy.get(document),
-        mouseWheelEventName = Fancy.getMouseWheelEventName();
+        docEl = F.get(document),
+        mouseWheelEventName = F.getMouseWheelEventName();
 
       docEl.un('mouseup', me.onMouseUpDoc, me);
       docEl.un('mousemove', me.onMouseMoveDoc, me);
@@ -23204,7 +23364,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.scrollBottomEl.un('mousedown', me.onMouseDownBottomSpin, me);
       me.scrollRightEl.un('mousedown', me.onMouseDownRightSpin, me);
 
-      if (Fancy.isTouch) {
+      if (F.isTouch) {
         leftBody.el.un('touchstart', me.onBodyTouchStart, me);
         leftBody.el.un('touchmove', me.onBodyTouchMove, me);
 
@@ -23223,7 +23383,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onGridInit: function () {
       var me = this,
         w = me.widget,
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       me.setScrollBars();
       docEl.on('mouseup', me.onMouseUpDoc, me);
@@ -23245,8 +23405,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       var me = this,
         w = me.widget,
         body = w.body,
-        rightScrollEl = Fancy.get(document.createElement('div')),
-        bottomScrollEl = Fancy.get(document.createElement('div')),
+        rightScrollEl = F.get(document.createElement('div')),
+        bottomScrollEl = F.get(document.createElement('div')),
         right = 1;
 
       if (w.nativeScroller) {
@@ -23266,10 +23426,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           '<div class="' + BOTTOM_SCROLL_INNER_CLS + '"></div>'
         ].join(" "));
 
-        Fancy.get(body.el.append(rightScrollEl.dom));
+        F.get(body.el.append(rightScrollEl.dom));
         me.scrollRightEl = body.el.select('.fancy-scroll-right');
 
-        Fancy.get(body.el.append(bottomScrollEl.dom));
+        F.get(body.el.append(bottomScrollEl.dom));
         me.scrollBottomEl = body.el.select('.fancy-scroll-bottom');
       }
 
@@ -23281,7 +23441,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onMouseWheel: function (e) {
       var me = this,
         w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e);
+        delta = F.getWheelDelta(e.originalEvent || e);
 
       if (me.isRightScrollable() == false) {
         return;
@@ -23327,7 +23487,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         me.initBottomScroll();
       }
 
-      if (Fancy.isTouch) {
+      if (F.isTouch) {
         me.initTouch();
       }
     },
@@ -23340,7 +23500,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = Fancy.get(document);
+        docEl = F.get(document);
 
       leftBody.el.on('touchstart', me.onBodyTouchStart, me);
       leftBody.el.on('touchmove', me.onBodyTouchMove, me);
@@ -23379,9 +23539,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onBodyTouchEnd: function () {
-      var me = this;
-
-      me.onMouseUpDoc();
+      this.onMouseUpDoc();
     },
     /*
      * @param {Object} e
@@ -23428,7 +23586,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onMouseDownRightSpin: function (e) {
       var me = this;
 
-      if (Fancy.isTouch) {
+
+      if (F.isTouch) {
         return;
       }
 
@@ -23492,7 +23651,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         marginLeft;
 
       if (me.rightKnobDown) {
-        if (Fancy.isTouch) {
+        if (F.isTouch) {
           deltaY = me.mouseDownXY.y - y;
           marginTop = deltaY + me.rightKnobTop;
         }
@@ -23520,7 +23679,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       if (me.bottomKnobDown) {
-        if (Fancy.isTouch) {
+        if (F.isTouch) {
           deltaX = me.mouseDownXY.x - x;
           deltaY = me.mouseDownXY.y - y;
           marginLeft = deltaX + me.bottomKnobLeft;
@@ -23606,14 +23765,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     isRightScrollable: function () {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
       if (w.nativeScroller) {
         return w.body.el.css('overflow-y') === 'scroll';
       }
 
-      return !me.scrollRightEl.hasCls(HIDDEN_CLS);
+      return !this.scrollRightEl.hasCls(HIDDEN_CLS);
     },
     /*
      *
@@ -23816,28 +23974,20 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @return {Number}
      */
     getScroll: function () {
-      var me = this,
-        w = me.widget;
-
-      return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('top')));
+      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
     },
     /*
      * @return {Number}
      */
     getBottomScroll: function () {
-      var me = this,
-        w = me.widget;
-
-      return Math.abs(parseInt(w.body.el.select('.' + w.columnCls).item(0).css('left')));
+      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
     },
     /*
      *
      */
     update: function () {
-      var me = this;
-
-      me.setScrollBars();
-      me.checkScroll();
+      this.setScrollBars();
+      this.checkScroll();
     },
     /*
      *
@@ -23849,9 +23999,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onColumnResize: function () {
-      var me = this;
-
-      me.setScrollBars();
+      this.setScrollBars();
     },
     /*
      *
@@ -23877,7 +24025,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
-        cellEl = Fancy.get(cell),
+        cellEl = F.get(cell),
         columnEl = cellEl.parent(),
         rowIndex = Number(cellEl.attr('index')),
         columnIndex = Number(columnEl.attr('index')),
@@ -23887,7 +24035,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bottomScroll = me.getBottomScroll(),
         bodyViewWidth = parseInt(w.body.el.css('width')),
         passedWidth = 0,
-        isCenterBody = columnEl.parent().parent().hasCls(w.centerCls);
+        isCenterBody = columnEl.parent().parent().hasCls(GRID_CENTER_CLS);
 
       if(w.nativeScroller){
         return;
@@ -23942,27 +24090,53 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         scrollTop = w.body.el.dom.scrollTop,
         scrollLeft = w.body.el.dom.scrollLeft;
 
-      if (w.header) {
+      if(w.header){
         w.header.scroll(-scrollLeft);
       }
 
-      if (w.leftBody) {
+      if (w.leftBody){
         w.leftBody.el.dom.scrollTop = scrollTop;
       }
 
-      if (w.rightBody) {
+      if (w.rightBody){
         w.rightBody.el.dom.scrollTop = scrollTop;
+      }
+
+      if(w.leftColumns.length && w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        w.body.el.dom.scrollTop = w.leftBody.el.dom.scrollTop;
+      }
+      else if(w.rightColumns.length && w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        w.body.el.dom.scrollTop = w.rightBody.el.dom.scrollTop;
       }
 
       w.fire('nativescroll');
     },
     /*
+     *
+     */
+    onNativeScrollLeftBody: function(){
+      var w = this.widget;
+
+      if(w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        this.onNativeScrollBody();
+      }
+    },
+    /*
+     *
+     */
+    onNativeScrollRightBody: function(){
+      var w = this.widget;
+
+      if(w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
+        this.onNativeScrollBody();
+      }
+    },
+    /*
      * @param {Object} e
      */
     onMouseWheelLeft: function (e) {
-      var me = this,
-        w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e),
+      var w = this.widget,
+        delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
       w.leftBody.el.dom.scrollTop -= scrollTop;
@@ -23973,9 +24147,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {Object} e
      */
     onMouseWheelRight: function (e) {
-      var me = this,
-        w = me.widget,
-        delta = Fancy.getWheelDelta(e.originalEvent || e),
+      var w = this.widget,
+        delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
       w.leftBody.el.dom.scrollTop -= scrollTop;
@@ -23986,31 +24159,22 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     },
     /*
      *
      */
     onRightLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     },
     /*
      *
      */
     onUnLockColumn: function () {
-      var me = this,
-        w = me.widget;
-
-      me.update();
-      w.setColumnsPosition();
+      this.update();
+      this.widget.setColumnsPosition();
     }
   });
 
@@ -24019,299 +24183,300 @@ Fancy.define('Fancy.grid.plugin.Updater', {
  * @class Fancy.grid.plugin.Sorter
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.Sorter', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.sorter',
-  inWidgetName: 'sorter',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_COLUMN_SORT_ASC = F.GRID_COLUMN_SORT_ASC;
+  var GRID_COLUMN_SORT_DESC = F.GRID_COLUMN_SORT_DESC;
+  var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
+  var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
+  var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.Sorter', {
+    extend: F.Plugin,
+    ptype: 'grid.sorter',
+    inWidgetName: 'sorter',
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
+      w.once('render', function () {
+        me.onsHeaders();
+      });
+    },
+    /*
+     *
+     */
+    onsHeaders: function () {
+      var me = this,
+        w = me.widget;
 
-    w.once('render', function(){
-     me.onsHeaders();
-    });
-  },
-  /*
-   *
-   */
-  onsHeaders: function(){
-    var me = this,
-      w = me.widget;
+      w.on('headercellclick', me.onHeaderCellClick, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onHeaderCellClick: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        cellEl = F.get(o.cell),
+        side = o.side,
+        index = o.index,
+        action,
+        columns,
+        column,
+        key,
+        e = o.e,
+        target = e.target;
 
-    w.on('headercellclick', me.onHeaderCellClick, me);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onHeaderCellClick: function(grid, o){
-    var me = this,
-      w = me.widget,
-      cellEl = Fancy.get(o.cell),
-      side = o.side,
-      index = o.index,
-      action,
-      clsASC = w.clsASC,
-      clsDESC = w.clsDESC,
-      columns,
-      column,
-      key,
-      e = o.e,
-      target = e.target;
+      if (target.tagName.toLocaleLowerCase() === 'input') {
+        return;
+      }
 
-    if(target.tagName.toLocaleLowerCase() === 'input'){
-      return;
-    }
+      var field = cellEl.select('.' + FIELD_CLS);
+      if (field.length > 0 && field.item(0).within(target) === true) {
+        return;
+      }
 
-    var field = cellEl.select('.' + Fancy.FIELD_CLS);
-    if(field.length > 0 && field.item(0).within(target) === true){
-       return;
-    }
+      if (cellEl.hasCls(GRID_COLUMN_RESIZER_CLS) || w.startResizing) {
+        return;
+      }
 
-    if(cellEl.hasCls(w.columnResizerCls) || w.startResizing){
-      return;
-    }
+      columns = w.getColumns(side);
 
-    columns = w.getColumns(side);
+      if (cellEl.hasCls(GRID_COLUMN_SORT_ASC)) {
+        action = 'desc';
+      }
+      else if (cellEl.hasCls(GRID_COLUMN_SORT_DESC)) {
+        action = 'asc';
+      }
+      else {
+        action = 'asc';
+      }
 
-    if(cellEl.hasCls(clsASC)){
-      action = 'desc';
-    }
-    else if(cellEl.hasCls(clsDESC)){
-      action = 'asc';
-    }
-    else{
-      action = 'asc';
-    }
+      column = columns[index];
+      key = column.index || column.key;
 
-    column = columns[index];
-    key = column.index || column.key;
+      me.sort(action, key, side, column, cellEl);
+    },
+    /*
+     * @param {String} dir
+     * @param {String} index
+     * @param {String} side
+     * @param {Object} column
+     * @param {Object} cell
+     */
+    sort: function (dir, index, side, column, cell) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = w.getColumns(side),
+        i = 0,
+        iL = columns.length,
+        type,
+        header = w.getHeader(side);
 
-    me.sort(action, key, side, column, cellEl);
-  },
-  /*
-   * @param {String} dir
-   * @param {String} index
-   * @param {String} side
-   * @param {Object} column
-   * @param {Object} cell
-   */
-  sort: function(dir, index, side, column, cell){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      clsASC = w.clsASC,
-      clsDESC = w.clsDESC,
-      columns = w.getColumns(side),
-      i = 0,
-      iL = columns.length,
-      type,
-      header = w.getHeader(side);
+      if (!column || !cell) {
+        for (; i < iL; i++) {
+          if (columns[i].index === index) {
+            column = columns[i];
+            cell = header.getCell(i);
+            break;
+          }
+        }
+      }
 
-    if(!column || !cell){
-      for(;i<iL;i++){
-        if(columns[i].index === index){
-          column = columns[i];
-          cell = header.getCell(i);
+      if (column.sortable !== true) {
+        return;
+      }
+
+      if (w.multiSort) {
+        me.clearHeaderMultiSortCls(dir, cell);
+      }
+      else {
+        me.clearHeaderSortCls();
+      }
+
+      switch (dir) {
+        case 'asc':
+          cell.addCls(GRID_COLUMN_SORT_ASC);
           break;
+        case 'desc':
+          cell.addCls(GRID_COLUMN_SORT_DESC);
+          break;
+      }
+
+      type = column.type;
+
+      var format,
+        mode;
+
+      if (column.format) {
+        if (F.isString(column.format)) {
+          switch (column.format) {
+            case 'date':
+              format = w.lang.date.read;
+              if (column.format.mode) {
+                mode = column.format.mode;
+              }
+              break;
+          }
+        }
+        else {
+          switch (column.type) {
+            case 'date':
+              format = column.format.read;
+              if (column.format.mode) {
+                mode = column.format.mode;
+              }
+              break;
+          }
         }
       }
-    }
 
-    if(column.sortable !== true) {
-      return;
-    }
-
-    if(w.multiSort){
-      me.clearHeaderMultiSortCls(dir, cell);
-    }
-    else{
-      me.clearHeaderSortCls();
-    }
-
-    switch(dir){
-      case 'asc':
-        cell.addCls(clsASC);
-        break;
-      case 'desc':
-        cell.addCls(clsDESC);
-        break;
-    }
-
-    type = column.type;
-
-    var format,
-      mode;
-
-    if(column.format){
-      if(Fancy.isString(column.format)){
-        switch (column.format) {
-          case 'date':
-            format = w.lang.date.read;
-            if(column.format.mode){
-              mode = column.format.mode;
-            }
-            break;
+      if (w.grouping) {
+        if (s.remoteSort) {
+          s.once('load', function () {
+            w.grouping.reGroup();
+            //Write code instead of reGroup
+          });
         }
       }
-      else{
-        switch(column.type){
-          case 'date':
-            format = column.format.read;
-            if(column.format.mode){
-              mode = column.format.mode;
-            }
-            break;
+
+      s.sort(dir, type, index, {
+        smartIndexFn: column.smartIndexFn,
+        format: format,
+        mode: mode
+      });
+    },
+    /*
+     * @param {String} dir
+     * @param {Fancy.Element} cellEl
+     */
+    clearHeaderMultiSortCls: function (dir, cellEl) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        itemsASC,
+        itemsDESC;
+
+      switch (dir.toLocaleUpperCase()) {
+        case 'ASC':
+          cellEl.removeCls(GRID_COLUMN_SORT_DESC);
+          break;
+        case 'DESC':
+          cellEl.removeCls(GRID_COLUMN_SORT_ASC);
+          break;
+      }
+
+      itemsASC = w.el.select('.' + GRID_COLUMN_SORT_ASC);
+      itemsDESC = w.el.select('.' + GRID_COLUMN_SORT_DESC);
+
+      if (itemsASC.length + itemsDESC.length < 3) {
+        return;
+      }
+
+      //TODO: Small refactoring that decrease size
+      var i = 0,
+        iL = itemsASC.length,
+        cellToRemoveCls;
+
+      for (; i < iL; i++) {
+        var cell = itemsASC.item(i),
+          sideEl = cell.parent().parent(),
+          side,
+          columns,
+          key,
+          index = cell.attr('index');
+
+        if (sideEl.hasCls(GRID_CENTER_CLS)) {
+          side = 'center';
+        }
+        else if (sideEl.hasCls(GRID_LEFT_CLS)) {
+          side = 'left';
+        }
+        else if (sideEl.hasCls(GRID_RIGHT_CLS)) {
+          side = 'right';
+        }
+
+        columns = w.getColumns(side);
+        key = columns[index].index;
+
+        var firstSorter = s.sorters[0];
+
+        if (firstSorter.key === key) {
+          cellToRemoveCls = cell;
         }
       }
+
+      var i = 0,
+        iL = itemsDESC.length;
+
+      for (; i < iL; i++) {
+        var cell = itemsDESC.item(i),
+          sideEl = cell.parent().parent(),
+          side,
+          columns,
+          key,
+          index = cell.attr('index');
+
+        if (sideEl.hasCls(GRID_CENTER_CLS)) {
+          side = 'center';
+        }
+        else if (sideEl.hasCls(GRID_LEFT_CLS)) {
+          side = 'left';
+        }
+        else if (sideEl.hasCls(GRID_RIGHT_CLS)) {
+          side = 'right';
+        }
+
+        columns = w.getColumns(side);
+        key = columns[index].index;
+
+        var firstSorter = s.sorters[0];
+
+        if (firstSorter.key === key) {
+          cellToRemoveCls = cell;
+        }
+      }
+
+      cellToRemoveCls.removeCls(GRID_COLUMN_SORT_ASC);
+      cellToRemoveCls.removeCls(GRID_COLUMN_SORT_DESC);
+    },
+    /*
+     *
+     */
+    clearHeaderSortCls: function () {
+      var el = this.widget.el;
+
+      el.select('.' + GRID_COLUMN_SORT_ASC).removeCls(GRID_COLUMN_SORT_ASC);
+      el.select('.' + GRID_COLUMN_SORT_DESC).removeCls(GRID_COLUMN_SORT_DESC);
     }
+  });
 
-    if(w.grouping){
-      if(s.remoteSort){
-        s.once('load', function(){
-          w.grouping.reGroup();
-          //Write code instead of reGroup
-        });
-      }
-    }
-
-    s.sort(dir, type, index, {
-      smartIndexFn: column.smartIndexFn,
-      format: format,
-      mode: mode
-    });
-  },
-  /*
-   * @param {String} dir
-   * @param {Fancy.Element} cellEl
-   */
-  clearHeaderMultiSortCls: function(dir, cellEl){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      clsASC = w.clsASC,
-      clsDESC = w.clsDESC,
-      itemsASC,
-      itemsDESC;
-
-    switch(dir.toLocaleUpperCase()){
-      case 'ASC':
-        cellEl.removeCls(clsDESC);
-        break;
-      case 'DESC':
-        cellEl.removeCls(clsASC);
-        break;
-    }
-
-    itemsASC = w.el.select('.'+clsASC);
-    itemsDESC = w.el.select('.'+clsDESC);
-
-    if(itemsASC.length + itemsDESC.length < 3){
-      return;
-    }
-
-    //TODO: Small refactoring that decrease size
-    var i = 0,
-      iL = itemsASC.length,
-      cellToRemoveCls;
-
-    for(;i<iL;i++){
-      var cell = itemsASC.item(i),
-        sideEl = cell.parent().parent(),
-        side,
-        columns,
-        key,
-        index = cell.attr('index');
-
-      if(sideEl.hasCls(w.centerCls)){
-        side = 'center';
-      }
-      else if(sideEl.hasCls(w.leftCls)){
-        side = 'left';
-      }
-      else if(sideEl.hasCls(w.rightCls)){
-        side = 'right';
-      }
-
-      columns = w.getColumns(side);
-      key = columns[index].index;
-
-      var firstSorter = s.sorters[0];
-
-      if(firstSorter.key === key){
-        cellToRemoveCls = cell;
-      }
-    }
-
-    var i = 0,
-      iL = itemsDESC.length;
-
-    for(;i<iL;i++){
-      var cell = itemsDESC.item(i),
-        sideEl = cell.parent().parent(),
-        side,
-        columns,
-        key,
-        index = cell.attr('index');
-
-      if(sideEl.hasCls(w.centerCls)){
-        side = 'center';
-      }
-      else if(sideEl.hasCls(w.leftCls)){
-        side = 'left';
-      }
-      else if(sideEl.hasCls(w.rightCls)){
-        side = 'right';
-      }
-
-      columns = w.getColumns(side);
-      key = columns[index].index;
-
-      var firstSorter = s.sorters[0];
-
-      if(firstSorter.key === key){
-        cellToRemoveCls = cell;
-      }
-    }
-
-    cellToRemoveCls.removeCls(clsASC);
-    cellToRemoveCls.removeCls(clsDESC);
-  },
-  /*
-   *
-   */
-  clearHeaderSortCls: function(){
-    var me = this,
-      w = me.widget,
-      clsASC = w.clsASC,
-      clsDESC = w.clsDESC;
-
-    w.el.select('.'+clsASC).removeCls(clsASC);
-    w.el.select('.'+clsDESC).removeCls(clsDESC);
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.Paging
  * @extends Fancy.Plugin
@@ -24326,19 +24491,14 @@ Fancy.define('Fancy.grid.plugin.Paging', {
    * @param {Object} config
    */
   constructor: function(config) {
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -24357,51 +24517,31 @@ Fancy.define('Fancy.grid.plugin.Paging', {
    * @param {Number} value
    */
   setPageSize: function(value){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.setPageSize(value);
+    this.widget.store.setPageSize(value);
   },
   /*
    *
    */
   nextPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.nextPage();
+    this.widget.store.nextPage();
   },
   /*
    *
    */
   lastPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.lastPage();
+    this.widget.store.lastPage();
   },
   /*
    *
    */
   prevPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.prevPage();
+    this.widget.store.prevPage();
   },
   /*
    *
    */
   firstPage: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
-
-    store.firstPage();
+    this.widget.store.firstPage();
   },
   /*
    * @param {Fancy.Store} store
@@ -24562,19 +24702,14 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -24657,17 +24792,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onBeforeLoad: function(){
-    var me = this;
-
-    me.showLoadMask();
+    this.showLoadMask();
   },
   /*
    *
    */
   onLoad: function(){
-    var me = this;
-
-    me.hideLoadMask();
+    this.hideLoadMask();
   },
   /*
    * @param {String} text
@@ -24697,765 +24828,1300 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   hideLoadMask: function(){
-    var me = this;
-
-    me.loaded = true;
-    me.el.css('display', 'none');
+    this.loaded = true;
+    this.el.css('display', 'none');
   }
 });
 /*
  * @class Fancy.grid.plugin.ColumnResizer
  * @extend Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.ColumnResizer', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.columnresizer',
-  inWidgetName: 'columnresizer',
-  resizerLeftCls: 'fancy-grid-resizer-left',
-  resizerRightCls: 'fancy-grid-resizer-right',
-  /*
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var G = F.get;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this,
-      w = me.widget;
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var GRID_RESIZER_LEFT_CLS = F.GRID_RESIZER_LEFT_CLS;
+  var GRID_RESIZER_RIGHT_CLS = F.GRID_RESIZER_RIGHT_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.ColumnResizer', {
+    extend: F.Plugin,
+    ptype: 'grid.columnresizer',
+    inWidgetName: 'columnresizer',
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
 
-    w.on('render', function() {
-      me.render();
-      me.ons();
-    });
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
+      me.Super('init', arguments);
 
-    w.on('headercellmousemove', me.onCellMouseMove, me);
-    w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
-    w.on('docclick', me.onDocClick, me);
-    w.on('docmove', me.onDocMove, me);
-    w.on('docmouseup', me.onDocMouseUp, me);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellMouseMove: function(grid, o){
-    var me = this,
-      w = me.widget,
-      FIELD_CLS = Fancy.FIELD_CLS,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      e = o.e,
-      cellEl = Fancy.get(o.cell),
-      offsetX = e.offsetX,
-      cellWidth = cellEl.width(),
-      target = Fancy.get(e.target),
-      isInTrigger = target.hasCls(cellHeaderTriggerCls),
-      isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
-      triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
-      triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
-      hasFieldInSide = Fancy.get(e.target).closest('.' + FIELD_CLS).hasCls(FIELD_CLS),
-      triggerWidth = parseInt(triggerEl.css('width')),
-      triggerImageWidth = parseInt(triggerImageEl.css('width')),
-      _width = cellWidth,
-      inOffsetX = 7;
+      w.on('render', function () {
+        me.render();
+        me.ons();
+      });
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    if(isInTrigger){
-      _width = triggerWidth;
-    }
+      w.on('headercellmousemove', me.onCellMouseMove, me);
+      w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
+      w.on('docclick', me.onDocClick, me);
+      w.on('docmove', me.onDocMove, me);
+      w.on('docmouseup', me.onDocMouseUp, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellMouseMove: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        e = o.e,
+        cellEl = G(o.cell),
+        offsetX = e.offsetX,
+        cellWidth = cellEl.width(),
+        target = G(e.target),
+        isInTrigger = target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS),
+        isInTriggerImage = target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS),
+        triggerEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0),
+        triggerImageEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS).item(0),
+        hasFieldInSide = G(e.target).closest('.' + FIELD_CLS).hasCls(FIELD_CLS),
+        triggerWidth = parseInt(triggerEl.css('width')),
+        triggerImageWidth = parseInt(triggerImageEl.css('width')),
+        _width = cellWidth,
+        inOffsetX = 7;
 
-    if(isInTriggerImage){
-      _width = triggerImageWidth;
-    }
-
-    if(w.startResizing){
-      return;
-    }
-
-    if(o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2){
-      inOffsetX += 2;
-    }
-
-    if(!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX){
-      if(me.isColumnResizable(o)){
-        if( !hasFieldInSide ){
-          me.addCellResizeCls(o.cell);
-        }
+      if (isInTrigger) {
+        _width = triggerWidth;
       }
-    }
-    else if(!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.side === 'center' && o.index === 0 && w.leftColumns.length){
-      o.side = 'left';
-      o.index = w.leftColumns.length - 1;
-      if(me.isColumnResizable(o)){
-        if( !hasFieldInSide ){
-          me.addCellResizeCls(o.cell);
-        }
+
+      if (isInTriggerImage) {
+        _width = triggerImageWidth;
       }
-    }
-    else if(!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0){
-      var isLeft = offsetX < inOffsetX;
 
-      if(me.isColumnResizable(o, isLeft)){
-        if( !hasFieldInSide ){
-          me.addCellResizeCls(o.cell);
-        }
-      }
-    }
-    else if((_width - offsetX)<inOffsetX){
-      if(isInTriggerImage){
-        if(triggerImageWidth - offsetX > 2){
-          me.removeCellResizeCls(o.cell);
-        }
-        else{
-          me.addCellResizeCls(o.cell);
-        }
-      }
-      else if(me.isColumnResizable(o)){
-        me.addCellResizeCls(o.cell);
-      }
-    }
-    else{
-      me.removeCellResizeCls(o.cell);
-    }
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  addCellResizeCls: function(cell){
-    var me = this,
-      w = me.widget,
-      columnResizerCls = w.columnResizerCls,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls;
-
-    Fancy.get(cell).addCls(columnResizerCls);
-    Fancy.get(cell).select('.' + cellHeaderTriggerCls).addCls(columnResizerCls);
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  removeCellResizeCls: function(cell){
-    var me = this,
-      w = me.widget,
-      columnResizerCls = w.columnResizerCls,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls;
-
-    Fancy.get(cell).removeClass(columnResizerCls);
-    Fancy.get(cell).select('.' + cellHeaderTriggerCls).item(0).removeClass(columnResizerCls);
-  },
-  /*
-   * @param {Object} e
-   * @param {Object} o
-   */
-  onHeaderCellMouseDown: function(e, o){
-    var me = this,
-      w = me.widget,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      e = o.e,
-      target = Fancy.get(e.target),
-      cellEl = Fancy.get(o.cell),
-      offsetX = e.offsetX,
-      cellWidth = cellEl.width(),
-      field = cellEl.select('.' + Fancy.FIELD_CLS),
-      isInTrigger = target.hasCls(cellHeaderTriggerCls),
-      isInTriggerImage = target.hasCls(cellHeaderTriggerImageCls),
-      triggerEl = cellEl.select('.' + cellHeaderTriggerCls).item(0),
-      triggerImageEl = cellEl.select('.' + cellHeaderTriggerImageCls).item(0),
-      triggerWidth = parseInt(triggerEl.css('width')),
-      triggerImageWidth = parseInt(triggerImageEl.css('width')),
-      _width = cellWidth,
-      inOffsetX = 7;
-
-    if(isInTrigger){
-      _width = triggerWidth;
-    }
-
-    if(isInTriggerImage){
-      _width = triggerImageWidth;
-      return;
-    }
-
-    if(field.length > 0 && field.item(0).within(target.dom)){
-      return;
-    }
-
-    if(o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2){
-      inOffsetX += 2;
-    }
-
-    if(!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX){
-      w.startResizing = true;
-      me.cell = o.cell;
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index;
-      me.moveLeftResizer = true;
-    }
-    else if(offsetX < 7 && o.side === 'center' && o.index === 0 && w.leftColumns.length){
-      w.startResizing = true;
-      o.side = 'left';
-      o.index = w.leftColumns.length - 1;
-      me.cell = me.getCell(o);
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index;
-    }
-    else if(!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.index !== 0){
-      w.startResizing = true;
-      me.cell = me.getPrevCell(o);
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index - 1;
-    }
-    else if((_width - offsetX) < inOffsetX){
-      w.startResizing = true;
-      me.cell = o.cell;
-      me.activeSide = o.side;
-      me.clientX = e.clientX;
-      me.columnIndex = o.index;
-    }
-
-    if(w.startResizing){
-      me.isColumnResizable();
-    }
-  },
-  /*
-   * @param {Object} o
-   * @param {Boolean} isLeft
-   * @return {Boolean}
-   */
-  isColumnResizable: function(o, isLeft) {
-    var me = this,
-      w = me.widget,
-      columns,
-      column,
-      index;
-
-    if(o){
-      columns = w.getColumns(o.side);
-      index = o.index;
-      if(isLeft){
-        index--;
-      }
-      if(isNaN(index)){
+      if (w.startResizing) {
         return;
       }
-      column = columns[index];
-      return column.resizable === true;
-    }
-    else{
-      columns = w.getColumns(me.activeSide);
-      if (columns[me.columnIndex].resizable !== true) {
-        w.startResizing = false;
-        delete me.cell;
-        delete me.activeSide;
-        delete me.clientX;
-        delete me.columnIndex;
+
+      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
+        inOffsetX += 2;
       }
-    }
-  },
-  /*
-   * @return {Number}
-   */
-  getMinColumnWidth: function(){
-    var me = this,
-      w = me.widget,
-      minCellWidth = w.minCellWidth,
-      columns,
-      column;
 
-    if(me.columnIndex === undefined){
+      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX) {
+        if (me.isColumnResizable(o)) {
+          if (!hasFieldInSide) {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+      }
+      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.side === 'center' && o.index === 0 && w.leftColumns.length) {
+        o.side = 'left';
+        o.index = w.leftColumns.length - 1;
+        if (me.isColumnResizable(o)) {
+          if (!hasFieldInSide) {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+      }
+      else if (!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0) {
+        var isLeft = offsetX < inOffsetX;
+
+        if (me.isColumnResizable(o, isLeft)) {
+          if (!hasFieldInSide) {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+      }
+      else if ((_width - offsetX) < inOffsetX) {
+        if (isInTriggerImage) {
+          if (triggerImageWidth - offsetX > 2) {
+            me.removeCellResizeCls(o.cell);
+          }
+          else {
+            me.addCellResizeCls(o.cell);
+          }
+        }
+        else if (me.isColumnResizable(o)) {
+          me.addCellResizeCls(o.cell);
+        }
+      }
+      else {
+        me.removeCellResizeCls(o.cell);
+      }
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    addCellResizeCls: function (cell) {
+      G(cell).addCls(GRID_COLUMN_RESIZER_CLS);
+      G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).addCls(GRID_COLUMN_RESIZER_CLS);
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    removeCellResizeCls: function (cell) {
+      G(cell).removeClass(GRID_COLUMN_RESIZER_CLS);
+      G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0).removeClass(GRID_COLUMN_RESIZER_CLS);
+    },
+    /*
+     * @param {Object} e
+     * @param {Object} o
+     */
+    onHeaderCellMouseDown: function (e, o) {
+      var me = this,
+        w = me.widget,
+        e = o.e,
+        target = G(e.target),
+        cellEl = G(o.cell),
+        offsetX = e.offsetX,
+        cellWidth = cellEl.width(),
+        field = cellEl.select('.' + FIELD_CLS),
+        isInTrigger = target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS),
+        isInTriggerImage = target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS),
+        triggerEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0),
+        triggerImageEl = cellEl.select('.' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS).item(0),
+        triggerWidth = parseInt(triggerEl.css('width')),
+        triggerImageWidth = parseInt(triggerImageEl.css('width')),
+        _width = cellWidth,
+        inOffsetX = 7;
+
+      if (isInTrigger) {
+        _width = triggerWidth;
+      }
+
+      if (isInTriggerImage) {
+        _width = triggerImageWidth;
+        return;
+      }
+
+      if (field.length > 0 && field.item(0).within(target.dom)) {
+        return;
+      }
+
+      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
+        inOffsetX += 2;
+      }
+
+      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX) {
+        w.startResizing = true;
+        F.apply(me, {
+          cell: o.cell,
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index,
+          moveLeftResizer: true
+        });
+      }
+      else if (offsetX < 7 && o.side === 'center' && o.index === 0 && w.leftColumns.length) {
+        w.startResizing = true;
+        o.side = 'left';
+        o.index = w.leftColumns.length - 1;
+        F.apply(me, {
+          cell: me.getCell(o),
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index
+        });
+      }
+      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.index !== 0) {
+        w.startResizing = true;
+        F.apply(me, {
+          cell: me.getPrevCell(o),
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index - 1
+        });
+      }
+      else if ((_width - offsetX) < inOffsetX) {
+        w.startResizing = true;
+        F.apply(me, {
+          cell: o.cell,
+          activeSide: o.side,
+          clientX: e.clientX,
+          columnIndex: o.index
+        });
+      }
+
+      if (w.startResizing) {
+        me.isColumnResizable();
+      }
+    },
+    /*
+     * @param {Object} o
+     * @param {Boolean} isLeft
+     * @return {Boolean}
+     */
+    isColumnResizable: function (o, isLeft) {
+      var me = this,
+        w = me.widget,
+        columns,
+        column,
+        index;
+
+      if (o) {
+        columns = w.getColumns(o.side);
+        index = o.index;
+        if (isLeft) {
+          index--;
+        }
+        if (isNaN(index)) {
+          return;
+        }
+        column = columns[index];
+        return column.resizable === true;
+      }
+      else {
+        columns = w.getColumns(me.activeSide);
+        if (columns[me.columnIndex].resizable !== true) {
+          w.startResizing = false;
+          delete me.cell;
+          delete me.activeSide;
+          delete me.clientX;
+          delete me.columnIndex;
+        }
+      }
+    },
+    /*
+     * @return {Number}
+     */
+    getMinColumnWidth: function () {
+      var me = this,
+        w = me.widget,
+        minCellWidth = w.minCellWidth,
+        columns,
+        column;
+
+      if (me.columnIndex === undefined) {
+        return minCellWidth;
+      }
+
+      columns = w.getColumns(me.activeSide);
+      column = columns[me.columnIndex];
+
+      if (column.minWidth) {
+        return column.minWidth;
+      }
+
       return minCellWidth;
-    }
+    },
+    /*
+     * @return {Number|false}
+     */
+    getMaxColumnWidth: function () {
+      var me = this,
+        w = me.widget,
+        columns,
+        column;
 
-    columns = w.getColumns(me.activeSide);
-    column = columns[me.columnIndex];
+      if (me.columnIndex === undefined) {
+        return false;
+      }
 
-    if(column.minWidth){
-      return column.minWidth;
-    }
+      columns = w.getColumns(me.activeSide);
+      column = columns[me.columnIndex];
 
-    return minCellWidth;
-  },
-  /*
-   * @return {Number|false}
-   */
-  getMaxColumnWidth: function(){
-    var me = this,
-      w = me.widget,
-      columns,
-      column;
+      if (column.maxWidth) {
+        return column.maxWidth;
+      }
 
-    if(me.columnIndex === undefined){
       return false;
-    }
+    },
+    /*
+     *
+     */
+    onDocClick: function () {
+      this.widget.startResizing = false;
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} e
+     */
+    onDocMove: function (grid, e) {
+      if (this.widget.startResizing) {
+        this.moveResizeEls(e);
+      }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        leftEl = G(document.createElement('div')),
+        rightEl = G(document.createElement('div'));
 
-    columns = w.getColumns(me.activeSide);
-    column = columns[me.columnIndex];
+      leftEl.addCls(GRID_RESIZER_LEFT_CLS);
+      rightEl.addCls(GRID_RESIZER_RIGHT_CLS);
 
-    if(column.maxWidth){
-      return column.maxWidth;
-    }
+      me.leftEl = G(w.el.dom.appendChild(leftEl.dom));
+      me.rightEl = G(w.el.dom.appendChild(rightEl.dom));
+    },
+    /*
+     * @param {Object} e
+     */
+    moveResizeEls: function (e) {
+      var me = this,
+        w = me.widget,
+        cellEl = G(me.cell),
+        left = parseInt(cellEl.css('left')),
+        minWidth = me.getMinColumnWidth(),
+        maxWidth = me.getMaxColumnWidth();
 
-    return false;
-  },
-  /*
-   *
-   */
-  onDocClick: function(){
-    var me = this,
-      w = me.widget;
+      switch (me.activeSide) {
+        case 'left':
+          break;
+        case 'center':
+          left += parseInt(w.leftEl.css('width'));
+          break;
+        case 'right':
+          left += parseInt(w.leftEl.css('width'));
+          left += parseInt(w.centerEl.css('width'));
+          break;
+      }
 
-    w.startResizing = false;
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} e
-   */
-  onDocMove: function(grid, e){
-    var me = this,
-      w = me.widget;
+      var clientX = e.clientX,
+        deltaClientX = clientX - me.clientX,
+        cellWidth = cellEl.width() + deltaClientX;
 
-    if(w.startResizing){
-      me.moveResizeEls(e);
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget,
-      leftEl = Fancy.get( document.createElement('div')),
-      rightEl = Fancy.get( document.createElement('div') );
-
-    leftEl.addCls(me.resizerLeftCls);
-    rightEl.addCls(me.resizerRightCls);
-
-    me.leftEl = Fancy.get(w.el.dom.appendChild(leftEl.dom));
-    me.rightEl = Fancy.get(w.el.dom.appendChild(rightEl.dom));
-  },
-  /*
-   * @param {Object} e
-   */
-  moveResizeEls: function(e){
-    var me = this,
-      w = me.widget,
-      cellEl = Fancy.get(me.cell),
-      left = parseInt(cellEl.css('left')),
-      minWidth = me.getMinColumnWidth(),
-      maxWidth = me.getMaxColumnWidth();
-
-    switch(me.activeSide){
-      case 'left':
-        break;
-      case 'center':
-        left += parseInt(w.leftEl.css('width'));
-        break;
-      case 'right':
-        left += parseInt(w.leftEl.css('width'));
-        left += parseInt(w.centerEl.css('width'));
-        break;
-    }
-
-    var clientX = e.clientX,
-      deltaClientX = clientX - me.clientX,
-      cellWidth = cellEl.width() + deltaClientX;
-
-    if(cellWidth < minWidth){
-      cellWidth = minWidth;
-    }
-
-    if(maxWidth && cellWidth > maxWidth){
-      cellWidth = maxWidth;
-    }
-
-    me.deltaWidth = cellEl.width() - cellWidth;
-
-    if(me.moveLeftResizer){
-      deltaClientX = clientX - me.clientX;
-      cellWidth = cellEl.width() - deltaClientX;
-
-      if(cellWidth < minWidth){
+      if (cellWidth < minWidth) {
         cellWidth = minWidth;
+      }
+
+      if (maxWidth && cellWidth > maxWidth) {
+        cellWidth = maxWidth;
       }
 
       me.deltaWidth = cellEl.width() - cellWidth;
 
-      me.leftEl.css({
-        display: 'block',
-        left: left + deltaClientX + 'px'
-      });
+      if (me.moveLeftResizer) {
+        deltaClientX = clientX - me.clientX;
+        cellWidth = cellEl.width() - deltaClientX;
 
-      me.rightEl.css({
-        display: 'block',
-        left: (left + cellEl.width() - 1) + 'px'
-      });
-    }
-    else {
-      me.leftEl.css({
-        display: 'block',
-        left: left + 'px'
-      });
-
-      me.rightEl.css({
-        display: 'block',
-        left: left + cellWidth + 'px'
-      });
-    }
-
-    me.cellWidth = cellWidth;
-  },
-  /*
-   *
-   */
-  onDocMouseUp: function(){
-    var me = this,
-      w = me.widget;
-
-    if (w.startResizing === false) {
-      return;
-    }
-
-    me.leftEl.css({
-      display: 'none'
-    });
-
-    me.rightEl.css({
-      display: 'none'
-    });
-
-    me.fixSidesWidth();
-    w.startResizing = false;
-    me.moveLeftResizer = false;
-    delete me.cellWidth;
-  },
-  /*
-   *
-   */
-  fixSidesWidth: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      columnCls = w.columnCls,
-      cellWidth = me.cellWidth,
-      index = me.columnIndex,
-      delta = me.deltaWidth,
-      domColumns,
-      domHeaderCells,
-      leftEl = w.leftEl,
-      centerEl = w.centerEl,
-      rightEl = w.rightEl,
-      leftHeaderEl = w.leftHeader.el,
-      centerHeaderEl = w.header.el,
-      rightHeaderEl = w.rightHeader.el,
-      centerBodyEl = w.body.el,
-      groupMove = {},
-      ignoreGroupIndexes = {},
-      column,
-      newCenterWidth,
-      minCenterWidth = me.minCenterWidth;
-
-    if(cellWidth === undefined){
-      return;
-    }
-
-    var leftFix = 1;
-    if(Fancy.nojQuery){
-      leftFix = 0;
-    }
-
-    switch(me.activeSide){
-      case 'left':
-        newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
-
-        if(newCenterWidth < minCenterWidth){
-          return;
+        if (cellWidth < minWidth) {
+          cellWidth = minWidth;
         }
 
-        column = w.leftColumns[index];
+        me.deltaWidth = cellEl.width() - cellWidth;
 
-        w.leftColumns[me.columnIndex].width = cellWidth;
-        domColumns = w.leftBody.el.select('.' + columnCls);
-        domHeaderCells = w.leftHeader.el.select('.' + cellHeaderCls);
-        domColumns.item(index).css('width', cellWidth + 'px');
+        me.leftEl.css({
+          display: 'block',
+          left: left + deltaClientX + 'px'
+        });
 
-        var i = me.columnIndex + 1,
-          iL = domHeaderCells.length,
-          _i = 0,
-          _iL = i;
-
-        for(;_i<_iL;_i++){
-          var domHeaderCell = domHeaderCells.item(_i),
-            groupIndex = domHeaderCell.attr('group-index');
-
-          if(groupIndex){
-            ignoreGroupIndexes[groupIndex] = true;
-          }
-        }
-
-        for(;i<iL;i++){
-          var domColumnEl = domColumns.item(i),
-            domHeaderCell = domHeaderCells.item(i);
-
-          domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
-          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
-          else{
-            domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
-          }
-        }
-
-        leftEl.css('width', parseInt(leftEl.css('width')) - delta - leftFix);
-        leftHeaderEl.css('width', parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px');
-
-        if(w.columns.length){
-          centerEl.css('left', parseInt(centerEl.css('left')) - delta - leftFix);
-          centerEl.css('width', newCenterWidth);
-          centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
-          centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
-        }
-
-        break;
-      case 'center':
-        column = w.columns[index];
-        w.columns[me.columnIndex].width = cellWidth;
-        domColumns = w.body.el.select('.' + columnCls);
-        domHeaderCells = w.header.el.select('.' + cellHeaderCls);
-        domColumns.item(index).css('width', cellWidth + 'px');
-
-        var i = me.columnIndex + 1,
-          iL = domHeaderCells.length,
-          _i = 0,
-          _iL = i;
-
-        for(;_i<_iL;_i++){
-          var domHeaderCell = domHeaderCells.item(_i),
-            groupIndex = domHeaderCell.attr('group-index');
-
-          if(groupIndex){
-            ignoreGroupIndexes[groupIndex] = true;
-          }
-        }
-
-        for(;i<iL;i++){
-          var domColumnEl = domColumns.item(i),
-            domHeaderCell = domHeaderCells.item(i),
-            left = parseInt(domColumnEl.css('left')) - delta - leftFix,
-            _left = parseInt(domHeaderCell.css('left')) - delta - leftFix;
-
-          if(domHeaderCell.attr('group-index')){
-            groupMove[domHeaderCell.attr('group-index')] = {};
-          }
-
-          domColumnEl.css('left', left);
-
-          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
-          else{
-            domHeaderCell.css('left', _left);
-          }
-        }
-
-        break;
-      case 'right':
-        newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
-
-        if(newCenterWidth < minCenterWidth){
-          return;
-        }
-
-        column = w.rightColumns[index];
-
-        w.rightColumns[me.columnIndex].width = cellWidth;
-        domColumns = w.rightBody.el.select('.' + columnCls);
-        domHeaderCells = w.rightHeader.el.select('.' + cellHeaderCls);
-        domColumns.item(index).css('width', cellWidth + 'px');
-
-        var i = me.columnIndex + 1,
-          iL = domHeaderCells.length,
-          _i = 0,
-          _iL = i;
-
-        for(;_i<_iL;_i++){
-          var domHeaderCell = domHeaderCells.item(_i),
-            groupIndex = domHeaderCell.attr('group-index');
-
-          if(groupIndex){
-            ignoreGroupIndexes[groupIndex] = true;
-          }
-        }
-
-        for(;i<iL;i++){
-          var domColumnEl = domColumns.item(i),
-            domHeaderCell = domHeaderCells.item(i);
-
-          domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
-
-          if(domHeaderCell.hasCls(cellHeaderGroupLevel2) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
-          else{
-            domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
-          }
-        }
-
-        rightEl.css('width', parseInt(rightEl.css('width')) - delta - leftFix);
-        rightHeaderEl.css('width', parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px');
-
-        if(w.columns.length){
-          centerEl.css('width', newCenterWidth);
-          centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
-          centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
-        }
-        break;
-    }
-
-    var cellEl = Fancy.get(me.cell),
-      groupName = cellEl.attr('group-index'),
-      groupCell;
-
-    cellEl.css('width', cellWidth + 'px');
-
-    if(groupName){
-      groupCell = w.el.select("[index='" + groupName + "']");
-      groupCell.css('width', parseInt(groupCell.css('width')) - delta - leftFix);
-    }
-    else {
-      for (var p in groupMove) {
-        groupCell = w.el.select("[index='" + p + "']");
-        groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+        me.rightEl.css({
+          display: 'block',
+          left: (left + cellEl.width() - 1) + 'px'
+        });
       }
-    }
+      else {
+        me.leftEl.css({
+          display: 'block',
+          left: left + 'px'
+        });
 
-    w.fire('columnresize', {
-      cell: cellEl.dom,
-      width: cellWidth
-    });
+        me.rightEl.css({
+          display: 'block',
+          left: left + cellWidth + 'px'
+        });
+      }
 
-    if(/sparkline/.test(column.type) ){
-      switch(me.activeSide) {
+      me.cellWidth = cellWidth;
+    },
+    /*
+     *
+     */
+    onDocMouseUp: function () {
+      var me = this,
+        w = me.widget;
+
+      if (w.startResizing === false) {
+        return;
+      }
+
+      me.leftEl.css({
+        display: 'none'
+      });
+
+      me.rightEl.css({
+        display: 'none'
+      });
+
+      me.fixSidesWidth();
+      w.startResizing = false;
+      me.moveLeftResizer = false;
+      delete me.cellWidth;
+    },
+    /*
+     *
+     */
+    fixSidesWidth: function () {
+      var me = this,
+        w = me.widget,
+        cellWidth = me.cellWidth,
+        index = me.columnIndex,
+        delta = me.deltaWidth,
+        domColumns,
+        domHeaderCells,
+        leftEl = w.leftEl,
+        centerEl = w.centerEl,
+        rightEl = w.rightEl,
+        leftHeaderEl = w.leftHeader.el,
+        centerHeaderEl = w.header.el,
+        rightHeaderEl = w.rightHeader.el,
+        centerBodyEl = w.body.el,
+        groupMove = {},
+        ignoreGroupIndexes = {},
+        column,
+        newCenterWidth,
+        minCenterWidth = me.minCenterWidth;
+
+      if (cellWidth === undefined) {
+        return;
+      }
+
+      var leftFix = 1;
+      if (F.nojQuery) {
+        leftFix = 0;
+      }
+
+      switch (me.activeSide) {
         case 'left':
-          w.leftBody.updateRows(undefined, index);
+          newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+
+          if (newCenterWidth < minCenterWidth) {
+            return;
+          }
+
+          column = w.leftColumns[index];
+
+          w.leftColumns[me.columnIndex].width = cellWidth;
+          domColumns = w.leftBody.el.select('.' + GRID_COLUMN_CLS);
+          domHeaderCells = w.leftHeader.el.select('.' + GRID_HEADER_CELL_CLS);
+          domColumns.item(index).css('width', cellWidth + 'px');
+
+          var i = me.columnIndex + 1,
+            iL = domHeaderCells.length,
+            _i = 0,
+            _iL = i;
+
+          for (; _i < _iL; _i++) {
+            var domHeaderCell = domHeaderCells.item(_i),
+              groupIndex = domHeaderCell.attr('group-index');
+
+            if (groupIndex) {
+              ignoreGroupIndexes[groupIndex] = true;
+            }
+          }
+
+          for (; i < iL; i++) {
+            var domColumnEl = domColumns.item(i),
+              domHeaderCell = domHeaderCells.item(i);
+
+            domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
+            }
+            else {
+              domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
+            }
+          }
+
+          leftEl.css('width', parseInt(leftEl.css('width')) - delta - leftFix);
+          leftHeaderEl.css('width', parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px');
+
+          if (w.columns.length) {
+            centerEl.css('left', parseInt(centerEl.css('left')) - delta - leftFix);
+            centerEl.css('width', newCenterWidth);
+            centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
+            centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
+          }
+
           break;
         case 'center':
-          w.body.updateRows(undefined, index);
+          column = w.columns[index];
+          w.columns[me.columnIndex].width = cellWidth;
+          domColumns = w.body.el.select('.' + GRID_COLUMN_CLS);
+          domHeaderCells = w.header.el.select('.' + GRID_HEADER_CELL_CLS);
+          domColumns.item(index).css('width', cellWidth + 'px');
+
+          var i = me.columnIndex + 1,
+            iL = domHeaderCells.length,
+            _i = 0,
+            _iL = i;
+
+          for (; _i < _iL; _i++) {
+            var domHeaderCell = domHeaderCells.item(_i),
+              groupIndex = domHeaderCell.attr('group-index');
+
+            if (groupIndex) {
+              ignoreGroupIndexes[groupIndex] = true;
+            }
+          }
+
+          for (; i < iL; i++) {
+            var domColumnEl = domColumns.item(i),
+              domHeaderCell = domHeaderCells.item(i),
+              left = parseInt(domColumnEl.css('left')) - delta - leftFix,
+              _left = parseInt(domHeaderCell.css('left')) - delta - leftFix;
+
+            if (domHeaderCell.attr('group-index')) {
+              groupMove[domHeaderCell.attr('group-index')] = {};
+            }
+
+            domColumnEl.css('left', left);
+
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
+            }
+            else {
+              domHeaderCell.css('left', _left);
+            }
+          }
+
           break;
         case 'right':
-          w.rightBody.updateRows(undefined, index);
+          newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
+
+          if (newCenterWidth < minCenterWidth) {
+            return;
+          }
+
+          column = w.rightColumns[index];
+
+          w.rightColumns[me.columnIndex].width = cellWidth;
+          domColumns = w.rightBody.el.select('.' + GRID_COLUMN_CLS);
+          domHeaderCells = w.rightHeader.el.select('.' + GRID_HEADER_CELL_CLS);
+          domColumns.item(index).css('width', cellWidth + 'px');
+
+          var i = me.columnIndex + 1,
+            iL = domHeaderCells.length,
+            _i = 0,
+            _iL = i;
+
+          for (; _i < _iL; _i++) {
+            var domHeaderCell = domHeaderCells.item(_i),
+              groupIndex = domHeaderCell.attr('group-index');
+
+            if (groupIndex) {
+              ignoreGroupIndexes[groupIndex] = true;
+            }
+          }
+
+          for (; i < iL; i++) {
+            var domColumnEl = domColumns.item(i),
+              domHeaderCell = domHeaderCells.item(i);
+
+            domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
+
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
+            }
+            else {
+              domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
+            }
+          }
+
+          rightEl.css('width', parseInt(rightEl.css('width')) - delta - leftFix);
+          rightHeaderEl.css('width', parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px');
+
+          if (w.columns.length) {
+            centerEl.css('width', newCenterWidth);
+            centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
+            centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
+          }
           break;
       }
+
+      var cellEl = G(me.cell),
+        groupName = cellEl.attr('group-index'),
+        groupCell;
+
+      cellEl.css('width', cellWidth + 'px');
+
+      if (groupName) {
+        groupCell = w.el.select("[index='" + groupName + "']");
+        groupCell.css('width', parseInt(groupCell.css('width')) - delta - leftFix);
+      }
+      else {
+        for (var p in groupMove) {
+          groupCell = w.el.select("[index='" + p + "']");
+          groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+        }
+      }
+
+      w.fire('columnresize', {
+        cell: cellEl.dom,
+        width: cellWidth
+      });
+
+      if (/sparkline/.test(column.type)) {
+        switch (me.activeSide) {
+          case 'left':
+            w.leftBody.updateRows(undefined, index);
+            break;
+          case 'center':
+            w.body.updateRows(undefined, index);
+            break;
+          case 'right':
+            w.rightBody.updateRows(undefined, index);
+            break;
+        }
+      }
+    },
+    /*
+     * @param {Object} o
+     * @return {Fancy.Element}
+     */
+    getPrevCell: function (o) {
+      var me = this,
+        w = me.widget,
+        header;
+
+      switch (o.side) {
+        case 'left':
+          header = w.leftHeader;
+          break;
+        case 'center':
+          header = w.header;
+          break;
+        case 'right':
+          header = w.rightHeader;
+          break;
+      }
+
+      return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index - 1).dom;
+    },
+    /*
+     * @param {Object} o
+     * @return {HTMLElement}
+     */
+    getCell: function (o) {
+      var me = this,
+        w = me.widget,
+        header;
+
+      switch (o.side) {
+        case 'left':
+          header = w.leftHeader;
+          break;
+        case 'center':
+          header = w.header;
+          break;
+        case 'right':
+          header = w.rightHeader;
+          break;
+      }
+
+      return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index).dom;
+    },
+    /*
+     * @param {String} side
+     */
+    updateColumnsWidth: function (side) {
+      var me = this,
+        w = me.widget,
+        side = side || 'center',
+        header = w.getHeader(side),
+        columns = w.getColumns(side),
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        me.setColumnWidth(i, column.width, side);
+      }
+
+      header.setCellsPosition();
+    },
+    /*
+     * @param {Number} index
+     * @param {Number} width
+     * @param {String} side
+     */
+    setColumnWidth: function (index, width, side) {
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(side),
+        header = w.getHeader(side),
+        body = w.getBody(side),
+        columnEl = G(body.getDomColumn(index)),
+        headerCellEl = header.getCell(index),
+        nextHeaderCellEl,
+        nextColumnEl,
+        left = parseInt(columnEl.css('left'));
+
+      columnEl.css('width', width);
+      headerCellEl.css('width', width);
+
+      if (columns[index + 1]) {
+        left += width;
+
+        nextColumnEl = G(body.getDomColumn(index + 1));
+        nextColumnEl.css('left', left);
+
+        nextHeaderCellEl = header.getCell(index + 1);
+        nextHeaderCellEl.css('left', left);
+      }
     }
-  },
-  /*
-   * @param {Object} o
-   * @return {Fancy.Element}
-   */
-  getPrevCell: function(o){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      header;
+  });
 
-    switch(o.side){
-      case 'left':
-        header = w.leftHeader;
-        break;
-      case 'center':
-        header = w.header;
-        break;
-      case 'right':
-        header = w.rightHeader;
-        break;
+})();
+/*
+ * @class Fancy.grid.plugin.ColumnDrag
+ * @extend Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var DOC = F.get(document);
+
+  //CONSTANTS
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+
+  F.define('Fancy.grid.plugin.ColumnDrag', {
+    extend: F.Plugin,
+    ptype: 'grid.columndrag',
+    inWidgetName: 'columndrag',
+    activeSide: undefined,
+    activeCell: undefined,
+    activeIndex: undefined,
+    activeColumn: undefined,
+    inCell: undefined,
+    inIndex: undefined,
+    inSide: undefined,
+    ok: false,
+    status: 'none', //none/dragging
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
+
+      me.Super('init', arguments);
+
+      w.on('render', function(){
+        me.ons();
+        me.initHint();
+      });
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.on('mousedown', me.onMouseDownCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseDownCell: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = Fancy.get(e.currentTarget),
+        index = Number(cell.attr('index')),
+        side = me.getSideByCell(cell),
+        columns = w.getColumns(side),
+        column = columns[index];
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        return;
+      }
+
+      if(w.startResizing){
+        return;
+      }
+
+      if(column.draggable === false){
+        return;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.activeUnderGroup = true;
+      }
+
+      me.activeSide = side;
+      me.inSide = side;
+      me.activeCell = cell;
+      me.inCell = cell;
+      me.activeIndex = Number(cell.attr('index'));
+      me.inIndex = me.activeIndex;
+      me.activeColumn = columns[me.activeIndex];
+
+      me.mouseDownX = e.x;
+      me.mouseDownY = e.y;
+
+      DOC.once('mouseup', me.onMouseUp, me);
+      DOC.on('mousemove', me.onMouseMove, me);
+
+      w.el.on('mouseleave', me.onMouseLeave, me);
+      w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseLeave: function () {
+      this.hideHint();
+    },
+    onMouseUp: function () {
+      var me = this,
+        w = me.widget,
+        dragged = false;
+
+      DOC.un('mousemove', me.onMouseMove, me);
+
+      w.el.un('mouseleave', me.onMouseLeave, me);
+      w.el.un('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+
+      if(me.ok){
+        if(me.inSide === me.activeSide){
+          me.dragColumn(me.inSide);
+        }
+        else if(me.activeSide === 'center'){
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+        else{
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+
+        dragged = true;
+      }
+
+      delete me.inUpGroupCell;
+      delete me.inUnderGroup;
+      delete me.activeUnderGroup;
+      delete me.activeSide;
+      delete me.activeCell;
+      delete me.activeIndex;
+      delete me.activeIndex;
+      delete me.activeColumn;
+      delete me.mouseDownX;
+      delete me.mouseDownY;
+      me.ok = false;
+      delete me.okPosition;
+
+      if(me.tip){
+        me.tip.destroy();
+        delete me.tip;
+      }
+
+      if(me.status === 'dragging'){
+        setTimeout(function () {
+          me.status = 'none';
+          if(dragged) {
+            w.fire('columndrag');
+          }
+        }, 10);
+      }
+
+      me.hideHint();
+    },
+    onMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        x = e.x,
+        y = e.y,
+        columns = w.getColumns(me.activeSide);
+
+      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
+        //me.status = 'dragging';
+
+        me.tip = new Fancy.ToolTip({
+          text: me.activeColumn.title,
+          cls: 'fancy-drag-cell'
+        });
+
+        me.tip.el.css('display', 'block');
+      }
+      else if(!me.tip){
+        return;
+      }
+
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.tip.destroy();
+        return;
+      }
+
+      me.tip.show(e.pageX + 15, e.pageY + 15);
+    },
+    onMouseEnterCell: function(e){
+      var me = this,
+        cell = Fancy.get(e.currentTarget),
+        side = me.getSideByCell(cell);
+
+      me.hideHint();
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.inUnderGroup = true;
+      }
+      else{
+        delete me.inUnderGroup;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        me.inUpGroupCell = cell;
+      }
+      else{
+        delete me.inUpGroupCell;
+      }
+
+      me.inSide = side;
+      me.inCell = cell;
+      me.inIndex = Number(cell.attr('index'));
+    },
+    onMouseMoveCell: function(e){
+      var me = this,
+        w = me.widget,
+        cell = me.inCell,
+        cellWidth = parseInt(cell.css('width')),
+        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS),
+        targetEl = Fancy.get(e.target),
+        inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
+        fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
+        toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
+
+      me.status = 'dragging';
+
+      var columns = w.getColumns(me.activeSide);
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.ok = false;
+        me.hideHint();
+        return;
+      }
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd(),
+          startIndex = o.start,
+          endIndex = o.end;
+
+        if(me.activeSide !== me.inSide){
+          me.ok = true;
+          if(e.offsetX > cellWidth/2 || inTriggerEl){
+            me.showHint('right');
+          }
+          else{
+            me.showHint('left');
+          }
+        }
+        else{
+          if (e.offsetX > cellWidth / 2) {
+            if(me.activeIndex > endIndex && me.activeIndex - 1 === endIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            if(me.activeIndex < startIndex && me.activeIndex + 1 === startIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('left');
+            }
+          }
+        }
+      }
+      else if(me.activeSide !== me.inSide){
+        me.ok = true;
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.showHint('right');
+        }
+        else{
+          me.showHint('left');
+        }
+      }
+      else if(me.activeIndex === me.inIndex){
+        me.ok = false;
+      }
+      else if(me.activeIndex < me.inIndex){
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.ok = true;
+          me.showHint('right');
+        }
+        else{
+          if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
+            me.ok = true;
+            me.showHint('left');
+          }
+          else {
+            if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
+              me.ok = true;
+              me.showHint('left');
+            }
+            else{
+              me.ok = false;
+              me.hideHint();
+            }
+          }
+        }
+      }
+      else if(me.activeIndex > me.inIndex){
+        if(e.offsetX < cellWidth/2){
+          if(inTriggerEl){
+            if(fromGroup || toGroup){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
+              me.ok = false;
+              me.hideHint();
+            }
+            else{
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            me.ok = true;
+            me.showHint('left');
+          }
+        }
+        else{
+          if(e.offsetX > cellWidth/2){
+            if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else{
+              if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
+                me.ok = true;
+                me.showHint('right');
+              }
+              else{
+                me.ok = false;
+                me.hideHint();
+              }
+            }
+          }
+          else {
+            me.ok = false;
+            me.hideHint();
+          }
+        }
+      }
+    },
+    showHint: function(position){
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        cell = me.inCell,
+        topEl = me.topEl,
+        bottomEl = me.bottomEl,
+        o = cell.offset(),
+        cellWidth = parseInt(cell.css('width')),
+        cellHeight = parseInt(cell.css('height'));
+
+      me.okPosition = position;
+
+      topEl.removeCls(HIDDEN_CLS);
+      bottomEl.removeCls(HIDDEN_CLS);
+
+      var plusWidth = 0;
+
+      if(position === 'right'){
+        plusWidth += cellWidth;
+      }
+
+      topEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(topEl.css('width'))/2),
+        top: o.top - parseInt(topEl.css('height'))
+      });
+
+      var bottomTop = o.top + cellHeight;
+
+      if(me.inUpGroupCell){
+        var rows = w.header.calcRows();
+        bottomTop = o.top + rows * CELL_HEADER_HEIGHT;
+      }
+
+      bottomEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(bottomEl.css('width'))/2),
+        top: bottomTop
+      });
+    },
+    hideHint: function(){
+      var me = this;
+
+      me.topEl.addCls(HIDDEN_CLS);
+      me.bottomEl.addCls(HIDDEN_CLS);
+    },
+    initHint: function(){
+      var me = this,
+        w = me.widget,
+        themeCls = 'fancy-theme-' + w.theme,
+        renderTo = F.get(document.body).dom,
+        topEl = F.get(document.createElement('div')),
+        bottomEl = F.get(document.createElement('div'));
+
+      topEl.addCls('fancy-drag-hint-top', HIDDEN_CLS, themeCls);
+      bottomEl.addCls('fancy-drag-hint-bottom', HIDDEN_CLS, themeCls);
+
+      me.topEl = F.get(renderTo.appendChild(topEl.dom));
+      me.bottomEl = F.get(renderTo.appendChild(bottomEl.dom));
+    },
+    /*
+     * @param {String} side
+     */
+    dragColumn: function (side) {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(side),
+        body = w.getBody(side),
+        activeIndex = me.activeIndex,
+        inIndex = me.inIndex,
+        position = me.okPosition,
+        columns = w.getColumns(side),
+        column = columns[activeIndex],
+        rows = header.calcRows();
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd();
+
+        inIndex = o.start;
+
+        if(position === 'right'){
+          inIndex = o.end + 1;
+        }
+      }
+      else if(position === 'right'){
+        if(me.inUnderGroup){
+          var groupName = columns[inIndex].grouping,
+            nextColumn = columns[inIndex + 1];
+
+          if(nextColumn && nextColumn.grouping === groupName){
+            inIndex++;
+          }
+        }
+        else {
+          inIndex++;
+        }
+      }
+
+      if(w.groupheader){
+        var inColumn = columns[inIndex];
+
+        if(inColumn && inColumn.grouping && me.inUnderGroup){
+          column.grouping = inColumn.grouping;
+
+          if(column.filter && column.filter.header && rows < 3){
+            delete column.filter;
+          }
+        }
+        else{
+          delete column.grouping;
+        }
+      }
+
+      columns.splice(activeIndex, 1);
+
+      if(activeIndex<inIndex){
+        inIndex--;
+      }
+
+      columns.splice(inIndex, 0, column);
+
+      body.clearColumnsStyles();
+      header.updateTitles();
+      header.updateCellsSizes();
+      if(w.groupheader){
+        w.header.fixGroupHeaderSizing();
+        if(w.leftColumns){
+          w.leftHeader.fixGroupHeaderSizing();
+        }
+
+        if(w.rightColumns){
+          w.rightHeader.fixGroupHeaderSizing();
+        }
+
+        header.reSetGroupIndexes();
+      }
+
+      header.reSetColumnsAlign();
+      body.reSetColumnsAlign();
+      body.reSetColumnsCls();
+      body.updateColumnsSizes();
+      w.update();
+    },
+    /*
+     *
+     */
+    getSideByCell: function (cell) {
+      var me = this,
+        w = me.widget,
+        side;
+
+      if(w.centerEl.within(cell)){
+        side = 'center';
+      }
+      else if(w.leftEl.within(cell)){
+        side = 'left';
+      }
+      else if(w.rightEl.within(cell)){
+        side = 'right';
+      }
+
+      return side;
+    },
+    /*
+     * @return {Object}
+     */
+    getGroupStartEnd: function () {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(me.inSide),
+        groupName = me.inUpGroupCell.attr('index'),
+        inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
+        values = [];
+
+      inUpGroupCells.each(function(cell){
+        values.push(Number(cell.attr('index')));
+      });
+
+      return {
+        start: F.Array.min(values),
+        end: F.Array.max(values)
+      };
     }
+  });
 
-    return header.el.select('.' + cellHeaderCls).item(o.index - 1).dom;
-  },
-  /*
-   * @param {Object} o
-   * @return {HTMLElement}
-   */
-  getCell: function(o){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      header;
-
-    switch(o.side){
-      case 'left':
-        header = w.leftHeader;
-        break;
-      case 'center':
-        header = w.header;
-        break;
-      case 'right':
-        header = w.rightHeader;
-        break;
-    }
-
-    return header.el.select('.' + cellHeaderCls).item(o.index).dom;
-  },
-  /*
-   * @param {String} side
-   */
-  updateColumnsWidth: function(side){
-    var me = this,
-      w = me.widget,
-      side = side || 'center',
-      header = w.getHeader(side),
-      columns = w.getColumns(side),
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      me.setColumnWidth(i, column.width, side);
-    }
-
-    header.setCellsPosition();
-  },
-  /*
-   * @param {Number} index
-   * @param {Number} width
-   * @param {String} side
-   */
-  setColumnWidth: function(index, width, side){
-    var me = this,
-      w = me.widget,
-      columns = w.getColumns(side),
-      header = w.getHeader(side),
-      body = w.getBody(side),
-      columnEl = Fancy.get(body.getDomColumn(index)),
-      headerCellEl = header.getCell(index),
-      nextHeaderCellEl,
-      nextColumnEl,
-      left = parseInt(columnEl.css('left'));
-
-    columnEl.css('width', width);
-    headerCellEl.css('width', width);
-
-    if(columns[index + 1]){
-      left += width;
-
-      nextColumnEl = Fancy.get(body.getDomColumn(index + 1));
-      nextColumnEl.css('left', left);
-
-      nextHeaderCellEl = header.getCell(index + 1);
-      nextHeaderCellEl.css('left', left);
-    }
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.ChartIntegration
  */
@@ -25468,9 +26134,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -25719,19 +26383,14 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -25819,8 +26478,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Array} data
    */
   setSeriesData: function(id, data){
-    var me = this,
-      chart = me.getChart(chartConfig.id),
+    var chart = this.getChart(chartConfig.id),
       sery = chart.series[0];
 
     sery.setData(data.data);
@@ -25830,9 +26488,8 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} o
    */
   set: function(chartConfig, o){
-    var me = this,
-      fieldsMap = me.getFieldsMap(chartConfig),
-      _chart = me.getChart(chartConfig.id),
+    var fieldsMap = this.getFieldsMap(chartConfig),
+      _chart = this.getChart(chartConfig.id),
       series = _chart.series,
       sery;
 
@@ -25957,8 +26614,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @return {Array}
    */
   getColumnsChartIndexes: function(){
-    var me = this,
-      w = me.widget,
+    var w = this.widget,
       indexes = [],
       columns = w.columns,
       i = 0,
@@ -25995,8 +26651,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} o
    */
   addSeries: function(id, o){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     chart.addSeries(o);
   },
@@ -26005,8 +26660,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @return {Number}
    */
   getNumberSeries: function(id){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     return chart.series.length;
   },
@@ -26014,8 +26668,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {String} id
    */
   removeLastSeries: function(id){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     chart.series[chart.series.length - 1].remove();
   },
@@ -26024,8 +26677,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {String} index
    */
   removeSeries: function(id, index){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     chart.series[index].remove();
   },
@@ -26053,8 +26705,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @return {Boolean}
    */
   isTreeMap: function(id){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     if( chart.series[0] === undefined ){
       return false;
@@ -26100,9 +26751,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -26150,31 +26799,24 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   onGridActivate: function(){
-    var me = this,
-      docEl = Fancy.get(document);
-
-    docEl.on('keydown', me.onKeyDown, me);
+    Fancy.get(document).on('keydown', this.onKeyDown, this);
   },
   /*
    *
    */
   onGridDeActivate: function(){
-    var me = this,
-      docEl = Fancy.get(document);
-
-    docEl.un('keydown', me.onKeyDown, me);
+    Fancy.get(document).un('keydown', this.onKeyDown, this);
   },
   /*
    * @param {Object} e
    */
   onKeyDown: function(e){
-    var me = this,
-      keyCode = e.keyCode,
+    var keyCode = e.keyCode,
       key = Fancy.key;
 
     switch(keyCode) {
       case key.TAB:
-        me.fire('tab', e);
+        this.fire('tab', e);
         break;
     }
   },
@@ -26342,31 +26984,25 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @return {String}
    */
   getClickEventName: function(){
-    var me = this;
-
-    if(me.clicksToEdit === 1){
-      return 'click';
-    }
-
-    if(me.clicksToEdit === 2){
-      return 'dblclick';
+    switch(this.clicksToEdit){
+      case 1:
+        return 'click';
+      case 2:
+        return 'dblclick';
     }
   },
   /*
    *
    */
   stopEditor: function(){
-    var me = this;
-
-    me.stopped = true;
+    this.stopped = true;
   },
   /*
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
   onClickCell: function(grid, o){
-    var me = this,
-      w = me.widget,
+    var w = this.widget,
       column = o.column;
 
     if(column.editable && column.type === 'checkbox' && w.celledit){
@@ -26406,10 +27042,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} o
    */
   onStoreSet: function(store, o){
-    var me = this,
-      w = me.widget;
-
-    w.updater.updateRow(o.rowIndex);
+    this.widget.updater.updateRow(o.rowIndex);
   },
   /*
    *
@@ -26444,12 +27077,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   onStoreCRUDDestroy: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    s.loadData();
-    me.clearDirty();
+    this.widget.store.loadData();
+    this.clearDirty();
   },
   /*
    *
@@ -26468,1564 +27097,1598 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Array} data
    */
   onCreate: function(store, data){
-    var me = this,
-      w = me.widget;
-
-    w.updater.update();
-    me.clearDirty();
+    this.widget.updater.update();
+    this.clearDirty();
   }
 });
 /*
  * @class Fancy.grid.plugin.CellEdit
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.CellEdit', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.celledit',
-  inWidgetName: 'celledit',
-  editorsCls: 'fancy-grid-editors',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var D = F.Date;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.CellEdit', {
+    extend: F.Plugin,
+    ptype: 'grid.celledit',
+    inWidgetName: 'celledit',
+    editorsCls: 'fancy-grid-editors',
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
-
-    w.once('render', function(){
-      me.initEditorContainer();
-      me.checkAutoInitEditors();
-      w.on('scroll', me.onScroll, me);
-      w.on('nativescroll', me.onNativeScroll, me);
-      w.on('docclick', me.onDocClick, me);
-      w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
-    });
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} e
-   */
-  onDocClick: function(grid, e){
-    var me = this,
-      w = me.widget,
-      o = me.activeCellEditParams,
-      editor = me.activeEditor,
-      inCombo = true,
-      target = e.target,
-      targetEl = Fancy.get(target);
-
-    if(editor === undefined){
-      return;
-    }
-    else if(o.column.type === 'date'){
-      return;
-    }
-    else if(o.column.type === 'combo'){}
-    else{
-      var cellEl = targetEl.closest('.' + w.cellCls);
-
-      if(!cellEl.dom && !editor.el.within(target)){
-        editor.hide();
-      }
-      return;
-    }
-
-    if(editor.el.within(target) === false && editor.list.within(target) === false && me.comboClick !== true){
-      inCombo = false;
-    }
-
-    if(inCombo === false){
-      editor.hide();
-    }
-
-    me.comboClick = false;
-  },
-  /*
-   *
-   */
-  initEditorContainer: function(){
-    var me = this,
-      w = me.widget;
-
-    me.editorsContainer = w.el.select('.' + me.editorsCls);
-  },
-  /*
-   * @param {Object} o
-   */
-  edit: function(o){
-    var me = this,
-      w = me.widget,
-      column = o.column;
-
-    if(column.index === '$selected'){
-      return;
-    }
-
-    me.activeCellEditParams = o;
-    w.edit.activeCellEditParams = o;
-
-    column.editor = me.generateEditor(column);
-
-    //me.hideEditor();
-    w.scroller.scrollToCell(o.cell);
-    me.showEditor(o);
-  },
-  /*
-   * @param {Object} column
-   * @return {Object}
-   */
-  generateEditor: function(column){
-    var me = this,
-      w = me.widget,
-      style = {
-        position: 'absolute',
-        left: '0px',
-        top: '0px',
-        display: 'none',
-        padding: '0px'
-      },
-      type = column.type,
-      editor,
-      vtype = column.vtype,
-      renderTo,
-      theme = w.theme;
-
-    if(column.editor){
-      return column.editor;
-    }
-
-    renderTo = me.editorsContainer.dom;
-
-    var itemConfig = {
-      renderTo: renderTo,
-      label: false,
-      style: style,
-      checkValidOnTyping: true
-    };
-
-    switch(type){
-      case 'combo':
-        var displayKey = 'text',
-          valueKey = 'text',
-          data = column.data,
-          events = [{
-            change: me.onComboChange,
-            scope: me
-          }];
-
-        if(column.editorEvents){
-          var i = 0,
-            iL = column.editorEvents.length;
-
-          for(;i<iL;i++){
-            events.push(column.editorEvents[i]);
-          }
-        }
-
-        if(column.displayKey !== undefined){
-          displayKey = column.displayKey;
-          valueKey = displayKey;
-        }
-
-        if(theme === 'default'){
-          theme = undefined;
-        }
-
-        editor = new Fancy.Combo({
-          theme: theme,
-          renderTo: renderTo,
-          label: false,
-          style: style,
-          data: data,
-          displayKey: displayKey,
-          valueKey: valueKey,
-          value: 0,
-          padding: false,
-          vtype: vtype,
-          events: events,
-          checkValidOnTyping: true
-        });
-        break;
-      case 'text':
-        editor = new Fancy.TextArea({
-          renderTo: renderTo,
-          label: false,
-          style: style,
-          vtype: vtype,
-          checkValidOnTyping: true,
-          events: [{
-            enter: me.onEditorEnter,
-            scope: me
-          },{
-            beforehide: me.onEditorBeforeHide,
-            scope: me
-          },{
-            blur: me.onBlur,
-            scope: me
-          }]
-        });
-        break;
-      case 'image':
-      case 'string':
-      case 'color':
-        editor = new Fancy.StringField({
-          renderTo: renderTo,
-          label: false,
-          style: style,
-          vtype: vtype,
-          format: column.format,
-          checkValidOnTyping: true,
-          events: [{
-            enter: me.onEditorEnter,
-            scope: me
-          },{
-            beforehide: me.onEditorBeforeHide,
-            scope: me
-          },{
-            blur: me.onBlur,
-            scope: me
-          }]
-        });
-        break;
-      case 'number':
-      case 'currency':
-        Fancy.apply(itemConfig, {
-          vtype: vtype,
-          format: column.format,
-          events: [{
-            enter: me.onEditorEnter,
-            scope: me
-          },{
-            beforehide: me.onEditorBeforeHide,
-            scope: me
-          },{
-            blur: me.onBlur,
-            scope: me
-          }]
-        });
-
-        if(column.spin !== undefined){
-          itemConfig.spin = column.spin;
-        }
-
-        if(column.step !== undefined){
-          itemConfig.step = column.step;
-        }
-
-        if(column.min !== undefined){
-          itemConfig.min = column.min;
-        }
-
-        if(column.max !== undefined ){
-          itemConfig.max = column.max;
-        }
-
-        editor = new Fancy.NumberField(itemConfig);
-        break;
-      case 'date':
-        editor = new Fancy.DateField({
-          renderTo: renderTo,
-          label: false,
-          style: style,
-          format: column.format,
-          lang: w.lang,
-          vtype: vtype,
-          theme: theme,
-          checkValidOnTyping: true,
-          events: [{
-            enter: me.onEditorEnter,
-            scope: me
-          },{
-            beforehide: me.onEditorBeforeHide,
-            scope: me
-          },{
-            blur: me.onBlur,
-            scope: me
-          }]
-        });
-
-        break;
-      default:
-        throw new Error('[FancyGrid error] - type ' + type + ' editor does not exit');
-    }
-
-    return editor;
-  },
-  /*
-   * @param {Object} o
-   */
-  showEditor: function(o){
-    var me = this,
-      w = me.widget,
-      column = o.column,
-      type = column.type,
-      //editor = me[type + 'Editor'],
-      editor = column.editor,
-      cell = o.cell,
-      cellXY = me.getCellPosition(cell),
-      cellSize = me.getCellSize(cell);
-
-    if(type === 'combo'){
-      me.comboClick = true;
-    }
-
-    me.activeEditor = editor;
-    me.setEditorValue(o);
-    me.setEditorSize(cellSize);
-    editor.show();
-    editor.el.css(cellXY);
-
-    editor.focus();
-
-    if(type === 'combo') {
-      if (o.value !== undefined) {
-        editor.set(o.value, false);
-      }
-    }
-
-    w.fire('startedit', o);
-  },
-  /*
-   * @param {Number} side
-   */
-  setEditorSize: function(size){
-    var me = this;
-
-    if(me.activeEditor.wtype === 'field.combo'){
-      me.activeEditor.size(size);
-    }
-    else {
-      me.activeEditor.setInputSize({
-        width: size.width,
-        height: size.height
+      w.once('render', function () {
+        me.initEditorContainer();
+        me.checkAutoInitEditors();
+        w.on('scroll', me.onScroll, me);
+        w.on('nativescroll', me.onNativeScroll, me);
+        w.on('docclick', me.onDocClick, me);
+        w.on('headercellmousedown', me.onHeaderCellMouseDown, me);
       });
-    }
-  },
-  /*
-   *
-   */
-  hideEditor: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      key,
-      value,
-      o = me.activeCellEditParams,
-      editor = me.activeEditor,
-      column;
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} e
+     */
+    onDocClick: function (grid, e) {
+      var me = this,
+        o = me.activeCellEditParams,
+        editor = me.activeEditor,
+        inCombo = true,
+        target = e.target,
+        targetEl = F.get(target);
 
-    if(editor){
-      column = o.column;
-      value = editor.get();
-
-      if(s.proxyType === 'server' && column.type !== 'combo'){
-        key = me.getActiveColumnKey();
-        value = me.prepareValue(value);
-
-        s.set(o.rowIndex, key, value);
+      if (editor === undefined) {
+        return;
       }
+      else if (o.column.type === 'date') {
+        return;
+      }
+      else if (o.column.type === 'combo') {
+      }
+      else {
+        var cellEl = targetEl.closest('.' + GRID_CELL_CLS);
 
-      editor.hide();
-      editor.hideErrorTip();
-    }
-
-    delete me.activeEditor;
-
-    //Bug fix: when editor is out of side, grid el scrolls
-    if(w.el.dom.scrollTop){
-      w.el.dom.scrollTop = 0;
-    }
-  },
-  /*
-   * @param {Fancy.Element} cell
-   * @return {Object}
-   */
-  getCellPosition: function(cell){
-    var me = this,
-      w = me.widget,
-      gridBorders = w.gridBorders,
-      cellEl = Fancy.get(cell),
-      cellOffset = cellEl.offset(),
-      gridOffset = w.el.offset(),
-      offset = {
-        left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 2 + 'px',
-        top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - (gridBorders[0] + gridBorders[2]) + 'px'
-      };
-
-    return offset;
-  },
-  /*
-   * @param {Fancy.Element} cell
-   * @return {Object}
-   */
-  getCellSize: function(cell){
-    var me = this,
-      w = me.widget,
-      cellEl = Fancy.get(cell),
-      width = cellEl.width(),
-      height = cellEl.height(),
-      coeficient = 2;
-
-    if(Fancy.nojQuery && w.panelBorderWidth === 2){
-      coeficient = 1;
-    }
-
-    width += parseInt( cellEl.css('border-right-width') ) * coeficient;
-    height += parseInt( cellEl.css('border-bottom-width') ) * coeficient;
-
-    return {
-      width: width,
-      height: height
-    };
-  },
-  /*
-   * @param {Object} o
-   */
-  setEditorValue: function(o){
-    var me = this,
-      editor = me.activeEditor;
-
-    switch(o.column.type){
-      case 'combo':
-        if(editor.valueIndex !== - 1){
-          editor.set(editor.getValueKey(o.value), false);
+        if (!cellEl.dom && !editor.el.within(target)) {
+          editor.hide();
         }
-        break;
-      case 'date':
-        var format = o.column.format,
-          date = Fancy.Date.parse(o.value, format.read, format.mode);
-
-        editor.set(date);
-        break;
-      default:
-        editor.set(o.value);
-    }
-  },
-  /*
-   * @param {Object} editor
-   * @param {String} value
-   */
-  onEditorEnter: function(editor, value){
-    this.hideEditor();
-  },
-  /*
-   *
-   */
-  onHeaderCellMouseDown: function(){
-    this.hideEditor();
-  },
-  /*
-   * @param {Object} editor
-   * @param {String} value
-   */
-  onKey: function(editor, value){},
-  /*
-   * @param {String} value
-   */
-  setValue: function(value){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      key,
-      o = me.activeCellEditParams,
-      editor = me.activeEditor;
-
-    if(editor === undefined){
-      return;
-    }
-
-    if(editor.isValid() === false){
-      return;
-    }
-
-    if(s.proxyType === 'server'){
-      return;
-    }
-
-    key = me.getActiveColumnKey();
-
-    value = me.prepareValue(value);
-
-    if(editor.type === 'field.date' && editor.isEqual(s.get(o.rowIndex, key))){
-      return;
-    }
-
-    s.set(o.rowIndex, key, value);
-  },
-  /*
-   * @param {Object} editor
-   */
-  onEditorBeforeHide: function(editor){
-    if(editor.isValid()){
-      this.setValue(editor.getValue());
-    }
-  },
-  /*
-   *
-   */
-  onScroll: function(){
-    this.hideEditor();
-  },
-  /*
-   *
-   */
-  onNativeScroll: function(){
-    this.hideEditor();
-  },
-  /*
-   * @param {Object} field
-   */
-  onBlur: function(field){
-    var me = this;
-
-    if(!me.activeEditor || field.id === me.activeEditor.id) {
-      if(field.mouseDownSpinUp === true || field.mouseDownSpinDown){
         return;
       }
 
-      me.hideEditor();
-    }
-  },
-  /*
-   * @param {*} value
-   * @return {*}
-   */
-  prepareValue: function(value){
-    var me = this,
-      type = me.getActiveColumnType(),
-      o = me.activeCellEditParams,
-      column = o.column,
-      format = column.format;
+      if (editor.el.within(target) === false && editor.list.within(target) === false && me.comboClick !== true) {
+        inCombo = false;
+      }
 
-    switch(type){
-      case 'number':
-      case 'currency':
-        if(format && format.inputFn){
-          var _value = '',
-            i = 0,
-            iL = value.length;
+      if (inCombo === false) {
+        editor.hide();
+      }
 
-          if(Fancy.isNumber(value)){
-            return value;
-          }
+      me.comboClick = false;
+    },
+    /*
+     *
+     */
+    initEditorContainer: function () {
+      var me = this,
+        w = me.widget;
 
-          for(;i<iL;i++){
-            if(!isNaN(Number(value[i]))){
-              _value += value[i];
+      me.editorsContainer = w.el.select('.' + me.editorsCls);
+    },
+    /*
+     * @param {Object} o
+     */
+    edit: function (o) {
+      var me = this,
+        w = me.widget,
+        column = o.column;
+
+      if (column.index === '$selected') {
+        return;
+      }
+
+      me.activeCellEditParams = o;
+      w.edit.activeCellEditParams = o;
+
+      column.editor = me.generateEditor(column);
+
+      //me.hideEditor();
+      w.scroller.scrollToCell(o.cell);
+      me.showEditor(o);
+    },
+    /*
+     * @param {Object} column
+     * @return {Object}
+     */
+    generateEditor: function (column) {
+      var me = this,
+        w = me.widget,
+        style = {
+          position: 'absolute',
+          left: '0px',
+          top: '0px',
+          display: 'none',
+          padding: '0px'
+        },
+        type = column.type,
+        editor,
+        vtype = column.vtype,
+        renderTo,
+        theme = w.theme;
+
+      if (column.editor) {
+        return column.editor;
+      }
+
+      renderTo = me.editorsContainer.dom;
+
+      var itemConfig = {
+        renderTo: renderTo,
+        label: false,
+        style: style,
+        checkValidOnTyping: true
+      };
+
+      switch (type) {
+        case 'combo':
+          var displayKey = 'text',
+            valueKey = 'text',
+            data = column.data,
+            events = [{
+              change: me.onComboChange,
+              scope: me
+            }];
+
+          if (column.editorEvents) {
+            var i = 0,
+              iL = column.editorEvents.length;
+
+            for (; i < iL; i++) {
+              events.push(column.editorEvents[i]);
             }
           }
 
-          value = _value;
-        }
-        else if( value !== ''){
-          value = Number(value);
-        }
-        break;
-      case 'date':
-        if(column.format && column.format.read){
-          var date = column.editor.getDate();
-          value = Fancy.Date.format(date, column.format.read, undefined, column.format.mode);
-        }
-        break;
-    }
+          if (column.displayKey !== undefined) {
+            displayKey = column.displayKey;
+            valueKey = displayKey;
+          }
 
-    return value;
-  },
-  /*
-   * @return {String}
-   */
-  getActiveColumnType: function(){
-    var me = this,
-      o = me.activeCellEditParams,
-      column = o.column;
+          if (theme === 'default') {
+            theme = undefined;
+          }
 
-    return column.type;
-  },
-  /*
-   * @return {String}
-   */
-  getActiveColumnKey: function(){
-    var me = this,
-      o = me.activeCellEditParams,
-      column = o.column,
-      key = column.key ||column.index;
+          editor = new F.Combo({
+            theme: theme,
+            renderTo: renderTo,
+            label: false,
+            style: style,
+            data: data,
+            displayKey: displayKey,
+            valueKey: valueKey,
+            value: 0,
+            padding: false,
+            vtype: vtype,
+            events: events,
+            checkValidOnTyping: true
+          });
+          break;
+        case 'text':
+          editor = new F.TextArea({
+            renderTo: renderTo,
+            label: false,
+            style: style,
+            vtype: vtype,
+            checkValidOnTyping: true,
+            events: [{
+              enter: me.onEditorEnter,
+              scope: me
+            }, {
+              beforehide: me.onEditorBeforeHide,
+              scope: me
+            }, {
+              blur: me.onBlur,
+              scope: me
+            }]
+          });
+          break;
+        case 'image':
+        case 'string':
+        case 'color':
+          editor = new F.StringField({
+            renderTo: renderTo,
+            label: false,
+            style: style,
+            vtype: vtype,
+            format: column.format,
+            checkValidOnTyping: true,
+            events: [{
+              enter: me.onEditorEnter,
+              scope: me
+            }, {
+              beforehide: me.onEditorBeforeHide,
+              scope: me
+            }, {
+              blur: me.onBlur,
+              scope: me
+            }]
+          });
+          break;
+        case 'number':
+        case 'currency':
+          F.apply(itemConfig, {
+            vtype: vtype,
+            format: column.format,
+            events: [{
+              enter: me.onEditorEnter,
+              scope: me
+            }, {
+              beforehide: me.onEditorBeforeHide,
+              scope: me
+            }, {
+              blur: me.onBlur,
+              scope: me
+            }]
+          });
 
-    return key;
-  },
-  /*
-   * @param {Object} o
-   */
-  onCheckBoxChange: function(o){
-    var me = this,
-      w = me.widget,
-      column = o.column,
-      key = column.key ||column.index,
-      s = w.store,
-      value = me.checkBoxChangedValue;
+          if (column.spin !== undefined) {
+            itemConfig.spin = column.spin;
+          }
 
-    if(me.activeEditor){
-      me.hideEditor();
-    }
+          if (column.step !== undefined) {
+            itemConfig.step = column.step;
+          }
 
-    if(me.checkBoxChangedValue === undefined){
-      return
-    }
+          if (column.min !== undefined) {
+            itemConfig.min = column.min;
+          }
 
-    delete me.checkBoxChangedValue;
+          if (column.max !== undefined) {
+            itemConfig.max = column.max;
+          }
 
-    me.activeCellEditParams = o;
-    w.edit.activeCellEditParams = o;
+          editor = new F.NumberField(itemConfig);
+          break;
+        case 'date':
+          editor = new F.DateField({
+            renderTo: renderTo,
+            label: false,
+            style: style,
+            format: column.format,
+            lang: w.lang,
+            vtype: vtype,
+            theme: theme,
+            checkValidOnTyping: true,
+            events: [{
+              enter: me.onEditorEnter,
+              scope: me
+            }, {
+              beforehide: me.onEditorBeforeHide,
+              scope: me
+            }, {
+              blur: me.onBlur,
+              scope: me
+            }]
+          });
 
-    s.set(o.rowIndex, key, value);
-  },
-  /*
-   * @param {Object} combo
-   * @param {*} value
-   */
-  onComboChange: function(combo, value){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      o = me.activeCellEditParams,
-      key = me.getActiveColumnKey(),
-      newValue = combo.getDisplayValue(value);
-
-    s.set(o.rowIndex, key, newValue);
-    me.hideEditor();
-  },
-  checkAutoInitEditors: function(){
-    var me = this,
-      w = me.widget;
-
-    Fancy.each(w.columns, function(column){
-      if(column.editorAutoInit){
-        column.editor = me.generateEditor(column);
+          break;
+        default:
+          throw new Error('[FancyGrid error] - type ' + type + ' editor does not exit');
       }
-    });
-  }
-});
+
+      return editor;
+    },
+    /*
+     * @param {Object} o
+     */
+    showEditor: function (o) {
+      var me = this,
+        w = me.widget,
+        column = o.column,
+        type = column.type,
+        //editor = me[type + 'Editor'],
+        editor = column.editor,
+        cell = o.cell,
+        cellXY = me.getCellPosition(cell),
+        cellSize = me.getCellSize(cell);
+
+      if (type === 'combo') {
+        me.comboClick = true;
+      }
+
+      me.activeEditor = editor;
+      me.setEditorValue(o);
+      me.setEditorSize(cellSize);
+      editor.show();
+      editor.el.css(cellXY);
+
+      editor.focus();
+
+      if (type === 'combo') {
+        if (o.value !== undefined) {
+          editor.set(o.value, false);
+        }
+      }
+
+      w.fire('startedit', o);
+    },
+    /*
+     * @param {Number} side
+     */
+    setEditorSize: function (size) {
+      var me = this;
+
+      if (me.activeEditor.wtype === 'field.combo') {
+        me.activeEditor.size(size);
+      }
+      else {
+        me.activeEditor.setInputSize({
+          width: size.width,
+          height: size.height
+        });
+      }
+    },
+    /*
+     *
+     */
+    hideEditor: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        key,
+        value,
+        o = me.activeCellEditParams,
+        editor = me.activeEditor,
+        column;
+
+      if (editor) {
+        column = o.column;
+        value = editor.get();
+
+        if (s.proxyType === 'server' && column.type !== 'combo') {
+          key = me.getActiveColumnKey();
+          value = me.prepareValue(value);
+
+          s.set(o.rowIndex, key, value);
+        }
+
+        editor.hide();
+        editor.hideErrorTip();
+      }
+
+      delete me.activeEditor;
+
+      //Bug fix: when editor is out of side, grid el scrolls
+      if (w.el.dom.scrollTop) {
+        w.el.dom.scrollTop = 0;
+      }
+    },
+    /*
+     * @param {Fancy.Element} cell
+     * @return {Object}
+     */
+    getCellPosition: function (cell) {
+      var me = this,
+        w = me.widget,
+        gridBorders = w.gridBorders,
+        cellEl = F.get(cell),
+        cellOffset = cellEl.offset(),
+        gridOffset = w.el.offset(),
+        offset = {
+          left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 2 + 'px',
+          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - (gridBorders[0] + gridBorders[2]) + 'px'
+        };
+
+      return offset;
+    },
+    /*
+     * @param {Fancy.Element} cell
+     * @return {Object}
+     */
+    getCellSize: function (cell) {
+      var me = this,
+        w = me.widget,
+        cellEl = F.get(cell),
+        width = cellEl.width(),
+        height = cellEl.height(),
+        coeficient = 2;
+
+      if (F.nojQuery && w.panelBorderWidth === 2) {
+        coeficient = 1;
+      }
+
+      width += parseInt(cellEl.css('border-right-width')) * coeficient;
+      height += parseInt(cellEl.css('border-bottom-width')) * coeficient;
+
+      return {
+        width: width,
+        height: height
+      };
+    },
+    /*
+     * @param {Object} o
+     */
+    setEditorValue: function (o) {
+      var me = this,
+        editor = me.activeEditor;
+
+      switch (o.column.type) {
+        case 'combo':
+          if (editor.valueIndex !== -1) {
+            editor.set(editor.getValueKey(o.value), false);
+          }
+          break;
+        case 'date':
+          var format = o.column.format,
+            date = D.parse(o.value, format.read, format.mode);
+
+          editor.set(date);
+          break;
+        default:
+          editor.set(o.value);
+      }
+    },
+    /*
+     * @param {Object} editor
+     * @param {String} value
+     */
+    onEditorEnter: function (editor, value) {
+      this.hideEditor();
+    },
+    /*
+     *
+     */
+    onHeaderCellMouseDown: function () {
+      this.hideEditor();
+    },
+    /*
+     * @param {Object} editor
+     * @param {String} value
+     */
+    onKey: function (editor, value) {
+    },
+    /*
+     * @param {String} value
+     */
+    setValue: function (value) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        key,
+        o = me.activeCellEditParams,
+        editor = me.activeEditor;
+
+      if (editor === undefined) {
+        return;
+      }
+
+      if (editor.isValid() === false) {
+        return;
+      }
+
+      if (s.proxyType === 'server') {
+        return;
+      }
+
+      key = me.getActiveColumnKey();
+
+      value = me.prepareValue(value);
+
+      if (editor.type === 'field.date' && editor.isEqual(s.get(o.rowIndex, key))) {
+        return;
+      }
+
+      s.set(o.rowIndex, key, value);
+    },
+    /*
+     * @param {Object} editor
+     */
+    onEditorBeforeHide: function (editor) {
+      if (editor.isValid()) {
+        this.setValue(editor.getValue());
+      }
+    },
+    /*
+     *
+     */
+    onScroll: function () {
+      this.hideEditor();
+    },
+    /*
+     *
+     */
+    onNativeScroll: function () {
+      this.hideEditor();
+    },
+    /*
+     * @param {Object} field
+     */
+    onBlur: function (field) {
+      var me = this;
+
+      if (!me.activeEditor || field.id === me.activeEditor.id) {
+        if (field.mouseDownSpinUp === true || field.mouseDownSpinDown) {
+          return;
+        }
+
+        me.hideEditor();
+      }
+    },
+    /*
+     * @param {*} value
+     * @return {*}
+     */
+    prepareValue: function (value) {
+      var me = this,
+        type = me.getActiveColumnType(),
+        o = me.activeCellEditParams,
+        column = o.column,
+        format = column.format;
+
+      switch (type) {
+        case 'number':
+        case 'currency':
+          if (format && format.inputFn) {
+            var _value = '',
+              i = 0,
+              iL = value.length;
+
+            if (F.isNumber(value)) {
+              return value;
+            }
+
+            for (; i < iL; i++) {
+              if (!isNaN(Number(value[i]))) {
+                _value += value[i];
+              }
+            }
+
+            value = _value;
+          }
+          else if (value !== '') {
+            value = Number(value);
+          }
+          break;
+        case 'date':
+          if (column.format && column.format.read) {
+            var date = column.editor.getDate();
+            value = D.format(date, column.format.read, undefined, column.format.mode);
+          }
+          break;
+      }
+
+      return value;
+    },
+    /*
+     * @return {String}
+     */
+    getActiveColumnType: function () {
+      var o = this.activeCellEditParams,
+        column = o.column;
+
+      return column.type;
+    },
+    /*
+     * @return {String}
+     */
+    getActiveColumnKey: function () {
+      var o = this.activeCellEditParams,
+        column = o.column,
+        key = column.key || column.index;
+
+      return key;
+    },
+    /*
+     * @param {Object} o
+     */
+    onCheckBoxChange: function (o) {
+      var me = this,
+        w = me.widget,
+        column = o.column,
+        key = column.key || column.index,
+        s = w.store,
+        value = me.checkBoxChangedValue;
+
+      if (me.activeEditor) {
+        me.hideEditor();
+      }
+
+      if (me.checkBoxChangedValue === undefined) {
+        return
+      }
+
+      delete me.checkBoxChangedValue;
+
+      me.activeCellEditParams = o;
+      w.edit.activeCellEditParams = o;
+
+      s.set(o.rowIndex, key, value);
+    },
+    /*
+     * @param {Object} combo
+     * @param {*} value
+     */
+    onComboChange: function (combo, value) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        o = me.activeCellEditParams,
+        key = me.getActiveColumnKey(),
+        newValue = combo.getDisplayValue(value);
+
+      s.set(o.rowIndex, key, newValue);
+      me.hideEditor();
+    },
+    checkAutoInitEditors: function () {
+      var me = this,
+        w = me.widget;
+
+      F.each(w.columns, function (column) {
+        if (column.editorAutoInit) {
+          column.editor = me.generateEditor(column);
+        }
+      });
+    }
+  });
+
+})();
 /*
  * @class Fancy.grid.plugin.RowEdit
  */
-Fancy.define('Fancy.grid.plugin.RowEdit', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.rowedit',
-  inWidgetName: 'rowedit',
-  rendered: false,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var E = F.each;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var FIELD_CLS = F.FIELD_CLS;
+  var GRID_ROW_EDIT_CLS = F.GRID_ROW_EDIT_CLS;
+  var GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
+  var GRID_ROW_EDIT_BUTTON_UPDATE_CLS =  F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
+  var GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.RowEdit', {
+    extend: F.Plugin,
+    ptype: 'grid.rowedit',
+    inWidgetName: 'rowedit',
+    rendered: false,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
+      w.on('scroll', me.onScroll, me);
+      w.on('columnresize', me.onColumnResize, me);
 
-    w.on('scroll', me.onScroll, me);
-    w.on('columnresize', me.onColumnResize, me);
+      w.on('columndrag', me.onColumnDrag, me);
 
-    if(w.grouping){
-      w.on('collapse', me.onCollapse, me);
-      w.on('expand', me.onExpand, me);
-    }
-  },
-  /*
-   *
-   */
-  onCollapse: function(){
-    var me = this;
-
-    me.hide();
-  },
-  /*
-   *
-   */
-  onExpand: function(){
-    var me = this;
-
-    me.hide();
-  },
-  /*
-   * @param {Object} o
-   */
-  edit: function(o){
-    var me = this,
-      w = me.widget,
-      column = o.column;
-
-    if(column.index === '$selected'){
-      return;
-    }
-
-    w.scroller.scrollToCell(o.cell);
-    me.showEditor(o);
-  },
-  /*
-   * @param {Object} o
-   */
-  showEditor: function(o){
-    var me = this;
-
-    me.changed = {};
-
-    if(!me.rendered){
-      me.render();
-      me.changePosition(o.rowIndex, false);
-    }
-    else{
-      var isHidden = me.el.css('display') === 'none';
-      me.show();
-      me.changePosition(o.rowIndex, !isHidden);
-    }
-
-    me.setValues(o);
-
-    me.setSizes();
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget;
-
-    if(w.leftColumns){
-      me.leftEl = me.renderTo(w.leftBody.el, w.leftColumns);
-    }
-
-    if(w.columns){
-      me.el = me.renderTo(w.body.el, w.columns);
-    }
-
-    if(w.rightColumns){
-      me.rightEl = me.renderTo(w.rightBody.el, w.rightColumns);
-    }
-
-    me.renderButtons();
-
-    me.rendered = true;
-  },
-  /*
-   * @param {Object} renderTo
-   * @param {Array} columns
-   *  @param {Number} order
-   * @param {String} side
-   * @param {String} fromSide
-   * @return {Fancy.Element}
-   */
-  renderTo: function(renderTo, columns, order, side, fromSide){
-    var me = this,
-      w = me.widget,
-      container = Fancy.get(document.createElement('div')),
-      el,
-      i = 0,
-      iL = columns.length,
-      theme = w.theme,
-      column,
-      style = {
-        'float': 'left',
-        margin: '0px',
-        padding: '0px'
-      },
-      renderAfter,
-      renderBefore;
-
-    if(!side){
-      container.addCls(w.rowEditCls);
-      el = Fancy.get(renderTo.dom.appendChild(container.dom));
-    }
-    else{
-      var fieldEls = renderTo.select('.' + Fancy.FIELD_CLS);
-
-      i = order;
-      iL = order + 1;
-
-      switch(side){
-        case 'right':
-          renderBefore = fieldEls.item(order);
-          break;
-        case 'left':
-          renderAfter = fieldEls.item(order);
-          break;
-        case 'center':
-          switch(fromSide){
-            case 'left':
-              renderBefore = fieldEls.item(0);
-              break;
-            case 'right':
-              renderAfter = fieldEls.item(fieldEls.length - 1);
-              break;
-          }
-          break;
+      if (w.grouping) {
+        w.on('collapse', me.onCollapse, me);
+        w.on('expand', me.onExpand, me);
       }
-    }
+    },
+    /*
+     *
+     */
+    onCollapse: function () {
+      this.hide();
+    },
+    /*
+     *
+     */
+    onExpand: function () {
+      this.hide();
+    },
+    /*
+     * @param {Object} o
+     */
+    edit: function (o) {
+      var me = this,
+        w = me.widget,
+        column = o.column;
 
-    for(;i<iL;i++){
-      column = columns[i];
-      var columnWidth = column.width;
-
-      var itemConfig = {
-        index: column.index,
-        label: false,
-        style: style,
-        width: columnWidth,
-        vtype: column.vtype,
-        format: column.format,
-        stopPropagation: true,
-        theme: theme,
-        checkValidOnTyping: true,
-        events: [{
-          change: me.onFieldChange,
-          delay: 100,
-          scope: me
-        },{
-          enter: me.onFieldEnter,
-          scope: me
-        }]
-      };
-
-      switch(side){
-        case 'left':
-          itemConfig.renderAfter = renderAfter;
-          break;
-        case 'right':
-          itemConfig.renderBefore = renderBefore;
-          break;
-        case 'center':
-          switch(fromSide){
-            case 'left':
-              itemConfig.renderBefore = fieldEls.item(0);
-              break;
-            case 'right':
-              itemConfig.renderAfter = fieldEls.item(fieldEls.length - 1);
-              break;
-          }
-          break;
-        default:
-          itemConfig.renderTo = el.dom;
+      if (column.index === '$selected') {
+        return;
       }
 
-      var editor;
+      w.scroller.scrollToCell(o.cell);
+      me.showEditor(o);
+    },
+    /*
+     * @param {Object} o
+     */
+    showEditor: function (o) {
+      var me = this;
 
-      if(column.editable === false){
-         switch(column.type){
-          case 'string':
-          case 'number':
-            editor = new Fancy.TextField(itemConfig);
-            break;
-          default:
-            editor = new Fancy.EmptyField(itemConfig);
-        }
+      me.changed = {};
+
+      if (!me.rendered) {
+        me.render();
+        me.changePosition(o.rowIndex, false);
       }
-      else{
-        switch(column.type){
-          case 'date':
-            if(column.format){
-              itemConfig.format = column.format;
-            }
+      else {
+        var isHidden = me.el.css('display') === 'none';
+        me.show();
+        me.changePosition(o.rowIndex, !isHidden);
+      }
 
-            editor = new Fancy.DateField(itemConfig);
+      me.setValues(o);
+
+      me.setSizes();
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget;
+
+      if (w.leftColumns) {
+        me.leftEl = me.renderTo(w.leftBody.el, w.leftColumns);
+      }
+
+      if (w.columns) {
+        me.el = me.renderTo(w.body.el, w.columns);
+      }
+
+      if (w.rightColumns) {
+        me.rightEl = me.renderTo(w.rightBody.el, w.rightColumns);
+      }
+
+      me.renderButtons();
+
+      me.rendered = true;
+    },
+    /*
+     * @param {Object} renderTo
+     * @param {Array} columns
+     *  @param {Number} order
+     * @param {String} side
+     * @param {String} fromSide
+     * @return {Fancy.Element}
+     */
+    renderTo: function (renderTo, columns, order, side, fromSide) {
+      var me = this,
+        w = me.widget,
+        container = F.get(document.createElement('div')),
+        el,
+        i = 0,
+        iL = columns.length,
+        theme = w.theme,
+        column,
+        style = {
+          'float': 'left',
+          margin: '0px',
+          padding: '0px'
+        },
+        renderAfter,
+        renderBefore;
+
+      if (!side) {
+        container.addCls(GRID_ROW_EDIT_CLS);
+        el = F.get(renderTo.dom.appendChild(container.dom));
+      }
+      else {
+        var fieldEls = renderTo.select('.' + FIELD_CLS);
+
+        i = order;
+        iL = order + 1;
+
+        switch (side) {
+          case 'right':
+            renderBefore = fieldEls.item(order);
             break;
-          case 'image':
-          case 'string':
-          case 'color':
-            editor = new Fancy.StringField(itemConfig);
+          case 'left':
+            renderAfter = fieldEls.item(order);
             break;
-          case 'number':
-            if(column.spin){
-              itemConfig.spin = column.spin;
-            }
-
-            if(column.step){
-              itemConfig.step = column.step;
-            }
-
-            if(column.min){
-              itemConfig.min = column.min;
-            }
-
-            if(column.max){
-              itemConfig.max = column.max;
-            }
-
-            editor = new Fancy.NumberField(itemConfig);
-            break;
-          case 'combo':
-            Fancy.apply(itemConfig, {
-              data: column.data,
-              value: -1,
-              padding: false
-            });
-
-            if(column.displayKey){
-              itemConfig.displayKey = column.displayKey;
-              itemConfig.valueKey = column.displayKey;
-            }
-            else{
-              itemConfig.displayKey = 'text';
-              itemConfig.valueKey = 'text';
-            }
-
-            editor = new Fancy.Combo(itemConfig);
-            break;
-          case 'checkbox':
-            var paddingLeft;
-            switch(column.cellAlign){
+          case 'center':
+            switch (fromSide) {
               case 'left':
-                paddingLeft = 7;
-                break;
-              case 'center':
-                paddingLeft = (column.width - 20 - 2)/2;
+                renderBefore = fieldEls.item(0);
                 break;
               case 'right':
-                paddingLeft = (column.width - 20)/2 + 11;
+                renderAfter = fieldEls.item(fieldEls.length - 1);
                 break;
             }
-
-            Fancy.apply(itemConfig, {
-              renderId: true,
-              value: false,
-              style: {
-                padding: '0px',
-                display: 'inline-block',
-                'padding-left': paddingLeft,
-                'float': 'left',
-                margin: '0px'
-              }
-            });
-
-            editor = new Fancy.CheckBox(itemConfig);
             break;
-          default:
-            editor = new Fancy.EmptyField(itemConfig);
         }
       }
 
-      column.rowEditor = editor;
-    }
+      for (; i < iL; i++) {
+        column = columns[i];
+        var columnWidth = column.width;
 
-    return el;
-  },
-  /*
-   *
-   */
-  renderButtons: function(){
-    var me = this,
-      w = me.widget,
-      container = Fancy.get(document.createElement('div')),
-      el;
+        var itemConfig = {
+          index: column.index,
+          label: false,
+          style: style,
+          width: columnWidth,
+          vtype: column.vtype,
+          format: column.format,
+          stopPropagation: true,
+          theme: theme,
+          checkValidOnTyping: true,
+          events: [{
+            change: me.onFieldChange,
+            delay: 100,
+            scope: me
+          }, {
+            enter: me.onFieldEnter,
+            scope: me
+          }]
+        };
 
-    container.addCls(w.rowEditButtonCls);
+        switch (side) {
+          case 'left':
+            itemConfig.renderAfter = renderAfter;
+            break;
+          case 'right':
+            itemConfig.renderBefore = renderBefore;
+            break;
+          case 'center':
+            switch (fromSide) {
+              case 'left':
+                itemConfig.renderBefore = fieldEls.item(0);
+                break;
+              case 'right':
+                itemConfig.renderAfter = fieldEls.item(fieldEls.length - 1);
+                break;
+            }
+            break;
+          default:
+            itemConfig.renderTo = el.dom;
+        }
 
-    el = Fancy.get(w.body.el.dom.appendChild(container.dom));
+        var editor;
 
-    me.buttonsEl = el;
+        if (column.editable === false) {
+          switch (column.type) {
+            case 'string':
+            case 'number':
+              editor = new F.TextField(itemConfig);
+              break;
+            default:
+              editor = new F.EmptyField(itemConfig);
+          }
+        }
+        else {
+          switch (column.type) {
+            case 'date':
+              if (column.format) {
+                itemConfig.format = column.format;
+              }
 
-    me.buttonUpdate = new Fancy.Button({
-      cls: 'fancy-edit-row-button-update',
-      renderTo: el.dom,
-      text: 'Update',
-      events: [{
-        click: me.onClickUpdate,
-        scope: me
-      }]
-    });
+              editor = new F.DateField(itemConfig);
+              break;
+            case 'image':
+            case 'string':
+            case 'color':
+              editor = new F.StringField(itemConfig);
+              break;
+            case 'number':
+              if (column.spin) {
+                itemConfig.spin = column.spin;
+              }
 
-    me.buttonCancel = new Fancy.Button({
-      cls: 'fancy-edit-row-button-cancel',
-      renderTo: el.dom,
-      text: 'Cancel',
-      events: [{
-        click: me.onClickCancel,
-        scope: me
-      }]
-    });
-  },
-  /*
-   *
-   */
-  setSizes: function(){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls;
+              if (column.step) {
+                itemConfig.step = column.step;
+              }
 
-    if(w.leftColumns){
-      me._setSizes(w.leftBody.el.select('.' + cellCls + '[index="0"]'), w.leftColumns, 'left');
-    }
+              if (column.min) {
+                itemConfig.min = column.min;
+              }
 
-    if(w.columns){
-      me._setSizes(w.body.el.select('.' + cellCls + '[index="0"]'), w.columns);
-    }
+              if (column.max) {
+                itemConfig.max = column.max;
+              }
 
-    if(w.rightColumns){
-      me._setSizes(w.rightBody.el.select('.' + cellCls + '[index="0"]'), w.rightColumns, 'right');
-    }
+              editor = new F.NumberField(itemConfig);
+              break;
+            case 'combo':
+              F.apply(itemConfig, {
+                data: column.data,
+                value: -1,
+                padding: false
+              });
 
-    me.setElSize();
-  },
-  /*
-   *
-   */
-  setElSize: function(){
-    var me = this,
-      w = me.widget,
-      centerWidth = w.getCenterViewWidth(),
-      centerFullWidth = w.getCenterFullWidth();
+              if (column.displayKey) {
+                itemConfig.displayKey = column.displayKey;
+                itemConfig.valueKey = column.displayKey;
+              }
+              else {
+                itemConfig.displayKey = 'text';
+                itemConfig.valueKey = 'text';
+              }
 
-    if(centerWidth < centerFullWidth){
-      me.el.css('width', centerFullWidth);
-    }
-  },
-  /*
-   * @private
-   * @param {Fancy.Elements} firstRowCells
-   * @param {Array} columns
-   * @param {String} side
-   */
-  _setSizes: function(firstRowCells, columns, side){
-    var me = this,
-      i = 0,
-      iL = columns.length,
-      column,
-      cellSize,
-      cell,
-      cellEl,
-      editor,
-      borderWidth = 1,
-      offset = 2;
+              editor = new F.Combo(itemConfig);
+              break;
+            case 'checkbox':
+              var paddingLeft;
+              switch (column.cellAlign) {
+                case 'left':
+                  paddingLeft = 7;
+                  break;
+                case 'center':
+                  paddingLeft = (column.width - 20 - 2) / 2;
+                  break;
+                case 'right':
+                  paddingLeft = (column.width - 20) / 2 + 11;
+                  break;
+              }
 
-    for(;i<iL;i++){
-      column = columns[i];
-      cell = firstRowCells.item(i).dom;
-      cellEl = Fancy.get(cell);
-      cellSize = me.getCellSize(cell);
-      editor = column.rowEditor;
+              F.apply(itemConfig, {
+                renderId: true,
+                value: false,
+                style: {
+                  padding: '0px',
+                  display: 'inline-block',
+                  'padding-left': paddingLeft,
+                  'float': 'left',
+                  margin: '0px'
+                }
+              });
 
-      if(!editor){
-        continue;
+              editor = new F.CheckBox(itemConfig);
+              break;
+            default:
+              editor = new F.EmptyField(itemConfig);
+          }
+        }
+
+        column.rowEditor = editor;
       }
 
-      if((side === 'left' || side === 'right') && i === iL - 1){
-        cellSize.width--;
-      }
+      return el;
+    },
+    /*
+     *
+     */
+    renderButtons: function () {
+      var me = this,
+        w = me.widget,
+        container = F.get(document.createElement('div')),
+        el;
 
-      cellSize.height -= 2;
+      container.addCls(GRID_ROW_EDIT_BUTTONS_CLS);
 
-      if(i === iL - 1){
-        editor.el.css('width', (cellSize.width - 2));
-      }
-      else{
-        editor.el.css('width', (cellSize.width - 1));
-      }
+      el = F.get(w.body.el.dom.appendChild(container.dom));
 
-      editor.el.css('height', (cellSize.height));
+      me.buttonsEl = el;
 
-      cellSize.width -= borderWidth * 2;
-      cellSize.width -= offset * 2;
-
-      cellSize.height -= offset * 2;
-
-      me.setEditorSize(editor, cellSize);
-    }
-  },
-  //Dublication code from Fancy.grid.plugin.CellEdit
-  /*
-   * @param {Fancy.Element} cell
-   * @return {Object}
-   */
-  getCellSize: function(cell){
-    var me = this,
-      w = me.widget,
-      cellEl = Fancy.get(cell),
-      width = cellEl.width(),
-      height = cellEl.height(),
-      coeficient = 2;
-
-    if(Fancy.nojQuery && w.panelBorderWidth === 2){
-      coeficient = 1;
-    }
-
-    width += parseInt( cellEl.css('border-right-width') ) * coeficient;
-    height += parseInt( cellEl.css('border-bottom-width') ) * coeficient;
-
-    return {
-      width: width,
-      height: height
-    };
-  },
-  /*
-   * @param {Object} editor
-   * @param {Number} size
-   */
-  setEditorSize: function(editor, size){
-    if(editor.wtype === 'field.combo'){
-      editor.size(size);
-
-      editor.el.css('width', size.width + 5);
-    }
-    else{
-      editor.setInputSize({
-        width: size.width,
-        height: size.height
+      me.buttonUpdate = new F.Button({
+        cls: GRID_ROW_EDIT_BUTTON_UPDATE_CLS,
+        renderTo: el.dom,
+        text: 'Update',
+        events: [{
+          click: me.onClickUpdate,
+          scope: me
+        }]
       });
-    }
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {Boolean} animate
-   */
-  changePosition: function(rowIndex, animate){
-    var me = this,
-      w = me.widget,
-      scrollTop = w.scroller.getScroll(),
-      bottomScroll = w.scroller.getBottomScroll(),
-      newTop = w.cellHeight * rowIndex - 1 - scrollTop,
-      duration = 100,
-      plusTop = 0;
 
-    if(w.grouping){
-      plusTop += w.grouping.getOffsetForRow(rowIndex);
-      newTop += plusTop;
-    }
+      me.buttonCancel = new F.Button({
+        cls: GRID_ROW_EDIT_BUTTON_CANCEL_CLS,
+        renderTo: el.dom,
+        text: 'Cancel',
+        events: [{
+          click: me.onClickCancel,
+          scope: me
+        }]
+      });
+    },
+    /*
+     *
+     */
+    setSizes: function () {
+      var me = this,
+        w = me.widget;
 
-    if(me.leftEl){
-      if(animate !== false){
-        me.leftEl.animate({
+      if (w.leftColumns) {
+        me._setSizes(w.leftBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.leftColumns, 'left');
+      }
+
+      if (w.columns) {
+        me._setSizes(w.body.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.columns);
+      }
+
+      if (w.rightColumns) {
+        me._setSizes(w.rightBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.rightColumns, 'right');
+      }
+
+      me.setElSize();
+    },
+    /*
+     *
+     */
+    setElSize: function () {
+      var w = this.widget,
+        centerWidth = w.getCenterViewWidth(),
+        centerFullWidth = w.getCenterFullWidth();
+
+      if (centerWidth < centerFullWidth) {
+        this.el.css('width', centerFullWidth);
+      }
+    },
+    /*
+     * @private
+     * @param {Fancy.Elements} firstRowCells
+     * @param {Array} columns
+     * @param {String} side
+     */
+    _setSizes: function (firstRowCells, columns, side) {
+      var me = this,
+        i = 0,
+        iL = columns.length,
+        column,
+        cellSize,
+        cell,
+        cellEl,
+        editor,
+        borderWidth = 1,
+        offset = 2;
+
+      for (; i < iL; i++) {
+        column = columns[i];
+        cell = firstRowCells.item(i).dom;
+        cellEl = F.get(cell);
+        cellSize = me.getCellSize(cell);
+        editor = column.rowEditor;
+
+        if (!editor) {
+          continue;
+        }
+
+        if ((side === 'left' || side === 'right') && i === iL - 1) {
+          cellSize.width--;
+        }
+
+        cellSize.height -= 2;
+
+        if (i === iL - 1) {
+          editor.el.css('width', (cellSize.width - 2));
+        }
+        else {
+          editor.el.css('width', (cellSize.width - 1));
+        }
+
+        editor.el.css('height', (cellSize.height));
+
+        cellSize.width -= borderWidth * 2;
+        cellSize.width -= offset * 2;
+
+        cellSize.height -= offset * 2;
+
+        me.setEditorSize(editor, cellSize);
+      }
+    },
+    //Dublication code from Fancy.grid.plugin.CellEdit
+    /*
+     * @param {Fancy.Element} cell
+     * @return {Object}
+     */
+    getCellSize: function (cell) {
+      var w = this.widget,
+        cellEl = F.get(cell),
+        width = cellEl.width(),
+        height = cellEl.height(),
+        coeficient = 2;
+
+      if (F.nojQuery && w.panelBorderWidth === 2) {
+        coeficient = 1;
+      }
+
+      width += parseInt(cellEl.css('border-right-width')) * coeficient;
+      height += parseInt(cellEl.css('border-bottom-width')) * coeficient;
+
+      return {
+        width: width,
+        height: height
+      };
+    },
+    /*
+     * @param {Object} editor
+     * @param {Number} size
+     */
+    setEditorSize: function (editor, size) {
+      if (editor.wtype === 'field.combo') {
+        editor.size(size);
+
+        editor.el.css('width', size.width + 5);
+      }
+      else {
+        editor.setInputSize({
+          width: size.width,
+          height: size.height
+        });
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {Boolean} animate
+     */
+    changePosition: function (rowIndex, animate) {
+      var me = this,
+        w = me.widget,
+        scrollTop = w.scroller.getScroll(),
+        bottomScroll = w.scroller.getBottomScroll(),
+        newTop = w.cellHeight * rowIndex - 1 - scrollTop,
+        duration = 100,
+        plusTop = 0;
+
+      if (w.grouping) {
+        plusTop += w.grouping.getOffsetForRow(rowIndex);
+        newTop += plusTop;
+      }
+
+      if (me.leftEl) {
+        if (animate !== false) {
+          me.leftEl.animate({
+            duration: duration,
+            top: newTop
+          });
+        }
+        else {
+          me.leftEl.css('top', newTop);
+        }
+      }
+
+      if (me.el) {
+        if (animate !== false) {
+          me.el.animate({
+            duration: duration,
+            top: newTop
+          });
+        }
+        else {
+          me.el.css('top', newTop);
+        }
+      }
+
+      if (me.rightEl) {
+        if (animate !== false) {
+          me.rightEl.animate({
+            duration: duration,
+            top: newTop
+          });
+        }
+        else {
+          me.rightEl.css('top', newTop);
+        }
+      }
+
+      var showOnTop = w.getViewTotal() - 3 < rowIndex,
+        buttonTop = newTop;
+
+      if (rowIndex < 3) {
+        showOnTop = false;
+      }
+
+      if (showOnTop) {
+        if (w.grouping) {
+          if (w.getViewTotal() - 3 < rowIndex - w.grouping.getSpecialRowsUnder(rowIndex)) {
+            buttonTop = newTop - parseInt(me.buttonsEl.css('height')) + 1;
+          }
+          else {
+            buttonTop = newTop + w.cellHeight;
+            showOnTop = false;
+          }
+        }
+        else {
+          buttonTop = newTop - parseInt(me.buttonsEl.css('height')) + 1;
+        }
+      }
+      else {
+        buttonTop = newTop + w.cellHeight;
+      }
+
+      if (animate !== false) {
+        me.buttonsEl.animate({
           duration: duration,
-          top: newTop
+          top: buttonTop
         });
       }
       else {
-        me.leftEl.css('top', newTop);
+        me.buttonsEl.css('top', buttonTop);
       }
-    }
 
-    if(me.el){
-      if(animate !== false){
-        me.el.animate({
-          duration: duration,
-          top: newTop
-        });
+      me.el.css('left', -bottomScroll);
+
+      me.changeButtonsLeftPos();
+
+      me.activeRowIndex = rowIndex;
+    },
+    /*
+     *
+     */
+    changeButtonsLeftPos: function () {
+      var me = this,
+        w = me.widget,
+        viewWidth = w.getCenterViewWidth(),
+        buttonsElWidth = parseInt(me.buttonsEl.css('width'));
+
+      me.buttonsEl.css('left', (viewWidth - buttonsElWidth) / 2);
+    },
+    /*
+     * @param {Object} o
+     */
+    setValues: function (o) {
+      var me = this,
+        w = me.widget;
+
+      if (w.leftColumns) {
+        me._setValues(o.data, w.leftColumns);
       }
-      else{
-        me.el.css('top', newTop);
+
+      if (w.columns) {
+        me._setValues(o.data, w.columns);
       }
-    }
 
-    if(me.rightEl){
-      if(animate !== false){
-        me.rightEl.animate({
-          duration: duration,
-          top: newTop
-        });
+      if (w.rightColumns) {
+        me._setValues(o.data, w.rightColumns);
       }
-      else{
-        me.rightEl.css('top', newTop);
-      }
-    }
 
-    var showOnTop = w.getViewTotal() - 3 < rowIndex,
-      buttonTop = newTop;
-
-    if(rowIndex < 3){
-      showOnTop = false;
-    }
-
-    if(showOnTop){
-      if(w.grouping){
-        if(w.getViewTotal() - 3 < rowIndex - w.grouping.getSpecialRowsUnder(rowIndex)){
-          buttonTop = newTop - parseInt(me.buttonsEl.css('height')) + 1;
+      me.activeId = o.id;
+      me.activeRowIndex = o.rowIndex;
+    },
+    /*
+     * @private
+     * @param {Array} data
+     * @param {Array} columns
+     */
+    _setValues: function (data, columns) {
+      E(columns, function (column) {
+        var editor = column.rowEditor;
+        if (editor) {
+          switch (column.type) {
+            case 'action':
+            case 'button':
+            case 'order':
+            case 'select':
+              break;
+            default:
+              editor.set(data[column.index], false);
+          }
         }
-        else{
-          buttonTop = newTop + w.cellHeight;
-          showOnTop = false;
-        }
-      }
-      else{
-        buttonTop = newTop - parseInt(me.buttonsEl.css('height')) + 1;
-      }
-    }
-    else{
-      buttonTop = newTop + w.cellHeight;
-    }
-
-    if(animate !== false){
-      me.buttonsEl.animate({
-        duration: duration,
-        top: buttonTop
       });
-    }
-    else{
-      me.buttonsEl.css('top', buttonTop);
-    }
+    },
+    /*
+     *
+     */
+    onScroll: function () {
+      var me = this;
 
-    me.el.css('left', -bottomScroll);
+      if (me.rendered === false) {
+        return;
+      }
 
-    me.changeButtonsLeftPos();
+      if (me.activeRowIndex !== undefined) {
+        me.changePosition(me.activeRowIndex, false);
+      }
+    },
+    /*
+     *
+     */
+    onColumnResize: function () {
+      if (this.rendered === false) {
+        return;
+      }
 
-    me.activeRowIndex = rowIndex;
-  },
-  /*
-   *
-   */
-  changeButtonsLeftPos: function(){
-    var me = this,
-      w = me.widget,
-      viewWidth = w.getCenterViewWidth(),
-      buttonsElWidth = parseInt(me.buttonsEl.css('width'));
+      this.setSizes();
+    },
+    /*
+     *
+     */
+    onClickUpdate: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        data = me.prepareChanged(),
+        rowIndex = s.getRow(me.activeId);
 
-    me.buttonsEl.css('left', (viewWidth - buttonsElWidth)/2);
-  },
-  /*
-   * @param {Object} o
-   */
-  setValues: function(o){
-    var me = this,
-      w = me.widget;
+      s.setItemData(rowIndex, data);
+      w.update();
 
-    if(w.leftColumns){
-      me._setValues(o.data, w.leftColumns);
-    }
+      me.hide();
+    },
+    /*
+     *
+     */
+    prepareChanged: function () {
+      var me = this,
+        w = me.widget,
+        data = me.changed;
 
-    if(w.columns){
-      me._setValues(o.data, w.columns);
-    }
+      for (var p in data) {
+        var column = w.getColumnByIndex(p);
 
-    if(w.rightColumns){
-      me._setValues(o.data, w.rightColumns);
-    }
+        switch (column.type) {
+          case 'date':
+            var date = F.Date.parse(data[p], column.format.edit, column.format.mode),
+              formattedValue = F.Date.format(date, column.format.read, column.format.mode);
 
-    me.activeId = o.id;
-    me.activeRowIndex = o.rowIndex;
-  },
-  /*
-   * @private
-   * @param {Array} data
-   * @param {Array} columns
-   */
-  _setValues: function(data, columns){
-    Fancy.each(columns, function(column){
-      var editor = column.rowEditor;
-      if(editor){
-        switch(column.type){
-          case 'action':
-          case 'button':
-          case 'order':
-          case 'select':
+            data[p] = formattedValue;
             break;
-          default:
-            editor.set(data[column.index], false);
         }
       }
-    });
-  },
-  /*
-   *
-   */
-  onScroll: function(){
-    var me = this;
 
-    if(me.rendered === false){
-      return;
-    }
+      return data;
+    },
+    /*
+     *
+     */
+    onClickCancel: function () {
+      this.hide();
+    },
+    /*
+     *
+     */
+    hide: function () {
+      var me = this;
 
-    if(me.activeRowIndex !== undefined){
-      me.changePosition(me.activeRowIndex, false);
-    }
-  },
-  /*
-   *
-   */
-  onColumnResize: function(){
-    var me = this;
+      if (!me.el) {
+        return;
+      }
 
-    if(me.rendered === false){
-      return;
-    }
+      if (me.leftEl) {
+        me.leftEl.hide();
+      }
 
-    me.setSizes();
-  },
-  /*
-   *
-   */
-  onClickUpdate: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      data = me.prepareChanged(),
-      rowIndex = s.getRow(me.activeId);
+      me.el.hide();
 
-    s.setItemData(rowIndex, data);
-    w.update();
+      if (me.rightEl) {
+        me.rightEl.hide();
+      }
 
-    me.hide();
-  },
-  /*
-   *
-   */
-  prepareChanged: function(){
-    var me = this,
-      w = me.widget,
-      data = me.changed;
+      me.buttonsEl.hide();
+    },
+    /*
+     *
+     */
+    show: function () {
+      var me = this;
 
-    for(var p in data){
-      var column = w.getColumnByIndex(p);
+      if (me.leftEl) {
+        me.leftEl.show();
+      }
 
-      switch(column.type){
-        case 'date':
-          var date = Fancy.Date.parse(data[p], column.format.edit, column.format.mode),
-            formattedValue = Fancy.Date.format(date, column.format.read, column.format.mode);
+      me.el.show();
 
-          data[p] = formattedValue;
+      if (me.rightEl) {
+        me.rightEl.show();
+      }
+
+      me.buttonsEl.show();
+    },
+    /*
+     * @param {Object} field
+     * @param {*} newValue
+     * @param {*} oldValue
+     */
+    onFieldChange: function (field, newValue, oldValue) {
+      var me = this;
+
+      if (!field.isValid()) {
+        delete me.changed[field.index];
+      }
+      else {
+        me.changed[field.index] = newValue;
+      }
+    },
+    /*
+     *
+     */
+    onFieldEnter: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        rowIndex = s.getRow(me.activeId);
+
+      s.setItemData(rowIndex, me.changed);
+      w.update();
+
+      me.hide();
+    },
+    /*
+     * @param {Number} index
+     * @param {String} side
+     */
+    hideField: function (index, side) {
+      var w = this.widget,
+        columns = w.getColumns(side),
+        column = columns[index];
+
+      if (column.rowEditor) {
+        column.rowEditor.hide();
+      }
+    },
+    /*
+     * @param {Number} index
+     * @param {String} side
+     */
+    showField: function (index, side) {
+      var w = this.widget,
+        columns = w.getColumns(side),
+        column = columns[index];
+
+      if (column.rowEditor) {
+        column.rowEditor.show();
+      }
+    },
+    /*
+     * @param {Object} column
+     * @param {Number} index
+     * @param {String} side
+     * @param {String} fromSide
+     */
+    moveEditor: function (column, index, side, fromSide) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = w.getColumns(side),
+        editor = column.rowEditor,
+        body = w.getBody(side),
+        rowEditRowEl = body.el.select('.' + GRID_ROW_EDIT_CLS),
+        item = s.getById(me.activeId),
+        value = item.get(column.index),
+        field;
+
+      if (me.activeId === undefined) {
+        value = s.get(me.activeRowIndex)[column.index];
+      }
+
+      editor.destroy();
+      me.renderTo(rowEditRowEl, columns, index, side, fromSide);
+
+      field = me.getField(index, side);
+      column.rowEditor = field;
+
+      field.set(value);
+      me.setSizes();
+
+      me.changeButtonsLeftPos();
+      me.reSetColumnsEditorsLinks();
+    },
+    /*
+     * @param {Number} index
+     * @param {String} side
+     * @return {Object}
+     */
+    getField: function (index, side) {
+      var w = this.widget,
+        body = w.getBody(side),
+        field;
+
+      switch (side) {
+        case 'left':
+          index++;
           break;
       }
+
+      field = F.getWidget(body.el.select('.' + FIELD_CLS).item(index).attr('id'));
+
+      return field;
+    },
+    /*
+     *
+     */
+    reSetColumnsEditorsLinks: function () {
+      var w = me.widget,
+        cells = w.body.el.select('.' + FIELD_CLS);
+
+      E(w.columns, function (column, i) {
+        column.rowEditor = F.getWidget(cells.item(i).attr('id'));
+      });
+
+      cells = w.leftBody.el.select('.' + FIELD_CLS);
+
+      E(w.leftColumns, function (column, i) {
+        column.rowEditor = F.getWidget(cells.item(i).attr('id'));
+      });
+
+      cells = w.rightBody.el.select('.' + FIELD_CLS);
+
+      E(w.rightColumns, function (column, i) {
+        column.rowEditor = F.getWidget(cells.item(i).attr('id'));
+      });
+    },
+    onColumnDrag: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
+    destroyEls: function () {
+      var me = this,
+        w = me.widget;
+
+      if(me.rendered){
+        me.rendered = false;
+
+        if (w.leftColumns) {
+          me.leftEl.destroy();
+          F.each(w.leftColumns, function (column) {
+            column.rowEditor.destroy();
+          });
+        }
+
+        if (w.columns) {
+          me.el.destroy();
+          F.each(w.columns, function (column) {
+            column.rowEditor.destroy();
+          });
+        }
+
+        if (w.rightColumns) {
+          me.rightEl.destroy();
+          F.each(w.rightColumns, function (column) {
+            column.rowEditor.destroy();
+          });
+        }
+      }
     }
+  });
 
-    return data;
-  },
-  /*
-   *
-   */
-  onClickCancel: function(){
-    var me = this;
-
-    me.hide();
-  },
-  /*
-   *
-   */
-  hide: function(){
-    var me = this;
-
-    if(!me.el){
-      return;
-    }
-
-    if(me.leftEl){
-      me.leftEl.hide();
-    }
-
-    me.el.hide();
-
-    if(me.rightEl){
-      me.rightEl.hide();
-    }
-
-    me.buttonsEl.hide();
-  },
-  /*
-   *
-   */
-  show: function(){
-    var me = this;
-
-    if(me.leftEl){
-      me.leftEl.show();
-    }
-
-    me.el.show();
-
-    if(me.rightEl){
-      me.rightEl.show();
-    }
-
-    me.buttonsEl.show();
-  },
-  /*
-   * @param {Object} field
-   * @param {*} newValue
-   * @param {*} oldValue
-   */
-  onFieldChange: function(field, newValue, oldValue){
-    var me = this;
-
-    if(!field.isValid()){
-      delete me.changed[field.index];
-    }
-    else {
-      me.changed[field.index] = newValue;
-    }
-  },
-  /*
-   *
-   */
-  onFieldEnter: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      rowIndex = s.getRow(me.activeId);
-
-    s.setItemData(rowIndex, me.changed);
-    w.update();
-
-    me.hide();
-  },
-  /*
-   * @param {Number} index
-   * @param {String} side
-   */
-  hideField: function(index, side){
-    var me = this,
-      w = me.widget,
-      columns = w.getColumns(side),
-      column = columns[index];
-
-    if(column.rowEditor){
-      column.rowEditor.hide();
-    }
-  },
-  /*
-   * @param {Number} index
-   * @param {String} side
-   */
-  showField: function(index, side){
-    var me = this,
-      w = me.widget,
-      columns = w.getColumns(side),
-      column = columns[index];
-
-    if(column.rowEditor){
-      column.rowEditor.show();
-    }
-  },
-  /*
-   * @param {Object} column
-   * @param {Number} index
-   * @param {String} side
-   * @param {String} fromSide
-   */
-  moveEditor: function(column, index, side, fromSide){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = w.getColumns(side),
-      editor = column.rowEditor,
-      body = w.getBody(side),
-      rowEditRowEl = body.el.select('.' + w.rowEditCls),
-      item = s.getById(me.activeId),
-      value = item.get(column.index),
-      field;
-
-    if(me.activeId === undefined){
-      value = s.get(me.activeRowIndex)[column.index];
-    }
-
-    editor.destroy();
-    me.renderTo(rowEditRowEl, columns, index, side, fromSide);
-
-    field = me.getField(index, side);
-    column.rowEditor = field;
-
-    field.set(value);
-    me.setSizes();
-
-    me.changeButtonsLeftPos();
-    me.reSetColumnsEditorsLinks();
-  },
-  /*
-   * @param {Number} index
-   * @param {String} side
-   * @return {Object}
-   */
-  getField: function(index, side){
-    var me = this,
-      w = me.widget,
-      body = w.getBody(side),
-      field;
-
-    switch(side){
-      case 'left':
-        index++;
-        break;
-    }
-
-    field = Fancy.getWidget(body.el.select('.' + Fancy.FIELD_CLS).item(index).attr('id'));
-
-    return field;
-  },
-  /*
-   *
-   */
-  reSetColumnsEditorsLinks: function(){
-    var me = this,
-      w = me.widget,
-      FIELD_CLS = Fancy.FIELD_CLS,
-      cells;
-
-    cells = w.body.el.select('.' + FIELD_CLS);
-
-    Fancy.each(w.columns, function(column, i){
-      column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
-    });
-
-    cells = w.leftBody.el.select('.' + FIELD_CLS);
-
-    Fancy.each(w.leftColumns, function(column, i){
-      column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
-    });
-
-    cells = w.rightBody.el.select('.' + FIELD_CLS);
-
-    Fancy.each(w.rightColumns, function(column, i){
-      column.rowEditor = Fancy.getWidget(cells.item(i).attr('id'));
-    });
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.Selection
  * @extends Fancy.Plugin
  */
 (function(){
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
    * CONSTANTS
    */
-  var CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
-  var CELL_CLS = Fancy.GRID_CELL_CLS;
-  var CELL_OVER_CLS = Fancy.GRID_CELL_OVER_CLS;
-  var CELL_SELECTED_CLS = Fancy.GRID_CELL_SELECTED_CLS;
-  var COLUMN_CLS = Fancy.GRID_COLUMN_CLS;
-  var COLUMN_OVER_CLS = Fancy.GRID_COLUMN_OVER_CLS;
-  var COLUMN_SELECT_CLS = Fancy.GRID_COLUMN_SELECT_CLS;
-  var COLUMN_SELECTED_CLS = Fancy.GRID_COLUMN_SELECTED_CLS;
-  var ROW_OVER_CLS = Fancy.GRID_ROW_OVER_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_CELL_OVER_CLS = F.GRID_CELL_OVER_CLS;
+  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_COLUMN_OVER_CLS = F.GRID_COLUMN_OVER_CLS;
+  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  var GRID_COLUMN_SELECTED_CLS = F.GRID_COLUMN_SELECTED_CLS;
+  var GRID_ROW_OVER_CLS = F.GRID_ROW_OVER_CLS;
+  var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
 
-  Fancy.define('Fancy.grid.plugin.Selection', {
-    extend: Fancy.Plugin,
+  F.define('Fancy.grid.plugin.Selection', {
+    extend: F.Plugin,
     ptype: 'grid.selection',
     inWidgetName: 'selection',
     mixins: [
@@ -28040,9 +28703,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      me.Super('const', arguments);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -28076,6 +28737,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
           me.initNavigation();
         }
         w.on('changepage', me.onChangePage, me);
+
+        if(F.nojQuery){
+          me.initFixTrackOver();
+        }
       });
 
       w.on('sort', me.onSort, me);
@@ -28091,14 +28756,14 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         except: {},
         selected: {},
         setAll: function () {
-          Fancy.apply(me.memory, {
+          F.apply(me.memory, {
             all: true,
             except: {},
             selected: {}
           });
         },
         clearAll: function () {
-          Fancy.apply(me.memory, {
+          F.apply(me.memory, {
             all: false,
             except: {},
             selected: {}
@@ -28141,68 +28806,63 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @param {Object} params
      */
     onCellEnter: function (grid, params) {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
       if (!w.cellTrackOver) {
         return;
       }
 
-      Fancy.get(params.cell).addCls(CELL_OVER_CLS);
+      F.get(params.cell).addCls(GRID_CELL_OVER_CLS);
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} params
      */
     onCellLeave: function (grid, params) {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
       if (!w.cellTrackOver) {
         return;
       }
 
-      Fancy.get(params.cell).removeCls(CELL_OVER_CLS);
+      F.get(params.cell).removeCls(GRID_CELL_OVER_CLS);
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} params
      */
     onColumnEnter: function (grid, params) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         scroller = w.scroller;
 
       if (!w.columnTrackOver || scroller.bottomKnobDown || scroller.rightKnobDown || params.column.trackOver === false) {
         return;
       }
 
-      Fancy.get(params.columnDom).addCls(COLUMN_OVER_CLS);
+      F.get(params.columnDom).addCls(GRID_COLUMN_OVER_CLS);
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} params
      */
     onColumnLeave: function (grid, params) {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
       if (!w.columnTrackOver) {
         return;
       }
 
-      Fancy.get(params.columnDom).removeCls(COLUMN_OVER_CLS);
+      F.get(params.columnDom).removeCls(GRID_COLUMN_OVER_CLS);
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} params
      */
     onRowEnter: function (grid, params) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         scroller = w.scroller;
 
-      if (me.enabled === false) {
+      if (this.enabled === false) {
         return;
       }
 
@@ -28212,8 +28872,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       var rowCells = w.getDomRow(params.rowIndex);
 
-      Fancy.each(rowCells, function (cell) {
-        Fancy.get(cell).addCls(ROW_OVER_CLS);
+      F.each(rowCells, function (cell) {
+        F.get(cell).addCls(GRID_ROW_OVER_CLS);
       });
 
       w.fire('rowtrackenter', params);
@@ -28223,10 +28883,9 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @param {Object} params
      */
     onRowLeave: function (grid, params) {
-      var me = this,
-        w = me.widget;
+      var w = this.widget;
 
-      if (me.enabled === false) {
+      if (this.enabled === false) {
         return;
       }
 
@@ -28236,8 +28895,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       var rowCells = w.getDomRow(params.rowIndex);
 
-      Fancy.each(rowCells, function (cell) {
-        Fancy.get(cell).removeCls(ROW_OVER_CLS);
+      F.each(rowCells, function (cell) {
+        F.get(cell).removeCls(GRID_ROW_OVER_CLS);
       });
 
       w.fire('rowtrackleave', params);
@@ -28246,9 +28905,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      *
      */
     onChangePage: function () {
-      var me = this;
-
-      if (me.memory) {
+      if (this.memory) {
         return;
       }
 
@@ -28312,7 +28969,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         rowCells = w.getDomRow(rowIndex);
 
       if (isCTRL && w.multiSelect) {
-        if (Fancy.get(rowCells[0]).hasCls(CELL_SELECTED_CLS)) {
+        if (F.get(rowCells[0]).hasCls(GRID_CELL_SELECTED_CLS)) {
           me.domDeSelectRow(rowIndex);
           if (me.checkboxRow) {
             me.deSelectCheckBox(rowIndex);
@@ -28327,7 +28984,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       }
       else {
         if (params.column.index === '$selected') {
-          var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.' + CHECKBOX_CLS).attr('id'));
+          var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
 
           if (checkbox.el.within(target)) {
             me.domSelectRow(rowIndex);
@@ -28358,7 +29015,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       me.isMouseDown = true;
       me.startRowSelection = rowIndex;
 
-      Fancy.$(document).one('mouseup', function () {
+      F.$(document).one('mouseup', function () {
         delete me.isMouseDown;
         delete me.startCellSelection;
       });
@@ -28371,10 +29028,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     selectCheckBox: function (rowIndex) {
       var me = this,
         w = me.widget,
-        checkBoxEls = w.el.select('.' + COLUMN_SELECT_CLS + ' .' + CELL_CLS + '[index="' + rowIndex + '"] .' + CHECKBOX_CLS);
+        checkBoxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + FIELD_CHECKBOX_CLS);
 
       checkBoxEls.each(function (item) {
-        Fancy.getWidget(item.attr('id')).set(true);
+        F.getWidget(item.attr('id')).set(true);
       });
 
       if (w.selModel === 'rows') {
@@ -28389,7 +29046,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       var me = this,
         w = me.widget,
         s = w.store,
-        checkBoxEls = w.el.select('.' + COLUMN_SELECT_CLS + ' .' + CELL_CLS + '[index="' + rowIndex + '"] .' + CHECKBOX_CLS),
+        checkBoxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + FIELD_CHECKBOX_CLS),
         id = s.get(rowIndex, 'id');
 
       if (!id) {
@@ -28402,7 +29059,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       }
 
       checkBoxEls.each(function (item) {
-        Fancy.getWidget(item.attr('id')).set(false);
+        F.getWidget(item.attr('id')).set(false);
       });
 
       me.clearHeaderCheckBox();
@@ -28423,20 +29080,19 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         me.memory.selected[id] = true;
       }
 
-      Fancy.each(rowCells, function (cell) {
-        Fancy.get(cell).addCls(CELL_SELECTED_CLS);
+      F.each(rowCells, function (cell) {
+        F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
       });
     },
     /*
      * @param {Number} rowIndex
      */
     domDeSelectRow: function (rowIndex) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         rowCells = w.getDomRow(rowIndex);
 
-      Fancy.each(rowCells, function (cell) {
-        Fancy.get(cell).removeCls(CELL_SELECTED_CLS);
+      F.each(rowCells, function (cell) {
+        F.get(cell).removeCls(GRID_CELL_SELECTED_CLS);
       });
     },
     /*
@@ -28578,8 +29234,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @return {Object}
      */
     getSelectedRowByColumn: function (columnIndex, side) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         body;
 
       switch (side) {
@@ -28594,8 +29249,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
           break;
       }
 
-      var columnEl = body.el.select('.' + COLUMN_CLS + '[index="' + columnIndex + '"][grid="' + w.id + '"]'),
-        selectedCells = columnEl.select('.' + CELL_SELECTED_CLS),
+      var columnEl = body.el.select('.' + GRID_COLUMN_CLS + '[index="' + columnIndex + '"][grid="' + w.id + '"]'),
+        selectedCells = columnEl.select('.' + GRID_CELL_SELECTED_CLS),
         selectedRows = {};
 
       selectedCells.each(function (cell) {
@@ -28608,10 +29263,9 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @return {Number}
      */
     getSelectedRow: function () {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         body = w.body,
-        selectedCells = body.el.select('.' + CELL_SELECTED_CLS);
+        selectedCells = body.el.select('.' + GRID_CELL_SELECTED_CLS);
 
       if (selectedCells.length === 0) {
         return -1;
@@ -28623,11 +29277,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @return {Array}
      */
     getSelectedRows: function () {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         body = w.body,
-        columnEl = body.el.select('.' + COLUMN_CLS + '[index="0"][grid="' + w.id + '"]'),
-        selectedCells = columnEl.select('.' + CELL_SELECTED_CLS),
+        columnEl = body.el.select('.' + GRID_COLUMN_CLS + '[index="0"][grid="' + w.id + '"]'),
+        selectedCells = columnEl.select('.' + GRID_CELL_SELECTED_CLS),
         rows = [];
 
       selectedCells.each(function (cell) {
@@ -28654,14 +29307,13 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @param {Object} params
      */
     onColumnClick: function (grid, params) {
-      var me = this,
-        w = me.widget;
+      var me = this;
 
       if (!me.column || params.column.selectable === false) {
         return;
       }
 
-      var columnEl = Fancy.get(params.columnDom);
+      var columnEl = F.get(params.columnDom);
 
       if (me.column) {
         me.selectedColumns[0] = params;
@@ -28669,7 +29321,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       me.clearSelection();
 
-      columnEl.addCls(COLUMN_SELECTED_CLS);
+      columnEl.addCls(GRID_COLUMN_SELECTED_CLS);
     },
     /*
      * @param {Fancy.Grid} grid
@@ -28692,7 +29344,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         select = true;
 
       if (column.type === 'action' && column.items) {
-        Fancy.each(column.items, function (item) {
+        F.each(column.items, function (item) {
           if (item.action === 'remove') {
             select = false;
           }
@@ -28704,12 +29356,12 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       var rowCells = w.getDomRow(rowIndex);
 
       if (params.column.index === '$selected') {
-        var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.' + CHECKBOX_CLS).attr('id'));
+        var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
 
         if (checkbox.get() === true) {
           me.selectCheckBox(rowIndex);
-          Fancy.each(rowCells, function (cell) {
-            Fancy.get(cell).addCls(CELL_SELECTED_CLS);
+          F.each(rowCells, function (cell) {
+            F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
           });
         }
         else {
@@ -28717,8 +29369,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         }
       }
       else if (select) {
-        Fancy.each(rowCells, function (cell) {
-          Fancy.get(cell).addCls(CELL_SELECTED_CLS);
+        F.each(rowCells, function (cell) {
+          F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
         });
 
         me.selectCheckBox(rowIndex);
@@ -28748,7 +29400,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       if (isCTRL && w.multiSelect) {
       }
       else if (params.column.index === '$selected') {
-        var checkbox = Fancy.getWidget(Fancy.get(params.cell).select('.' + CHECKBOX_CLS).attr('id'));
+        var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
         if (checkbox.get() === true) {
           me.selectCheckBox(rowIndex);
         }
@@ -28772,8 +29424,8 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       var rowCells = w.getDomRow(rowIndex);
 
-      Fancy.each(rowCells, function (cell) {
-        Fancy.get(cell).addCls(CELL_SELECTED_CLS);
+      F.each(rowCells, function (cell) {
+        F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
       });
 
       w.fire('select');
@@ -28792,7 +29444,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       me.clearSelection();
 
-      Fancy.get(params.cell).addCls(CELL_SELECTED_CLS);
+      F.get(params.cell).addCls(GRID_CELL_SELECTED_CLS);
 
       w.fire('select');
     },
@@ -28804,7 +29456,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         w = me.widget;
 
       if (me.checkboxRow) {
-        var selected = w.body.el.select('.' + COLUMN_CLS + '[index="0"] .' + CELL_SELECTED_CLS);
+        var selected = w.body.el.select('.' + GRID_COLUMN_CLS + '[index="0"] .' + GRID_CELL_SELECTED_CLS);
 
         selected.each(function (item) {
           var rowIndex = item.attr('index');
@@ -28820,26 +29472,26 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       if (side) {
         switch (side) {
           case 'left':
-            w.leftBody.el.select('.' + CELL_SELECTED_CLS).removeCls(CELL_SELECTED_CLS);
-            w.leftBody.el.select('.' + COLUMN_SELECTED_CLS).removeCls(COLUMN_SELECTED_CLS);
-            w.leftBody.el.select('.' + CELL_OVER_CLS).removeCls(CELL_OVER_CLS);
+            w.leftBody.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+            w.leftBody.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
+            w.leftBody.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
             break;
           case 'center':
-            w.body.el.select('.' + CELL_SELECTED_CLS).removeCls(CELL_SELECTED_CLS);
-            w.body.el.select('.' + COLUMN_SELECTED_CLS).removeCls(COLUMN_SELECTED_CLS);
-            w.body.el.select('.' + CELL_OVER_CLS).removeCls(CELL_OVER_CLS);
+            w.body.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+            w.body.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
+            w.body.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
             break;
           case 'right':
-            w.rightBody.el.select('.' + CELL_SELECTED_CLS).removeCls(CELL_SELECTED_CLS);
-            w.rightBody.el.select('.' + COLUMN_SELECTED_CLS).removeCls(COLUMN_SELECTED_CLS);
-            w.rightBody.el.select('.' + CELL_OVER_CLS).removeCls(CELL_OVER_CLS);
+            w.rightBody.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+            w.rightBody.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
+            w.rightBody.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
             break;
         }
       }
       else {
-        w.el.select('.' + CELL_SELECTED_CLS).removeCls(CELL_SELECTED_CLS);
-        w.el.select('.' + COLUMN_SELECTED_CLS).removeCls(COLUMN_SELECTED_CLS);
-        w.el.select('.' + CELL_OVER_CLS).removeCls(CELL_OVER_CLS);
+        w.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+        w.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
+        w.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
       }
 
       w.fire('clearselect');
@@ -28848,13 +29500,11 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      *
      */
     onSort: function () {
-      var me = this;
-
-      if (me.memory) {
+      if (this.memory) {
         return;
       }
 
-      me.clearSelection();
+      this.clearSelection();
     },
     /*
      * @param {Fancy.Grid} grid
@@ -29033,7 +29683,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         return;
       }
 
-      var columnEl = Fancy.get(params.columnDom);
+      var columnEl = F.get(params.columnDom);
 
       me.isMouseDown = true;
       me.startColumnColumnIndex = params.columnIndex;
@@ -29041,9 +29691,9 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
 
       me.clearSelection();
 
-      columnEl.addCls(COLUMN_SELECTED_CLS);
+      columnEl.addCls(GRID_COLUMN_SELECTED_CLS);
 
-      Fancy.$(document).one('mouseup', function () {
+      F.$(document).one('mouseup', function () {
         delete me.isMouseDown;
       });
 
@@ -29066,18 +29716,18 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         return;
       }
 
-      var cellEl = Fancy.get(params.cell);
+      var cellEl = F.get(params.cell);
 
       me.clearSelection();
 
-      cellEl.addCls(CELL_SELECTED_CLS);
+      cellEl.addCls(GRID_CELL_SELECTED_CLS);
       me.isMouseDown = true;
       me.startCellSelection = params.cell;
       me.startCellRowIndex = params.rowIndex;
       me.startCellColumnIndex = params.columnIndex;
       me.startCellSide = params.side;
 
-      Fancy.$(document).one('mouseup', function () {
+      F.$(document).one('mouseup', function () {
         delete me.isMouseDown;
         delete me.startCellSelection;
       });
@@ -29163,7 +29813,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         for (var q in toSelect[p]) {
           var cell = b.getCell(p, q);
 
-          cell.addCls(CELL_SELECTED_CLS);
+          cell.addCls(GRID_CELL_SELECTED_CLS);
         }
       }
 
@@ -29171,7 +29821,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         for (var q in toDeselect[p]) {
           var cell = b.getCell(p, q);
 
-          cell.removeCls(CELL_SELECTED_CLS);
+          cell.removeCls(GRID_CELL_SELECTED_CLS);
         }
       }
     },
@@ -29183,7 +29833,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       var me = this,
         w = me.widget,
         body = w.getBody(side || 'center'),
-        selectedCells = body.el.select('.' + CELL_SELECTED_CLS),
+        selectedCells = body.el.select('.' + GRID_CELL_SELECTED_CLS),
         selected = {},
         i = 0,
         iL = selectedCells.length;
@@ -29203,21 +29853,17 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @return {Array}
      */
     getNumberSelectedCells: function () {
-      var me = this,
-        w = me.widget;
-
-      return w.el.select('.' + CELL_SELECTED_CLS).length;
+      return this.widget.el.select('.' + GRID_CELL_SELECTED_CLS).length;
     },
     /*
      * @param {String} side
      * @return {Array}
      */
     getSelectedColumns: function (side) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         body = w.getBody(side),
         selected = {},
-        selectedColumns = body.el.select('.' + COLUMN_SELECTED_CLS),
+        selectedColumns = body.el.select('.' + GRID_COLUMN_SELECTED_CLS),
         i = 0,
         iL = selectedColumns.length;
 
@@ -29276,24 +29922,22 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      * @param {String} side
      */
     selectColumn: function (columnIndex, side) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         body = w.getBody(side || 'center'),
-        columnEl = Fancy.get(body.getDomColumn(columnIndex));
+        columnEl = F.get(body.getDomColumn(columnIndex));
 
-      columnEl.addCls(COLUMN_SELECTED_CLS);
+      columnEl.addCls(GRID_COLUMN_SELECTED_CLS);
     },
     /*
      * @param {Object} columnIndex
      * @param {String} side
      */
     deselectColumn: function (columnIndex, side) {
-      var me = this,
-        w = me.widget,
+      var w = this.widget,
         body = w.getBody(side || 'center'),
-        columnEl = Fancy.get(body.getDomColumn(columnIndex));
+        columnEl = F.get(body.getDomColumn(columnIndex));
 
-      columnEl.removeCls(COLUMN_SELECTED_CLS);
+      columnEl.removeCls(GRID_COLUMN_SELECTED_CLS);
     },
     /*
      * @param {Object} returnModel
@@ -29353,7 +29997,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
      */
     renderHeaderCheckBox: function () {
       var me = this,
-        w = me.widget;
+        w = this.widget;
 
       me._renderHeaderCheckBox(w.leftHeader, w.leftColumns);
       me._renderHeaderCheckBox(w.header, w.columns);
@@ -29367,11 +30011,11 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       var me = this,
         memory = me.memory;
 
-      Fancy.each(columns, function (column, i) {
+      F.each(columns, function (column, i) {
         if (column.index === '$selected') {
           var headerCellContainer = header.getCell(i).firstChild();
 
-          column.headerCheckBox = new Fancy.CheckBox({
+          column.headerCheckBox = new F.CheckBox({
             renderTo: headerCellContainer.dom,
             renderId: true,
             value: false,
@@ -29406,18 +30050,17 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     selectAll: function () {
       var me = this,
         w = me.widget,
-        cellHeaderSelectCls = w.cellHeaderSelectCls,
-        headerCheckBoxEls = w.el.select('.' + cellHeaderSelectCls + ' .' + CHECKBOX_CLS),
+        headerCheckBoxEls = w.el.select('.' + GRID_HEADER_CELL_SELECT_CLS + ' .' + FIELD_CHECKBOX_CLS),
         i = 0,
         iL = w.getViewTotal();
 
       for (; i < iL; i++) {
-        var checkBoxEls = w.el.select('.' + COLUMN_SELECT_CLS + ' .' + CELL_CLS + '[index="' + i + '"] .' + CHECKBOX_CLS),
+        var checkBoxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + i + '"] .' + FIELD_CHECKBOX_CLS),
           j = 0,
           jL = checkBoxEls.length;
 
         for (; j < jL; j++) {
-          var checkBox = Fancy.getWidget(checkBoxEls.item(j).attr('id'));
+          var checkBox = F.getWidget(checkBoxEls.item(j).attr('id'));
 
           checkBox.setValue(true);
         }
@@ -29426,7 +30069,7 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       }
 
       headerCheckBoxEls.each(function (item) {
-        var checkBox = Fancy.getWidget(item.attr('id'));
+        var checkBox = F.getWidget(item.attr('id'));
 
         checkBox.setValue(true, false);
       });
@@ -29441,10 +30084,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
         iL = w.getViewTotal();
 
       for (; i < iL; i++) {
-        var checkBoxEls = w.el.select('.' + COLUMN_SELECT_CLS + ' .' + CELL_CLS + '[index="' + i + '"] .' + CHECKBOX_CLS);
+        var checkBoxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + i + '"] .' + FIELD_CHECKBOX_CLS);
 
         checkBoxEls.each(function (item) {
-          var checkBox = Fancy.getWidget(item.attr('id'));
+          var checkBox = F.getWidget(item.attr('id'));
 
           checkBox.setValue(false);
         });
@@ -29460,10 +30103,10 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
     clearHeaderCheckBox: function () {
       var me = this,
         w = me.widget,
-        headerCheckBoxEls = w.el.select('.' + w.cellHeaderSelectCls + ' .' + CHECKBOX_CLS);
+        headerCheckBoxEls = w.el.select('.' + GRID_HEADER_CELL_SELECT_CLS + ' .' + FIELD_CHECKBOX_CLS);
 
       headerCheckBoxEls.each(function (item) {
-        var checkBox = Fancy.getWidget(item.attr('id'));
+        var checkBox = F.getWidget(item.attr('id'));
 
         checkBox.setValue(false, false);
       });
@@ -29478,6 +30121,89 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
       }
 
       this.enabled = true;
+    },
+    initFixTrackOver: function(){
+      var me = this,
+        w = me.widget;
+
+      if(w.columns){
+        w.body.el.on('mouseleave', me.onBodyMouseLeave, me);
+        w.body.el.on('mouseenter', me.onBodyMouseEnter, me);
+      }
+
+      if(w.leftColumns){
+        w.leftBody.el.on('mouseleave', me.onLeftBodyMouseLeave, me);
+        w.leftBody.el.on('mouseenter', me.onLeftBodyMouseEnter, me);
+      }
+
+      if(w.rightColumns){
+        w.rightBody.el.on('mouseleave', me.onRightBodyMouseLeave, me);
+        w.rightBody.el.on('mouseenter', me.onRightBodyMouseEnter, me);
+      }
+    },
+    onBodyMouseLeave: function () {
+      var me = this,
+        w = me.widget;
+
+      me.clearBodyTrackCls(w.body);
+    },
+    onBodyMouseEnter: function () {
+      var me = this;
+
+      me.rowTrackFixInBody = true;
+      setTimeout(function () {
+        me.rowTrackFixInBody = false;
+      }, 30);
+    },
+    onLeftBodyMouseLeave: function () {
+      var me = this,
+        w = me.widget;
+
+      me.clearBodyTrackCls(w.leftBody);
+    },
+    onLeftBodyMouseEnter: function () {
+      var me = this;
+
+      me.rowTrackFixInBody = true;
+      setTimeout(function () {
+        me.rowTrackFixInBody = false;
+      }, 30);
+    },
+    onRightBodyMouseLeave: function () {
+      var me = this,
+        w = me.widget;
+
+      me.clearBodyTrackCls(w.rightBody);
+    },
+    onRightBodyMouseEnter: function () {
+      var me = this;
+
+      me.rowTrackFixInBody = true;
+      setTimeout(function () {
+        me.rowTrackFixInBody = false;
+      }, 30);
+    },
+    clearBodyTrackCls: function (body) {
+      var me = this,
+        w = me.widget;
+
+      if(w.cellTrackOver){
+        body.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
+      }
+
+      if(w.trackOver){
+        delete body.prevCellOver;
+        if(me.rowTrackFixInterval){
+          clearInterval(me.rowTrackFixInterval);
+          delete me.rowTrackFixInterval;
+        }
+
+        me.rowTrackFixInterval = setTimeout(function () {
+          if(!me.rowTrackFixInBody){
+            w.el.select('.' + GRID_ROW_OVER_CLS).removeCls(GRID_ROW_OVER_CLS);
+          }
+        }, 20);
+      }
     }
   });
 
@@ -29486,774 +30212,797 @@ Fancy.define('Fancy.grid.plugin.RowEdit', {
  * @class Fancy.grid.plugin.Expander
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.Expander', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.expander',
-  inWidgetName: 'expander',
-  plusScroll: 0,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var G = F.get;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_ROW_EXPAND_CLS = F.GRID_ROW_EXPAND_CLS;
+  var GRID_ROW_EXPAND_OVER_CLS = F.GRID_ROW_EXPAND_OVER_CLS;
+  var GRID_ROW_EXPAND_SELECTED_CLS = F.GRID_ROW_EXPAND_SELECTED_CLS;
+  var GRID_ROW_OVER_CLS = F.GRID_ROW_OVER_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.Expander', {
+    extend: F.Plugin,
+    ptype: 'grid.expander',
+    inWidgetName: 'expander',
+    plusScroll: 0,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me._expanded = {};
-    me._expandedIds = {};
-    // For grid grouping
-    me.expandedGroups = {};
+      me.Super('init', arguments);
 
-    me.initTpl();
-    
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      expandRowCls = w.expandRowCls;
+      me._expanded = {};
+      me._expandedIds = {};
+      // For grid grouping
+      me.expandedGroups = {};
 
-    w.on('scroll', me.onScroll, me);
-    //w.on('sort', me.onSort, me);
-    w.on('beforesort', me.onBeforeSort, me);
-    w.on('changepage', me.onChangePage, me);
-    w.on('filter', me.onFilter, me);
-    w.on('columnresize', me.onColumnReSize, me);
+      me.initTpl();
 
-    w.on('rowdblclick', me.onRowDBlClick, me);
+      me.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-    w.on('rowtrackenter', me.onRowTrackOver, me);
-    w.on('rowtrackleave', me.onRowTrackLeave, me);
+      w.on('scroll', me.onScroll, me);
+      //w.on('sort', me.onSort, me);
+      w.on('beforesort', me.onBeforeSort, me);
+      w.on('changepage', me.onChangePage, me);
+      w.on('filter', me.onFilter, me);
+      w.on('columnresize', me.onColumnReSize, me);
 
-    w.on('collapse', me.onGroupCollapse, me);
-    w.on('expand', me.onGroupExpand, me);
+      w.on('rowdblclick', me.onRowDBlClick, me);
 
-    w.on('render', function() {
-      w.el.on('mouseenter', me.onExpandRowMouseEnter, me, 'div.' + expandRowCls);
-      w.el.on('mouseleave', me.onExpandRowMouseLeave, me, 'div.' + expandRowCls);
-    });
+      w.on('rowtrackenter', me.onRowTrackOver, me);
+      w.on('rowtrackleave', me.onRowTrackLeave, me);
 
-    w.on('select', me.onSelect, me);
-    w.on('clearselect', me.onClearSelect, me);
+      w.on('collapse', me.onGroupCollapse, me);
+      w.on('expand', me.onGroupExpand, me);
+      w.on('remove', me.onRemove, me);
 
-    if(me.expanded) {
-      if (s.proxyType) {
-        w.once('load', function () {
-          me.expandAll();
-        });
+      w.on('render', function () {
+        w.el.on('mouseenter', me.onExpandRowMouseEnter, me, 'div.' + GRID_ROW_EXPAND_CLS);
+        w.el.on('mouseleave', me.onExpandRowMouseLeave, me, 'div.' + GRID_ROW_EXPAND_CLS);
+      });
+
+      w.on('select', me.onSelect, me);
+      w.on('clearselect', me.onClearSelect, me);
+
+      s.on('beforeinsert', me.onBeforeInsert, me);
+
+      if (me.expanded) {
+        if (s.proxyType) {
+          w.once('load', function () {
+            me.expandAll();
+          });
+        }
+        else {
+          w.on('init', function () {
+            me.expandAll();
+          });
+        }
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     */
+    expand: function (rowIndex) {
+      var me = this,
+        w = me.widget,
+        id = w.get(rowIndex).id;
+
+      if (me._expandedIds[id] === undefined) {
+        me._expandedIds[id] = {};
+        me.expandRow(Number(rowIndex), id);
+        me.addMargin(Number(rowIndex) + 1, id);
       }
       else {
-        w.on('init', function () {
-          me.expandAll();
-        });
+        me.showRow(Number(rowIndex), id);
       }
-    }
-  },
-  /*
-   * @param {Number} rowIndex
-   */
-  expand: function(rowIndex){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls,
-      id = w.get(rowIndex).id;
 
-    if(me._expandedIds[id] === undefined){
-      me._expandedIds[id] = {};
-      me.expandRow(Number(rowIndex), id);
-      me.addMargin(Number(rowIndex) + 1, id);
-    }
-    else{
-      me.showRow(Number(rowIndex), id);
-    }
+      delete me._expandedIds[id].hidden;
 
-    delete me._expandedIds[id].hidden;
+      me.reSetTop();
+      me.reSetPlusScroll();
 
-    me.reSetTop();
-    me.reSetPlusScroll();
+      var checkBoxEls = w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .fancy-checkbox-expander'),
+        i = 0,
+        iL = checkBoxEls.length;
 
-    var checkBoxEls = w.el.select('.' + w.columnCls + '[grid="'+ w.id +'"] .' + cellCls + '[index="' + rowIndex + '"] .fancy-checkbox-expander'),
-      i = 0,
-      iL = checkBoxEls.length;
+      for (; i < iL; i++) {
+        var checkBox = F.getWidget(checkBoxEls.item(i).attr('id'));
 
-    for(;i<iL;i++){
-      var checkBox = Fancy.getWidget(checkBoxEls.item(i).attr('id'));
-
-      if(checkBox.get() === false){
-        checkBox.set(true, false);
+        if (checkBox.get() === false) {
+          checkBox.set(true, false);
+        }
       }
-    }
 
-    me.changeSidesSize();
-    me.onSelect();
-  },
-  /*
-   * @param {Number} rowIndex
-   */
-  collapse: function(rowIndex){
-    var me = this,
-      w = me.widget,
-      scroller = w.scroller,
-      id = w.get(rowIndex).id;
+      me.changeSidesSize();
+      me.onSelect();
+    },
+    /*
+     * @param {Number} rowIndex
+     */
+    collapse: function (rowIndex) {
+      var me = this,
+        w = me.widget,
+        scroller = w.scroller,
+        id = w.get(rowIndex).id;
 
-    me.collapseRow(Number(rowIndex), id);
-    me.clearMargin(Number(rowIndex) + 1, id);
+      me.collapseRow(Number(rowIndex), id);
+      me.clearMargin(Number(rowIndex) + 1, id);
 
-    me.reSetTop();
-    me.reSetPlusScroll();
+      me.reSetTop();
+      me.reSetPlusScroll();
 
-    me.changeSidesSize();
+      me.changeSidesSize();
 
-    scroller.scrollDelta(1);
-    scroller.scrollRightKnob();
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} id
-   */
-  collapseRow: function(rowIndex, id){
-    var me = this,
-      w = me.widget,
-      item = me._expandedIds[id];
-
-    item.el.hide();
-    item.hidden = true;
-
-    if(w.leftColumns){
-      item.leftEl.hide();
-    }
-
-    if(w.rightColumns){
-      item.rightEl.hide();
-    }
-
-    var checkBoxEls = w.el.select('.' + w.columnCls + '[grid="'+ w.id +'"] .' + w.cellCls + '[index="' + rowIndex + '"] .fancy-checkbox-expander'),
-      i = 0,
-      iL = checkBoxEls.length;
-
-    for(;i<iL;i++){
-      var checkBox = Fancy.getWidget(checkBoxEls.item(i).attr('id'));
-
-      if(checkBox.get() === true){
-        checkBox.set(false, false);
-        checkBox.collapsedTime = new Date();
-      }
-    }
-  },
-  /*
-   *
-   */
-  _hideAllSideExpandedRow: function(){
-    var me = this,
-      w = me.widget;
-
-    for(var p in me._expandedIds){
-      var item = me._expandedIds[p];
+      scroller.scrollDelta(1);
+      scroller.scrollRightKnob();
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} id
+     */
+    collapseRow: function (rowIndex, id) {
+      var me = this,
+        w = me.widget,
+        item = me._expandedIds[id];
 
       item.el.hide();
       item.hidden = true;
 
-      if(w.leftColumns){
+      if (w.leftColumns) {
         item.leftEl.hide();
       }
 
-      if(w.rightColumns){
+      if (w.rightColumns) {
         item.rightEl.hide();
       }
-    }
-  },
-  /*
-   *
-   */
-  expandAll: function(){
-    var me = this,
-      w = me.widget,
-      viewTotal = w.getViewTotal(),
-      i = 0;
 
-    for(;i<viewTotal;i++){
-      me.expand(i);
-    }
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} id
-   */
-  expandRow: function(rowIndex, id){
-    var me = this,
-      w = me.widget,
-      expandRowCls = w.expandRowCls,
-      el = Fancy.get(document.createElement('div')),
-      item = w.getById(id),
-      data = me.prepareData(item),
-      html,
-      left = -w.scroller.scrollLeft || 0,
-      width = w.getCenterFullWidth(),
-      height;
+      var checkBoxEls = w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .fancy-checkbox-expander'),
+        i = 0,
+        iL = checkBoxEls.length;
 
-    if(me.tpl){
-      html = me.tpl.getHTML(data);
-      el.update(html);
-    }
+      for (; i < iL; i++) {
+        var checkBox = F.getWidget(checkBoxEls.item(i).attr('id'));
 
-    el.addCls(expandRowCls);
-    el.css({
-      left: left,
-      width: width
-    });
-    el.attr('index', rowIndex);
-
-    w.body.el.dom.appendChild(el.dom);
-
-    if(me.render){
-      /*renderTo, data, width*/
-      me.render(el.dom, data, w.getCenterFullWidth());
-    }
-
-    height = parseInt(el.css('height'));
-
-    me._expandedIds[id].rowIndex = rowIndex;
-    me._expandedIds[id].el = el;
-    me._expandedIds[id].height = height;
-    me._expandedIds[id].width = width;
-
-    if(w.leftColumns){
-      var leftEl = Fancy.get(document.createElement('div'));
-
-      leftEl.css('left', '0px');
-      leftEl.css('height', height);
-      leftEl.css('width', w.getLeftFullWidth());
-      leftEl.attr('index', rowIndex);
-
-      leftEl.addCls(expandRowCls);
-      w.leftBody.el.dom.appendChild(leftEl.dom);
-
-      me._expandedIds[id].leftEl = leftEl;
-    }
-
-    if(w.rightColumns){
-      var rightEl = Fancy.get(document.createElement('div'));
-
-      rightEl.css('left', '0px');
-      rightEl.css('height', height);
-      rightEl.css('width', w.getRightFullWidth());
-      rightEl.attr('index', rowIndex);
-
-      rightEl.addCls(expandRowCls);
-      w.rightBody.el.dom.appendChild(rightEl.dom);
-
-      me._expandedIds[id].rightEl = rightEl;
-    }
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} id
-   */
-  addMargin: function(rowIndex, id){
-    var me = this,
-      w = me.widget,
-      height = me._expandedIds[id].height,
-      items = w.el.select('.' + w.columnCls + '[grid="' + w.id + '"] .' + w.cellCls + '[index="' + rowIndex + '"]');
-
-    items.css('margin-top', height);
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} id
-   */
-  clearMargin: function(rowIndex, id){
-    var me = this,
-      w = me.widget;
-
-    w.el.select('.' + w.columnCls + '[grid="'+ w.id +'"] .' + w.cellCls + '[index="' + rowIndex + '"]').css('margin-top', '0');
-  },
-  /*
-   *
-   */
-  onBeforeSort: function(){
-    this.reSet();
-  },
-  /*
-   *
-   */
-  onChangePage: function () {
-    this.reSet();
-  },
-  /*
-   *
-   */
-  onFilter: function () {
-    this.reSet();
-  },
-  /*
-   *
-   */
-  reSet: function(){
-    var me = this,
-      w = me.widget;
-
-    for(var p in me._expandedIds){
-      var item = me._expandedIds[p];
-
-      item.el.destroy();
-      me.clearMargin(Number(item.rowIndex) + 1, p);
-    }
-
-    me._hideAllSideExpandedRow();
-
-    me._expandedIds = {};
-
-    me.reSetTop();
-    me.reSetPlusScroll();
-    me.changeSidesSize();
-    w.scroller.scrollDelta(1);
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {String} id
-   */
-  showRow: function(rowIndex, id){
-    var me = this,
-      w = me.widget,
-      item = me._expandedIds[id];
-
-    item.el.show();
-
-    if(w.leftColumns){
-      item.leftEl.show();
-    }
-
-    if(w.rightColumns){
-      item.rightEl.show();
-    }
-
-    me.addMargin(rowIndex + 1, id);
-  },
-  /*
-   * @param {Number} rowIndex
-   * @return {Number}
-   */
-  getBeforeHeight: function(rowIndex){
-    var me = this,
-      height = 0;
-
-    for(var p in me._expandedIds){
-      var item = me._expandedIds[p];
-
-      if( item.rowIndex < rowIndex && !item.hidden && item.el.css('display') !== 'none'){
-        height += item.height;
-      }
-    }
-
-    return height;
-  },
-  /*
-   * @param {Boolean} [grouping]
-   */
-  reSetTop: function(grouping){
-    var me = this,
-      w = me.widget,
-      cellHeight = w.cellHeight,
-      top = -w.scroller.scrollTop || 0,
-      left = -w.scroller.scrollLeft || 0;
-
-    if(w.grouping){
-      me.expandedGroups = {};
-      var expanded = w.grouping.expanded;
-
-      for(var p in expanded){
-        me.expandedGroups[p] = me.expandedGroups[p] || {};
-      }
-    }
-
-    for(var p in me._expandedIds){
-      var item = me._expandedIds[p];
-
-      if(item.el.css('display') === 'none'){
-        continue;
-      }
-
-      //BUG: item.rowIndex has wrong value, if it has collapsed rows on top
-
-      var beforeHeight = me.getBeforeHeight(item.rowIndex),
-        rowIndex = me.getDisplayedRowsBefore(item, p),
-        _top = top + (rowIndex) * cellHeight + beforeHeight;
-
-      if(w.grouping){
-        var id = p,
-          groupName = w.grouping.getGroupById(id),
-          orderIndex = w.grouping.getGroupOrderIndex(groupName);
-
-        if(item.el.css('display') !== 'none'){
-          me.expandedGroups[groupName] = me.expandedGroups[groupName] || {};
-          me.expandedGroups[groupName][p] = item;
-
-          _top += (orderIndex + 1) * w.groupRowHeight;
+        if (checkBox.get() === true) {
+          checkBox.set(false, false);
+          checkBox.collapsedTime = new Date();
         }
       }
+    },
+    /*
+     *
+     */
+    _hideAllSideExpandedRow: function () {
+      var me = this,
+        w = me.widget;
 
-      item.el.css({
-        top: _top,
-        left: left
-      });
-
-      if(w.leftColumns){
-        item.leftEl.css('top', _top);
-      }
-
-      if(w.rightColumns){
-        item.rightEl.css('top', _top);
-      }
-    }
-
-    if(w.grouping && grouping !== false){
-      w.grouping.setPositions();
-      w.grouping.setExpanderCellsPosition();
-    }
-  },
-  /*
-   * @param {Object} item
-   * @param {String|Number} id
-   * @return {Number}
-   */
-  getDisplayedRowsBefore: function(item, id){
-    var me = this,
-      w = me.widget;
-
-    if(w.grouping){
-      var rowIndex = 0;
-
-      if(item.el.css('display') !== 'none'){
-        rowIndex = w.store.getRow(id);
-      }
-
-      return rowIndex + 1;
-    }
-
-    return item.rowIndex + 1;
-  },
-  /*
-   *
-   */
-  onScroll: function(){
-    this.reSetTop();
-  },
-  /*
-   *
-   */
-  reSetPlusScroll: function(){
-    var me = this,
-      w = me.widget;
-
-    me.plusScroll = me.getPlusHeight();
-    w.scroller.setRightKnobSize();
-
-    setTimeout(function(){
-      if(w.scroller.isRightScrollable() === false){
-        w.scroller.scroll(0);
-      }
-    }, 1);
-  },
-  /*
-   * @return {Number}
-   */
-  getPlusHeight: function(){
-    var me = this,
-      plusHeight = 0;
-
-    for(var p in me._expandedIds){
-      var item = me._expandedIds[p];
-
-      if(!item.hidden && item.el.css('display') !== 'none'){
-        plusHeight += item.height;
-      }
-    }
-
-    me.plusHeight = plusHeight;
-
-    return me.plusHeight;
-  },
-  /*
-   *
-   */
-  onColumnReSize: function(){
-    var me = this,
-      w = me.widget;
-
-    for(var p in me._expandedIds){
-      var item = me._expandedIds[p],
-        width = w.getCenterFullWidth();
-
-      item.el.css('width', width);
-
-    }
-  },
-  /*
-   * @param {Object} item
-   * @return {Object}
-   */
-  prepareData: function(item){
-    var me = this,
-      w = me.widget,
-      data = item.data;
-
-    if(me.dataFn){
-      data = me.dataFn(w, data);
-    }
-
-    return data;
-  },
-  /*
-   *
-   */
-  changeSidesSize: function(){
-    var w = this.widget;
-
-    w.setSidesHeight();
-    w.scroller.checkRightScroll();
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onRowDBlClick: function(grid, o){
-    var me = this,
-      w = me.widget,
-      rowIndex = Number(o.rowIndex),
-      id = o.id,
-      item = me._expandedIds[id];
-
-    if(w.edit){
-      w.un('rowdblclick', me.onRowDBlClick, me);
-      return;
-    }
-
-    if(item === undefined){
-      me.expand(rowIndex);
-    }
-    else{
-      if(item.hidden === true && item.el.css('display') === 'none'){
-        me.expand(rowIndex);
-      }
-      else{
-        me.collapse(rowIndex);
-      }
-    }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onRowTrackOver: function(grid, o){
-    var me = this,
-      w = me.widget,
-      item = me._expandedIds[o.id];
-
-    if(item){
-      item.el.addCls(w.expandRowOverCls);
-
-      if(w.leftColumns){
-        item.leftEl.addCls(w.expandRowOverCls);
-      }
-
-      if(w.rightColumns){
-        item.rightEl.addCls(w.expandRowOverCls);
-      }
-    }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onRowTrackLeave: function(grid, o){
-    var me = this,
-      w = me.widget,
-      item = me._expandedIds[o.id];
-
-    if(item){
-      item.el.removeCls(w.expandRowOverCls);
-
-      if(w.leftColumns){
-        item.leftEl.removeCls(w.expandRowOverCls);
-      }
-
-      if(w.rightColumns){
-        item.rightEl.removeCls(w.expandRowOverCls);
-      }
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onExpandRowMouseEnter: function(e){
-    var me = this,
-      w = me.widget,
-      scroller = w.scroller,
-      expandRowEl = Fancy.get(e.currentTarget),
-      index = expandRowEl.attr('index');
-
-    w.el.select('.' + w.expandRowCls + '[index="'+index+'"]').addCls(w.expandRowOverCls);
-
-    if(!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown){}
-    else{
-      w.el.select('.' + w.columnCls + '[grid="'+ w.id +'"] .' + w.cellCls + '[index="'+index+'"]').addCls(w.rowOverCls);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onExpandRowMouseLeave: function(e){
-    var me = this,
-      w = me.widget,
-      scroller = w.scroller,
-      expandRowEl = Fancy.get(e.currentTarget),
-      index = expandRowEl.attr('index');
-
-    w.el.select('.' + w.expandRowCls + '[index="'+index+'"]').removeCls(w.expandRowOverCls);
-
-    if(!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown){}
-    else{
-      w.el.select('.' + w.columnCls + '[grid="'+ w.id +'"] .' + w.cellCls + '[index="'+index+'"]').removeCls(w.rowOverCls);
-    }
-  },
-  /*
-   *
-   */
-  onSelect: function(){
-    var me = this,
-      w = me.widget,
-      selection = w.selection;
-
-    if(!selection || (!selection.row && !selection.rows)){
-      return;
-    }
-
-    me.onClearSelect();
-
-    selection = w.getSelection(true);
-    var rows = selection.rows,
-      i = 0,
-      iL = rows.length;
-
-    for(;i<iL;i++){
-      var rowIndex = rows[i];
-
-      w.el.select('.' + w.expandRowCls + '[index="'+rowIndex+'"]').addCls(w.expandRowSelectedCls);
-    }
-  },
-  /*
-   *
-   */
-  onClearSelect: function(){
-    var me = this,
-      w = me.widget,
-      selection = w.selection;
-
-    if(!selection.row && !selection.rows){
-      return;
-    }
-
-    selection = w.getSelection(true);
-
-    var shouldBeSelected = {},
-      rows = selection.rows,
-      i = 0,
-      iL = rows.length;
-
-    for(;i<iL;i++){
-      shouldBeSelected[rows[i]] = true;
-    }
-
-    var selected = w.el.select('.' + w.expandRowSelectedCls),
-      i = 0,
-      iL = selected.length;
-
-    for(;i<iL;i++){
-      var index = selected.item(i).attr('index');
-
-      if(!shouldBeSelected[index]){
-        w.el.select('.' + w.expandRowCls + '[index="'+index+'"]').removeCls(w.expandRowSelectedCls);
-      }
-    }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Number} index
-   * @param {String} groupName
-   */
-  onGroupCollapse: function(grid, index, groupName){
-    var me = this,
-      w = me.widget,
-      expandedGroups = me.expandedGroups;
-
-    if(expandedGroups[groupName]){
-      var items = expandedGroups[groupName];
-
-      for(var q in items){
-        var item = items[q];
-
-        if(me._expandedIds[q]){
-          delete me._expandedIds[q];
-        }
+      for (var p in me._expandedIds) {
+        var item = me._expandedIds[p];
 
         item.el.hide();
-        if(item.leftEl.dom){
+        item.hidden = true;
+
+        if (w.leftColumns) {
           item.leftEl.hide();
         }
 
-        if(item.rightEl.dom){
+        if (w.rightColumns) {
           item.rightEl.hide();
         }
       }
+    },
+    /*
+     *
+     */
+    expandAll: function () {
+      var w = this.widget,
+        viewTotal = w.getViewTotal(),
+        i = 0;
+
+      for (; i < viewTotal; i++) {
+        this.expand(i);
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} id
+     */
+    expandRow: function (rowIndex, id) {
+      var me = this,
+        w = me.widget,
+        el = G(document.createElement('div')),
+        item = w.getById(id),
+        data = me.prepareData(item),
+        html,
+        left = -w.scroller.scrollLeft || 0,
+        width = w.getCenterFullWidth(),
+        height;
+
+      if (me.tpl) {
+        html = me.tpl.getHTML(data);
+        el.update(html);
+      }
+
+      el.addCls(GRID_ROW_EXPAND_CLS);
+      el.css({
+        left: left,
+        width: width
+      });
+      el.attr('index', rowIndex);
+
+      w.body.el.dom.appendChild(el.dom);
+
+      if (me.render) {
+        /*renderTo, data, width*/
+        me.render(el.dom, data, w.getCenterFullWidth());
+      }
+
+      height = parseInt(el.css('height'));
+
+      me._expandedIds[id].rowIndex = rowIndex;
+      me._expandedIds[id].el = el;
+      me._expandedIds[id].height = height;
+      me._expandedIds[id].width = width;
+
+      if (w.leftColumns) {
+        var leftEl = G(document.createElement('div'));
+
+        leftEl.css('left', '0px');
+        leftEl.css('height', height);
+        leftEl.css('width', w.getLeftFullWidth());
+        leftEl.attr('index', rowIndex);
+
+        leftEl.addCls(GRID_ROW_EXPAND_CLS);
+        w.leftBody.el.dom.appendChild(leftEl.dom);
+
+        me._expandedIds[id].leftEl = leftEl;
+      }
+
+      if (w.rightColumns) {
+        var rightEl = G(document.createElement('div'));
+
+        rightEl.css('left', '0px');
+        rightEl.css('height', height);
+        rightEl.css('width', w.getRightFullWidth());
+        rightEl.attr('index', rowIndex);
+
+        rightEl.addCls(GRID_ROW_EXPAND_CLS);
+        w.rightBody.el.dom.appendChild(rightEl.dom);
+
+        me._expandedIds[id].rightEl = rightEl;
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} id
+     */
+    addMargin: function (rowIndex, id) {
+      var me = this,
+        w = me.widget,
+        height = me._expandedIds[id].height,
+        items = w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]');
+
+      items.css('margin-top', height);
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} id
+     */
+    clearMargin: function (rowIndex, id) {
+      var w = this.widget;
+
+      w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').css('margin-top', '0');
+    },
+    /*
+     *
+     */
+    onBeforeSort: function () {
+      this.reSet();
+    },
+    /*
+     *
+     */
+    onChangePage: function () {
+      this.reSet();
+    },
+    /*
+     *
+     */
+    onFilter: function () {
+      this.reSet();
+    },
+    /*
+     *
+     */
+    onRemove: function () {
+      this.reSet();
+    },
+    /*
+     *
+     */
+    reSet: function () {
+      var me = this,
+        w = me.widget;
+
+      for (var p in me._expandedIds) {
+        var item = me._expandedIds[p];
+
+        item.el.destroy();
+        me.clearMargin(Number(item.rowIndex) + 1, p);
+      }
+
+      me._hideAllSideExpandedRow();
+
+      me._expandedIds = {};
+
+      me.reSetTop();
+      me.reSetPlusScroll();
+      me.changeSidesSize();
+      w.scroller.scrollDelta(1);
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {String} id
+     */
+    showRow: function (rowIndex, id) {
+      var me = this,
+        w = me.widget,
+        item = me._expandedIds[id];
+
+      item.el.show();
+
+      if (w.leftColumns) {
+        item.leftEl.show();
+      }
+
+      if (w.rightColumns) {
+        item.rightEl.show();
+      }
+
+      me.addMargin(rowIndex + 1, id);
+    },
+    /*
+     * @param {Number} rowIndex
+     * @return {Number}
+     */
+    getBeforeHeight: function (rowIndex) {
+      var height = 0;
+
+      for (var p in this._expandedIds) {
+        var item = this._expandedIds[p];
+
+        if (item.rowIndex < rowIndex && !item.hidden && item.el.css('display') !== 'none') {
+          height += item.height;
+        }
+      }
+
+      return height;
+    },
+    /*
+     * @param {Boolean} [grouping]
+     */
+    reSetTop: function (grouping) {
+      var me = this,
+        w = me.widget,
+        cellHeight = w.cellHeight,
+        top = -w.scroller.scrollTop || 0,
+        left = -w.scroller.scrollLeft || 0;
+
+      if (w.grouping) {
+        me.expandedGroups = {};
+        var expanded = w.grouping.expanded;
+
+        for (var p in expanded) {
+          me.expandedGroups[p] = me.expandedGroups[p] || {};
+        }
+      }
+
+      for (var p in me._expandedIds) {
+        var item = me._expandedIds[p];
+
+        if (item.el.css('display') === 'none') {
+          continue;
+        }
+
+        //BUG: item.rowIndex has wrong value, if it has collapsed rows on top
+
+        var beforeHeight = me.getBeforeHeight(item.rowIndex),
+          rowIndex = me.getDisplayedRowsBefore(item, p),
+          _top = top + (rowIndex) * cellHeight + beforeHeight;
+
+        if (w.grouping) {
+          var id = p,
+            groupName = w.grouping.getGroupById(id),
+            orderIndex = w.grouping.getGroupOrderIndex(groupName);
+
+          if (item.el.css('display') !== 'none') {
+            me.expandedGroups[groupName] = me.expandedGroups[groupName] || {};
+            me.expandedGroups[groupName][p] = item;
+
+            _top += (orderIndex + 1) * w.groupRowHeight;
+          }
+        }
+
+        item.el.css({
+          top: _top,
+          left: left
+        });
+
+        if (w.leftColumns) {
+          item.leftEl.css('top', _top);
+        }
+
+        if (w.rightColumns) {
+          item.rightEl.css('top', _top);
+        }
+      }
+
+      if (w.grouping && grouping !== false) {
+        w.grouping.setPositions();
+        w.grouping.setExpanderCellsPosition();
+      }
+    },
+    /*
+     * @param {Object} item
+     * @param {String|Number} id
+     * @return {Number}
+     */
+    getDisplayedRowsBefore: function (item, id) {
+      var w = this.widget;
+
+      if (w.grouping) {
+        var rowIndex = 0;
+
+        if (item.el.css('display') !== 'none') {
+          rowIndex = w.store.getRow(id);
+        }
+
+        return rowIndex + 1;
+      }
+
+      return item.rowIndex + 1;
+    },
+    /*
+     *
+     */
+    onScroll: function () {
+      this.reSetTop();
+    },
+    /*
+     *
+     */
+    reSetPlusScroll: function () {
+      var me = this,
+        w = me.widget;
+
+      me.plusScroll = me.getPlusHeight();
+      w.scroller.setRightKnobSize();
+
+      setTimeout(function () {
+        if (w.scroller.isRightScrollable() === false) {
+          w.scroller.scroll(0);
+        }
+      }, 1);
+    },
+    /*
+     * @return {Number}
+     */
+    getPlusHeight: function () {
+      var me = this,
+        plusHeight = 0;
+
+      for (var p in me._expandedIds) {
+        var item = me._expandedIds[p];
+
+        if (!item.hidden && item.el.css('display') !== 'none') {
+          plusHeight += item.height;
+        }
+      }
+
+      me.plusHeight = plusHeight;
+
+      return me.plusHeight;
+    },
+    /*
+     *
+     */
+    onColumnReSize: function () {
+      var me = this,
+        w = me.widget;
+
+      for (var p in me._expandedIds) {
+        var item = me._expandedIds[p],
+          width = w.getCenterFullWidth();
+
+        item.el.css('width', width);
+
+      }
+    },
+    /*
+     * @param {Object} item
+     * @return {Object}
+     */
+    prepareData: function (item) {
+      var me = this,
+        w = me.widget,
+        data = item.data;
+
+      if (me.dataFn) {
+        data = me.dataFn(w, data);
+      }
+
+      return data;
+    },
+    /*
+     *
+     */
+    changeSidesSize: function () {
+      var w = this.widget;
+
+      w.setSidesHeight();
+      w.scroller.checkRightScroll();
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onRowDBlClick: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        rowIndex = Number(o.rowIndex),
+        id = o.id,
+        item = me._expandedIds[id];
+
+      if (w.edit) {
+        w.un('rowdblclick', me.onRowDBlClick, me);
+        return;
+      }
+
+      if (item === undefined) {
+        me.expand(rowIndex);
+      }
+      else {
+        if (item.hidden === true && item.el.css('display') === 'none') {
+          me.expand(rowIndex);
+        }
+        else {
+          me.collapse(rowIndex);
+        }
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onRowTrackOver: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        item = me._expandedIds[o.id];
+
+      if (item) {
+        item.el.addCls(GRID_ROW_EXPAND_OVER_CLS);
+
+        if (w.leftColumns) {
+          item.leftEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
+        }
+
+        if (w.rightColumns) {
+          item.rightEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
+        }
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onRowTrackLeave: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        item = me._expandedIds[o.id];
+
+      if (item) {
+        item.el.removeCls(GRID_ROW_EXPAND_OVER_CLS);
+
+        if (w.leftColumns) {
+          item.leftEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
+        }
+
+        if (w.rightColumns) {
+          item.rightEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
+        }
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onExpandRowMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        scroller = w.scroller,
+        expandRowEl = G(e.currentTarget),
+        index = expandRowEl.attr('index');
+
+      w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').addCls(GRID_ROW_EXPAND_OVER_CLS);
+
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {
+      }
+      else {
+        w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').addCls(GRID_ROW_OVER_CLS);
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onExpandRowMouseLeave: function (e) {
+      var me = this,
+        w = me.widget,
+        scroller = w.scroller,
+        expandRowEl = G(e.currentTarget),
+        index = expandRowEl.attr('index');
+
+      w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_EXPAND_OVER_CLS);
+
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {
+      }
+      else {
+        w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_OVER_CLS);
+      }
+    },
+    /*
+     *
+     */
+    onSelect: function () {
+      var me = this,
+        w = me.widget,
+        selection = w.selection;
+
+      if (!selection || (!selection.row && !selection.rows)) {
+        return;
+      }
+
+      me.onClearSelect();
+
+      selection = w.getSelection(true);
+      var rows = selection.rows,
+        i = 0,
+        iL = rows.length;
+
+      for (; i < iL; i++) {
+        var rowIndex = rows[i];
+
+        w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + rowIndex + '"]').addCls(GRID_ROW_EXPAND_SELECTED_CLS);
+      }
+    },
+    /*
+     *
+     */
+    onClearSelect: function () {
+      var me = this,
+        w = me.widget,
+        selection = w.selection;
+
+      if (!selection.row && !selection.rows) {
+        return;
+      }
+
+      selection = w.getSelection(true);
+
+      var shouldBeSelected = {},
+        rows = selection.rows,
+        i = 0,
+        iL = rows.length;
+
+      for (; i < iL; i++) {
+        shouldBeSelected[rows[i]] = true;
+      }
+
+      var selected = w.el.select('.' + GRID_ROW_EXPAND_SELECTED_CLS),
+        i = 0,
+        iL = selected.length;
+
+      for (; i < iL; i++) {
+        var index = selected.item(i).attr('index');
+
+        if (!shouldBeSelected[index]) {
+          w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_EXPAND_SELECTED_CLS);
+        }
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Number} index
+     * @param {String} groupName
+     */
+    onGroupCollapse: function (grid, index, groupName) {
+      var me = this,
+        w = me.widget,
+        expandedGroups = me.expandedGroups;
+
+      if (expandedGroups[groupName]) {
+        var items = expandedGroups[groupName];
+
+        for (var q in items) {
+          var item = items[q];
+
+          if (me._expandedIds[q]) {
+            delete me._expandedIds[q];
+          }
+
+          item.el.hide();
+          if (item.leftEl.dom) {
+            item.leftEl.hide();
+          }
+
+          if (item.rightEl.dom) {
+            item.rightEl.hide();
+          }
+        }
+      }
+
+      me.reSetTop(false);
+      me.reSetIndexes();
+      setTimeout(function () {
+        w.grouping.setExpanderCellsPosition();
+      }, 1);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Number} index
+     * @param {String} groupName
+     */
+    onGroupExpand: function (grid, index, groupName) {
+      var me = this,
+        w = me.widget;
+
+      me.reSetTop(false);
+      me.reSetIndexes();
+      setTimeout(function () {
+        w.grouping.setExpanderCellsPosition();
+      }, 1);
+    },
+    /*
+     *
+     */
+    reSetIndexes: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      for (var id in me._expandedIds) {
+        me._expandedIds[id].rowIndex = s.getRow(id);
+      }
+    },
+    onAdd: function(){
+      this.reSet();
+    },
+    onBeforeInsert: function(){
+      this.reSet();
     }
+  });
 
-    me.reSetTop(false);
-    me.reSetIndexes();
-    setTimeout(function () {
-      w.grouping.setExpanderCellsPosition();
-    }, 1);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Number} index
-   * @param {String} groupName
-   */
-  onGroupExpand: function(grid, index, groupName){
-    var me = this,
-      w = me.widget;
-
-    me.reSetTop(false);
-    me.reSetIndexes();
-    setTimeout(function () {
-      w.grouping.setExpanderCellsPosition();
-    }, 1);
-  },
-  /*
-   *
-   */
-  reSetIndexes: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    for(var id in me._expandedIds){
-      me._expandedIds[id].rowIndex = s.getRow(id);
-    }
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.GroupHeader
  * @extends Fancy.Plugin
@@ -30267,19 +31016,15 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
+    this.Super('init', arguments);
 
-    me.Super('init', arguments);
-
-    me.ons();
+    this.ons();
   },
   /*
    *
@@ -30289,2201 +31034,2904 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 /*
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
- *
  */
-Fancy.define('Fancy.grid.plugin.Grouping', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.grouping',
-  inWidgetName: 'grouping',
-  tpl: '{text}:{number}',
-  _renderFirstTime: true,
-  groupRowInnerCls: 'fancy-grid-group-row-inner',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var E = Fancy.each;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this,
-      w = me.widget;
+  //CONSTANTS
+  var GRID_ROW_GROUP_INNER_CLS = F.GRID_ROW_GROUP_INNER_CLS;
+  var GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
+  var GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.Grouping', {
+    extend: F.Plugin,
+    ptype: 'grid.grouping',
+    inWidgetName: 'grouping',
+    tpl: '{text}:{number}',
+    _renderFirstTime: true,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
 
-    me._expanded = {};
+      me.Super('init', arguments);
 
-    me.initTpl();
-    me.initGroups();
-    me.initOrder();
-    me.calcPlusScroll();
-    me.configParams();
+      me._expanded = {};
 
-    me.ons();
+      me.initTpl();
+      me.initGroups();
+      me.initOrder();
+      me.calcPlusScroll();
+      me.configParams();
 
-    if(!me.collapsed && w.store.data){
-      setTimeout(function () {
-        w.store.changeDataView({
-          doNotFired: true
-        });
+      me.ons();
 
-        w.update();
-      }, 100);
-    }
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    w.once('render', function(){
-      me.renderGroupedRows();
-      me.update();
-
-      w.el.on('click', me.onClick, me, 'div.' + w.clsGroupRow);
-      w.el.on('mousedown', me.onMouseDown, me, 'div.' + w.clsGroupRow);
-      w.on('scroll', me.onScroll, me);
-
-      w.on('columnresize', me.onColumnResize, me);
-
-      s.on('insert', me.onInsert, me);
-      s.on('remove', me.onRemove, me);
-    });
-  },
-  onInsert: function(){
-    var me = this;
-
-    me.reGroup();
-  },
-  onRemove: function(){
-    var me = this;
-
-    me.reGroup();
-    //me.initGroups();
-  },
-  /*
-   * @param {String} [dataProperty]
-   */
-  initGroups: function(dataProperty){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      o = s.initGroups(dataProperty);
-
-    me.groups = o.groups;
-    me.groupsCounts = o._groups;
-  },
-  /*
-   * @param {String|Number} id
-   * @return {String}
-   */
-  getGroupById: function (id) {
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    return s.groupMap[id];
-  },
-  /*
-   * @param {String} group
-   * @return {Number}
-   */
-  getGroupOrderIndex: function(group){
-    var me = this,
-      groups = me.groups,
-      i = 0,
-      iL = groups.length;
-
-    for(;i<iL;i++){
-      if(groups[i] === group){
-        return i
-      }
-    }
-  },
-  /*
-   *
-   */
-  initOrder: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      groups = [],
-      i,
-      iL,
-      groupNameUpperCase = {},
-      upperGroups = [];
-
-    if(me.order && me.order.length !== 0){
-      switch (Fancy.typeOf(me.order)){
-        case 'string':
-          //TODO
-          break;
-        case 'array':
-          //TODO
-          break;
-      }
-    }
-    else{
-      groups = me.groups;
-      i = 0;
-      iL = groups.length;
-
-      Fancy.each(groups, function(group){
-        var upperGroup = group.toLocaleUpperCase();
-
-        groupNameUpperCase[upperGroup] = group;
-        upperGroups.push(upperGroup);
-      });
-
-      upperGroups = upperGroups.sort();
-
-      for(;i<iL;i++){
-        groups[i] = groupNameUpperCase[ upperGroups[i] ];
-      }
-    }
-
-    me.groups = groups;
-    s.changeOrderByGroups(groups, me.by);
-  },
-  /*
-   *
-   */
-  calcPlusScroll: function(){
-    var me = this,
-      w = me.widget;
-
-    me.plusScroll = me.groups.length * w.groupRowHeight;
-  },
-  /*
-   *
-   */
-  configParams: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    me.expanded = me.expanded || {};
-    s.expanded = s.expanded || {};
-
-    if(me.collapsed){
-      s.collapsed = true;
-    }
-    else{
-      Fancy.each(me.groups, function(group){
-        if( me.expanded[group] === undefined ){
-          s.expanded[group] = true;
-          me.expanded[group] = true;
-          me._expanded[group] = true;
-        }
-      });
-    }
-  },
-  /*
-   *
-   */
-  renderGroupedRows: function(){
-    var me = this,
-      w = me.widget,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      width = w.getCenterFullWidth(),
-      leftWidth = w.getLeftFullWidth(),
-      rightWidth = w.getRightFullWidth(),
-      el,
-      passedTop = 0;
-
-    Fancy.each(me.groups, function(groupText){
-      var groupCount = me.groupsCounts[groupText];
-
-      if(leftWidth){
-        el = me.generateGroupRow(groupText, groupCount, true, passedTop);
-        el.css('width', leftWidth);
-        leftBody.el.dom.appendChild(el.dom);
-
-        el = me.generateGroupRow(groupText, groupCount, false, passedTop);
-        el.css('width', width);
-        body.el.dom.appendChild(el.dom);
-      }
-      else {
-        el = me.generateGroupRow(groupText, groupCount, true, passedTop);
-        el.css('width', width);
-        body.el.dom.appendChild(el.dom);
-      }
-
-      if(rightWidth){
-        el = me.generateGroupRow(groupText, groupCount, false, passedTop);
-        el.css('width', rightWidth);
-        rightBody.el.dom.appendChild(el.dom);
-      }
-
-      if(me.collapsed){
-        passedTop += w.groupRowHeight;
-      }
-    });
-  },
-  /*
-   *
-   */
-  removeGroupRows: function(){
-    var me = this,
-      w = me.widget,
-      columns = w.columns,
-      leftColumns = w.leftColumns,
-      rightColumns = w.rightColumns,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      clsGroupRow = w.clsGroupRow;
-
-    if(columns.length){
-      body.el.select('.' + clsGroupRow).remove();
-    }
-
-    if(leftColumns.length){
-      leftBody.el.select('.' + clsGroupRow).remove();
-    }
-
-    if(rightColumns.length){
-      rightBody.el.select('.' + clsGroupRow).remove();
-    }
-  },
-  /*
-   *
-   */
-  removeCells: function(){
-    var me = this,
-      w = me.widget,
-      columns = w.columns,
-      leftColumns = w.leftColumns,
-      rightColumns = w.rightColumns,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      cellCls = w.cellCls;
-
-    if(columns.length){
-      body.el.select('.' + cellCls).remove();
-    }
-
-    if(leftColumns.length){
-      leftBody.el.select('.' + cellCls).remove();
-    }
-
-    if(rightColumns.length){
-      rightBody.el.select('.' + cellCls).remove();
-    }
-  },
-  /*
-   * @param {String} groupText
-   * @param {Number} groupCount
-   * @param {Boolean} addText
-   * @param {Number} top
-   */
-  generateGroupRow: function(groupText, groupCount, addText, top){
-    var me = this,
-      w = me.widget,
-      clsGroupRow = w.clsGroupRow,
-      el = Fancy.get(document.createElement('div')),
-      groupRowInnerCls = me.groupRowInnerCls;
-
-    el.addCls(clsGroupRow);
-    el.attr('group', groupText);
-    if(addText){
-      var text = me.tpl.getHTML({
-        text: groupText,
-        number: groupCount
-      });
-      el.update('<div class="' + groupRowInnerCls + '"> ' + text + '</div>');
-    }
-
-    if(me.collapsed){
-      el.css('top', top + 'px');
-      el.addCls(w.clsCollapsedRow);
-    }
-    else {
-      el.css('top', '0px');
-    }
-
-    return el;
-  },
-  /*
-   *
-   */
-  insertGroupEls: function(){
-    var me = this,
-      w = me.widget,
-      leftBody = w.leftBody,
-      body = w.body,
-      clsGroupRow = w.clsGroupRow,
-      groupRowInnerCls = me.groupRowInnerCls;
-
-    if(w.leftColumns.length){
-      leftBody.el.select('.' + clsGroupRow).each(function(el) {
-        var groupText = me.groups[i];
-
-        el.update('<div class="' + groupRowInnerCls + '">' + groupText + '</div>');
-      });
-    }
-    else{
-      body.el.select('.' + clsGroupRow).each(function(el, i){
-        var groupText = me.groups[i],
-          groupCount = me.groupsCounts[groupText],
-          text = me.tpl.getHTML({
-            text: groupText,
-            number: groupCount
+      if (!me.collapsed && w.store.data) {
+        setTimeout(function () {
+          w.store.changeDataView({
+            doNotFired: true
           });
 
-        el.update('<div class="' + groupRowInnerCls + '">' + text + '</div>');
+          w.update();
+        }, 100);
+      }
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      w.once('render', function () {
+        me.renderGroupedRows();
+        me.update();
+
+        w.el.on('click', me.onClick, me, 'div.' + GRID_ROW_GROUP_CLS);
+        w.el.on('mousedown', me.onMouseDown, me, 'div.' + GRID_ROW_GROUP_CLS);
+        w.on('scroll', me.onScroll, me);
+
+        w.on('columnresize', me.onColumnResize, me);
+
+        s.on('insert', me.onInsert, me);
+        s.on('remove', me.onRemove, me);
+
+        w.on('columndrag', me.onColumnDrag, me);
       });
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onClick: function(e){
-    var me = this,
-      w = me.widget,
-      clsCollapsedRow = w.clsCollapsedRow,
-      rowEl = Fancy.get(e.currentTarget),
-      isCollapsed,
-      group = rowEl.attr('group');
+    },
+    onInsert: function () {
+      this.reGroup();
+    },
+    onRemove: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        groups = me.groups;
 
-    w.el.select('.'+ w.clsGroupRow + '[group="'+group+'"]').toggleCls(clsCollapsedRow);
+      me.initGroups();
+      me.update();
+      me.updateGroupRowsText();
 
-    isCollapsed = rowEl.hasCls(clsCollapsedRow);
+      if (groups.length > me.groups.length) {
+        var removedGroup;
 
-    if(isCollapsed){
-      me.collapse(me.by, group);
-    }
-    else{
-      me.expand(me.by, group);
-    }
+        E(groups, function (group, i) {
+          if (group !== me.groups[i]) {
+            removedGroup = group;
+            return true;
+          }
+        });
 
-    //update works very slow in this case
-    //it needs some fast solution without update
-    //me.fastCollapse();
-    me.update();
-  },
-  /*
-   *
-   */
-  fastCollapse: function(){},
-  /*
-   * @param {Object} e
-   */
-  onMouseDown: function(e){
-    e.preventDefault();
-  },
-  /*
-   *
-   */
-  onScroll: function(){
-    this.setPositions();
-  },
-  /*
-   * @param {String} group
-   * @param {String} value
-   */
-  collapse: function(group, value){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    s.collapse(group, value);
-    delete me._expanded[value];
-    delete me.expanded[value];
-
-    w.fire('collapse', group, value);
-  },
-  /*
-   * @param {String} group
-   * @param {String} value
-   */
-  expand: function(group, value){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    s.expand(group, value);
-    me._expanded[value] = true;
-    me.expanded[value] = true;
-
-    w.fire('expand', group, value);
-  },
-  /*
-   *
-   */
-  setPositions: function(){
-    var me = this,
-      w = me.widget,
-      top = -w.scroller.scrollTop || 0,
-      clsGroupRow = w.clsGroupRow,
-      leftRows = w.leftBody.el.select('.' + clsGroupRow),
-      rows = w.body.el.select('.' + clsGroupRow),
-      rightRows = w.rightBody.el.select('.' + clsGroupRow);
-
-    Fancy.each(me.groups, function (groupName, i){
-      if(leftRows.length) {
-        leftRows.item(i).css('top', top + 'px');
+        delete s.expanded[removedGroup];
+        delete me.expanded[removedGroup];
+        delete me._expanded[removedGroup];
       }
+    },
+    /*
+     * @param {String} [dataProperty]
+     */
+    initGroups: function (dataProperty) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        o = s.initGroups(dataProperty);
 
-      if(rows.length) {
-        rows.item(i).css('top', top + 'px');
+      me.groups = o.groups;
+      me.groupsCounts = o._groups;
+    },
+    /*
+     * @param {String|Number} id
+     * @return {String}
+     */
+    getGroupById: function (id) {
+      var w = this.widget,
+        s = w.store;
+
+      return s.groupMap[id];
+    },
+    /*
+     * @param {String} group
+     * @return {Number}
+     */
+    getGroupOrderIndex: function (group) {
+      var groups = this.groups,
+        i = 0,
+        iL = groups.length;
+
+      for (; i < iL; i++) {
+        if (groups[i] === group) {
+          return i
+        }
       }
+    },
+    /*
+     *
+     */
+    initOrder: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        groups = [],
+        i,
+        iL,
+        groupNameUpperCase = {},
+        upperGroups = [];
 
-      if(rightRows.length) {
-        rightRows.item(i).css('top', top + 'px');
+      if (me.order && me.order.length !== 0) {
+        switch (F.typeOf(me.order)) {
+          case 'string':
+            //TODO
+            break;
+          case 'array':
+            //TODO
+            break;
+        }
       }
+      else {
+        groups = me.groups;
+        i = 0;
+        iL = groups.length;
 
-      if(w.expander){
-        var expanded = w.expander.expandedGroups[groupName];
+        E(groups, function (group) {
+          var upperGroup = group.toLocaleUpperCase();
 
-        for(var p in expanded){
-          var item = expanded[p];
+          groupNameUpperCase[upperGroup] = group;
+          upperGroups.push(upperGroup);
+        });
 
-          top+= parseInt(item.el.css('height'));
+        upperGroups = upperGroups.sort();
+
+        for (; i < iL; i++) {
+          groups[i] = groupNameUpperCase[upperGroups[i]];
         }
       }
 
-      top+= w.groupRowHeight;
+      me.groups = groups;
+      s.changeOrderByGroups(groups, me.by);
+    },
+    /*
+     *
+     */
+    calcPlusScroll: function () {
+      var w = this.widget;
 
-      if(me._expanded[groupName] === true){
-        top += me.groupsCounts[groupName] * w.cellHeight;
+      this.plusScroll = this.groups.length * w.groupRowHeight;
+    },
+    /*
+     *
+     */
+    configParams: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      me.expanded = me.expanded || {};
+      s.expanded = s.expanded || {};
+
+      if (me.collapsed) {
+        s.collapsed = true;
       }
-    });
-  },
-  /*
-   * @param {Number} index
-   * @param {String} side
-   */
-  setCellsPosition: function(index, side) {
-    var me = this,
-      w = me.widget,
-      i = 0,
-      iL = me.groups.length,
-      j = 0,
-      jL,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      row = 0,
-      top = w.groupRowHeight,
-      rows = [],
-      cell,
-      marginedRows = {},
-      rowExpanderGroupMargined = {},
-      by = me.by;
-
-    for(;i<iL;i++){
-      var groupName = me.groups[i];
-
-      if(me._expanded[groupName] === true){
-        rows.push(row);
-        marginedRows[row] = true;
-
-        if(side === undefined || side === 'center'){
-          j = 0;
-          jL = w.columns.length;
-
-          if(index !== undefined){
-            j = index;
-            jL = index + 1;
+      else {
+        E(me.groups, function (group) {
+          if (me.expanded[group] === undefined) {
+            s.expanded[group] = true;
+            me.expanded[group] = true;
+            me._expanded[group] = true;
           }
+        });
+      }
+    },
+    /*
+     *
+     */
+    renderGroupedRows: function () {
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        width = w.getCenterFullWidth(),
+        leftWidth = w.getLeftFullWidth(),
+        rightWidth = w.getRightFullWidth(),
+        el,
+        passedTop = 0;
 
-          if(w.expander){
-            var dataItem = w.get(row),
-              _itemGroupName = dataItem.get(by),
-              expandedGroups = w.expander.expandedGroups,
-              groupOrderIndex = me.getGroupOrderIndex(groupName),
-              plusHeight = 0;
+      E(me.groups, function (groupText) {
+        var groupCount = me.groupsCounts[groupText];
 
-            for(var p in expandedGroups){
-              var _groupOrderIndex = me.getGroupOrderIndex(p);
+        if (leftWidth) {
+          el = me.generateGroupRow(groupText, groupCount, true, passedTop);
+          el.css('width', leftWidth);
+          leftBody.el.dom.appendChild(el.dom);
 
-              if(groupOrderIndex <= _groupOrderIndex){
-                continue;
-              }
+          el = me.generateGroupRow(groupText, groupCount, false, passedTop);
+          el.css('width', width);
+          body.el.dom.appendChild(el.dom);
+        }
+        else {
+          el = me.generateGroupRow(groupText, groupCount, true, passedTop);
+          el.css('width', width);
+          body.el.dom.appendChild(el.dom);
+        }
 
-              var groupItems = expandedGroups[p];
+        if (rightWidth) {
+          el = me.generateGroupRow(groupText, groupCount, false, passedTop);
+          el.css('width', rightWidth);
+          rightBody.el.dom.appendChild(el.dom);
+        }
 
-              for(var q in groupItems){
-                var _item = groupItems[q];
+        if (me.collapsed) {
+          passedTop += w.groupRowHeight;
+        }
+      });
+    },
+    /*
+     *
+     */
+    removeGroupRows: function () {
+      var me = this,
+        w = me.widget,
+        columns = w.columns,
+        leftColumns = w.leftColumns,
+        rightColumns = w.rightColumns,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody;
 
-                if(_item.el.css('display') !== 'none' && !rowExpanderGroupMargined[q]){
-                  var prevRow = row - 1;
-                  if(row < 0){
-                    row = 0;
-                  }
-                  prevRow = w.get(prevRow);
-                  var prevRowGroupName = prevRow.get(by);
-                  if(_itemGroupName !== prevRowGroupName){
-                    if(prevRow.id === q) {
+      if (columns.length) {
+        body.el.select('.' + GRID_ROW_GROUP_CLS).remove();
+      }
+
+      if (leftColumns.length) {
+        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).remove();
+      }
+
+      if (rightColumns.length) {
+        rightBody.el.select('.' + GRID_ROW_GROUP_CLS).remove();
+      }
+    },
+    /*
+    *
+    */
+    removeLastGroupRow: function () {
+      var me = this,
+        w = me.widget,
+        columns = w.columns,
+        groups = me.groups,
+        lastItemIndex = groups.length,
+        leftColumns = w.leftColumns,
+        rightColumns = w.rightColumns,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody;
+
+      if (columns.length) {
+        var el = body.el.select('.' + GRID_ROW_GROUP_CLS).item(lastItemIndex);
+        el.remove();
+      }
+
+      if (leftColumns.length) {
+        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).item(lastItemIndex).remove();
+      }
+
+      if (rightColumns.length) {
+        rightBody.el.select('.' + GRID_ROW_GROUP_CLS).item(lastItemIndex).remove();
+      }
+    },
+    /*
+     *
+     */
+    removeCells: function () {
+      var me = this,
+        w = me.widget,
+        columns = w.columns,
+        leftColumns = w.leftColumns,
+        rightColumns = w.rightColumns,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody;
+
+      if (columns.length) {
+        body.el.select('.' + GRID_CELL_CLS).remove();
+      }
+
+      if (leftColumns.length) {
+        leftBody.el.select('.' + GRID_CELL_CLS).remove();
+      }
+
+      if (rightColumns.length) {
+        rightBody.el.select('.' + GRID_CELL_CLS).remove();
+      }
+    },
+    /*
+     * @param {String} groupText
+     * @param {Number} groupCount
+     * @param {Boolean} addText
+     * @param {Number} top
+     */
+    generateGroupRow: function (groupText, groupCount, addText, top) {
+      var me = this,
+        el = F.get(document.createElement('div'));
+
+      el.addCls(GRID_ROW_GROUP_CLS);
+      el.attr('group', groupText);
+      if (addText) {
+        var text = me.tpl.getHTML({
+          text: groupText,
+          number: groupCount
+        });
+        el.update('<div class="' + GRID_ROW_GROUP_INNER_CLS + '"> ' + text + '</div>');
+      }
+
+      if (me.collapsed) {
+        el.css('top', top + 'px');
+        el.addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+      }
+      else {
+        el.css('top', '0px');
+      }
+
+      return el;
+    },
+    /*
+     *
+     */
+    insertGroupEls: function () {
+      var me = this,
+        w = me.widget,
+        leftBody = w.leftBody,
+        body = w.body;
+
+      if (w.leftColumns.length) {
+        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).each(function (el) {
+          var groupText = me.groups[i];
+
+          el.update('<div class="' + GRID_ROW_GROUP_INNER_CLS + '">' + groupText + '</div>');
+        });
+      }
+      else {
+        body.el.select('.' + GRID_ROW_GROUP_CLS).each(function (el, i) {
+          var groupText = me.groups[i],
+            groupCount = me.groupsCounts[groupText],
+            text = me.tpl.getHTML({
+              text: groupText,
+              number: groupCount
+            });
+
+          el.update('<div class="' + GRID_ROW_GROUP_INNER_CLS + '">' + text + '</div>');
+        });
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onClick: function (e) {
+      var me = this,
+        w = me.widget,
+        rowEl = F.get(e.currentTarget),
+        isCollapsed,
+        group = rowEl.attr('group');
+
+      w.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').toggleCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+
+      isCollapsed = rowEl.hasCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+
+      if (isCollapsed) {
+        me.collapse(me.by, group);
+      }
+      else {
+        me.expand(me.by, group);
+      }
+
+      //update works very slow in this case
+      //it needs some fast solution without update
+      //me.fastCollapse();
+      me.update();
+    },
+    /*
+     *
+     */
+    fastCollapse: function () {
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseDown: function (e) {
+      e.preventDefault();
+    },
+    /*
+     *
+     */
+    onScroll: function () {
+      this.setPositions();
+    },
+    /*
+     * @param {String} group
+     * @param {String} value
+     */
+    collapse: function (group, value) {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      s.collapse(group, value);
+      delete me._expanded[value];
+      delete me.expanded[value];
+
+      w.fire('collapse', group, value);
+    },
+    /*
+     * @param {String} group
+     * @param {String} value
+     */
+    expand: function (group, value) {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      s.expand(group, value);
+      me._expanded[value] = true;
+      me.expanded[value] = true;
+
+      w.fire('expand', group, value);
+    },
+    /*
+     *
+     */
+    setPositions: function () {
+      var me = this,
+        w = me.widget,
+        top = -w.scroller.scrollTop || 0,
+        leftRows = w.leftBody.el.select('.' + GRID_ROW_GROUP_CLS),
+        rows = w.body.el.select('.' + GRID_ROW_GROUP_CLS),
+        rightRows = w.rightBody.el.select('.' + GRID_ROW_GROUP_CLS);
+
+      E(me.groups, function (groupName, i) {
+        if (leftRows.length) {
+          leftRows.item(i).css('top', top + 'px');
+        }
+
+        if (rows.length) {
+          rows.item(i).css('top', top + 'px');
+        }
+
+        if (rightRows.length) {
+          rightRows.item(i).css('top', top + 'px');
+        }
+
+        if (w.expander) {
+          var expanded = w.expander.expandedGroups[groupName];
+
+          for (var p in expanded) {
+            var item = expanded[p];
+
+            top += parseInt(item.el.css('height'));
+          }
+        }
+
+        top += w.groupRowHeight;
+
+        if (me._expanded[groupName] === true) {
+          top += me.groupsCounts[groupName] * w.cellHeight;
+        }
+      });
+    },
+    /*
+     * @param {Number} index
+     * @param {String} side
+     */
+    setCellsPosition: function (index, side) {
+      var me = this,
+        w = me.widget,
+        i = 0,
+        iL = me.groups.length,
+        j = 0,
+        jL,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        row = 0,
+        top = w.groupRowHeight,
+        rows = [],
+        cell,
+        marginedRows = {},
+        rowExpanderGroupMargined = {},
+        by = me.by;
+
+      for (; i < iL; i++) {
+        var groupName = me.groups[i];
+
+        if (me._expanded[groupName] === true) {
+          rows.push(row);
+          marginedRows[row] = true;
+
+          if (side === undefined || side === 'center') {
+            j = 0;
+            jL = w.columns.length;
+
+            if (index !== undefined) {
+              j = index;
+              jL = index + 1;
+            }
+
+            if (w.expander) {
+              var dataItem = w.get(row),
+                _itemGroupName = dataItem.get(by),
+                expandedGroups = w.expander.expandedGroups,
+                groupOrderIndex = me.getGroupOrderIndex(groupName),
+                plusHeight = 0;
+
+              for (var p in expandedGroups) {
+                var _groupOrderIndex = me.getGroupOrderIndex(p);
+
+                if (groupOrderIndex <= _groupOrderIndex) {
+                  continue;
+                }
+
+                var groupItems = expandedGroups[p];
+
+                for (var q in groupItems) {
+                  var _item = groupItems[q];
+
+                  if (_item.el.css('display') !== 'none' && !rowExpanderGroupMargined[q]) {
+                    var prevRow = row - 1;
+                    if (row < 0) {
+                      row = 0;
+                    }
+                    prevRow = w.get(prevRow);
+                    var prevRowGroupName = prevRow.get(by);
+                    if (_itemGroupName !== prevRowGroupName) {
+                      if (prevRow.id === q) {
+                        rowExpanderGroupMargined[q] = true;
+                        plusHeight += parseInt(_item.el.css('height'));
+                      }
+                    }
+                    else {
                       rowExpanderGroupMargined[q] = true;
                       plusHeight += parseInt(_item.el.css('height'));
                     }
                   }
-                  else {
-                    rowExpanderGroupMargined[q] = true;
-                    plusHeight += parseInt(_item.el.css('height'));
-                  }
                 }
               }
+
+              top += plusHeight;
+
+              cell = body.getCell(row, j);
+
+              for (; j < jL; j++) {
+                cell = body.getCell(row, j);
+                cell.css('margin-top', top + 'px');
+              }
+            }
+            else {
+              for (; j < jL; j++) {
+                cell = body.getCell(row, j);
+
+                cell.css('margin-top', top + 'px');
+              }
+            }
+          }
+
+          if (side === undefined || side === 'left') {
+            j = 0;
+            jL = w.leftColumns.length;
+
+            if (index !== undefined) {
+              j = index;
+              jL = index + 1;
             }
 
-            top += plusHeight;
+            for (; j < jL; j++) {
+              cell = leftBody.getCell(row, j);
 
-            cell = body.getCell(row, j);
-
-            for(;j<jL;j++){
-              cell = body.getCell(row, j);
               cell.css('margin-top', top + 'px');
             }
           }
-          else{
-            for(;j<jL;j++){
-              cell = body.getCell(row, j);
+
+          if (side === undefined || side === 'right') {
+            j = 0;
+            jL = w.rightColumns.length;
+
+            if (index !== undefined) {
+              j = index;
+              jL = index + 1;
+            }
+
+            for (; j < jL; j++) {
+              cell = rightBody.getCell(row, j);
 
               cell.css('margin-top', top + 'px');
             }
           }
+
+          row += me.groupsCounts[groupName];
+          top = w.groupRowHeight;
         }
-
-        if(side === undefined || side === 'left') {
-          j = 0;
-          jL = w.leftColumns.length;
-
-          if(index !== undefined){
-            j = index;
-            jL = index + 1;
-          }
-
-          for (; j < jL; j++) {
-            cell = leftBody.getCell(row, j);
-
-            cell.css('margin-top', top + 'px');
-          }
+        else {
+          top += w.groupRowHeight;
         }
-
-        if(side === undefined || side === 'right') {
-          j = 0;
-          jL = w.rightColumns.length;
-
-          if(index !== undefined){
-            j = index;
-            jL = index + 1;
-          }
-
-          for (; j < jL; j++) {
-            cell = rightBody.getCell(row, j);
-
-            cell.css('margin-top', top + 'px');
-          }
-        }
-
-        row += me.groupsCounts[groupName];
-        top = w.groupRowHeight;
       }
-      else{
-        top += w.groupRowHeight;
+
+      if (me._renderFirstTime) {
+        me._renderFirstTime = false;
       }
-    }
+      else {
+        var toClearMargins = [];
 
-    if(me._renderFirstTime){
-      me._renderFirstTime = false;
-    }
-    else {
-      var toClearMargins = [];
-
-      Fancy.each(me.prevRows, function(rowIndex){
-        if( marginedRows[rowIndex] !== true ){
-          toClearMargins.push(rowIndex);
-        }
-      });
-
-      me.clearMargins(toClearMargins);
-    }
-
-    me.prevRows = rows;
-  },
-  /*
-   * It is used only to collapse groups of 'grouping row' with 'row expander'.
-   */
-  setExpanderCellsPosition: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      dataView = s.dataView,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      cell,
-      expandedGroups = w.expander.expandedGroups,
-      groupsCounts = me.groupsCounts,
-      dataItem,
-      top = w.groupRowHeight,
-      rowIndex = 0,
-      nextPlusTop = 0;
-
-    Fancy.each(me.groups, function (groupName) {
-      if(me._expanded[groupName] === true){
-        var iL = rowIndex + groupsCounts[groupName];
-
-        for(;rowIndex<iL;rowIndex++){
-          dataItem = dataView[rowIndex];
-          if(!dataItem){
-            continue;
+        E(me.prevRows, function (rowIndex) {
+          if (marginedRows[rowIndex] !== true) {
+            toClearMargins.push(rowIndex);
           }
-
-          var dataItemId = dataItem.id,
-            expandedItem = expandedGroups[groupName][dataItemId];
-
-          if(nextPlusTop){
-            top += nextPlusTop;
-            nextPlusTop = 0;
-          }
-
-          if(expandedItem){
-            nextPlusTop = parseInt(expandedItem.el.css('height'));
-          }
-
-          Fancy.each(w.columns, function(column, i){
-            cell = body.getCell(rowIndex, i);
-            cell.css('margin-top', top + 'px');
-          });
-
-          Fancy.each(w.leftColumns, function(column, i){
-            cell = leftBody.getCell(rowIndex, i);
-            cell.css('margin-top', top + 'px');
-          });
-
-          Fancy.each(w.rightColumns, function (column, i){
-            cell = rightBody.getCell(rowIndex, i);
-            cell.css('margin-top', top + 'px');
-          });
-
-          top = 0;
-        }
-
-        top = w.groupRowHeight;
-      }
-      else{
-        top += w.groupRowHeight;
-      }
-    });
-  },
-  /*
-   * @params {Array|undefined} rows
-   */
-  clearMargins: function(rows){
-    var me = this,
-      rows = rows || me.prevRows;
-
-    if(rows === undefined){
-      return;
-    }
-
-    var w = me.widget,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      cell;
-
-    Fancy.each(rows, function(row){
-      Fancy.each(w.columns, function(column, j){
-        cell = body.getCell(row, j);
-        if(cell.dom === undefined){
-          return true;
-        }
-
-        cell.css('margin-top', '0px');
-      });
-
-      Fancy.each(w.leftColumns, function(column, j){
-        cell = leftBody.getCell(row, j);
-
-        if(cell.dom === undefined){
-          return true;
-        }
-
-        cell.css('margin-top', '0px');
-      });
-
-      Fancy.each(w.rightColumns, function(column, j){
-        cell = rightBody.getCell(row, j);
-
-        if(cell.dom === undefined){
-          return true;
-        }
-
-        cell.css('margin-top', '0px');
-      });
-    });
-  },
-  /*
-   *
-   */
-  onColumnResize: function(){
-    this.updateGroupRows();
-  },
-  /*
-   *
-   */
-  updateGroupRows: function(){
-    var me = this,
-      w = me.widget,
-      leftColumns = w.leftColumns,
-      rightColumns = w.rightColumns,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      clsGroupRow = w.clsGroupRow,
-      width = 0;
-
-    width += w.getCenterFullWidth();
-
-    body.el.select('.' + clsGroupRow).css('width', width + 'px');
-
-    width += w.getLeftFullWidth();
-
-    if(leftColumns.length){
-      leftBody.el.select('.' + clsGroupRow).css('width', width + 'px');
-    }
-
-    width += w.getRightFullWidth();
-
-    if(rightColumns.length){
-      rightBody.el.select('.' + clsGroupRow).css('width', width + 'px');
-    }
-  },
-  /*
-   * @param {Boolean} loaded
-   */
-  update: function(loaded){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    if(!loaded && (s.loading === true || s.autoLoad === false) && !s.data.length){
-      //s.once('load', function(){
-      s.on('load', function(){
-        me.initGroups();
-        me.initOrder();
-        me.calcPlusScroll();
-        me.configParams();
-        s.changeDataView({
-          doNotFired: true
         });
 
-        me.renderGroupedRows();
-        me.update(true);
-      }, me);
-    }
-    else if(loaded && s.data.length && s.loadedTimes > 1){
-      me.reGroup();
-    }
-    else {
-      me.setPositions();
-      w.update();
-      w.scroller.update();
-      me.setCellsPosition();
+        me.clearMargins(toClearMargins);
+      }
+
+      me.prevRows = rows;
+    },
+    /*
+     * It is used only to collapse groups of 'grouping row' with 'row expander'.
+     */
+    setExpanderCellsPosition: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        dataView = s.dataView,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        cell,
+        expandedGroups = w.expander.expandedGroups,
+        groupsCounts = me.groupsCounts,
+        dataItem,
+        top = w.groupRowHeight,
+        rowIndex = 0,
+        nextPlusTop = 0;
+
+      E(me.groups, function (groupName) {
+        if (me._expanded[groupName] === true) {
+          var iL = rowIndex + groupsCounts[groupName];
+
+          for (; rowIndex < iL; rowIndex++) {
+            dataItem = dataView[rowIndex];
+            if (!dataItem) {
+              continue;
+            }
+
+            var dataItemId = dataItem.id,
+              expandedItem = expandedGroups[groupName][dataItemId];
+
+            if (nextPlusTop) {
+              top += nextPlusTop;
+              nextPlusTop = 0;
+            }
+
+            if (expandedItem) {
+              nextPlusTop = parseInt(expandedItem.el.css('height'));
+            }
+
+            E(w.columns, function (column, i) {
+              cell = body.getCell(rowIndex, i);
+              cell.css('margin-top', top + 'px');
+            });
+
+            E(w.leftColumns, function (column, i) {
+              cell = leftBody.getCell(rowIndex, i);
+              cell.css('margin-top', top + 'px');
+            });
+
+            E(w.rightColumns, function (column, i) {
+              cell = rightBody.getCell(rowIndex, i);
+              cell.css('margin-top', top + 'px');
+            });
+
+            top = 0;
+          }
+
+          top = w.groupRowHeight;
+        }
+        else {
+          top += w.groupRowHeight;
+        }
+      });
+    },
+    /*
+     * @params {Array|undefined} rows
+     */
+    clearMargins: function (rows) {
+      var me = this,
+        rows = rows || me.prevRows;
+
+      if (rows === undefined) {
+        return;
+      }
+
+      var w = me.widget,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        cell;
+
+      E(rows, function (row) {
+        E(w.columns, function (column, j) {
+          cell = body.getCell(row, j);
+          if (cell.dom === undefined) {
+            return true;
+          }
+
+          cell.css('margin-top', '0px');
+        });
+
+        E(w.leftColumns, function (column, j) {
+          cell = leftBody.getCell(row, j);
+
+          if (cell.dom === undefined) {
+            return true;
+          }
+
+          cell.css('margin-top', '0px');
+        });
+
+        E(w.rightColumns, function (column, j) {
+          cell = rightBody.getCell(row, j);
+
+          if (cell.dom === undefined) {
+            return true;
+          }
+
+          cell.css('margin-top', '0px');
+        });
+      });
+    },
+    /*
+     *
+     */
+    onColumnResize: function () {
+      this.updateGroupRows();
+    },
+    /*
+     *
+     */
+    updateGroupRows: function () {
+      var me = this,
+        w = me.widget,
+        leftColumns = w.leftColumns,
+        rightColumns = w.rightColumns,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        width = 0;
+
+      width += w.getCenterFullWidth();
+
+      body.el.select('.' + GRID_ROW_GROUP_CLS).css('width', width + 'px');
+
+      width += w.getLeftFullWidth();
+
+      if (leftColumns.length) {
+        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).css('width', width + 'px');
+      }
+
+      width += w.getRightFullWidth();
+
+      if (rightColumns.length) {
+        rightBody.el.select('.' + GRID_ROW_GROUP_CLS).css('width', width + 'px');
+      }
+    },
+    /*
+     * @param {Boolean} loaded
+     */
+    update: function (loaded) {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      if (!loaded && (s.loading === true || s.autoLoad === false) && !s.data.length) {
+        //s.once('load', function(){
+        s.on('load', function () {
+          me.initGroups();
+          me.initOrder();
+          me.calcPlusScroll();
+          me.configParams();
+          s.changeDataView({
+            doNotFired: true
+          });
+
+          me.renderGroupedRows();
+          me.update(true);
+        }, me);
+      }
+      else if (loaded && s.data.length && s.loadedTimes > 1) {
+        me.reGroup();
+      }
+      else {
+        me.setPositions();
+        w.update();
+        w.scroller.update();
+        me.setCellsPosition();
+        w.setSidesHeight();
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     * @return {Number}
+     */
+    getOffsetForRow: function (rowIndex) {
+      var me = this,
+        w = me.widget,
+        top = 0,
+        rows = 0;
+
+      E(me.groups, function (groupName) {
+        top += w.groupRowHeight;
+
+        if (me._expanded[groupName] === true) {
+          rows += me.groupsCounts[groupName];
+        }
+
+        if (rowIndex < rows) {
+          return true;
+        }
+      });
+
+      return top;
+    },
+    /*
+     * @param {Number} rowIndex
+     * @return {Number}
+     */
+    getSpecialRowsUnder: function (rowIndex) {
+      var me = this,
+        w = me.widget,
+        top = 0,
+        rows = 0,
+        rowsAfter = 0;
+
+      E(me.groups, function (groupName) {
+        if (rowIndex < rows) {
+          rowsAfter++;
+        }
+
+        top += w.groupRowHeight;
+
+        if (me._expanded[groupName] === true) {
+          rows += me.groupsCounts[groupName];
+        }
+      });
+
+      return rowsAfter;
+    },
+    /*
+     *
+     */
+    reGroup: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        dataProperty = 'data';
+
+      me.expanded = {};
+      me._expanded = {};
+      w.store.expanded = {};
+      w.store.dataView = [];
+
+      me.collapsed = true;
+
+      if (w.store.filteredData) {
+        dataProperty = 'filteredData';
+      }
+
+      me.removeGroupRows();
+      me.removeCells();
+
+      me.initGroups(dataProperty);
+      if (s.remoteFilter) {
+        me.initOrder();
+      }
+      me.calcPlusScroll();
+      me.configParams();
+      me.renderGroupedRows();
       w.setSidesHeight();
+    },
+    /*
+     * @param {Number} value
+     */
+    scrollLeft: function (value) {
+      this.widget.body.el.select('.' + GRID_ROW_GROUP_CLS).css('left', value);
+    },
+    /*
+     *
+     */
+    updateGroupRowsText: function () {
+      var me = this,
+        w = me.widget,
+        groups = me.groups,
+        leftBody = w.leftBody,
+        body = w.body,
+        rightBody = w.rightBody,
+        leftGroupInnerEls = leftBody.el.select('.' + GRID_ROW_GROUP_INNER_CLS),
+        groupElInners = body.el.select('.' + GRID_ROW_GROUP_INNER_CLS),
+        leftGroupEls = leftBody.el.select('.' + GRID_ROW_GROUP_CLS),
+        groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS),
+        rightGroupEls = rightBody.el.select('.' + GRID_ROW_GROUP_CLS);
+
+      E(groups, function (groupText, i) {
+        var groupCount = me.groupsCounts[groupText],
+          text = me.tpl.getHTML({
+            text: groupText,
+            number: groupCount
+          }),
+          groupEl;
+
+        if (w.leftColumns.length) {
+          leftGroupInnerEls.item(i).update(text);
+          groupEl = leftGroupEls.item(i);
+          groupEl.attr('group', groupText);
+
+          if (me.expanded[groupText]) {
+            groupEl.removeClass(GRID_ROW_GROUP_COLLAPSED_CLS);
+          }
+          else {
+            groupEl.addClass(GRID_ROW_GROUP_COLLAPSED_CLS);
+          }
+        }
+        else {
+          groupElInners.item(i).update(text);
+          groupEl = groupEls.item(i);
+
+          if (me.expanded[groupText]) {
+            groupEl.removeClass(GRID_ROW_GROUP_COLLAPSED_CLS);
+          }
+          else {
+            groupEl.addClass(GRID_ROW_GROUP_COLLAPSED_CLS);
+          }
+        }
+
+        groupEls.item(i).attr('group', groupText);
+
+        if (w.rightColumns.length) {
+          rightGroupEls.item(i).attr('group', groupText);
+        }
+      });
+
+      if (groups.length < body.el.select('.' + GRID_ROW_GROUP_CLS).length) {
+        setTimeout(function () {
+          me.removeLastGroupRow();
+        }, 10);
+      }
+    },
+    onColumnDrag: function () {
+      var me = this,
+        w = me.widget,
+        groupRowEls = w.el.select('.' + GRID_ROW_GROUP_CLS);
+
+      if(!w.leftColumns.length && groupRowEls.length){
+        groupRowEls.destroy();
+        me.renderGroupedRows();
+        me.update();
+      }
     }
-  },
-  /*
-   * @param {Number} rowIndex
-   * @return {Number}
-   */
-  getOffsetForRow: function(rowIndex){
-    var me = this,
-      w = me.widget,
-      top = 0,
-      rows = 0;
+  });
 
-    Fancy.each(me.groups, function (groupName) {
-      top += w.groupRowHeight;
+})();
+/*
+ * @class Fancy.grid.plugin.ColumnDrag
+ * @extend Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var DOC = F.get(document);
 
-      if(me._expanded[groupName] === true){
-        rows += me.groupsCounts[groupName];
+  //CONSTANTS
+  var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+
+  F.define('Fancy.grid.plugin.ColumnDrag', {
+    extend: F.Plugin,
+    ptype: 'grid.columndrag',
+    inWidgetName: 'columndrag',
+    activeSide: undefined,
+    activeCell: undefined,
+    activeIndex: undefined,
+    activeColumn: undefined,
+    inCell: undefined,
+    inIndex: undefined,
+    inSide: undefined,
+    ok: false,
+    status: 'none', //none/dragging
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this,
+        w = me.widget;
+
+      me.Super('init', arguments);
+
+      w.on('render', function(){
+        me.ons();
+        me.initHint();
+      });
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.on('mousedown', me.onMouseDownCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseDownCell: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = Fancy.get(e.currentTarget),
+        index = Number(cell.attr('index')),
+        side = me.getSideByCell(cell),
+        columns = w.getColumns(side),
+        column = columns[index];
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        return;
       }
 
-      if(rowIndex < rows){
-        return true;
-      }
-    });
-
-    return top;
-  },
-  /*
-   * @param {Number} rowIndex
-   * @return {Number}
-   */
-  getSpecialRowsUnder: function(rowIndex){
-    var me = this,
-      w = me.widget,
-      top = 0,
-      rows = 0,
-      rowsAfter = 0;
-
-    Fancy.each(me.groups, function(groupName){
-      if(rowIndex < rows){
-        rowsAfter++;
+      if(w.startResizing){
+        return;
       }
 
-      top += w.groupRowHeight;
-
-      if(me._expanded[groupName] === true){
-        rows += me.groupsCounts[groupName];
+      if(column.draggable === false){
+        return;
       }
-    });
 
-    return rowsAfter;
-  },
-  /*
-   *
-   */
-  reGroup: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      dataProperty = 'data';
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.activeUnderGroup = true;
+      }
 
-    me.expanded = {};
-    me._expanded = {};
-    w.store.expanded = {};
-    w.store.dataView = [];
+      me.activeSide = side;
+      me.inSide = side;
+      me.activeCell = cell;
+      me.inCell = cell;
+      me.activeIndex = Number(cell.attr('index'));
+      me.inIndex = me.activeIndex;
+      me.activeColumn = columns[me.activeIndex];
 
-    me.collapsed = true;
+      me.mouseDownX = e.x;
+      me.mouseDownY = e.y;
 
-    if(w.store.filteredData){
-      dataProperty = 'filteredData';
+      DOC.once('mouseup', me.onMouseUp, me);
+      DOC.on('mousemove', me.onMouseMove, me);
+
+      w.el.on('mouseleave', me.onMouseLeave, me);
+      w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+    },
+    onMouseLeave: function () {
+      this.hideHint();
+    },
+    onMouseUp: function () {
+      var me = this,
+        w = me.widget,
+        dragged = false;
+
+      DOC.un('mousemove', me.onMouseMove, me);
+
+      w.el.un('mouseleave', me.onMouseLeave, me);
+      w.el.un('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+
+      if(me.ok){
+        if(me.inSide === me.activeSide){
+          me.dragColumn(me.inSide);
+        }
+        else if(me.activeSide === 'center'){
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+        else{
+          var inIndex = me.inIndex;
+          if(me.okPosition === 'right'){
+            inIndex++;
+          }
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+        }
+
+        dragged = true;
+      }
+
+      delete me.inUpGroupCell;
+      delete me.inUnderGroup;
+      delete me.activeUnderGroup;
+      delete me.activeSide;
+      delete me.activeCell;
+      delete me.activeIndex;
+      delete me.activeIndex;
+      delete me.activeColumn;
+      delete me.mouseDownX;
+      delete me.mouseDownY;
+      me.ok = false;
+      delete me.okPosition;
+
+      if(me.tip){
+        me.tip.destroy();
+        delete me.tip;
+      }
+
+      if(me.status === 'dragging'){
+        setTimeout(function () {
+          me.status = 'none';
+          if(dragged) {
+            w.fire('columndrag');
+          }
+        }, 10);
+      }
+
+      me.hideHint();
+    },
+    onMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        x = e.x,
+        y = e.y,
+        columns = w.getColumns(me.activeSide);
+
+      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
+        //me.status = 'dragging';
+
+        me.tip = new Fancy.ToolTip({
+          text: me.activeColumn.title,
+          cls: 'fancy-drag-cell'
+        });
+
+        me.tip.el.css('display', 'block');
+      }
+      else if(!me.tip){
+        return;
+      }
+
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.tip.destroy();
+        return;
+      }
+
+      me.tip.show(e.pageX + 15, e.pageY + 15);
+    },
+    onMouseEnterCell: function(e){
+      var me = this,
+        cell = Fancy.get(e.currentTarget),
+        side = me.getSideByCell(cell);
+
+      me.hideHint();
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
+        me.inUnderGroup = true;
+      }
+      else{
+        delete me.inUnderGroup;
+      }
+
+      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        me.inUpGroupCell = cell;
+      }
+      else{
+        delete me.inUpGroupCell;
+      }
+
+      me.inSide = side;
+      me.inCell = cell;
+      me.inIndex = Number(cell.attr('index'));
+    },
+    onMouseMoveCell: function(e){
+      var me = this,
+        w = me.widget,
+        cell = me.inCell,
+        cellWidth = parseInt(cell.css('width')),
+        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS),
+        targetEl = Fancy.get(e.target),
+        inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
+        fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
+        toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
+
+      me.status = 'dragging';
+
+      var columns = w.getColumns(me.activeSide);
+      if(columns.length === 1 && me.activeSide === 'center'){
+        me.ok = false;
+        me.hideHint();
+        return;
+      }
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd(),
+          startIndex = o.start,
+          endIndex = o.end;
+
+        if(me.activeSide !== me.inSide){
+          me.ok = true;
+          if(e.offsetX > cellWidth/2 || inTriggerEl){
+            me.showHint('right');
+          }
+          else{
+            me.showHint('left');
+          }
+        }
+        else{
+          if (e.offsetX > cellWidth / 2) {
+            if(me.activeIndex > endIndex && me.activeIndex - 1 === endIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            if(me.activeIndex < startIndex && me.activeIndex + 1 === startIndex){
+              me.hideHint();
+            }
+            else {
+              me.ok = true;
+              me.showHint('left');
+            }
+          }
+        }
+      }
+      else if(me.activeSide !== me.inSide){
+        me.ok = true;
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.showHint('right');
+        }
+        else{
+          me.showHint('left');
+        }
+      }
+      else if(me.activeIndex === me.inIndex){
+        me.ok = false;
+      }
+      else if(me.activeIndex < me.inIndex){
+        if(e.offsetX > cellWidth/2 || inTriggerEl){
+          me.ok = true;
+          me.showHint('right');
+        }
+        else{
+          if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
+            me.ok = true;
+            me.showHint('left');
+          }
+          else {
+            if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
+              me.ok = true;
+              me.showHint('left');
+            }
+            else{
+              me.ok = false;
+              me.hideHint();
+            }
+          }
+        }
+      }
+      else if(me.activeIndex > me.inIndex){
+        if(e.offsetX < cellWidth/2){
+          if(inTriggerEl){
+            if(fromGroup || toGroup){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
+              me.ok = false;
+              me.hideHint();
+            }
+            else{
+              me.ok = true;
+              me.showHint('right');
+            }
+          }
+          else {
+            me.ok = true;
+            me.showHint('left');
+          }
+        }
+        else{
+          if(e.offsetX > cellWidth/2){
+            if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
+              me.ok = true;
+              me.showHint('right');
+            }
+            else{
+              if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
+                me.ok = true;
+                me.showHint('right');
+              }
+              else{
+                me.ok = false;
+                me.hideHint();
+              }
+            }
+          }
+          else {
+            me.ok = false;
+            me.hideHint();
+          }
+        }
+      }
+    },
+    showHint: function(position){
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        cell = me.inCell,
+        topEl = me.topEl,
+        bottomEl = me.bottomEl,
+        o = cell.offset(),
+        cellWidth = parseInt(cell.css('width')),
+        cellHeight = parseInt(cell.css('height'));
+
+      me.okPosition = position;
+
+      topEl.removeCls(HIDDEN_CLS);
+      bottomEl.removeCls(HIDDEN_CLS);
+
+      var plusWidth = 0;
+
+      if(position === 'right'){
+        plusWidth += cellWidth;
+      }
+
+      topEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(topEl.css('width'))/2),
+        top: o.top - parseInt(topEl.css('height'))
+      });
+
+      var bottomTop = o.top + cellHeight;
+
+      if(me.inUpGroupCell){
+        var rows = w.header.calcRows();
+        bottomTop = o.top + rows * CELL_HEADER_HEIGHT;
+      }
+
+      bottomEl.css({
+        left: o.left + plusWidth - Math.ceil(parseInt(bottomEl.css('width'))/2),
+        top: bottomTop
+      });
+    },
+    hideHint: function(){
+      var me = this;
+
+      me.topEl.addCls(HIDDEN_CLS);
+      me.bottomEl.addCls(HIDDEN_CLS);
+    },
+    initHint: function(){
+      var me = this,
+        w = me.widget,
+        themeCls = 'fancy-theme-' + w.theme,
+        renderTo = F.get(document.body).dom,
+        topEl = F.get(document.createElement('div')),
+        bottomEl = F.get(document.createElement('div'));
+
+      topEl.addCls('fancy-drag-hint-top', HIDDEN_CLS, themeCls);
+      bottomEl.addCls('fancy-drag-hint-bottom', HIDDEN_CLS, themeCls);
+
+      me.topEl = F.get(renderTo.appendChild(topEl.dom));
+      me.bottomEl = F.get(renderTo.appendChild(bottomEl.dom));
+    },
+    /*
+     * @param {String} side
+     */
+    dragColumn: function (side) {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(side),
+        body = w.getBody(side),
+        activeIndex = me.activeIndex,
+        inIndex = me.inIndex,
+        position = me.okPosition,
+        columns = w.getColumns(side),
+        column = columns[activeIndex],
+        rows = header.calcRows();
+
+      if(me.inUpGroupCell){
+        var o = me.getGroupStartEnd();
+
+        inIndex = o.start;
+
+        if(position === 'right'){
+          inIndex = o.end + 1;
+        }
+      }
+      else if(position === 'right'){
+        if(me.inUnderGroup){
+          var groupName = columns[inIndex].grouping,
+            nextColumn = columns[inIndex + 1];
+
+          if(nextColumn && nextColumn.grouping === groupName){
+            inIndex++;
+          }
+        }
+        else {
+          inIndex++;
+        }
+      }
+
+      if(w.groupheader){
+        var inColumn = columns[inIndex];
+
+        if(inColumn && inColumn.grouping && me.inUnderGroup){
+          column.grouping = inColumn.grouping;
+
+          if(column.filter && column.filter.header && rows < 3){
+            delete column.filter;
+          }
+        }
+        else{
+          delete column.grouping;
+        }
+      }
+
+      columns.splice(activeIndex, 1);
+
+      if(activeIndex<inIndex){
+        inIndex--;
+      }
+
+      columns.splice(inIndex, 0, column);
+
+      body.clearColumnsStyles();
+      header.updateTitles();
+      header.updateCellsSizes();
+      if(w.groupheader){
+        w.header.fixGroupHeaderSizing();
+        if(w.leftColumns){
+          w.leftHeader.fixGroupHeaderSizing();
+        }
+
+        if(w.rightColumns){
+          w.rightHeader.fixGroupHeaderSizing();
+        }
+
+        header.reSetGroupIndexes();
+      }
+
+      header.reSetColumnsAlign();
+      body.reSetColumnsAlign();
+      body.reSetColumnsCls();
+      body.updateColumnsSizes();
+      w.update();
+    },
+    /*
+     *
+     */
+    getSideByCell: function (cell) {
+      var me = this,
+        w = me.widget,
+        side;
+
+      if(w.centerEl.within(cell)){
+        side = 'center';
+      }
+      else if(w.leftEl.within(cell)){
+        side = 'left';
+      }
+      else if(w.rightEl.within(cell)){
+        side = 'right';
+      }
+
+      return side;
+    },
+    /*
+     * @return {Object}
+     */
+    getGroupStartEnd: function () {
+      var me = this,
+        w = me.widget,
+        header = w.getHeader(me.inSide),
+        groupName = me.inUpGroupCell.attr('index'),
+        inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
+        values = [];
+
+      inUpGroupCells.each(function(cell){
+        values.push(Number(cell.attr('index')));
+      });
+
+      return {
+        start: F.Array.min(values),
+        end: F.Array.max(values)
+      };
     }
+  });
 
-    me.removeGroupRows();
-    me.removeCells();
-
-    me.initGroups(dataProperty);
-    if(s.remoteFilter){
-      me.initOrder();
-    }
-    me.calcPlusScroll();
-    me.configParams();
-    me.renderGroupedRows();
-    w.setSidesHeight();
-  },
-  /*
-   * @param {Number} value
-   */
-  scrollLeft: function(value){
-    var me = this,
-      w = me.widget,
-      body = w.body;
-
-    body.el.select('.' + w.clsGroupRow).css('left', value);
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.Summary
  * @extend Fancy.Plugin
  */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-Fancy.define('Fancy.grid.plugin.Summary', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.summary',
-  inWidgetName: 'summary',
-  position: 'top',
-  sumDisplayed: true,
-  topOffSet: 0,
-  bottomOffSet: 0,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+  //CONSTANTS
+  var GRID_CELL_CLS = Fancy.GRID_CELL_CLS;
+  var GRID_CELL_INNER_CLS = Fancy.GRID_CELL_INNER_CLS;
+  var GRID_ROW_SUMMARY_CLS = Fancy.GRID_ROW_SUMMARY_CLS;
+  var GRID_ROW_SUMMARY_CONTAINER_CLS = Fancy.GRID_ROW_SUMMARY_CONTAINER_CLS;
+  var GRID_ROW_SUMMARY_BOTTOM_CLS = Fancy.GRID_ROW_SUMMARY_BOTTOM_CLS;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define('Fancy.grid.plugin.Summary', {
+    extend: F.Plugin,
+    ptype: 'grid.summary',
+    inWidgetName: 'summary',
+    position: 'top',
+    sumDisplayed: true,
+    topOffSet: 0,
+    bottomOffSet: 0,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
 
-    me.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
-
-    w.once('render', function(){
-      me.calcOffSets();
-    });
-
-    w.once('init', function(){
-      me.render();
-      me.update();
-
-      w.on('update', function(){
-        me.update();
+      w.once('render', function () {
+        me.calcOffSets();
       });
-    });
 
-    w.on('columnresize', me.onColumnResize, me);
+      w.once('init', function () {
+        me.render();
+        me.update();
 
-    if(me.sumDisplayed){
-      w.on('changepage', me.onChangePage, me);
-    }
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget,
-      body = w.body,
-      leftBody = w.leftBody,
-      rightBody = w.rightBody,
-      width = w.getCenterFullWidth(),
-      leftWidth = w.getLeftFullWidth(),
-      rightWidth = w.getRightFullWidth(),
-      el,
-      method = me.position === 'top'? 'before': 'after';
+        w.on('update', function () {
+          me.update();
+        });
 
-    el = me.generateRow('center');
-    el.css('width', w.startWidths.center);
-    el.firstChild().css('width', width);
-    el.css('height', w.cellHeight);
-    el.firstChild().css('height', w.cellHeight);
+        w.on('set', function () {
+          me.update();
+        });
+      });
 
-    me.el = el;
+      w.on('columnresize', me.onColumnResize, me);
 
-    body.el[method](el.dom);
+      if (me.sumDisplayed) {
+        w.on('changepage', me.onChangePage, me);
+      }
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        width = w.getCenterFullWidth(),
+        leftWidth = w.getLeftFullWidth(),
+        rightWidth = w.getRightFullWidth(),
+        el,
+        method = me.position === 'top' ? 'before' : 'after';
 
-    if(leftWidth){
-      el = me.generateRow('left');
-      el.css('width', leftWidth - 2);
-      el.firstChild().css('width', leftWidth);
+      el = me.generateRow('center');
+      el.css('width', w.startWidths.center);
+      el.firstChild().css('width', width);
       el.css('height', w.cellHeight);
+      el.firstChild().css('height', w.cellHeight);
 
-      me.leftEl = el;
+      me.el = el;
 
-      leftBody.el[method](el.dom);
-    }
+      body.el[method](el.dom);
 
-    if(rightWidth){
-      el = me.generateRow('right');
-      el.css('width', rightWidth - 1);
-      el.firstChild().css('width', rightWidth);
-      el.css('height', w.cellHeight);
+      if (leftWidth) {
+        el = me.generateRow('left');
+        el.css('width', leftWidth - 2);
+        el.firstChild().css('width', leftWidth);
+        el.css('height', w.cellHeight);
 
-      me.rightEl = el;
+        me.leftEl = el;
 
-      rightBody.el[method](el.dom);
-    }
-  },
-  /*
-   * @param {String} side
-   * @return {Fancy.Element}
-   */
-  generateRow: function(side){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls,
-      cellInnerCls = w.cellInnerCls,
-      cellHeight = w.cellHeight,
-      columnsWidth = w.getColumnsWidth(side),
-      clsSummaryRow = w.clsSummaryRow,
-      clsSummaryContainer = w.clsSummaryContainer,
-      el = Fancy.get(document.createElement('div')),
-      cells = '';
+        leftBody.el[method](el.dom);
+      }
 
-    Fancy.each(w.getColumns(side), function(column){
-      cells += [
-        '<div style="width:'+column.width+'px;height:'+ cellHeight +'px;" class="' + cellCls + '">',
-          '<div class="' + cellInnerCls + '"></div>',
+      if (rightWidth) {
+        el = me.generateRow('right');
+        el.css('width', rightWidth - 1);
+        el.firstChild().css('width', rightWidth);
+        el.css('height', w.cellHeight);
+
+        me.rightEl = el;
+
+        rightBody.el[method](el.dom);
+      }
+    },
+    /*
+     * @param {String} side
+     * @return {Fancy.Element}
+     */
+    generateRow: function (side) {
+      var me = this,
+        w = me.widget,
+        cellHeight = w.cellHeight,
+        columnsWidth = w.getColumnsWidth(side),
+        el = F.get(document.createElement('div')),
+        cells = '';
+
+      F.each(w.getColumns(side), function (column) {
+        cells += [
+          '<div style="width:' + column.width + 'px;height:' + cellHeight + 'px;" class="' + GRID_CELL_CLS + '">',
+          '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
+          '</div>'
+        ].join("");
+      });
+
+      var inner = [
+        '<div style="position: relative;" class="' + GRID_ROW_SUMMARY_CLS + '">',
+        cells,
         '</div>'
       ].join("");
-    });
 
-    var inner = [
-      '<div style="position: relative;" class="'+clsSummaryRow+'">',
-        cells,
-      '</div>'
-    ].join("");
+      el.update(inner);
 
-    el.update(inner);
-
-    el.css('width', columnsWidth + 'columnsWidth');
-    el.addCls(clsSummaryContainer);
-    if(me.position === 'bottom'){
-      el.addCls(w.rowSummaryBottomCls);
-    }
-
-    return el;
-  },
-  /*
-   *
-   */
-  calcPlusScroll: function(){
-    var me = this,
-      w = me.widget;
-
-    me.plusScroll = me.groups.length * w.groupRowHeight;
-  },
-  /*
-   * @param {Number} value
-   */
-  scrollLeft: function(value){
-    var me = this;
-
-    me.el.firstChild().css('left', value);
-  },
-  /*
-   *
-   */
-  update: function(){
-    var me = this,
-      w = me.widget;
-
-    me.updateSide('center');
-    if(w.leftColumns.length){
-      me.updateSide('left');
-    }
-
-    if(w.rightColumns.length){
-      me.updateSide('right');
-    }
-  },
-  /*
-   * @param {String} side
-   * @return {Fancy.Element}
-   */
-  getEl: function (side) {
-    var me = this;
-
-    switch(side){
-      case 'center':
-        return me.el;
-      case 'left':
-        return me.leftEl;
-      case 'right':
-        return me.rightEl;
-      default:
-        return me.el;
-    }
-  },
-  /*
-   * @param {String} side
-   */
-  updateSide: function(side){
-    var me = this,
-      w = me.widget,
-      body = w.body,
-      s = w.store,
-      cellInners = me.getEl(side).select('.' + w.cellInnerCls),
-      dataProperty = 'data';
-
-    if(me.sumDisplayed){
-      dataProperty = 'dataView';
-    }
-
-    Fancy.each(w.getColumns(side), function(column, i){
-      if(!column.summary){
-        return;
+      el.css('width', columnsWidth + 'columnsWidth');
+      el.addCls(GRID_ROW_SUMMARY_CONTAINER_CLS);
+      if (me.position === 'bottom') {
+        el.addCls(GRID_ROW_SUMMARY_BOTTOM_CLS);
       }
 
-      var columnIndex = column.index,
-        columnValues = s.getColumnOriginalValues(columnIndex, {
-          smartIndexFn: column.smartIndexFn,
-          dataProperty: dataProperty
-        }),
-        value = '';
+      return el;
+    },
+    /*
+     *
+     */
+    calcPlusScroll: function () {
+      var me = this,
+        w = me.widget;
 
-      switch(Fancy.typeOf(column.summary)){
-        case 'string':
-          value = Fancy.Array[column.summary](columnValues);
-          break;
-        case 'object':
-          value = Fancy.Array[column.summary.type](columnValues);
-          if(column.summary.fn){
-            value = column.summary.fn(value);
-          }
-          break;
-        case 'function':
-          value = column.summary(columnValues);
-          break;
+      me.plusScroll = me.groups.length * w.groupRowHeight;
+    },
+    /*
+     * @param {Number} value
+     */
+    scrollLeft: function (value) {
+      this.el.firstChild().css('left', value);
+    },
+    /*
+     *
+     */
+    update: function () {
+      var me = this,
+        w = me.widget;
+
+      me.updateSide('center');
+      if (w.leftColumns.length) {
+        me.updateSide('left');
       }
 
-      if(column.format){
-        value = body.format(value, column.format);
+      if (w.rightColumns.length) {
+        me.updateSide('right');
+      }
+    },
+    /*
+     * @param {String} side
+     * @return {Fancy.Element}
+     */
+    getEl: function (side) {
+      var me = this;
+
+      switch (side) {
+        case 'center':
+          return me.el;
+        case 'left':
+          return me.leftEl;
+        case 'right':
+          return me.rightEl;
+        default:
+          return me.el;
+      }
+    },
+    /*
+     * @param {String} side
+     */
+    updateSide: function (side) {
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        s = w.store,
+        cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
+        dataProperty = 'data';
+
+      if (me.sumDisplayed) {
+        dataProperty = 'dataView';
       }
 
-      cellInners.item(i).update(value);
-    });
-  },
-  /*
-   *
-   */
-  onColumnResize: function(){
-    var me = this,
-      w = me.widget;
+      F.each(w.getColumns(side), function (column, i) {
+        if (!column.summary) {
+          return;
+        }
 
-    me.updateSizes('center');
+        var columnIndex = column.index,
+          columnValues = s.getColumnOriginalValues(columnIndex, {
+            smartIndexFn: column.smartIndexFn,
+            dataProperty: dataProperty
+          }),
+          value = '';
 
-    if(w.leftColumns.length){
-      me.updateSizes('left');
+        switch (F.typeOf(column.summary)) {
+          case 'string':
+            value = F.Array[column.summary](columnValues);
+            break;
+          case 'object':
+            value = F.Array[column.summary.type](columnValues);
+            if (column.summary.fn) {
+              value = column.summary.fn(value);
+            }
+            break;
+          case 'function':
+            value = column.summary(columnValues);
+            break;
+        }
+
+        if (column.format) {
+          value = body.format(value, column.format);
+        }
+
+        cellInners.item(i).update(value);
+      });
+    },
+    /*
+     *
+     */
+    onColumnResize: function () {
+      var me = this,
+        w = me.widget;
+
+      me.updateSizes('center');
+
+      if (w.leftColumns.length) {
+        me.updateSizes('left');
+      }
+
+      if (w.rightColumns.length) {
+        me.updateSizes('right');
+      }
+    },
+    /*
+     * @param {String} side
+     */
+    updateSizes: function (side) {
+      var me = this,
+        w = me.widget,
+        el = me.getEl(side),
+        cells = el.select('.' + GRID_CELL_CLS),
+        totalWidth = 0;
+
+      F.each(w.getColumns(side), function (column, i) {
+        totalWidth += column.width;
+        cells.item(i).css('width', column.width + 'px');
+      });
+
+      el.firstChild().css('width', totalWidth);
+
+      switch (side) {
+        case 'center':
+          me.el.css('width', w.centerEl.css('width'));
+          break;
+        case 'left':
+          me.leftEl.css('width', parseInt(w.leftEl.css('width')) - 2);
+          break;
+        case 'right':
+          me.rightEl.css('width', parseInt(w.rightEl.css('width')) - 1);
+          break;
+      }
+    },
+    /*
+     *
+     */
+    calcOffSets: function () {
+      var me = this,
+        w = me.widget;
+
+      switch (me.position) {
+        case 'top':
+          me.topOffSet = w.cellHeight;
+          break;
+        case 'bottom':
+          me.bottomOffSet = w.cellHeight;
+          break;
+        case 'both':
+          me.topOffSet = w.cellHeight;
+          me.bottomOffSet = w.cellHeight;
+          break;
+      }
+    },
+    /*
+     * @param {Number} index
+     * @param {String} side
+     */
+    removeColumn: function (index, side) {
+      var el = this.getEl(side),
+        cells = el.select('.' + GRID_CELL_CLS),
+        cell = cells.item(index);
+
+      cell.destroy();
+
+      this.updateSizes(side);
+    },
+    /*
+     * @param {Number} index
+     * @param {String} side
+     */
+    insertColumn: function (index, side) {
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(side),
+        column = columns[index],
+        el = me.getEl(side),
+        cells = el.select('.' + GRID_CELL_CLS),
+        cell = cells.item(index - 1),
+        newCell = F.get(document.createElement('div'));
+
+      if (index === 0) {
+        cell = cells.item(0);
+      }
+
+      newCell.css({
+        width: column.width,
+        height: w.cellHeight
+      });
+
+      newCell.addCls(GRID_CELL_CLS);
+      newCell.update('<div class="' + GRID_CELL_INNER_CLS + '"></div>');
+
+      if (index === 0) {
+        cell.before(newCell.dom);
+      }
+      else {
+        cell.after(newCell.dom);
+      }
+
+      me.updateSizes(side);
+      me.updateSide(side);
+    },
+    /*
+     *
+     */
+    onChangePage: function () {
+      this.update();
     }
+  });
 
-    if(w.rightColumns.length){
-      me.updateSizes('right');
-    }
-  },
-  /*
-   * @param {String} side
-   */
-  updateSizes: function(side){
-    var me = this,
-      w = me.widget,
-      el = me.getEl(side),
-      cells = el.select('.' + w.cellCls),
-      totalWidth = 0;
-
-    Fancy.each(w.getColumns(side), function (column, i) {
-      totalWidth += column.width;
-      cells.item(i).css('width', column.width + 'px');
-    });
-
-    el.firstChild().css('width', totalWidth);
-
-    switch(side){
-      case 'center':
-        me.el.css('width', w.centerEl.css('width'));
-        break;
-      case 'left':
-        me.leftEl.css('width', parseInt(w.leftEl.css('width')) - 2);
-        break;
-      case 'right':
-        me.rightEl.css('width', parseInt(w.rightEl.css('width')) - 1);
-        break;
-    }
-  },
-  /*
-   *
-   */
-  calcOffSets: function(){
-    var me = this,
-      w = me.widget;
-
-    switch(me.position){
-      case 'top':
-        me.topOffSet = w.cellHeight;
-        break;
-      case 'bottom':
-        me.bottomOffSet = w.cellHeight;
-        break;
-      case 'both':
-        me.topOffSet = w.cellHeight;
-        me.bottomOffSet = w.cellHeight;
-        break;
-    }
-  },
-  /*
-   * @param {Number} index
-   * @param {String} side
-   */
-  removeColumn: function(index, side){
-    var me = this,
-      w = me.widget,
-      el = me.getEl(side),
-      cells = el.select('.' + w.cellCls),
-      cell = cells.item(index);
-
-    cell.destroy();
-
-    me.updateSizes(side);
-  },
-  /*
-   * @param {Number} index
-   * @param {String} side
-   */
-  insertColumn: function(index, side){
-    var me = this,
-      w = me.widget,
-      columns = w.getColumns(side),
-      column = columns[index],
-      el = me.getEl(side),
-      cells = el.select('.' + w.cellCls),
-      cell = cells.item(index - 1),
-      newCell = Fancy.get(document.createElement('div'));
-
-    if(index === 0){
-      cell = cells.item(0);
-    }
-
-    newCell.css({
-      width: column.width,
-      height: w.cellHeight
-    });
-
-    newCell.addCls(w.cellCls);
-    newCell.update('<div class="' + w.cellInnerCls + '"></div>');
-
-    if(index === 0){
-      cell.before(newCell.dom);
-    }
-    else{
-      cell.after(newCell.dom);
-    }
-
-    me.updateSizes(side);
-    me.updateSide(side);
-  },
-  /*
-   *
-   */
-  onChangePage: function(){
-    var me = this;
-
-    me.update();
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.CellTip
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.CellTip', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.celltip',
-  inWidgetName: 'celltip',
-  cellTip: '{value}',
-  stopped: true,
-  /*
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define('Fancy.grid.plugin.CellTip', {
+    extend: F.Plugin,
+    ptype: 'grid.celltip',
+    inWidgetName: 'celltip',
+    cellTip: '{value}',
+    stopped: true,
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document);
 
-    me.Super('init', arguments);
+      w.on('cellenter', me.onCellEnter, me);
+      w.on('cellleave', me.onCellLeave, me);
+      docEl.on('touchend', me.onTouchEnd, me);
+      docEl.on('mousemove', me.onDocMove, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellEnter: function (grid, o) {
+      var me = this,
+        column = o.column,
+        cellTip = me.cellTip,
+        e = o.e;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      docEl = Fancy.get(document);
-
-    w.on('cellenter', me.onCellEnter, me);
-    w.on('cellleave', me.onCellLeave, me);
-    docEl.on('touchend', me.onTouchEnd, me);
-    docEl.on('mousemove', me.onDocMove, me);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellEnter: function(grid, o){
-    var me = this,
-      column = o.column,
-      cellTip = me.cellTip,
-      e = o.e;
-
-    if(column.cellTip){
-      if(Fancy.isString(column.cellTip)){
-        cellTip = column.cellTip;
-      }
-      else if(Fancy.isFunction(column.cellTip)){
-        cellTip = column.cellTip(o);
-        if(cellTip === false){
-          return;
+      if (column.cellTip) {
+        if (F.isString(column.cellTip)) {
+          cellTip = column.cellTip;
         }
+        else if (F.isFunction(column.cellTip)) {
+          cellTip = column.cellTip(o);
+          if (cellTip === false) {
+            return;
+          }
+        }
+
+        var tpl = new F.Template(cellTip),
+          data = {
+            title: column.title,
+            value: o.value,
+            columnIndex: 0,
+            rowIndex: 0
+          };
+
+        me.stopped = false;
+        F.apply(data, o.data);
+
+        F.tip.update(tpl.getHTML(data));
+        F.tip.show(e.pageX + 15, e.pageY - 25);
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellLeave: function (grid, o) {
+      this.stopped = true;
+      F.tip.hide(1000);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onTouchEnd: function (grid, o) {
+      this.stopped = true;
+      F.tip.hide(1000);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMove: function (e) {
+      if (this.stopped === true) {
+        return;
       }
 
-      var tpl = new Fancy.Template(cellTip),
-        data = {
-          title: column.title,
-          value: o.value,
-          columnIndex: 0,
-          rowIndex:0
-        };
-
-      me.stopped = false;
-      Fancy.apply(data, o.data);
-
-      Fancy.tip.update(tpl.getHTML(data));
-      Fancy.tip.show(e.pageX + 15, e.pageY - 25);
+      F.tip.show(e.pageX + 15, e.pageY - 25);
     }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellLeave: function(grid, o){
-    this.stopped = true;
-    Fancy.tip.hide(1000);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onTouchEnd: function(grid, o){
-    this.stopped = true;
-    Fancy.tip.hide(1000);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMove: function(e){
-    if(this.stopped === true){
-      return;
-    }
+  });
 
-    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.Filter
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.Filter', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.filter',
-  inWidgetName: 'filter',
-  autoEnterDelay: 500,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function() {
+  //SHORTCUTS
+  var F = Fancy;
+  var D = Fancy.Date;
 
-    me.filters = {};
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var FIELD_CLS = F.FIELD_CLS;
+  var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
+  var GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
+  var GRID_HEADER_CELL_FILTER_CLS = F.GRID_HEADER_CELL_FILTER_CLS;
+  var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
+  var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.plugin.Filter', {
+    extend: F.Plugin,
+    ptype: 'grid.filter',
+    inWidgetName: 'filter',
+    autoEnterDelay: 500,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.filters = {};
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    me.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
-    
-    w.once('render', function(){
-      me.render();
-    });
+      w.once('render', function () {
+        me.render();
+      });
 
-    w.on('columnresize', me.onColumnResize, me);
-    w.on('filter', me.onFilter, me);
-    w.on('lockcolumn', me.onLockColumn, me);
-    w.on('rightlockcolumn', me.onRightLockColumn, me);
-    w.on('unlockcolumn', me.onUnLockColumn, me);
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget;
+      w.on('columnresize', me.onColumnResize, me);
+      w.on('filter', me.onFilter, me);
+      w.on('lockcolumn', me.onLockColumn, me);
+      w.on('rightlockcolumn', me.onRightLockColumn, me);
+      w.on('unlockcolumn', me.onUnLockColumn, me);
 
-    me._renderSideFields(w.header, w.columns);
-    me._renderSideFields(w.leftHeader, w.leftColumns);
-    me._renderSideFields(w.rightHeader, w.rightColumns);
-  },
-  _renderSideFields: function(header, columns){
-    var me = this,
-      w = me.widget,
-      i = 0,
-      iL = columns.length,
-      cell,
-      column,
-      cellHeaderTripleCls = w.cellHeaderTripleCls,
-      cellHeaderDoubleCls = w.cellHeaderDoubleCls;
+      w.on('columndrag', me.onColumnDrag, me);
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget;
 
-    for(;i<iL;i++){
-      column = columns[i];
-      cell = header.getCell(i);
-      if(column.filter && column.filter.header){
-        me.renderFilter(column.type, column, cell);
-        if(me.groupHeader && !column.grouping){
-          cell.addCls(cellHeaderTripleCls);
-        }
+      me._renderSideFields(w.header, w.columns);
+      me._renderSideFields(w.leftHeader, w.leftColumns);
+      me._renderSideFields(w.rightHeader, w.rightColumns);
+    },
+    _renderSideFields: function (header, columns) {
+      var me = this,
+        i = 0,
+        iL = columns.length,
+        cell,
+        column;
 
-        cell.addCls(w.filterHeaderCellCls);
-      }
-      else if(me.header){
-        if(me.groupHeader && !column.grouping){
-          cell.addCls(cellHeaderTripleCls);
-        }
-        else{
-          if(column.grouping && me.groupHeader){
-            cell.addCls(cellHeaderDoubleCls);
+      for (; i < iL; i++) {
+        column = columns[i];
+        cell = header.getCell(i);
+        if (column.filter && column.filter.header) {
+          me.renderFilter(column.type, column, cell);
+          if (me.groupHeader && !column.grouping) {
+            cell.addCls(GRID_HEADER_CELL_TRIPLE_CLS);
           }
-          else if(!column.grouping){
-            cell.addCls(cellHeaderDoubleCls);
+
+          cell.addCls(GRID_HEADER_CELL_FILTER_CLS);
+        }
+        else if (me.header) {
+          if (me.groupHeader && !column.grouping) {
+            cell.addCls(GRID_HEADER_CELL_TRIPLE_CLS);
+          }
+          else {
+            if (column.grouping && me.groupHeader) {
+              cell.addCls(GRID_HEADER_CELL_DOUBLE_CLS);
+            }
+            else if (!column.grouping) {
+              cell.addCls(GRID_HEADER_CELL_DOUBLE_CLS);
+            }
           }
         }
       }
-    }
-  },
-  _clearColumnsFields: function(columns, header, index, sign){
-    var i = 0,
-      iL = columns.length,
-      column;
+    },
+    _clearColumnsFields: function (columns, header, index, sign) {
+      var i = 0,
+        iL = columns.length,
+        column;
 
-    for(;i<iL;i++){
-      column = columns[i];
-      if(column.filter && column.filter.header){
-        if(index && column.index !== index){
+      for (; i < iL; i++) {
+        column = columns[i];
+        if (column.filter && column.filter.header) {
+          if (index && column.index !== index) {
+            continue;
+          }
+
+          switch (column.type) {
+            case 'date':
+              var els = header.getCell(i).select('.' + FIELD_CLS),
+                fieldFrom = F.getWidget(els.item(0).attr('id')),
+                fieldTo = F.getWidget(els.item(1).attr('id'));
+
+              fieldFrom.clear();
+              fieldTo.clear();
+              break;
+            default:
+              var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
+                field = F.getWidget(id);
+
+              if (sign) {
+                var splitted = field.get().split(',');
+
+                if (splitted.length < 2 && !sign) {
+                  field.clear();
+                }
+                else {
+                  var j = 0,
+                    jL = splitted.length,
+                    value = '';
+
+                  for (; j < jL; j++) {
+                    var splitItem = splitted[j];
+
+                    if (!new RegExp(sign).test(splitItem)) {
+                      value += splitItem;
+                    }
+                  }
+
+                  field.set(value);
+                }
+              }
+              else {
+                field.clear();
+              }
+          }
+        }
+      }
+    },
+    clearColumnsFields: function (index, sign) {
+      var me = this,
+        w = me.widget;
+
+      me._clearColumnsFields(w.columns, w.header, index, sign);
+      me._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
+      me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
+    },
+    _addValuesInColumnFields: function (columns, header, index, value, sign) {
+      var i = 0,
+        iL = columns.length,
+        column;
+
+      for (; i < iL; i++) {
+        column = columns[i];
+        if (column.index === index && column.filter && column.filter.header) {
+          switch (column.type) {
+            case 'date':
+              var els = header.getCell(i).select('.' + FIELD_CLS),
+                fieldFrom = F.getWidget(els.item(0).attr('id')),
+                fieldTo = F.getWidget(els.item(1).attr('id'));
+
+              fieldFrom.clear();
+              fieldTo.clear();
+              break;
+            default:
+              var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
+                field = F.getWidget(id),
+                fieldValue = field.get(),
+                splitted = field.get().split(',');
+
+              if (splitted.length === 1 && splitted[0] === '') {
+                field.set((sign || '') + value);
+              }
+              else if (splitted.length === 1) {
+                if (new RegExp(sign).test(fieldValue)) {
+                  field.set((sign || '') + value);
+                }
+                else {
+                  field.set(fieldValue + ',' + (sign || '') + value);
+                }
+              }
+              else {
+                var j = 0,
+                  jL = splitted.length,
+                  newValue = '';
+
+                for (; j < jL; j++) {
+                  var splittedItem = splitted[j];
+
+                  if (!new RegExp(sign).test(splittedItem)) {
+                    if (newValue.length !== 0) {
+                      newValue += ',';
+                    }
+                    newValue += splittedItem;
+                  }
+                  else {
+                    if (newValue.length !== 0) {
+                      newValue += ',';
+                    }
+                    newValue += (sign || '') + value;
+                  }
+                }
+
+                field.set(newValue);
+              }
+          }
+        }
+      }
+    },
+    addValuesInColumnFields: function (index, value, sign) {
+      var me = this,
+        w = me.widget;
+
+      me._addValuesInColumnFields(w.columns, w.header, index, value, sign);
+      me._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
+      me._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
+    },
+    /*
+     * @param {String} type
+     * @param {Object} column
+     * @param {Fancy.Element} dom
+     */
+    renderFilter: function (type, column, dom) {
+      var me = this,
+        w = me.widget,
+        field,
+        style = {
+          position: 'absolute',
+          bottom: '3px'
+        },
+        filter = column.filter,
+        theme = w.theme,
+        tip = filter.tip;
+
+      switch (type) {
+        case 'date':
+          var events = [];
+
+          events.push({
+            change: me.onDateChange,
+            scope: me
+          });
+
+          var format;
+
+          if (F.isString(column.format)) {
+            switch (column.format) {
+              case 'date':
+                format = column.format;
+                break;
+            }
+          }
+
+          field = new F.DateRangeField({
+            renderTo: dom.dom,
+            value: new Date(),
+            format: column.format,
+            label: false,
+            padding: false,
+            style: style,
+            events: events,
+            width: column.width - 8,
+            emptyText: filter.emptyText,
+            dateImage: false,
+            theme: theme
+          });
+          break;
+        case 'string':
+          var events = [{
+            enter: me.onEnter,
+            scope: me
+          }];
+
+          if (me.autoEnterDelay !== false) {
+            events.push({
+              key: me.onKey,
+              scope: me
+            });
+          }
+
+          field = new F.StringField({
+            renderTo: dom.dom,
+            label: false,
+            padding: false,
+            style: style,
+            events: events,
+            emptyText: filter.emptyText,
+            tip: tip
+          });
+          break;
+        case 'number':
+        case 'grossloss':
+        case 'progressbar':
+        case 'progressdonut':
+          var events = [{
+            enter: me.onEnter,
+            scope: me
+          }];
+
+          if (me.autoEnterDelay !== false) {
+            events.push({
+              key: me.onKey,
+              scope: me
+            });
+          }
+
+          field = new F.NumberField({
+            renderTo: dom.dom,
+            label: false,
+            padding: false,
+            style: style,
+            emptyText: filter.emptyText,
+            events: events,
+            tip: tip
+          });
+          break;
+        case 'combo':
+          var displayKey = 'text',
+            valueKey = 'text',
+            data;
+
+          if (column.displayKey !== undefined) {
+            displayKey = column.displayKey;
+            valueKey = displayKey;
+          }
+
+          if (F.isObject(column.data) || F.isObject(column.data[0])) {
+            data = column.data;
+          }
+          else {
+            data = me.configComboData(column.data);
+          }
+
+          field = new F.Combo({
+            renderTo: dom.dom,
+            label: false,
+            padding: false,
+            style: style,
+            width: column.width - 8,
+            displayKey: displayKey,
+            valueKey: valueKey,
+            value: '',
+            height: 28,
+            emptyText: filter.emptyText,
+            theme: theme,
+            tip: tip,
+            multiSelect: column.multiSelect,
+            itemCheckBox: column.itemCheckBox,
+            minListWidth: column.minListWidth,
+            events: [{
+              change: me.onEnter,
+              scope: me
+            }, {
+              empty: function () {
+                this.set(-1);
+              }
+            }],
+            data: data
+          });
+
+          break;
+        case 'checkbox':
+          field = new F.Combo({
+            renderTo: dom.dom,
+            label: false,
+            padding: false,
+            style: style,
+            displayKey: 'text',
+            valueKey: 'value',
+            width: column.width - 8,
+            emptyText: filter.emptyText,
+            value: '',
+            editable: false,
+            events: [{
+              change: me.onEnter,
+              scope: me
+            }],
+            data: [{
+              value: '',
+              text: ''
+            }, {
+              value: 'false',
+              text: w.lang.no
+            }, {
+              value: 'true',
+              text: w.lang.yes
+            }]
+          });
+
+          break;
+        default:
+          var events = [{
+            enter: me.onEnter,
+            scope: me
+          }];
+
+          if (me.autoEnterDelay !== false) {
+            events.push({
+              key: me.onKey,
+              scope: me
+            });
+          }
+
+          field = new F.StringField({
+            renderTo: dom.dom,
+            label: false,
+            style: style,
+            padding: false,
+            emptyText: filter.emptyText,
+            events: events
+          });
+      }
+
+      field.filterIndex = column.index;
+      field.column = column;
+
+      /*
+      field.el.on('click', function (e) {
+        e.stopPropagation();
+      });
+      */
+
+      if (type !== 'date') {
+        field.el.css('padding-left', '4px');
+        field.el.css('padding-top', '0px');
+      }
+
+      switch (type) {
+        case 'checkbox':
+        case 'combo':
+        case 'date':
+          break;
+        default:
+          field.setInputSize({
+            width: column.width - 8
+          });
+      }
+
+      column.filterField = field;
+    },
+    /*
+     * @param {Object} field
+     * @param {String|Number} value
+     * @param {Object} options
+     */
+    onEnter: function (field, value, options) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        filterIndex = field.filterIndex,
+        signs = {
+          '<': true,
+          '>': true,
+          '!': true,
+          '=': true
+        };
+
+      options = options || {};
+
+      if (me.intervalAutoEnter) {
+        clearInterval(me.intervalAutoEnter);
+        me.intervalAutoEnter = false;
+      }
+      delete me.intervalAutoEnter;
+
+      if (value.length === 0) {
+        me.filters[field.filterIndex] = {};
+        me.updateStoreFilters();
+
+        if (w.grouping) {
+          w.grouping.reGroup();
+        }
+
+        return;
+      }
+
+      var filters = me.processFilterValue(value, field.column.type),
+        i = 0,
+        iL = filters.length;
+
+      me.filters[filterIndex] = {};
+
+      for (; i < iL; i++) {
+        var filter = filters[i];
+
+        me.filters[filterIndex][filter.operator] = filter.value;
+        if (filter.operator !== '|') {
+          //F.apply(me.filters[filterIndex], options);
+        }
+
+        if (field.column.type === 'date') {
+          F.apply(me.filters[filterIndex], options);
+        }
+      }
+
+      if (s.remoteFilter) {
+        s.filters = me.filters;
+        s.serverFilter();
+      }
+      else {
+        me.updateStoreFilters();
+      }
+
+      if (w.grouping) {
+        if (s.remoteSort) {
+          s.once('load', function () {
+            w.grouping.reGroup();
+            w.fire('filter', me.filters);
+          });
+        }
+        else {
+          w.grouping.reGroup();
+        }
+      }
+
+      w.setSidesHeight();
+    },
+    /*
+     * @param {String|Number} value
+     * @param {String} type
+     */
+    processFilterValue: function (value, type) {
+      var signs = {
+          '<': true,
+          '>': true,
+          '!': true,
+          '=': true,
+          '|': true
+        },
+        operator,
+        _value,
+        i = 0,
+        iL = 3,
+        filters = [],
+        splitted,
+        j,
+        jL;
+
+      if (F.isArray(value)) {
+        _value = {};
+
+        F.Array.each(value, function (v, i) {
+          _value[String(v).toLocaleLowerCase()] = true;
+        });
+
+        filters.push({
+          operator: '|',
+          value: _value
+        });
+
+        return filters;
+      }
+
+      splitted = value.split(',');
+      j = 0;
+      jL = splitted.length;
+
+      for (; j < jL; j++) {
+        i = 0;
+        operator = '';
+        _value = splitted[j];
+
+        for (; i < iL; i++) {
+          if (signs[_value[i]]) {
+            operator += _value[i];
+          }
+        }
+
+        _value = _value.replace(new RegExp('^' + operator), '');
+
+        if (_value.length < 1) {
           continue;
         }
 
-        switch(column.type){
-          case 'date':
-            var els = header.getCell(i).select('.' + Fancy.FIELD_CLS),
-              fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
-              fieldTo = Fancy.getWidget(els.item(1).attr('id'));
-
-            fieldFrom.clear();
-            fieldTo.clear();
+        switch (type) {
+          case 'number':
+            _value = Number(_value);
             break;
-          default:
-            var id = header.getCell(i).select('.' + Fancy.FIELD_CLS).attr('id'),
-              field = Fancy.getWidget(id);
-
-            if(sign){
-              var splitted = field.get().split(',');
-
-              if(splitted.length < 2 && !sign){
-                field.clear();
-              }
-              else{
-                var j = 0,
-                  jL = splitted.length,
-                  value = '';
-
-                for(;j<jL;j++){
-                  var splitItem = splitted[j];
-
-                  if( !new RegExp(sign).test(splitItem) ){
-                    value += splitItem;
-                  }
-                }
-
-                field.set(value);
-              }
-            }
-            else {
-              field.clear();
-            }
-        }
-      }
-    }
-  },
-  clearColumnsFields: function(index, sign){
-    var me = this,
-      w = me.widget;
-
-    me._clearColumnsFields(w.columns, w.header, index, sign);
-    me._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
-    me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
-  },
-  _addValuesInColumnFields: function(columns, header, index, value, sign){
-    var i = 0,
-      FIELD_CLS = Fancy.FIELD_CLS,
-      iL = columns.length,
-      column;
-
-    for(;i<iL;i++){
-      column = columns[i];
-      if(column.index === index && column.filter && column.filter.header){
-        switch(column.type){
-          case 'date':
-            var els = header.getCell(i).select('.' + FIELD_CLS),
-              fieldFrom = Fancy.getWidget(els.item(0).attr('id')),
-              fieldTo = Fancy.getWidget(els.item(1).attr('id'));
-
-            fieldFrom.clear();
-            fieldTo.clear();
+          case 'combo':
+            operator = '=';
             break;
-          default:
-            var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
-              field = Fancy.getWidget(id),
-              fieldValue = field.get(),
-              splitted = field.get().split(',');
-
-            if(splitted.length === 1 && splitted[0] === ''){
-              field.set((sign || '') + value);
-            }
-            else if(splitted.length === 1){
-              if(new RegExp(sign).test(fieldValue)){
-                field.set((sign || '') + value);
-              }
-              else{
-                field.set(fieldValue + ',' + (sign || '') + value);
-              }
-            }
-            else{
-              var j = 0,
-                jL = splitted.length,
-                newValue = '';
-
-              for(;j<jL;j++){
-                var splittedItem = splitted[j];
-
-                if(!new RegExp(sign).test(splittedItem)){
-                  if(newValue.length !== 0){
-                    newValue += ',';
-                  }
-                  newValue += splittedItem;
-                }
-                else{
-                  if(newValue.length !== 0){
-                    newValue += ',';
-                  }
-                  newValue += (sign || '') + value;
-                }
-              }
-
-              field.set(newValue);
-            }
-        }
-      }
-    }
-  },
-  addValuesInColumnFields: function(index, value, sign){
-    var  me = this,
-      w = me.widget;
-
-    me._addValuesInColumnFields(w.columns, w.header, index, value, sign);
-    me._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
-    me._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
-  },
-  /*
-   * @param {String} type
-   * @param {Object} column
-   * @param {Fancy.Element} dom
-   */
-  renderFilter: function(type, column, dom) {
-    var me = this,
-      w = me.widget,
-      field,
-      style = {
-        position: 'absolute',
-        bottom: '3px'
-      },
-      filter = column.filter,
-      theme = w.theme,
-      tip = filter.tip;
-
-    switch (type) {
-      case 'date':
-        var events = [];
-
-        events.push({
-          change: me.onDateChange,
-          scope: me
-        });
-
-        var format;
-
-        if(Fancy.isString(column.format)){
-          switch(column.format){
-            case 'date':
-              format = column.format;
-              break;
-          }
         }
 
-        field = new Fancy.DateRangeField({
-          renderTo: dom.dom,
-          value: new Date(),
-          format: column.format,
-          label: false,
-          padding: false,
-          style: style,
-          events: events,
-          width: column.width - 8,
-          emptyText: filter.emptyText,
-          dateImage: false,
-          theme: theme
-        });
-        break;
-      case 'string':
-        var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-        if( me.autoEnterDelay !== false ){
-          events.push({
-            key: me.onKey,
-            scope: me
-          });
-        }
-
-        field = new Fancy.StringField({
-          renderTo: dom.dom,
-          label: false,
-          padding: false,
-          style: style,
-          events: events,
-          emptyText: filter.emptyText,
-          tip: tip
-        });
-        break;
-      case 'number':
-      case 'grossloss':
-      case 'progressbar':
-      case 'progressdonut':
-        var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-        if( me.autoEnterDelay !== false ){
-          events.push({
-            key: me.onKey,
-            scope: me
-          });
-        }
-
-        field = new Fancy.NumberField({
-          renderTo: dom.dom,
-          label: false,
-          padding: false,
-          style: style,
-          emptyText: filter.emptyText,
-          events: events,
-          tip: tip
-        });
-        break;
-      case 'combo':
-        var displayKey = 'text',
-          valueKey = 'text',
-          data;
-
-        if(column.displayKey !== undefined){
-          displayKey = column.displayKey;
-          valueKey = displayKey;
-        }
-
-        if(Fancy.isObject(column.data) || Fancy.isObject(column.data[0])) {
-          data = column.data;
-        }
-        else{
-          data = me.configComboData(column.data);
-        }
-
-        field = new Fancy.Combo({
-          renderTo: dom.dom,
-          label: false,
-          padding: false,
-          style: style,
-          width: column.width - 8,
-          displayKey: displayKey,
-          valueKey: valueKey,
-          value: '',
-          height: 28,
-          emptyText: filter.emptyText,
-          theme: theme,
-          tip: tip,
-          multiSelect: column.multiSelect,
-          itemCheckBox: column.itemCheckBox,
-          minListWidth: column.minListWidth,
-          events: [{
-            change: me.onEnter,
-            scope: me
-          },{
-            empty: function(){
-              this.set(-1);
-            }
-          }],
-          data: data
-        });
-
-        break;
-      case 'checkbox':
-        field = new Fancy.Combo({
-          renderTo: dom.dom,
-          label: false,
-          padding: false,
-          style: style,
-          displayKey: 'text',
-          valueKey: 'value',
-          width: column.width - 8,
-          emptyText: filter.emptyText,
-          value: '',
-          editable: false,
-          events: [{
-            change: me.onEnter,
-            scope: me
-          }],
-          data: [{
-            value: '',
-            text: ''
-          }, {
-            value: 'false',
-            text: w.lang.no
-          }, {
-            value: 'true',
-            text: w.lang.yes
-          }]
-        });
-
-        break;
-      default:
-        var events = [{
-          enter: me.onEnter,
-          scope: me
-        }];
-
-        if( me.autoEnterDelay !== false ){
-          events.push({
-            key: me.onKey,
-            scope: me
-          });
-        }
-
-        field = new Fancy.StringField({
-          renderTo: dom.dom,
-          label: false,
-          style: style,
-          padding: false,
-          emptyText: filter.emptyText,
-          events: events
-        });
-    }
-
-    field.filterIndex = column.index;
-    field.column = column;
-
-    /*
-    field.el.on('click', function (e) {
-      e.stopPropagation();
-    });
-    */
-
-    if(type !== 'date') {
-      field.el.css('padding-left', '4px');
-      field.el.css('padding-top', '0px');
-    }
-
-    switch(type){
-      case 'checkbox':
-      case 'combo':
-      case 'date':
-        break;
-      default:
-        field.setInputSize({
-          width: column.width - 8
-        });
-    }
-
-    column.filterField = field;
-  },
-  /*
-   * @param {Object} field
-   * @param {String|Number} value
-   * @param {Object} options
-   */
-  onEnter: function(field, value, options){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      filterIndex = field.filterIndex,
-      signs = {
-        '<': true,
-        '>': true,
-        '!': true,
-        '=': true
-      };
-
-	  options = options || {};
-
-    if(me.intervalAutoEnter){
-      clearInterval(me.intervalAutoEnter);
-      me.intervalAutoEnter = false;
-    }
-    delete me.intervalAutoEnter;
-
-    if(value.length === 0){
-      me.filters[field.filterIndex] = {};
-      me.updateStoreFilters();
-
-      if(w.grouping){
-        w.grouping.reGroup();
-      }
-
-      return;
-    }
-
-    var filters = me.processFilterValue(value, field.column.type),
-      i = 0,
-      iL = filters.length;
-
-    me.filters[filterIndex] = {};
-
-    for(;i<iL;i++) {
-      var filter = filters[i];
-
-      me.filters[filterIndex][filter.operator] = filter.value;
-      if(filter.operator !== '|'){
-        //Fancy.apply(me.filters[filterIndex], options);
-      }
-
-      if(field.column.type === 'date'){
-        Fancy.apply(me.filters[filterIndex], options);
-      }
-    }
-
-    if(s.remoteFilter){
-      s.filters = me.filters;
-      s.serverFilter();
-    }
-    else {
-      me.updateStoreFilters();
-    }
-
-    if(w.grouping){
-      if(s.remoteSort){
-        s.once('load', function(){
-          w.grouping.reGroup();
-          w.fire('filter', me.filters);
+        filters.push({
+          operator: operator,
+          value: _value
         });
       }
-      else {
-        w.grouping.reGroup();
-      }
-    }
-
-    w.setSidesHeight();
-  },
-  /*
-   * @param {String|Number} value
-   * @param {String} type
-   */
-  processFilterValue: function(value, type) {
-    var signs = {
-        '<': true,
-        '>': true,
-        '!': true,
-        '=': true,
-        '|': true
-      },
-      operator,
-      _value,
-      i = 0,
-      iL = 3,
-      filters = [],
-      splitted,
-      j,
-      jL;
-
-    if(Fancy.isArray(value)){
-      _value = {};
-
-      Fancy.Array.each(value, function (v, i) {
-        _value[String(v).toLocaleLowerCase()] = true;
-      });
-
-      filters.push({
-        operator: '|',
-        value: _value
-      });
 
       return filters;
-    }
+    },
+    /*
+     *
+     */
+    updateStoreFilters: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-    splitted = value.split(',');
-    j = 0;
-    jL = splitted.length;
+      s.filters = me.filters;
 
-    for(;j<jL;j++){
-      i = 0;
-      operator = '';
-      _value = splitted[j];
+      s.changeDataView();
+      w.update();
 
-      for (; i < iL; i++) {
-        if (signs[_value[i]]) {
-          operator += _value[i];
-        }
+      w.fire('filter', me.filters);
+      w.setSidesHeight();
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onColumnResize: function (grid, o) {
+      var cell = F.get(o.cell),
+        width = o.width,
+        fieldEl = cell.select('.' + FIELD_CLS),
+        field;
+
+      if (fieldEl.length === 0) {
       }
+      else if (fieldEl.length === 2) {
+        field = F.getWidget(fieldEl.item(0).dom.id);
 
-      _value = _value.replace(new RegExp('^' + operator), '');
+        field.setWidth((width - 8) / 2);
 
-      if(_value.length < 1){
-        continue;
-      }
+        field = F.getWidget(fieldEl.item(1).dom.id);
 
-      switch(type){
-        case 'number':
-            _value = Number(_value);
-          break;
-        case 'combo':
-            operator = '=';
-          break;
-      }
-
-      filters.push({
-        operator: operator,
-        value: _value
-      });
-    }
-
-    return filters;
-  },
-  /*
-   *
-   */
-  updateStoreFilters: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    s.filters = me.filters;
-
-    s.changeDataView();
-    w.update();
-
-    w.fire('filter', me.filters);
-    w.setSidesHeight();
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onColumnResize: function(grid, o){
-    var cell = Fancy.get(o.cell),
-      width = o.width,
-      fieldEl = cell.select('.' + Fancy.FIELD_CLS),
-      field;
-
-    if(fieldEl.length === 0){}
-    else if(fieldEl.length === 2){
-      field = Fancy.getWidget(fieldEl.item(0).dom.id);
-
-      field.setWidth((width - 8) / 2);
-
-      field = Fancy.getWidget(fieldEl.item(1).dom.id);
-
-      field.setWidth((width - 8) / 2);
-    }
-    else {
-      field = Fancy.getWidget(fieldEl.dom.id);
-
-      if(field.wtype === 'field.combo'){
-        field.size({
-          width: width - 8
-        });
-
-        field.el.css('width', width - 8 + 5);
+        field.setWidth((width - 8) / 2);
       }
       else {
-        field.setInputSize({
-          width: width - 8
+        field = F.getWidget(fieldEl.dom.id);
+
+        if (field.wtype === 'field.combo') {
+          field.size({
+            width: width - 8
+          });
+
+          field.el.css('width', width - 8 + 5);
+        }
+        else {
+          field.setInputSize({
+            width: width - 8
+          });
+        }
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {String|Number} value
+     * @param {Object} e
+     */
+    onKey: function (field, value, e) {
+      var me = this;
+
+      if (e.keyCode === F.key.ENTER) {
+        return;
+      }
+
+      me.autoEnterTime = +new Date();
+
+      if (!me.intervalAutoEnter) {
+        me.intervalAutoEnter = setInterval(function () {
+          var now = new Date();
+
+          if (!me.intervalAutoEnter) {
+            return;
+          }
+
+          if (now - me.autoEnterTime > me.autoEnterDelay) {
+            clearInterval(me.intervalAutoEnter);
+            delete me.intervalAutoEnter;
+            value = field.getValue();
+
+            me.onEnter(field, value);
+          }
+        }, 200);
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {*} date
+     */
+    onDateChange: function (field, date) {
+      var me = this,
+        w = me.widget,
+        format = field.format,
+        s = w.store,
+        dateFrom = field.dateField1.getDate(),
+        dateTo = field.dateField2.getDate(),
+        value,
+        isValid1 = dateFrom.toString() !== 'Invalid Date' && F.isDate(dateFrom),
+        isValid2 = dateTo.toString() !== 'Invalid Date' && F.isDate(dateTo),
+        value1,
+        value2,
+        isRemote = s.remoteFilter;
+
+      if (isValid1) {
+        dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate());
+      }
+
+      if (isValid2) {
+        dateTo = new Date(dateTo.getFullYear(), dateTo.getMonth(), dateTo.getDate());
+      }
+
+      if (isValid1 && isValid2) {
+        if (isRemote !== true) {
+          value1 = Number(dateFrom);
+          value2 = Number(dateTo);
+        }
+        else {
+          value1 = D.format(dateFrom, format.edit, format.mode);
+          value2 = D.format(dateTo, format.edit, format.mode);
+        }
+
+        value = '>=' + value1 + ',<=' + value2;
+      }
+      else if (isValid1) {
+        if (isRemote !== true) {
+          value = '>=' + Number(dateFrom);
+        }
+        else {
+          value = '>=' + D.format(dateFrom, format.edit, format.mode);
+        }
+
+        me.clearFilter(field.filterIndex, '<=', false);
+      }
+      else if (isValid2) {
+        if (isRemote !== true) {
+          value = '<=' + Number(dateTo);
+        }
+        else {
+          value = '<=' + D.format(dateFrom, format.edit, format.mode);
+        }
+
+        me.clearFilter(field.filterIndex, '>=', false);
+      }
+      else {
+        me.clearFilter(field.filterIndex);
+      }
+
+      if (value) {
+        me.onEnter(field, value, {
+          type: 'date',
+          format: field.format
         });
       }
-    }
-  },
-  /*
-   * @param {Object} field
-   * @param {String|Number} value
-   * @param {Object} e
-   */
-  onKey: function(field, value, e){
-    var me = this;
+    },
+    /*
+     * @param {String} index
+     * @param {String} operator
+     * @param {Boolean} update
+     */
+    clearFilter: function (index, operator, update) {
+      var me = this;
 
-    if( e.keyCode === Fancy.key.ENTER ){
-      return;
-    }
-
-    me.autoEnterTime = +new Date();
-
-    if(!me.intervalAutoEnter){
-      me.intervalAutoEnter = setInterval(function(){
-        var now = new Date();
-
-        if(!me.intervalAutoEnter){
-          return;
+      if (operator === undefined) {
+        delete me.filters[index];
+      }
+      else {
+        if (me.filters[index]) {
+          delete me.filters[index][operator];
         }
+      }
 
-        if(now - me.autoEnterTime > me.autoEnterDelay){
-          clearInterval(me.intervalAutoEnter);
-          delete me.intervalAutoEnter;
-          value = field.getValue();
+      if (update !== false) {
+        me.updateStoreFilters();
+      }
+    },
+    onFilter: function () {
+      this.widget.scroll(0);
+    },
+    /*
+     * @param {Array} data
+     * @return {Array}
+     */
+    configComboData: function (data) {
+      var i = 0,
+        iL = data.length,
+        _data = [];
 
-          me.onEnter(field, value);
+      if (F.isObject(data)) {
+        return data;
+      }
+
+      for (; i < iL; i++) {
+        _data.push({
+          value: i,
+          text: data[i]
+        });
+      }
+
+      return _data;
+    },
+    destroyFields: function () {
+      var me = this,
+        w = me.widget;
+
+      F.each(w.columns, function (column) {
+        if(column.filterField){
+          column.filterField.destroy();
+          delete column.filterField;
         }
-      }, 200);
-    }
-  },
-  /*
-   * @param {Object} field
-   * @param {*} date
-   */
-  onDateChange: function(field, date){
-    var me = this,
-      w = me.widget,
-      format = field.format,
-      s = w.store,
-      dateFrom = field.dateField1.getDate(),
-      dateTo = field.dateField2.getDate(),
-      value,
-      isValid1 = dateFrom.toString() !== 'Invalid Date' && Fancy.isDate(dateFrom),
-      isValid2 = dateTo.toString() !== 'Invalid Date' && Fancy.isDate(dateTo),
-      value1,
-      value2,
-      isRemote = s.remoteFilter;
-
-    if(isValid1){
-      dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate());
-    }
-
-    if(isValid2){
-      dateTo = new Date(dateTo.getFullYear(), dateTo.getMonth(), dateTo.getDate());
-    }
-
-    if(isValid1 && isValid2){
-      if(isRemote !== true) {
-        value1 = Number(dateFrom);
-        value2 = Number(dateTo);
-      }
-      else{
-        value1 = Fancy.Date.format(dateFrom, format.edit, format.mode);
-        value2 = Fancy.Date.format(dateTo, format.edit, format.mode);
-      }
-
-      value = '>=' + value1 + ',<=' + value2;
-    }
-    else if(isValid1){
-      if(isRemote !== true) {
-        value = '>=' + Number(dateFrom);
-      }
-      else{
-        value = '>=' + Fancy.Date.format(dateFrom, format.edit, format.mode);
-      }
-
-      me.clearFilter(field.filterIndex, '<=', false);
-    }
-    else if(isValid2){
-      if(isRemote !== true) {
-        value = '<=' + Number(dateTo);
-      }
-      else{
-        value = '<=' + Fancy.Date.format(dateFrom, format.edit, format.mode);
-      }
-
-      me.clearFilter(field.filterIndex, '>=', false);
-    }
-    else{
-      me.clearFilter(field.filterIndex);
-    }
-
-    if(value) {
-      me.onEnter(field, value, {
-		    type: 'date',
-		    format: field.format
-	    });
-    }
-  },
-  /*
-   * @param {String} index
-   * @param {String} operator
-   * @param {Boolean} update
-   */
-  clearFilter: function(index, operator, update){
-    var me = this;
-
-    if(operator === undefined){
-      delete me.filters[index];
-    }
-    else{
-      if(me.filters[index]){
-        delete me.filters[index][operator];
-      }
-    }
-
-    if(update !== false) {
-      me.updateStoreFilters();
-    }
-  },
-  onFilter: function(){
-    var me = this,
-      w = me.widget;
-
-    w.scroll(0);
-  },
-  /*
-   * @param {Array} data
-   * @return {Array}
-   */
-  configComboData: function(data){
-    var i = 0,
-      iL = data.length,
-      _data = [];
-
-    if(Fancy.isObject(data)){
-      return data;
-    }
-
-    for(;i<iL;i++){
-      _data.push({
-        value: i,
-        text: data[i]
       });
+
+      F.each(w.leftColumns, function (column) {
+        if(column.filterField){
+          column.filterField.destroy();
+          delete column.filterField;
+        }
+      });
+
+      F.each(w.rightColumns, function (column) {
+        if(column.filterField){
+          column.filterField.destroy();
+          delete column.filterField;
+        }
+      });
+
+      w.el.select('.' + GRID_HEADER_CELL_FILTER_CLS).removeCls(GRID_HEADER_CELL_FILTER_CLS);
+      w.el.select('.' + GRID_HEADER_CELL_FILTER_FULL_CLS).removeCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
+      w.el.select('.' + GRID_HEADER_CELL_FILTER_SMALL_CLS).removeCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+
+      w.el.select('.' + GRID_HEADER_CELL_DOUBLE_CLS).removeCls(GRID_HEADER_CELL_DOUBLE_CLS);
+      w.el.select('.' + GRID_HEADER_CELL_TRIPLE_CLS).removeCls(GRID_HEADER_CELL_TRIPLE_CLS);
+    },
+    /*
+     *
+     */
+    onLockColumn: function () {
+      this.render();
+    },
+    /*
+     *
+     */
+    onUnLockColumn: function () {
+      this.render();
+    },
+    /*
+     *
+     */
+    onRightLockColumn: function () {
+      this.render();
+    },
+    /*
+     *
+     */
+    onColumnDrag: function () {
+      var me = this;
+
+      me.destroyFields();
+      me.render();
     }
+  });
 
-    return _data;
-  },
-  onLockColumn: function(){
-    var me = this;
-
-    me.render();
-  },
-  onUnLockColumn: function(){
-    var me = this;
-
-    me.render();
-  },
-  onRightLockColumn: function(){
-    var me = this;
-
-    me.render();
-  }
-});
+})();
 /*
  * @class Fancy.grid.plugin.Search
  */
@@ -32497,21 +33945,17 @@ Fancy.define('Fancy.grid.plugin.Search', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.searches = {};
-    me.Super('const', arguments);
+    this.searches = {};
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
+    this.Super('init', arguments);
 
     //me.generateKeys();
-    me.ons();
+    this.ons();
   },
   /*
    *
@@ -32574,8 +34018,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
    *
    */
   updateStoreSearches: function(){
-    var me = this,
-      w = me.widget,
+    var w = this.widget,
       s = w.store;
 
     s.changeDataView();
@@ -32709,452 +34152,456 @@ Fancy.define('Fancy.grid.plugin.Search', {
  * @class Fancy.grid.plugin.GridToGrid
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.GridToGrid', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.dragdrop',
-  inWidgetName: 'dragdrop',
-  dropOK: false,
-  cellMaskCls: 'fancy-drop-cell-mask',
-  dropZoneCls: 'fancy-drop-zone-active',
-  dropOkCls: 'fancy-drop-ok',
-  dropNotOkCls: 'fancy-drop-not-ok',
-  dropHeaderMaskCls: 'fancy-drop-header-mask',
-  droppable: true,
-  dropZoneOverClass: 'fancy-grid-body',
-  /*
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_BODY_CLS = F.GRID_BODY_CLS;
+  var GRID_CLS = F.GRID_CLS;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-    me.addEvents('drop');
-    me.Super('init', arguments);
-    me.initDropCls();
-    me.initEnterLeave();
-    
-    me.ons();
-  },
-  /*
-   *
-   */
-  initDropCls: function(){
-    var me = this,
-      dropCls = '.' + me.dropGroup;
+  F.define('Fancy.grid.plugin.GridToGrid', {
+    extend: F.Plugin,
+    ptype: 'grid.dragdrop',
+    inWidgetName: 'dragdrop',
+    dropOK: false,
+    cellMaskCls: 'fancy-drop-cell-mask',
+    dropZoneCls: 'fancy-drop-zone-active',
+    dropOkCls: 'fancy-drop-ok',
+    dropNotOkCls: 'fancy-drop-not-ok',
+    dropHeaderMaskCls: 'fancy-drop-header-mask',
+    droppable: true,
+    dropZoneOverClass: GRID_BODY_CLS,
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    dropCls += ' .' + me.dropZoneOverClass;
+      me.addEvents('drop');
+      me.Super('init', arguments);
+      me.initDropCls();
+      me.initEnterLeave();
 
-    me.dropCls = dropCls;
-  },
-  /*
-   *
-   */
-  addDragDropCls: function(){
-    var me = this,
-      w = me.widget;
-    
-    w.el.addCls(me.dragGroup);
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget;
+      me.ons();
+    },
+    /*
+     *
+     */
+    initDropCls: function () {
+      var me = this,
+        dropCls = '.' + me.dropGroup;
 
-    w.on('render', function(){
-      me.addDragDropCls();
-    });
+      dropCls += ' .' + me.dropZoneOverClass;
 
-    if( me.dropGroup ){
-      w.on('beforecellmousedown', me.onBeforeCellMouseDown, me);
-      w.on('cellmousedown', me.onCellMouseDown, me);
-      w.on('cellleave', me.onCellLeave, me);
-      w.on('cellenter', me.onCellEnter, me);
-    }
+      me.dropCls = dropCls;
+    },
+    /*
+     *
+     */
+    addDragDropCls: function(){
+      this.widget.el.addCls(this.dragGroup);
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
 
-    me.on('drop', me.onDropItems, me);
-  },
-  /*
-   * @param {Object} dd
-   * @param {*} items
-   */
-  onDropItems: function(dd, items){
-    var me = this,
-      w = me.widget,
-      dropGrid = me.dropGrid,
-      rowIndex = dropGrid.activeRowEnterIndex === undefined? dropGrid.getViewTotal():dropGrid.activeRowEnterIndex;
-
-    w.fire('dropitems', items, rowIndex);
-    if(me.onDrop){
-      me.onDrop.apply(w, [items, rowIndex]);
-    }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onBeforeCellMouseDown: function(grid, o){
-    var me = this,
-      w = me.widget,
-      lang = w.lang,
-      docEl = Fancy.get(document),
-      selected = w.getSelection(),
-      e = o.e,
-      isCTRL = e.ctrlKey;
-
-    if(isCTRL && w.multiSelect === true){
-      return;
-    }
-
-    if(selected.length > 1){
-      var passed = false;
-
-      Fancy.each(selected, function(item){
-        if(item.id === o.id){
-          passed = true;
-          return true;
-        }
+      w.on('render', function () {
+        me.addDragDropCls();
       });
 
-      if(passed === false){
+      if (me.dropGroup) {
+        w.on('beforecellmousedown', me.onBeforeCellMouseDown, me);
+        w.on('cellmousedown', me.onCellMouseDown, me);
+        w.on('cellleave', me.onCellLeave, me);
+        w.on('cellenter', me.onCellEnter, me);
+      }
+
+      me.on('drop', me.onDropItems, me);
+    },
+    /*
+     * @param {Object} dd
+     * @param {*} items
+     */
+    onDropItems: function (dd, items) {
+      var me = this,
+        w = me.widget,
+        dropGrid = me.dropGrid,
+        rowIndex = dropGrid.activeRowEnterIndex === undefined ? dropGrid.getViewTotal() : dropGrid.activeRowEnterIndex;
+
+      w.fire('dropitems', items, rowIndex);
+      if (me.onDrop) {
+        me.onDrop.apply(w, [items, rowIndex]);
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onBeforeCellMouseDown: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        docEl = F.get(document),
+        selected = w.getSelection(),
+        e = o.e,
+        isCTRL = e.ctrlKey;
+
+      if (isCTRL && w.multiSelect === true) {
         return;
       }
 
-      w.stopSelection();
+      if (selected.length > 1) {
+        var passed = false;
+
+        F.each(selected, function (item) {
+          if (item.id === o.id) {
+            passed = true;
+            return true;
+          }
+        });
+
+        if (passed === false) {
+          return;
+        }
+
+        w.stopSelection();
+
+        docEl.once('mouseup', me.onDocMouseUp, me);
+        docEl.on('mousemove', me.onDocMouseMove, me);
+
+        docEl.once('mouseup', function () {
+          w.enableSelection();
+        }, me);
+
+        selected = w.getSelection();
+        var text = F.String.format(lang.dragText, [selected.length, selected.length > 1 ? 's' : '']);
+
+        me.initTip(text);
+
+        me.dragItems = w.getSelection();
+
+        me.cellMouseDown = true;
+
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellMouseDown: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document);
+
+      if (w.selection.enabled === false) {
+        return;
+      }
+
+      var e = o.e,
+        isCTRL = e.ctrlKey;
+
+      if (isCTRL && w.multiSelect === true) {
+        return;
+      }
+
+      if (o.column.index === '$selected') {
+      }
+      else {
+        w.clearSelection();
+      }
 
       docEl.once('mouseup', me.onDocMouseUp, me);
       docEl.on('mousemove', me.onDocMouseMove, me);
 
-      docEl.once('mouseup', function(){
-        w.enableSelection();
-      }, me);
-
-      selected = w.getSelection();
-      var text = Fancy.String.format(lang.dragText, [selected.length, selected.length > 1? 's': '']);
-
-      me.initTip(text);
-
-      me.dragItems = w.getSelection();
-
       me.cellMouseDown = true;
-
-    }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellMouseDown: function(grid, o){
-    var me = this,
-      w = me.widget,
-      docEl = Fancy.get(document);
-
-    if(w.selection.enabled === false){
-      return;
-    }
-
-    var e = o.e,
-      isCTRL = e.ctrlKey;
-
-    if(isCTRL && w.multiSelect === true){
-      return;
-    }
-
-    if(o.column.index === '$selected'){}
-    else{
-      w.clearSelection();
-    }
-
-    docEl.once('mouseup', me.onDocMouseUp, me);
-    docEl.on('mousemove', me.onDocMouseMove, me);
-    
-    me.cellMouseDown = true;
-    me.activeRowIndex = o.rowIndex;
-  },
-  /*
-   *
-   */
-  initEnterLeave: function(){
-    var me = this,
-      dropEl = Fancy.select(me.dropCls);
-
-    if(dropEl.length === 0){
-      setTimeout(function(){
-        me.initEnterLeave();
-      }, 500);
-      return;
-    }
-
-    dropEl.on('mouseenter', me.onMouseEnterDropGroup, me);
-    dropEl.on('mouseleave', me.onMouseLeaveDropGroup, me);
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseEnterDropGroup: function(e){
-    var me = this;
-    
-    if(!me.cellMouseDown){
-      return;
-    }
-
-    var targetEl = Fancy.get(e.currentTarget);
-    
-    me.dropGrid = Fancy.getWidget(targetEl.closest('.' + Fancy.GRID_CLS).attr('id'));
-
-    if(me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false){
-      me.dropOK = false;
-      if( me.tip ){
-        me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
-      }
-      return;
-    }
-
-    me.setDropGridCellsMask();
-    if( !me.dropGridEventInited ){
-      me.onsDropGrid();
-    }
-
-    targetEl.addCls(me.dropZoneCls);
-    
-    me.dropOK = true;
-
-    if( me.tip ){
-      me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseLeaveDropGroup: function(e){
-    var me = this;
-    
-    if(!me.cellMouseDown){
-      return;
-    }
-    
-    Fancy.get(e.currentTarget).removeCls(me.dropZoneCls);
-    
-    me.dropOK = false;
-    me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
-    me.clearCellsMask();
-  },
-  /*
-   *
-   */
-  setDropGridCellsMask: function(){
-    var me = this,
-      w = me.widget,
-      dropGrid = me.dropGrid,
-      total;
-      
-    if(!dropGrid || !me.cellMouseDown){
-      return;
-    }
-      
-    total = dropGrid.getTotal();
-    
-    if(total === 0){
-      dropGrid.el.addCls(me.dropHeaderMaskCls);
-    }
-    else{
-      dropGrid.el.select('.' + w.cellCls + '[index="'+(total - 1)+'"]').addCls(me.cellMaskCls);
-    }
-  },
-  /*
-   *
-   */
-  onsDropGrid: function(){
-    var me = this;
-    
-    me.dropGrid.on('rowenter', me.onDropGridRowEnter, me);
-    me.dropGrid.on('rowleave', me.onDropGridRowLeave, me);
-    
-    me.dropGridEventInited = true;
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onDropGridRowEnter: function(grid, o){
-    var me = this;
-
-    if( me.cellMouseDown === false ){
-      //Fix core bug. In future needs to find out what it is.
-      //'un' does not unset handler
-      me.dropGrid.un('rowenter', me.onDropGridRowEnter);
-      me.dropGrid.un('rowleave', me.onDropGridRowLeave);
-    }
-
-    me.clearCellsMask();
-    
-    if(o.rowIndex === 0){
-      grid.el.addCls(me.dropHeaderMaskCls);
-    }
-    else{
-      grid.el.select('.' + grid.cellCls + '[index="'+(o.rowIndex - 1)+'"]').addCls(me.cellMaskCls);
-    }
-
-    if( me.cellMouseDown === false ){
-      me.clearCellsMask();
-    }
-
-    if(me.dropGrid){
-      me.dropGrid.activeRowEnterIndex = o.rowIndex;
-    }
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onDropGridRowLeave: function(grid, o){
-    var me = this;
-    
-    me.clearCellsMask();
-    me.setDropGridCellsMask();
-
-    if(me.dropGrid){
-      delete me.dropGrid.activeRowEnterIndex;
-    }
-  },
-  clearCellsMask: function(){
-    var me = this,
-      cellMaskCls = me.cellMaskCls;
-    
-    if(!me.dropGrid){
-      return;
-    }
-    
-    me.dropGrid.el.removeCls(me.dropHeaderMaskCls);
-    me.dropGrid.el.select('.' + cellMaskCls).removeCls(cellMaskCls);
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMouseUp: function(e){
-    var me = this,
-      w = me.widget,
-      docEl = Fancy.get(document);
-    
-    me.cellMouseDown = false;
-    if(me.tip){
-      me.tip.hide();
-    }
-    w.enableSelection();
-    
-    docEl.un('mousemove', me.onDocMouseMove);
-    
-    if(me.dropOK === true){
-      w.clearSelection();
-      me.dropGrid.clearSelection();
-      me.fire('drop', me.dragItems);
-    }
-    
-    delete me.dragItems;
-    me.dropOK = false;
-    
-    Fancy.select('.'+me.dropZoneCls).removeCls(me.dropZoneCls);
-    
-    me.clearCellsMask();    
-    
-    if(me.dropGrid){
-      me.dropGrid.un('rowenter', me.onDropGridRowEnter);
-      me.dropGrid.un('rowleave', me.onDropGridRowLeave);
-      //delete me.dropGrid;
-    }
-    
-    delete me.dropGridEventInited;
-  },
-  /*
-   * @param {Object} e
-   */
-  onDocMouseMove: function(e){
-    var me = this;
-    
-    if(!me.dragItems){
-      return;
-    }
-    
-    me.tip.show(e.pageX + 20, e.pageY + 20);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellLeave: function(grid, o){
-    var me = this,
-      w = me.widget,
-      lang = w.lang;
-    
-    setTimeout(function(){
-      if(me.onceStopDrag){
-        me.onceStopDrag = false;
-        return;
-      }
-      
-      if(me.cellMouseDown !== true || me.dragItems){
-        return;
-      }
-
-      var selected = w.getSelection(),
-        text = Fancy.String.format(lang.dragText, [selected.length, selected.length > 1? 's': '']);
-
-      w.stopSelection();
-      me.initTip(text, o.e);
-      
-      me.tip.show();
-      me.tip.el.css('display', 'block');
-      
-      me.dragItems = selected;
-    }, 1);
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellEnter: function(grid, o){
-    var me = this;
-
-    if(me.cellMouseDown !== true || me.dragItems){
-      return;
-    }
-    
-    if(o.rowIndex !== me.activeRowIndex){
-      me.onceStopDrag = true;
       me.activeRowIndex = o.rowIndex;
+    },
+    /*
+     *
+     */
+    initEnterLeave: function () {
+      var me = this,
+        dropEl = F.select(me.dropCls);
+
+      if (dropEl.length === 0) {
+        setTimeout(function () {
+          me.initEnterLeave();
+        }, 500);
+        return;
+      }
+
+      dropEl.on('mouseenter', me.onMouseEnterDropGroup, me);
+      dropEl.on('mouseleave', me.onMouseLeaveDropGroup, me);
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseEnterDropGroup: function (e) {
+      var me = this;
+
+      if (!me.cellMouseDown) {
+        return;
+      }
+
+      var targetEl = F.get(e.currentTarget);
+
+      me.dropGrid = F.getWidget(targetEl.closest('.' + GRID_CLS).attr('id'));
+
+      if (me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false) {
+        me.dropOK = false;
+        if (me.tip) {
+          me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
+        }
+        return;
+      }
+
+      me.setDropGridCellsMask();
+      if (!me.dropGridEventInited) {
+        me.onsDropGrid();
+      }
+
+      targetEl.addCls(me.dropZoneCls);
+
+      me.dropOK = true;
+
+      if (me.tip) {
+        me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseLeaveDropGroup: function (e) {
+      var me = this;
+
+      if (!me.cellMouseDown) {
+        return;
+      }
+
+      F.get(e.currentTarget).removeCls(me.dropZoneCls);
+
+      me.dropOK = false;
+      me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
+      me.clearCellsMask();
+    },
+    /*
+     *
+     */
+    setDropGridCellsMask: function () {
+      var me = this,
+        dropGrid = me.dropGrid,
+        total;
+
+      if (!dropGrid || !me.cellMouseDown) {
+        return;
+      }
+
+      total = dropGrid.getTotal();
+
+      if (total === 0) {
+        dropGrid.el.addCls(me.dropHeaderMaskCls);
+      }
+      else {
+        dropGrid.el.select('.' + GRID_CELL_CLS + '[index="' + (total - 1) + '"]').addCls(me.cellMaskCls);
+      }
+    },
+    /*
+     *
+     */
+    onsDropGrid: function () {
+      var me = this;
+
+      me.dropGrid.on('rowenter', me.onDropGridRowEnter, me);
+      me.dropGrid.on('rowleave', me.onDropGridRowLeave, me);
+
+      me.dropGridEventInited = true;
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onDropGridRowEnter: function (grid, o) {
+      var me = this;
+
+      if (me.cellMouseDown === false) {
+        //Fix core bug. In future needs to find out what it is.
+        //'un' does not unset handler
+        me.dropGrid.un('rowenter', me.onDropGridRowEnter);
+        me.dropGrid.un('rowleave', me.onDropGridRowLeave);
+      }
+
+      me.clearCellsMask();
+
+      if (o.rowIndex === 0) {
+        grid.el.addCls(me.dropHeaderMaskCls);
+      }
+      else {
+        grid.el.select('.' + GRID_CELL_CLS + '[index="' + (o.rowIndex - 1) + '"]').addCls(me.cellMaskCls);
+      }
+
+      if (me.cellMouseDown === false) {
+        me.clearCellsMask();
+      }
+
+      if (me.dropGrid) {
+        me.dropGrid.activeRowEnterIndex = o.rowIndex;
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onDropGridRowLeave: function (grid, o) {
+      var me = this;
+
+      me.clearCellsMask();
+      me.setDropGridCellsMask();
+
+      if (me.dropGrid) {
+        delete me.dropGrid.activeRowEnterIndex;
+      }
+    },
+    clearCellsMask: function () {
+      var me = this,
+        cellMaskCls = me.cellMaskCls;
+
+      if (!me.dropGrid) {
+        return;
+      }
+
+      me.dropGrid.el.removeCls(me.dropHeaderMaskCls);
+      me.dropGrid.el.select('.' + cellMaskCls).removeCls(cellMaskCls);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMouseUp: function (e) {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document);
+
+      me.cellMouseDown = false;
+      if (me.tip) {
+        me.tip.hide();
+      }
+      w.enableSelection();
+
+      docEl.un('mousemove', me.onDocMouseMove);
+
+      if (me.dropOK === true) {
+        w.clearSelection();
+        me.dropGrid.clearSelection();
+        me.fire('drop', me.dragItems);
+      }
+
+      delete me.dragItems;
+      me.dropOK = false;
+
+      F.select('.' + me.dropZoneCls).removeCls(me.dropZoneCls);
+
+      me.clearCellsMask();
+
+      if (me.dropGrid) {
+        me.dropGrid.un('rowenter', me.onDropGridRowEnter);
+        me.dropGrid.un('rowleave', me.onDropGridRowLeave);
+        //delete me.dropGrid;
+      }
+
+      delete me.dropGridEventInited;
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMouseMove: function (e) {
+      if (!this.dragItems) {
+        return;
+      }
+
+      this.tip.show(e.pageX + 20, e.pageY + 20);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellLeave: function (grid, o) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang;
+
+      setTimeout(function () {
+        if (me.onceStopDrag) {
+          me.onceStopDrag = false;
+          return;
+        }
+
+        if (me.cellMouseDown !== true || me.dragItems) {
+          return;
+        }
+
+        var selected = w.getSelection(),
+          text = F.String.format(lang.dragText, [selected.length, selected.length > 1 ? 's' : '']);
+
+        w.stopSelection();
+        me.initTip(text, o.e);
+
+        me.tip.show();
+        me.tip.el.css('display', 'block');
+
+        me.dragItems = selected;
+      }, 1);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellEnter: function (grid, o) {
+      var me = this;
+
+      if (me.cellMouseDown !== true || me.dragItems) {
+        return;
+      }
+
+      if (o.rowIndex !== me.activeRowIndex) {
+        me.onceStopDrag = true;
+        me.activeRowIndex = o.rowIndex;
+      }
+    },
+    /*
+     * @param {String} text
+     * @param {Object} e
+     */
+    initTip: function (text, e) {
+      var me = this,
+        dropNotOkCls = me.dropNotOkCls;
+
+      if (!me.tip) {
+        me.tip = new F.ToolTip({
+          cls: dropNotOkCls,
+          text: text
+        });
+      }
+
+      if (e) {
+        me.tip.show(e.pageX + 20, e.pageY + 20);
+      }
+
+      me.tip.update(text);
+      me.tip.el.replaceClass(me.dropOkCls, dropNotOkCls);
     }
-  },
-  /*
-   * @param {String} text
-   * @param {Object} e
-   */
-  initTip: function(text, e){
-    var me = this,
-      dropNotOkCls = me.dropNotOkCls;
-    
-    if(!me.tip){
-      me.tip = new Fancy.ToolTip({
-        cls: dropNotOkCls,
-        text: text
-      });
-    }
-    
-    if(e){
-      me.tip.show(e.pageX + 20, e.pageY + 20);
-    }
-    
-    me.tip.update(text);
-    me.tip.el.replaceClass(me.dropOkCls, dropNotOkCls);
-  }
-});
+  });
+
+})();
 /*
  * @class Fancy.grid.plugin.Exporter
  * @extends Fancy.Plugin
@@ -33167,9 +34614,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
@@ -33342,19 +34787,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -33766,3480 +35206,3779 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     return md5(string, key, raw);
   }
 });
-Fancy.ns('Fancy.grid.body.mixin');
-
 /*
  * @mixin Fancy.grid.body.mixin.Updater
  */
-Fancy.grid.body.mixin.Updater = function() {};
+(function() {
+  //SHORTCUTS
+  var F = Fancy;
 
-Fancy.grid.body.mixin.Updater.prototype = {
+  // CONSTANTS
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_CELL_EVEN_CLS = F.GRID_CELL_EVEN_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
+  var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
+  var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
+  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  var GRID_CELL_DIRTY_CLS = F.GRID_CELL_DIRTY_CLS;
+  var GRID_CELL_DIRTY_EL_CLS = F.GRID_CELL_DIRTY_EL_CLS;
+  var GRID_PSEUDO_CELL_CLS = F.GRID_PSEUDO_CELL_CLS;
+  var GRID_EMPTY_CLS =  F.GRID_EMPTY_CLS;
+  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
+  var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
+  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS =  F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
+  var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
+  var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
+  var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+
+  F.ns('Fancy.grid.body.mixin');
+
   /*
-   *
+   * @mixin Fancy.grid.body.mixin.Updater
    */
-  update: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
+  F.grid.body.mixin.Updater = function () {};
 
-    me.checkDomColumns();
+  F.grid.body.mixin.Updater.prototype = {
+    /*
+     *
+     */
+    update: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-    if(s.loading){
-      return;
-    }
+      me.checkDomColumns();
 
-    me.checkDomCells();
-    me.updateRows();
-
-    me.showEmptyText();
-  },
-  /*
-   *
-   */
-  checkDomColumns: function(){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columnTextCls = w.columnTextCls,
-      columnWithEllipsisCls = w.columnWithEllipsisCls,
-      columnOrderCls = w.columnOrderCls,
-      columnSelectCls = w.columnSelectCls,
-      numExistedColumn = me.el.select('.' + columnCls).length,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length;
-
-    if(iL <= numExistedColumn){
-      return;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i],
-        width = column.width,
-        el = Fancy.get(document.createElement('div'));
-
-      if(column.hidden){
-        el.css('display', 'none');
+      if (s.loading) {
+        return;
       }
 
-      el.addCls(columnCls);
-      el.attr('grid', w.id);
+      me.checkDomCells();
+      me.updateRows();
 
-      if(column.index === '$selected'){
-        el.addCls(columnSelectCls);
+      me.showEmptyText();
+    },
+    /*
+     *
+     */
+    checkDomColumns: function () {
+      var me = this,
+        w = me.widget,
+        numExistedColumn = me.el.select('.' + GRID_COLUMN_CLS).length,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length;
+
+      if (iL <= numExistedColumn) {
+        return;
       }
-      else{
-        switch(column.type){
-          case 'order':
-            el.addCls(columnOrderCls);
-            break;
+
+      for (; i < iL; i++) {
+        var column = columns[i],
+          width = column.width,
+          el = F.get(document.createElement('div'));
+
+        if (column.hidden) {
+          el.css('display', 'none');
         }
-      }
 
-      if(column.cls){
-        el.addCls(column.cls);
-      }
+        el.addCls(GRID_COLUMN_CLS);
+        el.attr('grid', w.id);
 
-      if(column.type === 'text'){
-        el.addCls(columnTextCls);
-      }
-
-      el.css({
-        width: width + 'px'
-      });
-      el.attr('index', i);
-
-      if(column.cellAlign){
-        el.css('text-align', column.cellAlign);
-      }
-
-      if(column.ellipsis === true){
-        switch(column.type){
-          case 'string':
-          case 'text':
-          case 'number':
-            el.addCls(columnWithEllipsisCls);
-            break;
+        if (column.index === '$selected') {
+          el.addCls(GRID_COLUMN_SELECT_CLS);
         }
-      }
+        else {
+          switch (column.type) {
+            case 'order':
+              el.addCls(GRID_COLUMN_ORDER_CLS);
+              break;
+          }
+        }
 
-      me.el.dom.appendChild(el.dom);
-    }
+        if (column.cls) {
+          el.addCls(column.cls);
+        }
 
-    me.fire('adddomcolumns');
-  },
-  /*
-   * @param {number} indexOrder
-   */
-  checkDomCells: function(indexOrder){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      s = w.store,
-      i = 0,
-      iL = s.dataView.length,
-      j = 0,
-      jL,
-      columns,
-      column;
+        if (column.type === 'text') {
+          el.addCls(GRID_COLUMN_TEXT_CLS);
+        }
 
-    switch(me.side){
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
-
-    jL = columns.length;
-
-    var columsDom = me.el.select('.'+columnCls),
-      dataLength = s.getLength(),
-      cellTpl = me.cellTpl;
-
-    if(w.cellWrapper){
-      cellTpl = me.cellWrapperTpl;
-    }
-
-    if(indexOrder !== undefined){
-      j = indexOrder;
-      jL = indexOrder;
-    }
-
-    for(;j<jL;j++){
-      column = columns[j];
-      var columnDom = columsDom.item(j);
-      i = 0;
-      var delta = dataLength - columnDom.select('.'+cellCls).length;
-      i = iL - delta;
-      for(;i<iL;i++){
-        var cellHTML = cellTpl.getHTML({});
-
-        var el = Fancy.get(document.createElement('div'));
         el.css({
-          height: w.cellHeight + 'px'
+          width: width + 'px'
         });
-        el.addCls(me.cellCls);
         el.attr('index', i);
 
-        if(i%2 !== 0 && w.striped){
-          el.addCls(w.cellEvenCls)
+        if (column.cellAlign) {
+          el.css('text-align', column.cellAlign);
         }
-        el.update(cellHTML);
-        columnDom.dom.appendChild(el.dom);
-      }
 
-      if(w.nativeScroller && (me.side === 'left' || me.side === 'right')){
-        columnDom.select('.' + me.pseudoCellCls).destroy();
-
-        var cellHTML = cellTpl.getHTML({
-          cellValue: '&nbsp;'
-        });
-
-        var el = Fancy.get(document.createElement('div'));
-        el.css({
-          height: w.cellHeight + 'px'
-        });
-        el.addCls(me.pseudoCellCls);
-
-        el.update(cellHTML);
-        columnDom.dom.appendChild(el.dom);
-      }
-    }
-  },
-  /*
-   * @param {Number} rowIndex
-   * @param {Number} columnIndex
-   */
-  updateRows: function(rowIndex, columnIndex) {
-    var me = this,
-      w = me.widget,
-      i = 0,
-      columns,
-      iL;
-
-    if (rowIndex === undefined) {
-      me.clearDirty();
-    }
-    else{
-      me.clearDirty(rowIndex);
-    }
-
-    switch (me.side) {
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
-
-    iL = columns.length;
-
-    if(columnIndex !== undefined){
-      i = columnIndex;
-      iL = columnIndex + 1;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      switch(column.type){
-        case 'string':
-        case 'number':
-        case 'combo':
-        case 'action':
-        case 'text':
-        case 'date':
-        case 'currency':
-          me.renderUniversal(i, rowIndex);
-          break;
-        case 'order':
-          me.renderOrder(i, rowIndex);
-          break;
-        case 'expand':
-          me.renderExpand(i, rowIndex);
-          break;
-        case 'select':
-          me.renderSelect(i, rowIndex);
-          break;
-        case 'color':
-          me.renderColor(i, rowIndex);
-          break;
-        case 'checkbox':
-          me.renderCheckbox(i, rowIndex);
-          break;
-        case 'image':
-          me.renderImage(i, rowIndex);
-          break;
-        case 'sparklineline':
-          me.renderSparkLine(i, rowIndex, 'line');
-          break;
-        case 'sparklinebar':
-          me.renderSparkLine(i, rowIndex, 'bar');
-          break;
-        case 'sparklinetristate':
-          me.renderSparkLine(i, rowIndex, 'tristate');
-          break;
-        case 'sparklinediscrete':
-          me.renderSparkLine(i, rowIndex, 'discrete');
-          break;
-        case 'sparklinebullet':
-          me.renderSparkLine(i, rowIndex, 'bullet');
-          break;
-        case 'sparklinepie':
-          me.renderSparkLine(i, rowIndex, 'pie');
-          break;
-        case 'sparklinebox':
-          me.renderSparkLine(i, rowIndex, 'box');
-          break;
-        case 'circle':
-          me.renderCircle(i, rowIndex);
-          break;
-        case 'progressdonut':
-          me.renderProgressDonut(i, rowIndex);
-          break;
-        case 'progressbar':
-          me.renderProgressBar(i, rowIndex);
-          break;
-        case 'hbar':
-          me.renderHBar(i, rowIndex);
-          break;
-        case 'grossloss':
-          me.renderGrossLoss(i, rowIndex);
-          break;
-        default:
-          throw new Error('[FancyGrid error] - not existed column type ' + column.type);
-          break;
-      }
-    }
-
-    me.removeNotUsedCells();
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderUniversal: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      lang = w.lang,
-      emptyValue = w.emptyValue,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key,
-      columsDom = me.el.select('.'+columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      currencySign = lang.currencySign;
-
-    if(column.key !== undefined){
-      key = column.key;
-    }
-    else if(column.index !== undefined){
-      key = column.index;
-    }
-    else{
-      key = column.type === 'action'? 'none' : undefined;
-    }
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        id = s.getId(j),
-        inner = cellsDomInner.item(j),
-        cell = cellsDom.item(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j),
-          inner: inner,
-          cell: cell
-        },
-        value,
-        dirty = false;
-
-      if(s.changed[o.id] && s.changed[o.id][column.index]){
-        dirty = true;
-      }
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      switch(column.type){
-        case 'currency':
-          if(value !== ''){
-            value = currencySign + value;
+        if (column.ellipsis === true) {
+          switch (column.type) {
+            case 'string':
+            case 'text':
+            case 'number':
+              el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
+              break;
           }
-          o.value = value;
+        }
+
+        me.el.dom.appendChild(el.dom);
+      }
+
+      me.fire('adddomcolumns');
+    },
+    /*
+     * @param {number} indexOrder
+     */
+    checkDomCells: function (indexOrder) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        i = 0,
+        iL = s.dataView.length,
+        j = 0,
+        jL,
+        columns,
+        column;
+
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
           break;
       }
 
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      jL = columns.length;
+
+      var columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        dataLength = s.getLength(),
+        cellTpl = me.cellTpl;
+
+      if (w.cellWrapper) {
+        cellTpl = me.cellWrapperTpl;
       }
 
-      switch(value){
-        case '':
-        case undefined:
-          value = emptyValue;
+      if (indexOrder !== undefined) {
+        j = indexOrder;
+        jL = indexOrder;
+      }
+
+      for (; j < jL; j++) {
+        column = columns[j];
+        var columnDom = columsDom.item(j);
+        i = 0;
+        var delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+        i = iL - delta;
+        for (; i < iL; i++) {
+          var cellHTML = cellTpl.getHTML({});
+
+          var el = F.get(document.createElement('div'));
+          el.css({
+            height: w.cellHeight + 'px'
+          });
+          el.addCls(GRID_CELL_CLS);
+          el.attr('index', i);
+
+          if (i % 2 !== 0 && w.striped) {
+            el.addCls(GRID_CELL_EVEN_CLS)
+          }
+          el.update(cellHTML);
+          columnDom.dom.appendChild(el.dom);
+        }
+
+        if (w.nativeScroller && (me.side === 'left' || me.side === 'right')) {
+          columnDom.select('.' + GRID_PSEUDO_CELL_CLS).destroy();
+
+          var cellHTML = cellTpl.getHTML({
+            cellValue: '&nbsp;'
+          });
+
+          var el = F.get(document.createElement('div'));
+          el.css({
+            height: w.cellHeight + 'px'
+          });
+          el.addCls(GRID_PSEUDO_CELL_CLS);
+
+          el.update(cellHTML);
+          columnDom.dom.appendChild(el.dom);
+        }
+      }
+    },
+    /*
+     * @param {Number} rowIndex
+     * @param {Number} columnIndex
+     */
+    updateRows: function (rowIndex, columnIndex) {
+      var me = this,
+        w = me.widget,
+        i = 0,
+        columns,
+        iL;
+
+      if (rowIndex === undefined) {
+        me.clearDirty();
+      }
+      else {
+        me.clearDirty(rowIndex);
+      }
+
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
           break;
       }
 
-      if(w.cellStylingCls){
-        me.clearCls(cell);
+      iL = columns.length;
+
+      if (columnIndex !== undefined) {
+        i = columnIndex;
+        iL = columnIndex + 1;
       }
 
-      if(o.cls){
-        cell.addCls(o.cls);
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        switch (column.type) {
+          case 'string':
+          case 'number':
+          case 'combo':
+          case 'action':
+          case 'text':
+          case 'date':
+          case 'currency':
+            me.renderUniversal(i, rowIndex);
+            break;
+          case 'order':
+            me.renderOrder(i, rowIndex);
+            break;
+          case 'expand':
+            me.renderExpand(i, rowIndex);
+            break;
+          case 'select':
+            me.renderSelect(i, rowIndex);
+            break;
+          case 'color':
+            me.renderColor(i, rowIndex);
+            break;
+          case 'checkbox':
+            me.renderCheckbox(i, rowIndex);
+            break;
+          case 'image':
+            me.renderImage(i, rowIndex);
+            break;
+          case 'sparklineline':
+            me.renderSparkLine(i, rowIndex, 'line');
+            break;
+          case 'sparklinebar':
+            me.renderSparkLine(i, rowIndex, 'bar');
+            break;
+          case 'sparklinetristate':
+            me.renderSparkLine(i, rowIndex, 'tristate');
+            break;
+          case 'sparklinediscrete':
+            me.renderSparkLine(i, rowIndex, 'discrete');
+            break;
+          case 'sparklinebullet':
+            me.renderSparkLine(i, rowIndex, 'bullet');
+            break;
+          case 'sparklinepie':
+            me.renderSparkLine(i, rowIndex, 'pie');
+            break;
+          case 'sparklinebox':
+            me.renderSparkLine(i, rowIndex, 'box');
+            break;
+          case 'circle':
+            me.renderCircle(i, rowIndex);
+            break;
+          case 'progressdonut':
+            me.renderProgressDonut(i, rowIndex);
+            break;
+          case 'progressbar':
+            me.renderProgressBar(i, rowIndex);
+            break;
+          case 'hbar':
+            me.renderHBar(i, rowIndex);
+            break;
+          case 'grossloss':
+            me.renderGrossLoss(i, rowIndex);
+            break;
+          default:
+            throw new Error('[FancyGrid error] - not existed column type ' + column.type);
+            break;
+        }
       }
 
-      if(dirty && w.dirtyEnabled){
-        me.enableCellDirty(cell);
+      me.removeNotUsedCells();
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderUniversal: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        emptyValue = w.emptyValue,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        currencySign = lang.currencySign;
+
+      if (column.key !== undefined) {
+        key = column.key;
+      }
+      else if (column.index !== undefined) {
+        key = column.index;
+      }
+      else {
+        key = column.type === 'action' ? 'none' : undefined;
       }
 
-      cell.css(o.style);
-
-      if(!o.column.widget){
-        inner.update(value);
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
       }
-    }
-  },
-  /*
-   * @param {Number} i
-   */
-  renderOrder: function(i){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      cellInnerCls = w.cellInnerCls,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + cellInnerCls),
-      j = 0,
-      jL = s.getLength(),
-      plusValue = 0;
-
-    if(w.paging){
-      plusValue += s.showPage * s.pageSize;
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        id = s.getId(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j)
-        },
-        value = j + 1 + plusValue;
-
-      o.value = value;
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      var cell = cellsDom.item(j);
-      if(w.cellStylingCls){
-        me.clearCls(cell);
-      }
-
-      if(o.cls){
-        cell.addCls(o.cls);
-      }
-
-      cell.css(o.style);
-      cellsDomInner.item(j).update(value);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderExpand: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++) {
-      var cellInnerEl = cellsDomInner.item(j),
-        checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-        checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0,
-        dataItem = w.get(j),
-        dataItemId = dataItem.id;
-
-      if(isCheckBoxInside === false){
-        new Fancy.CheckBox({
-          renderTo: cellsDomInner.item(j).dom,
-          renderId: true,
-          value: false,
-          label: false,
-          expander: true,
-          style: {
-            padding: '0px',
-            display: 'inline-block'
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          id = s.getId(j),
+          inner = cellsDomInner.item(j),
+          cell = cellsDom.item(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j),
+            inner: inner,
+            cell: cell
           },
-          events: [{
-            change: function(checkbox, value){
-              rowIndex = checkbox.el.parent().parent().attr('index');
+          value,
+          dirty = false;
 
-              if(value){
-                w.expander.expand(rowIndex);
-              }
-              else{
-                w.expander.collapse(rowIndex);
-              }
+        if (s.changed[o.id] && s.changed[o.id][column.index]) {
+          dirty = true;
+        }
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
+
+        switch (column.type) {
+          case 'currency':
+            if (value !== '') {
+              value = currencySign + value;
             }
-          }]
-        });
-      }
-      else{
-        checkBoxId = checkBox.dom.id;
-        checkBox = Fancy.getWidget(checkBoxId);
-
-        if(w.expander._expandedIds[dataItemId]){
-          checkBox.set(true, false);
+            o.value = value;
+            break;
         }
-        else{
-          checkBox.set(false, false);
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        switch (value) {
+          case '':
+          case undefined:
+            value = emptyValue;
+            break;
+        }
+
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        if (dirty && w.dirtyEnabled) {
+          me.enableCellDirty(cell);
+        }
+
+        cell.css(o.style);
+
+        if (!o.column.widget) {
+          inner.update(value);
         }
       }
-    }
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  clearCls: function(cell){
-    var me = this,
-      w = me.widget,
-      cellStylingCls = w.cellStylingCls,
-      i = 0,
-      iL = cellStylingCls.length;
+    },
+    /*
+     * @param {Number} i
+     */
+    renderOrder: function (i) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j = 0,
+        jL = s.getLength(),
+        plusValue = 0;
 
-    for(;i<iL;i++){
-      cell.removeCls(cellStylingCls[i]);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderColor: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
+      if (w.paging) {
+        plusValue += s.showPage * s.pageSize;
       }
 
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j)
+          },
+          value = j + 1 + plusValue;
+
+        o.value = value;
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        var cell = cellsDom.item(j);
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        cell.css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderExpand: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      o.value = value;
+      for (; j < jL; j++) {
+        var cellInnerEl = cellsDomInner.item(j),
+          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBoxId,
+          isCheckBoxInside = checkBox.length !== 0,
+          dataItem = w.get(j),
+          dataItemId = dataItem.id;
 
-      var cell = cellsDom.item(j);
-      cell.css(o.style);
-
-      var cellInner = cell.select('.' + w.cellInnerCls);
-      cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderCombo: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        o = {
-          rowIndex: j,
-          value: value,
-          style: {}
-        };
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-      cellsDomInner.item(j).update(value);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderCheckbox: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++) {
-      var data = s.get(j),
-        value = s.get(j, key),
-        cellInnerEl = cellsDomInner.item(j),
-        checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-        checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0,
-        dirty = false,
-        id = s.getId(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column,
-          id: id,
-          item: s.getItem(j),
-          value: value
-        };
-
-      if(s.changed[o.id] && s.changed[o.id][column.index]){
-        dirty = true;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      if(isCheckBoxInside === false){
-
-        if(!o.stopped){
-          var editable = true;
-
-          if(w.rowEdit){
-            editable = false;
-          }
-
-          cellsDomInner.item(j).update('');
-
-          new Fancy.CheckBox({
+        if (isCheckBoxInside === false) {
+          new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,
-            value: value,
+            value: false,
             label: false,
-            editable: editable,
+            expander: true,
             style: {
               padding: '0px',
               display: 'inline-block'
             },
             events: [{
-              beforechange: function(checkbox){
-                if(column.index === '$selected'){
-                  return;
-                }
+              change: function (checkbox, value) {
+                rowIndex = checkbox.el.parent().parent().attr('index');
 
-                if(column.editable !== true){
-                  checkbox.canceledChange = true;
+                if (value) {
+                  w.expander.expand(rowIndex);
                 }
-              }
-            },{
-              change: function(checkbox, value){
-                if(column.index === '$selected'){
-                  return;
+                else {
+                  w.expander.collapse(rowIndex);
                 }
-
-                w.celledit.checkBoxChangedValue = value;
               }
             }]
           });
         }
-        else{
-          cellsDomInner.item(j).update(value);
+        else {
+          checkBoxId = checkBox.dom.id;
+          checkBox = F.getWidget(checkBoxId);
+
+          if (w.expander._expandedIds[dataItemId]) {
+            checkBox.set(true, false);
+          }
+          else {
+            checkBox.set(false, false);
+          }
         }
       }
-      else{
-        checkBoxId = checkBox.dom.id;
-        checkBox = Fancy.getWidget(checkBoxId);
-        if(o.stopped){
-          checkBox.destroy();
-          cellsDomInner.item(j).update(value);
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    clearCls: function (cell) {
+      var w = this.widget;
+
+      F.each(w.cellStylingCls, function (cls) {
+        cell.removeCls(cls);
+      });
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderColor: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
         }
         else {
+          value = s.get(j, key);
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        o.value = value;
+
+        var cell = cellsDom.item(j);
+        cell.css(o.style);
+
+        var cellInner = cell.select('.' + GRID_CELL_INNER_CLS);
+        cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderCombo: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          o = {
+            rowIndex: j,
+            value: value,
+            style: {}
+          };
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        cellsDom.item(j).css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderCheckbox: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          value = s.get(j, key),
+          cellInnerEl = cellsDomInner.item(j),
+          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBoxId,
+          isCheckBoxInside = checkBox.length !== 0,
+          dirty = false,
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j),
+            value: value
+          };
+
+        if (s.changed[o.id] && s.changed[o.id][column.index]) {
+          dirty = true;
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        if (isCheckBoxInside === false) {
+
+          if (!o.stopped) {
+            var editable = true;
+
+            if (w.rowEdit) {
+              editable = false;
+            }
+
+            cellsDomInner.item(j).update('');
+
+            new F.CheckBox({
+              renderTo: cellsDomInner.item(j).dom,
+              renderId: true,
+              value: value,
+              label: false,
+              editable: editable,
+              style: {
+                padding: '0px',
+                display: 'inline-block'
+              },
+              events: [{
+                beforechange: function (checkbox) {
+                  if (column.index === '$selected') {
+                    return;
+                  }
+
+                  if (column.editable !== true) {
+                    checkbox.canceledChange = true;
+                  }
+                }
+              }, {
+                change: function (checkbox, value) {
+                  if (column.index === '$selected') {
+                    return;
+                  }
+
+                  w.celledit.checkBoxChangedValue = value;
+                }
+              }]
+            });
+          }
+          else {
+            cellsDomInner.item(j).update(value);
+          }
+        }
+        else {
+          checkBoxId = checkBox.dom.id;
+          checkBox = F.getWidget(checkBoxId);
+          if (o.stopped) {
+            checkBox.destroy();
+            cellsDomInner.item(j).update(value);
+          }
+          else {
+            checkBox.set(value, false);
+          }
+        }
+
+        if (dirty) {
+          var cell = cellsDom.item(j);
+          me.enableCellDirty(cell);
+        }
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderSelect: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          id = s.get(j, 'id'),
+          cellInnerEl = cellsDomInner.item(j),
+          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBoxId,
+          isCheckBoxInside = checkBox.length !== 0;
+
+        if (w.selection.memory) {
+          if (w.selection.memory.all && !w.selection.memory.except[id]) {
+            value = true;
+            w.selection.domSelectRow(j);
+          }
+          else if (w.selection.memory.selected[id]) {
+            value = true;
+            w.selection.domSelectRow(j);
+          }
+          else {
+            value = false;
+            w.selection.domDeSelectRow(j);
+          }
+        }
+
+        if (isCheckBoxInside === false) {
+          new F.CheckBox({
+            renderTo: cellsDomInner.item(j).dom,
+            renderId: true,
+            value: value,
+            label: false,
+            stopIfCTRL: true,
+            style: {
+              padding: '0px',
+              display: 'inline-block'
+            }
+          });
+        }
+        else {
+          checkBoxId = checkBox.dom.id;
+          checkBox = F.getWidget(checkBoxId);
           checkBox.set(value, false);
         }
       }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderImage: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
 
-      if(dirty){
-        var cell = cellsDom.item(j);
-        me.enableCellDirty(cell);
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
       }
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderSelect: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        id = s.get(j, 'id'),
-        cellInnerEl = cellsDomInner.item(j),
-        checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-        checkBoxId,
-        isCheckBoxInside = checkBox.length !== 0;
-
-      if(w.selection.memory){
-        if( w.selection.memory.all && !w.selection.memory.except[id]){
-          value = true;
-          w.selection.domSelectRow(j);
-        }
-        else if(w.selection.memory.selected[id]){
-          value = true;
-          w.selection.domSelectRow(j);
-        }
-        else{
-          value = false;
-          w.selection.domDeSelectRow(j);
-        }
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      if(isCheckBoxInside === false){
-        new Fancy.CheckBox({
-          renderTo: cellsDomInner.item(j).dom,
-          renderId: true,
-          value: value,
-          label: false,
-          stopIfCTRL: true,
-          style: {
-            padding: '0px',
-            display: 'inline-block'
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          data = s.get(j),
+          o = {
+            rowIndex: j,
+            value: value,
+            data: data,
+            style: {}
+          },
+          attr = '';
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        if (o.attr) {
+          for (var p in o.attr) {
+            attr += p + '="' + o.attr[p] + '"';
           }
+        }
+
+        value = '<img ' + attr + ' src="' + o.value + '">';
+
+        cellsDom.item(j).css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     * @param {String} type
+     */
+    renderSparkLine: function (i, rowIndex, type) {
+      var me = this,
+        w = me.widget,
+        cellHeight = w.cellHeight,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columnWidth = column.width,
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        _sparkConfig = column.sparkConfig || {};
+
+      columnDom.addCls(GRID_COLUMN_SPARKLINE_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      var sparkHeight = cellHeight - 1,
+        sparkWidth = columnWidth - 20,
+        widthName;
+
+      switch (type) {
+        case 'line':
+        case 'pie':
+        case 'box':
+          widthName = 'width';
+          break;
+        case 'bullet':
+          widthName = 'width';
+          sparkHeight -= 11;
+          columnDom.addCls(GRID_COLUMN_SPARKLINE_BULLET_CLS);
+          break;
+        case 'discrete':
+          widthName = 'width';
+          sparkWidth = columnWidth;
+          sparkHeight -= 2;
+          break;
+        case 'bar':
+        case 'tristate':
+          widthName = 'barWidth';
+          break;
+      }
+
+      for (; j < jL; j++) {
+        var value = s.get(j, key),
+          data = s.get(j),
+          o = {
+            rowIndex: j,
+            value: value,
+            data: data,
+            style: {}
+          };
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        if (F.isArray(column.values)) {
+          var k = 0,
+            kL = column.values.length;
+
+          value = [];
+
+          for (; k < kL; k++) {
+            value.push(s.get(j, column.values[k]));
+          }
+        }
+
+        cellsDom.item(j).css(o.style);
+        var innerDom = cellsDomInner.item(j).dom,
+          sparkConfig = {
+            type: type,
+            fillColor: 'transparent',
+            height: sparkHeight
+          };
+
+        F.apply(sparkConfig, _sparkConfig);
+
+        if (type === 'bar' || type === 'tristate') {
+          sparkWidth = columnWidth - 20;
+          sparkWidth = sparkWidth / value.length;
+        }
+
+        sparkConfig[widthName] = sparkWidth;
+
+        F.$(innerDom).sparkline(value, sparkConfig);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderProgressDonut: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      columnDom.addCls(GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        cellsDom.item(j).css(o.style);
+        var sparkConfig = column.sparkConfig || {},
+          renderTo = cellsDomInner.item(j).dom;
+
+        F.apply(sparkConfig, {
+          renderTo: renderTo,
+          value: value
         });
-      }
-      else{
-        checkBoxId = checkBox.dom.id;
-        checkBox = Fancy.getWidget(checkBoxId);
-        checkBox.set(value, false);
-      }
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderImage: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
 
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        data = s.get(j),
-        o = {
-          rowIndex: j,
-          value: value,
-          data: data,
-          style: {}
-        },
-        attr = '';
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      if(o.attr){
-        for(var p in o.attr){
-          attr += p + '="' + o.attr[p] + '"';
+        if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width) {
+          sparkConfig.size = w.cellHeaderHeight - 3 * 2;
         }
+
+        F.get(renderTo).update('');
+
+        new F.spark.ProgressDonut(sparkConfig);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderGrossLoss: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL;
+
+      columnDom.addCls(GRID_COLUMN_GROSSLOSS_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      value = '<img ' + attr + ' src="' + o.value + '">';
+      var sparkConfig = column.sparkConfig || {};
 
-      cellsDom.item(j).css(o.style);
-      cellsDomInner.item(j).update(value);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   * @param {String} type
-   */
-  renderSparkLine: function(i, rowIndex, type){
-    var me = this,
-      w = me.widget,
-      cellHeight = w.cellHeight,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      columnWidth = column.width,
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      _sparkConfig = column.sparkConfig || {};
-
-    columnDom.addCls(w.columnSparkCls);
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    var sparkHeight = cellHeight - 1,
-      sparkWidth = columnWidth - 20,
-      widthName;
-
-    switch(type){
-      case 'line':
-      case 'pie':
-      case 'box':
-        widthName = 'width';
-        break;
-      case 'bullet':
-        widthName = 'width';
-        sparkHeight -= 11;
-        columnDom.addCls(w.columnSparkBulletCls);
-        break;
-      case 'discrete':
-        widthName = 'width';
-        sparkWidth = columnWidth;
-        sparkHeight -= 2;
-        break;
-      case 'bar':
-      case 'tristate':
-        widthName = 'barWidth';
-        break;
-    }
-
-    for(;j<jL;j++){
-      var value = s.get(j, key),
-        data = s.get(j),
-        o = {
-          rowIndex: j,
-          value: value,
-          data: data,
-          style: {}
-        };
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
+      if (sparkConfig.showOnMax) {
+        sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
       }
 
-      if(Fancy.isArray(column.values)){
-        var k = 0,
-          kL = column.values.length;
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
 
-        value = [];
-
-        for(;k<kL;k++){
-          value.push(s.get(j, column.values[k]));
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
         }
-      }
+        else {
+          value = s.get(j, key);
+        }
 
-      cellsDom.item(j).css(o.style);
-      var innerDom = cellsDomInner.item(j).dom,
-        sparkConfig = {
-          type: type,
-          fillColor: 'transparent',
-          height: sparkHeight
-        };
+        o.value = value;
 
-      Fancy.apply(sparkConfig, _sparkConfig);
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
 
-      if( type === 'bar' || type === 'tristate' ){
-        sparkWidth = columnWidth - 20;
-        sparkWidth = sparkWidth/value.length;
-      }
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
 
-      sparkConfig[widthName] = sparkWidth;
+        cellsDom.item(j).css(o.style);
 
-      Fancy.$(innerDom).sparkline(value, sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderProgressDonut: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + cellCls),
-      cellsDomInner = columnDom.select('.' + cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    columnDom.addCls(w.columnSparkDonutProgressCls);
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
+        F.apply(sparkConfig, {
+          renderTo: cellsDomInner.item(j).dom,
+          value: value,
           column: column
-        },
-        value;
+        });
 
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
+        new F.spark.GrossLoss(sparkConfig);
       }
-      else{
-        value = s.get(j, key);
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderProgressBar: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        maxValue = 100;
+
+      columnDom.addCls(GRID_COLUMN_PROGRESS_CLS);
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
       }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-      var sparkConfig = column.sparkConfig || {},
-        renderTo = cellsDomInner.item(j).dom;
-
-      Fancy.apply(sparkConfig, {
-        renderTo: renderTo,
-        value: value
-      });
-
-      if(!sparkConfig.size && !sparkConfig.height && !sparkConfig.width){
-        sparkConfig.size = w.cellHeaderHeight - 3 * 2;
-      }
-
-      Fancy.get( renderTo ).update('');
-
-      new Fancy.spark.ProgressDonut(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderGrossLoss: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL;
-
-    columnDom.addCls(w.columnGrossLossCls);
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    var sparkConfig = column.sparkConfig || {};
-
-    if(sparkConfig.showOnMax){
-      sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
+      else {
+        j = 0;
+        jL = s.getLength();
       }
 
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
+      var sparkConfig = column.sparkConfig || {};
+      if (sparkConfig.percents === false) {
+        maxValue = Math.max.apply(Math, s.getColumnData(key));
       }
 
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
 
-      cellsDom.item(j).css(o.style);
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
 
-      Fancy.apply(sparkConfig, {
-        renderTo: cellsDomInner.item(j).dom,
-        value: value,
-        column: column
-      });
+        o.value = value;
 
-      new Fancy.spark.GrossLoss(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderProgressBar: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      maxValue = 100;
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
 
-    columnDom.addCls(w.columnProgressCls);
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
 
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
+        cellsDom.item(j).css(o.style);
 
-    var sparkConfig = column.sparkConfig || {};
-    if(sparkConfig.percents === false){
-      maxValue = Math.max.apply(Math, s.getColumnData(key) );
-    }
+        var _renderTo = F.get(cellsDomInner.item(j).dom);
 
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-
-      var _renderTo = Fancy.get(cellsDomInner.item(j).dom);
-
-      if(_renderTo.select('.fancy-grid-column-progress-bar').length){
-        var spark = Fancy.getWidget(_renderTo.select('.fancy-grid-column-progress-bar').item(0).attr('id'));
-        spark.value = value;
-        spark.maxValue = maxValue;
-        spark.update();
-        continue;
-      }
-
-      Fancy.apply(sparkConfig, {
-        renderTo: cellsDomInner.item(j).dom,
-        value: value,
-        column: column,
-        maxValue: maxValue
-      });
-
-      new Fancy.spark.ProgressBar(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderHBar: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.'+ w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDom = columnDom.select('.' + w.cellCls),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      sparkConfig = column.sparkConfig || {},
-      disabled = column.disabled || {};
-
-    columnDom.addCls(w.columnSparkHBarCls);
-
-    var values = {},
-      i = 0,
-      iL,
-      kL,
-      maxItemValue = Number.MIN_VALUE;
-
-    if(Fancy.isArray(column.index)){
-      iL = column.index.length;
-      for(;i<iL;i++){
-        var _key = column.index[i];
-
-        if(disabled[_key]){
+        if (_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).length) {
+          var spark = F.getWidget(_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).item(0).attr('id'));
+          spark.value = value;
+          spark.maxValue = maxValue;
+          spark.update();
           continue;
         }
 
-        values[_key] = s.getColumnData(_key);
+        F.apply(sparkConfig, {
+          renderTo: cellsDomInner.item(j).dom,
+          value: value,
+          column: column,
+          maxValue: maxValue
+        });
 
-        var _maxItemValue = Math.max.apply(Math, values[_key]);
-        if(_maxItemValue > maxItemValue){
-          maxItemValue = _maxItemValue;
-        }
-
-        kL = values[_key].length;
+        new F.spark.ProgressBar(sparkConfig);
       }
-    }
-    else{
-      var data = s.getColumnData(column.index),
-        fields = [];
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderHBar: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        sparkConfig = column.sparkConfig || {},
+        disabled = column.disabled || {};
 
-      iL = data.length;
+      columnDom.addCls(GRID_COLUMN_H_BAR_CLS);
 
-      for(;i<iL;i++){
-        var n = 0,
-          nL = data[i].length;
+      var values = {},
+        i = 0,
+        iL,
+        kL,
+        maxItemValue = Number.MIN_VALUE;
 
-        for(;n<nL;n++){
-          if(disabled[n]){
+      if (F.isArray(column.index)) {
+        iL = column.index.length;
+        for (; i < iL; i++) {
+          var _key = column.index[i];
+
+          if (disabled[_key]) {
             continue;
           }
 
-          values[n] = values[n] || [];
-          values[n].push(data[i][n]);
+          values[_key] = s.getColumnData(_key);
+
+          var _maxItemValue = Math.max.apply(Math, values[_key]);
+          if (_maxItemValue > maxItemValue) {
+            maxItemValue = _maxItemValue;
+          }
+
+          kL = values[_key].length;
         }
-      }
-
-      for(var p in values){
-        var _maxItemValue = Math.max.apply(Math, values[p]);
-        fields.push(p);
-
-        if(_maxItemValue > maxItemValue){
-          maxItemValue = _maxItemValue;
-        }
-
-        kL = values[p].length;
-      }
-
-      if(!column.fields){
-        column.fields = fields;
-      }
-    }
-
-    var sum = [],
-      k = 0;
-
-    for(; k < kL; k++){
-      sum[k] = 0;
-      for (var p in values){
-        if(column.fields && disabled[column.index + '.' +p]){
-          continue;
-        }
-        else if(disabled[p]){
-          continue;
-        }
-
-        sum[k] += values[p][k];
-      }
-    }
-
-    maxValue = Math.max.apply(Math, sum);
-
-    sparkConfig.maxItemValue = maxItemValue;
-
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
-
-    for(;j<jL;j++){
-      var data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {},
-          column: column
-        },
-        value;
-
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.format ){
-        o.value = me.format(o.value, column.format);
-        value = o.value;
-      }
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      cellsDom.item(j).css(o.style);
-
-      var _renderTo = Fancy.get(cellsDomInner.item(j).dom);
-
-      if(_renderTo.select('.fancy-spark-hbar').length){
-        var spark = Fancy.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
-        spark.maxValue = maxValue;
-        spark.maxItemValue = maxItemValue;
-        spark.update(data);
-        continue;
-      }
-
-      Fancy.apply(sparkConfig, {
-        renderTo: cellsDomInner.item(j).dom,
-        value: value,
-        data: data,
-        column: column,
-        maxValue: maxValue,
-        height: w.cellHeight - 1
-      });
-
-      new Fancy.spark.HBar(sparkConfig);
-    }
-  },
-  /*
-   * @param {Number} i
-   * @param {Number} rowIndex
-   */
-  renderCircle: function(i, rowIndex){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      column = columns[i],
-      key = column.key || column.index,
-      columsDom = me.el.select('.' + w.columnCls),
-      columnDom = columsDom.item(i),
-      cellsDomInner = columnDom.select('.' + w.cellCls + ' .' + w.cellInnerCls),
-      j,
-      jL,
-      cellHeight = w.cellHeight - 4;
-
-    columnDom.addCls(w.columnSparkCircleCls);
-
-    function pieChart(percentage, size) {
-      //http://jsfiddle.net/da5LN/62/
-
-      var svgns = "http://www.w3.org/2000/svg";
-      var chart = document.createElementNS(svgns, "svg:svg");
-      chart.setAttribute("width", size);
-      chart.setAttribute("height", size);
-      chart.setAttribute("viewBox", "0 0 " + size + " " + size);
-
-      var back = document.createElementNS(svgns, "circle");
-      back.setAttributeNS(null, "cx", size / 2);
-      back.setAttributeNS(null, "cy", size / 2);
-      back.setAttributeNS(null, "r",  size / 2);
-      var color = "#F0F0F0";
-      if (size > 50) {
-        color = "F0F0F0";
-      }
-
-      if(percentage < 0){
-        color = '#F9DDE0';
-      }
-
-      back.setAttributeNS(null, "fill", color);
-      chart.appendChild(back);
-
-      var path = document.createElementNS(svgns, "path");
-      var unit = (Math.PI *2) / 100;
-      var startangle = 0;
-      var endangle = percentage * unit - 0.001;
-      var x1 = (size / 2) + (size / 2) * Math.sin(startangle);
-      var y1 = (size / 2) - (size / 2) * Math.cos(startangle);
-      var x2 = (size / 2) + (size / 2) * Math.sin(endangle);
-      var y2 = (size / 2) - (size / 2) * Math.cos(endangle);
-      var big = 0;
-      if (endangle - startangle > Math.PI) {
-        big = 1;
-      }
-      var d = "M " + (size / 2) + "," + (size / 2) +
-        " L " + x1 + "," + y1 +
-        " A " + (size / 2) + "," + (size / 2) +
-        " 0 " + big + " 1 " +
-        x2 + "," + y2 +
-        " Z";
-
-      path.setAttribute("d", d); // Set this path
-      if(percentage < 0){
-        path.setAttribute("fill", '#EA7369');
       }
       else {
-        path.setAttribute("fill", '#44A4D3');
-      }
-      chart.appendChild(path);
+        var data = s.getColumnData(column.index),
+          fields = [];
 
-      var front = document.createElementNS(svgns, "circle");
-      front.setAttributeNS(null, "cx", (size / 2));
-      front.setAttributeNS(null, "cy", (size / 2));
-      front.setAttributeNS(null, "r",  (size * 0.25));
-      front.setAttributeNS(null, "fill", "#fff");
-      chart.appendChild(front);
-      return chart;
-    }
+        iL = data.length;
 
-    if(rowIndex !== undefined){
-      j = rowIndex;
-      jL = rowIndex + 1;
-    }
-    else{
-      j = 0;
-      jL = s.getLength();
-    }
+        for (; i < iL; i++) {
+          var n = 0,
+            nL = data[i].length;
 
-    for(;j<jL;j++){
-      var value,
-        data = s.get(j),
-        o = {
-          rowIndex: j,
-          data: data,
-          style: {}
-        };
+          for (; n < nL; n++) {
+            if (disabled[n]) {
+              continue;
+            }
 
-      if(column.smartIndexFn){
-        value = column.smartIndexFn(data);
-      }
-      else{
-        value = s.get(j, key);
-      }
-
-      o.value = value;
-
-      if( column.render ){
-        o = column.render(o);
-        value = o.value;
-      }
-
-      var innerDom = cellsDomInner.item(j).dom;
-
-      if(innerDom.innerHTML === ''){
-
-        innerDom.appendChild(pieChart(value, cellHeight));
-      }
-    }
-  },
-  /*
-   *
-   */
-  removeNotUsedCells: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store,
-      columnsDom = me.el.select('.' + w.columnCls),
-      i = 0,
-      iL = columnsDom.length;
-
-    for(;i<iL;i++){
-      var columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select('.' + w.cellCls),
-        j = store.getLength(),
-        jL = cellsDom.length;
-
-      for(;j<jL;j++){
-        cellsDom.item(j).remove();
-      }
-    }
-  },
-  /*
-   * @param {String|Object} format
-   * @return {Function|String|Object}
-   */
-  getFormat: function(format){
-    var me = this,
-      w = me.widget,
-      lang = w.lang;
-
-    switch(format){
-      case 'number':
-        return function (value){
-          return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
-        };
-        break;
-      case 'date':
-        return function (value) {
-          var date = Fancy.Date.parse(value, lang.date.read, format.mode);
-          value = Fancy.Date.format(date, lang.date.write, format.mode);
-
-          return value;
-        };
-        break;
-    }
-
-    switch(format.type){
-      case 'date':
-        return function (value) {
-          if(value.length === 0){
-            return '';
+            values[n] = values[n] || [];
+            values[n].push(data[i][n]);
           }
-          var date = Fancy.Date.parse(value, format.read, format.mode);
-          value = Fancy.Date.format(date, format.write, undefined, format.mode);
-
-
-          return value;
-        };
-        break;
-    }
-
-    if(format.inputFn){
-      return format.inputFn;
-    }
-  },
-  /*
-   * @param {String} value
-   * @param {*} format
-   * @return {String}
-   */
-  format: function(value, format){
-    switch(Fancy.typeOf(format)){
-      case 'string':
-        value = this.getFormat(format)(value);
-        break;
-      case 'function':
-        value = format(value);
-        break;
-      case 'object':
-        if(format.inputFn){
-          value = format.inputFn(value);
         }
-        else{
+
+        for (var p in values) {
+          var _maxItemValue = Math.max.apply(Math, values[p]);
+          fields.push(p);
+
+          if (_maxItemValue > maxItemValue) {
+            maxItemValue = _maxItemValue;
+          }
+
+          kL = values[p].length;
+        }
+
+        if (!column.fields) {
+          column.fields = fields;
+        }
+      }
+
+      var sum = [],
+        k = 0;
+
+      for (; k < kL; k++) {
+        sum[k] = 0;
+        for (var p in values) {
+          if (column.fields && disabled[column.index + '.' + p]) {
+            continue;
+          }
+          else if (disabled[p]) {
+            continue;
+          }
+
+          sum[k] += values[p][k];
+        }
+      }
+
+      maxValue = Math.max.apply(Math, sum);
+
+      sparkConfig.maxItemValue = maxItemValue;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column
+          },
+          value;
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.format) {
+          o.value = me.format(o.value, column.format);
+          value = o.value;
+        }
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        cellsDom.item(j).css(o.style);
+
+        var _renderTo = F.get(cellsDomInner.item(j).dom);
+
+        if (_renderTo.select('.fancy-spark-hbar').length) {
+          var spark = F.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
+          spark.maxValue = maxValue;
+          spark.maxItemValue = maxItemValue;
+          spark.update(data);
+          continue;
+        }
+
+        F.apply(sparkConfig, {
+          renderTo: cellsDomInner.item(j).dom,
+          value: value,
+          data: data,
+          column: column,
+          maxValue: maxValue,
+          height: w.cellHeight - 1
+        });
+
+        new F.spark.HBar(sparkConfig);
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
+    renderCircle: function (i, rowIndex) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        key = column.key || column.index,
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        cellHeight = w.cellHeight - 4;
+
+      columnDom.addCls(GRID_COLUMN_CHART_CIRCLE_CLS);
+
+      function pieChart(percentage, size) {
+        //http://jsfiddle.net/da5LN/62/
+
+        var svgns = "http://www.w3.org/2000/svg";
+        var chart = document.createElementNS(svgns, "svg:svg");
+        chart.setAttribute("width", size);
+        chart.setAttribute("height", size);
+        chart.setAttribute("viewBox", "0 0 " + size + " " + size);
+
+        var back = document.createElementNS(svgns, "circle");
+        back.setAttributeNS(null, "cx", size / 2);
+        back.setAttributeNS(null, "cy", size / 2);
+        back.setAttributeNS(null, "r", size / 2);
+        var color = "#F0F0F0";
+        if (size > 50) {
+          color = "F0F0F0";
+        }
+
+        if (percentage < 0) {
+          color = '#F9DDE0';
+        }
+
+        back.setAttributeNS(null, "fill", color);
+        chart.appendChild(back);
+
+        var path = document.createElementNS(svgns, "path");
+        var unit = (Math.PI * 2) / 100;
+        var startangle = 0;
+        var endangle = percentage * unit - 0.001;
+        var x1 = (size / 2) + (size / 2) * Math.sin(startangle);
+        var y1 = (size / 2) - (size / 2) * Math.cos(startangle);
+        var x2 = (size / 2) + (size / 2) * Math.sin(endangle);
+        var y2 = (size / 2) - (size / 2) * Math.cos(endangle);
+        var big = 0;
+        if (endangle - startangle > Math.PI) {
+          big = 1;
+        }
+        var d = "M " + (size / 2) + "," + (size / 2) +
+          " L " + x1 + "," + y1 +
+          " A " + (size / 2) + "," + (size / 2) +
+          " 0 " + big + " 1 " +
+          x2 + "," + y2 +
+          " Z";
+
+        path.setAttribute("d", d); // Set this path
+        if (percentage < 0) {
+          path.setAttribute("fill", '#EA7369');
+        }
+        else {
+          path.setAttribute("fill", '#44A4D3');
+        }
+        chart.appendChild(path);
+
+        var front = document.createElementNS(svgns, "circle");
+        front.setAttributeNS(null, "cx", (size / 2));
+        front.setAttributeNS(null, "cy", (size / 2));
+        front.setAttributeNS(null, "r", (size * 0.25));
+        front.setAttributeNS(null, "fill", "#fff");
+        chart.appendChild(front);
+        return chart;
+      }
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var value,
+          data = s.get(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {}
+          };
+
+        if (column.smartIndexFn) {
+          value = column.smartIndexFn(data);
+        }
+        else {
+          value = s.get(j, key);
+        }
+
+        o.value = value;
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        var innerDom = cellsDomInner.item(j).dom;
+
+        if (innerDom.innerHTML === '') {
+
+          innerDom.appendChild(pieChart(value, cellHeight));
+        }
+      }
+    },
+    /*
+     *
+     */
+    removeNotUsedCells: function () {
+      var me = this,
+        w = me.widget,
+        store = w.store,
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        i = 0,
+        iL = columnsDom.length;
+
+      for (; i < iL; i++) {
+        var columnDom = columnsDom.item(i),
+          cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+          j = store.getLength(),
+          jL = cellsDom.length;
+
+        for (; j < jL; j++) {
+          cellsDom.item(j).remove();
+        }
+      }
+    },
+    /*
+     * @param {String|Object} format
+     * @return {Function|String|Object}
+     */
+    getFormat: function (format) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang;
+
+      switch (format) {
+        case 'number':
+          return function (value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
+          };
+          break;
+        case 'date':
+          return function (value) {
+            var date = F.Date.parse(value, lang.date.read, format.mode);
+            value = F.Date.format(date, lang.date.write, format.mode);
+
+            return value;
+          };
+          break;
+      }
+
+      switch (format.type) {
+        case 'date':
+          return function (value) {
+            if (value.length === 0) {
+              return '';
+            }
+            var date = F.Date.parse(value, format.read, format.mode);
+            value = F.Date.format(date, format.write, undefined, format.mode);
+
+
+            return value;
+          };
+          break;
+      }
+
+      if (format.inputFn) {
+        return format.inputFn;
+      }
+    },
+    /*
+     * @param {String} value
+     * @param {*} format
+     * @return {String}
+     */
+    format: function (value, format) {
+      switch (F.typeOf(format)) {
+        case 'string':
           value = this.getFormat(format)(value);
-        }
+          break;
+        case 'function':
+          value = format(value);
+          break;
+        case 'object':
+          if (format.inputFn) {
+            value = format.inputFn(value);
+          }
+          else {
+            value = this.getFormat(format)(value);
+          }
 
-        break;
+          break;
+      }
+
+      return value;
+    },
+    /*
+     * @param {Fancy.Element} cell
+     */
+    enableCellDirty: function (cell) {
+      if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
+        return;
+      }
+
+      cell.addCls(GRID_CELL_DIRTY_CLS);
+      cell.append('<div class="' + GRID_CELL_DIRTY_EL_CLS + '"></div>');
+    },
+    /*
+     * @param {Number} rowIndex
+     */
+    clearDirty: function (rowIndex) {
+      var me = this;
+
+      if (rowIndex !== undefined) {
+        me.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + GRID_CELL_DIRTY_EL_CLS).destroy();
+        me.el.select('.' + GRID_CELL_DIRTY_CLS + '[index="' + rowIndex + '"]').removeCls(GRID_CELL_DIRTY_CLS);
+
+        return;
+      }
+
+      me.el.select('.' + GRID_CELL_DIRTY_EL_CLS).destroy();
+      me.el.select('.' + GRID_CELL_DIRTY_CLS).removeCls(GRID_CELL_DIRTY_CLS);
+    },
+    /*
+     *
+     */
+    showEmptyText: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      if (me.side !== 'center') {
+        return;
+      }
+
+      if (me.emptyTextEl) {
+        me.emptyTextEl.destroy();
+        delete me.emptyTextEl;
+      }
+
+      if (s.dataView.length === 0) {
+        var el = F.get(document.createElement('div'));
+
+        el.addCls(GRID_EMPTY_CLS);
+        el.update(w.emptyText);
+
+        me.emptyTextEl = F.get(me.el.dom.appendChild(el.dom));
+      }
     }
-    
-    return value;
-  },
-  /*
-   * @param {Fancy.Element} cell
-   */
-  enableCellDirty: function(cell){
-    if(cell.hasCls('fancy-grid-cell-dirty')){
-      return;
-    }
+  };
 
-    cell.addCls('fancy-grid-cell-dirty');
-    cell.append('<div class="fancy-grid-cell-dirty-el"></div>');
-  },
-  /*
-   * @param {Number} rowIndex
-   */
-  clearDirty: function(rowIndex){
-    var me = this;
-
-    if(rowIndex !== undefined){
-      me.el.select('.fancy-grid-cell[index="'+rowIndex+'"] .fancy-grid-cell-dirty-el').destroy();
-      me.el.select('.fancy-grid-cell-dirty[index="'+rowIndex+'"]').removeCls('fancy-grid-cell-dirty');
-
-      return;
-    }
-
-    me.el.select('.fancy-grid-cell-dirty-el').destroy();
-    me.el.select('.fancy-grid-cell-dirty').removeCls('fancy-grid-cell-dirty');
-  },
-  /*
-   *
-   */
-  showEmptyText: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    if(me.side !== 'center'){
-      return;
-    }
-
-    if(me.emptyTextEl){
-      me.emptyTextEl.destroy();
-      delete me.emptyTextEl;
-    }
-
-    if(s.dataView.length === 0){
-      var el = Fancy.get(document.createElement('div'));
-
-      el.addCls('fancy-grid-empty-text');
-      el.update(w.emptyText);
-
-      me.emptyTextEl = Fancy.get(me.el.dom.appendChild(el.dom));
-    }
-  }
-};
+})();
 /**
- * @class Fancy.Grid
+ * @class Fancy.grid.Body
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.grid.Body', {
-	extend: Fancy.Widget,
-  mixins: [
-    Fancy.grid.body.mixin.Updater
-  ],
-  cls: 'fancy-grid-body',
-  cellCls: 'fancy-grid-cell',
-  pseudoCellCls: 'fancy-grid-pseudo-cell',
-  cellTpl: [
-    '<div class="fancy-grid-cell-inner">{cellValue}</div>'
-  ],
-  cellWrapperTpl: [
-    '<div class="fancy-grid-cell-wrapper">',
-      '<div class="fancy-grid-cell-inner">{cellValue}</div>',
-    '</div>'
-  ],
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+
   /*
-   * @constructor
-   * @param {Object} config
+   * Constants
    */
-	constructor: function(){
-		var me = this;
-		
-		me.Super('const', arguments);
-	},
-  /*
-   *
-   */
-	init: function(){
-		var me = this;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  var GRID_BODY_CLS = F.GRID_BODY_CLS;
+  var GRID_CELL_WRAPPER_CLS = F.GRID_CELL_WRAPPER_CLS;
+  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
+  var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
+  var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
 
-    me.Super('init', arguments);
-    me.addEvents('adddomcolumns');
+  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
+  var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
+  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS =  F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
+  var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
+  var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
+  var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
 
-    me.initTpl();
-		me.render();
-		me.ons();
-	},
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
+  F.define('Fancy.grid.Body', {
+    extend: F.Widget,
+    mixins: [
+      F.grid.body.mixin.Updater
+    ],
+    cls: GRID_BODY_CLS,
+    cellTpl: [
+      '<div class="' + GRID_CELL_INNER_CLS + '">{cellValue}</div>'
+    ],
+    cellWrapperTpl: [
+      '<div class="' + GRID_CELL_WRAPPER_CLS + '">',
+      '<div class="' + GRID_CELL_INNER_CLS + '">{cellValue}</div>',
+      '</div>'
+    ],
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.cellTpl = new Fancy.Template(me.cellTpl);
-    me.cellWrapperTpl = new Fancy.Template(me.cellWrapperTpl);
-  },
-  /*
-   *
-   */
-	ons: function(){
-		var me = this,
-			w = me.widget,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls,
-      id = w.id;
-		
-		w.on('afterrender', me.onAfterRender, me);
+      me.Super('init', arguments);
+      me.addEvents('adddomcolumns');
 
-		var columnSelector = '.' + columnCls + '[grid="'+id+'"]',
-      cellSelector = columnSelector + ' div.' + cellCls;
+      me.initTpl();
+      me.render();
+      me.ons();
+    },
+    /*
+     *
+     */
+    initTpl: function () {
+      var me = this;
 
-    me.el.on('click', me.onCellClick, me, cellSelector);
-    me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
-    me.el.on('mouseenter', me.onCellMouseEnter, me, cellSelector);
-    me.el.on('mouseleave', me.onCellMouseLeave, me, cellSelector);
-    me.el.on('mousedown', me.onCellMouseDown, me, cellSelector);
+      me.cellTpl = new F.Template(me.cellTpl);
+      me.cellWrapperTpl = new F.Template(me.cellWrapperTpl);
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        id = w.id;
 
-    me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
-    me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
-	},
-  /*
-   *
-   */
-	render: function(){
-		var me = this,
-			w = me.widget,
-			renderTo,
-			el = Fancy.get(document.createElement('div'));
+      w.on('afterrender', me.onAfterRender, me);
 
-		el.addCls(me.cls);
-    renderTo = w.el.select('.fancy-grid-' + me.side).dom;
-		me.el = Fancy.get(renderTo.appendChild(el.dom));
-	},
-  /*
-   *
-   */
-	onAfterRender: function(){
-		var me = this;
+      var columnSelector = '.' + GRID_COLUMN_CLS + '[grid="' + id + '"]',
+        cellSelector = columnSelector + ' div.' + GRID_CELL_CLS;
 
-    me.update();
-    me.setHeight();
-	},
-  /*
-   * @param {Number} scrollLeft
-   */
-  setColumnsPosition: function(scrollLeft){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length,
-      columnsWidth = 0,
-      bodyDomColumns = me.el.select('.'+columnCls+'[grid="' + w.id + '"]'),
-      scrollLeft = scrollLeft || me.scrollLeft || 0;
+      me.el.on('click', me.onCellClick, me, cellSelector);
+      me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
+      me.el.on('mouseenter', me.onCellMouseEnter, me, cellSelector);
+      me.el.on('mouseleave', me.onCellMouseLeave, me, cellSelector);
+      me.el.on('mousedown', me.onCellMouseDown, me, cellSelector);
 
-    columnsWidth += scrollLeft;
+      me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
+      me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        renderTo,
+        el = F.get(document.createElement('div'));
 
-    for(;i<iL;i++) {
-      var column = columns[i],
-        columnEl = bodyDomColumns.item(i);
+      el.addCls(GRID_BODY_CLS);
+      renderTo = w.el.select('.fancy-grid-' + me.side).dom;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     *
+     */
+    onAfterRender: function () {
+      this.update();
+      this.setHeight();
+    },
+    /*
+     * @param {Number} scrollLeft
+     */
+    setColumnsPosition: function (scrollLeft) {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length,
+        columnsWidth = 0,
+        bodyDomColumns = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
+        scrollLeft = scrollLeft || me.scrollLeft || 0;
 
-      columnEl.css({
-        left: columnsWidth + 'px'
-      });
+      columnsWidth += scrollLeft;
 
-      if(!column.hidden){
-        columnsWidth += column.width;
+      for (; i < iL; i++) {
+        var column = columns[i],
+          columnEl = bodyDomColumns.item(i);
+
+        columnEl.css({
+          left: columnsWidth + 'px'
+        });
+
+        if (!column.hidden) {
+          columnsWidth += column.width;
+        }
       }
-    }
-  },
-  /*
-   * @param {Number} delta
-   * @return {Object}
-   */
-  wheelScroll: function(delta){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      knobOffSet = w.knobOffSet,
-      columnsDom = me.el.select('.'+columnCls+'[grid="' + w.id + '"]');
+    },
+    /*
+     * @param {Number} delta
+     * @return {Object}
+     */
+    wheelScroll: function (delta) {
+      var me = this,
+        w = me.widget,
+        knobOffSet = w.knobOffSet,
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
 
-    if(columnsDom.length === 0){
-      return;
-    }
+      if (columnsDom.length === 0) {
+        return;
+      }
 
-    var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
-      i = 0,
-      iL = columnsDom.length,
-      bodyViewHeight = w.getBodyHeight(),
-      cellsViewHeight = w.getCellsViewHeight(),
-      scrollRightPath = cellsViewHeight - bodyViewHeight + knobOffSet,
-      o = {
-        oldScroll: parseInt(columnsDom.item(0).css('top')),
-        newScroll: parseInt(columnsDom.item(0).css('top')) + 30 * delta,
-        deltaScroll: 30 * delta
+      var oldScrollTop = parseInt(columnsDom.item(0).css('top')),
+        i = 0,
+        iL = columnsDom.length,
+        bodyViewHeight = w.getBodyHeight(),
+        cellsViewHeight = w.getCellsViewHeight(),
+        scrollRightPath = cellsViewHeight - bodyViewHeight + knobOffSet,
+        o = {
+          oldScroll: parseInt(columnsDom.item(0).css('top')),
+          newScroll: parseInt(columnsDom.item(0).css('top')) + 30 * delta,
+          deltaScroll: 30 * delta
+        };
+
+      for (; i < iL; i++) {
+        var columnEl = columnsDom.item(i),
+          topValue = parseInt(columnEl.css('top')) + 30 * delta;
+
+        if (topValue > 0) {
+          topValue = 0;
+          o.newScroll = 0;
+        }
+        else if (Math.abs(topValue) > scrollRightPath) {
+          topValue = -scrollRightPath - knobOffSet;
+          o.newScroll = topValue;
+        }
+
+        columnEl.css('top', topValue + 'px');
+      }
+
+      o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
+
+      return o;
+    },
+    /*
+     * @param {Number} y
+     * @param {Number} x
+     * @return {Object}
+     */
+    scroll: function (y, x) {
+      var me = this,
+        w = me.widget,
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
+        i = 0,
+        iL = columnsDom.length,
+        o = {};
+
+      if (y !== false && y !== null && y !== undefined) {
+        o.scrollTop = y;
+        for (; i < iL; i++) {
+          var columnEl = columnsDom.item(i);
+          columnEl.css('top', -y + 'px');
+        }
+      }
+
+      if (x !== false && x !== null && x !== undefined) {
+        o.scrollLeft = x;
+        if (w.header) {
+          w.header.scroll(x);
+        }
+        me.scrollLeft = x;
+        w.body.setColumnsPosition(x);
+
+        if (me.side === 'center') {
+          if (w.grouping) {
+            w.grouping.scrollLeft(x);
+          }
+
+          if (w.summary) {
+            w.summary.scrollLeft(x);
+          }
+        }
+      }
+
+      return o;
+    },
+    /*
+     *
+     */
+    setHeight: function () {
+      var height = this.widget.getBodyHeight();
+
+      this.css('height', height + 'px');
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellClick: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('cellclick', me.getEventParams(e));
+      w.fire('rowclick', me.getEventParams(e));
+      w.fire('columnclick', me.getColumnEventParams(e));
+      if (w.activated === false) {
+        w.activated = true;
+        w.fire('activate');
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellDblClick: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('celldblclick', me.getEventParams(e));
+      w.fire('rowdblclick', me.getEventParams(e));
+      w.fire('columndblclick', me.getColumnEventParams(e));
+    },
+    /*
+     * @param {Object} e
+     * @return {false|Object}
+     */
+    getEventParams: function (e) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        cell = e.currentTarget,
+        cellEl = F.get(e.currentTarget),
+        columnEl = cellEl.parent();
+
+      if (cellEl.parent().dom === undefined) {
+        return false;
+      }
+
+      if (s.getLength() === 0) {
+        return false;
+      }
+
+      var columnIndex = parseInt(columnEl.attr('index')),
+        rowIndex = parseInt(cellEl.attr('index')),
+        column = columns[columnIndex],
+        key = column.index || column.key,
+        value = s.get(rowIndex, key),
+        id = s.getId(rowIndex),
+        data = s.get(rowIndex),
+        item = s.getById(id);
+
+      if (column.smartIndexFn) {
+        value = column.smartIndexFn(data);
+      }
+
+      return {
+        e: e,
+        id: id,
+        side: me.side,
+        cell: cell,
+        column: column,
+        rowIndex: rowIndex,
+        columnIndex: columnIndex,
+        value: value,
+        data: data,
+        item: item
       };
+    },
+    /*
+     * @param {Object} e
+     * @return {Object}
+     */
+    getColumnEventParams: function (e) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        cellEl = F.get(e.currentTarget),
+        columnEl = cellEl.parent(),
+        columnIndex = parseInt(columnEl.attr('index')),
+        columns = me.getColumns(),
+        column = columns[columnIndex],
+        config = {
+          e: e,
+          side: me.side,
+          columnIndex: columnIndex,
+          column: column,
+          columnDom: columnEl.dom
+        };
 
-    for(;i<iL;i++){
-      var columnEl = columnsDom.item(i),
-        topValue = parseInt(columnEl.css('top')) + 30 * delta;
-
-      if(topValue > 0){
-        topValue = 0;
-        o.newScroll = 0;
+      if (w.columnClickData) {
+        config.data = s.getColumnData(column.index, column.smartIndexFn);
       }
-      else if(Math.abs(topValue) > scrollRightPath ){
-        topValue = -scrollRightPath - knobOffSet;
-        o.newScroll = topValue;
-      }
 
-      columnEl.css('top', topValue + 'px');
-    }
+      return config;
+    },
+    /*
+     * @param {Object} e
+     * @return {Object}
+     */
+    getColumnHoverEventParams: function (e) {
+      var me = this,
+        columnEl = F.get(e.currentTarget),
+        columnIndex = parseInt(columnEl.attr('index')),
+        columns = me.getColumns(),
+        column = columns[columnIndex];
 
-    o.scrolled = oldScrollTop !== parseInt(columnsDom.item(0).css('top'));
-
-    return o;
-  },
-  /*
-   * @param {Number} y
-   * @param {Number} x
-   * @return {Object}
-   */
-  scroll: function(y, x){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columnsDom = me.el.select('.'+columnCls+'[grid="'+w.id+'"]'),
-      i = 0,
-      iL = columnsDom.length,
-      o = {};
-
-    if(y !== false && y !== null && y !== undefined){
-      o.scrollTop = y;
-      for(;i<iL;i++){
-        var columnEl = columnsDom.item(i);
-        columnEl.css('top', -y + 'px');
-      }
-    }
-
-    if(x !== false && x !== null && x !== undefined) {
-      o.scrollLeft = x;
-      if (w.header) {
-        w.header.scroll(x);
-      }
-      me.scrollLeft = x;
-      w.body.setColumnsPosition(x);
-
-      if (me.side === 'center'){
-        if(w.grouping){
-          w.grouping.scrollLeft(x);
-        }
-
-        if(w.summary){
-          w.summary.scrollLeft(x);
-        }
-      }
-    }
-
-    return o;
-  },
-  /*
-   *
-   */
-  setHeight: function(){
-    var me = this,
-      w = me.widget,
-      height = w.getBodyHeight();
-
-    me.css('height', height + 'px');
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellClick: function(e){
-    var me = this,
-      w = me.widget;
-
-    w.fire('cellclick', me.getEventParams(e));
-    w.fire('rowclick', me.getEventParams(e));
-    w.fire('columnclick', me.getColumnEventParams(e));
-    if(w.activated === false){
-      w.activated = true;
-      w.fire('activate');
-    }
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellDblClick: function(e){
-    var me = this,
-      w = me.widget;
-
-    w.fire('celldblclick', me.getEventParams(e));
-    w.fire('rowdblclick', me.getEventParams(e));
-    w.fire('columndblclick', me.getColumnEventParams(e));
-  },
-  /*
-   * @param {Object} e
-   * @return {false|Object}
-   */
-  getEventParams: function(e){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      columns = me.getColumns(),
-      cell = e.currentTarget,
-      cellEl = Fancy.get(e.currentTarget),
-      columnEl = cellEl.parent();
-
-    if(cellEl.parent().dom === undefined){
-      return false;
-    }
-
-    if(s.getLength() === 0){
-      return false;
-    }
-
-    var columnIndex = parseInt(columnEl.attr('index')),
-      rowIndex = parseInt(cellEl.attr('index')),
-      column = columns[columnIndex],
-      key = column.index || column.key,
-      value = s.get(rowIndex, key),
-      id = s.getId(rowIndex),
-      data = s.get(rowIndex),
-      item = s.getById(id);
-
-    if(column.smartIndexFn){
-      value = column.smartIndexFn(data);
-    }
-
-    return {
-      e: e,
-      id: id,
-      side: me.side,
-      cell: cell,
-      column: column,
-      rowIndex: rowIndex,
-      columnIndex: columnIndex,
-      value: value,
-      data: data,
-      item: item
-    };
-  },
-  /*
-   * @param {Object} e
-   * @return {Object}
-   */
-  getColumnEventParams: function(e){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      cellEl = Fancy.get(e.currentTarget),
-      columnEl = cellEl.parent(),
-      columnIndex = parseInt(columnEl.attr('index')),
-      columns = me.getColumns(),
-      column = columns[columnIndex],
-      config = {
+      return {
         e: e,
         side: me.side,
         columnIndex: columnIndex,
         column: column,
         columnDom: columnEl.dom
       };
+    },
+    /*
+     * @return {Array}
+     */
+    getColumns: function () {
+      return this.widget.getColumns(this.side);
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
 
-    if(w.columnClickData){
-      config.data = s.getColumnData(column.index, column.smartIndexFn);
-    }
-
-    return config;
-  },
-  /*
-   * @param {Object} e
-   * @return {Object}
-   */
-  getColumnHoverEventParams: function(e){
-    var me = this,
-      columnEl = Fancy.get(e.currentTarget),
-      columnIndex = parseInt(columnEl.attr('index')),
-      columns = me.getColumns(),
-      column = columns[columnIndex];
-
-    return {
-      e: e,
-      side: me.side,
-      columnIndex: columnIndex,
-      column: column,
-      columnDom: columnEl.dom
-    };
-  },
-  /*
-   * @return {Array}
-   */
-  getColumns: function(){
-    var me = this,
-      w = me.widget;
-
-    return w.getColumns(me.side);
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellMouseEnter: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getEventParams(e),
-      prevCellOver = me.prevCellOver;
-
-    if(Fancy.nojQuery && prevCellOver){
-      if(me.fixZeptoBug){
-        if(params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
-          w.fire('cellleave', prevCellOver);
-          if(params.rowIndex !== prevCellOver.rowIndex){
-            w.fire('rowleave', prevCellOver);
+      if (F.nojQuery && prevCellOver) {
+        if (me.fixZeptoBug) {
+          if (params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side) {
+            w.fire('cellleave', prevCellOver);
+            if (params.rowIndex !== prevCellOver.rowIndex) {
+              w.fire('rowleave', prevCellOver);
+            }
           }
         }
       }
-    }
 
-    if(!prevCellOver){
-      w.fire('rowenter', params);
-    }
-    else{
-      if(params.rowIndex !== me.prevCellOver.rowIndex){
+      if (!prevCellOver) {
         w.fire('rowenter', params);
       }
-    }
+      else {
+        if (params.rowIndex !== me.prevCellOver.rowIndex) {
+          w.fire('rowenter', params);
+        }
+      }
 
-    w.fire('cellenter', params);
+      w.fire('cellenter', params);
 
-    me.prevCellOver = params;
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellMouseDown: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getEventParams(e),
-      columnParams = {
-        e: params.e,
-        side: params.side,
-        columnDom: Fancy.get(params.cell).parent().dom,
-        column: params.column,
-        columnIndex: params.columnIndex
-      };
+      me.prevCellOver = params;
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellMouseDown: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        columnParams = {
+          e: params.e,
+          side: params.side,
+          columnDom: F.get(params.cell).parent().dom,
+          column: params.column,
+          columnIndex: params.columnIndex
+        };
 
-    w.fire('beforecellmousedown', params);
-    w.fire('cellmousedown', params);
-    w.fire('columnmousedown', columnParams);
-  },
-  /*
-   * @param {Object} e
-   */
-  onCellMouseLeave: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getEventParams(e),
-      prevCellOver = me.prevCellOver;
+      w.fire('beforecellmousedown', params);
+      w.fire('cellmousedown', params);
+      w.fire('columnmousedown', columnParams);
+    },
+    /*
+     * @param {Object} e
+     */
+    onCellMouseLeave: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
 
-    if(Fancy.nojQuery){
-      if(prevCellOver === undefined){
+      if (F.nojQuery) {
+        if (prevCellOver === undefined) {
+          return;
+        }
+
+        me.fixZeptoBug = params;
         return;
       }
 
-      me.fixZeptoBug = params;
-      return;
-    }
+      w.fire('rowleave', prevCellOver);
+      w.fire('cellleave', prevCellOver);
+      delete me.prevCellOver;
+    },
+    /*
+     * @param {Object} e
+     */
+    onColumnMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getColumnHoverEventParams(e),
+        prevColumnOver = me.prevColumnOver;
 
-    w.fire('rowleave', prevCellOver);
-    w.fire('cellleave', prevCellOver);
-    delete me.prevCellOver;
-  },
-  /*
-   * @param {Object} e
-   */
-  onColumnMouseEnter: function(e){
-    var me = this,
-      w = me.widget,
-      params = me.getColumnHoverEventParams(e),
-      prevColumnOver = me.prevColumnOver;
-
-    if(!prevColumnOver){
-      w.fire('columnenter', params);
-    }
-    else if(me.prevCellOver){
-      if(params.rowIndex !== me.prevCellOver.rowIndex){
-        w.fire('rowenter', params);
+      if (!prevColumnOver) {
+        w.fire('columnenter', params);
       }
-    }
-
-    me.prevColumnOver = params;
-  },
-  /*
-   * @param {Object} e
-   */
-  onColumnMouseLeave: function(e){
-    var me = this,
-      w = me.widget;
-
-    w.fire('columnleave', me.prevColumnOver);
-    delete me.prevColumnOver;
-  },
-  /*
-   * @param {Number} row
-   * @param {Number} column
-   * @return {Fancy.Element}
-   */
-  getCell: function(row, column){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls;
-
-    return me.el.select('.'+columnCls+'[index="'+column+'"] .'+cellCls+'[index="'+row+'"]');
-  },
-  /*
-   * @param {Number} row
-   * @param {Number} column
-   * @return {HTMLElement}
-   */
-  getDomCell: function(row, column){
-    var me = this,
-      w = me.widget,
-      cellCls = w.cellCls,
-      columnCls = w.columnCls;
-
-    return me.el.select('.'+columnCls+'[index="'+column+'"][grid="' + w.id + '"] .'+cellCls+'[index="'+row+'"]').dom;
-  },
-  /*
-   * @param {Number} index
-   * @return {HTMLElement}
-   */
-  getDomColumn: function(index){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls;
-
-    return me.el.select('.'+columnCls+'[index="'+index+'"][grid="' + w.id + '"]').dom;
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      cellCls = w.cellCls,
-      cellSelector = 'div.'+cellCls,
-      columnSelector = 'div.'+columnCls;
-
-    me.el.un('click', me.onCellClick, me, cellSelector);
-    me.el.un('dblclick', me.onCellDblClick, me, cellSelector);
-    me.el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
-    me.el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
-    me.el.un('mousedown', me.onCellMouseDown, me, cellSelector);
-
-    me.el.un('mouseenter', me.onColumnMouseEnter, me, columnSelector);
-    me.el.un('mouseleave', me.onColumnMouseLeave, me, columnSelector);
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  hideColumn: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.el.select('.'+columnCls),
-      column = columns.item(orderIndex),
-      columnWidth = parseInt(column.css('width')),
-      i = orderIndex + 1,
-      iL = columns.length;
-
-    column.hide();
-
-    for(;i<iL;i++){
-      var _column = columns.item(i),
-        left = parseInt(_column.css('left')) - columnWidth;
-
-      _column.css('left', left);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  showColumn: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.el.select('.'+columnCls),
-      column = columns.item(orderIndex),
-      columnWidth,
-      i = orderIndex + 1,
-      iL = columns.length;
-
-    column.show();
-
-    columnWidth = parseInt(column.css('width'));
-
-    for(;i<iL;i++){
-      var _column = columns.item(i),
-        left = parseInt(_column.css('left')) + columnWidth;
-
-      _column.css('left', left);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  removeColumn: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columns = me.el.select('.'+columnCls),
-      column = columns.item(orderIndex),
-      columnWidth = parseInt(column.css('width')),
-      i = orderIndex + 1,
-      iL = columns.length;
-
-    column.destroy();
-
-    for(;i<iL;i++){
-      var _column = columns.item(i),
-        left = parseInt(_column.css('left')) - columnWidth;
-
-      _column.attr('index', i - 1);
-      _column.css('left', left);
-    }
-  },
-  /*
-   * @param {Number} index
-   * @param {Object} column
-   */
-  insertColumn: function(index, column){
-    var me = this,
-      w = me.widget,
-      columnCls = w.columnCls,
-      columnWithEllipsisCls = w.columnWithEllipsisCls,
-      columnTextCls = w.columnTextCls,
-      columnOrderCls = w.columnOrderCls,
-      columnSelectCls = w.columnSelectCls,
-      _columns = me.getColumns(),
-      columns = me.el.select('.' + columnCls),
-      width = column.width,
-      el = Fancy.get(document.createElement('div')),
-      i = index,
-      iL = columns.length,
-      left = 0,
-      j = 0,
-      jL = index;
-
-    for(;j<jL;j++){
-      left += _columns[j].width;
-    }
-
-    for(;i<iL;i++){
-      var _column = columns.item(i);
-      left = parseInt(_column.css('left')) + column.width;
-
-      _column.css('left', left);
-      _column.attr('index', i + 1);
-    }
-
-    el.addCls(columnCls);
-    el.attr('grid', w.id);
-
-    if(column.index === '$selected'){
-      el.addCls(columnSelectCls);
-    }
-    else{
-      switch(column.type){
-        case 'order':
-          el.addCls(columnOrderCls);
-          break;
+      else if (me.prevCellOver) {
+        if (params.rowIndex !== me.prevCellOver.rowIndex) {
+          w.fire('rowenter', params);
+        }
       }
-    }
 
-    if(column.cls){
-      el.addCls(column.cls);
-    }
+      me.prevColumnOver = params;
+    },
+    /*
+     * @param {Object} e
+     */
+    onColumnMouseLeave: function (e) {
+      var me = this,
+        w = me.widget;
 
-    if(column.type === 'text'){
-      el.addCls(columnTextCls);
-    }
+      w.fire('columnleave', me.prevColumnOver);
+      delete me.prevColumnOver;
+    },
+    /*
+     * @param {Number} row
+     * @param {Number} column
+     * @return {Fancy.Element}
+     */
+    getCell: function (row, column) {
+      return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
+    },
+    /*
+     * @param {Number} row
+     * @param {Number} column
+     * @return {HTMLElement}
+     */
+    getDomCell: function (row, column) {
+      var me = this,
+        w = me.widget;
 
-    el.css({
-      width: width + 'px'
-    });
-    el.attr('index', index);
+      return me.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]').dom;
+    },
+    /*
+     * @param {Number} index
+     * @return {HTMLElement}
+     */
+    getDomColumn: function (index) {
+      var me = this,
+        w = me.widget;
 
-    if(column.cellAlign){
-      el.css('text-align', column.cellAlign);
-    }
+      return me.el.select('.' + GRID_COLUMN_CLS + '[index="' + index + '"][grid="' + w.id + '"]').dom;
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        el = me.el,
+        cellSelector = 'div.' + GRID_CELL_CLS,
+        columnSelector = 'div.' + GRID_COLUMN_CLS;
 
-    if(column.ellipsis === true){
-      switch(column.type){
-        case 'string':
-        case 'text':
-        case 'number':
-          el.addCls(columnWithEllipsisCls);
-          break;
+      el.un('click', me.onCellClick, me, cellSelector);
+      el.un('dblclick', me.onCellDblClick, me, cellSelector);
+      el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
+      el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
+      el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+
+      el.un('mouseenter', me.onColumnMouseEnter, me, columnSelector);
+      el.un('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    hideColumn: function (orderIndex) {
+      var me = this,
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        column = columns.item(orderIndex),
+        columnWidth = parseInt(column.css('width')),
+        i = orderIndex + 1,
+        iL = columns.length;
+
+      column.hide();
+
+      for (; i < iL; i++) {
+        var _column = columns.item(i),
+          left = parseInt(_column.css('left')) - columnWidth;
+
+        _column.css('left', left);
       }
-    }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showColumn: function (orderIndex) {
+      var me = this,
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        column = columns.item(orderIndex),
+        columnWidth,
+        i = orderIndex + 1,
+        iL = columns.length;
 
-    var scrolled = w.scroller.getScroll();
-    el.css('top', -scrolled);
+      column.show();
 
-    if(index === 0 && columns.length){
-      el.css('left', '0px');
-      me.el.dom.insertBefore(el.dom, columns.item(index).dom);
-    }
-    else if(index !== 0 && columns.length){
-      el.css('left', left + 'px');
-      me.el.dom.appendChild(el.dom);
-    }
+      columnWidth = parseInt(column.css('width'));
 
-    me.checkDomCells();
-    me.updateRows(undefined, index);
+      for (; i < iL; i++) {
+        var _column = columns.item(i),
+          left = parseInt(_column.css('left')) + columnWidth;
+
+        _column.css('left', left);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    removeColumn: function (orderIndex) {
+      var me = this,
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        column = columns.item(orderIndex),
+        columnWidth = parseInt(column.css('width')),
+        i = orderIndex + 1,
+        iL = columns.length;
+
+      column.destroy();
+
+      for (; i < iL; i++) {
+        var _column = columns.item(i),
+          left = parseInt(_column.css('left')) - columnWidth;
+
+        _column.attr('index', i - 1);
+        _column.css('left', left);
+      }
+    },
+    /*
+     * @param {Number} index
+     * @param {Object} column
+     */
+    insertColumn: function (index, column) {
+      var me = this,
+        w = me.widget,
+        _columns = me.getColumns(),
+        columns = me.el.select('.' + GRID_COLUMN_CLS),
+        width = column.width,
+        el = F.get(document.createElement('div')),
+        i = index,
+        iL = columns.length,
+        left = 0,
+        j = 0,
+        jL = index,
+        passedLeft;
+
+      for (; j < jL; j++) {
+        left += _columns[j].width;
+      }
+
+      passedLeft = left;
+
+      for (; i < iL; i++) {
+        var _column = columns.item(i);
+        left = parseInt(_column.css('left')) + column.width;
+
+        _column.css('left', left);
+        _column.attr('index', i + 1);
+      }
+
+      el.addCls(GRID_COLUMN_CLS);
+      el.attr('grid', w.id);
+
+      if (column.index === '$selected') {
+        el.addCls(GRID_COLUMN_SELECT_CLS);
+      }
+      else {
+        switch (column.type) {
+          case 'order':
+            el.addCls(GRID_COLUMN_ORDER_CLS);
+            break;
+        }
+      }
+
+      if (column.cls) {
+        el.addCls(column.cls);
+      }
+
+      if (column.type === 'text') {
+        el.addCls(GRID_COLUMN_TEXT_CLS);
+      }
+
+      el.css({
+        width: width + 'px'
+      });
+      el.attr('index', index);
+
+      if (column.cellAlign) {
+        el.css('text-align', column.cellAlign);
+      }
+
+      if (column.ellipsis === true) {
+        switch (column.type) {
+          case 'string':
+          case 'text':
+          case 'number':
+            el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
+            break;
+        }
+      }
+
+      var scrolled = w.scroller.getScroll();
+      el.css('top', -scrolled);
+
+      if (index === 0 && columns.length) {
+        el.css('left', '0px');
+        me.el.dom.insertBefore(el.dom, columns.item(index).dom);
+      }
+      else if (index !== 0 && columns.length) {
+        if(index === columns.length){
+          el.css('left', left + 'px');
+          me.el.dom.appendChild(el.dom);
+        }
+        else {
+          el.css('left', passedLeft + 'px');
+          me.el.dom.insertBefore(el.dom, columns.item(index).dom);
+        }
+      }
+
+      me.checkDomCells();
+      me.updateRows(undefined, index);
+    },
+    reSetIndexes: function () {
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function (column, i) {
+        me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]').attr('index', i);
+      });
+    },
+    /*
+     *
+     */
+    clearColumnsStyles: function(){
+      var me = this,
+        cells = me.el.select('div.' + GRID_CELL_CLS);
+
+      cells.each(function(cell){
+        cell.css('color', '');
+        cell.css('background-color', '');
+      });
+    },
+    /*
+     *
+     */
+    updateColumnsSizes: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        left = -w.scroller.scrollLeft || 0;
+
+      F.each(columns, function (column, i) {
+        var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
+
+        el.css({
+          width: column.width,
+          left: left
+        });
+
+        left += column.width;
+      });
+    },
+    reSetColumnsAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+
+      columnEls.each(function(columnEl, i){
+        var column = columns[i];
+
+        columnEl.css('text-align', column.cellAlign || '');
+      });
+    },
+    reSetColumnsCls: function () {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+
+      columnEls.each(function(columnEl, i){
+        var column = columns[i],
+          clss = columnEl.attr('class').split(' ');
+
+        F.each(clss, function (cls) {
+          switch(cls){
+            case GRID_COLUMN_CLS:
+              break;
+            case column.cls:
+              break;
+            case spark[column.type]:
+              break;
+            default:
+              columnEl.removeCls(cls);
+          }
+        });
+      });
+    }
+  });
+
+  var spark = {
+    sparklineline: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebar: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinetristate: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinediscrete: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebullet: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinepie: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebox: GRID_COLUMN_SPARKLINE_CLS,
+    circle: GRID_COLUMN_CHART_CIRCLE_CLS,
+    progressdonut: GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS,
+    grossloss: GRID_COLUMN_GROSSLOSS_CLS,
+    progressbar: GRID_COLUMN_PROGRESS_CLS,
+    hbar: GRID_COLUMN_H_BAR_CLS
   }
-});
+
+})();
 /*
  * @mixin Fancy.grid.header.mixin.Menu
  */
-Fancy.Mixin('Fancy.grid.header.mixin.Menu', {
-  triggeredColumnCls: 'fancy-grid-header-column-triggered',
-  triggerUpCls: 'fancy-grid-header-cell-trigger-up',
-  triggerDownCls: 'fancy-grid-header-cell-trigger-down',
-  /*
-   * @param {Object} cell
-   * @param {Number} index
-   * @param {Object} column
-   * @param {Array} columns
-   */
-  showMenu: function(cell, index, column, columns){
-    var me = this,
-      w = me.widget,
-      offset = cell.offset();
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.hideMenu();
-    cell.addCls(me.triggeredColumnCls);
-    
-    if(!column.menu.rendered){
-      column.menu = me.generateMenu(column, columns);
-      column.menu = new Fancy.Menu({
-        column: column,
-        items: column.menu,
-        theme: w.theme,
-        events: [{
-          hide: me.onMenuHide,
-          scope: me
-        }]
-      });
-    }
-    else{
-      me.updateColumnsMenu(column, columns);
-    }
+  //CONSTANTS
+  var GRID_HEADER_COLUMN_TRIGGERED_CLS = F.GRID_HEADER_COLUMN_TRIGGERED_CLS;
+  var GRID_HEADER_CELL_TRIGGER_UP_CLS = F.GRID_HEADER_CELL_TRIGGER_UP_CLS;
+  var GRID_HEADER_CELL_TRIGGER_DOWN_CLS = F.GRID_HEADER_CELL_TRIGGER_DOWN_CLS;
 
-    column.menu.showAt(offset.left + parseInt(cell.css('width')) - 26, offset.top + parseInt(cell.css('height')) - 1);
+  F.Mixin('Fancy.grid.header.mixin.Menu', {
+    triggeredColumnCls: GRID_HEADER_COLUMN_TRIGGERED_CLS,
+    triggerUpCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
+    triggerDownCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
+    /*
+     * @param {Object} cell
+     * @param {Number} index
+     * @param {Object} column
+     * @param {Array} columns
+     */
+    showMenu: function (cell, index, column, columns) {
+      var me = this,
+        w = me.widget,
+        offset = cell.offset();
 
-    me.activeMenu = column.menu;
-    me.activeCell = cell;
-  },
-  /*
-   *
-   */
-  hideMenu: function(){
-    var me = this,
-      w = me.widget,
-      triggeredColumnCls = me.triggeredColumnCls;
+      me.hideMenu();
+      cell.addCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
 
-    switch(me.side){
-      case 'left':
-        if(w.header.activeMenu){
-          w.header.activeMenu.hide();
-          w.header.activeCell.removeCls(triggeredColumnCls);
-          delete w.header.activeMenu;
-          delete w.header.activeCell;
-        }
-
-        if(w.rightHeader.activeMenu){
-          w.rightHeader.activeMenu.hide();
-          w.rightHeader.activeCell.removeCls(triggeredColumnCls);
-          delete w.rightHeader.activeMenu;
-          delete w.rightHeader.activeCell;
-        }
-        break;
-      case 'center':
-        if(w.leftHeader.activeMenu){
-          w.leftHeader.activeMenu.hide();
-          w.leftHeader.activeCell.removeCls(triggeredColumnCls);
-          delete w.leftHeader.activeMenu;
-          delete w.leftHeader.activeCell;
-        }
-
-        if(w.rightHeader.activeMenu){
-          w.rightHeader.activeMenu.hide();
-          w.rightHeader.activeCell.removeCls(triggeredColumnCls);
-          delete w.rightHeader.activeMenu;
-          delete w.rightHeader.activeCell;
-        }
-        break;
-      case 'right':
-        if(w.leftHeader.activeMenu){
-          w.leftHeader.activeMenu.hide();
-          w.leftHeader.activeCell.removeCls(triggeredColumnCls);
-          delete w.leftHeader.activeMenu;
-          delete w.leftHeader.activeCell;
-        }
-
-        if(w.header.activeMenu){
-          w.header.activeMenu.hide();
-          w.header.activeCell.removeCls(triggeredColumnCls);
-          delete w.header.activeMenu;
-          delete w.header.activeCell;
-        }
-        break;
-    }
-
-    if(me.activeMenu){
-      me.activeMenu.hide();
-      me.activeCell.removeCls(triggeredColumnCls);
-    }
-
-    delete me.activeMenu;
-    delete me.activeCell;
-  },
-  /*
-   * @param {Object} column
-   * @param {Array} columns
-   */
-  generateMenu: function(column, columns){
-    var me = this,
-      w = me.widget,
-      lang = w.lang,
-      menu = [],
-      cls = '',
-      indexOrder,
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++){
-      if(column.index === columns[i].index){
-        indexOrder = i;
-        break;
+      if (!column.menu.rendered) {
+        column.menu = me.generateMenu(column, columns);
+        column.menu = new F.Menu({
+          column: column,
+          items: column.menu,
+          theme: w.theme,
+          events: [{
+            hide: me.onMenuHide,
+            scope: me
+          }]
+        });
       }
-    }
+      else {
+        me.updateColumnsMenu(column, columns);
+      }
 
-    if(column.sortable === false){
-      cls = 'fancy-menu-item-disabled';
-    }
+      column.menu.showAt(offset.left + parseInt(cell.css('width')) - 26, offset.top + parseInt(cell.css('height')) - 1);
 
-    if(column.sortable){
+      me.activeMenu = column.menu;
+      me.activeCell = cell;
+    },
+    /*
+     *
+     */
+    hideMenu: function () {
+      var me = this,
+        w = me.widget,
+        header = w.header,
+        rightHeader = w.rightHeader,
+        leftHeader = w.leftHeader;
+
+      switch (me.side) {
+        case 'left':
+          if (header.activeMenu) {
+            header.activeMenu.hide();
+            header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+            delete header.activeMenu;
+            delete header.activeCell;
+          }
+
+          if (rightHeader.activeMenu) {
+            rightHeader.activeMenu.hide();
+            rightHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+            delete rightHeader.activeMenu;
+            delete rightHeader.activeCell;
+          }
+          break;
+        case 'center':
+          if (leftHeader.activeMenu) {
+            leftHeader.activeMenu.hide();
+            leftHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+            delete leftHeader.activeMenu;
+            delete leftHeader.activeCell;
+          }
+
+          if (rightHeader.activeMenu) {
+            rightHeader.activeMenu.hide();
+            rightHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+            delete rightHeader.activeMenu;
+            delete rightHeader.activeCell;
+          }
+          break;
+        case 'right':
+          if (leftHeader.activeMenu) {
+            leftHeader.activeMenu.hide();
+            leftHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+            delete leftHeader.activeMenu;
+            delete leftHeader.activeCell;
+          }
+
+          if (header.activeMenu) {
+            header.activeMenu.hide();
+            header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+            delete header.activeMenu;
+            delete header.activeCell;
+          }
+          break;
+      }
+
+      if (me.activeMenu) {
+        me.activeMenu.hide();
+        me.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+      }
+
+      delete me.activeMenu;
+      delete me.activeCell;
+    },
+    /*
+     * @param {Object} column
+     * @param {Array} columns
+     */
+    generateMenu: function (column, columns) {
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        menu = [],
+        cls = '',
+        indexOrder,
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++) {
+        if (column.index === columns[i].index) {
+          indexOrder = i;
+          break;
+        }
+      }
+
+      if (column.sortable === false) {
+        cls = 'fancy-menu-item-disabled';
+      }
+
+      if (column.sortable) {
+        menu.push({
+          text: lang.sortAsc,
+          cls: cls,
+          imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
+          handler: function () {
+            w.sorter.sort('asc', column.index, me.side);
+            column.menu.hide();
+          }
+        });
+
+        menu.push({
+          text: lang.sortDesc,
+          cls: cls,
+          imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
+          handler: function () {
+            w.sorter.sort('desc', column.index, me.side);
+            column.menu.hide();
+          }
+        });
+      }
+
       menu.push({
-        text: lang.sortAsc,
-        cls: cls,
-        imageCls: me.triggerUpCls,
-        handler: function () {
-          w.sorter.sort('asc', column.index, me.side);
-          column.menu.hide();
-        }
+        text: lang.columns,
+        index: 'columns',
+        items: me.prepareColumns(columns)
       });
 
-      menu.push({
-        text: lang.sortDesc,
-        cls: cls,
-        imageCls: w.triggerDownCls,
-        handler: function () {
-          w.sorter.sort('desc', column.index, me.side);
-          column.menu.hide();
-        }
-      });
-    }
+      switch (me.side) {
+        case 'left':
+        case 'right':
+          if (column.lockable !== false) {
+            menu.push({
+              text: 'Unlock',
+              handler: function () {
+                column.menu.hide();
+                w.unLockColumn(indexOrder, me.side);
+              }
+            });
+          }
+          break;
+        case 'center':
+          if (columns.length > 1 && (w.leftColumns.length) && column.lockable !== false) {
+            menu.push({
+              text: 'Lock',
+              handler: function () {
+                column.menu.hide();
+                w.lockColumn(indexOrder, me.side);
+              }
+            });
+          }
 
-    menu.push({
-      text: lang.columns,
-      index: 'columns',
-      items: me.prepareColumns(columns)
-    });
-
-    switch(me.side){
-      case 'left':
-      case 'right':
-        if(column.lockable !== false) {
-          menu.push({
-            text: 'Unlock',
-            handler: function () {
-              column.menu.hide();
-              w.unLockColumn(indexOrder, me.side);
-            }
-          });
-        }
-        break;
-      case 'center':
-        if(columns.length > 1 && (w.leftColumns.length) && column.lockable !== false){
-          menu.push({
-            text: 'Lock',
-            handler: function(){
-              column.menu.hide();
-              w.lockColumn(indexOrder, me.side);
-            }
-          });
-        }
-
-        if(columns.length > 1 && w.rightColumns.length && column.lockable !== false){
-          menu.push({
-            text: 'Right Lock',
-            handler: function(){
-              column.menu.hide();
-              w.rightLockColumn(indexOrder, me.side);
-            }
-          });
-        }
-        break;
-    }
-
-    return menu;
-  },
-  /*
-   * @param {Array} columns
-   */
-  prepareColumns: function(columns) {
-    var me = this,
-      w = me.widget,
-      _columns = [],
-      i = 0,
-      iL = columns.length,
-      group = [],
-      groupName;
-
-    for(;i<iL;i++){
-      var value = true,
-        column = columns[i];
-
-      if(column.hidden){
-        value = false;
+          if (columns.length > 1 && w.rightColumns.length && column.lockable !== false) {
+            menu.push({
+              text: 'Right Lock',
+              handler: function () {
+                column.menu.hide();
+                w.rightLockColumn(indexOrder, me.side);
+              }
+            });
+          }
+          break;
       }
 
-      var columnConfig = {
-        text: column.title,
-        checked: value,
-        index: column.index,
-        handler: function(menu, item){
-          if(item.checked === true && !item.checkbox.get()){
-            item.checkbox.set(true);
-          }
+      return menu;
+    },
+    /*
+     * @param {Array} columns
+     */
+    prepareColumns: function (columns) {
+      var me = this,
+        w = me.widget,
+        _columns = [],
+        i = 0,
+        iL = columns.length,
+        group = [],
+        groupName;
 
-          if(item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
-            item.checkbox.set(true);
-            return;
-          }
+      for (; i < iL; i++) {
+        var value = true,
+          column = columns[i];
 
-          item.checked = !item.checked;
-          item.checkbox.set(item.checked);
-
-          if(item.checked){
-            w.showColumn(me.side, item.index);
-          }
-          else{
-            w.hideColumn(me.side, item.index);
-          }
+        if (column.hidden) {
+          value = false;
         }
-      };
 
-      if(column.grouping){
-        group = group || [];
-        group.push(columnConfig);
-        groupName = column.grouping;
-        continue;
+        var columnConfig = {
+          text: column.title,
+          checked: value,
+          index: column.index,
+          handler: function (menu, item) {
+            if (item.checked === true && !item.checkbox.get()) {
+              item.checkbox.set(true);
+            }
+
+            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1) {
+              item.checkbox.set(true);
+              return;
+            }
+
+            item.checked = !item.checked;
+            item.checkbox.set(item.checked);
+
+            if (item.checked) {
+              w.showColumn(me.side, item.index);
+            }
+            else {
+              w.hideColumn(me.side, item.index);
+            }
+          }
+        };
+
+        if (column.grouping) {
+          group = group || [];
+          group.push(columnConfig);
+          groupName = column.grouping;
+          continue;
+        }
+        else if (group.length) {
+          _columns.push({
+            text: groupName,
+            items: group
+          });
+          groupName = undefined;
+          group = [];
+        }
+
+        _columns.push(columnConfig);
       }
-      else if(group.length){
+
+      if (group.length) {
         _columns.push({
           text: groupName,
           items: group
         });
-        groupName = undefined;
-        group = [];
       }
 
-      _columns.push(columnConfig);
-    }
+      return _columns;
+    },
+    /*
+     *
+     */
+    onMenuHide: function () {
+      this.el.select('.' + GRID_HEADER_COLUMN_TRIGGERED_CLS).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+    },
+    /*
+     * @param {Object} column
+     * @param {Array} columns
+     * @param {Boolean} hard
+     */
+    updateColumnsMenu: function (column, columns, hard) {
+      var me = this,
+        menu = column.menu,
+        columnsMenu,
+        i = 0,
+        iL = menu.items.length,
+        item;
 
-    if(group.length){
-      _columns.push({
-        text: groupName,
-        items: group
-      });
-    }
+      for (; i < iL; i++) {
+        item = menu.items[i];
 
-    return _columns;
-  },
-  /*
-   *
-   */
-  onMenuHide: function(){
-    var me = this,
-      triggerCls = me.triggeredColumnCls;
+        if (item.index === 'columns') {
+          columnsMenu = item;
+          break;
+        }
+      }
 
-    me.el.select('.'+triggerCls).removeCls(triggerCls);
-  },
-  /*
-   * @param {Object} column
-   * @param {Array} columns
-   * @param {Boolean} hard
-   */
-  updateColumnsMenu: function(column, columns, hard){
-    var me = this,
-      menu = column.menu,
-      columnsMenu,
-      i = 0,
-      iL = menu.items.length,
-      item;
+      i = 0;
+      iL = columnsMenu.items.length;
+      var rendered = false;
 
-    for(;i<iL;i++){
-      item = menu.items[i];
+      for (; i < iL; i++) {
+        item = columnsMenu.items[i];
+        var _column = columns[i];
 
-      if(item.index === 'columns'){
-        columnsMenu = item;
-        break;
+        if (item.checkbox) {
+          item.checkbox.set(!_column.hidden, false);
+          rendered = true;
+        }
+      }
+
+      if (!rendered && !hard) {
+        columnsMenu.items = me.prepareColumns(columns);
+      }
+    },
+    /*
+     *
+     */
+    destroyMenus: function () {
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(me.side),
+        i = 0,
+        iL = columns.length,
+        column;
+
+      for (; i < iL; i++) {
+        column = columns[i];
+
+        if (F.isObject(column.menu)) {
+          column.menu.destroy();
+        }
       }
     }
+  });
 
-    i = 0;
-    iL = columnsMenu.items.length;
-    var rendered = false;
-
-    for(;i<iL;i++){
-      item = columnsMenu.items[i];
-      var _column = columns[i];
-
-      if(item.checkbox){
-        item.checkbox.set(!_column.hidden, false);
-        rendered = true;
-      }
-    }
-
-    if(!rendered && !hard){
-      columnsMenu.items = me.prepareColumns(columns);
-    }
-  },
-  /*
-   *
-   */
-  destroyMenus: function(){
-    var me = this,
-      w = me.widget,
-      columns = w.getColumns(me.side),
-      i = 0,
-      iL = columns.length,
-      column;
-
-    for(;i<iL;i++){
-      column = columns[i];
-
-      if(Fancy.isObject(column.menu)){
-        column.menu.destroy();
-      }
-    }
-  }
-});
+})();
 /**
- * @class Fancy.Grid
+ * @class Fancy.grid.Header
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.grid.Header', {
-  extend: Fancy.Widget,
-  cls: Fancy.GRID_HEADER_CLS,
-  mixins: [
-    'Fancy.grid.header.mixin.Menu'
-  ],
-  cellTpl: [
-    '<div class="fancy-grid-header-cell {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
-      '<div class="fancy-grid-header-cell-container" style="height: {height};">',
-        '<span class="fancy-grid-header-cell-text">{columnName}</span>',
-        '<span class="fancy-grid-header-cell-trigger">',
-          '<div class="fancy-grid-header-cell-trigger-image"></div>',
-        '</span>',
-      '</div>',
-    '</div>'
-  ],
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_CONTAINER_CLS = F.GRID_HEADER_CELL_CONTAINER_CLS;
+  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
+  var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
+  var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
+  var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
 
-    me.Super('init', arguments);
+  F.define('Fancy.grid.Header', {
+    extend: F.Widget,
+    cls: GRID_HEADER_CLS,
+    mixins: [
+      'Fancy.grid.header.mixin.Menu'
+    ],
+    cellTpl: [
+      '<div class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+        '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
+          '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
+          '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
+            '<div class="' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS + '"></div>',
+          '</span>',
+        '</div>',
+      '</div>'
+    ],
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.initTpl();
-    me.render();
+      me.Super('init', arguments);
 
-    me.renderHeaderCheckBox();
+      me.initTpl();
+      me.render();
 
-    me.setAlign();
-    me.setCellsPosition();
-    me.ons();
-  },
-  /*
-   *
-   */
-  initTpl: function(){
-    var me = this;
+      me.renderHeaderCheckBox();
 
-    me.cellTpl = new Fancy.Template(me.cellTpl);
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderCls = w.cellHeaderCls,
-      headerCellSelector = 'div.' + cellHeaderCls;
+      me.setAlign();
+      me.setCellsPosition();
+      me.ons();
+    },
+    /*
+     *
+     */
+    initTpl: function () {
+      this.cellTpl = new F.Template(this.cellTpl);
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        el = me.el,
+        headerCellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
-    w.on('render', me.onAfterRender, me);
-    me.el.on('click', me.onTriggerClick, me, 'span.' + cellHeaderTriggerCls);
-    me.el.on('click', me.onCellClick, me, headerCellSelector);
-    me.el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
-    me.el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
-    me.el.on('mousedown', me.onMouseDown, me);
-  },
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderSelectCls = w.cellHeaderSelectCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      columns = me.getColumns(),
-      renderTo,
-      el = Fancy.get(document.createElement('div')),
-      html = '',
-      i = 0,
-      iL = columns.length,
-      numRows = 1,
-      groups = {},
-      passedWidth = 0,
-      isFilterHeader = w.filter && w.filter.header,
-      cellFilterGroupType = 'full',
-      cellHeight = w.cellHeaderHeight;
+      w.on('render', me.onAfterRender, me);
+      el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
+      el.on('click', me.onCellClick, me, headerCellSelector);
+      el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
+      el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
+      el.on('mousedown', me.onMouseDown, me);
+    },
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        renderTo,
+        el = F.get(document.createElement('div')),
+        html = '',
+        i = 0,
+        iL = columns.length,
+        numRows = 1,
+        groups = {},
+        passedWidth = 0,
+        isFilterHeader = w.filter && w.filter.header,
+        cellFilterGroupType = 'full',
+        cellHeight = w.cellHeaderHeight;
 
-    if(w.groupheader){
-      if(isFilterHeader && !w.filter.groupHeader){
-        cellFilterGroupType = 'small';
-      }
-      else {
-        numRows = 2;
-      }
-    }
-
-    if(isFilterHeader){
-      numRows++;
-    }
-
-    for(;i<iL;i++){
-      var column = columns[i],
-        title = column.title || column.header,
-        height = cellHeight,
-        cls = '',
-        groupIndex = '';
-
-      if(numRows !== 1){
-        if(!column.grouping){
-          height = (numRows * cellHeight) + 'px';
+      if (w.groupheader) {
+        if (isFilterHeader && !w.filter.groupHeader) {
+          cellFilterGroupType = 'small';
         }
-        else{
-          if(!groups[column.grouping]){
-            groups[column.grouping] = {
-              width: 0,
-              title: column.grouping,
-              left: passedWidth
-            };
-          }
+        else {
+          numRows = 2;
+        }
+      }
 
-          if(isFilterHeader && w.filter.groupHeader){
-            height = (2 * cellHeight) + 'px';
+      if (isFilterHeader) {
+        numRows++;
+      }
+
+      for (; i < iL; i++) {
+        var column = columns[i],
+          title = column.title || column.header,
+          height = cellHeight,
+          cls = '',
+          groupIndex = '';
+
+        if (numRows !== 1) {
+          if (!column.grouping) {
+            height = (numRows * cellHeight) + 'px';
           }
           else {
-            height = cellHeight + 'px';
+            if (!groups[column.grouping]) {
+              groups[column.grouping] = {
+                width: 0,
+                title: column.grouping,
+                left: passedWidth
+              };
+            }
+
+            if (isFilterHeader && w.filter.groupHeader) {
+              height = (2 * cellHeight) + 'px';
+            }
+            else {
+              height = cellHeight + 'px';
+            }
+
+            if (!column.hidden) {
+              groups[column.grouping].width += column.width;
+            }
+
+            groupIndex = 'group-index="' + column.grouping + '"';
+
+            cls = GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
           }
+        }
 
-          if(!column.hidden){
-            groups[column.grouping].width += column.width;
+        passedWidth += column.width;
+
+        if (column.index === '$selected') {
+          cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
+        }
+
+        if (!column.menu) {
+          cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+        }
+
+        if (column.filter && column.filter.header) {
+          switch (cellFilterGroupType) {
+            case 'small':
+              cls += ' ' + GRID_HEADER_CELL_FILTER_SMALL_CLS;
+              break;
+            case 'full':
+              cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              break;
           }
+        }
 
-          groupIndex = 'group-index="' + column.grouping + '"';
+        html += me.cellTpl.getHTML({
+          cls: cls,
+          columnName: title,
+          columnWidth: column.width,
+          index: i,
+          height: height,
+          left: 'initial',
+          groupIndex: groupIndex,
+          display: column.hidden ? 'none' : ''
+        });
+      }
 
-          cls = cellHeaderGroupLevel1;
+      el.css({
+        height: cellHeight * numRows + 'px',
+        width: me.getColumnsWidth()
+      });
+
+      el.addCls(me.cls);
+
+      if (w.groupheader) {
+        el.addCls('fancy-grid-header-grouped');
+        html += me.getGroupingCellsHTML(groups);
+      }
+
+      el.update(html);
+
+      renderTo = w.el.select('.fancy-grid-' + me.side).dom;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     * @param {Number} index
+     * @param {Object} column
+     */
+    insertCell: function (index, column) {
+      var me = this,
+        w = me.widget,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        columns = me.getColumns(),
+        cls = '',
+        title = column.title || column.header,
+        cellHeight = parseInt(cells.item(0).css('height')),
+        groupIndex = '',
+        left = 0;
+
+      if (w.groupheader) {
+        cellHeight = w.cellHeight * 2;
+        var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+        //BUG: possible bug for dragging column
+        if (index !== w.columns.length - 1) {
+          groupUpCells.each(function (cell) {
+            var left = parseInt(cell.css('left') || 0) + column.width;
+
+            cell.css('left', left);
+          });
         }
       }
 
-      passedWidth += column.width;
-
-      if(column.index === '$selected'){
-        cls += ' ' + cellHeaderSelectCls;
+      if (column.index === '$selected') {
+        cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
       }
 
-      if(!column.menu){
-        cls += ' fancy-grid-header-cell-trigger-disabled';
+      if (!column.menu) {
+        cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
       }
 
-      if(column.filter && column.filter.header){
-        switch(cellFilterGroupType){
-          case 'small':
-            cls += ' fancy-grid-header-filter-cell-small';
-            break;
-          case 'full':
-            cls += ' fancy-grid-header-filter-cell-full';
-            break;
-        }
+      var j = 0,
+        jL = index;
+
+      for (; j < jL; j++) {
+        left += columns[j].width;
       }
 
-      html += me.cellTpl.getHTML({
+      var i = index,
+        iL = columns.length - 1;
+
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          _left = parseInt(_cell.css('left') || 0) + column.width;
+
+        _cell.css('left', _left);
+      }
+
+      var cellHTML = me.cellTpl.getHTML({
         cls: cls,
         columnName: title,
         columnWidth: column.width,
-        index: i,
-        height: height,
-        left: 'initial',
-        groupIndex: groupIndex,
-        display: column.hidden? 'none': ''
+        index: index,
+        height: String(cellHeight) + 'px',
+        left: String(left) + 'px',
+        groupIndex: groupIndex
       });
-    }
 
-    el.css({
-      height: cellHeight * numRows + 'px',
-      width: me.getColumnsWidth()
-    });
+      if (index === 0 && cells.length) {
+        F.get(cells.item(0).before(cellHTML));
+      }
+      else if (index !== 0 && cells.length) {
+        if(index === cells.length) {
+          me.el.append(cellHTML);
+        }
+        else{
+          F.get(cells.item(index).before(cellHTML));
+        }
+      }
 
-    el.addCls(me.cls);
+      me.css('width', parseInt(me.css('width')) + column.width);
+    },
+    /*
+     *
+     */
+    setAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length;
 
-    if(w.groupheader){
-      el.addCls('fancy-grid-header-grouped');
-      html += me.getGroupingCellsHTML(groups);
-    }
+      for (; i < iL; i++) {
+        var column = columns[i];
 
-    el.update(html);
+        if (column.align) {
+          me.getDomCell(i).css('text-align', column.align);
+        }
+      }
+    },
+    onAfterRender: function () {},
+    /*
+     *
+     */
+    setCellsPosition: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        cellsWidth = 0,
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS);
 
-    renderTo = w.el.select('.fancy-grid-' + me.side).dom;
-    me.el = Fancy.get(renderTo.appendChild(el.dom));
-  },
-  /*
-   * @param {Number} index
-   * @param {Object} column
-   */
-  insertCell: function(index, column){
-    var me = this,
-      w = me.widget,
-      cellHeaderSelectCls = w.cellHeaderSelectCls,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.' + cellHeaderCls + ':not(.' + cellHeaderGroupLevel2 + ')'),
-      columns = me.getColumns(),
-      cls = '',
-      title = column.title || column.header,
-      cellHeight = parseInt(cells.item(0).css('height')),
-      groupIndex = '',
-      left = 0;
+      cellsWidth += me.scrollLeft || 0;
 
-    if(w.groupheader){
-      cellHeight = w.cellHeight * 2;
-      var groupUpCells = me.el.select('.' + cellHeaderGroupLevel2);
+      F.each(columns, function (column, i) {
+        var cellEl = cellsDom.item(i),
+          top = '0px';
 
-      //BUG: possible bug for dragging column
-      if(index !== w.columns.length - 1){
-        groupUpCells.each(function(cell){
-          var left = parseInt(cell.css('left') || 0) + column.width;
+        if (column.grouping) {
+          top = w.cellHeaderHeight + 'px';
+        }
 
-          cell.css('left', left);
+        cellEl.css({
+          top: top,
+          left: cellsWidth + 'px'
+        });
+
+        if (!column.hidden) {
+          cellsWidth += column.width;
+        }
+      });
+
+      if (w.groupheader) {
+        var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+        groupCells.each(function (groupCell) {
+          var groupName = groupCell.attr('index');
+
+          var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
+            groupCellLeft = underGroupCells.item(0).css('left'),
+            groupCellWidth = 0;
+
+          F.each(columns, function (column) {
+            if (column.grouping === groupName && !column.hidden) {
+              groupCellWidth += column.width;
+            }
+          });
+
+          groupCell.css('left', groupCellLeft);
+          groupCell.css('width', groupCellWidth);
         });
       }
-    }
+    },
+    /*
+     *
+     */
+    fixGroupHeaderSizing: function () {
+      var me = this,
+        w = me.widget,
+        CELL_HEADER_HEIGHT = w.cellHeaderHeight,
+        columns = me.getColumns(),
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS),
+        left = w.scroller.scrollLeft,
+        groups = {},
+        groupsWidth = {},
+        groupsLeft = {},
+        rows = me.calcRows();
 
-    if(column.index === '$selected'){
-      cls += ' ' + cellHeaderSelectCls;
-    }
+      F.each(columns, function (column, i) {
+        var cell = cellsDom.item(i),
+          grouping = column.grouping,
+          top = '0px',
+          height = CELL_HEADER_HEIGHT * rows;
 
-    if(!column.menu){
-      cls += ' fancy-grid-header-cell-trigger-disabled';
-    }
+        groups[grouping] = true;
 
-    var j = 0,
-      jL = index;
+        if(grouping){
+          if(groupsWidth[grouping] === undefined){
+            groupsWidth[grouping] = column.width;
+            groupsLeft[grouping] = left;
+          }
+          else{
+            groupsWidth[grouping] += column.width;
+          }
 
-    for(;j<jL;j++){
-      left += columns[j].width;
-    }
+          cell.addCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
+          top = CELL_HEADER_HEIGHT + 'px';
+          height = CELL_HEADER_HEIGHT;
 
-    var i = index,
-      iL = columns.length - 1;
+          if(column.filter && column.filter.header){
+            height = CELL_HEADER_HEIGHT * 2;
+            setTimeout(function () {
+              cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
+            }, 30);
+          }
+        }
+        else{
+          cell.removeCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
+          if(column.filter && column.filter.header){
+            setTimeout(function () {
+              cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+            }, 30);
+            cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
+          }
+        }
 
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        _left = parseInt(_cell.css('left') || 0) + column.width;
+        if(w.groupheader && height === CELL_HEADER_HEIGHT && !grouping && !column.filter){
+          height = CELL_HEADER_HEIGHT * 2;
+        }
 
-      _cell.css('left', _left);
-    }
+        //TODO: case for ungroup all cells over column drag with filtering
 
-    var cellHTML = me.cellTpl.getHTML({
-      cls: cls,
-      columnName: title,
-      columnWidth: column.width,
-      index: index,
-      height: String(cellHeight) + 'px',
-      left: String(left) + 'px',
-      groupIndex: groupIndex
-    });
+        cell.css({
+          top: top,
+          height: height
+        });
 
-    if(index === 0 && cells.length){
-      Fancy.get(cells.item(0).before(cellHTML));
-    }
-    else if(index !== 0 && cells.length){
-      me.el.append(cellHTML);
-    }
-
-    me.css('width', parseInt(me.css('width')) + column.width);
-  },
-  /*
-   *
-   */
-  setAlign: function(){
-    var me = this,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length;
-
-    for(;i<iL;i++) {
-      var column = columns[i];
-
-      if(column.align){
-        me.getDomCell(i).css('text-align', column.align);
-      }
-    }
-  },
-  onAfterRender: function(){},
-  /*
-   *
-   */
-  setCellsPosition: function(){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cellHeaderCls = w.cellHeaderCls,
-      columns = me.getColumns(),
-      cellsWidth = 0,
-      cellsDom = me.el.select('.' + cellHeaderCls);
-
-    cellsWidth += me.scrollLeft || 0;
-
-    Fancy.each(columns, function(column, i){
-      var cellEl = cellsDom.item(i),
-        top = '0px';
-
-      if(column.grouping){
-        top = w.cellHeaderHeight + 'px';
-      }
-
-      cellEl.css({
-        top: top,
-        left: cellsWidth + 'px'
+        left += column.width;
       });
 
-      if(!column.hidden){
+      for(var p in groupsWidth){
+        var groupCell = me.el.select('[index="'+p+'"]');
+
+        groupCell.css({
+          left: groupsLeft[p],
+          width: groupsWidth[p]
+        });
+      }
+
+      var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+
+      groupCells.each(function (cell) {
+        var groupName = cell.attr('index');
+
+        if(!groups[groupName]){
+          cell.destroy();
+        }
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    getColumnsWidth: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cellsWidth = 0,
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
         cellsWidth += column.width;
       }
-    });
 
-    if(w.groupheader){
-      var groupCells = me.el.select('.' + cellHeaderGroupLevel2);
+      return cellsWidth;
+    },
+    /*
+     * @return {Array}
+     */
+    getColumns: function () {
+      var me = this,
+        w = me.widget,
+        columns;
 
-      groupCells.each(function(groupCell){
-        var groupName = groupCell.attr('index');
+      switch (me.side) {
+        case 'left':
+          columns = w.leftColumns;
+          break;
+        case 'center':
+          columns = w.columns;
+          break;
+        case 'right':
+          columns = w.rightColumns;
+          break;
+      }
 
-        var underGroupCells = me.el.select('[group-index="'+groupName+'"]'),
-          groupCellLeft = underGroupCells.item(0).css('left'),
-          groupCellWidth = 0;
+      return columns;
+    },
+    /*
+     * @param {Number} index
+     * @return {Fancy.Element}
+     */
+    getDomCell: function (index) {
+      return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellClick: function (e) {
+      var me = this,
+        w = me.widget,
+        columndrag = w.columndrag,
+        cell = e.currentTarget,
+        target = F.get(e.target),
+        index = parseInt(F.get(cell).attr('index'));
 
-        Fancy.each(columns, function (column){
-          if(column.grouping === groupName && !column.hidden){
-            groupCellWidth += column.width;
-          }
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
+
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS)) {
+        return
+      }
+
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)) {
+        return
+      }
+
+      if (F.get(cell).hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)) {
+        return;
+      }
+
+      w.fire('headercellclick', {
+        e: e,
+        side: me.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellMouseMove: function (e) {
+      var me = this,
+        w = me.widget,
+        cell = e.currentTarget,
+        cellEl = F.get(cell),
+        isGroupCell = cellEl.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS),
+        index = parseInt(F.get(cell).attr('index'));
+
+      if (isGroupCell) {
+        return;
+      }
+
+      w.fire('headercellmousemove', {
+        e: e,
+        side: me.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Event} e
+     */
+    onMouseDown: function (e) {
+      var targetEl = F.get(e.target);
+
+      if (targetEl.prop("tagName") === 'INPUT') {
+      }
+      else {
+        e.preventDefault();
+      }
+    },
+    /*
+     * @param {Event} e
+     */
+    onCellMouseDown: function (e) {
+      var w = this.widget,
+        cell = e.currentTarget,
+        index = parseInt(F.get(cell).attr('index'));
+
+      w.fire('headercellmousedown', {
+        e: e,
+        side: this.side,
+        cell: cell,
+        index: index
+      });
+    },
+    /*
+     * @param {Number} value
+     */
+    scroll: function (value) {
+      this.scrollLeft = value;
+      this.setCellsPosition();
+    },
+    /*
+     * @param {Array} groups
+     * @return {String}
+     */
+    getGroupingCellsHTML: function (groups) {
+      var me = this,
+        w = me.widget,
+        html = '';
+
+      F.each(groups, function (group, p) {
+        html += me.cellTpl.getHTML({
+          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
+          columnName: group.title,
+          columnWidth: group.width,
+          index: p,
+          height: w.cellHeaderHeight + 'px',
+          left: group.left + 'px',
+          groupIndex: ''
         });
-
-        groupCell.css('left', groupCellLeft);
-        groupCell.css('width', groupCellWidth);
       });
-    }
-  },
-  /*
-   * @return {Number}
-   */
-  getColumnsWidth: function(){
-    var me = this,
-      columns = me.getColumns(),
-      cellsWidth = 0,
-      i = 0,
-      iL = columns.length;
 
-    for(;i<iL;i++){
-      var column = columns[i];
+      return html;
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      var me = this,
+        el = me.el,
+        cellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
-      cellsWidth += column.width;
-    }
+      el.un('click', me.onCellClick, me, cellSelector);
+      el.un('mousemove', me.onCellMouseMove, me, cellSelector);
+      el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+      el.un('mousedown', me.onMouseDown, me);
+    },
+    /*
+     * @param {Number} index
+     * @return {Fancy.Element}
+     */
+    getCell: function (index) {
+      return this.el.select('.' + GRID_HEADER_CELL_CLS + '[index="' + index + '"]');
+    },
+    /*
+     * @param {Event} e
+     */
+    onTriggerClick: function (e) {
+      var me = this,
+        target = F.get(e.currentTarget),
+        cell = target.parent().parent(),
+        index = parseInt(cell.attr('index')),
+        columns = me.getColumns(),
+        column = columns[index];
 
-    return cellsWidth;
-  },
-  /*
-   * @return {Array}
-   */
-  getColumns: function(){
-    var me = this,
-      w = me.widget,
-      columns;
+      e.stopPropagation();
 
-    switch(me.side){
-      case 'left':
-        columns = w.leftColumns;
-        break;
-      case 'center':
-        columns = w.columns;
-        break;
-      case 'right':
-        columns = w.rightColumns;
-        break;
-    }
+      me.showMenu(cell, index, column, columns);
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    hideCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = orderIndex + 1,
+        iL = cells.length,
+        columns = me.getColumns();
 
-    return columns;
-  },
-  /*
-   * @param {Number} index
-   * @return {Fancy.Element}
-   */
-  getDomCell: function(index){
-    var me = this,
-      w = me.widget;
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
 
-    return me.el.select('.' + w.cellHeaderCls).item(index);
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellClick: function(e){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cellHeaderTriggerCls = w.cellHeaderTriggerCls,
-      cellHeaderTriggerImageCls = w.cellHeaderTriggerImageCls,
-      cell = e.currentTarget,
-      target = Fancy.get(e.target),
-      index = parseInt(Fancy.get(cell).attr('index'));
+        groupCell.css('width', groupCellWidth - cellWidth);
+      }
 
-    if(target.hasCls(cellHeaderTriggerCls)){
-      return
-    }
+      cell.hide();
 
-    if(target.hasCls(cellHeaderTriggerImageCls)){
-      return
-    }
+      var groups = {};
 
-    if(Fancy.get(cell).hasCls(cellHeaderGroupLevel2)){
-      return;
-    }
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) - cellWidth,
+          column = columns[i];
 
-    w.fire('headercellclick', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellMouseMove: function(e){
-    var me = this,
-      w = me.widget,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cell = e.currentTarget,
-      cellEl = Fancy.get(cell),
-      isGroupCell = cellEl.hasCls(cellHeaderGroupLevel2),
-      index = parseInt(Fancy.get(cell).attr('index'));
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
+        }
 
-    if(isGroupCell){
-      return;
-    }
+        _cell.css('left', left);
+      }
 
-    w.fire('headercellmousemove', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Event} e
-   */
-  onMouseDown: function(e){
-    var targetEl = Fancy.get(e.target);
+      F.each(groups, function (group, p) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
 
-    if(targetEl.prop("tagName") === 'INPUT'){}
-    else {
-      e.preventDefault();
-    }
-  },
-  /*
-   * @param {Event} e
-   */
-  onCellMouseDown: function(e){
-    var me = this,
-      w = me.widget,
-      cell = e.currentTarget,
-      index = parseInt(Fancy.get(cell).attr('index'));
-
-    w.fire('headercellmousedown', {
-      e: e,
-      side: me.side,
-      cell: cell,
-      index: index
-    });
-  },
-  /*
-   * @param {Number} value
-   */
-  scroll: function(value){
-    var me = this;
-
-    me.scrollLeft = value;
-    me.setCellsPosition();
-  },
-  /*
-   * @param {Array} groups
-   * @return {String}
-   */
-  getGroupingCellsHTML: function(groups){
-    var me = this,
-      w = me.widget,
-      html = '';
-
-    Fancy.each(groups, function(group, p){
-      html += me.cellTpl.getHTML({
-        cls: w.cellHeaderGroupLevel2,
-        columnName: group.title,
-        columnWidth: group.width,
-        index: p,
-        height: w.cellHeaderHeight + 'px',
-        left: group.left + 'px',
-        groupIndex: ''
+        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
       });
-    });
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth,
+        i = orderIndex + 1,
+        iL = cells.length,
+        columns = me.getColumns();
 
-    return html;
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this,
-      w = me.widget,
-      cellSelector = 'div.' + w.cellHeaderCls;
+      cell.show();
 
-    me.el.un('click', me.onCellClick, me, cellSelector);
-    me.el.un('mousemove', me.onCellMouseMove, me, cellSelector);
-    me.el.un('mousedown', me.onCellMouseDown, me, cellSelector);
-    me.el.un('mousedown', me.onMouseDown, me);
-  },
-  /*
-   * @param {Number} index
-   * @return {Fancy.Element}
-   */
-  getCell: function(index){
-    var me = this,
-      w = me.widget;
+      cellWidth = parseInt(cell.css('width'));
 
-    return me.el.select('.' + w.cellHeaderCls + '[index="'+index+'"]');
-  },
-  /*
-   * @param {Event} e
-   */
-  onTriggerClick: function(e){
-    var me = this,
-      target = Fancy.get(e.currentTarget),
-      cell = target.parent().parent(),
-      index = parseInt(cell.attr('index')),
-      columns = me.getColumns(),
-      column = columns[index];
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
 
-    e.stopPropagation();
+        groupCell.css('width', groupCellWidth + cellWidth);
+      }
 
-    me.showMenu(cell, index, column, columns);
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  hideCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.'+cellHeaderGroupLevel2+')'),
-      cell = cells.item(orderIndex),
-      cellWidth = parseInt(cell.css('width')),
-      i = orderIndex + 1,
-      iL = cells.length,
-      columns = me.getColumns();
+      var groups = {};
 
-    if(cell.hasCls(cellHeaderGroupLevel1)){
-      var groupIndex = cell.attr('group-index'),
-        groupCell = me.el.select('.'+cellHeaderGroupLevel2+'[index="'+groupIndex+'"]').item(0),
-        groupCellWidth = parseInt(groupCell.css('width'));
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) + cellWidth,
+          column = columns[i];
 
-      groupCell.css('width', groupCellWidth - cellWidth);
-    }
-
-    cell.hide();
-
-    var groups = {};
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) - cellWidth,
-        column = columns[i];
-
-      if(column.grouping){
-        if(columns[orderIndex].grouping !== column.grouping){
-          groups[column.grouping] = true;
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
         }
+        _cell.css('left', left);
       }
 
-      _cell.css('left', left);
-    }
+      for (var p in groups) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    removeCell: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = orderIndex + 1,
+        iL = cells.length,
+        groupCells = {},
+        isGroupCell = false;
 
-    Fancy.each(groups, function(group, p){
-      var groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+p+'"]').item(0);
+      if (cell.attr('group-index')) {
+        isGroupCell = cell.attr('group-index');
+        groupCells[isGroupCell] = true;
+      }
 
-      groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-    });
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  showCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel1 = w.cellHeaderGroupLevel1,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.' + cellHeaderGroupLevel2 + ')'),
-      cell = cells.item(orderIndex),
-      cellWidth,
-      i = orderIndex + 1,
-      iL = cells.length,
-      columns = me.getColumns();
+      cell.destroy();
 
-    cell.show();
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          left = parseInt(_cell.css('left')) - cellWidth;
 
-    cellWidth = parseInt(cell.css('width'));
-
-    if(cell.hasCls(cellHeaderGroupLevel1)){
-      var groupIndex = cell.attr('group-index'),
-        groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+groupIndex+'"]').item(0),
-        groupCellWidth = parseInt(groupCell.css('width'));
-
-      groupCell.css('width', groupCellWidth + cellWidth);
-    }
-
-    var groups = {};
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) + cellWidth,
-        column = columns[i];
-
-      if(column.grouping){
-        if(columns[orderIndex].grouping !== column.grouping){
-          groups[column.grouping] = true;
+        if (_cell.attr('group-index')) {
+          groupCells[_cell.attr('group-index')] = true;
         }
-      }
-      _cell.css('left', left);
-    }
 
-    for(var p in groups){
-      var groupCell = me.el.select('.' + cellHeaderGroupLevel2 + '[index="'+p+'"]').item(0);
-      groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-    }
-  },
-  /*
-   * @param {Number} orderIndex
-   */
-  removeCell: function(orderIndex){
-    var me = this,
-      w = me.widget,
-      cellHeaderCls = w.cellHeaderCls,
-      cellHeaderGroupLevel2 = w.cellHeaderGroupLevel2,
-      cells = me.el.select('.'+cellHeaderCls+':not(.' + cellHeaderGroupLevel2 + ')'),
-      cell = cells.item(orderIndex),
-      cellWidth = parseInt(cell.css('width')),
-      i = orderIndex + 1,
-      iL = cells.length,
-      groupCells = {},
-      isGroupCell = false;
+        _cell.attr('index', i - 1);
 
-    if(cell.attr('group-index')){
-      isGroupCell = cell.attr('group-index');
-      groupCells[isGroupCell] = true;
-    }
-
-    cell.destroy();
-
-    for(;i<iL;i++){
-      var _cell = cells.item(i),
-        left = parseInt(_cell.css('left')) - cellWidth;
-
-      if(_cell.attr('group-index')){
-        groupCells[_cell.attr('group-index')] = true;
+        _cell.css('left', left);
       }
 
-      _cell.attr('index', i - 1);
+      for (var p in groupCells) {
+        var groupCell = me.el.select('[index="' + p + '"]'),
+          newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
+          newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
 
-      _cell.css('left', left);
-    }
+        if (isGroupCell && groupCell) {
+          groupCell.css('width', newCellWidth);
 
-    for(var p in groupCells){
-      var groupCell = me.el.select('[index="'+p+'"]'),
-        newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
-        newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
-
-      if(isGroupCell){
-        groupCell.css('width', newCellWidth);
-
-        if(groupCell.attr('index') !== isGroupCell){
+          if (groupCell.attr('index') !== isGroupCell) {
+            groupCell.css('left', newCellLeft);
+          }
+        }
+        else {
           groupCell.css('left', newCellLeft);
         }
       }
-      else{
-        groupCell.css('left', newCellLeft);
-      }
-    }
 
-    if(isGroupCell){
-      if( me.el.select('[group-index="'+isGroupCell+'"]').length === 0 ){
-        var groupCell = me.el.select('[index="'+isGroupCell+'"]');
+      if (isGroupCell) {
+        if (me.el.select('[group-index="' + isGroupCell + '"]').length === 0) {
+          var groupCell = me.el.select('[index="' + isGroupCell + '"]');
 
-        groupCell.destroy();
-      }
-    }
-
-    if(me.side !== 'center'){
-      me.css('width', parseInt(me.css('width')) - cellWidth);
-    }
-  },
-  /*
-   *
-   */
-  renderHeaderCheckBox: function(){
-    var me = this,
-      w = me.widget,
-      columns = me.getColumns(),
-      i = 0,
-      iL = columns.length,
-      cells = me.el.select('.' + w.cellHeaderCls + ':not(.' + w.cellHeaderGroupLevel2 + ')');
-
-    for(;i<iL;i++){
-      var column = columns[i];
-
-      if(column.headerCheckBox === true){
-        var cell = cells.item(i),
-          headerCellContainer = cell.firstChild(),
-          textEl = cell.select('.fancy-grid-header-cell-text'),
-          text = textEl.dom.innerHTML,
-          label = !text ? false : text,
-          labelWidth = 0;
-
-        cell.addCls('fancy-grid-header-cell-checkbox');
-        textEl.update('');
-
-        if(label.length){
-          labelWidth = label.width * 15;
+          groupCell.destroy();
         }
-
-        column.headerCheckBox = new Fancy.CheckBox({
-          renderTo: headerCellContainer.dom,
-          renderId: true,
-          labelWidth: labelWidth,
-          value: false,
-          label: label,
-          labelAlign: 'right',
-          style: {
-            padding: '0px',
-            display: 'inline-block'
-          },
-          events: [{
-            change: function(checkbox, value){
-              var i = 0,
-                iL = w.getViewTotal();
-
-              for(;i<iL;i++){
-                w.set(i, column.index, value);
-              }
-            }
-          }]
-        });
       }
-    }
-  },
-  /*
-   *
-   */
-  reSetIndexes: function(){
-    var me = this,
-      w = me.widget,
-      cells = me.el.select('.'+w.cellHeaderCls+':not(.' + w.cellHeaderGroupLevel2 + ')');
 
-    cells.each(function(cell, i) {
-      cell.attr('index', i);
-    })
-  }
-});
+      if (me.side !== 'center') {
+        me.css('width', parseInt(me.css('width')) - cellWidth);
+      }
+    },
+    /*
+     *
+     */
+    renderHeaderCheckBox: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.headerCheckBox === true) {
+          var cell = cells.item(i),
+            headerCellContainer = cell.firstChild(),
+            textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
+            text = textEl.dom.innerHTML,
+            label = !text ? false : text,
+            labelWidth = 0;
+
+          cell.addCls('fancy-grid-header-cell-checkbox');
+          textEl.update('');
+
+          if (label.length) {
+            labelWidth = label.width * 15;
+          }
+
+          column.headerCheckBox = new F.CheckBox({
+            renderTo: headerCellContainer.dom,
+            renderId: true,
+            labelWidth: labelWidth,
+            value: false,
+            label: label,
+            labelAlign: 'right',
+            style: {
+              padding: '0px',
+              display: 'inline-block'
+            },
+            events: [{
+              change: function (checkbox, value) {
+                var i = 0,
+                  iL = w.getViewTotal();
+
+                for (; i < iL; i++) {
+                  w.set(i, column.index, value);
+                }
+              }
+            }]
+          });
+        }
+      }
+    },
+    /*
+     *
+     */
+    reSetIndexes: function () {
+      var cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function (cell, i) {
+        cell.attr('index', i);
+      })
+    },
+    /*
+     *
+     */
+    reSetGroupIndexes: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function (cell, i) {
+        var column = columns[i],
+          grouping = column.grouping;
+
+        if(cell.attr('group-index') && !grouping){
+          cell.removeAttr('group-index');
+        }
+        else if(grouping && cell.attr('group-index') !== grouping){
+          cell.attr('group-index', grouping);
+        }
+      });
+    },
+    /*
+     *
+     */
+
+    /*
+     *
+     */
+    updateTitles: function(){
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function (column, i) {
+        me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"] .' + GRID_HEADER_CELL_TEXT_CLS).update(column.title || '');
+      });
+    },
+    /*
+     *
+     */
+    updateCellsSizes: function(){
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        left = -w.scroller.scrollLeft || 0;
+
+      F.each(columns, function (column, i){
+        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
+
+        cell.css({
+          width: column.width,
+          left: left
+        });
+
+        left += column.width;
+      });
+    },
+    /*
+     * @return {Number}
+     */
+    calcRows: function(){
+      var me = this,
+        w = me.widget,
+        columns = w.columns.concat(w.leftColumns).concat(w.rightColumns),
+        rows = 1;
+
+      Fancy.each(columns, function(column){
+         if(column.grouping){
+           if(rows < 2){
+             rows = 2;
+           }
+
+           if(column.filter && column.filter.header){
+             if(rows < 3){
+               rows = 3;
+             }
+           }
+         }
+
+        if(column.filter && column.filter.header){
+          if(rows < 2){
+            rows = 2;
+          }
+        }
+      });
+
+      return rows;
+    },
+    /*
+     *
+     */
+    reSetColumnsAlign: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i){
+        var column = columns[i];
+
+        cell.css('text-align', column.align || '');
+      });
+    }
+  });
+
+})();
 /*
  * @class Fancy.DatePicker
  */
 (function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var D = F.Date;
 
-  Fancy.define('Fancy.datepicker.Manager', {
+  //CONSTANTS
+  var PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
+  var PICKER_DATE_CLS = F.PICKER_DATE_CLS;
+  var PICKER_DATE_CELL_TODAY_CLS = F.PICKER_DATE_CELL_TODAY_CLS;
+  var PICKER_DATE_CELL_OUT_RANGE_CLS = F.PICKER_DATE_CELL_OUT_RANGE_CLS;
+  var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
+  var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
+  var PICKER_BUTTON_DATE_CLS = F.PICKER_BUTTON_DATE_CLS;
+  var PICKER_BUTTON_DATE_WRAPPER_CLS = F.PICKER_BUTTON_DATE_WRAPPER_CLS;
+  var PICKER_BUTTON_TODAY_CLS = F.PICKER_BUTTON_TODAY_CLS;
+  var PICKER_BUTTON_TODAY_WRAPPER_CLS = F.PICKER_BUTTON_TODAY_WRAPPER_CLS;
+
+  F.define('Fancy.datepicker.Manager', {
     singleton: true,
     opened: [],
     /*
@@ -37247,12 +38986,10 @@ Fancy.define('Fancy.grid.Header', {
      */
     add: function (picker) {
       this.hide();
-
       this.opened.push(picker);
     },
     hide: function () {
-      var me = this,
-        opened = me.opened,
+      var opened = this.opened,
         i = 0,
         iL = opened.length;
 
@@ -37260,17 +38997,17 @@ Fancy.define('Fancy.grid.Header', {
         opened[i].hide();
       }
 
-      me.opened = [];
+      this.opened = [];
     }
   });
 
-  Fancy.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
-    extend: Fancy.Grid,
+  F.define(['Fancy.picker.Date', 'Fancy.DatePicker'], {
+    extend: F.Grid,
     type: 'datepicker',
     mixins: [
       'Fancy.grid.mixin.Grid',
-      Fancy.panel.mixin.PrepareConfig,
-      Fancy.panel.mixin.methods,
+      F.panel.mixin.PrepareConfig,
+      F.panel.mixin.methods,
       'Fancy.grid.mixin.PrepareConfig',
       'Fancy.grid.mixin.ActionColumn',
       'Fancy.grid.mixin.Edit'
@@ -37281,17 +39018,17 @@ Fancy.define('Fancy.grid.Header', {
     //panelBorderWidth: 0,
     i18n: 'en',
     cellTrackOver: true,
-    cellStylingCls: ['fancy-date-picker-cell-out-range', 'fancy-date-picker-cell-today', 'fancy-date-picker-cell-active'],
-    activeCellCls: 'fancy-date-picker-cell-active',
-    todayCellCls: 'fancy-date-picker-cell-today',
-    pickerDateCls: 'fancy-date-picker',
-    outRangeCellCls: 'fancy-date-picker-cell-out-range',
-    buttonBackCls: 'fancy-picker-button-back',
-    buttonDateCls: 'fancy-picker-button-date',
-    buttonDateWrapperCls: 'fancy-picker-button-date-wrapper',
-    buttonNextCls: 'fancy-picker-button-next',
-    buttonTodayCls: 'fancy-picker-button-today',
-    buttonTodayWrapperCls: 'fancy-picker-button-today-wrapper',
+    cellStylingCls: [PICKER_DATE_CELL_OUT_RANGE_CLS, PICKER_DATE_CELL_TODAY_CLS, PICKER_DATE_CELL_ACTIVE_CLS],
+    activeCellCls: PICKER_DATE_CELL_ACTIVE_CLS,
+    todayCellCls: PICKER_DATE_CELL_TODAY_CLS,
+    pickerDateCls: PICKER_DATE_CLS,
+    outRangeCellCls: PICKER_DATE_CELL_OUT_RANGE_CLS,
+    buttonBackCls: PICKER_BUTTON_BACK_CLS,
+    buttonDateCls: PICKER_BUTTON_DATE_CLS,
+    buttonDateWrapperCls: PICKER_BUTTON_DATE_WRAPPER_CLS,
+    buttonNextCls: PICKER_BUTTON_NEXT_CLS,
+    buttonTodayCls: PICKER_BUTTON_TODAY_CLS,
+    buttonTodayWrapperCls: PICKER_BUTTON_TODAY_WRAPPER_CLS,
     defaults: {
       type: 'string',
       width: 44,
@@ -37306,10 +39043,9 @@ Fancy.define('Fancy.grid.Header', {
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
+      var me = this;
 
-      Fancy.apply(me, config);
+      F.apply(me, config);
 
       me.initFormat();
       me.initColumns();
@@ -37334,7 +39070,7 @@ Fancy.define('Fancy.grid.Header', {
       me.on('update', me.onUpdate, me);
       me.on('cellclick', me.onCellClick, me);
 
-      me.addCls(me.pickerDateCls);
+      me.addCls(PICKER_DATE_CLS);
       me.el.on('mousewheel', me.onMouseWheel, me);
 
       me.panel.el.on('mousedown', me.onMouseDown, me);
@@ -37348,7 +39084,7 @@ Fancy.define('Fancy.grid.Header', {
       if (me.format) {
       }
       else {
-        me.format = Fancy.i18n[me.i18n].date;
+        me.format = F.i18n[me.i18n].date;
       }
     },
     /*
@@ -37357,11 +39093,11 @@ Fancy.define('Fancy.grid.Header', {
     initMonthPicker: function () {
       var me = this;
 
-      if (!Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULELOAD !== false && ( me.monthPicker || !Fancy.modules['grid'] )) {
+      if (!F.fullBuilt && F.MODULELOAD !== false && F.MODULELOAD !== false && ( me.monthPicker || !F.modules['grid'] )) {
         return;
       }
 
-      me.monthPicker = new Fancy.MonthPicker({
+      me.monthPicker = new F.MonthPicker({
         date: me.date,
         renderTo: me.panel.el.dom,
         style: {
@@ -37382,9 +39118,7 @@ Fancy.define('Fancy.grid.Header', {
      *
      */
     initData: function () {
-      var me = this;
-
-      me.data = me.setData();
+      this.data = this.setData();
     },
     /*
      *
@@ -37405,11 +39139,10 @@ Fancy.define('Fancy.grid.Header', {
       var me = this,
         format = me.format,
         days = format.days,
-        outRangeCellCls = me.outRangeCellCls,
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = Fancy.Date.dayIndexes,
+        dayIndexes = D.dayIndexes,
         columns = [],
         today = new Date();
 
@@ -37419,13 +39152,13 @@ Fancy.define('Fancy.grid.Header', {
         switch (o.rowIndex) {
           case 0:
             if (Number(o.value) > 20) {
-              o.cls += ' ' + outRangeCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
           case 4:
           case 5:
             if (Number(o.value) < 15) {
-              o.cls += ' ' + outRangeCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
         }
@@ -37437,16 +39170,16 @@ Fancy.define('Fancy.grid.Header', {
           if (o.value === today.getDate()) {
             if (o.rowIndex === 0) {
               if (o.value < 20) {
-                o.cls += ' ' + me.todayCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
             else if (o.rowIndex === 4 || o.rowIndex === 5) {
               if (o.value > 20) {
-                o.cls += ' ' + me.todayCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
             else {
-              o.cls += ' ' + me.todayCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
             }
           }
         }
@@ -37455,16 +39188,16 @@ Fancy.define('Fancy.grid.Header', {
           if (o.value === date.getDate()) {
             if (o.rowIndex === 0) {
               if (o.value < 20) {
-                o.cls += ' ' + me.activeCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
             else if (o.rowIndex === 4 || o.rowIndex === 5) {
               if (o.value > 20) {
-                o.cls += ' ' + me.activeCellCls;
+                o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
             else {
-              o.cls += ' ' + me.activeCellCls;
+              o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
             }
           }
         }
@@ -37504,7 +39237,7 @@ Fancy.define('Fancy.grid.Header', {
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = Fancy.Date.dayIndexes;
+        dayIndexes = D.dayIndexes;
 
       for (; i < iL; i++) {
         fields.push(dayIndexes[i]);
@@ -37527,8 +39260,8 @@ Fancy.define('Fancy.grid.Header', {
         format = me.format,
         startDay = format.startDay,
         date = me.showDate,
-        daysInMonth = Fancy.Date.getDaysInMonth(date),
-        firstDayOfMonth = Fancy.Date.getFirstDayOfMonth(date),
+        daysInMonth = D.getDaysInMonth(date),
+        firstDayOfMonth = D.getFirstDayOfMonth(date),
         data = [],
         fields = me.getDataFields(),
         i = 0,
@@ -37567,7 +39300,7 @@ Fancy.define('Fancy.grid.Header', {
       }
 
       var prevDate = new Date(year, month, _date, hour, minute, second, millisecond),
-        prevDateDaysInMonth = Fancy.Date.getDaysInMonth(prevDate);
+        prevDateDaysInMonth = D.getDaysInMonth(prevDate);
 
       i = 7;
 
@@ -37606,10 +39339,8 @@ Fancy.define('Fancy.grid.Header', {
      *
      */
     initBars: function () {
-      var me = this;
-
-      me.initTBar();
-      me.initBBar();
+      this.initTBar();
+      this.initBBar();
     },
     /*
      *
@@ -37619,16 +39350,16 @@ Fancy.define('Fancy.grid.Header', {
         tbar = [];
 
       tbar.push({
-        cls: me.buttonBackCls,
+        cls: PICKER_BUTTON_BACK_CLS,
         handler: me.onBackClick,
         scope: me,
         style: {}
       });
 
       tbar.push({
-        cls: me.buttonDateCls,
+        cls: PICKER_BUTTON_DATE_CLS,
         wrapper: {
-          cls: me.buttonDateWrapperCls
+          cls: PICKER_BUTTON_DATE_WRAPPER_CLS
         },
         handler: me.onDateClick,
         scope: me,
@@ -37638,7 +39369,7 @@ Fancy.define('Fancy.grid.Header', {
       tbar.push('side');
 
       tbar.push({
-        cls: me.buttonNextCls,
+        cls: PICKER_BUTTON_NEXT_CLS,
         handler: me.onNextClick,
         scope: me
       });
@@ -37654,9 +39385,9 @@ Fancy.define('Fancy.grid.Header', {
 
       bbar.push({
         text: me.format.today,
-        cls: me.buttonTodayCls,
+        cls: PICKER_BUTTON_TODAY_CLS,
         wrapper: {
-          cls: me.buttonTodayWrapperCls
+          cls: PICKER_BUTTON_TODAY_WRAPPER_CLS
         },
         handler: me.onClickToday,
         scope: me
@@ -37725,7 +39456,7 @@ Fancy.define('Fancy.grid.Header', {
      */
     onUpdate: function () {
       var me = this,
-        value = Fancy.Date.format(me.showDate, 'F Y', {
+        value = D.format(me.showDate, 'F Y', {
           date: me.format
         });
 
@@ -37759,18 +39490,17 @@ Fancy.define('Fancy.grid.Header', {
         second = date.getSeconds(),
         millisecond = date.getMilliseconds(),
         day,
-        activeCellCls = me.activeCellCls,
-        cell = Fancy.get(o.cell);
+        cell = F.get(o.cell);
 
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
-      me.el.select('.' + activeCellCls).removeCls(activeCellCls);
+      me.el.select('.' + PICKER_DATE_CELL_ACTIVE_CLS).removeCls(PICKER_DATE_CELL_ACTIVE_CLS);
 
-      cell.addCls(activeCellCls);
+      cell.addCls(PICKER_DATE_CELL_ACTIVE_CLS);
 
       me.fire('changedate', me.date);
 
-      if (cell.hasCls(me.outRangeCellCls)) {
+      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)) {
         day = Number(o.value);
         if (o.rowIndex < 3) {
           if (month === 0) {
@@ -37804,14 +39534,13 @@ Fancy.define('Fancy.grid.Header', {
      * @param {Object} e
      */
     onMouseWheel: function (e) {
-      var me = this,
-        delta = Fancy.getWheelDelta(e.originalEvent || e);
+      var delta = F.getWheelDelta(e.originalEvent || e);
 
       if (delta < 0) {
-        me.onBackClick();
+        this.onBackClick();
       }
       else {
-        me.onNextClick();
+        this.onNextClick();
       }
     },
     /*
@@ -37823,7 +39552,7 @@ Fancy.define('Fancy.grid.Header', {
       me.initMonthPicker();
 
       me.monthPicker.panel.css('display', 'block');
-      if (Fancy.$.fn.animate) {
+      if (F.$.fn.animate) {
         me.monthPicker.panel.el.animate({
           top: '0px'
         });
@@ -37838,9 +39567,7 @@ Fancy.define('Fancy.grid.Header', {
      *
      */
     onMonthCancelClick: function () {
-      var me = this;
-
-      me.hideMonthPicker();
+      this.hideMonthPicker();
     },
     /*
      *
@@ -37875,10 +39602,9 @@ Fancy.define('Fancy.grid.Header', {
      *
      */
     hideMonthPicker: function () {
-      var me = this,
-        el = me.monthPicker.panel.el;
+      var el = this.monthPicker.panel.el;
 
-      if (Fancy.$.fn.animate) {
+      if (F.$.fn.animate) {
         el.animate({
           top: '-' + el.css('height')
         }, {
@@ -37915,366 +39641,364 @@ Fancy.define('Fancy.grid.Header', {
  * @class Fancy.MonthPicker
  * @extends Fancy.Grid
  */
-Fancy.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
-  extend: Fancy.Grid,
-  type: 'monthpicker',
-  mixins: [
-    'Fancy.grid.mixin.Grid',
-    Fancy.panel.mixin.PrepareConfig,
-    Fancy.panel.mixin.methods,
-    'Fancy.grid.mixin.PrepareConfig',
-    'Fancy.grid.mixin.ActionColumn',
-    'Fancy.grid.mixin.Edit'
-  ],
-  width: 308,
-  height: 299,
-  frame: false,
-  //panelBorderWidth: 0,
-  cellHeight: 37,
-  i18n: 'en',
-  cellTrackOver: true,
-  cellStylingCls: ['fancy-month-picker-cell-active'],
-  activeCellCls: 'fancy-month-picker-cell-active',
-  pickerCls: 'fancy-month-picker',
-  buttonBackCls: 'fancy-picker-button-back',
-  buttonNextCls: 'fancy-picker-button-next',
-  actionButtonsCls: 'fancy-month-picker-action-buttons',
-  defaults: {
-    type: 'string',
-    width: 76,
-    align: 'center',
-    cellAlign: 'center'
-  },
-  gridBorders: [1,0,1,1],
-  panelBodyBorders: [0,0,0,0],
-  header: false,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this,
-      config = config || {};
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    Fancy.apply(me, config);
-    me.initLang();
-    me.initColumns();
-    me.initDate();
-    me.initData();
-    me.initBars();
+  //CONSTANTS
+  var PICKER_MONTH_CELL_ACTIVE_CLS = F.PICKER_MONTH_CELL_ACTIVE_CLS;
+  var PICKER_MONTH_CLS = F.PICKER_MONTH_CLS;
+  var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
+  var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
+  var PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
 
-    me.Super('constructor', [me]);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  F.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
+    extend: F.Grid,
+    type: 'monthpicker',
+    mixins: [
+      'Fancy.grid.mixin.Grid',
+      F.panel.mixin.PrepareConfig,
+      F.panel.mixin.methods,
+      'Fancy.grid.mixin.PrepareConfig',
+      'Fancy.grid.mixin.ActionColumn',
+      'Fancy.grid.mixin.Edit'
+    ],
+    width: 308,
+    height: 299,
+    frame: false,
+    //panelBorderWidth: 0,
+    cellHeight: 37,
+    i18n: 'en',
+    cellTrackOver: true,
+    cellStylingCls: [PICKER_MONTH_CELL_ACTIVE_CLS],
+    activeCellCls: PICKER_MONTH_CELL_ACTIVE_CLS,
+    buttonBackCls: PICKER_BUTTON_BACK_CLS,
+    buttonNextCls: PICKER_BUTTON_NEXT_CLS,
+    actionButtonsCls: PICKER_MONTH_ACTION_BUTTONS_CLS,
+    defaults: {
+      type: 'string',
+      width: 76,
+      align: 'center',
+      cellAlign: 'center'
+    },
+    gridBorders: [1, 0, 1, 1],
+    panelBodyBorders: [0, 0, 0, 0],
+    header: false,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      var me = this;
 
-    me.Super('init', arguments);
-    me.addEvents('cancelclick', 'okclick');
+      F.apply(me, config);
+      me.initLang();
+      me.initColumns();
+      me.initDate();
+      me.initData();
+      me.initBars();
 
-    me.addEvents('changedate');
-    me.on('cellclick', me.onCellClick, me);
+      me.Super('constructor', [me]);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-    me.panel.addCls(me.pickerCls);
-  },
-  /*
-   *
-   */
-  initData: function(){
-    var me = this;
+      me.Super('init', arguments);
+      me.addEvents('cancelclick', 'okclick');
 
-    me.data = me.setData();
-  },
-  /*
-   *
-   */
-  initDate: function(){
-    var me = this;
+      me.addEvents('changedate');
+      me.on('cellclick', me.onCellClick, me);
 
-    if(me.date === undefined){
-      me.date = new Date();
-    }
+      me.panel.addCls(PICKER_MONTH_CLS);
+    },
+    /*
+     *
+     */
+    initData: function () {
+      this.data = this.setData();
+    },
+    /*
+     *
+     */
+    initDate: function () {
+      var me = this;
 
-    me.showDate = me.date;
-  },
-  /*
-   *
-   */
-  initLang: function(){
-    var me = this;
-
-    if(me.lang){
-      return;
-    }
-
-    me.lang = Fancy.Object.copy(Fancy.i18n[me.i18n]);
-  },
-  /*
-   *
-   */
-  initColumns: function(){
-    var me = this,
-      activeCellCls = me.activeCellCls;
-
-    var renderMonth = function(o){
-      var date = me.date,
-        month = date.getMonth();
-
-      if(me.lang.date.months[month].substr(0,3) === o.value){
-        o.cls = activeCellCls;
+      if (me.date === undefined) {
+        me.date = new Date();
       }
 
-      return o;
-    };
+      me.showDate = me.date;
+    },
+    /*
+     *
+     */
+    initLang: function () {
+      var me = this;
 
-    var renderYear = function(o){
-      var date = me.date,
-        year = date.getFullYear();
-
-      if(year === Number(o.value)){
-        o.cls = activeCellCls;
+      if (me.lang) {
+        return;
       }
 
-      return o;
-    };
+      me.lang = F.Object.copy(F.i18n[me.i18n]);
+    },
+    /*
+     *
+     */
+    initColumns: function () {
+      var me = this;
 
-    me.columns = [{
-      index: 'month1',
-      render: renderMonth,
-      locked: true
-    }, {
-      index: 'month2',
-      render: renderMonth,
-      locked: true,
-      width: 77
-    }, {
-      index: 'year1',
-      render: renderYear,
-      width: 77
-    },{
-      index: 'year2',
-      render: renderYear,
-      width: 77
-    }];
-  },
-  /*
-   * @return {Object}
-   */
-  setData: function(){
-    var me = this,
-      lang = me.lang,
-      date = me.showDate,
-      year = date.getFullYear(),
-      months = lang.date.months,
-      data = [],
-      i,
-      iL,
-      years = [];
+      var renderMonth = function (o) {
+        var date = me.date,
+          month = date.getMonth();
 
-    i = 0;
-    iL = 12;
+        if (me.lang.date.months[month].substr(0, 3) === o.value) {
+          o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
+        }
 
-    for(;i<iL;i++){
-      years.push(year - 5 + i);
-    }
+        return o;
+      };
 
-    i = 0;
-    iL = 6;
+      var renderYear = function (o) {
+        var date = me.date,
+          year = date.getFullYear();
 
-    for(;i<iL;i++){
-      data[i] = {};
+        if (year === Number(o.value)) {
+          o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
+        }
 
-      data[i]['month1'] = months[i].substr(0,3);
-      data[i]['month2'] = months[6 + i].substr(0,3);
+        return o;
+      };
 
-      data[i]['year1'] = years[i];
-      data[i]['year2'] = years[6 + i];
-    }
+      me.columns = [{
+        index: 'month1',
+        render: renderMonth,
+        locked: true
+      }, {
+        index: 'month2',
+        render: renderMonth,
+        locked: true,
+        width: 77
+      }, {
+        index: 'year1',
+        render: renderYear,
+        width: 77
+      }, {
+        index: 'year2',
+        render: renderYear,
+        width: 77
+      }];
+    },
+    /*
+     * @return {Object}
+     */
+    setData: function () {
+      var me = this,
+        lang = me.lang,
+        date = me.showDate,
+        year = date.getFullYear(),
+        months = lang.date.months,
+        data = [],
+        i,
+        iL,
+        years = [];
 
-    return {
-      fields: ['month1', 'month2', 'year1', 'year2'],
-      items: data
-    };
-  },
-  /*
-   *
-   */
-  initBars: function(){
-    var me = this;
+      i = 0;
+      iL = 12;
 
-    me.initTBar();
-    me.initBBar();
-  },
-  /*
-   *
-   */
-  initTBar: function(){
-    var me = this,
-      tbar = [];
+      for (; i < iL; i++) {
+        years.push(year - 5 + i);
+      }
 
-    tbar.push('side');
-    tbar.push({
-      cls: me.buttonBackCls,
-      handler: me.onBackClick,
-      scope: me
-    });
+      i = 0;
+      iL = 6;
 
-    tbar.push({
-      cls: me.buttonNextCls,
-      handler: me.onNextClick,
-      scope: me
-    });
+      for (; i < iL; i++) {
+        data[i] = {};
 
-    me.tbar = tbar;
-  },
-  /*
-   *
-   */
-  initBBar: function(){
-    var me = this,
-      bbar = [],
-      lang = me.lang;
+        data[i]['month1'] = months[i].substr(0, 3);
+        data[i]['month2'] = months[6 + i].substr(0, 3);
 
-    bbar.push({
-      type: 'wrapper',
-      cls: me.actionButtonsCls,
-      items: [{
-        text: lang.date.ok,
-        handler: me.onClickOk,
+        data[i]['year1'] = years[i];
+        data[i]['year2'] = years[6 + i];
+      }
+
+      return {
+        fields: ['month1', 'month2', 'year1', 'year2'],
+        items: data
+      };
+    },
+    /*
+     *
+     */
+    initBars: function () {
+      this.initTBar();
+      this.initBBar();
+    },
+    /*
+     *
+     */
+    initTBar: function () {
+      var me = this,
+        tbar = [];
+
+      tbar.push('side');
+      tbar.push({
+        cls: PICKER_BUTTON_BACK_CLS,
+        handler: me.onBackClick,
         scope: me
-       },{
-        text: lang.date.cancel,
-        handler: me.onClickCancel,
+      });
+
+      tbar.push({
+        cls: PICKER_BUTTON_NEXT_CLS,
+        handler: me.onNextClick,
         scope: me
-      }]
-    });
+      });
 
-    me.bbar = bbar;
-  },
-  /*
-   *
-   */
-  onBackClick: function(){
-    var me = this,
-      date = me.showDate,
-      year = date.getFullYear(),
-      month = date.getMonth(),
-      _date = date.getDate(),
-      hour = date.getHours(),
-      minute = date.getMinutes(),
-      second = date.getSeconds(),
-      millisecond = date.getMilliseconds();
+      me.tbar = tbar;
+    },
+    /*
+     *
+     */
+    initBBar: function () {
+      var me = this,
+        bbar = [],
+        lang = me.lang;
 
-    year -= 10;
+      bbar.push({
+        type: 'wrapper',
+        cls: PICKER_MONTH_ACTION_BUTTONS_CLS,
+        items: [{
+          text: lang.date.ok,
+          handler: me.onClickOk,
+          scope: me
+        }, {
+          text: lang.date.cancel,
+          handler: me.onClickCancel,
+          scope: me
+        }]
+      });
 
-    me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
+      me.bbar = bbar;
+    },
+    /*
+     *
+     */
+    onBackClick: function () {
+      var me = this,
+        date = me.showDate,
+        year = date.getFullYear(),
+        month = date.getMonth(),
+        _date = date.getDate(),
+        hour = date.getHours(),
+        minute = date.getMinutes(),
+        second = date.getSeconds(),
+        millisecond = date.getMilliseconds();
 
-    var data = me.setData();
-    me.store.setData(data.items);
-    me.update();
-  },
-  /*
-   *
-   */
-  onNextClick: function(){
-    var me = this,
-      date = me.showDate,
-      year = date.getFullYear(),
-      month = date.getMonth(),
-      _date = date.getDate(),
-      hour = date.getHours(),
-      minute = date.getMinutes(),
-      second = date.getSeconds(),
-      millisecond = date.getMilliseconds();
+      year -= 10;
 
-    year += 10;
+      me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-    me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
+      var data = me.setData();
+      me.store.setData(data.items);
+      me.update();
+    },
+    /*
+     *
+     */
+    onNextClick: function () {
+      var me = this,
+        date = me.showDate,
+        year = date.getFullYear(),
+        month = date.getMonth(),
+        _date = date.getDate(),
+        hour = date.getHours(),
+        minute = date.getMinutes(),
+        second = date.getSeconds(),
+        millisecond = date.getMilliseconds();
 
-    var data = me.setData();
-    me.store.setData(data.items);
-    me.update();
-  },
-  /*
-   *
-   */
-  onClickOk: function(){
-    var me = this;
+      year += 10;
 
-    me.fire('okclick');
-  },
-  /*
-   *
-   */
-  onClickCancel: function(){
-    var me = this;
+      me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-    me.fire('cancelclick');
-  },
-  /*
-   * @param {Fancy.Grid} grid
-   * @param {Object} o
-   */
-  onCellClick: function(grid, o){
-    var me = this,
-      date = me.date,
-      year = date.getFullYear(),
-      month = date.getMonth(),
-      _date = date.getDate(),
-      hour = date.getHours(),
-      minute = date.getMinutes(),
-      second = date.getSeconds(),
-      millisecond = date.getMilliseconds(),
-      activeCellCls = me.activeCellCls,
-      cell = Fancy.get(o.cell),
-      body;
+      var data = me.setData();
+      me.store.setData(data.items);
+      me.update();
+    },
+    /*
+     *
+     */
+    onClickOk: function () {
+      this.fire('okclick');
+    },
+    /*
+     *
+     */
+    onClickCancel: function () {
+      this.fire('cancelclick');
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellClick: function (grid, o) {
+      var me = this,
+        date = me.date,
+        year = date.getFullYear(),
+        month = date.getMonth(),
+        _date = date.getDate(),
+        hour = date.getHours(),
+        minute = date.getMinutes(),
+        second = date.getSeconds(),
+        millisecond = date.getMilliseconds(),
+        cell = F.get(o.cell),
+        body;
 
-    if(o.side === 'center'){
-      body = me.body;
-      year = Number(o.value);
+      if (o.side === 'center') {
+        body = me.body;
+        year = Number(o.value);
+      }
+      else {
+        body = me.leftBody;
+        month = o.rowIndex + o.columnIndex * 6;
+      }
+
+      body.el.select('.' + PICKER_MONTH_CELL_ACTIVE_CLS).removeCls(PICKER_MONTH_CELL_ACTIVE_CLS);
+      cell.addCls(PICKER_MONTH_CELL_ACTIVE_CLS);
+
+      if (_date > 28) {
+        _date = 1;
+      }
+
+      me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
+      me.date = me.showDate;
+
+      me.fire('changedate', me.date);
+    },
+    /*
+     * @param {Object} e
+     */
+    onMouseWheel: function (e) {
+      var delta = F.getWheelDelta(e.originalEvent || e);
+
+      if (delta < 0) {
+        this.onBackClick();
+      }
+      else {
+        this.onNextClick();
+      }
+    },
+    /*
+     *
+     */
+    onDateClick: function () {
+      this.initMonthPicker();
     }
-    else{
-      body = me.leftBody;
-      month = o.rowIndex + o.columnIndex * 6;
-    }
+  });
 
-    body.el.select('.' + activeCellCls).removeCls(activeCellCls);
-    cell.addCls(activeCellCls);
-
-    if(_date > 28){
-      _date = 1;
-    }
-
-    me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
-    me.date = me.showDate;
-
-    me.fire('changedate', me.date);
-  },
-  /*
-   * @param {Object} e
-   */
-  onMouseWheel: function(e){
-    var me = this,
-      delta = Fancy.getWheelDelta(e.originalEvent || e);
-
-    if(delta < 0){
-      me.onBackClick();
-    }
-    else{
-      me.onNextClick();
-    }
-  },
-  /*
-   *
-   */
-  onDateClick: function(){
-    var me = this;
-
-    me.initMonthPicker();
-  }
-});
+})();
 /*
  * @class Fancy.spark.ProgressDonut
  */
@@ -38598,11 +40322,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
    * @param {Object} o
    */
   constructor: function(o){
-    var me = this;
-
-    Fancy.apply(me, o);
-    
-    me.init();
+    Fancy.apply(this, o);
+    this.init();
   },
   /*
    *
@@ -38656,18 +40377,14 @@ Fancy.define('Fancy.spark.GrossLoss', {
    *
    */
   onMouseLeave: function(){
-    var me = this;
-
-    me.tooltip.destroy();
+    this.tooltip.destroy();
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    var me = this;
-
-    me.tooltip.el.css('display', 'block');
-    me.tooltip.show(e.pageX + 15, e.pageY - 25);
+    this.tooltip.el.css('display', 'block');
+    this.tooltip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *
@@ -39293,134 +41010,134 @@ Fancy.define('Fancy.spark.HBar', {
  * @class Fancy.ToolTip
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.ToolTip', {
-  extend: Fancy.Widget,
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(config){
-    var me = this;
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    me.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    var me = this;
+  //CONSTANTS
+  var TOOLTIP_CLS = F.TOOLTIP_CLS;
+  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
-    me.initTpl();
-    me.render();
-  },
-  tpl: [
-    '<div class="{innerCls}">{text}</div>'
-  ],
-  widgetCls: 'fancy-tooltip',
-  cls: '',
-  extraCls: '',
-  innerCls: 'fancy-tooltip-inner',
-  /*
-   *
-   */
-  render: function(){
-    var me = this,
-      renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = Fancy.get(document.createElement('div'));
+  F.define('Fancy.ToolTip', {
+    extend: F.Widget,
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.initTpl();
+      this.render();
+    },
+    tpl: [
+      '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
+    ],
+    widgetCls: TOOLTIP_CLS,
+    cls: '',
+    extraCls: '',
+    /*
+     *
+     */
+    render: function () {
+      var me = this,
+        renderTo = F.get(me.renderTo || document.body).dom,
+        el = F.get(document.createElement('div'));
 
-    el.addCls(
-      Fancy.cls,
-      me.widgetCls,
-      me.cls,
-      me.extraCls
-    );
+      el.addCls(
+        F.cls,
+        me.widgetCls,
+        me.cls,
+        me.extraCls
+      );
 
-    el.update(me.tpl.getHTML({
-      text: me.text,
-      innerCls: me.innerCls
-    }));
+      el.update(me.tpl.getHTML({
+        text: me.text
+      }));
 
-    me.el = Fancy.get(renderTo.appendChild(el.dom));
-  },
-  /*
-   * @param {Number} x
-   * @param {Number} y
-   */
-  show: function(x, y){
-    var me = this;
+      me.el = F.get(renderTo.appendChild(el.dom));
+    },
+    /*
+     * @param {Number} x
+     * @param {Number} y
+     */
+    show: function (x, y) {
+      var me = this;
 
-    if(me.timeout){
-      clearInterval(me.timeout);
-      delete me.timeout;
-    }
+      if (me.timeout) {
+        clearInterval(me.timeout);
+        delete me.timeout;
+      }
 
-    if(me.css('display') === 'none'){
+      if (me.css('display') === 'none') {
+        me.css({
+          display: 'block'
+        });
+      }
+
       me.css({
-        display: 'block'
+        left: x,
+        top: y
+      });
+    },
+    /*
+     * @param {Number} [delay]
+     */
+    hide: function (delay) {
+      var me = this;
+
+      if (me.timeout) {
+        clearInterval(me.timeout);
+        delete me.timeout;
+      }
+
+      if (delay) {
+        me.timeout = setTimeout(function () {
+          me.el.hide();
+        }, delay);
+      }
+      else {
+        me.el.hide();
+      }
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      this.el.destroy();
+    },
+    /*
+     * @param {String} html
+     */
+    update: function (html) {
+      this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    }
+  });
+
+  F.tip = {
+    update: function (text) {
+      F.tip = new F.ToolTip({
+        text: text
+      });
+    },
+    show: function (x, y) {
+      F.tip = new F.ToolTip({
+        text: ' '
+      });
+      F.tip.show(x, y);
+    },
+    hide: function () {
+      F.tip = new F.ToolTip({
+        text: ' '
       });
     }
+  };
 
-    me.css({
-      left: x,
-      top: y
-    });
-  },
-  /*
-   * @param {Number} [delay]
-   */
-  hide: function(delay){
-    var me = this;
-
-    if(me.timeout){
-      clearInterval(me.timeout);
-      delete me.timeout;
-    }
-
-    if(delay){
-      me.timeout = setTimeout(function(){
-        me.el.hide();
-      }, delay);
-    }
-    else {
-      me.el.hide();
-    }
-  },
-  /*
-   *
-   */
-  destroy: function(){
-    var me = this;
-
-    me.el.destroy();
-  },
-  /*
-   * @param {String} html
-   */
-  update: function(html){
-    var me = this;
-
-    me.el.select('.' + me.innerCls).update(html);
-  }
-});
-
-Fancy.tip = {
-  update: function(text){
-    Fancy.tip = new Fancy.ToolTip({
-      text: text
-    });
-  },
-  show: function(x, y){
-    Fancy.tip = new Fancy.ToolTip({
-      text: ' '
-    });
-    Fancy.tip.show(x, y);
-  },
-  hide: function(){
-    Fancy.tip = new Fancy.ToolTip({
-      text: ' '
-    });
-  }
-};
+})();
 ;(function () {
 	'use strict';
 

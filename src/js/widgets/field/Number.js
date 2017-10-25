@@ -28,12 +28,8 @@
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this,
-        config = config || {};
-
-      Fancy.apply(me, config);
-
-      me.Super('const', arguments);
+      Fancy.apply(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -150,17 +146,13 @@
      * @param {Number} value
      */
     setMin: function (value) {
-      var me = this;
-
-      me.min = value;
+      this.min = value;
     },
     /*
      * @param {Number} value
      */
     setMax: function (value) {
-      var me = this;
-
-      me.max = value;
+      this.max = value;
     },
     /*
      *

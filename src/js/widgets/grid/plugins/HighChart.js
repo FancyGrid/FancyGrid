@@ -10,19 +10,14 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
-
-    me.Super('const', arguments);
+    this.Super('const', arguments);
   },
   /*
    *
    */
   init: function(){
-    var me = this;
-
-    me.Super('init', arguments);
-
-    me.ons();
+    this.Super('init', arguments);
+    this.ons();
   },
   /*
    *
@@ -110,8 +105,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Array} data
    */
   setSeriesData: function(id, data){
-    var me = this,
-      chart = me.getChart(chartConfig.id),
+    var chart = this.getChart(chartConfig.id),
       sery = chart.series[0];
 
     sery.setData(data.data);
@@ -121,9 +115,8 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} o
    */
   set: function(chartConfig, o){
-    var me = this,
-      fieldsMap = me.getFieldsMap(chartConfig),
-      _chart = me.getChart(chartConfig.id),
+    var fieldsMap = this.getFieldsMap(chartConfig),
+      _chart = this.getChart(chartConfig.id),
       series = _chart.series,
       sery;
 
@@ -248,8 +241,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @return {Array}
    */
   getColumnsChartIndexes: function(){
-    var me = this,
-      w = me.widget,
+    var w = this.widget,
       indexes = [],
       columns = w.columns,
       i = 0,
@@ -286,8 +278,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Object} o
    */
   addSeries: function(id, o){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     chart.addSeries(o);
   },
@@ -296,8 +287,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @return {Number}
    */
   getNumberSeries: function(id){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     return chart.series.length;
   },
@@ -305,8 +295,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {String} id
    */
   removeLastSeries: function(id){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     chart.series[chart.series.length - 1].remove();
   },
@@ -315,8 +304,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {String} index
    */
   removeSeries: function(id, index){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     chart.series[index].remove();
   },
@@ -344,8 +332,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @return {Boolean}
    */
   isTreeMap: function(id){
-    var me = this,
-      chart = me.getChart(id);
+    var chart = this.getChart(id);
 
     if( chart.series[0] === undefined ){
       return false;

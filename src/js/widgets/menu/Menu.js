@@ -1,4 +1,15 @@
 (function() {
+  //SHORTCUTS
+  var F = Fancy;
+
+  //CONSTANTS
+  var MENU_CLS = F.MENU_CLS;
+  var MENU_ITEM_CLS = F.MENU_ITEM_CLS;
+  var MENU_ITEM_IMAGE_CLS =  F.MENU_ITEM_IMAGE_CLS;
+  var MENU_ITEM_TEXT_CLS = F.MENU_ITEM_TEXT_CLS;
+  var MENU_ITEM_ACTIVE_CLS = F.MENU_ITEM_ACTIVE_CLS;
+  var MENU_ITEM_RIGHT_IMAGE_CLS = F.MENU_ITEM_RIGHT_IMAGE_CLS;
+  var MENU_ITEM_EXPAND_CLS = F.MENU_ITEM_EXPAND_CLS;
 
   /**
    * @class Fancy.Menu
@@ -12,11 +23,8 @@
      * @param {Object} scope
      */
     constructor: function (config, scope) {
-      var me = this;
-
-      Fancy.applyConfig(me, config || {});
-
-      me.Super('const', arguments);
+      Fancy.applyConfig(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -38,16 +46,14 @@
       var me = this,
         el = me.el;
 
-      el.on('mousedown', me.onItemMouseDown, me, '.fancy-menu-item');
-      el.on('click', me.onItemClick, me, '.fancy-menu-item');
-      el.on('mouseenter', me.onItemEnter, me, '.fancy-menu-item');
-      el.on('mouseleave', me.onItemLeave, me, '.fancy-menu-item');
+      el.on('mousedown', me.onItemMouseDown, me, '.' + MENU_ITEM_CLS);
+      el.on('click', me.onItemClick, me, '.' + MENU_ITEM_CLS);
+      el.on('mouseenter', me.onItemEnter, me, '.' + MENU_ITEM_CLS);
+      el.on('mouseleave', me.onItemLeave, me, '.' + MENU_ITEM_CLS);
     },
-    widgetCls: 'fancy-menu',
-    itemCls: 'fancy-menu-item',
-    itemImageCls: 'fancy-menu-item-image',
-    itemContainerCls: 'fancy-menu-item-text',
-    activeItemCls: 'fancy-menu-item-active',
+    widgetCls: MENU_CLS,
+    itemCls: MENU_ITEM_CLS,
+    itemImageCls: MENU_ITEM_IMAGE_CLS,
     cls: '',
     extraCls: '',
     width: 142,
@@ -93,13 +99,12 @@
      * @return {Number}
      */
     getItemsHeight: function () {
-      var me = this,
-        height = 0,
+      var height = 0,
         i = 0,
-        iL = me.items.length;
+        iL = this.items.length;
 
       for (; i < iL; i++) {
-        height += me.itemHeight;
+        height += this.itemHeight;
       }
 
       return height;
@@ -130,9 +135,9 @@
         }
 
         itemEl.update([
-          item.image === false ? '' : '<div class="fancy-menu-item-image ' + imageCls + '"></div>',
-          '<div class="fancy-menu-item-text"></div>',
-          '<div class="fancy-menu-item-right-image ' + (item.items ? 'fancy-menu-item-expand' : '') + '"></div>'
+          item.image === false ? '' : '<div class="'+MENU_ITEM_IMAGE_CLS+' ' + imageCls + '"></div>',
+          '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>',
+          '<div class="'+MENU_ITEM_RIGHT_IMAGE_CLS+' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>'
         ].join(""));
 
         if (item.image === false) {
@@ -143,7 +148,7 @@
           case '':
             break;
           default:
-            itemEl.select('.fancy-menu-item-text').item(0).update(item.text || '');
+            itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
         }
 
         if(item.checked !== undefined){
@@ -151,7 +156,7 @@
             label: false,
             theme: me.theme,
             padding: '1px 8px 0px',
-            renderTo: itemEl.select('.fancy-menu-item-image').item(0).dom,
+            renderTo: itemEl.select('.' + MENU_ITEM_IMAGE_CLS).item(0).dom,
             value: item.checked
           });
         }
@@ -271,36 +276,35 @@
      *
      */
     hideAll: function(){
-      var me = this;
+      var parentMenu = this.parentMenu;
 
-      if(me.parentMenu && me.parentMenu.el.css('display') !== 'none'){
-        me.parentMenu.hide();
+      if(parentMenu && parentMenu.el.css('display') !== 'none'){
+        parentMenu.hide();
       }
 
-      me.hide();
+      this.hide();
     },
     /*
      * @param {Number} index
      */
     activateItem: function (index) {
-      var me = this,
-        item = me.items[index];
+      var item = this.items[index];
 
-      me.activeItem = item;
-      item.el.addCls(me.activeItemCls);
+      this.activeItem = item;
+      item.el.addCls(MENU_ITEM_ACTIVE_CLS);
     },
     /*
      *
      */
     deActivateItem: function () {
-      var me = this;
+      var activeItem = this;
 
-      if (!me.activeItem) {
+      if (!activeItem) {
         return;
       }
 
-      me.activeItem.el.removeClass(me.activeItemCls);
-      delete me.activeItem;
+      activeItem.el.removeClass(MENU_ITEM_ACTIVE_CLS);
+      delete this.activeItem;
     },
     /*
      * @param {Object} e
@@ -318,10 +322,9 @@
      *
      */
     init: function(){
-      var me = this,
-        docEl = Fancy.get(document);
+      var docEl = Fancy.get(document);
 
-      docEl.on('click', me.onDocClick, me);
+      docEl.on('click', this.onDocClick, this);
     },
     /*
      * @param {Object} menu
@@ -353,7 +356,7 @@
           break;
         }
 
-        if( parentEl.hasCls('fancy-menu') ){
+        if( parentEl.hasCls(MENU_CLS) ){
           return;
         }
 

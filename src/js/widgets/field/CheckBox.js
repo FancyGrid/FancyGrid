@@ -13,6 +13,7 @@
   var FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
   var FIELD_INPUT_LABEL_CLS =  Fancy.FIELD_INPUT_LABEL_CLS;
+  var FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
 
   Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     mixins: [
@@ -25,11 +26,8 @@
      * @param {Object} config
      */
     constructor: function (config) {
-      var me = this;
-
-      Fancy.applyConfig(me, config || {});
-
-      me.Super('const', arguments);
+      Fancy.applyConfig(this, config);
+      this.Super('const', arguments);
     },
     /*
      *
@@ -67,7 +65,7 @@
     value: false,
     editable: true,
     stopIfCTRL: false,
-    checkedCls: 'fancy-checkbox-on',
+    checkedCls: FIELD_CHECKBOX_ON_CLS,
     fieldCls: FIELD_CLS + ' ' + FIELD_CHECKBOX_CLS,
     tpl: [
       '<div class="'+FIELD_LABEL_CLS+'" style="{labelWidth}{labelDisplay}">',
@@ -96,8 +94,7 @@
      */
     onClick: function (e) {
       var me = this,
-        el = me.el,
-        checkedCls = me.checkedCls;
+        el = me.el;
 
       me.fire('beforechange');
 
@@ -114,9 +111,9 @@
         return;
       }
 
-      el.toggleCls(checkedCls);
+      el.toggleCls(me.checkedCls);
       var oldValue = me.value;
-      me.value = el.hasCls(checkedCls);
+      me.value = el.hasCls(me.checkedCls);
       me.fire('change', me.value, oldValue);
     },
     /*
@@ -132,19 +129,18 @@
      */
     set: function (value, fire) {
       var me = this,
-        el = me.el,
-        checkedCls = me.checkedCls;
+        el = me.el;
 
       if (value === '') {
         value = false;
       }
 
       if (value === true || value === 1) {
-        el.addCls(checkedCls);
+        el.addCls(me.checkedCls);
         value = true;
       }
       else if (value === false || value === 0) {
-        el.removeClass(checkedCls);
+        el.removeClass(me.checkedCls);
         value = false;
       }
       else if (value === undefined) {
@@ -170,9 +166,7 @@
      * @return {*}
      */
     getValue: function () {
-      var me = this;
-
-      return me.value;
+      return this.value;
     },
     /*
      * @return {*}
@@ -190,9 +184,7 @@
      *
      */
     toggle: function () {
-      var me = this;
-
-      me.set(!me.value);
+      me.set(!this.value);
     }
   });
 
