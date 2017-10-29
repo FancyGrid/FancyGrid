@@ -66,6 +66,8 @@
         column = columns[index];
 
       if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        //TODO: write realization
+        //me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
         return;
       }
 
@@ -73,7 +75,7 @@
         return;
       }
 
-      if(column.draggable === false){
+      if(!me.activeCellTopGroup && column.draggable === false){
         return;
       }
 
@@ -137,6 +139,7 @@
 
       delete me.inUpGroupCell;
       delete me.inUnderGroup;
+      delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
       delete me.activeCell;
@@ -158,6 +161,7 @@
           me.status = 'none';
           if(dragged) {
             w.fire('columndrag');
+            w.scroller.update();
           }
         }, 10);
       }
@@ -172,8 +176,6 @@
         columns = w.getColumns(me.activeSide);
 
       if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
-        //me.status = 'dragging';
-
         me.tip = new Fancy.ToolTip({
           text: me.activeColumn.title,
           cls: 'fancy-drag-cell'
@@ -514,13 +516,15 @@
       return side;
     },
     /*
+     * @param {Object} [cell]
+     * @param {String} [side]
      * @return {Object}
      */
-    getGroupStartEnd: function () {
+    getGroupStartEnd: function (cell, side) {
       var me = this,
         w = me.widget,
-        header = w.getHeader(me.inSide),
-        groupName = me.inUpGroupCell.attr('index'),
+        header = w.getHeader(side || me.inSide),
+        groupName = (cell || me.inUpGroupCell).attr('index'),
         inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
         values = [];
 
@@ -603,6 +607,8 @@
         column = columns[index];
 
       if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+        //TODO: write realization
+        //me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
         return;
       }
 
@@ -610,7 +616,7 @@
         return;
       }
 
-      if(column.draggable === false){
+      if(!me.activeCellTopGroup && column.draggable === false){
         return;
       }
 
@@ -674,6 +680,7 @@
 
       delete me.inUpGroupCell;
       delete me.inUnderGroup;
+      delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
       delete me.activeCell;
@@ -695,6 +702,7 @@
           me.status = 'none';
           if(dragged) {
             w.fire('columndrag');
+            w.scroller.update();
           }
         }, 10);
       }
@@ -709,8 +717,6 @@
         columns = w.getColumns(me.activeSide);
 
       if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
-        //me.status = 'dragging';
-
         me.tip = new Fancy.ToolTip({
           text: me.activeColumn.title,
           cls: 'fancy-drag-cell'
@@ -1051,13 +1057,15 @@
       return side;
     },
     /*
+     * @param {Object} [cell]
+     * @param {String} [side]
      * @return {Object}
      */
-    getGroupStartEnd: function () {
+    getGroupStartEnd: function (cell, side) {
       var me = this,
         w = me.widget,
-        header = w.getHeader(me.inSide),
-        groupName = me.inUpGroupCell.attr('index'),
+        header = w.getHeader(side || me.inSide),
+        groupName = (cell || me.inUpGroupCell).attr('index'),
         inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
         values = [];
 

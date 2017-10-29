@@ -942,7 +942,11 @@
 
         cell.css('text-align', column.align || '');
       });
-    }
+    },
+    /*
+     * Bug Fix: Empty method that is rewritten in HeaderMenu mixin
+     */
+    destroyMenus: function () {}
   });
 
 })();

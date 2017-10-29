@@ -139,6 +139,14 @@
      * @param {Fancy.Element} cell
      */
     addCellResizeCls: function (cell) {
+      var me = this,
+        w = me.widget,
+        columndrag = w.columndrag;
+
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
+
       G(cell).addCls(GRID_COLUMN_RESIZER_CLS);
       G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).addCls(GRID_COLUMN_RESIZER_CLS);
     },

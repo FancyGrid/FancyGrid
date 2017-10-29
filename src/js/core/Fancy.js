@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.14',
+  version: '1.6.15',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -796,7 +796,7 @@ var FancyForm = function(){
       fn = fn || function () {},
       protocol = location.protocol,
       _v = Fancy.version.replace(/\./g, ''),
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//code.fancygrid.com/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//cdn.fancygrid.com/modules/');
 
     if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
       return;
@@ -853,7 +853,7 @@ var FancyForm = function(){
       //endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       endUrl = '.js',
       protocol = location.protocol,
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//code.fancygrid.com/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//cdn.fancygrid.com/modules/');
 
     _script.src = MODULESDIR + 'i18n/' + i18n + endUrl;
     _script.charset = 'utf-8';

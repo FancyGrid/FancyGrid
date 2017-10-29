@@ -126,7 +126,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   loadData: function(){
     var me = this,
       proxy = me.proxy,
-      params = me.params || {},
+      params = me.params || proxy.params || {},
       headers = proxy.headers || {};
 
     me.fire('beforeload');
@@ -198,8 +198,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    */
   proxyServerUpdate: function(id, key, value){
     var me = this,
-      params = me.params || {},
       proxy = me.proxy,
+      params = me.params || proxy.params || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     if(!proxy.api.update){
@@ -247,8 +247,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    */
   proxyServerDestroy: function(id, data){
     var me = this,
-      params = me.params || {},
       proxy = me.proxy,
+      params = me.params || proxy.params || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     if(sendJSON && Fancy.isArray(id)){
@@ -287,8 +287,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    */
   proxyServerCreate: function(id, data){
     var me = this,
-      params = me.params || {},
       proxy = me.proxy,
+      params = me.params || proxy.params || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     if(sendJSON && Fancy.isArray(id)){

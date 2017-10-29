@@ -742,6 +742,10 @@
               columnEl.removeCls(cls);
           }
         });
+
+        if(column.cls){
+          columnEl.addCls(column.cls);
+        }
       });
     }
   });

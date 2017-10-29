@@ -238,6 +238,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var _columns = columns.concat(leftColumns).concat(rightColumns);
 
     Fancy.each(_columns, function(column){
+      if(column.draggable === true){
+        requiredModules['column-drag'] = true;
+      }
+
       if(column.sortable === true){
         requiredModules.sort = true;
       }

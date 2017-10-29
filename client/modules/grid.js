@@ -5057,6 +5057,14 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
      * @param {Fancy.Element} cell
      */
     addCellResizeCls: function (cell) {
+      var me = this,
+        w = me.widget,
+        columndrag = w.columndrag;
+
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
+
       G(cell).addCls(GRID_COLUMN_RESIZER_CLS);
       G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).addCls(GRID_COLUMN_RESIZER_CLS);
     },
@@ -8532,6 +8540,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               columnEl.removeCls(cls);
           }
         });
+
+        if(column.cls){
+          columnEl.addCls(column.cls);
+        }
       });
     }
   });
@@ -9495,7 +9507,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         cell.css('text-align', column.align || '');
       });
-    }
+    },
+    /*
+     * Bug Fix: Empty method that is rewritten in HeaderMenu mixin
+     */
+    destroyMenus: function () {}
   });
 
 })();
