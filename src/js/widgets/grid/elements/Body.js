@@ -28,6 +28,8 @@
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   F.define('Fancy.grid.Body', {
     extend: F.Widget,
     mixins: [
@@ -594,6 +596,10 @@
         jL = index,
         passedLeft;
 
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
+
       for (; j < jL; j++) {
         left += _columns[j].width;
       }
@@ -701,11 +707,16 @@
 
       F.each(columns, function (column, i) {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
-
+        /*
         el.css({
           width: column.width,
           left: left
         });
+        */
+        el.animate({
+          width: column.width,
+          left: left
+        }, ANIMATE_DURATION);
 
         left += column.width;
       });

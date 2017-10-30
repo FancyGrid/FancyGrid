@@ -4391,7 +4391,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bodyViewHeight -= knobOffSet;
       }
 
-      me.rightKnob.css('height', knobHeight + 'px');
+      me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
       me.rightScrollScale = (cellsViewHeight - bodyViewHeight) / (bodyViewHeight - knobHeight);
@@ -4464,7 +4464,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         knobWidth = me.minBottomKnobWidth;
       }
 
-      me.bottomKnob.css('width', knobWidth + 'px');
+      me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
       me.bottomScrollScale = (centerViewWidth - centerFullWidth) / (centerViewWidth - knobWidth - 2 - 1);
@@ -4936,6 +4936,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   F.define('Fancy.grid.plugin.ColumnResizer', {
     extend: F.Plugin,
     ptype: 'grid.columnresizer',
@@ -5357,7 +5359,6 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       me.rightEl.css({
         display: 'none'
       });
-
       me.fixSidesWidth();
       w.startResizing = false;
       me.moveLeftResizer = false;
@@ -5409,7 +5410,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           w.leftColumns[me.columnIndex].width = cellWidth;
           domColumns = w.leftBody.el.select('.' + GRID_COLUMN_CLS);
           domHeaderCells = w.leftHeader.el.select('.' + GRID_HEADER_CELL_CLS);
-          domColumns.item(index).css('width', cellWidth + 'px');
+          domColumns.item(index).animate({width: cellWidth}, ANIMATE_DURATION);
 
           var i = me.columnIndex + 1,
             iL = domHeaderCells.length,
@@ -5429,22 +5430,24 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             var domColumnEl = domColumns.item(i),
               domHeaderCell = domHeaderCells.item(i);
 
-            domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
-            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
-            }
+            domColumnEl.animate({left: parseInt(domColumnEl.css('left')) - delta - leftFix}, ANIMATE_DURATION);
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {}
             else {
-              domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
+              domHeaderCell.animate({left: parseInt(domHeaderCell.css('left')) - delta - leftFix}, ANIMATE_DURATION);
             }
           }
 
-          leftEl.css('width', parseInt(leftEl.css('width')) - delta - leftFix);
-          leftHeaderEl.css('width', parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px');
+          leftEl.animate({width: parseInt(leftEl.css('width')) - delta - leftFix}, ANIMATE_DURATION);
+          leftHeaderEl.animate({width: parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px'}, ANIMATE_DURATION);
 
           if (w.columns.length) {
-            centerEl.css('left', parseInt(centerEl.css('left')) - delta - leftFix);
-            centerEl.css('width', newCenterWidth);
-            centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
-            centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
+            //Bug fix for dom fx without jQuery
+            centerEl.animate({
+              left: parseInt(centerEl.css('left')) - delta - leftFix,
+              width: newCenterWidth
+            }, ANIMATE_DURATION);
+            centerHeaderEl.animate({width: parseInt(centerHeaderEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
+            centerBodyEl.animate({width: parseInt(centerBodyEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
           }
 
           break;
@@ -5453,7 +5456,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           w.columns[me.columnIndex].width = cellWidth;
           domColumns = w.body.el.select('.' + GRID_COLUMN_CLS);
           domHeaderCells = w.header.el.select('.' + GRID_HEADER_CELL_CLS);
-          domColumns.item(index).css('width', cellWidth + 'px');
+          domColumns.item(index).animate({width: cellWidth}, ANIMATE_DURATION);
 
           var i = me.columnIndex + 1,
             iL = domHeaderCells.length,
@@ -5479,12 +5482,11 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
               groupMove[domHeaderCell.attr('group-index')] = {};
             }
 
-            domColumnEl.css('left', left);
+            domColumnEl.animate({left: left}, ANIMATE_DURATION);
 
-            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
-            }
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {}
             else {
-              domHeaderCell.css('left', _left);
+              domHeaderCell.animate({left: _left}, ANIMATE_DURATION);
             }
           }
 
@@ -5501,7 +5503,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           w.rightColumns[me.columnIndex].width = cellWidth;
           domColumns = w.rightBody.el.select('.' + GRID_COLUMN_CLS);
           domHeaderCells = w.rightHeader.el.select('.' + GRID_HEADER_CELL_CLS);
-          domColumns.item(index).css('width', cellWidth + 'px');
+          domColumns.item(index).animate({width: cellWidth + 'px'}, ANIMATE_DURATION);
 
           var i = me.columnIndex + 1,
             iL = domHeaderCells.length,
@@ -5521,41 +5523,42 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             var domColumnEl = domColumns.item(i),
               domHeaderCell = domHeaderCells.item(i);
 
-            domColumnEl.css('left', parseInt(domColumnEl.css('left')) - delta - leftFix);
+            domColumnEl.animate({left: parseInt(domColumnEl.css('left')) - delta - leftFix}, ANIMATE_DURATION);
 
-            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {
-            }
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {}
             else {
-              domHeaderCell.css('left', parseInt(domHeaderCell.css('left')) - delta - leftFix);
+              domHeaderCell.animate({left: parseInt(domHeaderCell.css('left')) - delta - leftFix}, ANIMATE_DURATION);
             }
           }
 
-          rightEl.css('width', parseInt(rightEl.css('width')) - delta - leftFix);
-          rightHeaderEl.css('width', parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px');
+          rightEl.animate({width:  parseInt(rightEl.css('width')) - delta - leftFix}, ANIMATE_DURATION);
+          rightHeaderEl.animate({width: parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px'}, ANIMATE_DURATION);
 
           if (w.columns.length) {
-            centerEl.css('width', newCenterWidth);
-            centerHeaderEl.css('width', parseInt(centerHeaderEl.css('width')) + delta + leftFix);
-            centerBodyEl.css('width', parseInt(centerBodyEl.css('width')) + delta + leftFix);
+            centerEl.animate({width: newCenterWidth}, ANIMATE_DURATION);
+            centerHeaderEl.animate({width: parseInt(centerHeaderEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
+            centerBodyEl.animate({width: parseInt(centerBodyEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
           }
           break;
       }
+
 
       var cellEl = G(me.cell),
         groupName = cellEl.attr('group-index'),
         groupCell;
 
-      cellEl.css('width', cellWidth + 'px');
+      cellEl.animate({width: cellWidth + 'px'}, ANIMATE_DURATION);
 
       if (groupName) {
         groupCell = w.el.select("[index='" + groupName + "']");
-        groupCell.css('width', parseInt(groupCell.css('width')) - delta - leftFix);
+        groupCell.animate({width: parseInt(groupCell.css('width')) - delta - leftFix}, ANIMATE_DURATION);
       }
       else {
-        for (var p in groupMove) {
-          groupCell = w.el.select("[index='" + p + "']");
-          groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
-        }
+          for (var p in groupMove) {
+            groupCell = w.el.select("[index='" + p + "']");
+            //groupCell.animate({left: parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix}, ANIMATE_DURATION);
+            groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+          }
       }
 
       w.fire('columnresize', {
@@ -7826,6 +7829,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   F.define('Fancy.grid.Body', {
     extend: F.Widget,
     mixins: [
@@ -8392,6 +8397,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         jL = index,
         passedLeft;
 
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
+
       for (; j < jL; j++) {
         left += _columns[j].width;
       }
@@ -8499,11 +8508,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       F.each(columns, function (column, i) {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
-
+        /*
         el.css({
           width: column.width,
           left: left
         });
+        */
+        el.animate({
+          width: column.width,
+          left: left
+        }, ANIMATE_DURATION);
 
         left += column.width;
       });
@@ -8584,6 +8598,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.Header', {
     extend: F.Widget,
@@ -8780,6 +8796,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         cellHeight = parseInt(cells.item(0).css('height')),
         groupIndex = '',
         left = 0;
+
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
 
       if (w.groupheader) {
         cellHeight = w.cellHeight * 2;
@@ -9455,10 +9475,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       F.each(columns, function (column, i){
         var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
 
+        /*
         cell.css({
           width: column.width,
           left: left
         });
+        */
+        cell.animate({
+          width: column.width,
+          left: left
+        }, ANIMATE_DURATION);
 
         left += column.width;
       });

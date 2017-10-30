@@ -297,7 +297,7 @@
      *
      */
     deActivateItem: function () {
-      var activeItem = this;
+      var activeItem = this.activeItem;
 
       if (!activeItem) {
         return;

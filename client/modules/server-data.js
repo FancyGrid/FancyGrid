@@ -126,8 +126,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   loadData: function(){
     var me = this,
       proxy = me.proxy,
-      params = me.params || proxy.params || {},
+      params = {},
       headers = proxy.headers || {};
+
+    Fancy.apply(params, me.params);
+    Fancy.applyIf(params, proxy.params);
 
     me.fire('beforeload');
     //IDEA: sortType === 'server'
@@ -199,8 +202,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   proxyServerUpdate: function(id, key, value){
     var me = this,
       proxy = me.proxy,
-      params = me.params || proxy.params || {},
+      params = {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
+
+    Fancy.apply(params, me.params);
+    Fancy.applyIf(params, proxy.params);
 
     if(!proxy.api.update){
       return;
@@ -248,8 +254,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   proxyServerDestroy: function(id, data){
     var me = this,
       proxy = me.proxy,
-      params = me.params || proxy.params || {},
+      params = {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
+
+    Fancy.apply(params, me.params);
+    Fancy.applyIf(params, proxy.params);
 
     if(sendJSON && Fancy.isArray(id)){
       params = id;
@@ -288,8 +297,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   proxyServerCreate: function(id, data){
     var me = this,
       proxy = me.proxy,
-      params = me.params || proxy.params || {},
+      params = {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
+
+    Fancy.apply(params, me.params);
+    Fancy.applyIf(params, proxy.params);
 
     if(sendJSON && Fancy.isArray(id)){
       params = id;

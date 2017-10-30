@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.15',
+  version: '1.6.16',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -603,6 +603,9 @@ Fancy.apply(Fancy, {
   PICKER_BUTTON_TODAY_CLS: 'fancy-picker-button-today',
   PICKER_BUTTON_TODAY_WRAPPER_CLS: 'fancy-picker-button-today-wrapper'
 });
+
+// Animation duration for all animations
+Fancy.ANIMATE_DURATION = 300;
 
 (function(){
 
@@ -8300,7 +8303,18 @@ if(!Fancy.nojQuery && Fancy.$){
      *
      */
     show: function () {
-      this.css('display', 'block');
+      var me = this,
+        animate = false;
+
+      if(me.css('display') === 'none'){
+        me.css('opacity', 0);
+        animate = true;
+      }
+      me.css('display', 'block');
+
+      if(animate){
+        me.el.animate({opacity: 1}, F.ANIMATE_DURATION);
+      }
     },
     /*
      * @param {Number|Object} width

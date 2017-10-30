@@ -1034,6 +1034,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   var GRID_ROW_EDIT_BUTTON_UPDATE_CLS =  F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
   var GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   F.define('Fancy.grid.plugin.RowEdit', {
     extend: F.Plugin,
     ptype: 'grid.rowedit',
@@ -1108,14 +1110,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       if (!me.rendered) {
         me.render();
         me.changePosition(o.rowIndex, false);
+        me.setValues(o);
       }
       else {
         var isHidden = me.el.css('display') === 'none';
         me.show();
         me.changePosition(o.rowIndex, !isHidden);
-      }
 
-      me.setValues(o);
+        me.setValues(o);
+      }
 
       me.setSizes();
     },
@@ -1514,7 +1517,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         scrollTop = w.scroller.getScroll(),
         bottomScroll = w.scroller.getBottomScroll(),
         newTop = w.cellHeight * rowIndex - 1 - scrollTop,
-        duration = 100,
         plusTop = 0;
 
       if (w.grouping) {
@@ -1525,9 +1527,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       if (me.leftEl) {
         if (animate !== false) {
           me.leftEl.animate({
-            duration: duration,
             top: newTop
-          });
+          }, ANIMATE_DURATION);
         }
         else {
           me.leftEl.css('top', newTop);
@@ -1537,9 +1538,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       if (me.el) {
         if (animate !== false) {
           me.el.animate({
-            duration: duration,
             top: newTop
-          });
+          }, ANIMATE_DURATION);
         }
         else {
           me.el.css('top', newTop);
@@ -1549,9 +1549,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       if (me.rightEl) {
         if (animate !== false) {
           me.rightEl.animate({
-            duration: duration,
             top: newTop
-          });
+          }, ANIMATE_DURATION);
         }
         else {
           me.rightEl.css('top', newTop);
@@ -1585,9 +1584,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if (animate !== false) {
         me.buttonsEl.animate({
-          duration: duration,
           top: buttonTop
-        });
+        }, ANIMATE_DURATION);
       }
       else {
         me.buttonsEl.css('top', buttonTop);
@@ -1671,11 +1669,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      *
      */
     onColumnResize: function () {
-      if (this.rendered === false) {
+      var me = this;
+
+      if (me.rendered === false) {
         return;
       }
 
-      this.setSizes();
+      setTimeout(function () {
+        me.setSizes();
+      }, ANIMATE_DURATION);
     },
     /*
      *
@@ -1750,16 +1752,32 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       var me = this;
 
       if (me.leftEl) {
+        if(me.leftEl.css('display') === 'none'){
+          me.leftEl.css('opacity', 0);
+        }
         me.leftEl.show();
+        me.leftEl.animate({opacity: 1 }, ANIMATE_DURATION);
       }
 
+      if(me.el.css('display') === 'none'){
+        me.el.css('opacity', 0);
+      }
       me.el.show();
+      me.el.animate({opacity: 1 }, ANIMATE_DURATION);
 
       if (me.rightEl) {
+        if(me.rightEl.css('display') === 'none'){
+          me.rightEl.css('opacity', 0);
+        }
         me.rightEl.show();
+        me.rightEl.animate({opacity: 1 }, ANIMATE_DURATION);
       }
 
+      if(me.buttonsEl.css('display') === 'none'){
+        me.buttonsEl.css('opacity', 0);
+      }
       me.buttonsEl.show();
+      me.buttonsEl.animate({opacity: 1 }, ANIMATE_DURATION);
     },
     /*
      * @param {Object} field

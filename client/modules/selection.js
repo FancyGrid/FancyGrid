@@ -77,6 +77,11 @@
       });
 
       w.on('sort', me.onSort, me);
+
+      w.on('columndrag', me.onColumnDrag, me);
+      w.on('lockcolumn', me.onColumnLock, me);
+      w.on('rightlockcolumn', me.onColumnRightLock, me);
+      w.on('unlockcolumn', me.onUnColumnLock, me);
     },
     /*
      *
@@ -1537,6 +1542,86 @@
           }
         }, 20);
       }
+    },
+    /*
+     *
+     */
+    onColumnDrag: function () {
+      var me = this,
+        w = me.widget,
+        selectModel;
+
+      if(me.cells || me.cell || me.column || me.columns){
+        me.clearSelection();
+        return;
+      }
+
+      selectModel = me.getSelection(true);
+
+      //reselecting rows
+      F.each(selectModel, function (rowIndex) {
+        w.selectRow(rowIndex);
+      });
+    },
+    /*
+     *
+     */
+    onColumnLock: function () {
+      var me = this,
+        w = me.widget,
+        selectModel;
+
+      if(me.cells || me.cell || me.column || me.columns){
+        me.clearSelection();
+        return;
+      }
+
+      selectModel = me.getSelection(true);
+
+      //reselecting rows
+      F.each(selectModel, function (rowIndex) {
+        w.selectRow(rowIndex);
+      });
+    },
+    /*
+     *
+     */
+    onColumnRightLock: function () {
+      var me = this,
+        w = me.widget,
+        selectModel;
+
+      if(me.cells || me.cell || me.column || me.columns){
+        me.clearSelection();
+        return;
+      }
+
+      selectModel = me.getSelection(true);
+
+      //reselecting rows
+      F.each(selectModel, function (rowIndex) {
+        w.selectRow(rowIndex);
+      });
+    },
+    /*
+     *
+     */
+    onUnColumnLock: function () {
+      var me = this,
+        w = me.widget,
+        selectModel;
+
+      if(me.cells || me.cell || me.column || me.columns){
+        me.clearSelection();
+        return;
+      }
+
+      selectModel = me.getSelection(true);
+
+      //reselecting rows
+      F.each(selectModel, function (rowIndex) {
+        w.selectRow(rowIndex);
+      });
     }
   });
 

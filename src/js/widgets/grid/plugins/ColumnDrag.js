@@ -91,8 +91,8 @@
       me.inIndex = me.activeIndex;
       me.activeColumn = columns[me.activeIndex];
 
-      me.mouseDownX = e.x;
-      me.mouseDownY = e.y;
+      me.mouseDownX = e.pageX;
+      me.mouseDownY = e.pageY;
 
       DOC.once('mouseup', me.onMouseUp, me);
       DOC.on('mousemove', me.onMouseMove, me);
@@ -151,10 +151,7 @@
       me.ok = false;
       delete me.okPosition;
 
-      if(me.tip){
-        me.tip.destroy();
-        delete me.tip;
-      }
+      F.tip.hide();
 
       if(me.status === 'dragging'){
         setTimeout(function () {
@@ -171,28 +168,23 @@
     onMouseMove: function (e) {
       var me = this,
         w = me.widget,
-        x = e.x,
-        y = e.y,
+        x = e.pageX,
+        y = e.pageY,
         columns = w.getColumns(me.activeSide);
 
-      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)) && !me.tip){
-        me.tip = new Fancy.ToolTip({
-          text: me.activeColumn.title,
-          cls: 'fancy-drag-cell'
-        });
-
-        me.tip.el.css('display', 'block');
+      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY))){
+        F.tip.update(me.activeColumn.title);
       }
-      else if(!me.tip){
+      else{
         return;
       }
 
       if(columns.length === 1 && me.activeSide === 'center'){
-        me.tip.destroy();
+        F.tip.hide();
         return;
       }
 
-      me.tip.show(e.pageX + 15, e.pageY + 15);
+      F.tip.show(e.pageX + 15, e.pageY + 15);
     },
     onMouseEnterCell: function(e){
       var me = this,

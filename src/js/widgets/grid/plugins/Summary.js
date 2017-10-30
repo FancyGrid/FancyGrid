@@ -13,6 +13,8 @@
   var GRID_ROW_SUMMARY_CONTAINER_CLS = Fancy.GRID_ROW_SUMMARY_CONTAINER_CLS;
   var GRID_ROW_SUMMARY_BOTTOM_CLS = Fancy.GRID_ROW_SUMMARY_BOTTOM_CLS;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   F.define('Fancy.grid.plugin.Summary', {
     extend: F.Plugin,
     ptype: 'grid.summary',
@@ -276,20 +278,20 @@
 
       F.each(w.getColumns(side), function (column, i) {
         totalWidth += column.width;
-        cells.item(i).css('width', column.width + 'px');
+        cells.item(i).animate({width: column.width}, ANIMATE_DURATION);
       });
 
-      el.firstChild().css('width', totalWidth);
+      el.firstChild().animate({width: totalWidth}, ANIMATE_DURATION);
 
       switch (side) {
         case 'center':
-          me.el.css('width', w.centerEl.css('width'));
+          me.el.animate({width: w.centerEl.css('width')}, ANIMATE_DURATION);
           break;
         case 'left':
-          me.leftEl.css('width', parseInt(w.leftEl.css('width')) - 2);
+          me.leftEl.animate({width: parseInt(w.leftEl.css('width')) - 2}, ANIMATE_DURATION);
           break;
         case 'right':
-          me.rightEl.css('width', parseInt(w.rightEl.css('width')) - 1);
+          me.rightEl.animate({width: parseInt(w.rightEl.css('width')) - 1}, ANIMATE_DURATION);
           break;
       }
     },

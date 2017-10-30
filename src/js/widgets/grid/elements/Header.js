@@ -20,6 +20,8 @@
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   F.define('Fancy.grid.Header', {
     extend: F.Widget,
     cls: GRID_HEADER_CLS,
@@ -215,6 +217,10 @@
         cellHeight = parseInt(cells.item(0).css('height')),
         groupIndex = '',
         left = 0;
+
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
 
       if (w.groupheader) {
         cellHeight = w.cellHeight * 2;
@@ -890,10 +896,16 @@
       F.each(columns, function (column, i){
         var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
 
+        /*
         cell.css({
           width: column.width,
           left: left
         });
+        */
+        cell.animate({
+          width: column.width,
+          left: left
+        }, ANIMATE_DURATION);
 
         left += column.width;
       });
