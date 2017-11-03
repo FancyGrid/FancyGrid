@@ -11,6 +11,7 @@
   var HIDDEN_CLS = F.HIDDEN_CLS;
   var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
   var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
 
@@ -63,7 +64,12 @@
         index = Number(cell.attr('index')),
         side = me.getSideByCell(cell),
         columns = w.getColumns(side),
-        column = columns[index];
+        column = columns[index],
+        targetEl = F.get(e.target);
+
+      if(targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_CLS) || targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)){
+        return;
+      }
 
       if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
         //TODO: write realization
@@ -168,9 +174,17 @@
     onMouseMove: function (e) {
       var me = this,
         w = me.widget,
+        header = w.header,
+        leftHeader = w.leftHeader,
+        rightHeader = w.rightHeader,
         x = e.pageX,
         y = e.pageY,
-        columns = w.getColumns(me.activeSide);
+        columns = w.getColumns(me.activeSide),
+        targetEl = F.get(e.target);
+
+      if(targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_CLS) || targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)){
+        return;
+      }
 
       if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY))){
         F.tip.update(me.activeColumn.title);
@@ -185,6 +199,17 @@
       }
 
       F.tip.show(e.pageX + 15, e.pageY + 15);
+      if(header.hideMenu){
+        header.hideMenu();
+
+        if(w.leftColumns && leftHeader.hideMenu()){
+          leftHeader.hideMenu();
+        }
+
+        if(w.rightColumns && rightHeader.hideMenu()){
+          rightHeader.hideMenu();
+        }
+      }
     },
     onMouseEnterCell: function(e){
       var me = this,

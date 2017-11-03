@@ -84,5 +84,20 @@ Fancy.Array = {
    */
   max: function(values){
     return Math.max.apply(this, values);
+  },
+  /*
+   * @param {Array} values
+   * @return {Number}
+   */
+  average: function (values) {
+    var sum = 0,
+      i = 0,
+      iL = values.length;
+
+    for(;i<iL;i++){
+      sum += values[i];
+    }
+
+    return sum/values.length;
   }
 };

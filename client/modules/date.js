@@ -489,7 +489,6 @@ Fancy.Date = {
           break;
         case 'i':
           minute = value[0] + value[1];
-
           value = value.substr(2, value.length);
           break;
         case 's':

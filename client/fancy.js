@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.16',
+  version: '1.6.17',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1116,6 +1116,21 @@ Fancy.Array = {
    */
   max: function(values){
     return Math.max.apply(this, values);
+  },
+  /*
+   * @param {Array} values
+   * @return {Number}
+   */
+  average: function (values) {
+    var sum = 0,
+      i = 0,
+      iL = values.length;
+
+    for(;i<iL;i++){
+      sum += values[i];
+    }
+
+    return sum/values.length;
   }
 };
 /**
@@ -2305,7 +2320,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
  */
 Fancy.Mixin('Fancy.store.mixin.Edit', {
   //TODO: too slow for big data, needs redo. Add some map.
-  idSeed: 0,
+  //idSeed: 0,
   /*
    * @param {Object} o
    */
@@ -2428,12 +2443,13 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     me.addIndex = index;
 
     if(o.id === undefined){
-      me.idSeed++;
+      Fancy.idSeed++;
+      var id = Fancy.idSeed + 1000;
       if(me.proxyType === 'server'){
-        o.id = 'Temp-' + me.idSeed;
+        o.id = 'Temp-' + id;
       }
       else {
-        o.id = me.getTotal() + me.idSeed;
+        o.id = id;
       }
     }
 
@@ -8306,15 +8322,19 @@ if(!Fancy.nojQuery && Fancy.$){
       var me = this,
         animate = false;
 
+      /*
       if(me.css('display') === 'none'){
         me.css('opacity', 0);
         animate = true;
       }
+      */
       me.css('display', 'block');
 
+      /*
       if(animate){
         me.el.animate({opacity: 1}, F.ANIMATE_DURATION);
       }
+      */
     },
     /*
      * @param {Number|Object} width

@@ -2107,6 +2107,7 @@ vml {
   width: 100%;
   font: normal 11px/16px tahoma, arial, sans-serif;
   color: #2B587A;
+  display: flex;
 }
 .fancy-menu-item:hover {
   background: #048DC8;
@@ -2123,6 +2124,9 @@ vml {
   height: 100%;
   float: left;
   padding: 7px 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .fancy-menu-item-no-image .fancy-menu-item-text {
   padding-left: 10px;

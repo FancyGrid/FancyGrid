@@ -618,15 +618,19 @@
       var me = this,
         animate = false;
 
+      /*
       if(me.css('display') === 'none'){
         me.css('opacity', 0);
         animate = true;
       }
+      */
       me.css('display', 'block');
 
+      /*
       if(animate){
         me.el.animate({opacity: 1}, F.ANIMATE_DURATION);
       }
+      */
     },
     /*
      * @param {Number|Object} width

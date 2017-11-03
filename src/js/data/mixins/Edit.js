@@ -3,7 +3,7 @@
  */
 Fancy.Mixin('Fancy.store.mixin.Edit', {
   //TODO: too slow for big data, needs redo. Add some map.
-  idSeed: 0,
+  //idSeed: 0,
   /*
    * @param {Object} o
    */
@@ -126,12 +126,13 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     me.addIndex = index;
 
     if(o.id === undefined){
-      me.idSeed++;
+      Fancy.idSeed++;
+      var id = Fancy.idSeed + 1000;
       if(me.proxyType === 'server'){
-        o.id = 'Temp-' + me.idSeed;
+        o.id = 'Temp-' + id;
       }
       else {
-        o.id = me.getTotal() + me.idSeed;
+        o.id = id;
       }
     }
 

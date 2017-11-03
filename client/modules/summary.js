@@ -12,6 +12,10 @@
   var GRID_ROW_SUMMARY_CLS = Fancy.GRID_ROW_SUMMARY_CLS;
   var GRID_ROW_SUMMARY_CONTAINER_CLS = Fancy.GRID_ROW_SUMMARY_CONTAINER_CLS;
   var GRID_ROW_SUMMARY_BOTTOM_CLS = Fancy.GRID_ROW_SUMMARY_BOTTOM_CLS;
+  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
+  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS = F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -67,6 +71,8 @@
       if (me.sumDisplayed) {
         w.on('changepage', me.onChangePage, me);
       }
+
+      w.on('columndrag', me.onColumnDrag, me);
     },
     /*
      *
@@ -129,7 +135,7 @@
 
       F.each(w.getColumns(side), function (column) {
         cells += [
-          '<div style="width:' + column.width + 'px;height:' + cellHeight + 'px;" class="' + GRID_CELL_CLS + '">',
+          '<div style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_CELL_CLS + '">',
           '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
           '</div>'
         ].join("");
@@ -225,28 +231,127 @@
             smartIndexFn: column.smartIndexFn,
             dataProperty: dataProperty
           }),
-          value = '';
+          value = '',
+          cell = cellInners.item(i).parent();
 
-        switch (F.typeOf(column.summary)) {
-          case 'string':
+        switch(column.type){
+          case 'sparklineline':
+          case 'sparklinebar':
+          case 'sparklinetristate':
+          case 'sparklinebullet':
+          case 'sparklinebox':
+          case 'sparklinepie':
+          case 'sparklinediscrete':
             value = F.Array[column.summary](columnValues);
-            break;
-          case 'object':
-            value = F.Array[column.summary.type](columnValues);
-            if (column.summary.fn) {
-              value = column.summary.fn(value);
+
+            cell.addCls(GRID_COLUMN_SPARKLINE_CLS);
+
+            var columnWidth = column.width,
+              sparkHeight = w.cellHeight - 1,
+              sparkWidth = columnWidth - 20,
+              widthName,
+              type = column.type.replace('sparkline', '');
+
+            switch (type) {
+              case 'line':
+              case 'pie':
+              case 'box':
+                widthName = 'width';
+                break;
+              case 'bullet':
+                widthName = 'width';
+                sparkHeight -= 11;
+                cell.addCls(GRID_COLUMN_SPARKLINE_BULLET_CLS);
+                break;
+              case 'discrete':
+                widthName = 'width';
+                sparkWidth = columnWidth;
+                sparkHeight -= 2;
+                break;
+              case 'bar':
+              case 'tristate':
+                widthName = 'barWidth';
+                break;
             }
-            break;
-          case 'function':
-            value = column.summary(columnValues);
-            break;
-        }
 
-        if (column.format) {
-          value = body.format(value, column.format);
-        }
+            var _sparkConfig = column.sparkConfig || {};
+            var sparkConfig = {
+              type: type,
+              fillColor: 'transparent',
+              height: sparkHeight
+            };
 
-        cellInners.item(i).update(value);
+            F.apply(sparkConfig, _sparkConfig);
+
+            if (type === 'bar' || type === 'tristate') {
+              sparkWidth = columnWidth - 20;
+              sparkWidth = sparkWidth / value.length;
+            }
+
+            sparkConfig[widthName] = sparkWidth;
+            cellInners.item(i).$dom.sparkline(value, sparkConfig);
+            break;
+          case 'progressdonut':
+            cell.addCls(GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS);
+
+            var sparkConfig = column.sparkConfig || {},
+              value = F.Array[column.summary](columnValues);
+
+            F.apply(sparkConfig, {
+              renderTo: cellInners.item(i).dom,
+              value: value
+            });
+
+            if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width) {
+              sparkConfig.size = w.cellHeaderHeight - 3 * 2;
+            }
+
+            new F.spark.ProgressDonut(sparkConfig);
+            break;
+          case 'grossloss':
+            cell.addCls(GRID_COLUMN_GROSSLOSS_CLS);
+            value = F.Array[column.summary](columnValues);
+
+            var sparkConfig = column.sparkConfig || {};
+
+            if (sparkConfig.showOnMax) {
+              sparkConfig.maxValue = Math.max.apply(Math, columnValues);
+            }
+
+            if(value > 50){
+              value = 50;
+            }
+
+            F.apply(sparkConfig, {
+              renderTo: cellInners.item(i).dom,
+              value: value,
+              column: column
+            });
+
+            new F.spark.GrossLoss(sparkConfig);
+            break;
+          default:
+            switch (F.typeOf(column.summary)) {
+              case 'string':
+                value = F.Array[column.summary](columnValues);
+                break;
+              case 'object':
+                value = F.Array[column.summary.type](columnValues);
+                if (column.summary.fn) {
+                  value = column.summary.fn(value);
+                }
+                break;
+              case 'function':
+                value = column.summary(columnValues);
+                break;
+            }
+
+            if (column.format) {
+              value = body.format(value, column.format);
+            }
+
+            cellInners.item(i).update(value);
+        }
       });
     },
     /*
@@ -285,7 +390,7 @@
 
       switch (side) {
         case 'center':
-          me.el.animate({width: w.centerEl.css('width')}, ANIMATE_DURATION);
+          me.el.animate({width: parseInt(w.centerEl.css('width'))}, ANIMATE_DURATION);
           break;
         case 'left':
           me.leftEl.animate({width: parseInt(w.leftEl.css('width')) - 2}, ANIMATE_DURATION);
@@ -369,6 +474,23 @@
      */
     onChangePage: function () {
       this.update();
+    },
+    /*
+     *
+     */
+    onColumnDrag: function () {
+      var me = this,
+        w = me.widget;
+
+      me.updateSizes('center');
+
+      if (w.leftColumns.length) {
+        me.updateSizes('left');
+      }
+
+      if (w.rightColumns.length) {
+        me.updateSizes('right');
+      }
     }
   });
 

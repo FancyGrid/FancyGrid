@@ -704,6 +704,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       for (; i < iL; i++) {
         var filter = filters[i];
 
+        if(filter.operator === ''){
+          if(field.column.filter && field.column.filter.operator){
+            filter.operator = field.column.filter.operator;
+          }
+        }
+
         me.filters[filterIndex][filter.operator] = filter.value;
         if (filter.operator !== '|') {
           //F.apply(me.filters[filterIndex], options);
