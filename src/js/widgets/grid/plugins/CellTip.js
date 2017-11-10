@@ -98,6 +98,14 @@
         return;
       }
 
+      var me = this,
+        w = me.widget;
+
+      if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
+        me.stopped = true;
+        F.tip.hide(1000);
+      }
+
       F.tip.show(e.pageX + 15, e.pageY - 25);
     }
   });

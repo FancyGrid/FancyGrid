@@ -261,6 +261,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     store.on('remove', me.onChangeStore, me);
     store.on('filter', me.onChangeStore, me);
     w.on('render', me.onRenderGrid, me);
+    w.on('docmove', me.onDocMouseMove, me);
   },
   /*
    * @param {Number} value
@@ -431,6 +432,20 @@ Fancy.define('Fancy.grid.plugin.Paging', {
         break;
       default:
         me.updateBar();
+    }
+  },
+  onDocMouseMove: function(){
+    var me = this,
+      w = me.widget;
+
+    if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
+      if(!me.wasHidden){
+        Fancy.combo.Manager.hideLists();
+        me.wasHidden = true;
+      }
+    }
+    else{
+      me.wasHidden = false;
     }
   }
 });

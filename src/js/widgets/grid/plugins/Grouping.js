@@ -1003,12 +1003,24 @@
     onColumnDrag: function () {
       var me = this,
         w = me.widget,
-        groupRowEls = w.el.select('.' + GRID_ROW_GROUP_CLS);
+        groupRowEls = w.el.select('.' + GRID_ROW_GROUP_CLS),
+        notCollapsedEls = w.el.select('.' + GRID_ROW_GROUP_CLS + ':not(.' + GRID_ROW_GROUP_COLLAPSED_CLS + ')'),
+        expandedGroups = {};
+
+      notCollapsedEls.each(function(cell){
+        expandedGroups[cell.attr('group')] = true;
+      });
 
       if(!w.leftColumns.length && groupRowEls.length){
         groupRowEls.destroy();
         me.renderGroupedRows();
         me.update();
+
+        for(var p in expandedGroups){
+          var groupEl = w.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + p + '"]');
+
+          groupEl.removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+        }
       }
     }
   });

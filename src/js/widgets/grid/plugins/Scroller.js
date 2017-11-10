@@ -667,7 +667,7 @@
       w.rightBody.wheelScroll(value);
 
       me.scrollTop = Math.abs(scrollInfo.newScroll);
-      me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
+      //me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
 
       w.fire('scroll');
 

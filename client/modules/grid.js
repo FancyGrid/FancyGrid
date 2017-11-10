@@ -1585,7 +1585,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         length = config.data.items.length;
       }
 
-      height = length * config.cellHeight;
+      var height = length * config.cellHeight;
 
       if(config.title){
         height += config.titleHeight;
@@ -3535,6 +3535,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
+      if(me.grouping){
+        height += me.grouping.groups.length * me.groupRowHeight;
+      }
+
       if (me.panel) {
         height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
       }
@@ -4522,7 +4526,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       w.rightBody.wheelScroll(value);
 
       me.scrollTop = Math.abs(scrollInfo.newScroll);
-      me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
+      //me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
 
       w.fire('scroll');
 
@@ -5557,7 +5561,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           for (var p in groupMove) {
             groupCell = w.el.select("[index='" + p + "']");
             //groupCell.animate({left: parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix}, ANIMATE_DURATION);
-            groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+            groupCell.css('left', parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix);
           }
       }
 
@@ -6631,6 +6635,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           dataItemId = dataItem.id;
 
         if (isCheckBoxInside === false) {
+          cellsDomInner.item(j).update('');
+
           new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,
@@ -8275,7 +8281,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      * @return {Fancy.Element}
      */
     getCell: function (row, column) {
-      return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
+      var me = this,
+        w = me.widget;
+
+      return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
     },
     /*
      * @param {Number} row
@@ -8504,7 +8513,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
-        left = -w.scroller.scrollLeft || 0;
+        left = 0;
+
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
 
       F.each(columns, function (column, i) {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
@@ -8598,6 +8611,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+  var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -8657,6 +8671,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         headerCellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
       w.on('render', me.onAfterRender, me);
+      w.on('docmove', me.onDocMove, me);
       el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
       el.on('click', me.onCellClick, me, headerCellSelector);
       el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
@@ -8942,11 +8957,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         CELL_HEADER_HEIGHT = w.cellHeaderHeight,
         columns = me.getColumns(),
         cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS),
-        left = w.scroller.scrollLeft,
+        left = 0,
         groups = {},
         groupsWidth = {},
         groupsLeft = {},
         rows = me.calcRows();
+
+      if(me.side === 'center'){
+        left = w.scroller.scrollLeft;
+      }
 
       F.each(columns, function (column, i) {
         var cell = cellsDom.item(i),
@@ -9470,17 +9489,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
-        left = -w.scroller.scrollLeft || 0;
+        left = 0;
+
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
 
       F.each(columns, function (column, i){
         var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
 
-        /*
-        cell.css({
-          width: column.width,
-          left: left
-        });
-        */
         cell.animate({
           width: column.width,
           left: left
@@ -9499,17 +9516,17 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         rows = 1;
 
       Fancy.each(columns, function(column){
-         if(column.grouping){
-           if(rows < 2){
+        if(column.grouping){
+          if(rows < 2){
              rows = 2;
-           }
+          }
 
-           if(column.filter && column.filter.header){
-             if(rows < 3){
-               rows = 3;
-             }
-           }
-         }
+          if(column.filter && column.filter.header){
+            if(rows < 3){
+              rows = 3;
+            }
+          }
+        }
 
         if(column.filter && column.filter.header){
           if(rows < 2){
@@ -9517,6 +9534,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
       });
+
+      if(w.groupheader && rows === 2){
+        var tripleCells = w.el.select('.' + GRID_HEADER_CELL_TRIPLE_CLS);
+        if(tripleCells.length){
+          //TODO: redo this case to decrease header height
+          //Also needs to work with case of 1 row
+          rows = 3;
+        }
+      }
 
       return rows;
     },
@@ -9537,7 +9563,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     /*
      * Bug Fix: Empty method that is rewritten in HeaderMenu mixin
      */
-    destroyMenus: function () {}
+    destroyMenus: function () {},
+    onDocMove: function () {
+      var me = this,
+        w = me.widget;
+
+      if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none') && me.hideMenu){
+        me.hideMenu();
+      }
+    }
   });
 
 })();

@@ -474,7 +474,10 @@
      * @return {Fancy.Element}
      */
     getCell: function (row, column) {
-      return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
+      var me = this,
+        w = me.widget;
+
+      return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
     },
     /*
      * @param {Number} row
@@ -703,7 +706,11 @@
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
-        left = -w.scroller.scrollLeft || 0;
+        left = 0;
+
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
 
       F.each(columns, function (column, i) {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');

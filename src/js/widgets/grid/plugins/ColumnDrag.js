@@ -187,7 +187,7 @@
       }
 
       if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY))){
-        F.tip.update(me.activeColumn.title);
+        F.tip.update(me.activeColumn.title || '&nbsp;');
       }
       else{
         return;

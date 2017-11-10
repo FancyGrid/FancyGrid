@@ -1585,7 +1585,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         length = config.data.items.length;
       }
 
-      height = length * config.cellHeight;
+      var height = length * config.cellHeight;
 
       if(config.title){
         height += config.titleHeight;

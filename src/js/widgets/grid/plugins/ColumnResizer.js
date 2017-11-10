@@ -639,7 +639,7 @@
           for (var p in groupMove) {
             groupCell = w.el.select("[index='" + p + "']");
             //groupCell.animate({left: parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix}, ANIMATE_DURATION);
-            groupCell.css('left', parseInt(groupCell.css('left')) - groupMove[p].delta - leftFix);
+            groupCell.css('left', parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix);
           }
       }
 

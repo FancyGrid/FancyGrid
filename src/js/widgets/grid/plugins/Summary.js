@@ -234,6 +234,21 @@
           value = '',
           cell = cellInners.item(i).parent();
 
+        switch (F.typeOf(column.summary)) {
+          case 'string':
+            value = F.Array[column.summary](columnValues);
+            break;
+          case 'object':
+            value = F.Array[column.summary.type](columnValues);
+            if (column.summary.fn) {
+              value = column.summary.fn(value);
+            }
+            break;
+          case 'function':
+            value = column.summary(columnValues);
+            break;
+        }
+
         switch(column.type){
           case 'sparklineline':
           case 'sparklinebar':
@@ -242,8 +257,6 @@
           case 'sparklinebox':
           case 'sparklinepie':
           case 'sparklinediscrete':
-            value = F.Array[column.summary](columnValues);
-
             cell.addCls(GRID_COLUMN_SPARKLINE_CLS);
 
             var columnWidth = column.width,
@@ -294,8 +307,7 @@
           case 'progressdonut':
             cell.addCls(GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS);
 
-            var sparkConfig = column.sparkConfig || {},
-              value = F.Array[column.summary](columnValues);
+            var sparkConfig = column.sparkConfig || {};
 
             F.apply(sparkConfig, {
               renderTo: cellInners.item(i).dom,
@@ -306,11 +318,12 @@
               sparkConfig.size = w.cellHeaderHeight - 3 * 2;
             }
 
+            F.get(sparkConfig.renderTo).update('');
+
             new F.spark.ProgressDonut(sparkConfig);
             break;
           case 'grossloss':
             cell.addCls(GRID_COLUMN_GROSSLOSS_CLS);
-            value = F.Array[column.summary](columnValues);
 
             var sparkConfig = column.sparkConfig || {};
 
@@ -331,21 +344,6 @@
             new F.spark.GrossLoss(sparkConfig);
             break;
           default:
-            switch (F.typeOf(column.summary)) {
-              case 'string':
-                value = F.Array[column.summary](columnValues);
-                break;
-              case 'object':
-                value = F.Array[column.summary.type](columnValues);
-                if (column.summary.fn) {
-                  value = column.summary.fn(value);
-                }
-                break;
-              case 'function':
-                value = column.summary(columnValues);
-                break;
-            }
-
             if (column.format) {
               value = body.format(value, column.format);
             }

@@ -28,6 +28,7 @@
     hideLists: function(){
       F.each(this.opened, function(item){
         item.hideList();
+        item.hideAheadList();
       });
 
       this.opened = [];
@@ -443,7 +444,6 @@
         display: '',
         left: xy[0] + 'px',
         top: xy[1] + 'px',
-        //width: el.width(),
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
@@ -1200,10 +1200,15 @@
         });
       }
 
-      var inputWidth = me.inputWidth;
+      var inputWidth = me.inputWidth,
+        minusWidth = 2;
+
+      if(me.theme === 'dark'){
+        minusWidth = 0;
+      }
 
       input.css({
-        width: inputWidth - 2,
+        width: inputWidth - minusWidth,
         height: me.inputHeight
       });
 

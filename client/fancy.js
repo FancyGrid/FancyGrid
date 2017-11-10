@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.17',
+  version: '1.6.18',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -9585,6 +9585,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     hideLists: function(){
       F.each(this.opened, function(item){
         item.hideList();
+        item.hideAheadList();
       });
 
       this.opened = [];
@@ -10000,7 +10001,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         display: '',
         left: xy[0] + 'px',
         top: xy[1] + 'px',
-        //width: el.width(),
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
@@ -10757,10 +10757,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         });
       }
 
-      var inputWidth = me.inputWidth;
+      var inputWidth = me.inputWidth,
+        minusWidth = 2;
+
+      if(me.theme === 'dark'){
+        minusWidth = 0;
+      }
 
       input.css({
-        width: inputWidth - 2,
+        width: inputWidth - minusWidth,
         height: me.inputHeight
       });
 
@@ -12447,6 +12452,14 @@ if(!Fancy.nojQuery && Fancy.$){
     onDocMove: function (e) {
       if (this.stopped === true) {
         return;
+      }
+
+      var me = this,
+        w = me.widget;
+
+      if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
+        me.stopped = true;
+        F.tip.hide(1000);
       }
 
       F.tip.show(e.pageX + 15, e.pageY - 25);

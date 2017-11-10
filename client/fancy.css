@@ -2661,6 +2661,10 @@ vml {
   border-right-color: #000;
   border-bottom-color: #000;
 }
+.fancy-theme-dark .fancy-form .fancy-combo-input-container {
+  background-color: inherit;
+  border-width: 0;
+}
 .fancy-theme-dark .fancy-textarea-text-input {
   background-color: #222;
   border: 1px solid #151515;

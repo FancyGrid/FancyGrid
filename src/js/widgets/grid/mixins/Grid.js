@@ -1847,6 +1847,10 @@
         }
       }
 
+      if(me.grouping){
+        height += me.grouping.groups.length * me.groupRowHeight;
+      }
+
       if (me.panel) {
         height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
       }

@@ -19,6 +19,7 @@
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+  var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -78,6 +79,7 @@
         headerCellSelector = 'div.' + GRID_HEADER_CELL_CLS;
 
       w.on('render', me.onAfterRender, me);
+      w.on('docmove', me.onDocMove, me);
       el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
       el.on('click', me.onCellClick, me, headerCellSelector);
       el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
@@ -363,11 +365,15 @@
         CELL_HEADER_HEIGHT = w.cellHeaderHeight,
         columns = me.getColumns(),
         cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS),
-        left = w.scroller.scrollLeft,
+        left = 0,
         groups = {},
         groupsWidth = {},
         groupsLeft = {},
         rows = me.calcRows();
+
+      if(me.side === 'center'){
+        left = w.scroller.scrollLeft;
+      }
 
       F.each(columns, function (column, i) {
         var cell = cellsDom.item(i),
@@ -891,17 +897,15 @@
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
-        left = -w.scroller.scrollLeft || 0;
+        left = 0;
+
+      if(me.side === 'center'){
+        left = -w.scroller.scrollLeft;
+      }
 
       F.each(columns, function (column, i){
         var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
 
-        /*
-        cell.css({
-          width: column.width,
-          left: left
-        });
-        */
         cell.animate({
           width: column.width,
           left: left
@@ -920,17 +924,17 @@
         rows = 1;
 
       Fancy.each(columns, function(column){
-         if(column.grouping){
-           if(rows < 2){
+        if(column.grouping){
+          if(rows < 2){
              rows = 2;
-           }
+          }
 
-           if(column.filter && column.filter.header){
-             if(rows < 3){
-               rows = 3;
-             }
-           }
-         }
+          if(column.filter && column.filter.header){
+            if(rows < 3){
+              rows = 3;
+            }
+          }
+        }
 
         if(column.filter && column.filter.header){
           if(rows < 2){
@@ -938,6 +942,15 @@
           }
         }
       });
+
+      if(w.groupheader && rows === 2){
+        var tripleCells = w.el.select('.' + GRID_HEADER_CELL_TRIPLE_CLS);
+        if(tripleCells.length){
+          //TODO: redo this case to decrease header height
+          //Also needs to work with case of 1 row
+          rows = 3;
+        }
+      }
 
       return rows;
     },
@@ -958,7 +971,15 @@
     /*
      * Bug Fix: Empty method that is rewritten in HeaderMenu mixin
      */
-    destroyMenus: function () {}
+    destroyMenus: function () {},
+    onDocMove: function () {
+      var me = this,
+        w = me.widget;
+
+      if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none') && me.hideMenu){
+        me.hideMenu();
+      }
+    }
   });
 
 })();

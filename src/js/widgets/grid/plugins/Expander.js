@@ -77,6 +77,10 @@
       w.on('clearselect', me.onClearSelect, me);
 
       s.on('beforeinsert', me.onBeforeInsert, me);
+      w.on('columndrag', me.onColumnDrag, me);
+      w.on('lockcolumn', me.onLockColumn, me);
+      w.on('rightlockcolumn', me.onRightLockColumn, me);
+      w.on('unlockcolumn', me.onUnLockColumn, me);
 
       if (me.expanded) {
         if (s.proxyType) {
@@ -298,9 +302,8 @@
     },
     /*
      * @param {Number} rowIndex
-     * @param {String} id
      */
-    clearMargin: function (rowIndex, id) {
+    clearMargin: function (rowIndex) {
       var w = this.widget;
 
       w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').css('margin-top', '0');
@@ -789,6 +792,33 @@
     },
     onBeforeInsert: function(){
       this.reSet();
+    },
+    onColumnDrag: function () {
+      this.reSet();
+      this.clearExpandedCheckBoxes();
+    },
+    onLockColumn: function () {
+      this.reSet();
+      this.clearExpandedCheckBoxes();
+    },
+    onRightLockColumn: function () {
+      this.reSet();
+      this.clearExpandedCheckBoxes();
+    },
+    onUnLockColumn: function () {
+      this.reSet();
+      this.clearExpandedCheckBoxes();
+    },
+    clearExpandedCheckBoxes: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.select('.fancy-checkbox-expander.fancy-checkbox-on').each(function (cell) {
+        var id = cell.attr('id'),
+          checkBox = Fancy.getWidget(id);
+
+        checkBox.setValue(false, false);
+      });
     }
   });
 
