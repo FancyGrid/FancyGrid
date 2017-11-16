@@ -616,15 +616,32 @@
     updateStoreFilters: function () {
       var me = this,
         w = me.widget,
-        s = w.store;
+        s = w.store,
+        containFilters = false;
 
       s.filters = me.filters;
+
+      for(var p in s.filters){
+        var filter = s.filters[p];
+
+        if(filter){
+          containFilters = true;
+          break;
+        }
+      }
+
+      if(!containFilters){
+        delete s.filteredData;
+      }
 
       s.changeDataView();
       w.update();
 
       w.fire('filter', me.filters);
       w.setSidesHeight();
+      if(!containFilters){
+        delete s.filteredData;
+      }
     },
     /*
      * @param {Fancy.Grid} grid

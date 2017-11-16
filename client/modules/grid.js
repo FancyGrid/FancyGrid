@@ -1723,6 +1723,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         data = me.data,
         remoteSort,
         remoteFilter,
+        pageType,
         collapsed = false,
         state = me.state;
 
@@ -1732,6 +1733,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       remoteSort = me.data.remoteSort;
       remoteFilter = me.data.remoteFilter;
+      pageType = me.data.remotePage;
 
       F.define(modelName, {
         extend: F.Model,
@@ -1749,6 +1751,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         paging: me.paging,
         remoteSort: remoteSort,
         remoteFilter: remoteFilter,
+        pageType: pageType,
         collapsed: collapsed,
         multiSort: me.multiSort
       };
@@ -2523,6 +2526,26 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       return columns;
     },
     /*
+     * @param {Array} columns
+     * @param {String} side
+     */
+    setColumns: function(columns, side){
+      var me = this;
+
+      switch(side){
+        case 'left':
+          me.leftColumns = columns;
+          break;
+        case 'center':
+        case undefined:
+          me.columns = columns;
+          break;
+        case 'right':
+          me.rightColumns = columns;
+          break;
+      }
+    },
+    /*
      * @param {String} side
      * @return {Fancy.grid.Body}
      */
@@ -3279,6 +3302,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           me.header.css('width', parseInt(me.header.css('width')) + column.width);
           break;
       }
+
+      if(me.grouping){
+        me.grouping.updateGroupRows();
+      }
     },
     /*
      * @param {String} side
@@ -3332,6 +3359,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           me.body.css('width', parseInt(me.body.css('width')) - column.width);
           me.header.css('width', parseInt(me.header.css('width')) - column.width);
           break;
+      }
+
+      if(me.grouping){
+        me.grouping.updateGroupRows();
       }
     },
     /*
@@ -5284,6 +5315,10 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         left = parseInt(cellEl.css('left')),
         minWidth = me.getMinColumnWidth(),
         maxWidth = me.getMaxColumnWidth();
+
+      if(w.header.hideMenu){
+        w.header.hideMenu();
+      }
 
       switch (me.activeSide) {
         case 'left':
@@ -8571,6 +8606,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(column.cls){
           columnEl.addCls(column.cls);
         }
+
+        if(column.type === 'order'){
+          columnEl.addCls(GRID_COLUMN_ORDER_CLS);
+        }
+
+        if(column.menu){
+
+        }
       });
     }
   });
@@ -9571,6 +9614,26 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none') && me.hideMenu){
         me.hideMenu();
       }
+    },
+    /*
+     *
+     */
+    reSetColumnsCls: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i){
+        var column = columns[i];
+
+        if(column.menu){
+          cell.removeCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
+        }
+        else{
+          cell.addCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
+        }
+      });
     }
   });
 

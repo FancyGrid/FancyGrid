@@ -84,7 +84,9 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       Fancy.each(me.data, function(item){
         var group = item.data[by];
 
-        grouped[group].push(item);
+        if(grouped[group]){
+          grouped[group].push(item);
+        }
       });
     }
 

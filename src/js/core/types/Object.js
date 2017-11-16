@@ -16,5 +16,19 @@ Fancy.Object = {
     }
 
     return _o;
+  },
+  /**
+   * @param {Object} o
+   * @return {Boolean}
+   */
+  isEmpty: function (o) {
+    var empty = true;
+
+    for(var p in o){
+      empty = false;
+      continue;
+    }
+
+    return empty;
   }
 };

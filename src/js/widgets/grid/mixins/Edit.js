@@ -166,17 +166,33 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {Number} rowIndex
    * @param {String} key
    * @param {*} value
+   * @return {Number}
    */
   setById: function(id, key, value){
     var me = this,
       s = me.store,
       rowIndex = s.getRow(id);
 
+    if(rowIndex === undefined){
+      var item = s.getById(id);
+
+      if(item === undefined){
+        return false;
+      }
+
+      rowIndex = -1;
+    }
+
     if(!me.store){
       setTimeout(function(){
-        me.set(rowIndex, key, value)
+        if(rowIndex === -1){
+          me.setById(rowIndex, key, value)
+        }
+        else{
+          me.set(rowIndex, key, value)
+        }
       }, 100);
-      return;
+      return rowIndex;
     }
 
     if(Fancy.isObject(key) && value === undefined){
@@ -192,12 +208,22 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             delete key[p];
           }
         }
-      }
 
-      s.setItemData(rowIndex, key, value);
+        s.setItemData(rowIndex, key, value, id);
+
+        if(rowIndex === -1){
+          s.getById(id).set(key);
+        }
+      }
     }
     else {
-      s.set(rowIndex, key, value);
+      s.set(rowIndex, key, value, id);
+
+      if(rowIndex === -1){
+        s.getById(id).set(key, value);
+      }
     }
+
+    return rowIndex;
   }
 });

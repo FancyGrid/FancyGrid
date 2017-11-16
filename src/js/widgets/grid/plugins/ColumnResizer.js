@@ -363,6 +363,10 @@
         minWidth = me.getMinColumnWidth(),
         maxWidth = me.getMaxColumnWidth();
 
+      if(w.header.hideMenu){
+        w.header.hideMenu();
+      }
+
       switch (me.activeSide) {
         case 'left':
           break;

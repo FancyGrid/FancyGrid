@@ -10,10 +10,12 @@
   //CONSTANTS
   var HIDDEN_CLS = F.HIDDEN_CLS;
   var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
   var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
   var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_STATE_DRAG_COLUMN_CLS = F.GRID_STATE_DRAG_COLUMN_CLS;
 
   F.define('Fancy.grid.plugin.ColumnDrag', {
     extend: F.Plugin,
@@ -73,8 +75,8 @@
 
       if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
         //TODO: write realization
-        //me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
-        return;
+        me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
+        me.activeCellTopGroup.cell = cell;
       }
 
       if(w.startResizing){
@@ -126,6 +128,11 @@
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
+          if(me.activeCellTopGroup){
+            //TODO
+            return;
+          }
+
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
@@ -133,6 +140,11 @@
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
         }
         else{
+          if(me.activeCellTopGroup){
+            //TODO
+            return;
+          }
+          
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
@@ -158,6 +170,7 @@
       delete me.okPosition;
 
       F.tip.hide();
+      me.removeDragState();
 
       if(me.status === 'dragging'){
         setTimeout(function () {
@@ -186,8 +199,15 @@
         return;
       }
 
-      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY))){
-        F.tip.update(me.activeColumn.title || '&nbsp;');
+      if(Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)){
+        if(me.activeCellTopGroup){
+          F.tip.update(me.activeCellTopGroup.cell.select('.' + GRID_HEADER_CELL_TEXT_CLS).item(0).dom.innerHTML || '&nbsp;');
+          me.addDragState();
+        }
+        else {
+          F.tip.update(me.activeColumn.title || '&nbsp;');
+          me.addDragState();
+        }
       }
       else{
         return;
@@ -195,6 +215,7 @@
 
       if(columns.length === 1 && me.activeSide === 'center'){
         F.tip.hide();
+        me.removeDragState();
         return;
       }
 
@@ -210,6 +231,18 @@
           rightHeader.hideMenu();
         }
       }
+    },
+    addDragState: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.addClass(GRID_STATE_DRAG_COLUMN_CLS);
+    },
+    removeDragState: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.removeClass(GRID_STATE_DRAG_COLUMN_CLS);
     },
     onMouseEnterCell: function(e){
       var me = this,
@@ -256,7 +289,64 @@
         return;
       }
 
-      if(me.inUpGroupCell){
+      if(me.activeCellTopGroup){
+        if(me.inUpGroupCell){}
+        else{
+          var startIndex = me.activeCellTopGroup.start,
+            endIndex = me.activeCellTopGroup.end;
+
+          if(me.activeSide !== me.inSide){
+            me.ok = true;
+            if(e.offsetX > cellWidth/2 || inTriggerEl){
+              me.showHint('right');
+            }
+            else{
+              me.showHint('left');
+            }
+          }
+          else{
+            if(isNaN(me.inIndex)){
+              me.hideHint();
+            }
+            else{
+              if(me.inIndex < startIndex){
+                if (e.offsetX > cellWidth / 2) {
+                  if(me.inIndex + 1 === startIndex){
+                    me.hideHint();
+                  }
+                  else{
+                    me.ok = true;
+                    me.showHint('right');
+                  }
+                }
+                else{
+                  me.ok = true;
+                  me.showHint('left');
+                }
+              }
+              else if(me.inIndex > endIndex){
+                if (e.offsetX < cellWidth / 2) {
+                  if(me.inIndex === endIndex + 1){
+                    me.hideHint();
+                  }
+                  else{
+                    me.ok = true;
+                    me.showHint('left');
+                  }
+                }
+                else{
+                  me.ok = true;
+                  me.showHint('right');
+                }
+              }
+              else{
+                me.hideHint();
+              }
+            }
+          }
+        }
+      }
+      else if(me.inUpGroupCell){
         var o = me.getGroupStartEnd(),
           startIndex = o.start,
           endIndex = o.end;
@@ -444,7 +534,22 @@
         column = columns[activeIndex],
         rows = header.calcRows();
 
-      if(me.inUpGroupCell){
+      if(me.activeCellTopGroup){
+        var startIndex = me.activeCellTopGroup.start,
+          endIndex = me.activeCellTopGroup.end;
+
+        var _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+
+        if(me.inIndex < startIndex){
+          columns = Fancy.Array.insert(columns, me.inIndex, _columns);
+        }
+        else{
+          columns = Fancy.Array.insert(columns, me.inIndex - _columns.length + 1, _columns);
+        }
+
+        w.setColumns(columns, side);
+      }
+      else if(me.inUpGroupCell){
         var o = me.getGroupStartEnd();
 
         inIndex = o.start;
@@ -467,7 +572,7 @@
         }
       }
 
-      if(w.groupheader){
+      if(w.groupheader && !me.activeCellTopGroup){
         var inColumn = columns[inIndex];
 
         if(inColumn && inColumn.grouping && me.inUnderGroup){
@@ -482,13 +587,15 @@
         }
       }
 
-      columns.splice(activeIndex, 1);
+      if(!me.activeCellTopGroup){
+        columns.splice(activeIndex, 1);
 
-      if(activeIndex<inIndex){
-        inIndex--;
+        if(activeIndex<inIndex){
+          inIndex--;
+        }
+
+        columns.splice(inIndex, 0, column);
       }
-
-      columns.splice(inIndex, 0, column);
 
       body.clearColumnsStyles();
       header.updateTitles();
@@ -507,6 +614,7 @@
       }
 
       header.reSetColumnsAlign();
+      header.reSetColumnsCls();
       body.reSetColumnsAlign();
       body.reSetColumnsCls();
       body.updateColumnsSizes();
@@ -568,10 +676,12 @@
   //CONSTANTS
   var HIDDEN_CLS = F.HIDDEN_CLS;
   var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
   var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
   var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_STATE_DRAG_COLUMN_CLS = F.GRID_STATE_DRAG_COLUMN_CLS;
 
   F.define('Fancy.grid.plugin.ColumnDrag', {
     extend: F.Plugin,
@@ -631,8 +741,8 @@
 
       if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
         //TODO: write realization
-        //me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
-        return;
+        me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
+        me.activeCellTopGroup.cell = cell;
       }
 
       if(w.startResizing){
@@ -684,6 +794,11 @@
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
+          if(me.activeCellTopGroup){
+            //TODO
+            return;
+          }
+
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
@@ -691,6 +806,11 @@
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
         }
         else{
+          if(me.activeCellTopGroup){
+            //TODO
+            return;
+          }
+          
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
@@ -716,6 +836,7 @@
       delete me.okPosition;
 
       F.tip.hide();
+      me.removeDragState();
 
       if(me.status === 'dragging'){
         setTimeout(function () {
@@ -744,8 +865,15 @@
         return;
       }
 
-      if((Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY))){
-        F.tip.update(me.activeColumn.title || '&nbsp;');
+      if(Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)){
+        if(me.activeCellTopGroup){
+          F.tip.update(me.activeCellTopGroup.cell.select('.' + GRID_HEADER_CELL_TEXT_CLS).item(0).dom.innerHTML || '&nbsp;');
+          me.addDragState();
+        }
+        else {
+          F.tip.update(me.activeColumn.title || '&nbsp;');
+          me.addDragState();
+        }
       }
       else{
         return;
@@ -753,6 +881,7 @@
 
       if(columns.length === 1 && me.activeSide === 'center'){
         F.tip.hide();
+        me.removeDragState();
         return;
       }
 
@@ -768,6 +897,18 @@
           rightHeader.hideMenu();
         }
       }
+    },
+    addDragState: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.addClass(GRID_STATE_DRAG_COLUMN_CLS);
+    },
+    removeDragState: function () {
+      var me = this,
+        w = me.widget;
+
+      w.el.removeClass(GRID_STATE_DRAG_COLUMN_CLS);
     },
     onMouseEnterCell: function(e){
       var me = this,
@@ -814,7 +955,64 @@
         return;
       }
 
-      if(me.inUpGroupCell){
+      if(me.activeCellTopGroup){
+        if(me.inUpGroupCell){}
+        else{
+          var startIndex = me.activeCellTopGroup.start,
+            endIndex = me.activeCellTopGroup.end;
+
+          if(me.activeSide !== me.inSide){
+            me.ok = true;
+            if(e.offsetX > cellWidth/2 || inTriggerEl){
+              me.showHint('right');
+            }
+            else{
+              me.showHint('left');
+            }
+          }
+          else{
+            if(isNaN(me.inIndex)){
+              me.hideHint();
+            }
+            else{
+              if(me.inIndex < startIndex){
+                if (e.offsetX > cellWidth / 2) {
+                  if(me.inIndex + 1 === startIndex){
+                    me.hideHint();
+                  }
+                  else{
+                    me.ok = true;
+                    me.showHint('right');
+                  }
+                }
+                else{
+                  me.ok = true;
+                  me.showHint('left');
+                }
+              }
+              else if(me.inIndex > endIndex){
+                if (e.offsetX < cellWidth / 2) {
+                  if(me.inIndex === endIndex + 1){
+                    me.hideHint();
+                  }
+                  else{
+                    me.ok = true;
+                    me.showHint('left');
+                  }
+                }
+                else{
+                  me.ok = true;
+                  me.showHint('right');
+                }
+              }
+              else{
+                me.hideHint();
+              }
+            }
+          }
+        }
+      }
+      else if(me.inUpGroupCell){
         var o = me.getGroupStartEnd(),
           startIndex = o.start,
           endIndex = o.end;
@@ -1002,7 +1200,22 @@
         column = columns[activeIndex],
         rows = header.calcRows();
 
-      if(me.inUpGroupCell){
+      if(me.activeCellTopGroup){
+        var startIndex = me.activeCellTopGroup.start,
+          endIndex = me.activeCellTopGroup.end;
+
+        var _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+
+        if(me.inIndex < startIndex){
+          columns = Fancy.Array.insert(columns, me.inIndex, _columns);
+        }
+        else{
+          columns = Fancy.Array.insert(columns, me.inIndex - _columns.length + 1, _columns);
+        }
+
+        w.setColumns(columns, side);
+      }
+      else if(me.inUpGroupCell){
         var o = me.getGroupStartEnd();
 
         inIndex = o.start;
@@ -1025,7 +1238,7 @@
         }
       }
 
-      if(w.groupheader){
+      if(w.groupheader && !me.activeCellTopGroup){
         var inColumn = columns[inIndex];
 
         if(inColumn && inColumn.grouping && me.inUnderGroup){
@@ -1040,13 +1253,15 @@
         }
       }
 
-      columns.splice(activeIndex, 1);
+      if(!me.activeCellTopGroup){
+        columns.splice(activeIndex, 1);
 
-      if(activeIndex<inIndex){
-        inIndex--;
+        if(activeIndex<inIndex){
+          inIndex--;
+        }
+
+        columns.splice(inIndex, 0, column);
       }
-
-      columns.splice(inIndex, 0, column);
 
       body.clearColumnsStyles();
       header.updateTitles();
@@ -1065,6 +1280,7 @@
       }
 
       header.reSetColumnsAlign();
+      header.reSetColumnsCls();
       body.reSetColumnsAlign();
       body.reSetColumnsCls();
       body.updateColumnsSizes();

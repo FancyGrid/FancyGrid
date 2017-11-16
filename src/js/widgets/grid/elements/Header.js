@@ -979,6 +979,26 @@
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none') && me.hideMenu){
         me.hideMenu();
       }
+    },
+    /*
+     *
+     */
+    reSetColumnsCls: function () {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i){
+        var column = columns[i];
+
+        if(column.menu){
+          cell.removeCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
+        }
+        else{
+          cell.addCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
+        }
+      });
     }
   });
 

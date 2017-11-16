@@ -99,5 +99,18 @@ Fancy.Array = {
     }
 
     return sum/values.length;
+  },
+  /*
+   * @param {Array} arr
+   * @param {Number} index
+   * @param {Array} insert
+   * @return {Array}
+   */
+  insert: function (arr, index, insert) {
+    var arr2 = arr.splice(index, insert.length);
+
+    arr = arr.concat(insert).concat(arr2);
+
+    return arr;
   }
 };

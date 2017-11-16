@@ -232,12 +232,20 @@ Fancy.define('Fancy.Store', {
    * @param {Number} rowIndex
    * @param {String|Number} key
    * @param {String|Number} value
+   * @param {String|Number} [id]
    */
-  set: function(rowIndex, key, value){
+  set: function(rowIndex, key, value, id){
     var me = this,
-      item = me.dataView[rowIndex],
-      id = item.data.id || item.id,
+      item,
       oldValue;
+
+    if(rowIndex === -1){
+      item = me.getById(id);
+    }
+    else{
+      item = me.dataView[rowIndex];
+      id = item.data.id || item.id;
+    }
 
     if(value === undefined){
       var data = key;
@@ -247,13 +255,24 @@ Fancy.define('Fancy.Store', {
           continue;
         }
 
-        oldValue = me.get(rowIndex, p);
+        var _data;
 
-        me.dataView[rowIndex].data[p] = data[p];
+        if(rowIndex === -1){
+          oldValue = item.get(p);
+          item.set(p, data[p]);
+
+          _data = item.data;
+        }
+        else {
+          oldValue = me.get(rowIndex, p);
+          me.dataView[rowIndex].data[p] = data[p];
+
+          _data = me.dataView[rowIndex].data;
+        }
 
         me.fire('set', {
           id: id,
-          data: me.dataView[rowIndex].data,
+          data: _data,
           rowIndex: rowIndex,
           key: p,
           value: data[p],
@@ -267,22 +286,41 @@ Fancy.define('Fancy.Store', {
       return;
     }
     else{
-      oldValue = me.get(rowIndex, key);
+      if(rowIndex === -1){
+        oldValue = item.get(key);
+      }
+      else {
+        oldValue = me.get(rowIndex, key);
+      }
 
       if(oldValue == value){
         return;
       }
     }
 
-    me.dataView[rowIndex].data[key] = value;
+    if(rowIndex === -1){
+      item.set(key, value);
+    }
+    else {
+      me.dataView[rowIndex].data[key] = value;
+    }
 
     if(me.proxyType === 'server' && me.autoSave){
       me.proxyCRUD('UPDATE', id, key, value);
     }
 
+    var _data;
+
+    if(rowIndex === -1){
+      _data = item.data;
+    }
+    else{
+      _data = me.dataView[rowIndex].data;
+    }
+
     me.fire('set', {
       id: id,
-      data: me.dataView[rowIndex].data,
+      data: _data,
       rowIndex: rowIndex,
       key: key,
       value: value,
@@ -464,7 +502,7 @@ Fancy.define('Fancy.Store', {
       data = me.data;
 
     if(isFiltered) {
-      if (!o.stoppedFilter) {
+      if (!o.stoppedFilter && !o.doNotFired) {
         me.filterData();
       }
       else if (me.paging && me.pageType === 'server') {

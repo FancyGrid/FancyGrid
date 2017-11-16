@@ -764,6 +764,14 @@
         if(column.cls){
           columnEl.addCls(column.cls);
         }
+
+        if(column.type === 'order'){
+          columnEl.addCls(GRID_COLUMN_ORDER_CLS);
+        }
+
+        if(column.menu){
+
+        }
       });
     }
   });

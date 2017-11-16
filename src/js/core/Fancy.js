@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.18',
+  version: '1.6.19',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -477,6 +477,7 @@ Fancy.apply(Fancy, {
   GRID_RIGHT_CLS: 'fancy-grid-right',
   GRID_RESIZER_LEFT_CLS: 'fancy-grid-resizer-left',
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
+  GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
   GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',

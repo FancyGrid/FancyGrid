@@ -1290,7 +1290,8 @@
       switch (me.selModel) {
         case 'row':
           model.row = me.getSelectedRow();
-          if (model.row !== -1) {
+
+          if(model.row !== -1) {
             model.items = [s.get(model.row)];
             model.rows = [model.row];
           }
@@ -1306,12 +1307,20 @@
           }
           else {
             model.items = [];
+            if(me.memory && !Fancy.Object.isEmpty(me.memory.selected)){
+              var selected = me.memory.selected;
 
-            var i = 0,
-              iL = model.rows.length;
+              for(var p in selected){
+                model.items.push(s.getById(p));
+              }
+            }
+            else {
+              var i = 0,
+                iL = model.rows.length;
 
-            for (; i < iL; i++) {
-              model.items.push(s.get(model.rows[i]));
+              for (; i < iL; i++) {
+                model.items.push(s.get(model.rows[i]));
+              }
             }
           }
           break;

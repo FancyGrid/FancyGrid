@@ -35,6 +35,7 @@
         data = me.data,
         remoteSort,
         remoteFilter,
+        pageType,
         collapsed = false,
         state = me.state;
 
@@ -44,6 +45,7 @@
 
       remoteSort = me.data.remoteSort;
       remoteFilter = me.data.remoteFilter;
+      pageType = me.data.remotePage;
 
       F.define(modelName, {
         extend: F.Model,
@@ -61,6 +63,7 @@
         paging: me.paging,
         remoteSort: remoteSort,
         remoteFilter: remoteFilter,
+        pageType: pageType,
         collapsed: collapsed,
         multiSort: me.multiSort
       };
@@ -835,6 +838,26 @@
       return columns;
     },
     /*
+     * @param {Array} columns
+     * @param {String} side
+     */
+    setColumns: function(columns, side){
+      var me = this;
+
+      switch(side){
+        case 'left':
+          me.leftColumns = columns;
+          break;
+        case 'center':
+        case undefined:
+          me.columns = columns;
+          break;
+        case 'right':
+          me.rightColumns = columns;
+          break;
+      }
+    },
+    /*
      * @param {String} side
      * @return {Fancy.grid.Body}
      */
@@ -1591,6 +1614,10 @@
           me.header.css('width', parseInt(me.header.css('width')) + column.width);
           break;
       }
+
+      if(me.grouping){
+        me.grouping.updateGroupRows();
+      }
     },
     /*
      * @param {String} side
@@ -1644,6 +1671,10 @@
           me.body.css('width', parseInt(me.body.css('width')) - column.width);
           me.header.css('width', parseInt(me.header.css('width')) - column.width);
           break;
+      }
+
+      if(me.grouping){
+        me.grouping.updateGroupRows();
       }
     },
     /*
