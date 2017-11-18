@@ -395,10 +395,43 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {String} toSide
    * @param {Number} fromIndex
    * @param {Number} toIndex
+   * @param {Object} [grouping]
    */
-  moveColumn: function (fromSide, toSide, fromIndex, toIndex) {
+  moveColumn: function (fromSide, toSide, fromIndex, toIndex, grouping) {
     var me = this,
       removedColumn;
+
+    if(grouping){
+      var i = 0,
+        iL = grouping.end - grouping.start + 1,
+        groupIndex = grouping.cell.attr('index'),
+        toHeader = me.getHeader(toSide),
+        groupCellHTML = grouping.cell.dom.outerHTML;
+
+      for(;i<iL;i++){
+        me.moveColumn(fromSide, toSide, grouping.end - i, toIndex);
+      }
+
+      var toColumns = me.getColumns(toSide);
+      var cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
+
+      i = toIndex;
+      iL = i + (grouping.end - grouping.start + 1);
+
+      for(;i<iL;i++){
+        var column = toColumns[i],
+          cell =  cells.item(i);
+
+        column.grouping = groupIndex;
+        cell.attr('group-index', groupIndex);
+      }
+
+      toHeader.el.append(groupCellHTML);
+
+      toHeader.fixGroupHeaderSizing();
+
+      return;
+    }
 
     if(fromSide === 'center'){
       removedColumn = me.removeColumn(fromIndex, 'center');

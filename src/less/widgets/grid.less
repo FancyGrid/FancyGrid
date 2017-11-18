@@ -42,9 +42,10 @@
   &:hover {
     background-color: #eff2f5;
   }
-
   color: #048DC8;
 }
+
+
 
 .fancy-grid-header-cell-container {
   height: 30px;
@@ -236,4 +237,23 @@
 
 .fancy-grid-state-drag-column .fancy-grid-header-cell-trigger {
   display: none !important;
+}
+
+.fancy-grid-state-resize-column {
+  cursor: col-resize !important;
+  .fancy-grid-header-cell-trigger {
+    display: none !important;
+  }
+  .fancy-grid-cell {
+    cursor: col-resize !important;
+  }
+  .fancy-grid-header-cell {
+    &:hover {
+      background-color: #e3e9ee;
+    }
+  }
+}
+
+.fancy-grid-state-resize-column * {
+  cursor: col-resize !important;
 }

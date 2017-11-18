@@ -1576,7 +1576,28 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(config.height === 'fit'){
-      var length = 0;
+      var length = 0,
+        headerRows = 1;
+
+      Fancy.each(config.columns, function(column){
+        if(column.grouping){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+
+          if(column.filter && column.filter.header){
+            if(headerRows < 3){
+              headerRows = 3;
+            }
+          }
+        }
+
+        if(column.filter && column.filter.header){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+        }
+      });
 
       if(Fancy.isArray(config.data)){
         length = config.data.length;
@@ -1612,7 +1633,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.header !== false){
-        height += config.cellHeaderHeight;
+        height += config.cellHeaderHeight * headerRows;
       }
 
       if( isPanel ){
@@ -3386,6 +3407,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       switch (side) {
         case 'left':
           column = me.leftColumns[indexOrder];
+
           me.leftColumns.splice(indexOrder, 1);
           leftHeader.removeCell(indexOrder);
           leftHeader.reSetIndexes();
@@ -3533,7 +3555,29 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         s = me.store,
         panelBodyBorders = me.panelBodyBorders,
         gridBorders = me.gridBorders,
-        height = s.getLength() * me.cellHeight;
+        height = s.getLength() * me.cellHeight,
+        headerRows = 1,
+        columns = me.columns.concat(me.leftColumns || []).concat(me.rightColumns || []);
+
+      Fancy.each(columns, function(column){
+        if(column.grouping){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+
+          if(column.filter && column.filter.header){
+            if(headerRows < 3){
+              headerRows = 3;
+            }
+          }
+        }
+
+        if(column.filter && column.filter.header){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+        }
+      });
 
       if (me.title) {
         height += me.titleHeight;
@@ -3560,10 +3604,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (me.header !== false) {
-        height += me.cellHeaderHeight;
-        if (me.filter && me.filter.header) {
-          height += me.cellHeaderHeight;
-        }
+        height += me.cellHeaderHeight * headerRows;
       }
 
       if(me.grouping){
@@ -4970,6 +5011,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_STATE_RESIZE_COLUMN_CLS = F.GRID_STATE_RESIZE_COLUMN_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -5318,6 +5360,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
       if(w.header.hideMenu){
         w.header.hideMenu();
+        w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
+        F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
       }
 
       switch (me.activeSide) {
@@ -5390,6 +5434,9 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       if (w.startResizing === false) {
         return;
       }
+
+      w.el.removeCls(GRID_STATE_RESIZE_COLUMN_CLS);
+      F.get(document.body).removeCls(GRID_STATE_RESIZE_COLUMN_CLS);
 
       me.leftEl.css({
         display: 'none'

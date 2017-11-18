@@ -146,7 +146,7 @@
     onCellEnter: function (grid, params) {
       var w = this.widget;
 
-      if (!w.cellTrackOver) {
+      if (!w.cellTrackOver || w.startResizing) {
         return;
       }
 
@@ -159,7 +159,7 @@
     onCellLeave: function (grid, params) {
       var w = this.widget;
 
-      if (!w.cellTrackOver) {
+      if (!w.cellTrackOver || w.startResizing) {
         return;
       }
 
@@ -172,6 +172,10 @@
     onColumnEnter: function (grid, params) {
       var w = this.widget,
         scroller = w.scroller;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (!w.columnTrackOver || scroller.bottomKnobDown || scroller.rightKnobDown || params.column.trackOver === false) {
         return;
@@ -186,6 +190,10 @@
     onColumnLeave: function (grid, params) {
       var w = this.widget;
 
+      if(w.startResizing){
+        return;
+      }
+
       if (!w.columnTrackOver) {
         return;
       }
@@ -199,6 +207,10 @@
     onRowEnter: function (grid, params) {
       var w = this.widget,
         scroller = w.scroller;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (this.enabled === false) {
         return;
@@ -222,6 +234,10 @@
      */
     onRowLeave: function (grid, params) {
       var w = this.widget;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (this.enabled === false) {
         return;
@@ -413,6 +429,10 @@
         rowCells = w.getDomRow(rowIndex),
         id = s.get(rowIndex, 'id');
 
+      if(w.startResizing){
+        return;
+      }
+
       if (me.memory) {
         delete me.memory.except[id];
         me.memory.selected[id] = true;
@@ -509,6 +529,10 @@
     onRowEnterSelection: function (grid, params) {
       var me = this,
         w = me.widget;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (me.enabled === false) {
         return;
@@ -753,6 +777,10 @@
     selectRow: function (rowIndex) {
       var me = this,
         w = me.widget;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (!me.row && !me.rows) {
         throw new Error('[FancyGrid Error] - row selection was not enabled');

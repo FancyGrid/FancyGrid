@@ -1698,6 +1698,7 @@
       switch (side) {
         case 'left':
           column = me.leftColumns[indexOrder];
+
           me.leftColumns.splice(indexOrder, 1);
           leftHeader.removeCell(indexOrder);
           leftHeader.reSetIndexes();
@@ -1845,7 +1846,29 @@
         s = me.store,
         panelBodyBorders = me.panelBodyBorders,
         gridBorders = me.gridBorders,
-        height = s.getLength() * me.cellHeight;
+        height = s.getLength() * me.cellHeight,
+        headerRows = 1,
+        columns = me.columns.concat(me.leftColumns || []).concat(me.rightColumns || []);
+
+      Fancy.each(columns, function(column){
+        if(column.grouping){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+
+          if(column.filter && column.filter.header){
+            if(headerRows < 3){
+              headerRows = 3;
+            }
+          }
+        }
+
+        if(column.filter && column.filter.header){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+        }
+      });
 
       if (me.title) {
         height += me.titleHeight;
@@ -1872,10 +1895,7 @@
       }
 
       if (me.header !== false) {
-        height += me.cellHeaderHeight;
-        if (me.filter && me.filter.header) {
-          height += me.cellHeaderHeight;
-        }
+        height += me.cellHeaderHeight * headerRows;
       }
 
       if(me.grouping){

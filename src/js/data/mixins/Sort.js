@@ -137,16 +137,33 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else {
       columnOriginalValues = me.getColumnOriginalValues(key, options);
 
+      var notNumber = [],
+        toSortValues = Fancy.Array.copy(columnOriginalValues),
+        i = 0,
+        iL = toSortValues.length;
+
+      for(;i<iL;i++){
+        if(isNaN(toSortValues[i])){
+          notNumber.push(toSortValues[i]);
+          toSortValues.splice(i, 1);
+          iL--;
+        }
+      }
+
       switch (action) {
         case 'asc':
-          sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+          sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
             return a - b;
           });
+
+          sortedColumnValues = sortedColumnValues.concat(notNumber);
           break;
         case 'desc':
-          sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+          sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
             return b - a;
           });
+
+          sortedColumnValues = notNumber.concat(sortedColumnValues);
           break;
       }
     }

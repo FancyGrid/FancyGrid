@@ -1576,7 +1576,28 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(config.height === 'fit'){
-      var length = 0;
+      var length = 0,
+        headerRows = 1;
+
+      Fancy.each(config.columns, function(column){
+        if(column.grouping){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+
+          if(column.filter && column.filter.header){
+            if(headerRows < 3){
+              headerRows = 3;
+            }
+          }
+        }
+
+        if(column.filter && column.filter.header){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+        }
+      });
 
       if(Fancy.isArray(config.data)){
         length = config.data.length;
@@ -1612,7 +1633,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.header !== false){
-        height += config.cellHeaderHeight;
+        height += config.cellHeaderHeight * headerRows;
       }
 
       if( isPanel ){

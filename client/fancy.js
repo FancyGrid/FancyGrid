@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.19',
+  version: '1.6.20',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -478,6 +478,7 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_LEFT_CLS: 'fancy-grid-resizer-left',
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
+  GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
   GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',
@@ -1140,7 +1141,7 @@ Fancy.Array = {
    * @return {Array}
    */
   insert: function (arr, index, insert) {
-    var arr2 = arr.splice(index, insert.length);
+    var arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
 
@@ -9994,10 +9995,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       list.css({
         display: '',
         left: xy[0] + 'px',
-        top: xy[1] + 'px',
+        top: xy[1] + 3 + 'px',
+        opacity: 0,
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
+
+      list.animate({
+        opacity: 1,
+        top: xy[1]
+      }, F.ANIMATE_DURATION);
 
       var index;
 
@@ -12374,10 +12381,43 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {String} toSide
    * @param {Number} fromIndex
    * @param {Number} toIndex
+   * @param {Object} [grouping]
    */
-  moveColumn: function (fromSide, toSide, fromIndex, toIndex) {
+  moveColumn: function (fromSide, toSide, fromIndex, toIndex, grouping) {
     var me = this,
       removedColumn;
+
+    if(grouping){
+      var i = 0,
+        iL = grouping.end - grouping.start + 1,
+        groupIndex = grouping.cell.attr('index'),
+        toHeader = me.getHeader(toSide),
+        groupCellHTML = grouping.cell.dom.outerHTML;
+
+      for(;i<iL;i++){
+        me.moveColumn(fromSide, toSide, grouping.end - i, toIndex);
+      }
+
+      var toColumns = me.getColumns(toSide);
+      var cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
+
+      i = toIndex;
+      iL = i + (grouping.end - grouping.start + 1);
+
+      for(;i<iL;i++){
+        var column = toColumns[i],
+          cell =  cells.item(i);
+
+        column.grouping = groupIndex;
+        cell.attr('group-index', groupIndex);
+      }
+
+      toHeader.el.append(groupCellHTML);
+
+      toHeader.fixGroupHeaderSizing();
+
+      return;
+    }
 
     if(fromSide === 'center'){
       removedColumn = me.removeColumn(fromIndex, 'center');

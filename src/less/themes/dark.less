@@ -539,6 +539,15 @@
     border-left-color: #000;
     border-bottom: 1px solid #000;
   }
+
+  .fancy-grid-state-resize-column {
+    .fancy-grid-header-cell {
+      &:hover {
+        border-top: 1px solid #5a5a5a;
+        background-color: rgba(85, 85, 85, .35);
+      }
+    }
+  }
 }
 
 .fancy-theme-dark.fancy-panel .fancy-month-picker .fancy-picker-button-next {
@@ -562,4 +571,13 @@
 
 .fancy-theme-dark .fancy-panel-tbar .fancy-toolbar-tab-active {
   background: #048DC8;
+}
+
+.fancy-theme-dark.fancy-grid-state-resize-column {
+  .fancy-grid-header-cell {
+    &:hover {
+      border-top: 1px solid #5a5a5a;
+      background-color: rgba(85, 85, 85, .35);
+    }
+  }
 }

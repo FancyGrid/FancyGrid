@@ -371,10 +371,16 @@
       list.css({
         display: '',
         left: xy[0] + 'px',
-        top: xy[1] + 'px',
+        top: xy[1] + 3 + 'px',
+        opacity: 0,
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
+
+      list.animate({
+        opacity: 1,
+        top: xy[1]
+      }, F.ANIMATE_DURATION);
 
       var index;
 

@@ -128,28 +128,18 @@
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-          
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
 
         dragged = true;
@@ -280,8 +270,6 @@
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
 
-      me.status = 'dragging';
-
       var columns = w.getColumns(me.activeSide);
       if(columns.length === 1 && me.activeSide === 'center'){
         me.ok = false;
@@ -297,6 +285,7 @@
 
           if(me.activeSide !== me.inSide){
             me.ok = true;
+            me.status = 'dragging';
             if(e.offsetX > cellWidth/2 || inTriggerEl){
               me.showHint('right');
             }
@@ -316,11 +305,13 @@
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('right');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('left');
                 }
               }
@@ -331,11 +322,13 @@
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('left');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('right');
                 }
               }
@@ -353,6 +346,7 @@
 
         if(me.activeSide !== me.inSide){
           me.ok = true;
+          me.status = 'dragging';
           if(e.offsetX > cellWidth/2 || inTriggerEl){
             me.showHint('right');
           }
@@ -367,6 +361,7 @@
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
@@ -376,6 +371,7 @@
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
           }
@@ -383,6 +379,7 @@
       }
       else if(me.activeSide !== me.inSide){
         me.ok = true;
+        me.status = 'dragging';
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.showHint('right');
         }
@@ -396,16 +393,19 @@
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.ok = true;
+          me.status = 'dragging';
           me.showHint('right');
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
           else {
             if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
             else{
@@ -420,6 +420,7 @@
           if(inTriggerEl){
             if(fromGroup || toGroup){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
@@ -428,11 +429,13 @@
             }
             else{
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
           else {
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
         }
@@ -440,11 +443,13 @@
           if(e.offsetX > cellWidth/2){
             if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else{
               if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
                 me.ok = true;
+                me.status = 'dragging';
                 me.showHint('right');
               }
               else{
@@ -536,15 +541,19 @@
 
       if(me.activeCellTopGroup){
         var startIndex = me.activeCellTopGroup.start,
-          endIndex = me.activeCellTopGroup.end;
+          endIndex = me.activeCellTopGroup.end,
+          _columns = columns.splice(startIndex, endIndex - startIndex + 1),
+          inIndex = me.inIndex;
 
-        var _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+        if(position === 'right'){
+          inIndex++;
+        }
 
         if(me.inIndex < startIndex){
-          columns = Fancy.Array.insert(columns, me.inIndex, _columns);
+          columns = Fancy.Array.insert(columns, inIndex, _columns);
         }
         else{
-          columns = Fancy.Array.insert(columns, me.inIndex - _columns.length + 1, _columns);
+          columns = Fancy.Array.insert(columns, inIndex - _columns.length, _columns);
         }
 
         w.setColumns(columns, side);
@@ -794,28 +803,18 @@
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-          
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
 
         dragged = true;
@@ -946,8 +945,6 @@
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
 
-      me.status = 'dragging';
-
       var columns = w.getColumns(me.activeSide);
       if(columns.length === 1 && me.activeSide === 'center'){
         me.ok = false;
@@ -963,6 +960,7 @@
 
           if(me.activeSide !== me.inSide){
             me.ok = true;
+            me.status = 'dragging';
             if(e.offsetX > cellWidth/2 || inTriggerEl){
               me.showHint('right');
             }
@@ -982,11 +980,13 @@
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('right');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('left');
                 }
               }
@@ -997,11 +997,13 @@
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('left');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('right');
                 }
               }
@@ -1019,6 +1021,7 @@
 
         if(me.activeSide !== me.inSide){
           me.ok = true;
+          me.status = 'dragging';
           if(e.offsetX > cellWidth/2 || inTriggerEl){
             me.showHint('right');
           }
@@ -1033,6 +1036,7 @@
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
@@ -1042,6 +1046,7 @@
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
           }
@@ -1049,6 +1054,7 @@
       }
       else if(me.activeSide !== me.inSide){
         me.ok = true;
+        me.status = 'dragging';
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.showHint('right');
         }
@@ -1062,16 +1068,19 @@
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.ok = true;
+          me.status = 'dragging';
           me.showHint('right');
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
           else {
             if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
             else{
@@ -1086,6 +1095,7 @@
           if(inTriggerEl){
             if(fromGroup || toGroup){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
@@ -1094,11 +1104,13 @@
             }
             else{
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
           else {
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
         }
@@ -1106,11 +1118,13 @@
           if(e.offsetX > cellWidth/2){
             if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else{
               if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
                 me.ok = true;
+                me.status = 'dragging';
                 me.showHint('right');
               }
               else{
@@ -1202,15 +1216,19 @@
 
       if(me.activeCellTopGroup){
         var startIndex = me.activeCellTopGroup.start,
-          endIndex = me.activeCellTopGroup.end;
+          endIndex = me.activeCellTopGroup.end,
+          _columns = columns.splice(startIndex, endIndex - startIndex + 1),
+          inIndex = me.inIndex;
 
-        var _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+        if(position === 'right'){
+          inIndex++;
+        }
 
         if(me.inIndex < startIndex){
-          columns = Fancy.Array.insert(columns, me.inIndex, _columns);
+          columns = Fancy.Array.insert(columns, inIndex, _columns);
         }
         else{
-          columns = Fancy.Array.insert(columns, me.inIndex - _columns.length + 1, _columns);
+          columns = Fancy.Array.insert(columns, inIndex - _columns.length, _columns);
         }
 
         w.setColumns(columns, side);

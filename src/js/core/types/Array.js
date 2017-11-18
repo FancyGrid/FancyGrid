@@ -107,7 +107,7 @@ Fancy.Array = {
    * @return {Array}
    */
   insert: function (arr, index, insert) {
-    var arr2 = arr.splice(index, insert.length);
+    var arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
 

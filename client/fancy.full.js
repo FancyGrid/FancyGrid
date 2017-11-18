@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.19',
+  version: '1.6.20',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -478,6 +478,7 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_LEFT_CLS: 'fancy-grid-resizer-left',
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
+  GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
   GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',
@@ -1141,7 +1142,7 @@ Fancy.Array = {
    * @return {Array}
    */
   insert: function (arr, index, insert) {
-    var arr2 = arr.splice(index, insert.length);
+    var arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
 
@@ -4384,16 +4385,33 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else {
       columnOriginalValues = me.getColumnOriginalValues(key, options);
 
+      var notNumber = [],
+        toSortValues = Fancy.Array.copy(columnOriginalValues),
+        i = 0,
+        iL = toSortValues.length;
+
+      for(;i<iL;i++){
+        if(isNaN(toSortValues[i])){
+          notNumber.push(toSortValues[i]);
+          toSortValues.splice(i, 1);
+          iL--;
+        }
+      }
+
       switch (action) {
         case 'asc':
-          sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+          sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
             return a - b;
           });
+
+          sortedColumnValues = sortedColumnValues.concat(notNumber);
           break;
         case 'desc':
-          sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+          sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
             return b - a;
           });
+
+          sortedColumnValues = notNumber.concat(sortedColumnValues);
           break;
       }
     }
@@ -16722,10 +16740,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       list.css({
         display: '',
         left: xy[0] + 'px',
-        top: xy[1] + 'px',
+        top: xy[1] + 3 + 'px',
+        opacity: 0,
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
+
+      list.animate({
+        opacity: 1,
+        top: xy[1]
+      }, F.ANIMATE_DURATION);
 
       var index;
 
@@ -20430,7 +20454,28 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(config.height === 'fit'){
-      var length = 0;
+      var length = 0,
+        headerRows = 1;
+
+      Fancy.each(config.columns, function(column){
+        if(column.grouping){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+
+          if(column.filter && column.filter.header){
+            if(headerRows < 3){
+              headerRows = 3;
+            }
+          }
+        }
+
+        if(column.filter && column.filter.header){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+        }
+      });
 
       if(Fancy.isArray(config.data)){
         length = config.data.length;
@@ -20466,7 +20511,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.header !== false){
-        height += config.cellHeaderHeight;
+        height += config.cellHeaderHeight * headerRows;
       }
 
       if( isPanel ){
@@ -22471,6 +22516,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       switch (side) {
         case 'left':
           column = me.leftColumns[indexOrder];
+
           me.leftColumns.splice(indexOrder, 1);
           leftHeader.removeCell(indexOrder);
           leftHeader.reSetIndexes();
@@ -22618,7 +22664,29 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         s = me.store,
         panelBodyBorders = me.panelBodyBorders,
         gridBorders = me.gridBorders,
-        height = s.getLength() * me.cellHeight;
+        height = s.getLength() * me.cellHeight,
+        headerRows = 1,
+        columns = me.columns.concat(me.leftColumns || []).concat(me.rightColumns || []);
+
+      Fancy.each(columns, function(column){
+        if(column.grouping){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+
+          if(column.filter && column.filter.header){
+            if(headerRows < 3){
+              headerRows = 3;
+            }
+          }
+        }
+
+        if(column.filter && column.filter.header){
+          if(headerRows < 2){
+            headerRows = 2;
+          }
+        }
+      });
 
       if (me.title) {
         height += me.titleHeight;
@@ -22645,10 +22713,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.header !== false) {
-        height += me.cellHeaderHeight;
-        if (me.filter && me.filter.header) {
-          height += me.cellHeaderHeight;
-        }
+        height += me.cellHeaderHeight * headerRows;
       }
 
       if(me.grouping){
@@ -23331,10 +23396,43 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {String} toSide
    * @param {Number} fromIndex
    * @param {Number} toIndex
+   * @param {Object} [grouping]
    */
-  moveColumn: function (fromSide, toSide, fromIndex, toIndex) {
+  moveColumn: function (fromSide, toSide, fromIndex, toIndex, grouping) {
     var me = this,
       removedColumn;
+
+    if(grouping){
+      var i = 0,
+        iL = grouping.end - grouping.start + 1,
+        groupIndex = grouping.cell.attr('index'),
+        toHeader = me.getHeader(toSide),
+        groupCellHTML = grouping.cell.dom.outerHTML;
+
+      for(;i<iL;i++){
+        me.moveColumn(fromSide, toSide, grouping.end - i, toIndex);
+      }
+
+      var toColumns = me.getColumns(toSide);
+      var cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
+
+      i = toIndex;
+      iL = i + (grouping.end - grouping.start + 1);
+
+      for(;i<iL;i++){
+        var column = toColumns[i],
+          cell =  cells.item(i);
+
+        column.grouping = groupIndex;
+        cell.attr('group-index', groupIndex);
+      }
+
+      toHeader.el.append(groupCellHTML);
+
+      toHeader.fixGroupHeaderSizing();
+
+      return;
+    }
 
     if(fromSide === 'center'){
       removedColumn = me.removeColumn(fromIndex, 'center');
@@ -25049,6 +25147,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_STATE_RESIZE_COLUMN_CLS = F.GRID_STATE_RESIZE_COLUMN_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -25397,6 +25496,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
       if(w.header.hideMenu){
         w.header.hideMenu();
+        w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
+        F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
       }
 
       switch (me.activeSide) {
@@ -25469,6 +25570,9 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       if (w.startResizing === false) {
         return;
       }
+
+      w.el.removeCls(GRID_STATE_RESIZE_COLUMN_CLS);
+      F.get(document.body).removeCls(GRID_STATE_RESIZE_COLUMN_CLS);
 
       me.leftEl.css({
         display: 'none'
@@ -25927,28 +26031,18 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-          
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
 
         dragged = true;
@@ -26079,8 +26173,6 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
 
-      me.status = 'dragging';
-
       var columns = w.getColumns(me.activeSide);
       if(columns.length === 1 && me.activeSide === 'center'){
         me.ok = false;
@@ -26096,6 +26188,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
           if(me.activeSide !== me.inSide){
             me.ok = true;
+            me.status = 'dragging';
             if(e.offsetX > cellWidth/2 || inTriggerEl){
               me.showHint('right');
             }
@@ -26115,11 +26208,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('right');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('left');
                 }
               }
@@ -26130,11 +26225,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('left');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('right');
                 }
               }
@@ -26152,6 +26249,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
         if(me.activeSide !== me.inSide){
           me.ok = true;
+          me.status = 'dragging';
           if(e.offsetX > cellWidth/2 || inTriggerEl){
             me.showHint('right');
           }
@@ -26166,6 +26264,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
@@ -26175,6 +26274,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
           }
@@ -26182,6 +26282,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       }
       else if(me.activeSide !== me.inSide){
         me.ok = true;
+        me.status = 'dragging';
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.showHint('right');
         }
@@ -26195,16 +26296,19 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.ok = true;
+          me.status = 'dragging';
           me.showHint('right');
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
           else {
             if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
             else{
@@ -26219,6 +26323,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           if(inTriggerEl){
             if(fromGroup || toGroup){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
@@ -26227,11 +26332,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             }
             else{
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
           else {
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
         }
@@ -26239,11 +26346,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           if(e.offsetX > cellWidth/2){
             if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else{
               if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
                 me.ok = true;
+                me.status = 'dragging';
                 me.showHint('right');
               }
               else{
@@ -26335,15 +26444,19 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
       if(me.activeCellTopGroup){
         var startIndex = me.activeCellTopGroup.start,
-          endIndex = me.activeCellTopGroup.end;
+          endIndex = me.activeCellTopGroup.end,
+          _columns = columns.splice(startIndex, endIndex - startIndex + 1),
+          inIndex = me.inIndex;
 
-        var _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+        if(position === 'right'){
+          inIndex++;
+        }
 
         if(me.inIndex < startIndex){
-          columns = Fancy.Array.insert(columns, me.inIndex, _columns);
+          columns = Fancy.Array.insert(columns, inIndex, _columns);
         }
         else{
-          columns = Fancy.Array.insert(columns, me.inIndex - _columns.length + 1, _columns);
+          columns = Fancy.Array.insert(columns, inIndex - _columns.length, _columns);
         }
 
         w.setColumns(columns, side);
@@ -29173,7 +29286,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     onCellEnter: function (grid, params) {
       var w = this.widget;
 
-      if (!w.cellTrackOver) {
+      if (!w.cellTrackOver || w.startResizing) {
         return;
       }
 
@@ -29186,7 +29299,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     onCellLeave: function (grid, params) {
       var w = this.widget;
 
-      if (!w.cellTrackOver) {
+      if (!w.cellTrackOver || w.startResizing) {
         return;
       }
 
@@ -29199,6 +29312,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     onColumnEnter: function (grid, params) {
       var w = this.widget,
         scroller = w.scroller;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (!w.columnTrackOver || scroller.bottomKnobDown || scroller.rightKnobDown || params.column.trackOver === false) {
         return;
@@ -29213,6 +29330,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     onColumnLeave: function (grid, params) {
       var w = this.widget;
 
+      if(w.startResizing){
+        return;
+      }
+
       if (!w.columnTrackOver) {
         return;
       }
@@ -29226,6 +29347,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     onRowEnter: function (grid, params) {
       var w = this.widget,
         scroller = w.scroller;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (this.enabled === false) {
         return;
@@ -29249,6 +29374,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      */
     onRowLeave: function (grid, params) {
       var w = this.widget;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (this.enabled === false) {
         return;
@@ -29440,6 +29569,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         rowCells = w.getDomRow(rowIndex),
         id = s.get(rowIndex, 'id');
 
+      if(w.startResizing){
+        return;
+      }
+
       if (me.memory) {
         delete me.memory.except[id];
         me.memory.selected[id] = true;
@@ -29536,6 +29669,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     onRowEnterSelection: function (grid, params) {
       var me = this,
         w = me.widget;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (me.enabled === false) {
         return;
@@ -29780,6 +29917,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     selectRow: function (rowIndex) {
       var me = this,
         w = me.widget;
+
+      if(w.startResizing){
+        return;
+      }
 
       if (!me.row && !me.rows) {
         throw new Error('[FancyGrid Error] - row selection was not enabled');
@@ -32673,28 +32814,18 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
-          if(me.activeCellTopGroup){
-            //TODO
-            return;
-          }
-          
           var inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex);
+          w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
 
         dragged = true;
@@ -32825,8 +32956,6 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
 
-      me.status = 'dragging';
-
       var columns = w.getColumns(me.activeSide);
       if(columns.length === 1 && me.activeSide === 'center'){
         me.ok = false;
@@ -32842,6 +32971,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
           if(me.activeSide !== me.inSide){
             me.ok = true;
+            me.status = 'dragging';
             if(e.offsetX > cellWidth/2 || inTriggerEl){
               me.showHint('right');
             }
@@ -32861,11 +32991,13 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('right');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('left');
                 }
               }
@@ -32876,11 +33008,13 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                   }
                   else{
                     me.ok = true;
+                    me.status = 'dragging';
                     me.showHint('left');
                   }
                 }
                 else{
                   me.ok = true;
+                  me.status = 'dragging';
                   me.showHint('right');
                 }
               }
@@ -32898,6 +33032,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
         if(me.activeSide !== me.inSide){
           me.ok = true;
+          me.status = 'dragging';
           if(e.offsetX > cellWidth/2 || inTriggerEl){
             me.showHint('right');
           }
@@ -32912,6 +33047,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
@@ -32921,6 +33057,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
             }
             else {
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
           }
@@ -32928,6 +33065,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       }
       else if(me.activeSide !== me.inSide){
         me.ok = true;
+        me.status = 'dragging';
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.showHint('right');
         }
@@ -32941,16 +33079,19 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.ok = true;
+          me.status = 'dragging';
           me.showHint('right');
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
           else {
             if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('left');
             }
             else{
@@ -32965,6 +33106,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           if(inTriggerEl){
             if(fromGroup || toGroup){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
@@ -32973,11 +33115,13 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
             }
             else{
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
           }
           else {
             me.ok = true;
+            me.status = 'dragging';
             me.showHint('left');
           }
         }
@@ -32985,11 +33129,13 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           if(e.offsetX > cellWidth/2){
             if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
               me.ok = true;
+              me.status = 'dragging';
               me.showHint('right');
             }
             else{
               if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
                 me.ok = true;
+                me.status = 'dragging';
                 me.showHint('right');
               }
               else{
@@ -33081,15 +33227,19 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
       if(me.activeCellTopGroup){
         var startIndex = me.activeCellTopGroup.start,
-          endIndex = me.activeCellTopGroup.end;
+          endIndex = me.activeCellTopGroup.end,
+          _columns = columns.splice(startIndex, endIndex - startIndex + 1),
+          inIndex = me.inIndex;
 
-        var _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+        if(position === 'right'){
+          inIndex++;
+        }
 
         if(me.inIndex < startIndex){
-          columns = Fancy.Array.insert(columns, me.inIndex, _columns);
+          columns = Fancy.Array.insert(columns, inIndex, _columns);
         }
         else{
-          columns = Fancy.Array.insert(columns, me.inIndex - _columns.length + 1, _columns);
+          columns = Fancy.Array.insert(columns, inIndex - _columns.length, _columns);
         }
 
         w.setColumns(columns, side);

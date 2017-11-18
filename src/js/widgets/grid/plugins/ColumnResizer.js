@@ -17,6 +17,7 @@
   var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  var GRID_STATE_RESIZE_COLUMN_CLS = F.GRID_STATE_RESIZE_COLUMN_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -365,6 +366,8 @@
 
       if(w.header.hideMenu){
         w.header.hideMenu();
+        w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
+        F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
       }
 
       switch (me.activeSide) {
@@ -437,6 +440,9 @@
       if (w.startResizing === false) {
         return;
       }
+
+      w.el.removeCls(GRID_STATE_RESIZE_COLUMN_CLS);
+      F.get(document.body).removeCls(GRID_STATE_RESIZE_COLUMN_CLS);
 
       me.leftEl.css({
         display: 'none'
