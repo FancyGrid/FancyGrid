@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.20',
+  version: '1.6.21',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -442,6 +442,7 @@ Fancy.apply(Fancy, {
   FIELD_SPIN_UP_CLS: 'fancy-field-spin-up',
   FIELD_SPIN_DOWN_CLS: 'fancy-field-spin-down',
   FIELD_CHECKBOX_CLS: 'fancy-field-checkbox',
+  FIELD_CHECKBOX_DISABLED_CLS: 'fancy-field-checkbox-disabled',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
   FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
@@ -855,7 +856,6 @@ var FancyForm = function(){
 
     var  body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
-      //endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       endUrl = '.js',
       protocol = location.protocol,
       MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//cdn.fancygrid.com/modules/');
@@ -3752,7 +3752,7 @@ Fancy.Element.prototype = {
   },
   /*
    * @param {String} html
-   * @return {Fancy.Element}
+   .* @return {Fancy.Element}
    */
   before: function(html){
     return Fancy.get(this.$dom.before(html)[0]);
@@ -4468,7 +4468,10 @@ Fancy.i18n.en = {
   cancel: 'Cancel',
   columns: 'Columns',
   sortAsc: 'Sort ASC',
-  sortDesc: 'Sort DESC'
+  sortDesc: 'Sort DESC',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };
 
 Fancy.i18n['en-US'] = Fancy.i18n.en;
@@ -8060,15 +8063,31 @@ if(!Fancy.nojQuery && Fancy.$){
         keyCode = e.keyCode,
         key = F.key;
 
-      if (me.type === 'number') {
+      //This disable filter expressions in number field
+      /*
+      if (me.type === 'field.number') {
         if (F.Key.isNumControl(keyCode, e) === false) {
           e.preventDefault();
           e.stopPropagation();
           return;
         }
       }
+      */
 
       switch (keyCode) {
+        case key.BACKSPACE:
+        case key.DELETE:
+          switch(me.type) {
+            case 'field.number':
+            case 'field.string':
+              setTimeout(function () {
+                if(me.getValue() === ''){
+                  me.fire('empty');
+                }
+              }, 1);
+              break;
+          }
+          break;
         case key.TAB:
           me.fire('tab', e);
           break;
@@ -8718,7 +8737,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
   init: function(){
     var me = this;
 
-    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab','change', 'key');
+    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab','change', 'key', 'empty');
 
     me.Super('init', arguments);
 
@@ -8795,7 +8814,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     init: function () {
       var me = this;
 
-      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key');
+      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'empty');
 
       me.Super('init', arguments);
 
@@ -9411,6 +9430,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
   var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
   var FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
+  var FIELD_CHECKBOX_DISABLED_CLS = Fancy.FIELD_CHECKBOX_DISABLED_CLS;
   var FIELD_INPUT_LABEL_CLS =  Fancy.FIELD_INPUT_LABEL_CLS;
   var FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
 
@@ -9420,6 +9440,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     ],
     extend: Fancy.Widget,
     type: 'field.checkbox',
+    disabled: false,
     /*
      * @constructor
      * @param {Object} config
@@ -9452,6 +9473,10 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
 
       if (me.expander) {
         me.addCls('fancy-checkbox-expander');
+      }
+
+      if(me.disabled){
+        me.addCls(FIELD_CHECKBOX_DISABLED_CLS);
       }
 
       me.acceptedValue = me.value;
@@ -9583,8 +9608,26 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
      *
      */
     toggle: function () {
-      me.set(!this.value);
-    }
+      this.set(!this.value);
+    },
+    /*
+     *
+     */
+    enable: function () {
+      var me = this;
+
+      me.disabled = false;
+      me.removeCls(FIELD_CHECKBOX_DISABLED_CLS);
+    },
+    /*
+     *
+     */
+    disable: function () {
+      var me = this;
+
+      me.disabled = true;
+      me.addCls(FIELD_CHECKBOX_DISABLED_CLS);
+    },
   });
 
 })();
@@ -10637,6 +10680,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         if (displayValue === '' || displayValue === ' ') {
           displayValue = '&nbsp;';
+        }
+        else if (me.listItemTpl) {
+          var listTpl = new F.Template(me.listItemTpl);
+          displayValue = listTpl.getHTML(row);
         }
 
         listHtml.push('<li value="' + value + '" class="' + isActive + '"><span class="fancy-combo-list-value">' + displayValue + '</span></li>');

@@ -31,5 +31,15 @@ Fancy.i18n.id = {
     PM: 'MALAM',
     ok: 'OK',
     cancel: 'Batal'
-  }
+  },
+  yes: 'Ya',
+  no: 'Tidak',
+  dragText: '[0] baris terpilih',
+  update: 'Update',
+  cancel: 'Batal',
+  sortAsc: 'Urut Naik',
+  sortDesc: 'Urut Turun',
+  lock: 'Kancing Kolom',
+  unlock: 'Lepas Kunci Kolom',
+  columns: 'Kolom'
 };

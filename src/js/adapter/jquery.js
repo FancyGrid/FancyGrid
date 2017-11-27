@@ -327,7 +327,7 @@ Fancy.Element.prototype = {
   },
   /*
    * @param {String} html
-   * @return {Fancy.Element}
+   .* @return {Fancy.Element}
    */
   before: function(html){
     return Fancy.get(this.$dom.before(html)[0]);

@@ -36,10 +36,13 @@ Fancy.i18n.en = {
   no: 'No',
   dragText: '[0] selected row[1]',
   update: 'Update',
-  cancel: 'Cancel',  
+  cancel: 'Cancel',
+  columns: 'Columns',
   sortAsc: 'Sort ASC',
-  sortDesc: 'Sort Descending',
-  columns: 'Columns'
+  sortDesc: 'Sort DESC',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };
 
 Fancy.i18n['en-US'] = Fancy.i18n.en;

@@ -31,5 +31,15 @@ Fancy.i18n.tr = {
     PM: 'PM',
     ok: '*Tamam*',
     cancel: 'İptal'
-  }
+  },
+  yes: 'Evet',
+  no: 'Hayır',
+  update: 'Güncellemek',
+  cancel: 'İptal',
+  sortAsc: 'Artan sırada sırala',
+  sortDesc: 'Azalan sırada sırala',
+  lock: 'Kolonu kilitle',
+  rightLock: 'Kolonu kilitle',
+  unlock: 'Kolon kilidini kaldır',
+  columns: 'Kolonlar'
 };

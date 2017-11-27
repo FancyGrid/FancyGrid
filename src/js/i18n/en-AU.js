@@ -37,7 +37,10 @@ Fancy.i18n['en-AU'] = {
   dragText: '[0] selected row[1]',
   update: 'Update',
   cancel: 'Cancel',
-  sortAsc: 'Sort Ascending',
-  sortDesc: 'Sort Descending',
-  columns: 'Columns'
+  columns: 'Columns',
+  sortAsc: 'Sort ASC',
+  sortDesc: 'Sort DESC',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };

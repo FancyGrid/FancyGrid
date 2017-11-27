@@ -545,20 +545,30 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             theme = undefined;
           }
 
-          editor = new F.Combo({
+          Fancy.apply(itemConfig, {
             theme: theme,
-            renderTo: renderTo,
-            label: false,
-            style: style,
             data: data,
             displayKey: displayKey,
             valueKey: valueKey,
             value: 0,
             padding: false,
             vtype: vtype,
-            events: events,
-            checkValidOnTyping: true
+            events: events
           });
+
+          if(column.emptyText){
+            itemConfig.emptyText = column.emptyText;
+          }
+
+          if(column.displayTpl){
+            itemConfig.displayTpl = column.displayTpl;
+          }
+
+          if(column.listItemTpl){
+            itemConfig.listItemTpl = column.listItemTpl;
+          }
+
+          editor = new F.Combo(itemConfig);
           break;
         case 'text':
           editor = new F.TextArea({

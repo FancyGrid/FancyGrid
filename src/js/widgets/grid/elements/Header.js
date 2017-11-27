@@ -904,12 +904,26 @@
       }
 
       F.each(columns, function (column, i){
-        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
+        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]'),
+          currentLeft = parseInt(cell.css('left')),
+          currentWidth = parseInt(cell.css('width'));
 
-        cell.animate({
-          width: column.width,
-          left: left
-        }, ANIMATE_DURATION);
+        if(currentLeft === left && currentWidth === column.width){
+          left += column.width;
+          return;
+        }
+
+        if(Fancy.nojQuery){
+          //Bug fix for dom fx without jQuery
+          cell.animate({width: column.width}, ANIMATE_DURATION);
+          cell.animate({left: left}, ANIMATE_DURATION);
+        }
+        else {
+          cell.animate({
+            width: column.width,
+            left: left
+          }, ANIMATE_DURATION);
+        }
 
         left += column.width;
       });

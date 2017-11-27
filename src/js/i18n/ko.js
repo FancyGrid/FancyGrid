@@ -40,6 +40,7 @@ Fancy.i18n.ko = {
   sortAsc: '오름차순 정렬',
   sortDesc: '내림차순 정렬',
   lock: '칼럼 잠금',
+  rightLock: '칼럼 잠금',
   unlock: '칼럼 잠금해제',
   columns: '칼럼 목록'
 };

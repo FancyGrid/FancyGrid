@@ -1014,6 +1014,10 @@
         if (displayValue === '' || displayValue === ' ') {
           displayValue = '&nbsp;';
         }
+        else if (me.listItemTpl) {
+          var listTpl = new F.Template(me.listItemTpl);
+          displayValue = listTpl.getHTML(row);
+        }
 
         listHtml.push('<li value="' + value + '" class="' + isActive + '"><span class="fancy-combo-list-value">' + displayValue + '</span></li>');
       });

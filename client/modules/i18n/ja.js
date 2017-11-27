@@ -31,5 +31,16 @@ Fancy.i18n.ja = {
     PM: '午後',
     ok: 'OK',
     cancel: 'キャンセル'
-  }
+  },
+  yes: 'はい',
+  no: 'いいえ',
+  dragText: '[0] 行選択',
+  update: '更新',
+  cancel: 'キャンセル',
+  sortAsc: '昇順',
+  sortDesc: '降順',
+  columns: 'カラム',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };

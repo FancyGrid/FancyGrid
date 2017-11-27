@@ -29,5 +29,16 @@ Fancy.i18n['zh-TW'] = {
     pm: '晚上',
     AM: '上午',
     PM: '晚上'
-  }
+  },
+  yes: '是',
+  no: '否',
+  dragText: '選擇了 [0] 行',
+  update: '更新',
+  cancel: '取消',
+  sortAsc: '正向排序',
+  sortDesc: '反向排序',
+  lock: '鎖定欄位',
+  rightLock: '鎖定欄位',
+  unlock: '解開欄位鎖定',
+  columns: '欄位'
 };

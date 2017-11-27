@@ -31,5 +31,16 @@ Fancy.i18n.fr = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Annuler'
-  }
+  },
+  yes: 'Oui',
+  no: 'Non',
+  dragText: '[0] ligne[1] sélectionnée[1]',
+  update: 'Actualiser',
+  cancel: 'Annuler',
+  sortAsc: 'Tri croissant',
+  sortDesc: 'Tri décroissant',
+  columns: 'Colonnes',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };

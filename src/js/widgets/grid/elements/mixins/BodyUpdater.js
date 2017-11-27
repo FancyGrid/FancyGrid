@@ -821,7 +821,8 @@
           cellInnerEl = cellsDomInner.item(j),
           checkBox = cellInnerEl.select('.fancy-field-checkbox'),
           checkBoxId,
-          isCheckBoxInside = checkBox.length !== 0;
+          isCheckBoxInside = checkBox.length !== 0,
+          editable = true;
 
         if (w.selection.memory) {
           if (w.selection.memory.all && !w.selection.memory.except[id]) {
@@ -838,6 +839,10 @@
           }
         }
 
+        if(w.selection.disabled){
+          editable = false;
+        }
+
         if (isCheckBoxInside === false) {
           new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
@@ -845,6 +850,8 @@
             value: value,
             label: false,
             stopIfCTRL: true,
+            editable: editable,
+            disabled: !editable,
             style: {
               padding: '0px',
               display: 'inline-block'

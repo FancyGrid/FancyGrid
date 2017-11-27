@@ -31,5 +31,16 @@ Fancy.i18n.da = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Cancel'
-  }
+  },
+  yes: 'Ja',
+  no: 'Nej',
+  dragText: '[0] markerede rækker',
+  update: 'Opdatering',
+  cancel: 'Fortryd',
+  sortAsc: 'Sortér stigende',
+  sortDesc: 'Sortér faldende',
+  lock: 'Lås kolonne',
+  rightLock: 'Lås kolonne',
+  unlock: 'Fjern lås fra kolonne',
+  columns: 'Kolonner'
 };

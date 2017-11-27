@@ -37,7 +37,7 @@
     init: function () {
       var me = this;
 
-      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key');
+      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'empty');
 
       me.Super('init', arguments);
 

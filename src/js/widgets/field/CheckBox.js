@@ -12,6 +12,7 @@
   var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
   var FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
+  var FIELD_CHECKBOX_DISABLED_CLS = Fancy.FIELD_CHECKBOX_DISABLED_CLS;
   var FIELD_INPUT_LABEL_CLS =  Fancy.FIELD_INPUT_LABEL_CLS;
   var FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
 
@@ -21,6 +22,7 @@
     ],
     extend: Fancy.Widget,
     type: 'field.checkbox',
+    disabled: false,
     /*
      * @constructor
      * @param {Object} config
@@ -53,6 +55,10 @@
 
       if (me.expander) {
         me.addCls('fancy-checkbox-expander');
+      }
+
+      if(me.disabled){
+        me.addCls(FIELD_CHECKBOX_DISABLED_CLS);
       }
 
       me.acceptedValue = me.value;
@@ -184,8 +190,26 @@
      *
      */
     toggle: function () {
-      me.set(!this.value);
-    }
+      this.set(!this.value);
+    },
+    /*
+     *
+     */
+    enable: function () {
+      var me = this;
+
+      me.disabled = false;
+      me.removeCls(FIELD_CHECKBOX_DISABLED_CLS);
+    },
+    /*
+     *
+     */
+    disable: function () {
+      var me = this;
+
+      me.disabled = true;
+      me.addCls(FIELD_CHECKBOX_DISABLED_CLS);
+    },
   });
 
 })();

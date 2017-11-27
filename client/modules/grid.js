@@ -843,7 +843,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var initSelection = false,
       selectionConfig = {
         type: 'grid.selection'
-      };
+      },
+      disabled = false;
 
     if(config.trackOver || config.columnTrackOver || config.cellTrackOver){
       initSelection = true;
@@ -862,6 +863,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         memory = config.selModel.memory === true;
+        if(config.selModel.disabled){
+          disabled = true;
+        }
         config.selModel = config.selModel.type;
       }
 
@@ -874,6 +878,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection[config.selModel] = true;
       config.selection.checkOnly = checkOnly;
       config.selection.memory = memory;
+      config.selection.disabled = disabled;
     }
 
     if(config.selection){
@@ -1756,6 +1761,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       remoteFilter = me.data.remoteFilter;
       pageType = me.data.remotePage;
 
+      if(pageType) {
+        pageType = 'server';
+      }
+
       F.define(modelName, {
         extend: F.Model,
         fields: fields
@@ -2323,7 +2332,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (me.responsive) {
         F.$(window).bind('resize', function () {
-          me.onWindowResize()
+          me.onWindowResize();
         });
       }
 
@@ -2863,6 +2872,13 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       return store.getItem(rowIndex);
     },
     /*
+     * @param {Number} id
+     * @return {Number}
+     */
+    getRowById: function (id) {
+      return this.store.getRow(id);
+    },
+    /*
      * @return {Number}
      */
     getTotal: function () {
@@ -2888,11 +2904,13 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     },
     /*
      * @param {Number} rowIndex
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
      */
-    selectRow: function (rowIndex) {
+    selectRow: function (rowIndex, value, multi) {
       var me = this;
 
-      me.selection.selectRow(rowIndex);
+      me.selection.selectRow(rowIndex, value, multi);
     },
     /*
      * @param {String} key
@@ -2986,6 +3004,27 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.setBodysHeight();
+
+      var fn = function (columns, header) {
+        Fancy.each(columns, function (column, i) {
+          if(column.hidden){
+            return;
+          }
+
+          if(column.flex){
+            var cell = header.getCell(i);
+
+            me.fire('columnresize', {
+              cell: cell.dom,
+              width: column.width
+            });
+          }
+        });
+      }
+
+      fn(me.columns, me.header);
+      fn(me.leftColumns, me.leftHeader);
+      fn(me.rightColumns, me.rightHeader);
     },
     /*
      * @param {Number} width
@@ -3230,6 +3269,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
 
         if (!parent.dom.tagName || parent.dom.tagName.toLocaleLowerCase() === 'body') {
+          me.fire('deactivate');
+          return;
+        }
+
+        if (parent.hasCls === undefined) {
           me.fire('deactivate');
           return;
         }
@@ -3806,6 +3850,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       for (; i < iL; i++) {
         var column = columns[i];
 
+        if(column.hidden){
+          continue
+        }
+
         if (column.flex) {
           flex += column.flex;
         }
@@ -3823,6 +3871,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       i = 0;
       for (; i < iL; i++) {
         var column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
 
         if (column.flex) {
           column.width = Math.floor(column.flex * flexPerCent);
@@ -3886,6 +3938,18 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if (me.exporter) {
         me.exporter.exportToExcel();
       }
+    },
+    /*
+     *
+     */
+    enableSelection: function () {
+      this.selection.enableSelection()
+    },
+    /*
+     *
+     */
+    disableSelection: function () {
+      this.selection.disableSelection()
     }
   });
 
@@ -5727,6 +5791,10 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       for (; i < iL; i++) {
         var column = columns[i];
 
+        if(column.hidden){
+          continue;
+        }
+
         me.setColumnWidth(i, column.width, side);
       }
 
@@ -7018,7 +7086,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           cellInnerEl = cellsDomInner.item(j),
           checkBox = cellInnerEl.select('.fancy-field-checkbox'),
           checkBoxId,
-          isCheckBoxInside = checkBox.length !== 0;
+          isCheckBoxInside = checkBox.length !== 0,
+          editable = true;
 
         if (w.selection.memory) {
           if (w.selection.memory.all && !w.selection.memory.except[id]) {
@@ -7035,6 +7104,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
+        if(w.selection.disabled){
+          editable = false;
+        }
+
         if (isCheckBoxInside === false) {
           new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
@@ -7042,6 +7115,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             value: value,
             label: false,
             stopIfCTRL: true,
+            editable: editable,
+            disabled: !editable,
             style: {
               padding: '0px',
               display: 'inline-block'
@@ -9586,12 +9661,26 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       F.each(columns, function (column, i){
-        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]');
+        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]'),
+          currentLeft = parseInt(cell.css('left')),
+          currentWidth = parseInt(cell.css('width'));
 
-        cell.animate({
-          width: column.width,
-          left: left
-        }, ANIMATE_DURATION);
+        if(currentLeft === left && currentWidth === column.width){
+          left += column.width;
+          return;
+        }
+
+        if(Fancy.nojQuery){
+          //Bug fix for dom fx without jQuery
+          cell.animate({width: column.width}, ANIMATE_DURATION);
+          cell.animate({left: left}, ANIMATE_DURATION);
+        }
+        else {
+          cell.animate({
+            width: column.width,
+            left: left
+          }, ANIMATE_DURATION);
+        }
 
         left += column.width;
       });

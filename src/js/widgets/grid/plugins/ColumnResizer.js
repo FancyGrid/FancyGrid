@@ -733,6 +733,10 @@
       for (; i < iL; i++) {
         var column = columns[i];
 
+        if(column.hidden){
+          continue;
+        }
+
         me.setColumnWidth(i, column.width, side);
       }
 

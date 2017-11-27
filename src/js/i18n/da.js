@@ -40,6 +40,7 @@ Fancy.i18n.da = {
   sortAsc: 'Sortér stigende',
   sortDesc: 'Sortér faldende',
   lock: 'Lås kolonne',
+  rightLock: 'Lås kolonne',
   unlock: 'Fjern lås fra kolonne',
   columns: 'Kolonner'
 };

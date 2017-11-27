@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.20',
+  version: '1.6.21',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -442,6 +442,7 @@ Fancy.apply(Fancy, {
   FIELD_SPIN_UP_CLS: 'fancy-field-spin-up',
   FIELD_SPIN_DOWN_CLS: 'fancy-field-spin-down',
   FIELD_CHECKBOX_CLS: 'fancy-field-checkbox',
+  FIELD_CHECKBOX_DISABLED_CLS: 'fancy-field-checkbox-disabled',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
   FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
@@ -855,7 +856,6 @@ var FancyForm = function(){
 
     var  body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
-      //endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       endUrl = '.js',
       protocol = location.protocol,
       MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//cdn.fancygrid.com/modules/');

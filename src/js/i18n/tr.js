@@ -39,6 +39,7 @@ Fancy.i18n.tr = {
   sortAsc: 'Artan sırada sırala',
   sortDesc: 'Azalan sırada sırala',
   lock: 'Kolonu kilitle',
+  rightLock: 'Kolonu kilitle',
   unlock: 'Kolon kilidini kaldır',
   columns: 'Kolonlar'
 };

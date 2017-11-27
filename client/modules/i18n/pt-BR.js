@@ -31,5 +31,16 @@ Fancy.i18n['pt-BR'] = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Cancelar'
-  }
+  },
+  yes: 'Sim',
+  no: 'Não',
+  dragText: '[0] linha(s) selecionada(s)',
+  update: 'Actualizar',
+  cancel: 'Cancelar',
+  sortAsc: 'Ordem Ascendente',
+  sortDesc: 'Ordem Descendente',
+  columns: 'Colunas',
+  lock: 'Bloquear Coluna',
+  rightLock: 'Bloquear Coluna',
+  unlock: 'Desbloquear Coluna'
 };

@@ -31,5 +31,16 @@ Fancy.i18n.cs = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Storno'
-  }
+  },
+  yes: 'Ano',
+  no: 'Ne',
+  dragText: '[0] vybraných řádků',
+  update: 'Aktualizace',
+  cancel: 'Storno',
+  sortAsc: 'Řadit vzestupně',
+  sortDesc: 'Řadit sestupně',
+  lock: 'Ukotvit sloupec',
+  rightLock: 'Ukotvit sloupec',
+  unlock: 'Uvolnit sloupec',
+  columns: 'Sloupce'
 };

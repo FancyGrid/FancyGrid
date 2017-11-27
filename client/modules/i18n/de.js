@@ -31,5 +31,16 @@ Fancy.i18n.de = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Abbrechen'
-  }
+  },
+  yes: 'Ja',
+  no: 'Nein',
+  dragText: '[0] Zeile(n) ausgewählt',
+  update: 'Update',
+  cancel: 'Abbrechen',
+  sortAsc: 'Aufsteigend sortieren',
+  sortDesc: 'Absteigend sortieren',
+  lock: 'Spalte sperren',
+  rightLock: 'Spalte sperren',
+  unlock: 'Spalte freigeben (entsperren)',
+  columns: 'Spalten'
 };

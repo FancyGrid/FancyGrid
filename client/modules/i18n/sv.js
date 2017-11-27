@@ -31,5 +31,16 @@ Fancy.i18n.sv = {
     PM: 'FM',
     ok: 'OK',
     cancel: 'Cancel'
-  }
+  },
+  yes: 'Ja',
+  no: 'Nej',
+  dragText: '[0] markerade rad(er)',
+  update: 'Uppdatera',
+  cancel: 'Cancel',
+  sortAsc: 'Sortera stigande',
+  sortDesc: 'Sortera fallande',
+  lock: 'Lås kolumn',
+  rightLock: 'Lås kolumn',
+  unlock: 'Lås upp kolumn',
+  columns: 'Kolumner'
 };

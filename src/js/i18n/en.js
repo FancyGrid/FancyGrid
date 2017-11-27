@@ -39,7 +39,10 @@ Fancy.i18n.en = {
   cancel: 'Cancel',
   columns: 'Columns',
   sortAsc: 'Sort ASC',
-  sortDesc: 'Sort DESC'
+  sortDesc: 'Sort DESC',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };
 
 Fancy.i18n['en-US'] = Fancy.i18n.en;

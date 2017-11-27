@@ -40,6 +40,7 @@ Fancy.i18n.pl = {
   sortAsc: 'Sortuj rosnąco',
   sortDesc: 'Sortuj malejąco',
   lock: 'Zablokuj kolumnę',
+  rightLock: 'Zablokuj kolumnę',
   unlock: 'Odblokuj kolumnę',
   columns: 'Kolumny'
 };

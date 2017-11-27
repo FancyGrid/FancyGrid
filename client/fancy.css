@@ -732,6 +732,12 @@
 .fancy-grid-cell .fancy-field-checkbox-input {
   margin-top: 0;
 }
+.fancy-field-checkbox-disabled {
+  opacity: .3;
+}
+.fancy-field-checkbox-disabled .fancy-field-checkbox-input:hover {
+  background-position: inherit;
+}
 /*
  radio.less
 */
@@ -1307,7 +1313,7 @@
   font-weight: bold;
 }
 .fancy-grid-disable-column-lines .fancy-grid-cell {
-  border-right-color: transparent;
+  border-right-color: transparent !important;
 }
 .fancy-grid-column-text .fancy-grid-cell {
   word-wrap: break-word;

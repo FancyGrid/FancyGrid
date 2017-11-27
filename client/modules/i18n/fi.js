@@ -30,5 +30,16 @@ Fancy.i18n.fi = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Peruuta'
-  }
+  },
+  yes: 'Kyllä',
+  no: 'Ei',
+  dragText: '[0] rivi(ä) valittu',
+  update: 'Päivitys',
+  cancel: 'Peruuta',
+  sortAsct: 'Järjestä A-Ö',
+  sortDesc: 'Järjestä Ö-A',
+  lock: 'Lukitse sarake',
+  rightLock: 'Lukitse sarake',
+  unlock: 'Vapauta sarakkeen lukitus',
+  columns: 'Sarakkeet'
 };

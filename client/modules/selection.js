@@ -31,6 +31,7 @@
     checkboxRow: false,
     checkOnly: false,
     memory: false,
+    disabled: false,
     /*
      * @constructor
      * @param {Object} config
@@ -70,6 +71,7 @@
           me.initNavigation();
         }
         w.on('changepage', me.onChangePage, me);
+        w.on('load', me.onLoad, me);
 
         if(F.nojQuery){
           me.initFixTrackOver();
@@ -171,7 +173,12 @@
      */
     onColumnEnter: function (grid, params) {
       var w = this.widget,
+        columndrag = w.columndrag,
         scroller = w.scroller;
+
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
 
       if(w.startResizing){
         return;
@@ -206,7 +213,12 @@
      */
     onRowEnter: function (grid, params) {
       var w = this.widget,
+        columndrag = w.columndrag,
         scroller = w.scroller;
+
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
 
       if(w.startResizing){
         return;
@@ -265,6 +277,15 @@
 
       this.clearSelection();
     },
+    onLoad: function () {
+      var me = this;
+
+      if (me.memory) {
+        return;
+      }
+
+      me.clearSelection();
+    },
     /*
      *
      */
@@ -306,6 +327,10 @@
     onCellMouseDownRows: function (grid, params) {
       var me = this,
         w = me.widget;
+
+      if(me.disabled){
+        return;
+      }
 
       if (!me.rows || !me.enabled) {
         return;
@@ -417,7 +442,6 @@
       });
 
       me.clearHeaderCheckBox();
-      //w.set(rowIndex, '$selected', true);
     },
     /*
      * @param {Number} rowIndex
@@ -694,6 +718,10 @@
         w = me.widget,
         rowIndex = params.rowIndex;
 
+      if(me.disabled){
+        return;
+      }
+
       if (!me.row || params === false) {
         return;
       }
@@ -747,6 +775,10 @@
       var me = this,
         w = me.widget;
 
+      if(me.disabled){
+        return;
+      }
+
       if (!me.rows || !me.enabled) {
         return;
       }
@@ -773,10 +805,22 @@
     },
     /*
      * @param {Number} rowIndex
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
      */
-    selectRow: function (rowIndex) {
+    selectRow: function (rowIndex, value, multi) {
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        s = w.store,
+        leftBody = w.leftBody,
+        body = w.body,
+        rightBody = w.rightBody;
+
+      if(value === undefined){
+        value = true;
+      }
+
+      multi = multi || false;
 
       if(w.startResizing){
         return;
@@ -786,13 +830,64 @@
         throw new Error('[FancyGrid Error] - row selection was not enabled');
       }
 
-      me.clearSelection();
+      if(!multi){
+        me.clearSelection();
+      }
 
       var rowCells = w.getDomRow(rowIndex);
 
-      F.each(rowCells, function (cell) {
-        F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
+      if(value){
+        F.each(rowCells, function (cell) {
+          F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
+        });
+      }
+      else{
+        F.each(rowCells, function (cell) {
+          F.get(cell).removeCls(GRID_CELL_SELECTED_CLS);
+        });
+      }
+
+      F.each(w.columns, function (column, i) {
+        if(column.type === 'select'){
+          var el = body.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]' + ' .' + GRID_CELL_CLS + '[index="'+rowIndex+'"]' + ' .' + FIELD_CHECKBOX_CLS),
+            checkBox = Fancy.getWidget(el.attr('id'));
+
+          checkBox.set(value);
+        }
       });
+
+      F.each(w.leftColumns, function (column, i) {
+        if(column.type === 'select'){
+          var el = leftBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]' + ' .' + GRID_CELL_CLS + '[index="'+rowIndex+'"]' + ' .' + FIELD_CHECKBOX_CLS),
+            checkBox = Fancy.getWidget(el.attr('id'));
+
+          checkBox.set(value);
+        }
+      });
+
+      F.each(w.rightColumns, function (column, i) {
+        if(column.type === 'select'){
+          var el = rightBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]' + ' .' + GRID_CELL_CLS + '[index="'+rowIndex+'"]' + ' .' + FIELD_CHECKBOX_CLS),
+            checkBox = Fancy.getWidget(el.attr('id'));
+
+          checkBox.set(value);
+        }
+      });
+
+      if (me.memory) {
+        var id = s.get(rowIndex, 'id');
+
+        if(id){
+          if(value === true){
+            delete me.memory.except[id];
+            me.memory.selected[id] = true;
+          }
+          else{
+            me.memory.except[id] = true;
+            delete me.memory.selected[id];
+          }
+        }
+      }
 
       w.fire('select');
     },
@@ -879,7 +974,12 @@
     onCellEnterSelection: function (grid, params) {
       var me = this,
         w = me.widget,
+        columndrag = w.columndrag,
         numOfSelectedCells = 0;
+
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
 
       if (!me.cells || me.isMouseDown !== true) {
         return;
@@ -1331,15 +1431,29 @@
         case 'rows':
           model.rows = me.getSelectedRows();
           if (me.memory && me.memory.all) {
-            model.items = s.data;
+            if(s.filteredDataMap){
+              model.items = s.filteredData;
+            }
+            else{
+              model.items = s.data;
+            }
           }
           else {
             model.items = [];
             if(me.memory && !Fancy.Object.isEmpty(me.memory.selected)){
               var selected = me.memory.selected;
 
-              for(var p in selected){
-                model.items.push(s.getById(p));
+              if(s.filteredDataMap){
+                for (var p in selected) {
+                  if(s.filteredDataMap[p]){
+                    model.items.push(s.getById(p));
+                  }
+                }
+              }
+              else {
+                for (var p in selected) {
+                  model.items.push(s.getById(p));
+                }
               }
             }
             else {
@@ -1388,13 +1502,16 @@
 
       F.each(columns, function (column, i) {
         if (column.index === '$selected') {
-          var headerCellContainer = header.getCell(i).firstChild();
+          var headerCellContainer = header.getCell(i).firstChild(),
+            editable = !me.disabled;
 
           column.headerCheckBox = new F.CheckBox({
             renderTo: headerCellContainer.dom,
             renderId: true,
             value: false,
             label: false,
+            editable: editable,
+            disabled: me.disabled,
             style: {
               padding: '0px',
               display: 'inline-block'
@@ -1490,6 +1607,14 @@
       this.enabled = false;
     },
     enableSelection: function (value) {
+      var me = this;
+
+      if(me.disabled === true){
+        me.enableHeaderCheckBoxes();
+      }
+      me.disabled = false;
+      me.disabled = false;
+
       if (value !== undefined) {
         this.enabled = value;
         return;
@@ -1658,6 +1783,54 @@
       //reselecting rows
       F.each(selectModel, function (rowIndex) {
         w.selectRow(rowIndex);
+      });
+    },
+    disableSelection: function(){
+      var me = this;
+
+      me.disabled = true;
+      me.enableHeaderCheckBoxes(false);
+    },
+    enableHeaderCheckBoxes: function (enabled) {
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        method = 'enable';
+
+      if(enabled === false){
+        method = 'disable';
+      }
+
+      F.each(w.columns, function (column, i) {
+        if(column.type === 'select' && column.headerCheckBox){
+          column.headerCheckBox[method]();
+
+          body.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"] .' + FIELD_CHECKBOX_CLS).each(function (el) {
+            F.getWidget(el.attr('id'))[method]();
+          });
+        }
+      });
+
+      F.each(w.leftColumns, function (column, i) {
+        if(column.type === 'select' && column.headerCheckBox){
+          column.headerCheckBox[method]();
+
+          leftBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"] .' + FIELD_CHECKBOX_CLS).each(function (el) {
+            F.getWidget(el.attr('id'))[method]();
+          });
+        }
+      });
+
+      F.each(w.rightColumns, function (column, i) {
+        if(column.type === 'select' && column.headerCheckBox){
+          column.headerCheckBox[method]();
+
+          rightBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"] .' + FIELD_CHECKBOX_CLS).each(function (el) {
+            F.getWidget(el.attr('id'))[method]();
+          });
+        }
       });
     }
   });

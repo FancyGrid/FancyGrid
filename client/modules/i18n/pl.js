@@ -31,5 +31,16 @@ Fancy.i18n.pl = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Anuluj'
-  }
+  },
+  yes: 'Tak',
+  no: 'Nie',
+  dragText: '[0] wybrano wiersze(y)',
+  update: 'Aktualizacja',
+  cancel: 'Anuluj',
+  sortAsc: 'Sortuj rosnąco',
+  sortDesc: 'Sortuj malejąco',
+  lock: 'Zablokuj kolumnę',
+  rightLock: 'Zablokuj kolumnę',
+  unlock: 'Odblokuj kolumnę',
+  columns: 'Kolumny'
 };

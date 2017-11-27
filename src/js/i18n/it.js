@@ -40,6 +40,7 @@ Fancy.i18n.it = {
   sortAsc: 'Ordinamento crescente',
   sortDesc: 'Ordinamento decrescente',
   lock: 'Blocca colonna',
+  rightLock: 'Blocca colonna',
   unlock: 'Sblocca colonna',
   columns: 'Colonne'
 };

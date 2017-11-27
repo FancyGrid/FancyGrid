@@ -40,6 +40,7 @@ Fancy.i18n.cs = {
   sortAsc: 'Řadit vzestupně',
   sortDesc: 'Řadit sestupně',
   lock: 'Ukotvit sloupec',
+  rightLock: 'Ukotvit sloupec',
   unlock: 'Uvolnit sloupec',
   columns: 'Sloupce'
 };

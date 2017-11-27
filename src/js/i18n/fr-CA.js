@@ -40,6 +40,7 @@
   sortAsc: 'Tri ascendant',
   sortDesc: 'Tri descendant',
   lock: 'Verrouillé la colonne',
+  rightLock: 'Verrouillé la colonne',
   unlock: 'Déverrouillé la colonne',
   columns: 'Colonnes'
 };

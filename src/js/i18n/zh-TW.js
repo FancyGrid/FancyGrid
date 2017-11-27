@@ -38,6 +38,7 @@ Fancy.i18n['zh-TW'] = {
   sortAsc: '正向排序',
   sortDesc: '反向排序',
   lock: '鎖定欄位',
+  rightLock: '鎖定欄位',
   unlock: '解開欄位鎖定',
   columns: '欄位'
 };

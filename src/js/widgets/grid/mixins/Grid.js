@@ -47,6 +47,10 @@
       remoteFilter = me.data.remoteFilter;
       pageType = me.data.remotePage;
 
+      if(pageType) {
+        pageType = 'server';
+      }
+
       F.define(modelName, {
         extend: F.Model,
         fields: fields
@@ -614,7 +618,7 @@
 
       if (me.responsive) {
         F.$(window).bind('resize', function () {
-          me.onWindowResize()
+          me.onWindowResize();
         });
       }
 
@@ -1154,6 +1158,13 @@
       return store.getItem(rowIndex);
     },
     /*
+     * @param {Number} id
+     * @return {Number}
+     */
+    getRowById: function (id) {
+      return this.store.getRow(id);
+    },
+    /*
      * @return {Number}
      */
     getTotal: function () {
@@ -1179,11 +1190,13 @@
     },
     /*
      * @param {Number} rowIndex
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
      */
-    selectRow: function (rowIndex) {
+    selectRow: function (rowIndex, value, multi) {
       var me = this;
 
-      me.selection.selectRow(rowIndex);
+      me.selection.selectRow(rowIndex, value, multi);
     },
     /*
      * @param {String} key
@@ -1277,6 +1290,27 @@
       }
 
       me.setBodysHeight();
+
+      var fn = function (columns, header) {
+        Fancy.each(columns, function (column, i) {
+          if(column.hidden){
+            return;
+          }
+
+          if(column.flex){
+            var cell = header.getCell(i);
+
+            me.fire('columnresize', {
+              cell: cell.dom,
+              width: column.width
+            });
+          }
+        });
+      }
+
+      fn(me.columns, me.header);
+      fn(me.leftColumns, me.leftHeader);
+      fn(me.rightColumns, me.rightHeader);
     },
     /*
      * @param {Number} width
@@ -1521,6 +1555,11 @@
         }
 
         if (!parent.dom.tagName || parent.dom.tagName.toLocaleLowerCase() === 'body') {
+          me.fire('deactivate');
+          return;
+        }
+
+        if (parent.hasCls === undefined) {
           me.fire('deactivate');
           return;
         }
@@ -2097,6 +2136,10 @@
       for (; i < iL; i++) {
         var column = columns[i];
 
+        if(column.hidden){
+          continue
+        }
+
         if (column.flex) {
           flex += column.flex;
         }
@@ -2114,6 +2157,10 @@
       i = 0;
       for (; i < iL; i++) {
         var column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
 
         if (column.flex) {
           column.width = Math.floor(column.flex * flexPerCent);
@@ -2177,6 +2224,18 @@
       if (me.exporter) {
         me.exporter.exportToExcel();
       }
+    },
+    /*
+     *
+     */
+    enableSelection: function () {
+      this.selection.enableSelection()
+    },
+    /*
+     *
+     */
+    disableSelection: function () {
+      this.selection.disableSelection()
     }
   });
 

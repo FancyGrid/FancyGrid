@@ -31,5 +31,16 @@ Fancy.i18n.ko = {
     PM: '오후',
     ok: '확인',
     cancel: '취소'
-  }
+  },
+  yes: '예',
+  no: '아니오',
+  dragText: '[0] 개가 선택되었습니다.',
+  update: '업데이트',
+  cancel: '취소',
+  sortAsc: '오름차순 정렬',
+  sortDesc: '내림차순 정렬',
+  lock: '칼럼 잠금',
+  rightLock: '칼럼 잠금',
+  unlock: '칼럼 잠금해제',
+  columns: '칼럼 목록'
 };

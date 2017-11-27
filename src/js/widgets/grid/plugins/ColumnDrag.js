@@ -3,6 +3,7 @@
  * @extend Fancy.Plugin
  */
 (function () {
+
   //SHORTCUTS
   var F = Fancy;
   var DOC = F.get(document);
@@ -160,6 +161,9 @@
       delete me.okPosition;
 
       F.tip.hide();
+      setTimeout(function () {
+        me.status = 'none';
+      }, 1);
       me.removeDragState();
 
       if(me.status === 'dragging'){
@@ -192,10 +196,12 @@
       if(Math.abs(x - me.mouseDownX) > 10 || Math.abs(y - me.mouseDownY)){
         if(me.activeCellTopGroup){
           F.tip.update(me.activeCellTopGroup.cell.select('.' + GRID_HEADER_CELL_TEXT_CLS).item(0).dom.innerHTML || '&nbsp;');
+          me.status = 'dragging';
           me.addDragState();
         }
         else {
           F.tip.update(me.activeColumn.title || '&nbsp;');
+          me.status = 'dragging';
           me.addDragState();
         }
       }
@@ -205,6 +211,9 @@
 
       if(columns.length === 1 && me.activeSide === 'center'){
         F.tip.hide();
+        setTimeout(function () {
+          me.status = 'none';
+        }, 1);
         me.removeDragState();
         return;
       }
@@ -285,7 +294,6 @@
 
           if(me.activeSide !== me.inSide){
             me.ok = true;
-            me.status = 'dragging';
             if(e.offsetX > cellWidth/2 || inTriggerEl){
               me.showHint('right');
             }
@@ -305,13 +313,11 @@
                   }
                   else{
                     me.ok = true;
-                    me.status = 'dragging';
                     me.showHint('right');
                   }
                 }
                 else{
                   me.ok = true;
-                  me.status = 'dragging';
                   me.showHint('left');
                 }
               }
@@ -322,13 +328,11 @@
                   }
                   else{
                     me.ok = true;
-                    me.status = 'dragging';
                     me.showHint('left');
                   }
                 }
                 else{
                   me.ok = true;
-                  me.status = 'dragging';
                   me.showHint('right');
                 }
               }
@@ -346,7 +350,6 @@
 
         if(me.activeSide !== me.inSide){
           me.ok = true;
-          me.status = 'dragging';
           if(e.offsetX > cellWidth/2 || inTriggerEl){
             me.showHint('right');
           }
@@ -361,7 +364,6 @@
             }
             else {
               me.ok = true;
-              me.status = 'dragging';
               me.showHint('right');
             }
           }
@@ -371,7 +373,6 @@
             }
             else {
               me.ok = true;
-              me.status = 'dragging';
               me.showHint('left');
             }
           }
@@ -379,7 +380,6 @@
       }
       else if(me.activeSide !== me.inSide){
         me.ok = true;
-        me.status = 'dragging';
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.showHint('right');
         }
@@ -393,19 +393,16 @@
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
           me.ok = true;
-          me.status = 'dragging';
           me.showHint('right');
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
             me.ok = true;
-            me.status = 'dragging';
             me.showHint('left');
           }
           else {
             if(me.activeIndex + 1 === me.inIndex && (fromGroup || toGroup) ){
               me.ok = true;
-              me.status = 'dragging';
               me.showHint('left');
             }
             else{
@@ -420,7 +417,6 @@
           if(inTriggerEl){
             if(fromGroup || toGroup){
               me.ok = true;
-              me.status = 'dragging';
               me.showHint('right');
             }
             else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
@@ -429,13 +425,11 @@
             }
             else{
               me.ok = true;
-              me.status = 'dragging';
               me.showHint('right');
             }
           }
           else {
             me.ok = true;
-            me.status = 'dragging';
             me.showHint('left');
           }
         }
@@ -443,13 +437,11 @@
           if(e.offsetX > cellWidth/2){
             if((me.activeIndex - 1) === me.inIndex && (fromGroup || toGroup)){
               me.ok = true;
-              me.status = 'dragging';
               me.showHint('right');
             }
             else{
               if((me.activeIndex - 1) !== me.inIndex || me.activeUnderGroup){
                 me.ok = true;
-                me.status = 'dragging';
                 me.showHint('right');
               }
               else{

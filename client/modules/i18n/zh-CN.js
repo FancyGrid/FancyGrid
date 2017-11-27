@@ -31,5 +31,16 @@ Fancy.i18n['zh-CN'] = {
     PM: '晚上',
     ok: '确定',
     cancel: '取消'
-  }
+  },
+  yes: '是',
+  no: '否',
+  dragText: '选择了 [0] 行',
+  update: '更新',
+  cancel: '取消',
+  sortAsc: '正序',
+  sortDesc: '倒序',
+  lock: '锁定列',
+  rightLock: '锁定列',
+  unlock: '解除锁定',
+  columns: '列'
 };

@@ -40,6 +40,7 @@ Fancy.i18n.de = {
   sortAsc: 'Aufsteigend sortieren',
   sortDesc: 'Absteigend sortieren',
   lock: 'Spalte sperren',
+  rightLock: 'Spalte sperren',
   unlock: 'Spalte freigeben (entsperren)',
   columns: 'Spalten'
 };

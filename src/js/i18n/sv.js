@@ -37,9 +37,10 @@ Fancy.i18n.sv = {
   dragText: '[0] markerade rad(er)',
   update: 'Uppdatera',
   cancel: 'Cancel',
-  sortAscText: 'Sortera stigande',
-  sortDescText: 'Sortera fallande',
-  lockText: 'Lås kolumn',
-  unlockText: 'Lås upp kolumn',
-  columnsText: 'Kolumner'
+  sortAsc: 'Sortera stigande',
+  sortDesc: 'Sortera fallande',
+  lock: 'Lås kolumn',
+  rightLock: 'Lås kolumn',
+  unlock: 'Lås upp kolumn',
+  columns: 'Kolumner'
 };

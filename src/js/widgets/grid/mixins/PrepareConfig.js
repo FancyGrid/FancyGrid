@@ -843,7 +843,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var initSelection = false,
       selectionConfig = {
         type: 'grid.selection'
-      };
+      },
+      disabled = false;
 
     if(config.trackOver || config.columnTrackOver || config.cellTrackOver){
       initSelection = true;
@@ -862,6 +863,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         memory = config.selModel.memory === true;
+        if(config.selModel.disabled){
+          disabled = true;
+        }
         config.selModel = config.selModel.type;
       }
 
@@ -874,6 +878,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection[config.selModel] = true;
       config.selection.checkOnly = checkOnly;
       config.selection.memory = memory;
+      config.selection.disabled = disabled;
     }
 
     if(config.selection){

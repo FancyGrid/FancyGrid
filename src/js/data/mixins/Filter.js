@@ -128,7 +128,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
     if(me.remoteFilter){
       me.serverFilter();
+      return;
     }
+
+    me.filteredDataMap = {};
 
     for(;i<iL;i++){
       if(me.order){
@@ -142,6 +145,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
       if(me.filterCheckItem(item)){
         filteredData.push(item);
+        me.filteredDataMap[item.id] = item;
       }
     }
 

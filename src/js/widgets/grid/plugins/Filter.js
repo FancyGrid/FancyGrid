@@ -480,6 +480,7 @@
 
       if (value.length === 0) {
         me.filters[field.filterIndex] = {};
+        me.clearFilter(field.filterIndex, undefined, false);
         me.updateStoreFilters();
 
         if (w.grouping) {

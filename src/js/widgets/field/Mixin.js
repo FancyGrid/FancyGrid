@@ -289,15 +289,31 @@
         keyCode = e.keyCode,
         key = F.key;
 
-      if (me.type === 'number') {
+      //This disable filter expressions in number field
+      /*
+      if (me.type === 'field.number') {
         if (F.Key.isNumControl(keyCode, e) === false) {
           e.preventDefault();
           e.stopPropagation();
           return;
         }
       }
+      */
 
       switch (keyCode) {
+        case key.BACKSPACE:
+        case key.DELETE:
+          switch(me.type) {
+            case 'field.number':
+            case 'field.string':
+              setTimeout(function () {
+                if(me.getValue() === ''){
+                  me.fire('empty');
+                }
+              }, 1);
+              break;
+          }
+          break;
         case key.TAB:
           me.fire('tab', e);
           break;

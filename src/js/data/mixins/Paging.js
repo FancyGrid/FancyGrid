@@ -158,9 +158,11 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     var me = this;
 
     if(me.pageType === 'server'){
+      console.log('in 1');
       me.loadPage();
     }
     else{
+      console.log('in 2');
       me.changeDataView();
     }
   },

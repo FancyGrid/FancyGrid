@@ -60,6 +60,7 @@
     onHeaderCellClick: function (grid, o) {
       var me = this,
         w = me.widget,
+        columndrag = w.columndrag,
         cellEl = F.get(o.cell),
         side = o.side,
         index = o.index,
@@ -69,6 +70,10 @@
         key,
         e = o.e,
         target = e.target;
+
+      if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
 
       if (target.tagName.toLocaleLowerCase() === 'input') {
         return;

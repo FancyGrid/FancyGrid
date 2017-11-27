@@ -37,9 +37,10 @@ Fancy.i18n.ru = {
   dragText: '[0] выбранных строк',
   update: 'Обновить',
   cancel: 'Отмена',
-  sortAscText: 'Сортировать по возрастанию',
-  sortDescText: 'Сортировать по убыванию',
-  lockText: 'Закрепить столбец',
-  unlockText: 'Снять закрепление столбца',
-  columnsText: 'Столбцы'
+  sortAsc: 'По возрастанию',
+  sortDesc: 'По убыванию',
+  lock: 'Закрепить',
+  rightLock: 'Закрепить справа',
+  unlock: 'Снять закрепление',
+  columns: 'Столбцы'
 };

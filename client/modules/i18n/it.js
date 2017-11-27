@@ -31,5 +31,16 @@ Fancy.i18n.it = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Annulla'
-  }
+  },
+  yes: 'Si',
+  no: 'No',
+  dragText: '[0] Righe selezionate',
+  update: 'Aggiornare',
+  cancel: 'Annulla',
+  sortAsc: 'Ordinamento crescente',
+  sortDesc: 'Ordinamento decrescente',
+  lock: 'Blocca colonna',
+  rightLock: 'Blocca colonna',
+  unlock: 'Sblocca colonna',
+  columns: 'Colonne'
 };

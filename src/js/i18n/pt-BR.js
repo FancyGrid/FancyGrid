@@ -41,5 +41,6 @@ Fancy.i18n['pt-BR'] = {
   sortDesc: 'Ordem Descendente',
   columns: 'Colunas',
   lock: 'Bloquear Coluna',
+  rightLock: 'Bloquear Coluna',
   unlock: 'Desbloquear Coluna'
 };

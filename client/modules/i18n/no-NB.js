@@ -31,5 +31,16 @@ Fancy.i18n['no-NB'] = {
     PM: 'PM',
     ok: 'OK',
     cancel: 'Avbryt'
-  }
+  },
+  yes: 'Ja',
+  no: 'Nei',
+  dragText: '[0] markert(e) rad(er)',
+  update: 'Oppdatere',
+  cancel: 'Avbryt',
+  sortAsc: 'Sorter stigende',
+  sortDesc: 'Sorter synkende',
+  lock: 'Lås kolonne',
+  rightLock: 'Lås kolonne',
+  unlock: 'Lås opp kolonne',
+  columns: 'Kolonner'
 };

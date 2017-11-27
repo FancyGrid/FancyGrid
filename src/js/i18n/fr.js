@@ -39,5 +39,8 @@ Fancy.i18n.fr = {
   cancel: 'Annuler',
   sortAsc: 'Tri croissant',
   sortDesc: 'Tri décroissant',
-  columns: 'Colonnes'
+  columns: 'Colonnes',
+  lock: 'Lock',
+  unlock: 'Unlock',
+  rightLock: 'Right Lock'
 };

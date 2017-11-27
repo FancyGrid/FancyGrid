@@ -40,6 +40,7 @@ Fancy.i18n['zh-CN'] = {
   sortAsc: '正序',
   sortDesc: '倒序',
   lock: '锁定列',
+  rightLock: '锁定列',
   unlock: '解除锁定',
   columns: '列'
 };

@@ -544,7 +544,7 @@
         case 'right':
           if (column.lockable !== false) {
             menu.push({
-              text: 'Unlock',
+              text: lang.unlock,
               handler: function () {
                 column.menu.hide();
                 w.unLockColumn(indexOrder, me.side);
@@ -555,7 +555,7 @@
         case 'center':
           if (columns.length > 1 && (w.leftColumns.length) && column.lockable !== false) {
             menu.push({
-              text: 'Lock',
+              text: lang.lock,
               handler: function () {
                 column.menu.hide();
                 w.lockColumn(indexOrder, me.side);
@@ -565,7 +565,7 @@
 
           if (columns.length > 1 && w.rightColumns.length && column.lockable !== false) {
             menu.push({
-              text: 'Right Lock',
+              text: lang.rightLock,
               handler: function () {
                 column.menu.hide();
                 w.rightLockColumn(indexOrder, me.side);
@@ -619,6 +619,10 @@
             }
             else {
               w.hideColumn(me.side, item.index);
+            }
+
+            if(w.responsive){
+              w.onWindowResize();
             }
           }
         };
