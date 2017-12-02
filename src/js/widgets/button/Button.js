@@ -100,7 +100,12 @@
       var me = this,
         renderTo,
         el = F.get(document.createElement('div')),
-        width = 0;
+        width = 0,
+        charWidth = 7;
+
+      if(me.theme){
+        charWidth = Fancy.themes[me.theme].config.chartWidth;
+      }
 
       me.fire('beforerender');
 
@@ -110,12 +115,14 @@
 
       renderTo = F.get(me.renderTo || document.body).dom;
 
+
+
       if(me.width){
         width = me.width;
       }
       else{
         if(me.text !== false){
-          width += me.text.length * 7 + 7*2;
+          width += me.text.length * charWidth + charWidth*2;
         }
       }
 

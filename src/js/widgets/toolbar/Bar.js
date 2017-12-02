@@ -190,6 +190,7 @@
       item.style = item.style || {};
       item.label = false;
       item.padding = false;
+      item.theme = me.theme;
 
       F.applyIf(item.style, {
         'float': me.floating

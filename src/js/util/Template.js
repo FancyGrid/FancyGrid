@@ -22,7 +22,7 @@ Fancy.Template.prototype = {
    * @param {Array} values
    */
   getHTML: function(values){
-    return this.compiled(values);
+    return this.compiled(values || {});
   },
   /*
    * @return {Fancy.Template}

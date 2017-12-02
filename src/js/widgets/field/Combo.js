@@ -48,6 +48,7 @@
     labelWidth: 60,
     listRowHeight: 25,
     dropButtonWidth: 27,
+    leftWidth: 20,
     emptyText: '',
     editable: true,
     typeAhead: true, // not right name
@@ -62,7 +63,8 @@
       '</div>',
       '<div class="' + FIELD_TEXT_CLS + '">',
         '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<div class="fancy-combo-left-el" style="{inputHeight}cursor:default;">&nbsp;</div>',
+          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputHeight}cursor:default;" value="{value}">',
           '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
         '</div>',
       '</div>',
@@ -671,6 +673,10 @@
       if (onInput !== false) {
         me.onInput();
       }
+
+      if(me.left){
+        me.updateLeft();
+      }
     },
     /*
      * Method used only for multiSelect
@@ -837,6 +843,21 @@
       me.input = me.el.getByTag('input');
       me.inputContainer = me.el.select('.fancy-combo-input-container');
       me.drop = me.el.select('.fancy-combo-dropdown-button');
+
+      if(me.leftTpl){
+        me.left = me.el.select('.fancy-combo-left-el');
+
+        me.left.css({
+          display: 'block',
+          width: me.leftWidth
+        });
+
+        if(value){
+          me.updateLeft();
+        }
+
+      }
+
       me.setSize();
       renderTo.appendChild(el.dom);
 
@@ -1101,6 +1122,10 @@
 
       me.acceptedValue = me.get();
       me.fire('change', value, oldValue);
+
+      if(me.left){
+        me.updateLeft();
+      }
     },
     /*
      * @param {*} value
@@ -1121,6 +1146,9 @@
         return index;
       }
       else{
+        if(!me.data[index]){
+          return '';
+        }
         return me.data[index][me.displayKey];
       }
     },
@@ -1217,9 +1245,16 @@
         minusWidth = 0;
       }
 
+      var _inputWidth = inputWidth - minusWidth;
+
+      if(me.left){
+        _inputWidth -= me.leftWidth;
+      }
+
       input.css({
-        width: inputWidth - minusWidth,
-        height: me.inputHeight
+        width: _inputWidth,
+        height: me.inputHeight,
+        'margin-left': me.left? me.leftWidth: 0
       });
 
       inputContainer.css({
@@ -1487,6 +1522,12 @@
       });
 
       return _values;
+    },
+    updateLeft: function () {
+      var me = this,
+        item = me.data[me.getIndex(me.getValue())];
+
+      me.left.update(new F.Template(me.leftTpl).getHTML(item));
     }
   });
 

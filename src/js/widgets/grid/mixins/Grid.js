@@ -1194,9 +1194,15 @@
      * @param {Boolean} [multi]
      */
     selectRow: function (rowIndex, value, multi) {
-      var me = this;
-
-      me.selection.selectRow(rowIndex, value, multi);
+      this.selection.selectRow(rowIndex, value, multi);
+    },
+    /*
+     * @param {Number|String} id
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
+     */
+    selectById: function (rowIndex, value, multi) {
+      this.selection.selectById(rowIndex, value, multi);
     },
     /*
      * @param {String} key
@@ -1499,10 +1505,11 @@
     /*
      * @param {String} key
      * @param {*} value
+     * @param {Boolean} complex
      * @return {Array}
      */
-    find: function (key, value) {
-      return this.store.find(key, value);
+    find: function (key, value, complex) {
+      return this.store.find(key, value, complex);
     },
     /*
      * @param {String} key

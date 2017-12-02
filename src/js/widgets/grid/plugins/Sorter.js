@@ -94,7 +94,12 @@
         action = 'desc';
       }
       else if (cellEl.hasCls(GRID_COLUMN_SORT_DESC)) {
-        action = 'asc';
+        if(!w.multiSort){
+          action = 'drop';
+        }
+        else {
+          action = 'asc';
+        }
       }
       else {
         action = 'asc';
@@ -190,9 +195,9 @@
       }
 
       s.sort(dir, type, index, {
-        smartIndexFn: column.smartIndexFn,
-        format: format,
-        mode: mode
+         smartIndexFn: column.smartIndexFn,
+         format: format,
+         mode: mode
       });
     },
     /*

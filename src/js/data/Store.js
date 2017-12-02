@@ -190,8 +190,24 @@ Fancy.define('Fancy.Store', {
     }
 
     var item = me.dataView[rowIndex];
+
     if(!item){
-      return undefined;
+      if(me.order){
+        item = me.data[me.order[rowIndex]]
+      }
+      else {
+        item = me.data[rowIndex];
+      }
+
+      if(item){
+        if(key === 'id'){
+          return item.data[key] || item.id;
+        }
+
+        return item.data[key];
+      }
+
+      return item;
     }
 
     if(key === undefined){
@@ -208,10 +224,22 @@ Fancy.define('Fancy.Store', {
     }
 
     if(origin){
-      return me.data[rowIndex].data[key];
+      item = me.data[rowIndex];
+
+      if(key === 'id'){
+        return item.data[key] || item.id;
+      }
+
+      return item.data[key];
     }
     else {
-      return me.dataView[rowIndex].data[key];
+      item = me.dataView[rowIndex];
+
+      if(key === 'id'){
+        return item.data[key] || item.id;
+      }
+
+      return item.data[key];
     }
   },
   /*
@@ -705,9 +733,10 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {String|Number} key
    * @param {*} value
+   * @param {Boolean} [complex]
    * @return {Array}
    */
-  find: function(key, value){
+  find: function(key, value, complex){
     var me = this,
       dataView = me.dataView,
       i = 0,
@@ -715,11 +744,28 @@ Fancy.define('Fancy.Store', {
       item,
       founded = [];
 
-    for(;i<iL;i++){
-      item = dataView[i];
+    if(complex){
+      iL = me.data.length;
+      for (; i < iL; i++) {
+        if(me.order){
+          item = me.data[me.order[i]];
+        }
+        else {
+          item = me.data[i];
+        }
 
-      if(item.data[key] === value){
-        founded.push(i);
+        if (item.data[key] === value) {
+          founded.push(i);
+        }
+      }
+    }
+    else {
+      for (; i < iL; i++) {
+        item = dataView[i];
+
+        if (item.data[key] === value) {
+          founded.push(i);
+        }
       }
     }
 

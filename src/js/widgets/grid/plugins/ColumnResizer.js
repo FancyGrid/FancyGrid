@@ -366,9 +366,10 @@
 
       if(w.header.hideMenu){
         w.header.hideMenu();
-        w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
-        F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
       }
+
+      w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
+      F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
 
       switch (me.activeSide) {
         case 'left':

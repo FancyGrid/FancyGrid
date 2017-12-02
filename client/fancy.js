@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.21',
+  version: '1.6.22',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -934,7 +934,9 @@ Fancy.defineTheme('default', {
     panelBodyBorders: [0,2,2,2],
 
     knobOffSet: 2,
-    fieldHeight: 37
+    fieldHeight: 37,
+
+    charWidth: 7
   }
 });
 
@@ -944,7 +946,9 @@ Fancy.defineTheme('blue', {
     //borders: [1,1,0,1],
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -954,7 +958,9 @@ Fancy.defineTheme('gray', {
     //borders: [0,0,1,0],
     gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -963,7 +969,9 @@ Fancy.defineTheme('dark', {
     panelBorderWidth: 1,
     gridBorders: [0,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -972,7 +980,9 @@ Fancy.defineTheme('sand', {
     panelBorderWidth: 1,
     gridBorders: [0,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -981,7 +991,21 @@ Fancy.defineTheme('bootstrap', {
     panelBorderWidth: 1,
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
+  }
+});
+
+Fancy.defineTheme('bootstrap-no-borders', {
+  config: {
+    panelBorderWidth: 0,
+    gridBorders: [0, 0, 0, 0],
+    gridWithoutPanelBorders: [0, 0, 0, 0],
+    panelBodyBorders: [0,0,0,0],
+    columnLines: false,
+
+    charWidth: 8
   }
 });
 /**
@@ -1329,7 +1353,7 @@ Fancy.Template.prototype = {
    * @param {Array} values
    */
   getHTML: function(values){
-    return this.compiled(values);
+    return this.compiled(values || {});
   },
   /*
    * @return {Fancy.Template}
@@ -2801,8 +2825,24 @@ Fancy.define('Fancy.Store', {
     }
 
     var item = me.dataView[rowIndex];
+
     if(!item){
-      return undefined;
+      if(me.order){
+        item = me.data[me.order[rowIndex]]
+      }
+      else {
+        item = me.data[rowIndex];
+      }
+
+      if(item){
+        if(key === 'id'){
+          return item.data[key] || item.id;
+        }
+
+        return item.data[key];
+      }
+
+      return item;
     }
 
     if(key === undefined){
@@ -2819,10 +2859,22 @@ Fancy.define('Fancy.Store', {
     }
 
     if(origin){
-      return me.data[rowIndex].data[key];
+      item = me.data[rowIndex];
+
+      if(key === 'id'){
+        return item.data[key] || item.id;
+      }
+
+      return item.data[key];
     }
     else {
-      return me.dataView[rowIndex].data[key];
+      item = me.dataView[rowIndex];
+
+      if(key === 'id'){
+        return item.data[key] || item.id;
+      }
+
+      return item.data[key];
     }
   },
   /*
@@ -3316,9 +3368,10 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {String|Number} key
    * @param {*} value
+   * @param {Boolean} [complex]
    * @return {Array}
    */
-  find: function(key, value){
+  find: function(key, value, complex){
     var me = this,
       dataView = me.dataView,
       i = 0,
@@ -3326,11 +3379,28 @@ Fancy.define('Fancy.Store', {
       item,
       founded = [];
 
-    for(;i<iL;i++){
-      item = dataView[i];
+    if(complex){
+      iL = me.data.length;
+      for (; i < iL; i++) {
+        if(me.order){
+          item = me.data[me.order[i]];
+        }
+        else {
+          item = me.data[i];
+        }
 
-      if(item.data[key] === value){
-        founded.push(i);
+        if (item.data[key] === value) {
+          founded.push(i);
+        }
+      }
+    }
+    else {
+      for (; i < iL; i++) {
+        item = dataView[i];
+
+        if (item.data[key] === value) {
+          founded.push(i);
+        }
       }
     }
 
@@ -4968,7 +5038,12 @@ Fancy.define('Fancy.Plugin', {
       var me = this,
         renderTo,
         el = F.get(document.createElement('div')),
-        width = 0;
+        width = 0,
+        charWidth = 7;
+
+      if(me.theme){
+        charWidth = Fancy.themes[me.theme].config.chartWidth;
+      }
 
       me.fire('beforerender');
 
@@ -4978,12 +5053,14 @@ Fancy.define('Fancy.Plugin', {
 
       renderTo = F.get(me.renderTo || document.body).dom;
 
+
+
       if(me.width){
         width = me.width;
       }
       else{
         if(me.text !== false){
-          width += me.text.length * 7 + 7*2;
+          width += me.text.length * charWidth + charWidth*2;
         }
       }
 
@@ -6861,6 +6938,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       item.style = item.style || {};
       item.label = false;
       item.padding = false;
+      item.theme = me.theme;
 
       F.applyIf(item.style, {
         'float': me.floating
@@ -9715,6 +9793,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     labelWidth: 60,
     listRowHeight: 25,
     dropButtonWidth: 27,
+    leftWidth: 20,
     emptyText: '',
     editable: true,
     typeAhead: true, // not right name
@@ -9729,7 +9808,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       '</div>',
       '<div class="' + FIELD_TEXT_CLS + '">',
         '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}{inputHeight}cursor:default;" value="{value}">',
+          '<div class="fancy-combo-left-el" style="{inputHeight}cursor:default;">&nbsp;</div>',
+          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputHeight}cursor:default;" value="{value}">',
           '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
         '</div>',
       '</div>',
@@ -10338,6 +10418,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       if (onInput !== false) {
         me.onInput();
       }
+
+      if(me.left){
+        me.updateLeft();
+      }
     },
     /*
      * Method used only for multiSelect
@@ -10504,6 +10588,21 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.input = me.el.getByTag('input');
       me.inputContainer = me.el.select('.fancy-combo-input-container');
       me.drop = me.el.select('.fancy-combo-dropdown-button');
+
+      if(me.leftTpl){
+        me.left = me.el.select('.fancy-combo-left-el');
+
+        me.left.css({
+          display: 'block',
+          width: me.leftWidth
+        });
+
+        if(value){
+          me.updateLeft();
+        }
+
+      }
+
       me.setSize();
       renderTo.appendChild(el.dom);
 
@@ -10768,6 +10867,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.acceptedValue = me.get();
       me.fire('change', value, oldValue);
+
+      if(me.left){
+        me.updateLeft();
+      }
     },
     /*
      * @param {*} value
@@ -10788,6 +10891,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         return index;
       }
       else{
+        if(!me.data[index]){
+          return '';
+        }
         return me.data[index][me.displayKey];
       }
     },
@@ -10884,9 +10990,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         minusWidth = 0;
       }
 
+      var _inputWidth = inputWidth - minusWidth;
+
+      if(me.left){
+        _inputWidth -= me.leftWidth;
+      }
+
       input.css({
-        width: inputWidth - minusWidth,
-        height: me.inputHeight
+        width: _inputWidth,
+        height: me.inputHeight,
+        'margin-left': me.left? me.leftWidth: 0
       });
 
       inputContainer.css({
@@ -11154,6 +11267,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       return _values;
+    },
+    updateLeft: function () {
+      var me = this,
+        item = me.data[me.getIndex(me.getValue())];
+
+      me.left.update(new F.Template(me.leftTpl).getHTML(item));
     }
   });
 
@@ -12673,6 +12792,7 @@ if(!Fancy.nojQuery && Fancy.$){
     init: function () {
       this.initTpl();
       this.render();
+      this.ons();
     },
     tpl: [
       '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
@@ -12755,6 +12875,16 @@ if(!Fancy.nojQuery && Fancy.$){
      */
     update: function (html) {
       this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    },
+    ons: function () {
+      var me = this;
+
+      me.el.on('mouseenter', me.onMouseEnter, me);
+    },
+    onMouseEnter: function (e) {
+      var me = this;
+
+      me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
     }
   });
 

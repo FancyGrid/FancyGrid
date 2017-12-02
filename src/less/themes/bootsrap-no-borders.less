@@ -1,9 +1,9 @@
 /*
- bootstrap.less
+ bootstrap-no-borders.less
 */
 
 
-.fancy-theme-bootstrap {
+.fancy-theme-bootstrap-no-borders {
   .fancy-grid-column {
     .fancy-grid-cell-selected {
       background-color: #428bca;
@@ -240,52 +240,86 @@
     }
   }
 
-  .fancy-grid-header-cell-trigger-image {
-    background-image: url(images/bootstrap/menu.png);
+  .fancy-grid-header-cell {
+    border-right-color: transparent !important;
+  }
+
+  .fancy-panel-header {
+    border-color: transparent !important;
+  }
+
+  .fancy-grid-cell {
+    border-top-color: transparent !important;
+    border-bottom-color: transparent !important;
+  }
+
+  * {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: normal !important;
+  }
+
+  .fancy-panel-header-text {
+    padding-left: 8px !important;
+  }
+
+  .fancy-panel-tbar {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-bbar {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-buttons {
+    border-left-width: 0;
+    border-right-width: 0;
   }
 }
 
-.fancy-theme-bootstrap.fancy-panel {
+.fancy-theme-bootstrap-no-borders.fancy-panel {
   border-color: #ccc;
   border-bottom-width: 0;
 }
 
-.fancy-theme-bootstrap.fancy-grid {
+.fancy-theme-bootstrap-no-borders.fancy-grid {
   border-color: #ccc;
 }
 
-.fancy-theme-bootstrap.fancy-combo-result-list li {
+.fancy-theme-bootstrap-no-borders.fancy-combo-result-list li {
   color: #333;
   &:hover {
     background-color: #ebebeb;
   }
 }
 
-.fancy-theme-bootstrap.fancy-combo-result-list li:hover .fancy-combo-list-value {
+.fancy-theme-bootstrap-no-borders.fancy-combo-result-list li:hover .fancy-combo-list-value {
   color: #333;
 }
 
-.fancy-theme-bootstrap li.fancy-combo-item-selected {
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-selected {
   background-color: #428bca;
 }
 
-.fancy-theme-bootstrap li.fancy-combo-item-selected .fancy-combo-list-value {
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-selected .fancy-combo-list-value {
   color: #fff;
 }
 
-.fancy-theme-bootstrap li.fancy-combo-item-focused {
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-focused {
   background-color: #428bca;
 }
 
-.fancy-theme-bootstrap li.fancy-combo-item-focused .fancy-combo-list-value {
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-focused .fancy-combo-list-value {
   color: #fff;
 }
 
-.fancy-theme-bootstrap.fancy-panel-tab .fancy-grid {
+.fancy-theme-bootstrap-no-borders.fancy-panel-tab .fancy-grid {
   .box-shadow(none);
 }
 
-.fancy-theme-bootstrap.fancy-grid-state-resize-column {
+.fancy-theme-bootstrap-no-borders.fancy-grid-state-resize-column {
   .fancy-grid-header-cell {
     &:hover {
       background-color: whitesmoke;

@@ -528,6 +528,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           itemText,
           '</div>'
         ].join(" ");
+
+        if(item.render){
+          o = item.render(o);
+        }
       });
 
       return o;
@@ -2908,9 +2912,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {Boolean} [multi]
      */
     selectRow: function (rowIndex, value, multi) {
-      var me = this;
-
-      me.selection.selectRow(rowIndex, value, multi);
+      this.selection.selectRow(rowIndex, value, multi);
+    },
+    /*
+     * @param {Number|String} id
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
+     */
+    selectById: function (rowIndex, value, multi) {
+      this.selection.selectById(rowIndex, value, multi);
     },
     /*
      * @param {String} key
@@ -3213,10 +3223,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     /*
      * @param {String} key
      * @param {*} value
+     * @param {Boolean} complex
      * @return {Array}
      */
-    find: function (key, value) {
-      return this.store.find(key, value);
+    find: function (key, value, complex) {
+      return this.store.find(key, value, complex);
     },
     /*
      * @param {String} key
@@ -5424,9 +5435,10 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
       if(w.header.hideMenu){
         w.header.hideMenu();
-        w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
-        F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
       }
+
+      w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
+      F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
 
       switch (me.activeSide) {
         case 'left':

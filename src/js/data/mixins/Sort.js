@@ -56,7 +56,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
     options.type = type;
 
-    me[fn](action, key, options);
+    if(action === 'drop'){
+      delete me.order;
+    }
+    else {
+      me[fn](action, key, options);
+    }
 
     if(me.multiSort){
       var i = 0,
@@ -88,7 +93,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
     else{
       me.params[me.sortParam] = key;
-      me.params[me.directionParam] = action;
+      if(action === 'drop') {
+        delete me.params[me.directionParam];
+      }
+      else{
+        me.params[me.directionParam] = action;
+      }
     }
 
     me.loadData();

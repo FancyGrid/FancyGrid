@@ -198,6 +198,14 @@
             itemConfig.listItemTpl = column.listItemTpl;
           }
 
+          if(column.leftTpl){
+            itemConfig.leftTpl = column.leftTpl;
+          }
+
+          if(column.leftWidth){
+            itemConfig.leftWidth = column.leftWidth;
+          }
+
           editor = new F.Combo(itemConfig);
           break;
         case 'text':

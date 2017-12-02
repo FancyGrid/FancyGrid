@@ -59,7 +59,9 @@ Fancy.defineTheme('default', {
     panelBodyBorders: [0,2,2,2],
 
     knobOffSet: 2,
-    fieldHeight: 37
+    fieldHeight: 37,
+
+    charWidth: 7
   }
 });
 
@@ -69,7 +71,9 @@ Fancy.defineTheme('blue', {
     //borders: [1,1,0,1],
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -79,7 +83,9 @@ Fancy.defineTheme('gray', {
     //borders: [0,0,1,0],
     gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -88,7 +94,9 @@ Fancy.defineTheme('dark', {
     panelBorderWidth: 1,
     gridBorders: [0,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -97,7 +105,9 @@ Fancy.defineTheme('sand', {
     panelBorderWidth: 1,
     gridBorders: [0,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
   }
 });
 
@@ -106,6 +116,20 @@ Fancy.defineTheme('bootstrap', {
     panelBorderWidth: 1,
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
-    panelBodyBorders: [0,0,0,0]
+    panelBodyBorders: [0,0,0,0],
+
+    charWidth: 7
+  }
+});
+
+Fancy.defineTheme('bootstrap-no-borders', {
+  config: {
+    panelBorderWidth: 0,
+    gridBorders: [0, 0, 0, 0],
+    gridWithoutPanelBorders: [0, 0, 0, 0],
+    panelBodyBorders: [0,0,0,0],
+    columnLines: false,
+
+    charWidth: 8
   }
 });

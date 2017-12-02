@@ -22,20 +22,27 @@
   height: 100%;
   width: 25px;
   background-color: #eff2f5;
-  display: none;
+  visibility: hidden;
+  .opacity(0);
   cursor: pointer;
+  -webkit-transition: all .2s ease-out;
+  -moz-transition: all .2s ease-out;
+  -ms-transition: all .2s ease-out;
+  -o-transition: all .2s ease-out;
+  transition: all .2s ease-out;
 }
 
 .fancy-grid-header-cell-trigger-image {
-  width: 15px;
-  height: 15px;
+  width: 21px;
+  height: 20px;
   margin-top: 8px;
   margin-left: 5px;
-  background: url(images/default/sort-arrows.png) no-repeat scroll 0 1px transparent;
+  background: url(images/default/menu.png) no-repeat scroll -2px 1px transparent;
 }
 
 .fancy-grid-header-cell:hover .fancy-grid-header-cell-trigger {
-  display: block;
+  .opacity(1);
+  visibility: visible;
 }
 
 .fancy-grid-header-cell-trigger-up {

@@ -852,7 +852,9 @@
           var el = body.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]' + ' .' + GRID_CELL_CLS + '[index="'+rowIndex+'"]' + ' .' + FIELD_CHECKBOX_CLS),
             checkBox = Fancy.getWidget(el.attr('id'));
 
-          checkBox.set(value);
+          if(checkBox){
+            checkBox.set(value);
+          }
         }
       });
 
@@ -861,7 +863,9 @@
           var el = leftBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]' + ' .' + GRID_CELL_CLS + '[index="'+rowIndex+'"]' + ' .' + FIELD_CHECKBOX_CLS),
             checkBox = Fancy.getWidget(el.attr('id'));
 
-          checkBox.set(value);
+          if(checkBox){
+            checkBox.set(value);
+          }
         }
       });
 
@@ -870,7 +874,9 @@
           var el = rightBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]' + ' .' + GRID_CELL_CLS + '[index="'+rowIndex+'"]' + ' .' + FIELD_CHECKBOX_CLS),
             checkBox = Fancy.getWidget(el.attr('id'));
 
-          checkBox.set(value);
+          if(checkBox){
+            checkBox.set(value);
+          }
         }
       });
 
@@ -878,7 +884,7 @@
         var id = s.get(rowIndex, 'id');
 
         if(id){
-          if(value === true){
+          if(value === true || value === undefined){
             delete me.memory.except[id];
             me.memory.selected[id] = true;
           }
@@ -890,6 +896,39 @@
       }
 
       w.fire('select');
+    },
+    /*
+     * @param {Number|String} id
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
+     */
+    selectById: function (id, value, multi) {
+      var me = this,
+        w = me.widget,
+        rowIndex = w.find('id', String(id))[0];
+
+      if(rowIndex !== undefined){
+        me.selectRow(rowIndex, value, multi);
+      }
+      else{
+        rowIndex = w.find('id', Number(id))[0];
+
+        if(rowIndex !== undefined){
+          me.selectRow(rowIndex, value, multi);
+        }
+        else{
+          if(me.memory){
+            if(value === true || value === undefined){
+              delete me.memory.except[id];
+              me.memory.selected[id] = true;
+            }
+            else{
+              me.memory.except[id] = true;
+              delete me.memory.selected[id];
+            }
+          }
+        }
+      }
     },
     /*
      * @param {Fancy.Grid} grid

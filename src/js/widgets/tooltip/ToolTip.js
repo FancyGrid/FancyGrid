@@ -25,6 +25,7 @@
     init: function () {
       this.initTpl();
       this.render();
+      this.ons();
     },
     tpl: [
       '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
@@ -107,6 +108,16 @@
      */
     update: function (html) {
       this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    },
+    ons: function () {
+      var me = this;
+
+      me.el.on('mouseenter', me.onMouseEnter, me);
+    },
+    onMouseEnter: function (e) {
+      var me = this;
+
+      me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
     }
   });
 

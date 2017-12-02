@@ -528,6 +528,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           itemText,
           '</div>'
         ].join(" ");
+
+        if(item.render){
+          o = item.render(o);
+        }
       });
 
       return o;

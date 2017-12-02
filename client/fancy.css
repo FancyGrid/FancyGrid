@@ -904,6 +904,16 @@
 .fancy-combo-result-list .fancy-combo-item-selected .fancy-field-checkbox-input:hover {
   background-position: 0px -42px;
 }
+.fancy-combo-left-el {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: -1px;
+}
+.fancy-combo-left-el .flag {
+  left: 8px;
+  top: 11px;
+}
 /*
  tag.less
 */
@@ -1517,18 +1527,25 @@
   height: 100%;
   width: 25px;
   background-color: #eff2f5;
-  display: none;
+  visibility: hidden;
+  opacity: 0;
   cursor: pointer;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 .fancy-grid-header-cell-trigger-image {
-  width: 15px;
-  height: 15px;
+  width: 21px;
+  height: 20px;
   margin-top: 8px;
   margin-left: 5px;
-  background: url(images/default/sort-arrows.png) no-repeat scroll 0 1px transparent;
+  background: url(images/default/menu.png) no-repeat scroll -2px 1px transparent;
 }
 .fancy-grid-header-cell:hover .fancy-grid-header-cell-trigger {
-  display: block;
+  opacity: 1;
+  visibility: visible;
 }
 .fancy-grid-header-cell-trigger-up {
   background: url(images/default/sort.png) no-repeat scroll 0 1px transparent;
@@ -1751,6 +1768,13 @@ vml {
 }
 .fancy-grid-unselectable .fancy-grid-cell-inner {
   cursor: default;
+}
+.fancy-grid-cell {
+  -webkit-transition: background 0.2s ease-out;
+  -moz-transition: background 0.2s ease-out;
+  -ms-transition: background 0.2s ease-out;
+  -o-transition: background 0.2s ease-out;
+  transition: background 0.2s ease-out;
 }
 /*
  group-header.less
@@ -2275,6 +2299,9 @@ vml {
 .fancy-theme-blue .fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
   background-color: #e3e9ee;
 }
+.fancy-theme-blue .fancy-grid-header-cell-trigger-image {
+  background-image: url(images/blue/menu.png);
+}
 .fancy-theme-blue.fancy-panel-grid-inside {
   border-bottom-width: 0;
 }
@@ -2451,6 +2478,9 @@ vml {
 }
 .fancy-theme-gray .fancy-scroll-bottom-inner {
   background-color: #B5B9C4;
+}
+.fancy-theme-gray .fancy-grid-header-cell-trigger-image {
+  background-image: url(images/gray/menu.png);
 }
 .fancy-theme-gray.fancy-drag-hint-top {
   background-image: url(images/sand/col-drag-top.png);
@@ -2849,6 +2879,9 @@ vml {
 .fancy-theme-dark.fancy-loadmask .fancy-loadmask-text {
   font-weight: bold;
   color: #ccc;
+}
+.fancy-theme-dark.fancy-loadmask .fancy-grid-header-cell-trigger-image {
+  background-image: url(images/dark/menu.png);
 }
 .fancy-theme-dark.fancy-grid {
   border: 1px solid #000;
@@ -3285,7 +3318,7 @@ vml {
   background: #6A6758;
 }
 .fancy-theme-sand .fancy-grid-header-cell-trigger-image {
-  background-image: url(images/sand/sort-arrows.png);
+  background-image: url(images/sand/menu.png);
 }
 .fancy-theme-sand .fancy-grid-header-cell-trigger-up {
   background-image: url(images/sand/sort.png);
@@ -3325,6 +3358,13 @@ vml {
 }
 .fancy-theme-sand .fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
   background-color: #DDD5B6;
+}
+.fancy-theme-sand .fancy-grid-cell {
+  -webkit-transition: background 0s ease-out;
+  -moz-transition: background 0s ease-out;
+  -ms-transition: background 0s ease-out;
+  -o-transition: background 0s ease-out;
+  transition: background 0s ease-out;
 }
 .fancy-theme-sand.fancy-loadmask .fancy-loadmask-inner {
   background-color: #DDD5B6;
@@ -3561,6 +3601,9 @@ vml {
 .fancy-theme-bootstrap .fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
   background-color: whitesmoke;
 }
+.fancy-theme-bootstrap .fancy-grid-header-cell-trigger-image {
+  background-image: url(images/bootstrap/menu.png);
+}
 .fancy-theme-bootstrap.fancy-panel {
   border-color: #ccc;
   border-bottom-width: 0;
@@ -3595,5 +3638,247 @@ vml {
   box-shadow: none;
 }
 .fancy-theme-bootstrap.fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
+  background-color: whitesmoke;
+}
+/*
+ bootstrap-no-borders.less
+*/
+.fancy-theme-bootstrap-no-borders .fancy-grid-column .fancy-grid-cell-selected {
+  background-color: #428bca;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-column .fancy-grid-cell-selected .fancy-grid-cell-inner {
+  color: white;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-cell {
+  border-color: #ccc;
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-cell-over {
+  background: #ebebeb;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-header {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-header-cell {
+  background-color: whitesmoke;
+  border-color: #ccc;
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-button .fancy-button-text {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-left {
+  border-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-left .fancy-grid-header {
+  border-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-right {
+  border-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-group-row {
+  background-color: #f5f5f5;
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-field-label {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-body {
+  border-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-resize-corner {
+  right: 0;
+  border-bottom-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-resize-corner:before {
+  bottom: -13px;
+  border-bottom-color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-header {
+  background-color: #f5f5f5;
+  border-color: #e3e3e3;
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-field-text-input {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-scroll-right-inner,
+.fancy-theme-bootstrap-no-borders .fancy-scroll-bottom-inner {
+  background-color: #c1c1c1;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-tbar,
+.fancy-theme-bootstrap-no-borders .fancy-panel-bbar,
+.fancy-theme-bootstrap-no-borders .fancy-panel-buttons {
+  border-color: #e3e3e3;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid {
+  border-color: #e3e3e3;
+}
+.fancy-theme-bootstrap-no-borders .fancy-picker-button-date .fancy-button-text {
+  background-image: url(images/bootstrap/bottom.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-date-picker-cell-active:hover {
+  background-color: #1E8FC6;
+}
+.fancy-theme-bootstrap-no-borders .fancy-date-picker-cell-active .fancy-grid-cell-inner {
+  color: #fff;
+}
+.fancy-theme-bootstrap-no-borders .fancy-month-picker-cell-active:hover {
+  background-color: #1E8FC6;
+}
+.fancy-theme-bootstrap-no-borders .fancy-month-picker-cell-active .fancy-grid-cell-inner {
+  color: #fff;
+}
+.fancy-theme-bootstrap-no-borders .fancy-paging-next {
+  background-image: url(images/bootstrap/paging.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-paging-last {
+  background-image: url(images/bootstrap/paging.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-paging-prev {
+  background-image: url(images/bootstrap/paging.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-paging-first {
+  background-image: url(images/bootstrap/paging.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-field-checkbox-input {
+  background-image: url(images/bootstrap/check.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-field-picker-button {
+  background-image: url(images/bootstrap/calendar.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-group-row-inner {
+  background-image: url(images/bootstrap/options-slide.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-field-spin-up {
+  background-image: url(images/bootstrap/spin.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-field-spin-down {
+  background-image: url(images/bootstrap/spin.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-paging-refresh {
+  background-image: url(images/bootstrap/refresh.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-button:active {
+  border-color: #aeaeae;
+  background-color: #ebebeb;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-tbar {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-tbar .fancy-toolbar-tab {
+  background: #ebebeb;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-tbar .fancy-toolbar-tab-active {
+  background: #428bca;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-sub-tbar {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-bbar {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-buttons {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-button.fancy-button-pressed {
+  background-color: #428bca;
+}
+.fancy-theme-bootstrap-no-borders .fancy-button.fancy-button-pressed .fancy-button-text {
+  color: white;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-column-order .fancy-grid-cell {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-column-order .fancy-grid-cell .fancy-grid-cell-inner {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
+  background-color: #f5f5f5;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected .fancy-grid-cell-inner {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-row-edit .fancy-field-text-value {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders .fancy-checkbox-expander .fancy-field-checkbox-input {
+  background-image: url(images/gray/expand.png);
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-header-cell-trigger {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-bar-left-scroller {
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
+  background-color: whitesmoke;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-header-cell {
+  border-right-color: transparent !important;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-header {
+  border-color: transparent !important;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-cell {
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+.fancy-theme-bootstrap-no-borders * {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: normal !important;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-header-text {
+  padding-left: 8px !important;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-tbar {
+  border-left-width: 0;
+  border-right-width: 0;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-bbar {
+  border-left-width: 0;
+  border-right-width: 0;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-buttons {
+  border-left-width: 0;
+  border-right-width: 0;
+}
+.fancy-theme-bootstrap-no-borders.fancy-panel {
+  border-color: #ccc;
+  border-bottom-width: 0;
+}
+.fancy-theme-bootstrap-no-borders.fancy-grid {
+  border-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders.fancy-combo-result-list li {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders.fancy-combo-result-list li:hover {
+  background-color: #ebebeb;
+}
+.fancy-theme-bootstrap-no-borders.fancy-combo-result-list li:hover .fancy-combo-list-value {
+  color: #333;
+}
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-selected {
+  background-color: #428bca;
+}
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-selected .fancy-combo-list-value {
+  color: #fff;
+}
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-focused {
+  background-color: #428bca;
+}
+.fancy-theme-bootstrap-no-borders li.fancy-combo-item-focused .fancy-combo-list-value {
+  color: #fff;
+}
+.fancy-theme-bootstrap-no-borders.fancy-panel-tab .fancy-grid {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.fancy-theme-bootstrap-no-borders.fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
   background-color: whitesmoke;
 }
