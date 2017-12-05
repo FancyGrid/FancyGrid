@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.22',
+  version: '1.6.23',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -993,7 +993,6 @@ Fancy.defineTheme('bootstrap', {
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-
     charWidth: 7
   }
 });
@@ -1005,7 +1004,6 @@ Fancy.defineTheme('bootstrap-no-borders', {
     gridWithoutPanelBorders: [0, 0, 0, 0],
     panelBodyBorders: [0,0,0,0],
     columnLines: false,
-
     charWidth: 8
   }
 });
@@ -2087,9 +2085,17 @@ Fancy.Number = {
   isFloat: function(value){
     return Number(value) === value && value % 1 !== 0;
   },
+  /**
+   * @param {Number} value
+   * @return {Number}
+   */
   getPrecision: function(value){
     return (value + "").split(".")[1].length + 1;
   },
+  /**
+   * @param {Number} value
+   * @return {Number}
+   */
   correctFloat: function(value){
     return parseFloat(value.toPrecision(14));
   }
@@ -7224,7 +7230,7 @@ Fancy.select = function(selector){
  * @param {Function} fn
  */
 Fancy.onReady = function(fn){
-  $(document).ready(fn);
+  Fancy.$(document).ready(fn);
 };
 
 /**
@@ -9209,6 +9215,8 @@ Fancy.defineController = function(name, o){
   Fancy.controllers[name] = o;
 };
 
+Fancy.defineControl = Fancy.defineController;
+
 /*
  * @param {String} name
  * @return {Object}
@@ -9216,6 +9224,8 @@ Fancy.defineController = function(name, o){
 Fancy.getController = function(name){
   return Fancy.controllers[name];
 };
+
+Fancy.getControl = Fancy.getController;
 /**
  * @class Fancy.DD
  * @singleton
@@ -10978,7 +10988,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setActiveWindowWatcher();
       }
     },
-    cls: PANEL_CLS,
+    cls: '',
+    fieldCls: PANEL_CLS,
     value: '',
     width: 300,
     height: 200,
@@ -11033,7 +11044,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el.addCls(PANEL_NOFRAME_CLS);
       }
 
-      el.addCls(F.cls, me.cls);
+      el.addCls(F.cls, me.cls, me.fieldCls);
       if (me.theme !== 'default') {
         el.addCls('fancy-theme-' + me.theme);
       }
@@ -11466,7 +11477,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     ons: function () {
-      this.on('click', this.onClick, this);
+      this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
     text: '',
@@ -11913,7 +11924,8 @@ Fancy.define('Fancy.toolbar.Tab', {
         iL = items.length,
         isSide = false,
         barItems = [],
-        sidePassed = iL - 1;
+        sidePassed = iL - 1,
+        passedRight = 0;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -11933,9 +11945,10 @@ Fancy.define('Fancy.toolbar.Tab', {
 
         if (isSide) {
           me.floating = 'right';
+          item.style = item.style || {};
+          item.style['right'] = passedRight;
         }
 
-        //item.renderTo = el.dom;
         item.renderTo = containerEl.dom;
 
         switch (item) {
@@ -11972,6 +11985,18 @@ Fancy.define('Fancy.toolbar.Tab', {
             else {
               barItems.push(me.renderItem(item));
             }
+        }
+
+        if(isSide){
+          //TODO: redo with variable
+          //Needs variable charWidth from theme
+          //Possible place of bug: wrong right value.
+          if(item.text){
+            passedRight += item.text.length * 7 + 5 + 5 + 5;
+          }
+          else if(item.width){
+            passedRight += item.width + 5;
+          }
         }
       }
 
@@ -12818,6 +12843,11 @@ Fancy.define('Fancy.bar.Text', {
           panelBodyBorders: me.panelBodyBorders,
           resizable: me.resizable
         };
+
+      if(me.cls){
+        panelConfig.cls = me.cls;
+        delete me.cls;
+      }
 
       if (me.tabs) {
         panelConfig.tbar = me.generateTabs();
@@ -14184,13 +14214,13 @@ if(!Fancy.nojQuery && Fancy.$){
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
         switch (me.type) {
           case 'radio':
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             break;
           case 'textarea':
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
             break;
           default:
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
       else if (me.type !== 'radio') {
@@ -15234,7 +15264,6 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var CLEARFIX_CLS = F.CLEARFIX_CLS;
@@ -15321,14 +15350,14 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 
         var date;
         if (format) {
-          date = D.parse(value, format, me.format.mode);
+          date = F.Date.parse(value, format, me.format.mode);
         }
         else {
-          date = D.parse(value, me.format.read, me.format.mode);
+          date = F.Date.parse(value, me.format.read, me.format.mode);
         }
 
         if (date.toString === 'Invalid Date') {
-          date = D.parse(value, me.format.edit, me.format.mode);
+          date = F.Date.parse(value, me.format.edit, me.format.mode);
         }
 
         if (date.toString === 'Invalid Date') {
@@ -15349,7 +15378,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
             delete me.date;
             return;
           }
-          me.date = D.parse(me.value, me.format.read, me.format.mode);
+          me.date = F.Date.parse(me.value, me.format.read, me.format.mode);
           break;
       }
     },
@@ -15364,7 +15393,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         return;
       }
 
-      var value = D.format(me.date, me.format.edit, undefined, me.format.mode);
+      var value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
 
       if (me.format && me.format.inputFn) {
         value = me.format.inputFn(value);
@@ -15409,16 +15438,16 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       if (!me.value) {
       }
       else if (F.typeOf(me.value) === 'date') {
-        me.value = D.format(me.value, me.format.read, undefined, me.format.mode);
+        me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
         if (value === undefined) {
-          var _date = D.parse(me.value, me.format.edit, me.format.mode);
-          value = D.format(_date, me.format.edit, undefined, me.format.mode);
+          var _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
+          value = F.Date.format(_date, me.format.edit, undefined, me.format.mode);
         }
         me.acceptedValue = value;
       }
       else {
-        var date = D.parse(me.value, me.format.read, me.format.mode);
-        me.value = D.format(date, me.format.edit, undefined, me.format.mode);
+        var date = F.Date.parse(me.value, me.format.read, me.format.mode);
+        me.value = F.Date.format(date, me.format.edit, undefined, me.format.mode);
       }
 
       if (me.format && me.format.inputFn) {
@@ -15615,7 +15644,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       }
 
       if (me.date) {
-        return D.format(me.date, me.format.write, undefined, me.format.mode);
+        return F.Date.format(me.date, me.format.write, undefined, me.format.mode);
       }
       else {
         return '';
@@ -15657,7 +15686,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (D.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
+      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
         return;
       }
 
@@ -15672,7 +15701,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     isValid: function () {
       var me = this;
 
-      return D.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
+      return F.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
     },
     /*
      * @param {String|Date|Number} value
@@ -15699,10 +15728,10 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      */
     isEqual: function (oldValue) {
       var me = this,
-        oldDate = D.parse(oldValue, me.format.read, me.format.mode),
+        oldDate = F.Date.parse(oldValue, me.format.read, me.format.mode),
         value = me.input.dom.value;
 
-      oldValue = D.format(oldDate, me.format.edit, undefined, me.format.mode);
+      oldValue = F.Date.format(oldDate, me.format.edit, undefined, me.format.mode);
 
       return oldValue === value;
     },
@@ -15729,7 +15758,6 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   F.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
     extend: F.Widget,
@@ -15880,7 +15908,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      */
     onChangeDate1: function (field, date) {
       var me = this,
-        date = D.parse(date, field.format.edit, field.format.mode);
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       me.fire('changedatefrom', date);
       me.fire('change');
@@ -15890,7 +15918,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Date} date
      */
     onChangeDate2: function (field, date) {
-      var date = D.parse(date, field.format.edit, field.format.mode);
+      var date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       this.fire('changedateto', date);
       this.fire('change');
@@ -17370,7 +17398,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
       else if (me.labelAlign === 'right') {
         me.el.addCls('fancy-field-label-align-right');
-        $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
+        F.$(el.dom).find('.fancy-field-label').insertAfter(F.$(el.dom).find('.fancy-field-text'));
       }
 
       if (me.valueIndex) {
@@ -18560,7 +18588,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
       me.css(me.style);
     }
   },
-  fieldCls: 'fancy fancy-field-html',
+  fieldCls: 'fancy-field-html',
   value: '',
   width: 100,
   emptyText: '',
@@ -18587,7 +18615,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
     me.el = renderTo.appendChild(el);
     me.el = Fancy.get(me.el);
 
-    me.addCls(me.cls, me.fieldCls);
+    me.el.addCls(me.cls, Fancy.cls, me.fieldCls);
 
     me.acceptedValue = me.value;
     me.fire('afterrender');
@@ -18677,7 +18705,7 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
 
     formReCaptchaEl.one('submit', function(e){
       e.preventDefault();
-      me.value = $(this).serialize().replace('g-recaptcha-response=', '');
+      me.value = Fancy.$(this).serialize().replace('g-recaptcha-response=', '');
     });
 
     formReCaptchaEl.submit();
@@ -19514,7 +19542,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       width -= 2;
     }
 
-    var averageWidth = width/columnsWithoutWidth.length;
+    var averageWidth = parseInt(width/columnsWithoutWidth.length);
 
     if(averageWidth < minWidth){
       averageWidth = minWidth;
@@ -19565,6 +19593,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         else {
           column.width = (width / flexTotal) * column.flex;
         }
+
+        column.width = parseInt(column.width);
       });
     }
 
@@ -20166,6 +20196,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(config.searching){
       isSearchable = true;
+      Fancy.apply(searchConfig, config.searching);
     }
 
     if(isSearchable){
@@ -20505,7 +20536,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       for(;i<iL;i++){
         if(tbar[i].type === 'search'){
-          config.searching = true;
+          config.searching = config.searching || {};
           config.filter = true;
         }
 
@@ -23230,6 +23261,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return data;
     },
     /*
+     * @param {Array} data
+     */
+    setData: function (data) {
+      this.store.setData(data);
+    },
+    /*
      *
      */
     exportToExcel: function () {
@@ -23579,12 +23616,34 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     };
 
-    for(var p in me.neededModules){
-      if(p === 'length'){
-        continue;
-      }
+    if(me.neededModules.dom){
+      Fancy.loadModule('dom', function (name) {
+        delete me.neededModules[name];
+        me.neededModules.length--;
 
-      Fancy.loadModule(p, onLoad);
+        if(me.neededModules.length === 0){
+          me.neededModules = true;
+          me.init();
+        }
+        else{
+          for (var p in me.neededModules) {
+            if (p === 'length') {
+              continue;
+            }
+
+            Fancy.loadModule(p, onLoad);
+          }
+        }
+      });
+    }
+    else {
+      for (var p in me.neededModules) {
+        if (p === 'length') {
+          continue;
+        }
+
+        Fancy.loadModule(p, onLoad);
+      }
     }
   },
   /*
@@ -27825,7 +27884,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
@@ -28275,7 +28333,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           break;
         case 'date':
           var format = o.column.format,
-            date = D.parse(o.value, format.read, format.mode);
+            date = F.Date.parse(o.value, format.read, format.mode);
 
           editor.set(date);
           break;
@@ -28407,7 +28465,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         case 'date':
           if (column.format && column.format.read) {
             var date = column.editor.getDate();
-            value = D.format(date, column.format.read, undefined, column.format.mode);
+            value = F.Date.format(date, column.format.read, undefined, column.format.mode);
           }
           break;
       }
@@ -29509,18 +29567,29 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      *
      */
     initMemory: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.memory = {
         all: false,
         except: {},
         selected: {},
         setAll: function () {
-          F.apply(me.memory, {
-            all: true,
-            except: {},
-            selected: {}
-          });
+          var filteredDataMap = w.store.filteredDataMap;
+          if(filteredDataMap){
+            for(var p in filteredDataMap){
+              me.memory.selected[p] = true;
+            }
+            me.except = {};
+            me.all = false;
+          }
+          else {
+            F.apply(me.memory, {
+              all: true,
+              except: {},
+              selected: {}
+            });
+          }
         },
         clearAll: function () {
           F.apply(me.memory, {
@@ -31440,6 +31509,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       me.collapseRow(Number(rowIndex), id);
       me.clearMargin(Number(rowIndex) + 1, id);
+      delete me._expandedIds[id];
 
       me.reSetTop();
       me.reSetPlusScroll();
@@ -34459,7 +34529,6 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 (function() {
   //SHORTCUTS
   var F = Fancy;
-  var D = Fancy.Date;
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
@@ -34515,9 +34584,11 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       var me = this,
         w = me.widget;
 
-      me._renderSideFields(w.header, w.columns);
-      me._renderSideFields(w.leftHeader, w.leftColumns);
-      me._renderSideFields(w.rightHeader, w.rightColumns);
+      if(w.header) {
+        me._renderSideFields(w.header, w.columns);
+        me._renderSideFields(w.leftHeader, w.leftColumns);
+        me._renderSideFields(w.rightHeader, w.rightColumns);
+      }
     },
     _renderSideFields: function (header, columns) {
       var me = this,
@@ -35200,8 +35271,8 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           value2 = Number(dateTo);
         }
         else {
-          value1 = D.format(dateFrom, format.edit, format.mode);
-          value2 = D.format(dateTo, format.edit, format.mode);
+          value1 = F.Date.format(dateFrom, format.edit, format.mode);
+          value2 = F.Date.format(dateTo, format.edit, format.mode);
         }
 
         value = '>=' + value1 + ',<=' + value2;
@@ -35211,7 +35282,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           value = '>=' + Number(dateFrom);
         }
         else {
-          value = '>=' + D.format(dateFrom, format.edit, format.mode);
+          value = '>=' + F.Date.format(dateFrom, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '<=', false);
@@ -35221,7 +35292,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           value = '<=' + Number(dateTo);
         }
         else {
-          value = '<=' + D.format(dateFrom, format.edit, format.mode);
+          value = '<=' + F.Date.format(dateFrom, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '>=', false);
@@ -35454,7 +35525,14 @@ Fancy.define('Fancy.grid.plugin.Search', {
     var me = this,
       w = me.widget;
 
-    if(!me.keys){
+    if(me.items){
+      me.keys = {};
+
+      Fancy.each(me.items, function (item) {
+        me.keys[item.index] = true;
+      })
+    }
+    else if(!me.keys){
       me.keys = {};
 
       var columns = [];
@@ -39810,7 +39888,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           var groupName = groupCell.attr('index');
 
           var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
-            groupCellLeft = underGroupCells.item(0).css('left'),
+            groupCellLeft = parseInt(underGroupCells.item(0).css('left')),
             groupCellWidth = 0;
 
           F.each(columns, function (column) {
@@ -40491,7 +40569,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
@@ -40645,7 +40722,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      *
      */
     initData: function () {
-      this.data = this.setData();
+      this.data = this.generateData();
     },
     /*
      *
@@ -40669,7 +40746,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = D.dayIndexes,
+        dayIndexes = F.Date.dayIndexes,
         columns = [],
         today = new Date();
 
@@ -40764,7 +40841,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = D.dayIndexes;
+        dayIndexes = F.Date.dayIndexes;
 
       for (; i < iL; i++) {
         fields.push(dayIndexes[i]);
@@ -40782,13 +40859,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     /*
      *
      */
-    setData: function () {
+    generateData: function () {
       var me = this,
         format = me.format,
         startDay = format.startDay,
         date = me.showDate,
-        daysInMonth = D.getDaysInMonth(date),
-        firstDayOfMonth = D.getFirstDayOfMonth(date),
+        daysInMonth = F.Date.getDaysInMonth(date),
+        firstDayOfMonth = F.Date.getFirstDayOfMonth(date),
         data = [],
         fields = me.getDataFields(),
         i = 0,
@@ -40827,7 +40904,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       var prevDate = new Date(year, month, _date, hour, minute, second, millisecond),
-        prevDateDaysInMonth = D.getDaysInMonth(prevDate);
+        prevDateDaysInMonth = F.Date.getDaysInMonth(prevDate);
 
       i = 7;
 
@@ -40946,7 +41023,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -40974,7 +41051,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -40983,7 +41060,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      */
     onUpdate: function () {
       var me = this,
-        value = D.format(me.showDate, 'F Y', {
+        value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
         });
 
@@ -40999,7 +41076,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       me.showDate = date;
       me.date = date;
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -41051,7 +41128,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         me.date = new Date(year, month, day, hour, minute, second, millisecond);
         me.showDate = me.date;
 
-        var data = me.setData();
+        var data = me.generateData();
 
         me.store.setData(data.items);
         me.update();
@@ -41119,7 +41196,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
 
@@ -41158,7 +41235,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.date = date;
       me.showDate = date;
-      me.store.setData(me.setData().items);
+      me.store.setData(me.generateData().items);
       me.update();
     }
   });
@@ -41245,7 +41322,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      *
      */
     initData: function () {
-      this.data = this.setData();
+      this.data = this.generateData();
     },
     /*
      *
@@ -41321,7 +41398,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     /*
      * @return {Object}
      */
-    setData: function () {
+    generateData: function () {
       var me = this,
         lang = me.lang,
         date = me.showDate,
@@ -41379,6 +41456,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       });
 
       tbar.push({
+        width: 30,
         cls: PICKER_BUTTON_NEXT_CLS,
         handler: me.onNextClick,
         scope: me
@@ -41428,7 +41506,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -41450,7 +41528,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },

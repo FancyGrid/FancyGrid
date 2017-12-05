@@ -3817,22 +3817,20 @@ vml {
   background-color: whitesmoke;
 }
 .fancy-theme-bootstrap-no-borders .fancy-grid-header-cell {
-  border-right-color: transparent !important;
+  border-right-color: transparent;
 }
 .fancy-theme-bootstrap-no-borders .fancy-panel-header {
-  border-color: transparent !important;
+  border-color: transparent;
 }
 .fancy-theme-bootstrap-no-borders .fancy-grid-cell {
-  border-top-color: transparent !important;
-  border-bottom-color: transparent !important;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
 }
 .fancy-theme-bootstrap-no-borders * {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  font-size: 1rem !important;
-  font-weight: normal !important;
 }
 .fancy-theme-bootstrap-no-borders .fancy-panel-header-text {
-  padding-left: 8px !important;
+  padding-left: 8px;
 }
 .fancy-theme-bootstrap-no-borders .fancy-panel-tbar {
   border-left-width: 0;
@@ -3845,6 +3843,15 @@ vml {
 .fancy-theme-bootstrap-no-borders .fancy-panel-buttons {
   border-left-width: 0;
   border-right-width: 0;
+}
+.fancy-theme-bootstrap-no-borders .fancy-panel-body-inner .fancy-form {
+  border-width: 0px;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-header-cell-group-level-1 {
+  border-top-color: transparent;
+}
+.fancy-theme-bootstrap-no-borders .fancy-grid-header-cell-group-level-2 {
+  border-bottom-color: transparent;
 }
 .fancy-theme-bootstrap-no-borders.fancy-panel {
   border-color: #ccc;

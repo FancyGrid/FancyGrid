@@ -872,7 +872,6 @@ Fancy.Date = {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var CLEARFIX_CLS = F.CLEARFIX_CLS;
@@ -959,14 +958,14 @@ Fancy.Date = {
 
         var date;
         if (format) {
-          date = D.parse(value, format, me.format.mode);
+          date = F.Date.parse(value, format, me.format.mode);
         }
         else {
-          date = D.parse(value, me.format.read, me.format.mode);
+          date = F.Date.parse(value, me.format.read, me.format.mode);
         }
 
         if (date.toString === 'Invalid Date') {
-          date = D.parse(value, me.format.edit, me.format.mode);
+          date = F.Date.parse(value, me.format.edit, me.format.mode);
         }
 
         if (date.toString === 'Invalid Date') {
@@ -987,7 +986,7 @@ Fancy.Date = {
             delete me.date;
             return;
           }
-          me.date = D.parse(me.value, me.format.read, me.format.mode);
+          me.date = F.Date.parse(me.value, me.format.read, me.format.mode);
           break;
       }
     },
@@ -1002,7 +1001,7 @@ Fancy.Date = {
         return;
       }
 
-      var value = D.format(me.date, me.format.edit, undefined, me.format.mode);
+      var value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
 
       if (me.format && me.format.inputFn) {
         value = me.format.inputFn(value);
@@ -1047,16 +1046,16 @@ Fancy.Date = {
       if (!me.value) {
       }
       else if (F.typeOf(me.value) === 'date') {
-        me.value = D.format(me.value, me.format.read, undefined, me.format.mode);
+        me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
         if (value === undefined) {
-          var _date = D.parse(me.value, me.format.edit, me.format.mode);
-          value = D.format(_date, me.format.edit, undefined, me.format.mode);
+          var _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
+          value = F.Date.format(_date, me.format.edit, undefined, me.format.mode);
         }
         me.acceptedValue = value;
       }
       else {
-        var date = D.parse(me.value, me.format.read, me.format.mode);
-        me.value = D.format(date, me.format.edit, undefined, me.format.mode);
+        var date = F.Date.parse(me.value, me.format.read, me.format.mode);
+        me.value = F.Date.format(date, me.format.edit, undefined, me.format.mode);
       }
 
       if (me.format && me.format.inputFn) {
@@ -1253,7 +1252,7 @@ Fancy.Date = {
       }
 
       if (me.date) {
-        return D.format(me.date, me.format.write, undefined, me.format.mode);
+        return F.Date.format(me.date, me.format.write, undefined, me.format.mode);
       }
       else {
         return '';
@@ -1295,7 +1294,7 @@ Fancy.Date = {
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (D.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
+      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
         return;
       }
 
@@ -1310,7 +1309,7 @@ Fancy.Date = {
     isValid: function () {
       var me = this;
 
-      return D.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
+      return F.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
     },
     /*
      * @param {String|Date|Number} value
@@ -1337,10 +1336,10 @@ Fancy.Date = {
      */
     isEqual: function (oldValue) {
       var me = this,
-        oldDate = D.parse(oldValue, me.format.read, me.format.mode),
+        oldDate = F.Date.parse(oldValue, me.format.read, me.format.mode),
         value = me.input.dom.value;
 
-      oldValue = D.format(oldDate, me.format.edit, undefined, me.format.mode);
+      oldValue = F.Date.format(oldDate, me.format.edit, undefined, me.format.mode);
 
       return oldValue === value;
     },
@@ -1366,7 +1365,6 @@ Fancy.Date = {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   F.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
     extend: F.Widget,
@@ -1517,7 +1515,7 @@ Fancy.Date = {
      */
     onChangeDate1: function (field, date) {
       var me = this,
-        date = D.parse(date, field.format.edit, field.format.mode);
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       me.fire('changedatefrom', date);
       me.fire('change');
@@ -1527,7 +1525,7 @@ Fancy.Date = {
      * @param {Date} date
      */
     onChangeDate2: function (field, date) {
-      var date = D.parse(date, field.format.edit, field.format.mode);
+      var date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       this.fire('changedateto', date);
       this.fire('change');
@@ -1547,7 +1545,6 @@ Fancy.Date = {
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
@@ -1701,7 +1698,7 @@ Fancy.Date = {
      *
      */
     initData: function () {
-      this.data = this.setData();
+      this.data = this.generateData();
     },
     /*
      *
@@ -1725,7 +1722,7 @@ Fancy.Date = {
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = D.dayIndexes,
+        dayIndexes = F.Date.dayIndexes,
         columns = [],
         today = new Date();
 
@@ -1820,7 +1817,7 @@ Fancy.Date = {
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = D.dayIndexes;
+        dayIndexes = F.Date.dayIndexes;
 
       for (; i < iL; i++) {
         fields.push(dayIndexes[i]);
@@ -1838,13 +1835,13 @@ Fancy.Date = {
     /*
      *
      */
-    setData: function () {
+    generateData: function () {
       var me = this,
         format = me.format,
         startDay = format.startDay,
         date = me.showDate,
-        daysInMonth = D.getDaysInMonth(date),
-        firstDayOfMonth = D.getFirstDayOfMonth(date),
+        daysInMonth = F.Date.getDaysInMonth(date),
+        firstDayOfMonth = F.Date.getFirstDayOfMonth(date),
         data = [],
         fields = me.getDataFields(),
         i = 0,
@@ -1883,7 +1880,7 @@ Fancy.Date = {
       }
 
       var prevDate = new Date(year, month, _date, hour, minute, second, millisecond),
-        prevDateDaysInMonth = D.getDaysInMonth(prevDate);
+        prevDateDaysInMonth = F.Date.getDaysInMonth(prevDate);
 
       i = 7;
 
@@ -2002,7 +1999,7 @@ Fancy.Date = {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -2030,7 +2027,7 @@ Fancy.Date = {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -2039,7 +2036,7 @@ Fancy.Date = {
      */
     onUpdate: function () {
       var me = this,
-        value = D.format(me.showDate, 'F Y', {
+        value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
         });
 
@@ -2055,7 +2052,7 @@ Fancy.Date = {
       me.showDate = date;
       me.date = date;
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -2107,7 +2104,7 @@ Fancy.Date = {
         me.date = new Date(year, month, day, hour, minute, second, millisecond);
         me.showDate = me.date;
 
-        var data = me.setData();
+        var data = me.generateData();
 
         me.store.setData(data.items);
         me.update();
@@ -2175,7 +2172,7 @@ Fancy.Date = {
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
 
@@ -2214,7 +2211,7 @@ Fancy.Date = {
 
       me.date = date;
       me.showDate = date;
-      me.store.setData(me.setData().items);
+      me.store.setData(me.generateData().items);
       me.update();
     }
   });
@@ -2300,7 +2297,7 @@ Fancy.Date = {
      *
      */
     initData: function () {
-      this.data = this.setData();
+      this.data = this.generateData();
     },
     /*
      *
@@ -2376,7 +2373,7 @@ Fancy.Date = {
     /*
      * @return {Object}
      */
-    setData: function () {
+    generateData: function () {
       var me = this,
         lang = me.lang,
         date = me.showDate,
@@ -2434,6 +2431,7 @@ Fancy.Date = {
       });
 
       tbar.push({
+        width: 30,
         cls: PICKER_BUTTON_NEXT_CLS,
         handler: me.onNextClick,
         scope: me
@@ -2483,7 +2481,7 @@ Fancy.Date = {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -2505,7 +2503,7 @@ Fancy.Date = {
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },

@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.22',
+  version: '1.6.23',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -992,7 +992,6 @@ Fancy.defineTheme('bootstrap', {
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-
     charWidth: 7
   }
 });
@@ -1004,7 +1003,6 @@ Fancy.defineTheme('bootstrap-no-borders', {
     gridWithoutPanelBorders: [0, 0, 0, 0],
     panelBodyBorders: [0,0,0,0],
     columnLines: false,
-
     charWidth: 8
   }
 });
@@ -1218,9 +1216,17 @@ Fancy.Number = {
   isFloat: function(value){
     return Number(value) === value && value % 1 !== 0;
   },
+  /**
+   * @param {Number} value
+   * @return {Number}
+   */
   getPrecision: function(value){
     return (value + "").split(".")[1].length + 1;
   },
+  /**
+   * @param {Number} value
+   * @return {Number}
+   */
   correctFloat: function(value){
     return parseFloat(value.toPrecision(14));
   }
@@ -4440,7 +4446,7 @@ Fancy.select = function(selector){
  * @param {Function} fn
  */
 Fancy.onReady = function(fn){
-  $(document).ready(fn);
+  Fancy.$(document).ready(fn);
 };
 
 /**
@@ -4557,6 +4563,8 @@ Fancy.defineController = function(name, o){
   Fancy.controllers[name] = o;
 };
 
+Fancy.defineControl = Fancy.defineController;
+
 /*
  * @param {String} name
  * @return {Object}
@@ -4564,6 +4572,8 @@ Fancy.defineController = function(name, o){
 Fancy.getController = function(name){
   return Fancy.controllers[name];
 };
+
+Fancy.getControl = Fancy.getController;
 /**
  * @class Fancy.DD
  * @singleton
@@ -5954,7 +5964,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setActiveWindowWatcher();
       }
     },
-    cls: PANEL_CLS,
+    cls: '',
+    fieldCls: PANEL_CLS,
     value: '',
     width: 300,
     height: 200,
@@ -6009,7 +6020,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el.addCls(PANEL_NOFRAME_CLS);
       }
 
-      el.addCls(F.cls, me.cls);
+      el.addCls(F.cls, me.cls, me.fieldCls);
       if (me.theme !== 'default') {
         el.addCls('fancy-theme-' + me.theme);
       }
@@ -6442,7 +6453,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     ons: function () {
-      this.on('click', this.onClick, this);
+      this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
     text: '',
@@ -6861,7 +6872,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         iL = items.length,
         isSide = false,
         barItems = [],
-        sidePassed = iL - 1;
+        sidePassed = iL - 1,
+        passedRight = 0;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -6881,9 +6893,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
         if (isSide) {
           me.floating = 'right';
+          item.style = item.style || {};
+          item.style['right'] = passedRight;
         }
 
-        //item.renderTo = el.dom;
         item.renderTo = containerEl.dom;
 
         switch (item) {
@@ -6920,6 +6933,18 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             else {
               barItems.push(me.renderItem(item));
             }
+        }
+
+        if(isSide){
+          //TODO: redo with variable
+          //Needs variable charWidth from theme
+          //Possible place of bug: wrong right value.
+          if(item.text){
+            passedRight += item.text.length * 7 + 5 + 5 + 5;
+          }
+          else if(item.width){
+            passedRight += item.width + 5;
+          }
         }
       }
 
@@ -8103,13 +8128,13 @@ if(!Fancy.nojQuery && Fancy.$){
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
         switch (me.type) {
           case 'radio':
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             break;
           case 'textarea':
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
             break;
           default:
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
       else if (me.type !== 'radio') {
@@ -10611,7 +10636,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
       else if (me.labelAlign === 'right') {
         me.el.addCls('fancy-field-label-align-right');
-        $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
+        F.$(el.dom).find('.fancy-field-label').insertAfter(F.$(el.dom).find('.fancy-field-text'));
       }
 
       if (me.valueIndex) {
@@ -12475,12 +12500,34 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     };
 
-    for(var p in me.neededModules){
-      if(p === 'length'){
-        continue;
-      }
+    if(me.neededModules.dom){
+      Fancy.loadModule('dom', function (name) {
+        delete me.neededModules[name];
+        me.neededModules.length--;
 
-      Fancy.loadModule(p, onLoad);
+        if(me.neededModules.length === 0){
+          me.neededModules = true;
+          me.init();
+        }
+        else{
+          for (var p in me.neededModules) {
+            if (p === 'length') {
+              continue;
+            }
+
+            Fancy.loadModule(p, onLoad);
+          }
+        }
+      });
+    }
+    else {
+      for (var p in me.neededModules) {
+        if (p === 'length') {
+          continue;
+        }
+
+        Fancy.loadModule(p, onLoad);
+      }
     }
   },
   /*

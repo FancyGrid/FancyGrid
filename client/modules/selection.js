@@ -89,18 +89,29 @@
      *
      */
     initMemory: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.memory = {
         all: false,
         except: {},
         selected: {},
         setAll: function () {
-          F.apply(me.memory, {
-            all: true,
-            except: {},
-            selected: {}
-          });
+          var filteredDataMap = w.store.filteredDataMap;
+          if(filteredDataMap){
+            for(var p in filteredDataMap){
+              me.memory.selected[p] = true;
+            }
+            me.except = {};
+            me.all = false;
+          }
+          else {
+            F.apply(me.memory, {
+              all: true,
+              except: {},
+              selected: {}
+            });
+          }
         },
         clearAll: function () {
           F.apply(me.memory, {

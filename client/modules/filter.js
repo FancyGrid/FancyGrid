@@ -215,7 +215,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 (function() {
   //SHORTCUTS
   var F = Fancy;
-  var D = Fancy.Date;
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
@@ -271,9 +270,11 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       var me = this,
         w = me.widget;
 
-      me._renderSideFields(w.header, w.columns);
-      me._renderSideFields(w.leftHeader, w.leftColumns);
-      me._renderSideFields(w.rightHeader, w.rightColumns);
+      if(w.header) {
+        me._renderSideFields(w.header, w.columns);
+        me._renderSideFields(w.leftHeader, w.leftColumns);
+        me._renderSideFields(w.rightHeader, w.rightColumns);
+      }
     },
     _renderSideFields: function (header, columns) {
       var me = this,
@@ -956,8 +957,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           value2 = Number(dateTo);
         }
         else {
-          value1 = D.format(dateFrom, format.edit, format.mode);
-          value2 = D.format(dateTo, format.edit, format.mode);
+          value1 = F.Date.format(dateFrom, format.edit, format.mode);
+          value2 = F.Date.format(dateTo, format.edit, format.mode);
         }
 
         value = '>=' + value1 + ',<=' + value2;
@@ -967,7 +968,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           value = '>=' + Number(dateFrom);
         }
         else {
-          value = '>=' + D.format(dateFrom, format.edit, format.mode);
+          value = '>=' + F.Date.format(dateFrom, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '<=', false);
@@ -977,7 +978,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           value = '<=' + Number(dateTo);
         }
         else {
-          value = '<=' + D.format(dateFrom, format.edit, format.mode);
+          value = '<=' + F.Date.format(dateFrom, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '>=', false);
@@ -1209,7 +1210,14 @@ Fancy.define('Fancy.grid.plugin.Search', {
     var me = this,
       w = me.widget;
 
-    if(!me.keys){
+    if(me.items){
+      me.keys = {};
+
+      Fancy.each(me.items, function (item) {
+        me.keys[item.index] = true;
+      })
+    }
+    else if(!me.keys){
       me.keys = {};
 
       var columns = [];
