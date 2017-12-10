@@ -5,7 +5,6 @@
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   F.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
     extend: F.Widget,
@@ -156,7 +155,7 @@
      */
     onChangeDate1: function (field, date) {
       var me = this,
-        date = D.parse(date, field.format.edit, field.format.mode);
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       me.fire('changedatefrom', date);
       me.fire('change');
@@ -166,7 +165,7 @@
      * @param {Date} date
      */
     onChangeDate2: function (field, date) {
-      var date = D.parse(date, field.format.edit, field.format.mode);
+      var date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       this.fire('changedateto', date);
       this.fire('change');

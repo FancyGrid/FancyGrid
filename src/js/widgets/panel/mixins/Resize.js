@@ -10,7 +10,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   initResize: function(){
     var me = this;
 
-    me.addEvents('resize');
     me.activeResizeEl = undefined;
 
     me.renderResizeEls();

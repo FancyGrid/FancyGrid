@@ -5,6 +5,10 @@
 (function () {
   //SHORTCUTS
   var F = Fancy;
+  var HIDE_TIMEOUT = 500;
+
+  var TOOLTIP_CLS = F.TOOLTIP_CLS;
+  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
   F.define('Fancy.grid.plugin.CellTip', {
     extend: F.Plugin,
@@ -72,6 +76,7 @@
 
         F.tip.update(tpl.getHTML(data));
         F.tip.show(e.pageX + 15, e.pageY - 25);
+
       }
     },
     /*
@@ -80,7 +85,7 @@
      */
     onCellLeave: function (grid, o) {
       this.stopped = true;
-      F.tip.hide(1000);
+      F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Fancy.Grid} grid
@@ -88,7 +93,7 @@
      */
     onTouchEnd: function (grid, o) {
       this.stopped = true;
-      F.tip.hide(1000);
+      F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
@@ -103,7 +108,24 @@
 
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
         me.stopped = true;
-        F.tip.hide(1000);
+        F.tip.hide(HIDE_TIMEOUT);
+        return;
+      }
+
+      var targetEl = F.get(e.target);
+
+      if(targetEl.prop('tagName').toLocaleLowerCase() === 'body'){
+        me.stopped = true;
+        F.tip.hide(HIDE_TIMEOUT);
+        return;
+      }
+
+      if(!targetEl.hasClass(TOOLTIP_CLS) && !targetEl.hasClass(TOOLTIP_INNER_CLS)){
+        if(w.el.within(targetEl) === false){
+          me.stopped = true;
+          F.tip.hide(HIDE_TIMEOUT);
+          return;
+        }
       }
 
       F.tip.show(e.pageX + 15, e.pageY - 25);

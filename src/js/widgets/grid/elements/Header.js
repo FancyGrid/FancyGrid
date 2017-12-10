@@ -342,7 +342,7 @@
           var groupName = groupCell.attr('index');
 
           var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
-            groupCellLeft = underGroupCells.item(0).css('left'),
+            groupCellLeft = parseInt(underGroupCells.item(0).css('left')),
             groupCellWidth = 0;
 
           F.each(columns, function (column) {

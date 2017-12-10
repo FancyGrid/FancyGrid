@@ -79,7 +79,7 @@
      *
      */
     initData: function () {
-      this.data = this.setData();
+      this.data = this.generateData();
     },
     /*
      *
@@ -155,7 +155,7 @@
     /*
      * @return {Object}
      */
-    setData: function () {
+    generateData: function () {
       var me = this,
         lang = me.lang,
         date = me.showDate,
@@ -213,6 +213,7 @@
       });
 
       tbar.push({
+        width: 30,
         cls: PICKER_BUTTON_NEXT_CLS,
         handler: me.onNextClick,
         scope: me
@@ -262,7 +263,7 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -284,7 +285,7 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },

@@ -11,6 +11,8 @@
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
   var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
+  var FIELD_COMBO_SELECTED_ITEM_CLS = 'fancy-combo-item-selected';
+  var FIELD_COMBO_FOCUSED_ITEM_CLS = 'fancy-combo-item-focused';
   var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
   var CLEARFIX_CLS = F.CLEARFIX_CLS;
@@ -41,8 +43,8 @@
       F.form.field.Mixin
     ],
     extend: F.Widget,
-    selectedItemCls: 'fancy-combo-item-selected',
-    focusedItemCls: 'fancy-combo-item-focused',
+    selectedItemCls: FIELD_COMBO_SELECTED_ITEM_CLS,
+    focusedItemCls: FIELD_COMBO_FOCUSED_ITEM_CLS,
     fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
@@ -866,7 +868,7 @@
       }
       else if (me.labelAlign === 'right') {
         me.el.addCls('fancy-field-label-align-right');
-        $(el.dom).find('.fancy-field-label').insertAfter($(el.dom).find('.fancy-field-text'));
+        F.$(el.dom).find('.fancy-field-label').insertAfter(F.$(el.dom).find('.fancy-field-text'));
       }
 
       if (me.valueIndex) {

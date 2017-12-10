@@ -73,6 +73,11 @@
           w.leftBody.el.on('scroll', me.onNativeScrollLeftBody, me);
           w.rightBody.el.on('scroll', me.onNativeScrollRightBody, me);
         }
+        else {
+          if (w.panel) {
+            w.panel.on('resize', me.onPanelResize, me);
+          }
+        }
       });
 
       me.on('render', me.onRender, me);
@@ -255,8 +260,13 @@
      */
     onBodyTouchStart: function (e) {
       var me = this,
+        w = me.widget,
         e = e.originalEvent || e,
         touchXY = e.changedTouches[0];
+
+      if (w.nativeScroller) {
+        return;
+      }
 
       me.rightKnobDown = true;
       me.bottomKnobDown = true;
@@ -284,20 +294,34 @@
     onBodyTouchMove: function (e) {
       var me = this,
         e = e.originalEvent,
-        touchXY = e.changedTouches[0];
+        touchXY = e.changedTouches[0],
+        changed = true;
 
-      if (me.rightKnobDown === true) {
+      if(!me.nativeScroller){
+        var scrollLeft = me.scrollLeft,
+          scrollTop = me.scrollTop;
+
+        me.onMouseMoveDoc({
+          pageX: touchXY.pageX,
+          pageY: touchXY.pageY
+        });
+
+        changed = scrollLeft !== me.scrollLeft || scrollTop !== me.scrollTop;
+      }
+      else{
+        me.onMouseMoveDoc({
+          pageX: touchXY.pageX,
+          pageY: touchXY.pageY
+        });
+      }
+
+      if (me.rightKnobDown === true && changed) {
         e.preventDefault();
       }
 
-      if (me.bottomKnobDown === true) {
+      if (me.bottomKnobDown === true && changed) {
         e.preventDefault();
       }
-
-      me.onMouseMoveDoc({
-        pageX: touchXY.pageX,
-        pageY: touchXY.pageY
-      });
     },
     /*
      *
@@ -322,7 +346,6 @@
      */
     onMouseDownRightSpin: function (e) {
       var me = this;
-
 
       if (F.isTouch) {
         return;
@@ -736,7 +759,13 @@
      *
      */
     onColumnResize: function () {
-      this.setScrollBars();
+      var me = this;
+
+      me.setScrollBars();
+
+      setTimeout(function () {
+        me.setScrollBars();
+      }, Fancy.ANIMATE_DURATION + 20);
     },
     /*
      *
@@ -912,6 +941,15 @@
     onUnLockColumn: function () {
       this.update();
       this.widget.setColumnsPosition();
+    },
+    /*
+     *
+     */
+    onPanelResize: function () {
+      var me = this,
+        w = me.widget;
+
+      w.scroll(0, 0);
     }
   });
 

@@ -74,7 +74,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
-    Fancy.tip.hide(1000);
+    Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e

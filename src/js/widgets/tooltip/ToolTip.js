@@ -117,7 +117,8 @@
     onMouseEnter: function (e) {
       var me = this;
 
-      me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
+      //me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
+      me.hide(500);
     }
   });
 

@@ -945,7 +945,7 @@ Fancy.select = function(selector){
  * @param {Function} fn
  */
 Fancy.onReady = function(fn){
-  $(document).ready(fn);
+  Fancy.$(document).ready(fn);
 };
 
 /**

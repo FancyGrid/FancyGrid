@@ -88,6 +88,7 @@
     paddingTextWidth: 5,
     imageWidth: 20,
     pressed: false,
+    theme: 'default',
     tpl: [
       '<div class="' + BUTTON_IMAGE_CLS + '"></div>',
       '<a class="' + BUTTON_TEXT_CLS + '">{text}</a>',
@@ -103,7 +104,7 @@
         width = 0,
         charWidth = 7;
 
-      if(me.theme){
+      if(me.theme && Fancy.themes[me.theme]){
         charWidth = Fancy.themes[me.theme].config.chartWidth;
       }
 

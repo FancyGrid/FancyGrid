@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.22',
+  version: '1.6.24',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -449,6 +449,8 @@ Fancy.apply(Fancy, {
   FIELD_BUTTON_CLS: 'fancy-field-button',
   FIELD_TAB_CLS: 'fancy-field-tab',
   FIELD_COMBO_CLS: 'fancy-combo',
+  FIELD_COMBO_SELECTED_ITEM_CLS: 'fancy-combo-item-selected',
+  FIELD_COMBO_FOCUSED_ITEM_CLS: 'fancy-combo-item-focused',
   FIELD_SEARCH_CLS: 'fancy-field-search',
   FIELD_SEARCH_LIST_CLS: 'fancy-field-search-list',
   FIELD_SEARCH_PARAMS_LINK_CLS: 'fancy-field-search-params-link',

@@ -50,6 +50,7 @@
       var me = this;
 
       me.Super('init', arguments);
+      me.addEvents('resize');
 
       me.initTpl();
       me.render();
@@ -66,7 +67,8 @@
         me.setActiveWindowWatcher();
       }
     },
-    cls: PANEL_CLS,
+    cls: '',
+    fieldCls: PANEL_CLS,
     value: '',
     width: 300,
     height: 200,
@@ -121,7 +123,7 @@
         el.addCls(PANEL_NOFRAME_CLS);
       }
 
-      el.addCls(F.cls, me.cls);
+      el.addCls(F.cls, me.cls, me.fieldCls);
       if (me.theme !== 'default') {
         el.addCls('fancy-theme-' + me.theme);
       }

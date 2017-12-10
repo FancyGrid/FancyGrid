@@ -391,16 +391,29 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       hasLocked = false,
       hasRightLocked = false;
 
-    if(width === undefined && config.renderTo){
-      width = Fancy.get(config.renderTo).width();
+    if(width === undefined || width === 'fit'){
+      width = Fancy.get(config.renderTo || document.body).width();
     }
 
+    width -= config.panelBorderWidth * 2;
     if(config.flexScrollSensitive !== false){
       width -= config.bottomScrollHeight;
-      width -= config.panelBorderWidth * 2;
     }
     else{
-      width -= 1;
+      var theme = this.theme;
+
+      if(Fancy.isString(config.theme)){
+        theme = config.theme;
+      }
+      else if(Fancy.isObject(config.theme)){
+        if(config.theme.name){
+          theme = config.theme.name;
+        }
+      }
+
+      if(theme !== 'bootstrap-no-borders'){
+        width -= 1;
+      }
     }
 
     Fancy.each(columns, function(column, i){
@@ -456,7 +469,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       width -= 2;
     }
 
-    var averageWidth = width/columnsWithoutWidth.length;
+    var averageWidth = parseInt(width/columnsWithoutWidth.length);
 
     if(averageWidth < minWidth){
       averageWidth = minWidth;
@@ -481,8 +494,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     });
 
     if(flexTotal){
-      Fancy.each(flexColumns, function(column){
-        _width -= (_width/flexTotal) * column.flex;
+      var onePerCent = parseInt(_width/flexTotal);
+      Fancy.each(flexColumns, function(columnIndex){
+        _width -= onePerCent * columns[columnIndex].flex;
       });
     }
 
@@ -501,13 +515,29 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(flexTotal){
       Fancy.each(flexColumns, function(value){
         column = columns[value];
+        lastColumn = column;
         if(isOverFlow){
           column.width = defaultWidth * column.flex;
         }
         else {
           column.width = (width / flexTotal) * column.flex;
         }
+
+        column.width = parseInt(column.width);
       });
+
+      if(_width>= 1){
+        Fancy.each(flexColumns, function(value){
+          if(_width < 1){
+            return true;
+          }
+
+          column = columns[value];
+
+          column.width += 1;
+          _width -= 1;
+        });
+      }
     }
 
     return config;
@@ -1108,6 +1138,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(config.searching){
       isSearchable = true;
+      Fancy.apply(searchConfig, config.searching);
     }
 
     if(isSearchable){
@@ -1447,7 +1478,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       for(;i<iL;i++){
         if(tbar[i].type === 'search'){
-          config.searching = true;
+          config.searching = config.searching || {};
           config.filter = true;
         }
 
@@ -1557,6 +1588,26 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         config.responsive = true;
         el = Fancy.get(renderTo);
         config.width = parseInt(el.width());
+
+        if(config.width < 1 && el.prop('tagName').toLocaleLowerCase() !== 'body'){
+          var bootstrapTab = el.closest('.tab-pane');
+          if(bootstrapTab){
+            bootstrapTab.css({
+              display: 'block',
+              visibility: 'hidden'
+            });
+
+            config.width = parseInt(el.width());
+
+            bootstrapTab.css({
+              display: '',
+              visibility: ''
+            });
+          }
+          else {
+            config.width = el.parent().width()
+          }
+        }
       }
     }
     else if(config.width === 'fit'){

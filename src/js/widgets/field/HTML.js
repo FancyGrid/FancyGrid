@@ -39,7 +39,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
       me.css(me.style);
     }
   },
-  fieldCls: 'fancy fancy-field-html',
+  fieldCls: 'fancy-field-html',
   value: '',
   width: 100,
   emptyText: '',
@@ -66,7 +66,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
     me.el = renderTo.appendChild(el);
     me.el = Fancy.get(me.el);
 
-    me.addCls(me.cls, me.fieldCls);
+    me.el.addCls(me.cls, Fancy.cls, me.fieldCls);
 
     me.acceptedValue = me.value;
     me.fire('afterrender');

@@ -3853,6 +3853,9 @@ vml {
 .fancy-theme-bootstrap-no-borders .fancy-grid-header-cell-group-level-2 {
   border-bottom-color: transparent;
 }
+.fancy-theme-bootstrap-no-borders .fancy-grid-summary-row-bottom .fancy-grid-cell {
+  border-top-color: #ccc;
+}
 .fancy-theme-bootstrap-no-borders.fancy-panel {
   border-color: #ccc;
   border-bottom-width: 0;

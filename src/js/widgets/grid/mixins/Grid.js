@@ -1924,6 +1924,10 @@
         height += me.barHeight;
       }
 
+      if (me.summary) {
+        height += me.cellHeight;
+      }
+
       if (me.bbar) {
         height += me.barHeight;
       }
@@ -2221,6 +2225,12 @@
       }
 
       return data;
+    },
+    /*
+     * @param {Array} data
+     */
+    setData: function (data) {
+      this.store.setData(data);
     },
     /*
      *

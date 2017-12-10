@@ -251,13 +251,13 @@
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
         switch (me.type) {
           case 'radio':
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             break;
           case 'textarea':
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
             break;
           default:
-            $(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter($(el.dom).find('.' + FIELD_TEXT_CLS));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
       else if (me.type !== 'radio') {

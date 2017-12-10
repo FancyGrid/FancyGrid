@@ -38,7 +38,7 @@
      *
      */
     ons: function () {
-      this.on('click', this.onClick, this);
+      this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
     text: '',

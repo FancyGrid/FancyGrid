@@ -5,7 +5,6 @@
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
@@ -455,7 +454,7 @@
           break;
         case 'date':
           var format = o.column.format,
-            date = D.parse(o.value, format.read, format.mode);
+            date = F.Date.parse(o.value, format.read, format.mode);
 
           editor.set(date);
           break;
@@ -587,7 +586,7 @@
         case 'date':
           if (column.format && column.format.read) {
             var date = column.editor.getDate();
-            value = D.format(date, column.format.read, undefined, column.format.mode);
+            value = F.Date.format(date, column.format.read, undefined, column.format.mode);
           }
           break;
       }

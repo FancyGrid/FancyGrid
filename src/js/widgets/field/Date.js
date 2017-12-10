@@ -5,7 +5,6 @@
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var CLEARFIX_CLS = F.CLEARFIX_CLS;
@@ -92,14 +91,14 @@
 
         var date;
         if (format) {
-          date = D.parse(value, format, me.format.mode);
+          date = F.Date.parse(value, format, me.format.mode);
         }
         else {
-          date = D.parse(value, me.format.read, me.format.mode);
+          date = F.Date.parse(value, me.format.read, me.format.mode);
         }
 
         if (date.toString === 'Invalid Date') {
-          date = D.parse(value, me.format.edit, me.format.mode);
+          date = F.Date.parse(value, me.format.edit, me.format.mode);
         }
 
         if (date.toString === 'Invalid Date') {
@@ -120,7 +119,7 @@
             delete me.date;
             return;
           }
-          me.date = D.parse(me.value, me.format.read, me.format.mode);
+          me.date = F.Date.parse(me.value, me.format.read, me.format.mode);
           break;
       }
     },
@@ -135,7 +134,7 @@
         return;
       }
 
-      var value = D.format(me.date, me.format.edit, undefined, me.format.mode);
+      var value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
 
       if (me.format && me.format.inputFn) {
         value = me.format.inputFn(value);
@@ -180,16 +179,16 @@
       if (!me.value) {
       }
       else if (F.typeOf(me.value) === 'date') {
-        me.value = D.format(me.value, me.format.read, undefined, me.format.mode);
+        me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
         if (value === undefined) {
-          var _date = D.parse(me.value, me.format.edit, me.format.mode);
-          value = D.format(_date, me.format.edit, undefined, me.format.mode);
+          var _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
+          value = F.Date.format(_date, me.format.edit, undefined, me.format.mode);
         }
         me.acceptedValue = value;
       }
       else {
-        var date = D.parse(me.value, me.format.read, me.format.mode);
-        me.value = D.format(date, me.format.edit, undefined, me.format.mode);
+        var date = F.Date.parse(me.value, me.format.read, me.format.mode);
+        me.value = F.Date.format(date, me.format.edit, undefined, me.format.mode);
       }
 
       if (me.format && me.format.inputFn) {
@@ -386,7 +385,7 @@
       }
 
       if (me.date) {
-        return D.format(me.date, me.format.write, undefined, me.format.mode);
+        return F.Date.format(me.date, me.format.write, undefined, me.format.mode);
       }
       else {
         return '';
@@ -428,7 +427,7 @@
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (D.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
+      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
         return;
       }
 
@@ -443,7 +442,7 @@
     isValid: function () {
       var me = this;
 
-      return D.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
+      return F.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
     },
     /*
      * @param {String|Date|Number} value
@@ -470,10 +469,10 @@
      */
     isEqual: function (oldValue) {
       var me = this,
-        oldDate = D.parse(oldValue, me.format.read, me.format.mode),
+        oldDate = F.Date.parse(oldValue, me.format.read, me.format.mode),
         value = me.input.dom.value;
 
-      oldValue = D.format(oldDate, me.format.edit, undefined, me.format.mode);
+      oldValue = F.Date.format(oldDate, me.format.edit, undefined, me.format.mode);
 
       return oldValue === value;
     },

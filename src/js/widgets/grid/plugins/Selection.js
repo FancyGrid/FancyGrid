@@ -84,23 +84,35 @@
       w.on('lockcolumn', me.onColumnLock, me);
       w.on('rightlockcolumn', me.onColumnRightLock, me);
       w.on('unlockcolumn', me.onUnColumnLock, me);
+      w.on('filter', me.onFilter, me);
     },
     /*
      *
      */
     initMemory: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.memory = {
         all: false,
         except: {},
         selected: {},
         setAll: function () {
-          F.apply(me.memory, {
-            all: true,
-            except: {},
-            selected: {}
-          });
+          var filteredDataMap = w.store.filteredDataMap;
+          if(filteredDataMap){
+            for(var p in filteredDataMap){
+              me.memory.selected[p] = true;
+            }
+            me.except = {};
+            me.all = false;
+          }
+          else {
+            F.apply(me.memory, {
+              all: true,
+              except: {},
+              selected: {}
+            });
+          }
         },
         clearAll: function () {
           F.apply(me.memory, {
@@ -1869,6 +1881,37 @@
           rightBody.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"] .' + FIELD_CHECKBOX_CLS).each(function (el) {
             F.getWidget(el.attr('id'))[method]();
           });
+        }
+      });
+    },
+    onFilter: function () {
+      var me = this,
+        w = me.widget;
+
+      F.each(w.leftColumns, function (column, i) {
+        if(column.type === 'select'){
+          var cell = w.leftHeader.getCell(i),
+            checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+
+          checkBox.set(false, false);
+        }
+      });
+
+      F.each(w.columns, function (column, i) {
+        if(column.type === 'select'){
+          var cell = w.header.getCell(i),
+            checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+
+          checkBox.set(false, false);
+        }
+      });
+
+      F.each(w.rightColumns, function (column, i) {
+        if(column.type === 'select'){
+          var cell = w.rightHeader.getCell(i),
+            checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+
+          checkBox.set(false, false);
         }
       });
     }

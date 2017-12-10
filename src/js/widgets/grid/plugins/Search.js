@@ -107,7 +107,14 @@ Fancy.define('Fancy.grid.plugin.Search', {
     var me = this,
       w = me.widget;
 
-    if(!me.keys){
+    if(me.items){
+      me.keys = {};
+
+      Fancy.each(me.items, function (item) {
+        me.keys[item.index] = true;
+      })
+    }
+    else if(!me.keys){
       me.keys = {};
 
       var columns = [];

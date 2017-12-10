@@ -5,7 +5,6 @@
 (function() {
   //SHORTCUTS
   var F = Fancy;
-  var D = Fancy.Date;
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
@@ -61,9 +60,11 @@
       var me = this,
         w = me.widget;
 
-      me._renderSideFields(w.header, w.columns);
-      me._renderSideFields(w.leftHeader, w.leftColumns);
-      me._renderSideFields(w.rightHeader, w.rightColumns);
+      if(w.header) {
+        me._renderSideFields(w.header, w.columns);
+        me._renderSideFields(w.leftHeader, w.leftColumns);
+        me._renderSideFields(w.rightHeader, w.rightColumns);
+      }
     },
     _renderSideFields: function (header, columns) {
       var me = this,
@@ -746,8 +747,8 @@
           value2 = Number(dateTo);
         }
         else {
-          value1 = D.format(dateFrom, format.edit, format.mode);
-          value2 = D.format(dateTo, format.edit, format.mode);
+          value1 = F.Date.format(dateFrom, format.edit, format.mode);
+          value2 = F.Date.format(dateTo, format.edit, format.mode);
         }
 
         value = '>=' + value1 + ',<=' + value2;
@@ -757,7 +758,7 @@
           value = '>=' + Number(dateFrom);
         }
         else {
-          value = '>=' + D.format(dateFrom, format.edit, format.mode);
+          value = '>=' + F.Date.format(dateFrom, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '<=', false);
@@ -767,7 +768,7 @@
           value = '<=' + Number(dateTo);
         }
         else {
-          value = '<=' + D.format(dateFrom, format.edit, format.mode);
+          value = '<=' + F.Date.format(dateFrom, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '>=', false);

@@ -75,9 +75,18 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     };
 
     if(!Fancy.modules['grid'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false){
-      Fancy.loadModule('grid', function(){
-        preInit();
-      });
+      if(Fancy.nojQuery){
+        Fancy.loadModule('dom', function(){
+          Fancy.loadModule('grid', function(){
+            preInit();
+          });
+        });
+      }
+      else{
+        Fancy.loadModule('grid', function(){
+          preInit();
+        });
+      }
     }
     else{
       preInit();
@@ -323,12 +332,34 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     };
 
-    for(var p in me.neededModules){
-      if(p === 'length'){
-        continue;
-      }
+    if(me.neededModules.dom){
+      Fancy.loadModule('dom', function (name) {
+        delete me.neededModules[name];
+        me.neededModules.length--;
 
-      Fancy.loadModule(p, onLoad);
+        if(me.neededModules.length === 0){
+          me.neededModules = true;
+          me.init();
+        }
+        else{
+          for (var p in me.neededModules) {
+            if (p === 'length') {
+              continue;
+            }
+
+            Fancy.loadModule(p, onLoad);
+          }
+        }
+      });
+    }
+    else {
+      for (var p in me.neededModules) {
+        if (p === 'length') {
+          continue;
+        }
+
+        Fancy.loadModule(p, onLoad);
+      }
     }
   },
   /*
@@ -485,7 +516,13 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
  * @param {String} id
  */
 FancyGrid.get = function(id){
-  var gridId = Fancy.get(id).select('.' + Fancy.GRID_CLS).dom.id;
+  var gridEl = Fancy.get(id).select('.' + Fancy.GRID_CLS);
+
+  if(!gridEl.dom){
+    return;
+  }
+
+  var gridId = gridEl.dom.id;
 
   return Fancy.getWidget(gridId);
 };

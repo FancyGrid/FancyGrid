@@ -143,6 +143,7 @@
 
       me.collapseRow(Number(rowIndex), id);
       me.clearMargin(Number(rowIndex) + 1, id);
+      delete me._expandedIds[id];
 
       me.reSetTop();
       me.reSetPlusScroll();

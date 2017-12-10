@@ -503,7 +503,10 @@
           w.leftColumns[me.columnIndex].width = cellWidth;
           domColumns = w.leftBody.el.select('.' + GRID_COLUMN_CLS);
           domHeaderCells = w.leftHeader.el.select('.' + GRID_HEADER_CELL_CLS);
-          domColumns.item(index).animate({width: cellWidth}, ANIMATE_DURATION);
+          var columnEl = domColumns.item(index);
+          columnEl.animate({width: cellWidth}, ANIMATE_DURATION);
+          //Bug fix: jQuery add overflow. It causes bad side effect for column cells.
+          columnEl.css('overflow', '');
 
           var i = me.columnIndex + 1,
             iL = domHeaderCells.length,
@@ -549,7 +552,10 @@
           w.columns[me.columnIndex].width = cellWidth;
           domColumns = w.body.el.select('.' + GRID_COLUMN_CLS);
           domHeaderCells = w.header.el.select('.' + GRID_HEADER_CELL_CLS);
-          domColumns.item(index).animate({width: cellWidth}, ANIMATE_DURATION);
+          var columnEl = domColumns.item(index);
+          columnEl.animate({width: cellWidth}, ANIMATE_DURATION);
+          //Bug fix: jQuery add overflow. It causes bad side effect for column cells.
+          columnEl.css('overflow', '');
 
           var i = me.columnIndex + 1,
             iL = domHeaderCells.length,
@@ -596,7 +602,10 @@
           w.rightColumns[me.columnIndex].width = cellWidth;
           domColumns = w.rightBody.el.select('.' + GRID_COLUMN_CLS);
           domHeaderCells = w.rightHeader.el.select('.' + GRID_HEADER_CELL_CLS);
-          domColumns.item(index).animate({width: cellWidth + 'px'}, ANIMATE_DURATION);
+          var columnEl = domColumns.item(index);
+          columnEl.animate({width: cellWidth + 'px'}, ANIMATE_DURATION);
+          //Bug fix: jQuery add overflow. It causes bad side effect for column cells.
+          columnEl.css('overflow', '');
 
           var i = me.columnIndex + 1,
             iL = domHeaderCells.length,

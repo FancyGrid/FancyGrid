@@ -7,11 +7,12 @@
   var F = Fancy;
 
   //CONSTANTS
-  var GRID_CELL_CLS = Fancy.GRID_CELL_CLS;
-  var GRID_CELL_INNER_CLS = Fancy.GRID_CELL_INNER_CLS;
-  var GRID_ROW_SUMMARY_CLS = Fancy.GRID_ROW_SUMMARY_CLS;
-  var GRID_ROW_SUMMARY_CONTAINER_CLS = Fancy.GRID_ROW_SUMMARY_CONTAINER_CLS;
-  var GRID_ROW_SUMMARY_BOTTOM_CLS = Fancy.GRID_ROW_SUMMARY_BOTTOM_CLS;
+  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  var GRID_CELL_EVEN_CLS = F.GRID_CELL_EVEN_CLS;
+  var GRID_ROW_SUMMARY_CLS = F.GRID_ROW_SUMMARY_CLS;
+  var GRID_ROW_SUMMARY_CONTAINER_CLS = F.GRID_ROW_SUMMARY_CONTAINER_CLS;
+  var GRID_ROW_SUMMARY_BOTTOM_CLS = F.GRID_ROW_SUMMARY_BOTTOM_CLS;
   var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
   var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
   var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS = F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
@@ -27,6 +28,7 @@
     sumDisplayed: true,
     topOffSet: 0,
     bottomOffSet: 0,
+    striped: false,
     /*
      * @constructor
      * @param {Object} config
@@ -186,6 +188,16 @@
 
       if (w.rightColumns.length) {
         me.updateSide('right');
+      }
+
+      if(me.striped && me.position === 'bottom'){
+        var cells = w.el.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS + ' .' + GRID_CELL_CLS);
+        if(w.getViewTotal() % 2 === 1){
+          cells.addCls(GRID_CELL_EVEN_CLS);
+        }
+        else{
+          cells.removeCls(GRID_CELL_EVEN_CLS);
+        }
       }
     },
     /*

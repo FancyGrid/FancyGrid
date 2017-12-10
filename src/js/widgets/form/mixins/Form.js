@@ -94,6 +94,11 @@
           resizable: me.resizable
         };
 
+      if(me.cls){
+        panelConfig.cls = me.cls;
+        delete me.cls;
+      }
+
       if (me.tabs) {
         panelConfig.tbar = me.generateTabs();
         me.height -= me.barHeight;

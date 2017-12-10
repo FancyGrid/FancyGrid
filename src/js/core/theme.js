@@ -117,7 +117,6 @@ Fancy.defineTheme('bootstrap', {
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-
     charWidth: 7
   }
 });
@@ -129,7 +128,6 @@ Fancy.defineTheme('bootstrap-no-borders', {
     gridWithoutPanelBorders: [0, 0, 0, 0],
     panelBodyBorders: [0,0,0,0],
     columnLines: false,
-
     charWidth: 8
   }
 });

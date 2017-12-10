@@ -714,16 +714,19 @@
 
       F.each(columns, function (column, i) {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
-        /*
-        el.css({
-          width: column.width,
-          left: left
-        });
-        */
-        el.animate({
-          width: column.width,
-          left: left
-        }, ANIMATE_DURATION);
+        if(Fancy.nojQuery){
+          //Bug: zepto dom module does not support for 2 animation params.
+          el.animate({'width': column.width}, ANIMATE_DURATION);
+          el.animate({'left': left}, ANIMATE_DURATION);
+        }
+        else{
+          el.animate({
+            width: column.width,
+            left: left
+          }, ANIMATE_DURATION);
+
+          el.css('overflow', '');
+        }
 
         left += column.width;
       });

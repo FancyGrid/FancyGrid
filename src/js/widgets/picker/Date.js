@@ -4,7 +4,6 @@
 (function () {
   //SHORTCUTS
   var F = Fancy;
-  var D = F.Date;
 
   //CONSTANTS
   var PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
@@ -158,7 +157,7 @@
      *
      */
     initData: function () {
-      this.data = this.setData();
+      this.data = this.generateData();
     },
     /*
      *
@@ -182,7 +181,7 @@
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = D.dayIndexes,
+        dayIndexes = F.Date.dayIndexes,
         columns = [],
         today = new Date();
 
@@ -277,7 +276,7 @@
         startDay = format.startDay,
         i = startDay,
         iL = days.length,
-        dayIndexes = D.dayIndexes;
+        dayIndexes = F.Date.dayIndexes;
 
       for (; i < iL; i++) {
         fields.push(dayIndexes[i]);
@@ -295,13 +294,13 @@
     /*
      *
      */
-    setData: function () {
+    generateData: function () {
       var me = this,
         format = me.format,
         startDay = format.startDay,
         date = me.showDate,
-        daysInMonth = D.getDaysInMonth(date),
-        firstDayOfMonth = D.getFirstDayOfMonth(date),
+        daysInMonth = F.Date.getDaysInMonth(date),
+        firstDayOfMonth = F.Date.getFirstDayOfMonth(date),
         data = [],
         fields = me.getDataFields(),
         i = 0,
@@ -340,7 +339,7 @@
       }
 
       var prevDate = new Date(year, month, _date, hour, minute, second, millisecond),
-        prevDateDaysInMonth = D.getDaysInMonth(prevDate);
+        prevDateDaysInMonth = F.Date.getDaysInMonth(prevDate);
 
       i = 7;
 
@@ -459,7 +458,7 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -487,7 +486,7 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -496,7 +495,7 @@
      */
     onUpdate: function () {
       var me = this,
-        value = D.format(me.showDate, 'F Y', {
+        value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
         });
 
@@ -512,7 +511,7 @@
       me.showDate = date;
       me.date = date;
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -564,7 +563,7 @@
         me.date = new Date(year, month, day, hour, minute, second, millisecond);
         me.showDate = me.date;
 
-        var data = me.setData();
+        var data = me.generateData();
 
         me.store.setData(data.items);
         me.update();
@@ -632,7 +631,7 @@
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 
-      var data = me.setData();
+      var data = me.generateData();
       me.store.setData(data.items);
       me.update();
 
@@ -671,7 +670,7 @@
 
       me.date = date;
       me.showDate = date;
-      me.store.setData(me.setData().items);
+      me.store.setData(me.generateData().items);
       me.update();
     }
   });

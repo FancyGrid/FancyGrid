@@ -63,7 +63,7 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
 
     formReCaptchaEl.one('submit', function(e){
       e.preventDefault();
-      me.value = $(this).serialize().replace('g-recaptcha-response=', '');
+      me.value = Fancy.$(this).serialize().replace('g-recaptcha-response=', '');
     });
 
     formReCaptchaEl.submit();

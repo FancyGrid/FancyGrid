@@ -113,7 +113,8 @@
         iL = items.length,
         isSide = false,
         barItems = [],
-        sidePassed = iL - 1;
+        sidePassed = iL - 1,
+        passedRight = 0;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -133,9 +134,10 @@
 
         if (isSide) {
           me.floating = 'right';
+          item.style = item.style || {};
+          item.style['right'] = passedRight;
         }
 
-        //item.renderTo = el.dom;
         item.renderTo = containerEl.dom;
 
         switch (item) {
@@ -172,6 +174,18 @@
             else {
               barItems.push(me.renderItem(item));
             }
+        }
+
+        if(isSide){
+          //TODO: redo with variable
+          //Needs variable charWidth from theme
+          //Possible place of bug: wrong right value.
+          if(item.text){
+            passedRight += item.text.length * 7 + 5 + 5 + 5;
+          }
+          else if(item.width){
+            passedRight += item.width + 5;
+          }
         }
       }
 
