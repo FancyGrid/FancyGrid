@@ -53,6 +53,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           case '=':
           case '==':
             if(Fancy.isArray(value)){
+              Fancy.each(value, function (_v, i) {
+                value[i] = String(_v);
+              });
+
               indexValue = String(indexValue);
               passed = value.indexOf(indexValue) !== -1;
             }
@@ -73,7 +77,17 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = indexValue !== value;
             break;
           case '!=':
-            passed = indexValue != value;
+            if(Fancy.isArray(value)){
+              Fancy.each(value, function (_v, i) {
+                value[i] = String(_v);
+              });
+
+              indexValue = String(indexValue);
+              passed = value.indexOf(indexValue) === -1;
+            }
+            else {
+              passed = indexValue != value;
+            }
             break;
           case '':
             value = String(value).toLocaleLowerCase();

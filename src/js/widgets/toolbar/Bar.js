@@ -384,16 +384,20 @@
 
           item.events = item.events.concat([{
             enter: function (field, value) {
-              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+
               //this.search(['name', 'surname', 'position'], value);
               //this.search(value);
               //this.search(['a', 'b', 'c']);
               grid.search(value);
+              if(grid.expander){
+                grid.expander.reSet();
+              }
             }
           }, {
             key: function (field, value) {
               var me = this,
-                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
               if (!me.autoEnterTime) {
                 me.autoEnterTime = new Date();
@@ -413,6 +417,10 @@
                   value = field.getValue();
 
                   grid.search(value);
+
+                  if(grid.expander){
+                    grid.expander.reSet();
+                  }
                 }
               }, 200);
             }

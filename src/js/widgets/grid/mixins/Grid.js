@@ -1916,6 +1916,11 @@
         }
       });
 
+      if(me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE){
+        console.log(me.getCenterFullWidth(), me.getCenterViewWidth());
+        height += me.bottomScrollHeight;
+      }
+
       if (me.title) {
         height += me.titleHeight;
       }

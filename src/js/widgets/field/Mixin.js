@@ -252,16 +252,19 @@
         switch (me.type) {
           case 'radio':
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).css('float', 'right');
             break;
           case 'textarea':
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
+            break;
+          case 'checkbox':
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).css('float', 'right');
             break;
           default:
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
-      else if (me.type !== 'radio') {
-      }
+      else if (me.type !== 'radio') {}
 
       me.acceptedValue = me.value;
       me.fire('afterrender');
@@ -842,9 +845,23 @@
      * @param {Object} e
      */
     onMouseMove: function (e) {
-      var me = this;
+      var me = this,
+        //Link on grid if presented
+        w = me.widget;
 
       delete me.tooltipToDestroy;
+
+      if(w){
+        if(w.startResizing && me.tooltip){
+          me.tooltip.destroy();
+          return;
+        }
+
+        if(w.columndrag && w.columndrag.status === 'dragging'){
+          me.tooltip.destroy();
+          return;
+        }
+      }
 
       if (me.tip) {
         me.renderTip(e);

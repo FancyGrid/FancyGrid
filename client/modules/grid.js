@@ -389,7 +389,19 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       flexTotal = 0,
       column,
       hasLocked = false,
-      hasRightLocked = false;
+      hasRightLocked = false,
+      bootstrapTab = false,
+      _el = Fancy.get(config.renderTo || document.body);
+
+    if((config.width < 1 || config.width === undefined) && _el.prop('tagName').toLocaleLowerCase() !== 'body') {
+      bootstrapTab = _el.closest('.tab-pane');
+      if (bootstrapTab) {
+        bootstrapTab.css({
+          display: 'block',
+          visibility: 'hidden'
+        });
+      }
+    }
 
     if(width === undefined || width === 'fit'){
       width = Fancy.get(config.renderTo || document.body).width();
@@ -538,6 +550,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           _width -= 1;
         });
       }
+    }
+
+    if(bootstrapTab){
+      bootstrapTab.css({
+        display: '',
+        visibility: ''
+      });
     }
 
     return config;
@@ -1487,6 +1506,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             if(tbar[i].handler === undefined){
               tbar[i].handler = function(){
                 me.insert(0, {});
+                me.scroll(0);
               };
             }
             break;
@@ -3684,6 +3704,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           }
         }
       });
+
+      if(me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE){
+        console.log(me.getCenterFullWidth(), me.getCenterViewWidth());
+        height += me.bottomScrollHeight;
+      }
 
       if (me.title) {
         height += me.titleHeight;
@@ -9054,6 +9079,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
               break;
           }
+        }
+
+        if(F.isNumber(height)){
+          height += 'px';
         }
 
         html += me.cellTpl.getHTML({

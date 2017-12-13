@@ -160,7 +160,7 @@
     onCellEnter: function (grid, params) {
       var w = this.widget;
 
-      if (!w.cellTrackOver || w.startResizing) {
+      if (!w.cellTrackOver || w.startResizing || F.isTouch) {
         return;
       }
 
@@ -188,7 +188,7 @@
         columndrag = w.columndrag,
         scroller = w.scroller;
 
-      if(columndrag && columndrag.status === 'dragging'){
+      if((columndrag && columndrag.status === 'dragging') || F.isTouch){
         return;
       }
 
@@ -229,6 +229,10 @@
         scroller = w.scroller;
 
       if(columndrag && columndrag.status === 'dragging'){
+        return;
+      }
+
+      if(F.isTouch){
         return;
       }
 
@@ -1888,32 +1892,34 @@
       var me = this,
         w = me.widget;
 
-      F.each(w.leftColumns, function (column, i) {
-        if(column.type === 'select'){
-          var cell = w.leftHeader.getCell(i),
-            checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+      if(me.selModel === 'rows') {
+        F.each(w.leftColumns, function (column, i) {
+          if (column.type === 'select') {
+            var cell = w.leftHeader.getCell(i),
+              checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
 
-          checkBox.set(false, false);
-        }
-      });
+            checkBox.set(false, false);
+          }
+        });
 
-      F.each(w.columns, function (column, i) {
-        if(column.type === 'select'){
-          var cell = w.header.getCell(i),
-            checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+        F.each(w.columns, function (column, i) {
+          if (column.type === 'select') {
+            var cell = w.header.getCell(i),
+              checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
 
-          checkBox.set(false, false);
-        }
-      });
+            checkBox.set(false, false);
+          }
+        });
 
-      F.each(w.rightColumns, function (column, i) {
-        if(column.type === 'select'){
-          var cell = w.rightHeader.getCell(i),
-            checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+        F.each(w.rightColumns, function (column, i) {
+          if (column.type === 'select') {
+            var cell = w.rightHeader.getCell(i),
+              checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
 
-          checkBox.set(false, false);
-        }
-      });
+            checkBox.set(false, false);
+          }
+        });
+      }
     }
   });
 

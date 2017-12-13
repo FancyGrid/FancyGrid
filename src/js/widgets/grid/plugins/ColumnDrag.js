@@ -17,6 +17,8 @@
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
   var GRID_STATE_DRAG_COLUMN_CLS = F.GRID_STATE_DRAG_COLUMN_CLS;
+  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  var FIELD_CHECKBOX_INPUT_CLS =  F.FIELD_CHECKBOX_INPUT_CLS;
 
   F.define('Fancy.grid.plugin.ColumnDrag', {
     extend: F.Plugin,
@@ -71,6 +73,10 @@
         targetEl = F.get(e.target);
 
       if(targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_CLS) || targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)){
+        return;
+      }
+
+      if(targetEl.hasCls(FIELD_TEXT_INPUT_CLS) || targetEl.hasCls(FIELD_CHECKBOX_INPUT_CLS)){
         return;
       }
 

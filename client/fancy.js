@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.24',
+  version: '1.6.25',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -7146,16 +7146,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
           item.events = item.events.concat([{
             enter: function (field, value) {
-              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+
               //this.search(['name', 'surname', 'position'], value);
               //this.search(value);
               //this.search(['a', 'b', 'c']);
               grid.search(value);
+              if(grid.expander){
+                grid.expander.reSet();
+              }
             }
           }, {
             key: function (field, value) {
               var me = this,
-                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id'));
+                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
               if (!me.autoEnterTime) {
                 me.autoEnterTime = new Date();
@@ -7175,6 +7179,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                   value = field.getValue();
 
                   grid.search(value);
+
+                  if(grid.expander){
+                    grid.expander.reSet();
+                  }
                 }
               }, 200);
             }
@@ -8132,16 +8140,19 @@ if(!Fancy.nojQuery && Fancy.$){
         switch (me.type) {
           case 'radio':
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).css('float', 'right');
             break;
           case 'textarea':
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXTAREA_TEXT_CLS));
+            break;
+          case 'checkbox':
+            F.$(el.dom).find('.' + FIELD_LABEL_CLS).css('float', 'right');
             break;
           default:
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
-      else if (me.type !== 'radio') {
-      }
+      else if (me.type !== 'radio') {}
 
       me.acceptedValue = me.value;
       me.fire('afterrender');
@@ -8722,9 +8733,23 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Object} e
      */
     onMouseMove: function (e) {
-      var me = this;
+      var me = this,
+        //Link on grid if presented
+        w = me.widget;
 
       delete me.tooltipToDestroy;
+
+      if(w){
+        if(w.startResizing && me.tooltip){
+          me.tooltip.destroy();
+          return;
+        }
+
+        if(w.columndrag && w.columndrag.status === 'dragging'){
+          me.tooltip.destroy();
+          return;
+        }
+      }
 
       if (me.tip) {
         me.renderTip(e);

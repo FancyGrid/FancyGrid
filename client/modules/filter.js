@@ -53,6 +53,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           case '=':
           case '==':
             if(Fancy.isArray(value)){
+              Fancy.each(value, function (_v, i) {
+                value[i] = String(_v);
+              });
+
               indexValue = String(indexValue);
               passed = value.indexOf(indexValue) !== -1;
             }
@@ -73,7 +77,17 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = indexValue !== value;
             break;
           case '!=':
-            passed = indexValue != value;
+            if(Fancy.isArray(value)){
+              Fancy.each(value, function (_v, i) {
+                value[i] = String(_v);
+              });
+
+              indexValue = String(indexValue);
+              passed = value.indexOf(indexValue) === -1;
+            }
+            else {
+              passed = indexValue != value;
+            }
             break;
           case '':
             value = String(value).toLocaleLowerCase();
@@ -437,6 +451,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       var me = this,
         w = me.widget;
 
+      if(value === undefined || value.length === 0){
+        return;
+      }
+
       me._addValuesInColumnFields(w.columns, w.header, index, value, sign);
       me._addValuesInColumnFields(w.leftColumns, w.leftHeader, index, value, sign);
       me._addValuesInColumnFields(w.rightColumns, w.rightHeader, index, value, sign);
@@ -511,7 +529,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             style: style,
             events: events,
             emptyText: filter.emptyText,
-            tip: tip
+            tip: tip,
+            widget: w
           });
           break;
         case 'number':
@@ -537,6 +556,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             style: style,
             emptyText: filter.emptyText,
             events: events,
+            widget: w,
             tip: tip
           });
           break;
@@ -569,6 +589,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             height: 28,
             emptyText: filter.emptyText,
             theme: theme,
+            widget: w,
             tip: tip,
             multiSelect: column.multiSelect,
             itemCheckBox: column.itemCheckBox,
@@ -584,6 +605,36 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             data: data
           });
 
+          break;
+        case 'select':
+          if(w.selection && /row/.test(w.selection.selModel)){
+            field = new F.Combo({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              displayKey: 'text',
+              valueKey: 'value',
+              width: column.width - 8,
+              emptyText: filter.emptyText,
+              value: '',
+              editable: false,
+              events: [{
+                change: me.onEnterSelect,
+                scope: me
+              }],
+              data: [{
+                value: '',
+                text: ''
+              }, {
+                value: 'false',
+                text: w.lang.no
+              }, {
+                value: 'true',
+                text: w.lang.yes
+              }]
+            });
+          }
           break;
         case 'checkbox':
           field = new F.Combo({
@@ -747,6 +798,39 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
 
       w.setSidesHeight();
+    },
+    /*
+     * @param {Object} field
+     * @param {String|Number} value
+     * @param {Object} options
+     */
+    onEnterSelect: function (field, value, options) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        selected = w.getSelection(),
+        ids = [];
+
+      Fancy.each(selected, function (item) {
+        ids.push(item.id);
+      });
+
+      if(value === String(true)){
+        if(ids.length){
+          w.addFilter('id', ids, '=');
+        }
+        else{
+          w.clearFilter('id', '=');
+          w.clearFilter('id', '!=');
+        }
+      }
+      else if(value === String(false)){
+        w.clearFilter('id', '=');
+        w.addFilter('id', ids, '!=');
+      }
+      else{
+        w.clearFilter('id');
+      }
     },
     /*
      * @param {String|Number} value

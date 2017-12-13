@@ -1134,7 +1134,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         me.show();
         me.changePosition(o.rowIndex, !isHidden);
 
-        me.setValues(o);
+        if(!isHidden){
+          setTimeout(function () {
+            me.setValues(o);
+          }, F.ANIMATE_DURATION);
+        }
+        else {
+          me.setValues(o);
+        }
       }
 
       me.setSizes();

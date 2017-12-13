@@ -176,6 +176,10 @@
           }
         }
 
+        if(F.isNumber(height)){
+          height += 'px';
+        }
+
         html += me.cellTpl.getHTML({
           cls: cls,
           columnName: title,

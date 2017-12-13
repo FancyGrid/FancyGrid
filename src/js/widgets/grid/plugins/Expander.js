@@ -355,6 +355,10 @@
       me.reSetPlusScroll();
       me.changeSidesSize();
       w.scroller.scrollDelta(1);
+      w.setSidesHeight();
+      setTimeout(function () {
+        w.setSidesHeight();
+      }, 100);
     },
     /*
      * @param {Number} rowIndex
