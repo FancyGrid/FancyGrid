@@ -6,6 +6,7 @@
 
   //CONSTANTS
   var GRID_CLS = F.GRID_CLS;
+  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
   var BUTTON_CLS = F.BUTTON_CLS;
   var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
   var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
@@ -105,7 +106,7 @@
         charWidth = 7;
 
       if(me.theme && Fancy.themes[me.theme]){
-        charWidth = Fancy.themes[me.theme].config.chartWidth;
+        charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
       me.fire('beforerender');
@@ -115,8 +116,6 @@
       }
 
       renderTo = F.get(me.renderTo || document.body).dom;
-
-
 
       if(me.width){
         width = me.width;
@@ -298,7 +297,7 @@
      */
     getHandler: function(name){
       var me = this,
-        grid = F.getWidget(me.el.parent().parent().select('.' + GRID_CLS).attr('id'));
+        grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');

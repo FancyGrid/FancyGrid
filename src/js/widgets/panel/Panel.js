@@ -433,17 +433,26 @@
         'z-index': 1000 + F.zIndex++
       });
 
-      F.select('.' + MODAL_CLS).css('display', '');
+      if(me.modal){
+        F.select('.' + MODAL_CLS).css({
+          'display': '',
+          'z-index': 1000 + F.zIndex - 2
+        });
+      }
     },
     /*
      *
      */
     hide: function () {
-      this.css({
+      var me = this;
+
+      me.css({
         display: 'none'
       });
 
-      F.select('.' + MODAL_CLS).css('display', 'none');
+      if(me.modal){
+        F.select('.' + MODAL_CLS).css('display', 'none');
+      }
 
       F.each(this.items || [], function (item) {
         if (item.type === 'combo') {
@@ -501,7 +510,7 @@
     setActiveWindowWatcher: function () {
       var me = this;
 
-      me.el.on('click', function (e) {
+      me.el.on('mousedown', function (e) {
         var targetEl = F.get(e.target);
 
         if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {

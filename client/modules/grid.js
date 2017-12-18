@@ -2858,12 +2858,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     show: function () {
       var me = this;
 
-      if (me.panel) {
-        me.panel.show.apply(me.panel, arguments);
-      }
-      else {
-        me.el.show();
-      }
+      setTimeout(function () {
+        if (me.panel) {
+          me.panel.show.apply(me.panel, arguments);
+        }
+        else {
+          me.el.show();
+        }
+      }, 30);
     },
     /*
      *
@@ -3706,7 +3708,6 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       });
 
       if(me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE){
-        console.log(me.getCenterFullWidth(), me.getCenterViewWidth());
         height += me.bottomScrollHeight;
       }
 
@@ -4047,6 +4048,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     disableSelection: function () {
       this.selection.disableSelection()
+    },
+    /*
+     * @param {Object} o
+     */
+    setParams: function (o) {
+      var me = this,
+        s = me.store;
+
+      if(s.proxy && s.proxy.params){
+        F.apply(s.proxy.params, o);
+      }
     }
   });
 
@@ -8203,6 +8215,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+
+      me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
     },
     /*
      *
@@ -8885,6 +8899,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         }
       });
+    },
+    onContextMenu: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('contextmenu', me.getEventParams(e));
     }
   });
 

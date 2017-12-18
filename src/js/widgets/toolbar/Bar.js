@@ -36,7 +36,7 @@
     cls: '',
     text: '',
     floating: 'left',
-    sideRight: 0,
+    sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
     barScrollEnabled: true,
@@ -61,7 +61,7 @@
         me.initScroll();
         setTimeout(function () {
           me.checkScroll();
-        }, 50);
+        }, 150);
       }
     },
     /*
@@ -114,7 +114,7 @@
         isSide = false,
         barItems = [],
         sidePassed = iL - 1,
-        passedRight = 0;
+        passedRight = 3;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -260,8 +260,8 @@
               width += parseInt(fieldEl.$dom.outerWidth());
             }
 
-            width += parseInt(fieldEl.css('padding-left'));
-            width += parseInt(fieldEl.css('padding-right'));
+            //width += parseInt(fieldEl.css('padding-left'));
+            //width += parseInt(fieldEl.css('padding-right'));
           }
 
           renderTo.css('width', width);

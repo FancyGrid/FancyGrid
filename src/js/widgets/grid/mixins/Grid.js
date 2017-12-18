@@ -1069,12 +1069,14 @@
     show: function () {
       var me = this;
 
-      if (me.panel) {
-        me.panel.show.apply(me.panel, arguments);
-      }
-      else {
-        me.el.show();
-      }
+      setTimeout(function () {
+        if (me.panel) {
+          me.panel.show.apply(me.panel, arguments);
+        }
+        else {
+          me.el.show();
+        }
+      }, 30);
     },
     /*
      *
@@ -1917,7 +1919,6 @@
       });
 
       if(me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE){
-        console.log(me.getCenterFullWidth(), me.getCenterViewWidth());
         height += me.bottomScrollHeight;
       }
 
@@ -2258,6 +2259,17 @@
      */
     disableSelection: function () {
       this.selection.disableSelection()
+    },
+    /*
+     * @param {Object} o
+     */
+    setParams: function (o) {
+      var me = this,
+        s = me.store;
+
+      if(s.proxy && s.proxy.params){
+        F.apply(s.proxy.params, o);
+      }
     }
   });
 

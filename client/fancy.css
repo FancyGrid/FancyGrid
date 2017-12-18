@@ -2011,6 +2011,14 @@ vml {
 .fancy-date-picker-cell-out-range {
   color: #d0d0d0;
 }
+.fancy-date-picker-cell-out-min-max {
+  background: #E0E5E9;
+  color: #d0d0d0;
+  cursor: default !important;
+}
+.fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
+  cursor: default !important;
+}
 .fancy-date-picker-cell-today .fancy-grid-cell-inner {
   font-weight: bold;
 }
@@ -2037,7 +2045,7 @@ vml {
   display: block;
 }
 .fancy-picker-button-date {
-  margin: 4px auto !important;
+  margin: 3px auto !important;
   float: none !important;
 }
 .fancy-picker-button-date-wrapper {
@@ -2302,6 +2310,16 @@ vml {
 .fancy-theme-blue .fancy-grid-header-cell-trigger-image {
   background-image: url(images/blue/menu.png);
 }
+.fancy-theme-blue .fancy-date-picker-cell-out-range .fancy-grid-cell-inner {
+  color: #d0d0d0;
+}
+.fancy-theme-blue .fancy-date-picker-cell-out-min-max {
+  background: #e3e9ee;
+  color: #d0d0d0;
+}
+.fancy-theme-blue .fancy-date-picker-cell-active .fancy-grid-cell-inner {
+  color: white;
+}
 .fancy-theme-blue.fancy-panel-grid-inside {
   border-bottom-width: 0;
 }
@@ -2481,6 +2499,15 @@ vml {
 }
 .fancy-theme-gray .fancy-grid-header-cell-trigger-image {
   background-image: url(images/gray/menu.png);
+}
+.fancy-theme-gray .fancy-date-picker-cell-out-range .fancy-grid-cell-inner {
+  color: #d0d0d0;
+}
+.fancy-theme-gray .fancy-date-picker-cell-out-min-max {
+  background: #e5e5e7;
+}
+.fancy-theme-gray .fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
+  color: #d0d0d0;
 }
 .fancy-theme-gray.fancy-drag-hint-top {
   background-image: url(images/sand/col-drag-top.png);
@@ -2700,7 +2727,7 @@ vml {
   box-shadow: inset 0px 0px 0px 1px #404040, inset 0px 1px 1px 0px #404040;
 }
 .fancy-theme-dark .fancy-picker-button-date-wrapper {
-  width: 222px;
+  width: 234px;
 }
 .fancy-theme-dark .fancy-grid-column .fancy-month-picker-cell-active {
   background-color: #222;
@@ -2744,6 +2771,9 @@ vml {
 }
 .fancy-theme-dark .fancy-date-picker.fancy-grid {
   border-bottom-width: 0;
+}
+.fancy-theme-dark .fancy-date-picker.fancy-grid .fancy-grid-header-cell {
+  border-top-width: 0;
 }
 .fancy-theme-dark .fancy-month-picker .fancy-grid {
   border-bottom: 1px solid #5a5a5a;
@@ -2855,6 +2885,15 @@ vml {
   border-top-width: 0;
   border-color: #000;
   border-bottom: 1px solid #000;
+}
+.fancy-theme-dark .fancy-date-picker-cell-out-range .fancy-grid-cell-inner {
+  opacity: 0.4;
+}
+.fancy-theme-dark .fancy-date-picker-cell-out-min-max {
+  background: #222;
+}
+.fancy-theme-dark .fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
+  opacity: 0.4;
 }
 .fancy-theme-dark.fancy-menu {
   background: #2c2c2c;
@@ -3366,6 +3405,15 @@ vml {
   -o-transition: background 0s ease-out;
   transition: background 0s ease-out;
 }
+.fancy-theme-sand .fancy-date-picker-cell-out-range .fancy-grid-cell-inner {
+  color: #d0d0d0;
+}
+.fancy-theme-sand .fancy-date-picker-cell-out-min-max {
+  background: #DDD5B6;
+}
+.fancy-theme-sand .fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
+  color: #d0d0d0;
+}
 .fancy-theme-sand.fancy-loadmask .fancy-loadmask-inner {
   background-color: #DDD5B6;
 }
@@ -3603,6 +3651,13 @@ vml {
 }
 .fancy-theme-bootstrap .fancy-grid-header-cell-trigger-image {
   background-image: url(images/bootstrap/menu.png);
+}
+.fancy-theme-bootstrap .fancy-date-picker-cell-out-range .fancy-grid-cell-inner {
+  color: #d0d0d0;
+}
+.fancy-theme-bootstrap .fancy-date-picker-cell-out-min-max {
+  background: whitesmoke;
+  color: #d0d0d0;
 }
 .fancy-theme-bootstrap.fancy-panel {
   border-color: #ccc;
@@ -3855,6 +3910,10 @@ vml {
 }
 .fancy-theme-bootstrap-no-borders .fancy-grid-summary-row-bottom .fancy-grid-cell {
   border-top-color: #ccc;
+}
+.fancy-theme-bootstrap-no-borders .fancy-date-picker-cell-out-min-max {
+  background: whitesmoke;
+  color: #d0d0d0;
 }
 .fancy-theme-bootstrap-no-borders.fancy-panel {
   border-color: #ccc;

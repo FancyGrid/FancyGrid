@@ -669,14 +669,17 @@ Fancy.define('Fancy.toolbar.Tab', {
      *
      */
     show: function () {
-      var panel = this.panel;
+      var me = this,
+        panel = me.panel;
 
-      if (panel) {
-        panel.show.apply(panel, arguments);
-      }
-      else {
-        this.el.show();
-      }
+      setTimeout(function () {
+        if (panel) {
+          panel.show.apply(panel, arguments);
+        }
+        else {
+          me.el.show();
+        }
+      }, 30);
     },
     /*
      *

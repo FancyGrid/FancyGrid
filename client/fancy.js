@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.25',
+  version: '1.6.26',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -4956,6 +4956,7 @@ Fancy.define('Fancy.Plugin', {
 
   //CONSTANTS
   var GRID_CLS = F.GRID_CLS;
+  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
   var BUTTON_CLS = F.BUTTON_CLS;
   var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
   var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
@@ -5055,7 +5056,7 @@ Fancy.define('Fancy.Plugin', {
         charWidth = 7;
 
       if(me.theme && Fancy.themes[me.theme]){
-        charWidth = Fancy.themes[me.theme].config.chartWidth;
+        charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
       me.fire('beforerender');
@@ -5065,8 +5066,6 @@ Fancy.define('Fancy.Plugin', {
       }
 
       renderTo = F.get(me.renderTo || document.body).dom;
-
-
 
       if(me.width){
         width = me.width;
@@ -5248,7 +5247,7 @@ Fancy.define('Fancy.Plugin', {
      */
     getHandler: function(name){
       var me = this,
-        grid = F.getWidget(me.el.parent().parent().select('.' + GRID_CLS).attr('id'));
+        grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -6333,17 +6332,26 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         'z-index': 1000 + F.zIndex++
       });
 
-      F.select('.' + MODAL_CLS).css('display', '');
+      if(me.modal){
+        F.select('.' + MODAL_CLS).css({
+          'display': '',
+          'z-index': 1000 + F.zIndex - 2
+        });
+      }
     },
     /*
      *
      */
     hide: function () {
-      this.css({
+      var me = this;
+
+      me.css({
         display: 'none'
       });
 
-      F.select('.' + MODAL_CLS).css('display', 'none');
+      if(me.modal){
+        F.select('.' + MODAL_CLS).css('display', 'none');
+      }
 
       F.each(this.items || [], function (item) {
         if (item.type === 'combo') {
@@ -6401,7 +6409,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     setActiveWindowWatcher: function () {
       var me = this;
 
-      me.el.on('click', function (e) {
+      me.el.on('mousedown', function (e) {
         var targetEl = F.get(e.target);
 
         if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
@@ -6798,7 +6806,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     cls: '',
     text: '',
     floating: 'left',
-    sideRight: 0,
+    sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
     barScrollEnabled: true,
@@ -6823,7 +6831,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.initScroll();
         setTimeout(function () {
           me.checkScroll();
-        }, 50);
+        }, 150);
       }
     },
     /*
@@ -6876,7 +6884,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         isSide = false,
         barItems = [],
         sidePassed = iL - 1,
-        passedRight = 0;
+        passedRight = 3;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -7022,8 +7030,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
               width += parseInt(fieldEl.$dom.outerWidth());
             }
 
-            width += parseInt(fieldEl.css('padding-left'));
-            width += parseInt(fieldEl.css('padding-right'));
+            //width += parseInt(fieldEl.css('padding-left'));
+            //width += parseInt(fieldEl.css('padding-right'));
           }
 
           renderTo.css('width', width);
@@ -9857,6 +9865,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     displayKey: 'text',
     multiSelect: false,
     itemCheckBox: false,
+    listCls: '',
     tpl: [
       '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
         '{label}',
@@ -10178,6 +10187,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
+
+      if(me.listCls){
+        list.addCls(me.listCls);
+      }
 
       list.animate({
         opacity: 1,
@@ -12330,7 +12343,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'dropitems',
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
-      'filter'
+      'filter',
+      'contextmenu'
     );
 
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){

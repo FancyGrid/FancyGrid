@@ -123,7 +123,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'dropitems',
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
-      'filter'
+      'filter',
+      'contextmenu'
     );
 
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){

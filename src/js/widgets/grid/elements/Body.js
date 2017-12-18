@@ -94,6 +94,8 @@
 
       me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+
+      me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
     },
     /*
      *
@@ -776,6 +778,12 @@
 
         }
       });
+    },
+    onContextMenu: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('contextmenu', me.getEventParams(e));
     }
   });
 

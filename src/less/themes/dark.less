@@ -233,7 +233,7 @@
   }
 
   .fancy-picker-button-date-wrapper {
-    width: 222px;
+    width: 234px;
   }
 
   .fancy-grid-column .fancy-month-picker-cell-active {
@@ -285,6 +285,9 @@
 
   .fancy-date-picker.fancy-grid {
     border-bottom-width: 0;
+    .fancy-grid-header-cell {
+      border-top-width: 0;
+    }
   }
 
   .fancy-month-picker .fancy-grid {
@@ -437,6 +440,19 @@
     border-top-width: 0;
     border-color: #000;
     border-bottom: 1px solid #000;
+  }
+
+  .fancy-date-picker-cell-out-range {
+    .fancy-grid-cell-inner {
+      .opacity(0.4);
+    }
+  }
+
+  .fancy-date-picker-cell-out-min-max {
+    background: #222;
+    .fancy-grid-cell-inner {
+      .opacity(0.4);
+    }
   }
 }
 

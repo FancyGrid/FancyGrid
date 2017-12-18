@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.25',
+  version: '1.6.26',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -9622,6 +9622,7 @@ Fancy.define('Fancy.Plugin', {
 
   //CONSTANTS
   var GRID_CLS = F.GRID_CLS;
+  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
   var BUTTON_CLS = F.BUTTON_CLS;
   var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
   var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
@@ -9721,7 +9722,7 @@ Fancy.define('Fancy.Plugin', {
         charWidth = 7;
 
       if(me.theme && Fancy.themes[me.theme]){
-        charWidth = Fancy.themes[me.theme].config.chartWidth;
+        charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
       me.fire('beforerender');
@@ -9731,8 +9732,6 @@ Fancy.define('Fancy.Plugin', {
       }
 
       renderTo = F.get(me.renderTo || document.body).dom;
-
-
 
       if(me.width){
         width = me.width;
@@ -9914,7 +9913,7 @@ Fancy.define('Fancy.Plugin', {
      */
     getHandler: function(name){
       var me = this,
-        grid = F.getWidget(me.el.parent().parent().select('.' + GRID_CLS).attr('id'));
+        grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
           throw new Error('[FancyGrid Error] - handler does not exist');
@@ -11371,17 +11370,26 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         'z-index': 1000 + F.zIndex++
       });
 
-      F.select('.' + MODAL_CLS).css('display', '');
+      if(me.modal){
+        F.select('.' + MODAL_CLS).css({
+          'display': '',
+          'z-index': 1000 + F.zIndex - 2
+        });
+      }
     },
     /*
      *
      */
     hide: function () {
-      this.css({
+      var me = this;
+
+      me.css({
         display: 'none'
       });
 
-      F.select('.' + MODAL_CLS).css('display', 'none');
+      if(me.modal){
+        F.select('.' + MODAL_CLS).css('display', 'none');
+      }
 
       F.each(this.items || [], function (item) {
         if (item.type === 'combo') {
@@ -11439,7 +11447,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     setActiveWindowWatcher: function () {
       var me = this;
 
-      me.el.on('click', function (e) {
+      me.el.on('mousedown', function (e) {
         var targetEl = F.get(e.target);
 
         if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
@@ -11864,7 +11872,7 @@ Fancy.define('Fancy.toolbar.Tab', {
     cls: '',
     text: '',
     floating: 'left',
-    sideRight: 0,
+    sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
     barScrollEnabled: true,
@@ -11889,7 +11897,7 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.initScroll();
         setTimeout(function () {
           me.checkScroll();
-        }, 50);
+        }, 150);
       }
     },
     /*
@@ -11942,7 +11950,7 @@ Fancy.define('Fancy.toolbar.Tab', {
         isSide = false,
         barItems = [],
         sidePassed = iL - 1,
-        passedRight = 0;
+        passedRight = 3;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -12088,8 +12096,8 @@ Fancy.define('Fancy.toolbar.Tab', {
               width += parseInt(fieldEl.$dom.outerWidth());
             }
 
-            width += parseInt(fieldEl.css('padding-left'));
-            width += parseInt(fieldEl.css('padding-right'));
+            //width += parseInt(fieldEl.css('padding-left'));
+            //width += parseInt(fieldEl.css('padding-right'));
           }
 
           renderTo.css('width', width);
@@ -13417,14 +13425,17 @@ Fancy.define('Fancy.bar.Text', {
      *
      */
     show: function () {
-      var panel = this.panel;
+      var me = this,
+        panel = me.panel;
 
-      if (panel) {
-        panel.show.apply(panel, arguments);
-      }
-      else {
-        this.el.show();
-      }
+      setTimeout(function () {
+        if (panel) {
+          panel.show.apply(panel, arguments);
+        }
+        else {
+          me.el.show();
+        }
+      }, 30);
     },
     /*
      *
@@ -15568,9 +15579,11 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       var me = this,
         el = me.el,
         input = me.input,
-        docEl = F.get(document);
+        docEl = F.get(document),
+        firstShow = false;
 
       if (me.picker === true) {
+        firstShow = true;
         me.renderPicker();
       }
 
@@ -15583,7 +15596,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         date = new Date();
       }
 
-      me.picker.setDate(date);
+      me.picker.setDate(date, firstShow);
 
       F.datepicker.Manager.add(me.picker);
 
@@ -15666,6 +15679,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         date: me.date,
         format: me.format,
         theme: me.theme,
+        minValue: me.min,
+        maxValue: me.max,
         events: [{
           changedate: me.onPickerChangeDate,
           scope: me
@@ -16633,6 +16648,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     displayKey: 'text',
     multiSelect: false,
     itemCheckBox: false,
+    listCls: '',
     tpl: [
       '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
         '{label}',
@@ -16954,6 +16970,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
+
+      if(me.listCls){
+        list.addCls(me.listCls);
+      }
 
       list.animate({
         opacity: 1,
@@ -22219,12 +22239,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     show: function () {
       var me = this;
 
-      if (me.panel) {
-        me.panel.show.apply(me.panel, arguments);
-      }
-      else {
-        me.el.show();
-      }
+      setTimeout(function () {
+        if (me.panel) {
+          me.panel.show.apply(me.panel, arguments);
+        }
+        else {
+          me.el.show();
+        }
+      }, 30);
     },
     /*
      *
@@ -23067,7 +23089,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       });
 
       if(me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE){
-        console.log(me.getCenterFullWidth(), me.getCenterViewWidth());
         height += me.bottomScrollHeight;
       }
 
@@ -23408,6 +23429,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     disableSelection: function () {
       this.selection.disableSelection()
+    },
+    /*
+     * @param {Object} o
+     */
+    setParams: function (o) {
+      var me = this,
+        s = me.store;
+
+      if(s.proxy && s.proxy.params){
+        F.apply(s.proxy.params, o);
+      }
     }
   });
 
@@ -23537,7 +23569,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'dropitems',
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
-      'filter'
+      'filter',
+      'contextmenu'
     );
 
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
@@ -36454,6 +36487,10 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   constructor: function(config){
     this.Super('const', arguments);
+
+    if(Fancy.fullBuilt){
+      Fancy.loadModule('excel');
+    }
   },
   /*
    *
@@ -36484,7 +36521,13 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       });
     });
 
-    var ws_name = w.title || 'grid_data';
+    var title = w.title;
+
+    if(Fancy.isObject(title)){
+      title = title.text;
+    }
+
+    var ws_name = title || 'grid_data';
 
     /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);
@@ -38841,6 +38884,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
+
+      me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
     },
     /*
      *
@@ -39523,6 +39568,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         }
       });
+    },
+    onContextMenu: function (e) {
+      var me = this,
+        w = me.widget;
+
+      w.fire('contextmenu', me.getEventParams(e));
     }
   });
 
@@ -40930,6 +40981,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var PICKER_DATE_CLS = F.PICKER_DATE_CLS;
   var PICKER_DATE_CELL_TODAY_CLS = F.PICKER_DATE_CELL_TODAY_CLS;
   var PICKER_DATE_CELL_OUT_RANGE_CLS = F.PICKER_DATE_CELL_OUT_RANGE_CLS;
+  var PICKER_DATE_CELL_OUT_MIN_MAX_CLS = 'fancy-date-picker-cell-out-min-max';
   var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
   var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
   var PICKER_BUTTON_DATE_CLS = F.PICKER_BUTTON_DATE_CLS;
@@ -41090,6 +41142,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       me.showDate = me.date;
+
+      if(me.maxValue && me.showDate > me.maxValue){
+        me.showDate = me.maxValue;
+      }
+      else if(me.minValue && me.showDate < me.minValue){
+        me.showDate = me.minValue;
+      }
     },
     /*
      *
@@ -41159,6 +41218,43 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
             }
           }
+        }
+
+        var _value = o.value;
+        var _month = showDate.getMonth();
+        var _year = showDate.getFullYear();
+
+        if(Number(_value) > 20 && o.rowIndex < 2){
+          _month--;
+          if(_month === 0){
+            _year--;
+            _month = 11;
+          }
+        }
+        else if(Number(_value) < 10 && o.rowIndex > 3 ){
+          _month++;
+          if(_month === 12){
+            _year++;
+            _month = 0;
+          }
+        }
+
+        var _day = new Date(_year, _month, _value),
+          isOutMinMax = false;
+
+        if(me.maxValue && me.maxValue < _day){
+          isOutMinMax = true;
+        }
+
+        if(me.minValue && me.minValue > _day){
+          isOutMinMax = true;
+        }
+
+        if(isOutMinMax){
+          o.cls += ' ' + PICKER_DATE_CELL_OUT_MIN_MAX_CLS;
+        }
+        else if(o.cell){
+          o.cell.removeCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS);
         }
 
         return o;
@@ -41451,6 +41547,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         day,
         cell = F.get(o.cell);
 
+      if(cell.hasCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS)){
+        return;
+      }
+
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
       me.el.select('.' + PICKER_DATE_CELL_ACTIVE_CLS).removeCls(PICKER_DATE_CELL_ACTIVE_CLS);
@@ -41585,11 +41685,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     /*
      * @param {Date} date
      */
-    setDate: function (date) {
+    setDate: function (date, firstShow) {
       var me = this;
 
       me.date = date;
-      me.showDate = date;
+      if(firstShow && me.showDate){}
+      else {
+        me.showDate = date;
+      }
       me.store.setData(me.generateData().items);
       me.update();
     }

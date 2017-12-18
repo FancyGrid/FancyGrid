@@ -267,9 +267,11 @@
       var me = this,
         el = me.el,
         input = me.input,
-        docEl = F.get(document);
+        docEl = F.get(document),
+        firstShow = false;
 
       if (me.picker === true) {
+        firstShow = true;
         me.renderPicker();
       }
 
@@ -282,7 +284,7 @@
         date = new Date();
       }
 
-      me.picker.setDate(date);
+      me.picker.setDate(date, firstShow);
 
       F.datepicker.Manager.add(me.picker);
 
@@ -365,6 +367,8 @@
         date: me.date,
         format: me.format,
         theme: me.theme,
+        minValue: me.min,
+        maxValue: me.max,
         events: [{
           changedate: me.onPickerChangeDate,
           scope: me

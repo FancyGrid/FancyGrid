@@ -59,6 +59,7 @@
     displayKey: 'text',
     multiSelect: false,
     itemCheckBox: false,
+    listCls: '',
     tpl: [
       '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
         '{label}',
@@ -380,6 +381,10 @@
         width: me.getListWidth(),
         "z-index": 2000 + F.zIndex++
       });
+
+      if(me.listCls){
+        list.addCls(me.listCls);
+      }
 
       list.animate({
         opacity: 1,

@@ -11,6 +11,10 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   constructor: function(config){
     this.Super('const', arguments);
+
+    if(Fancy.fullBuilt){
+      Fancy.loadModule('excel');
+    }
   },
   /*
    *
@@ -41,7 +45,13 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       });
     });
 
-    var ws_name = w.title || 'grid_data';
+    var title = w.title;
+
+    if(Fancy.isObject(title)){
+      title = title.text;
+    }
+
+    var ws_name = title || 'grid_data';
 
     /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);

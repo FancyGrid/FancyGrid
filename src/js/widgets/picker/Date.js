@@ -10,6 +10,7 @@
   var PICKER_DATE_CLS = F.PICKER_DATE_CLS;
   var PICKER_DATE_CELL_TODAY_CLS = F.PICKER_DATE_CELL_TODAY_CLS;
   var PICKER_DATE_CELL_OUT_RANGE_CLS = F.PICKER_DATE_CELL_OUT_RANGE_CLS;
+  var PICKER_DATE_CELL_OUT_MIN_MAX_CLS = 'fancy-date-picker-cell-out-min-max';
   var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
   var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
   var PICKER_BUTTON_DATE_CLS = F.PICKER_BUTTON_DATE_CLS;
@@ -170,6 +171,13 @@
       }
 
       me.showDate = me.date;
+
+      if(me.maxValue && me.showDate > me.maxValue){
+        me.showDate = me.maxValue;
+      }
+      else if(me.minValue && me.showDate < me.minValue){
+        me.showDate = me.minValue;
+      }
     },
     /*
      *
@@ -239,6 +247,43 @@
               o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
             }
           }
+        }
+
+        var _value = o.value;
+        var _month = showDate.getMonth();
+        var _year = showDate.getFullYear();
+
+        if(Number(_value) > 20 && o.rowIndex < 2){
+          _month--;
+          if(_month === 0){
+            _year--;
+            _month = 11;
+          }
+        }
+        else if(Number(_value) < 10 && o.rowIndex > 3 ){
+          _month++;
+          if(_month === 12){
+            _year++;
+            _month = 0;
+          }
+        }
+
+        var _day = new Date(_year, _month, _value),
+          isOutMinMax = false;
+
+        if(me.maxValue && me.maxValue < _day){
+          isOutMinMax = true;
+        }
+
+        if(me.minValue && me.minValue > _day){
+          isOutMinMax = true;
+        }
+
+        if(isOutMinMax){
+          o.cls += ' ' + PICKER_DATE_CELL_OUT_MIN_MAX_CLS;
+        }
+        else if(o.cell){
+          o.cell.removeCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS);
         }
 
         return o;
@@ -531,6 +576,10 @@
         day,
         cell = F.get(o.cell);
 
+      if(cell.hasCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS)){
+        return;
+      }
+
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
       me.el.select('.' + PICKER_DATE_CELL_ACTIVE_CLS).removeCls(PICKER_DATE_CELL_ACTIVE_CLS);
@@ -665,11 +714,14 @@
     /*
      * @param {Date} date
      */
-    setDate: function (date) {
+    setDate: function (date, firstShow) {
       var me = this;
 
       me.date = date;
-      me.showDate = date;
+      if(firstShow && me.showDate){}
+      else {
+        me.showDate = date;
+      }
       me.store.setData(me.generateData().items);
       me.update();
     }
