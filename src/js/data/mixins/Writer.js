@@ -23,6 +23,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
 
     if(writer.allFields){
       me.writeAllFields = writer.allFields;
+      writer.writeAllFields = writer.allFields;
     }
 
     switch(Fancy.typeOf(writer)){

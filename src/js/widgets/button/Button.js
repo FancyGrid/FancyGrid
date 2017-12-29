@@ -14,6 +14,7 @@
   var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
   var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
   var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+  var BUTTON_MENU_CLS = F.BUTTON_MENU_CLS;
 
   /**
    * @class Fancy.Button
@@ -88,6 +89,7 @@
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
+    rightImageWidth: 20,
     pressed: false,
     theme: 'default',
     tpl: [
@@ -143,6 +145,10 @@
         width += me.imageWidth;
       }
 
+      if(me.menu){
+        width += me.rightImageWidth;
+      }
+
       el.addCls(
         F.cls,
         me.widgetCls,
@@ -152,6 +158,10 @@
 
       if (me.disabled) {
         el.addCls(BUTTON_DISABLED_CLS);
+      }
+
+      if(me.menu){
+        el.addCls(BUTTON_MENU_CLS);
       }
 
       el.css({
@@ -262,7 +272,7 @@
     /*
      *
      */
-    onClick: function(){
+    onClick: function(e){
       var me = this,
         handler = me.handler;
 
@@ -289,6 +299,11 @@
           else {
             me.toggle();
           }
+        }
+
+        if(me.menu){
+          me.toggle();
+          me.toggleMenuShow(e);
         }
       }
     },
@@ -391,6 +406,34 @@
       if(me.tip && me.tooltip){
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
+    },
+    toggleMenuShow: function (e) {
+      var me = this,
+        p = me.el.$dom.offset(),
+        xy = [p.left, p.top + me.el.$dom.height()];
+
+      if(F.isArray(me.menu)){
+        me.initMenu();
+      }
+
+      setTimeout(function () {
+        me.menu.showAt(xy[0], xy[1]);
+      }, 100);
+    },
+    initMenu: function () {
+      var me = this;
+
+      me.menu = new F.Menu({
+        items: me.menu,
+        theme: me.theme,
+        events: [{
+          hide: me.onMenuHide,
+          scope: me
+        }]
+      });
+    },
+    onMenuHide: function(){
+      this.setPressed(false);
     }
   });
 })();

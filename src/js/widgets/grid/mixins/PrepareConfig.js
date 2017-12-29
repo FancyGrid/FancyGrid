@@ -313,13 +313,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       rightColumns = [],
       i = 0,
       iL = columns.length,
-      isDraggable = false;
+      isDraggable = false,
+      isTreeData = false;
 
     for(;i<iL;i++){
       var column = columns[i];
 
       if(column.draggable){
         isDraggable = true;
+      }
+
+      if(column.type === 'tree'){
+        isTreeData = true;
       }
 
       switch(column.type){
@@ -367,6 +372,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config._plugins.push({
         type: 'grid.columndrag'
       });
+    }
+
+    if(isTreeData){
+      config._plugins.push({
+        type: 'grid.tree'
+      });
+
+      config.isTreeData = true;
     }
 
     config.leftColumns = leftColumns;
@@ -907,12 +920,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       initSelection = true;
       var checkOnly = false;
       var memory = false;
+      var memoryPerformance = true;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
 
         if(!config.selModel.type){
           throw new Error('FancyGrid Error 5: Type for selection is not set');
+        }
+
+        if(config.selModel.memoryPerfomance !== undefined){
+          memoryPerformance = config.selModel.memoryPerfomance;
         }
 
         memory = config.selModel.memory === true;
@@ -931,6 +949,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection[config.selModel] = true;
       config.selection.checkOnly = checkOnly;
       config.selection.memory = memory;
+      config.selection.memoryPerformance = memoryPerformance;
       config.selection.disabled = disabled;
     }
 

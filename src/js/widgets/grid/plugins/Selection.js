@@ -31,6 +31,7 @@
     checkboxRow: false,
     checkOnly: false,
     memory: false,
+    memoryPerformance: true,
     disabled: false,
     /*
      * @constructor
@@ -99,6 +100,7 @@
         selected: {},
         setAll: function () {
           var filteredDataMap = w.store.filteredDataMap;
+
           if(filteredDataMap){
             for(var p in filteredDataMap){
               me.memory.selected[p] = true;
@@ -107,11 +109,23 @@
             me.all = false;
           }
           else {
-            F.apply(me.memory, {
-              all: true,
-              except: {},
-              selected: {}
-            });
+            if(me.memoryPerformance === false){
+              var data = w.getData();
+
+              Fancy.each(data, function (item) {
+                me.memory.selected[item.id] = true;
+              });
+
+              me.except = {};
+              me.all = false;
+            }
+            else {
+              F.apply(me.memory, {
+                all: true,
+                except: {},
+                selected: {}
+              });
+            }
           }
         },
         clearAll: function () {

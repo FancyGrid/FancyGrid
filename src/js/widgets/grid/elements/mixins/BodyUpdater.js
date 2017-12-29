@@ -256,6 +256,9 @@
           case 'currency':
             me.renderUniversal(i, rowIndex);
             break;
+          case 'tree':
+            me.renderTree(i, rowIndex);
+            break;
           case 'order':
             me.renderOrder(i, rowIndex);
             break;
@@ -270,6 +273,9 @@
             break;
           case 'checkbox':
             me.renderCheckbox(i, rowIndex);
+            break;
+          case 'switcher':
+            me.renderCheckbox(i, rowIndex, true);
             break;
           case 'image':
             me.renderImage(i, rowIndex);
@@ -492,6 +498,80 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
+    renderTree: function (i, rowIndex) {
+      //TODO:
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        key = column.index;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var cellInnerEl = cellsDomInner.item(j),
+          dataItem = w.get(j),
+          value = dataItem.get(key),
+          deep = Number(dataItem.get('$deep')) - 1,
+          expanderCls = 'fancy-grid-tree-expander';
+
+        if(dataItem.get('leaf')){
+          expanderCls = 'fancy-grid-tree-expander-leaf';
+        }
+
+        if(dataItem.get('expanded')){
+          expanderCls += ' fancy-grid-tree-expander-expanded';
+        }
+
+        var marginLeft = deep * 15;
+        var nodeImg = '';
+
+        if(column.render){
+          var o = column.render({
+            item: dataItem,
+            data: dataItem.data,
+            deep: deep,
+            leaf: dataItem.get('leaf'),
+            rowIndex: rowIndex,
+            column: column,
+            value: value
+          });
+
+          if(o.nodeImgCls){
+            nodeImg = '<div class="fancy-grid-tree-expander-node '+(o.nodeImgCls)+'"></div>';
+          }
+
+          if(o.value !== undefined){
+            value = o.value;
+          }
+        }
+
+        if(dataItem.get('leaf')){
+          marginLeft -= 8;
+        }
+
+        cellsDomInner.item(j).update([
+          '<div class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></div>' + nodeImg + '<div class="fancy-grid-tree-expander-text">' + value + '</div>'
+        ].join(''));
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
     renderExpand: function (i, rowIndex) {
       var me = this,
         w = me.widget,
@@ -674,7 +754,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCheckbox: function (i, rowIndex) {
+    renderCheckbox: function (i, rowIndex, isSwitcher) {
       var me = this,
         w = me.widget,
         s = w.store,
@@ -686,7 +766,12 @@
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j,
-        jL;
+        jL,
+        widgetName = 'CheckBox';
+
+      if(isSwitcher){
+        widgetName = 'Switcher';
+      }
 
       if (rowIndex !== undefined) {
         j = rowIndex;
@@ -736,7 +821,7 @@
 
             cellsDomInner.item(j).update('');
 
-            new F.CheckBox({
+            new F[widgetName]({
               renderTo: cellsDomInner.item(j).dom,
               renderId: true,
               value: value,

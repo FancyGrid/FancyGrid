@@ -559,6 +559,7 @@
         bodyViewHeight -= knobOffSet;
       }
 
+      me.rightKnob.stop();
       me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
@@ -632,6 +633,7 @@
         knobWidth = me.minBottomKnobWidth;
       }
 
+      me.bottomKnob.stop();
       me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
@@ -688,6 +690,10 @@
       w.leftBody.wheelScroll(value);
       scrollInfo = w.body.wheelScroll(value);
       w.rightBody.wheelScroll(value);
+
+      if(scrollInfo === undefined){
+        return;
+      }
 
       me.scrollTop = Math.abs(scrollInfo.newScroll);
       //me.scrollLeft = Math.abs(scrollInfo.scrollLeft);

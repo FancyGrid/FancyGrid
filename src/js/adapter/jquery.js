@@ -33,6 +33,9 @@ Fancy.Element = function(dom){
 };
 
 Fancy.Element.prototype = {
+  /*
+   * @return {Fancy.Element}
+   */
   last: function () {
     return Fancy.get(this.$dom);
   },
@@ -460,6 +463,14 @@ Fancy.Element.prototype = {
    */
   animate: function(style,speed,easing,callback){
     this.$dom.animate(style,speed,easing,callback);
+  },
+  /*
+   *
+   */
+  stop: function(){
+    if(this.$dom.stop){
+      this.$dom.stop();
+    }
   },
   /*
    * @return {Number}

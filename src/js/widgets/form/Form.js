@@ -85,6 +85,18 @@ Fancy.define('Fancy.Form', {
       requiredModules.ajax = true;
     }
 
+    var containsMenu = function (item) {
+      if(item.menu){
+        requiredModules['menu'] = true;
+        return true;
+      }
+    };
+
+    Fancy.each(config.tbar, containsMenu);
+    Fancy.each(config.bbar, containsMenu);
+    Fancy.each(config.buttons, containsMenu);
+    Fancy.each(config.subTBar, containsMenu);
+
     var items = config.items || [],
       i = 0,
       iL = items.length,

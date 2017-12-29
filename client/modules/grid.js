@@ -313,13 +313,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       rightColumns = [],
       i = 0,
       iL = columns.length,
-      isDraggable = false;
+      isDraggable = false,
+      isTreeData = false;
 
     for(;i<iL;i++){
       var column = columns[i];
 
       if(column.draggable){
         isDraggable = true;
+      }
+
+      if(column.type === 'tree'){
+        isTreeData = true;
       }
 
       switch(column.type){
@@ -367,6 +372,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config._plugins.push({
         type: 'grid.columndrag'
       });
+    }
+
+    if(isTreeData){
+      config._plugins.push({
+        type: 'grid.tree'
+      });
+
+      config.isTreeData = true;
     }
 
     config.leftColumns = leftColumns;
@@ -907,12 +920,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       initSelection = true;
       var checkOnly = false;
       var memory = false;
+      var memoryPerformance = true;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
 
         if(!config.selModel.type){
           throw new Error('FancyGrid Error 5: Type for selection is not set');
+        }
+
+        if(config.selModel.memoryPerfomance !== undefined){
+          memoryPerformance = config.selModel.memoryPerfomance;
         }
 
         memory = config.selModel.memory === true;
@@ -931,6 +949,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection[config.selModel] = true;
       config.selection.checkOnly = checkOnly;
       config.selection.memory = memory;
+      config.selection.memoryPerformance = memoryPerformance;
       config.selection.disabled = disabled;
     }
 
@@ -1948,9 +1967,18 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @return {Array}
      */
     getFieldsFromData: function (data) {
-      var items = data.items || data;
+      var me = this,
+        items = data.items || data;
 
       if (data.fields) {
+        if(me.isTreeData){
+          data.fields.push('$deep');
+          data.fields.push('leaf');
+          data.fields.push('parentId');
+          data.fields.push('expanded');
+          data.fields.push('child');
+        }
+
         return data.fields;
       }
 
@@ -1963,6 +1991,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       for (var p in itemZero) {
         fields.push(p);
+      }
+
+      if(me.isTreeData){
+        fields.push('$deep');
+        fields.push('leaf');
+        fields.push('parentId');
+        fields.push('expanded');
+        fields.push('child');
       }
 
       return fields;
@@ -2044,6 +2080,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (s.loading) {
         return;
+      }
+
+      if(me.expander){
+        me.expander.reSet();
       }
 
       me.updater.update();
@@ -4025,7 +4065,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {Array} data
      */
     setData: function (data) {
-      this.store.setData(data);
+      var me = this;
+
+      me.store.setData(data);
     },
     /*
      *
@@ -4663,6 +4705,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bodyViewHeight -= knobOffSet;
       }
 
+      me.rightKnob.stop();
       me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
@@ -4736,6 +4779,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         knobWidth = me.minBottomKnobWidth;
       }
 
+      me.bottomKnob.stop();
       me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
@@ -4792,6 +4836,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       w.leftBody.wheelScroll(value);
       scrollInfo = w.body.wheelScroll(value);
       w.rightBody.wheelScroll(value);
+
+      if(scrollInfo === undefined){
+        return;
+      }
 
       me.scrollTop = Math.abs(scrollInfo.newScroll);
       //me.scrollLeft = Math.abs(scrollInfo.scrollLeft);
@@ -6678,6 +6726,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           case 'currency':
             me.renderUniversal(i, rowIndex);
             break;
+          case 'tree':
+            me.renderTree(i, rowIndex);
+            break;
           case 'order':
             me.renderOrder(i, rowIndex);
             break;
@@ -6692,6 +6743,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             break;
           case 'checkbox':
             me.renderCheckbox(i, rowIndex);
+            break;
+          case 'switcher':
+            me.renderCheckbox(i, rowIndex, true);
             break;
           case 'image':
             me.renderImage(i, rowIndex);
@@ -6914,6 +6968,80 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      * @param {Number} i
      * @param {Number} rowIndex
      */
+    renderTree: function (i, rowIndex) {
+      //TODO:
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j,
+        jL,
+        key = column.index;
+
+      if (rowIndex !== undefined) {
+        j = rowIndex;
+        jL = rowIndex + 1;
+      }
+      else {
+        j = 0;
+        jL = s.getLength();
+      }
+
+      for (; j < jL; j++) {
+        var cellInnerEl = cellsDomInner.item(j),
+          dataItem = w.get(j),
+          value = dataItem.get(key),
+          deep = Number(dataItem.get('$deep')) - 1,
+          expanderCls = 'fancy-grid-tree-expander';
+
+        if(dataItem.get('leaf')){
+          expanderCls = 'fancy-grid-tree-expander-leaf';
+        }
+
+        if(dataItem.get('expanded')){
+          expanderCls += ' fancy-grid-tree-expander-expanded';
+        }
+
+        var marginLeft = deep * 15;
+        var nodeImg = '';
+
+        if(column.render){
+          var o = column.render({
+            item: dataItem,
+            data: dataItem.data,
+            deep: deep,
+            leaf: dataItem.get('leaf'),
+            rowIndex: rowIndex,
+            column: column,
+            value: value
+          });
+
+          if(o.nodeImgCls){
+            nodeImg = '<div class="fancy-grid-tree-expander-node '+(o.nodeImgCls)+'"></div>';
+          }
+
+          if(o.value !== undefined){
+            value = o.value;
+          }
+        }
+
+        if(dataItem.get('leaf')){
+          marginLeft -= 8;
+        }
+
+        cellsDomInner.item(j).update([
+          '<div class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></div>' + nodeImg + '<div class="fancy-grid-tree-expander-text">' + value + '</div>'
+        ].join(''));
+      }
+    },
+    /*
+     * @param {Number} i
+     * @param {Number} rowIndex
+     */
     renderExpand: function (i, rowIndex) {
       var me = this,
         w = me.widget,
@@ -7096,7 +7224,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCheckbox: function (i, rowIndex) {
+    renderCheckbox: function (i, rowIndex, isSwitcher) {
       var me = this,
         w = me.widget,
         s = w.store,
@@ -7108,7 +7236,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j,
-        jL;
+        jL,
+        widgetName = 'CheckBox';
+
+      if(isSwitcher){
+        widgetName = 'Switcher';
+      }
 
       if (rowIndex !== undefined) {
         j = rowIndex;
@@ -7158,7 +7291,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
             cellsDomInner.item(j).update('');
 
-            new F.CheckBox({
+            new F[widgetName]({
               renderTo: cellsDomInner.item(j).dom,
               renderId: true,
               value: value,

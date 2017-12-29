@@ -245,6 +245,18 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules['selection'] = true;
     }
 
+    var containsMenu = function (item) {
+      if(item.menu){
+        requiredModules['menu'] = true;
+        return true;
+      }
+    };
+    
+    Fancy.each(me.tbar, containsMenu);
+    Fancy.each(me.bbar, containsMenu);
+    Fancy.each(me.buttons, containsMenu);
+    Fancy.each(me.subTBar, containsMenu);
+
     var _columns = columns.concat(leftColumns).concat(rightColumns);
 
     Fancy.each(_columns, function(column){
@@ -283,6 +295,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         case 'grossloss':
         case 'hbar':
           requiredModules.spark = true;
+          break;
+        case 'tree':
+          requiredModules.tree = true;
           break;
         case 'date':
           requiredModules.date = true;
@@ -517,7 +532,13 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
  * @param {String} id
  */
 FancyGrid.get = function(id){
-  var gridEl = Fancy.get(id).select('.' + Fancy.GRID_CLS);
+  var el = Fancy.get(id);
+
+  if(!el.dom){
+    return;
+  }
+
+  var gridEl = el.select('.' + Fancy.GRID_CLS).item(0);
 
   if(!gridEl.dom){
     return;

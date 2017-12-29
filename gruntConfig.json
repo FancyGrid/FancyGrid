@@ -1,6 +1,6 @@
 {
   "name": "FancyGrid",
-  "version": "1.6.26",
+  "version": "1.6.27",
   "license": "All of the code within the FancyGrid software is developed and copyrighted by FancyGrid, Inc., and may not be copied,\nreplicated, or used in any other software or application without prior permission from FancyGrid. All usage must coincide with the\nFancyGrid End User License Agreement which can be requested by email at support@fancygrid.com.",
   "mfiles": [{
     "name": "core built js",
@@ -45,6 +45,9 @@
     "name": "grouping",
     "path": "./client/modules/grouping.js"
   },{
+    "name": "column-drag",
+    "path": "./client/modules/column-drag.js"
+  },{
     "name": "summary",
     "path": "./client/modules/summary.js"
   },{
@@ -69,8 +72,14 @@
     "name": "menu",
     "path": "./client/modules/menu.js"
   },{
+    "name": "column-drag",
+    "path": "./client/modules/column-drag.js"
+  },{
     "name": "summary",
     "path": "./client/modules/summary.js"
+  },{
+    "name": "tree",
+    "path": "./client/modules/tree.js"
   },{
     "name": "grid",
     "path": "./client/modules/grid.js"
@@ -139,6 +148,9 @@
   },{
     "path": "./src/js/data/mixins/Filter.js",
     "module": "filter"
+  },{
+    "path": "./src/js/data/mixins/Tree.js",
+    "module": "tree"
   },{
     "path": "./src/js/data/mixins/Dirty.js"
   },{
@@ -290,6 +302,9 @@
     "path": "./src/js/widgets/grid/plugins/ColumnResizer.js",
     "module": "grid"
   },{
+    "path": "./src/js/widgets/grid/plugins/ColumnDrag.js",
+    "module": "column-drag"
+  },{
     "path": "./src/js/widgets/grid/plugins/ChartIntegration.js",
     "module": "chart integration"
   },{
@@ -313,13 +328,18 @@
   },{
     "path": "./src/js/widgets/grid/plugins/GroupHeader.js",
     "module": "grouped-header"
-
   },{
 	"path": "./src/js/widgets/grid/plugins/Grouping.js",
     "module": "grouping"
   },{
+	"path": "./src/js/widgets/grid/plugins/ColumnDrag.js",
+    "module": "column-drag"
+  },{
 	"path": "./src/js/widgets/grid/plugins/Summary.js",
     "module": "summary"
+  },{
+	"path": "./src/js/widgets/grid/plugins/Tree.js",
+    "module": "tree"
   },{
 	"path": "./src/js/widgets/grid/plugins/CellTip.js"
   },{
@@ -331,6 +351,9 @@
   },{
     "path": "./src/js/widgets/grid/plugins/GridToGrid.js",
     "module": "dd"
+  },{
+    "path": "./src/js/widgets/grid/plugins/Exporter.js",
+    "module": "exporter"
   },{
     "path": "./src/js/widgets/grid/plugins/Licence.js",
     "module": "grid"
@@ -373,12 +396,12 @@
     "path": "./src/js/widgets/Component.js"
   },{
     "path": "./src/js/thirdparty/sheetjs/xlsx.full.min.js",
-	"module": "exporter"
+    "module": "excel"
   },{
     "path": "./src/js/thirdparty/sheetjs/Blob.js",
-	"module": "exporter"
+    "module": "excel"
   },{
     "path": "./src/js/thirdparty/sheetjs/FileSaver.js",
-	"module": "exporter"
+    "module": "excel"
   }]
 }

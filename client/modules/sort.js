@@ -38,6 +38,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       case 'combo':
       case 'text':
       case 'color':
+      case 'tree':
         fn = 'sortString';
         sortType = 'string';
         break;
@@ -47,6 +48,16 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
     if(me.multiSort){
       me.addSorter(key, action.toLocaleUpperCase(), sortType);
+    }
+    else{
+      me.sorters = [];
+
+      me.sorters.push({
+        key: key,
+        dir: action.toLocaleUpperCase().toLocaleUpperCase(),
+        type: sortType,
+        _type: type
+      });
     }
 
     if(me.remoteSort){
@@ -115,7 +126,15 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       i,
       iL;
 
-    if(me.grouping){
+    if(me.isTree){
+      columnOriginalValues = me.getColumnOriginalValues('id');
+
+      var treeData = me.treeGetDataAsTree(),
+        sortedData = me.treeSort(treeData, action, key, 'number');
+
+      sortedColumnValues = me.treeReadSortedId(sortedData);
+    }
+    else if(me.grouping){
       //BUG: It does not work for date
 
       var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
@@ -191,7 +210,15 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       i,
       iL;
 
-    if(me.grouping){
+    if(me.isTree){
+      columnOriginalValues = me.getColumnOriginalValues('id');
+
+      var treeData = me.treeGetDataAsTree(),
+        sortedData = me.treeSort(treeData, action, key, 'string');
+
+      sortedColumnValues = me.treeReadSortedId(sortedData);
+    }
+    else if(me.grouping){
       var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by);
       sortedColumnValues = [];
       i = 0;

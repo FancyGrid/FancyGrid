@@ -14,7 +14,8 @@ Fancy.define('Fancy.Store', {
     'Fancy.store.mixin.Grouping',
     'Fancy.store.mixin.Filter',
     'Fancy.store.mixin.Search',
-    'Fancy.store.mixin.Dirty'
+    'Fancy.store.mixin.Dirty',
+    'Fancy.store.mixin.Tree'
   ],
   pageSize: 10,
   showPage: 0,
@@ -49,6 +50,10 @@ Fancy.define('Fancy.Store', {
 
     if(me.widget.grouping){
       me.orderDataByGroupOnStart();
+    }
+
+    if(me.widget.isTreeData){
+      me.initTreeData();
     }
   },
   /*
@@ -309,7 +314,9 @@ Fancy.define('Fancy.Store', {
         });
       }
 
-      me.proxyCRUD('UPDATE', id, data);
+      if(me.proxyType === 'server' && me.autoSave) {
+        me.proxyCRUD('UPDATE', id, data);
+      }
 
       return;
     }

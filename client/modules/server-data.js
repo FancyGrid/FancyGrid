@@ -203,7 +203,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
-      sendJSON = me.writerType === 'json' || me.autoSave === false;
+      sendJSON = me.writerType === 'json';
 
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
@@ -724,6 +724,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
 
     if(writer.allFields){
       me.writeAllFields = writer.allFields;
+      writer.writeAllFields = writer.allFields;
     }
 
     switch(Fancy.typeOf(writer)){

@@ -259,6 +259,7 @@
               editor = new F.StringField(itemConfig);
               break;
             case 'number':
+            case 'currency':
               if (column.spin) {
                 itemConfig.spin = column.spin;
               }
@@ -322,6 +323,35 @@
               });
 
               editor = new F.CheckBox(itemConfig);
+              break;
+            case 'switcher':
+              var paddingLeft;
+              switch (column.cellAlign) {
+                case 'left':
+                case undefined:
+                  paddingLeft = 7;
+                  break;
+                case 'center':
+                  paddingLeft = (column.width - 20 - 2) / 2;
+                  break;
+                case 'right':
+                  paddingLeft = (column.width - 20) / 2 + 11;
+                  break;
+              }
+
+              F.apply(itemConfig, {
+                renderId: true,
+                value: false,
+                style: {
+                  padding: '0px',
+                  display: 'inline-block',
+                  'padding-left': paddingLeft,
+                  'float': 'left',
+                  margin: '0px'
+                }
+              });
+
+              editor = new F.Switcher(itemConfig);
               break;
             default:
               editor = new F.EmptyField(itemConfig);
@@ -631,6 +661,7 @@
             case 'button':
             case 'order':
             case 'select':
+            case 'expand':
               break;
             default:
               editor.set(data[column.index], false);

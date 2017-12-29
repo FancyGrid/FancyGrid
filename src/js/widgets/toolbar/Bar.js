@@ -254,11 +254,12 @@
 
             if (F.nojQuery) {
               width += parseInt(fieldEl.width());
-              width += parseInt(fieldEl.css('margin-left'));
             }
             else {
               width += parseInt(fieldEl.$dom.outerWidth());
             }
+
+            width += parseInt(fieldEl.css('margin-left'));
 
             //width += parseInt(fieldEl.css('padding-left'));
             //width += parseInt(fieldEl.css('padding-right'));

@@ -219,6 +219,10 @@
       if (me.theme && me.theme !== 'default') {
         me.addCls('fancy-theme-' + me.theme);
         me.list.addCls('fancy-theme-' + me.theme);
+
+        if(me.aheadList){
+          me.aheadList.addCls('fancy-theme-' + me.theme);
+        }
       }
     },
     /*
@@ -1072,6 +1076,8 @@
 
         me.onsAheadList();
       }
+
+      me.applyTheme();
     },
     /*
      *

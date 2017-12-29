@@ -193,6 +193,20 @@
 .fancy-bar-right-scroller.fancy-button-disabled .fancy-button-image {
   opacity: 0.3;
 }
+.fancy-button-menu {
+  position: relative;
+}
+.fancy-button-menu .fancy-button-drop {
+  position: absolute;
+  right: 0;
+  top: 2px;
+  width: 18px;
+  height: 22px;
+  background: url(images/default/bottom.png) no-repeat scroll -2px 1px transparent;
+}
+.fancy-button-menu .fancy-button-text {
+  margin-right: 5px;
+}
 /*
  toolbar.tab.less
 */
@@ -1383,6 +1397,12 @@
 .fancy-grid-state-resize-column * {
   cursor: col-resize !important;
 }
+.fancy-grid-cell .fancy-field-switcher {
+  margin-top: -7px;
+}
+.fancy-grid-row-edit .fancy-field-switcher .fancy-field-text {
+  margin-top: 12px;
+}
 /*
  scroll.less
 */
@@ -1990,6 +2010,34 @@ vml {
   border-bottom-width: 0;
   border-top-width: 1px;
 }
+.fancy-grid-tree-expander {
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-image: url(images/default/tree-expand.png);
+  background-position-y: -51px;
+  cursor: pointer;
+  display: inline-block;
+}
+.fancy-grid-tree-expander-leaf {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+}
+.fancy-grid-tree-expander-expanded {
+  background-position-y: -1px;
+}
+.fancy-grid-tree-expander-text {
+  display: inline-block;
+  margin-left: 5px;
+  position: relative;
+  top: -3px;
+}
+.fancy-grid-tree-expander-node {
+  display: inline-block;
+  height: 15px;
+  width: 25px;
+}
 /*
  datepicker.less
 */
@@ -2154,6 +2202,7 @@ vml {
   border: 1px solid #c0cad5;
   background-color: white;
   z-index: 3;
+  display: none;
 }
 .fancy-menu .fancy-menu-item-disabled {
   opacity: 0.3;
@@ -2319,6 +2368,9 @@ vml {
 }
 .fancy-theme-blue .fancy-date-picker-cell-active .fancy-grid-cell-inner {
   color: white;
+}
+.fancy-theme-blue .fancy-button-menu .fancy-button-drop {
+  background-image: url(images/blue/bottom.png);
 }
 .fancy-theme-blue.fancy-panel-grid-inside {
   border-bottom-width: 0;
@@ -2508,6 +2560,9 @@ vml {
 }
 .fancy-theme-gray .fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
   color: #d0d0d0;
+}
+.fancy-theme-gray .fancy-button-menu .fancy-button-drop {
+  background-image: url(images/gray/bottom.png);
 }
 .fancy-theme-gray.fancy-drag-hint-top {
   background-image: url(images/sand/col-drag-top.png);
@@ -2894,6 +2949,9 @@ vml {
 }
 .fancy-theme-dark .fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
   opacity: 0.4;
+}
+.fancy-theme-dark .fancy-button-menu .fancy-button-drop {
+  background-image: url(images/dark/bottom.png);
 }
 .fancy-theme-dark.fancy-menu {
   background: #2c2c2c;
@@ -3414,6 +3472,9 @@ vml {
 .fancy-theme-sand .fancy-date-picker-cell-out-min-max .fancy-grid-cell-inner {
   color: #d0d0d0;
 }
+.fancy-theme-sand .fancy-button-menu .fancy-button-drop {
+  background-image: url(images/sand/bottom.png);
+}
 .fancy-theme-sand.fancy-loadmask .fancy-loadmask-inner {
   background-color: #DDD5B6;
 }
@@ -3658,6 +3719,9 @@ vml {
 .fancy-theme-bootstrap .fancy-date-picker-cell-out-min-max {
   background: whitesmoke;
   color: #d0d0d0;
+}
+.fancy-theme-bootstrap .fancy-button-menu .fancy-button-drop {
+  background-image: url(images/bootstrap/bottom.png);
 }
 .fancy-theme-bootstrap.fancy-panel {
   border-color: #ccc;
@@ -3914,6 +3978,9 @@ vml {
 .fancy-theme-bootstrap-no-borders .fancy-date-picker-cell-out-min-max {
   background: whitesmoke;
   color: #d0d0d0;
+}
+.fancy-theme-bootstrap-no-borders .fancy-button-menu .fancy-button-drop {
+  background-image: url(images/bootstrap/bottom.png);
 }
 .fancy-theme-bootstrap-no-borders.fancy-panel {
   border-color: #ccc;

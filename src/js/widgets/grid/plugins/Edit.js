@@ -273,7 +273,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     var w = this.widget,
       column = o.column;
 
-    if(column.editable && column.type === 'checkbox' && w.celledit){
+    if(column.editable && (column.type === 'checkbox' || column.type === 'switcher') && w.celledit){
       w.celledit.onCheckBoxChange(o);
     }
   },
@@ -301,7 +301,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     if(w.rowedit){
       w.rowedit.edit(o);
     }
-    else if(column.editable && column.type !== 'checkbox' && w.celledit){
+    else if(column.editable && column.type !== 'checkbox' && column.type !== 'switcher' && w.celledit){
       w.celledit.edit(o);
     }
   },

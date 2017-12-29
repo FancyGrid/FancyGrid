@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.26',
+  version: '1.6.27',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -577,6 +577,7 @@ Fancy.apply(Fancy, {
   BUTTON_IMAGE_COLOR_CLS: 'fancy-button-image-color',
   BUTTON_TEXT_CLS: 'fancy-button-text',
   BUTTON_DROP_CLS: 'fancy-button-drop',
+  BUTTON_MENU_CLS: 'fancy-button-menu',
   SEG_BUTTON_CLS: 'fancy-seg-button',
   /*
    * Tooltip cls-s

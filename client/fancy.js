@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.26',
+  version: '1.6.27',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -577,6 +577,7 @@ Fancy.apply(Fancy, {
   BUTTON_IMAGE_COLOR_CLS: 'fancy-button-image-color',
   BUTTON_TEXT_CLS: 'fancy-button-text',
   BUTTON_DROP_CLS: 'fancy-button-drop',
+  BUTTON_MENU_CLS: 'fancy-button-menu',
   SEG_BUTTON_CLS: 'fancy-seg-button',
   /*
    * Tooltip cls-s
@@ -2657,7 +2658,8 @@ Fancy.define('Fancy.Store', {
     'Fancy.store.mixin.Grouping',
     'Fancy.store.mixin.Filter',
     'Fancy.store.mixin.Search',
-    'Fancy.store.mixin.Dirty'
+    'Fancy.store.mixin.Dirty',
+    'Fancy.store.mixin.Tree'
   ],
   pageSize: 10,
   showPage: 0,
@@ -2692,6 +2694,10 @@ Fancy.define('Fancy.Store', {
 
     if(me.widget.grouping){
       me.orderDataByGroupOnStart();
+    }
+
+    if(me.widget.isTreeData){
+      me.initTreeData();
     }
   },
   /*
@@ -2952,7 +2958,9 @@ Fancy.define('Fancy.Store', {
         });
       }
 
-      me.proxyCRUD('UPDATE', id, data);
+      if(me.proxyType === 'server' && me.autoSave) {
+        me.proxyCRUD('UPDATE', id, data);
+      }
 
       return;
     }
@@ -3536,6 +3544,9 @@ Fancy.Element = function(dom){
 };
 
 Fancy.Element.prototype = {
+  /*
+   * @return {Fancy.Element}
+   */
   last: function () {
     return Fancy.get(this.$dom);
   },
@@ -3963,6 +3974,14 @@ Fancy.Element.prototype = {
    */
   animate: function(style,speed,easing,callback){
     this.$dom.animate(style,speed,easing,callback);
+  },
+  /*
+   *
+   */
+  stop: function(){
+    if(this.$dom.stop){
+      this.$dom.stop();
+    }
   },
   /*
    * @return {Number}
@@ -4964,6 +4983,7 @@ Fancy.define('Fancy.Plugin', {
   var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
   var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
   var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+  var BUTTON_MENU_CLS = F.BUTTON_MENU_CLS;
 
   /**
    * @class Fancy.Button
@@ -5038,6 +5058,7 @@ Fancy.define('Fancy.Plugin', {
     height: 28,
     paddingTextWidth: 5,
     imageWidth: 20,
+    rightImageWidth: 20,
     pressed: false,
     theme: 'default',
     tpl: [
@@ -5093,6 +5114,10 @@ Fancy.define('Fancy.Plugin', {
         width += me.imageWidth;
       }
 
+      if(me.menu){
+        width += me.rightImageWidth;
+      }
+
       el.addCls(
         F.cls,
         me.widgetCls,
@@ -5102,6 +5127,10 @@ Fancy.define('Fancy.Plugin', {
 
       if (me.disabled) {
         el.addCls(BUTTON_DISABLED_CLS);
+      }
+
+      if(me.menu){
+        el.addCls(BUTTON_MENU_CLS);
       }
 
       el.css({
@@ -5212,7 +5241,7 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    onClick: function(){
+    onClick: function(e){
       var me = this,
         handler = me.handler;
 
@@ -5239,6 +5268,11 @@ Fancy.define('Fancy.Plugin', {
           else {
             me.toggle();
           }
+        }
+
+        if(me.menu){
+          me.toggle();
+          me.toggleMenuShow(e);
         }
       }
     },
@@ -5341,6 +5375,34 @@ Fancy.define('Fancy.Plugin', {
       if(me.tip && me.tooltip){
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
+    },
+    toggleMenuShow: function (e) {
+      var me = this,
+        p = me.el.$dom.offset(),
+        xy = [p.left, p.top + me.el.$dom.height()];
+
+      if(F.isArray(me.menu)){
+        me.initMenu();
+      }
+
+      setTimeout(function () {
+        me.menu.showAt(xy[0], xy[1]);
+      }, 100);
+    },
+    initMenu: function () {
+      var me = this;
+
+      me.menu = new F.Menu({
+        items: me.menu,
+        theme: me.theme,
+        events: [{
+          hide: me.onMenuHide,
+          scope: me
+        }]
+      });
+    },
+    onMenuHide: function(){
+      this.setPressed(false);
     }
   });
 })();
@@ -7024,11 +7086,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
             if (F.nojQuery) {
               width += parseInt(fieldEl.width());
-              width += parseInt(fieldEl.css('margin-left'));
             }
             else {
               width += parseInt(fieldEl.$dom.outerWidth());
             }
+
+            width += parseInt(fieldEl.css('margin-left'));
 
             //width += parseInt(fieldEl.css('padding-left'));
             //width += parseInt(fieldEl.css('padding-right'));
@@ -7801,6 +7864,18 @@ Fancy.define('Fancy.Form', {
     if(config.url){
       requiredModules.ajax = true;
     }
+
+    var containsMenu = function (item) {
+      if(item.menu){
+        requiredModules['menu'] = true;
+        return true;
+      }
+    };
+
+    Fancy.each(config.tbar, containsMenu);
+    Fancy.each(config.bbar, containsMenu);
+    Fancy.each(config.buttons, containsMenu);
+    Fancy.each(config.subTBar, containsMenu);
 
     var items = config.items || [],
       i = 0,
@@ -10025,6 +10100,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       if (me.theme && me.theme !== 'default') {
         me.addCls('fancy-theme-' + me.theme);
         me.list.addCls('fancy-theme-' + me.theme);
+
+        if(me.aheadList){
+          me.aheadList.addCls('fancy-theme-' + me.theme);
+        }
       }
     },
     /*
@@ -10878,6 +10957,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         me.onsAheadList();
       }
+
+      me.applyTheme();
     },
     /*
      *
@@ -12465,6 +12546,18 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules['selection'] = true;
     }
 
+    var containsMenu = function (item) {
+      if(item.menu){
+        requiredModules['menu'] = true;
+        return true;
+      }
+    };
+    
+    Fancy.each(me.tbar, containsMenu);
+    Fancy.each(me.bbar, containsMenu);
+    Fancy.each(me.buttons, containsMenu);
+    Fancy.each(me.subTBar, containsMenu);
+
     var _columns = columns.concat(leftColumns).concat(rightColumns);
 
     Fancy.each(_columns, function(column){
@@ -12503,6 +12596,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         case 'grossloss':
         case 'hbar':
           requiredModules.spark = true;
+          break;
+        case 'tree':
+          requiredModules.tree = true;
           break;
         case 'date':
           requiredModules.date = true;
@@ -12737,7 +12833,13 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
  * @param {String} id
  */
 FancyGrid.get = function(id){
-  var gridEl = Fancy.get(id).select('.' + Fancy.GRID_CLS);
+  var el = Fancy.get(id);
+
+  if(!el.dom){
+    return;
+  }
+
+  var gridEl = el.select('.' + Fancy.GRID_CLS).item(0);
 
   if(!gridEl.dom){
     return;

@@ -159,9 +159,18 @@
      * @return {Array}
      */
     getFieldsFromData: function (data) {
-      var items = data.items || data;
+      var me = this,
+        items = data.items || data;
 
       if (data.fields) {
+        if(me.isTreeData){
+          data.fields.push('$deep');
+          data.fields.push('leaf');
+          data.fields.push('parentId');
+          data.fields.push('expanded');
+          data.fields.push('child');
+        }
+
         return data.fields;
       }
 
@@ -174,6 +183,14 @@
 
       for (var p in itemZero) {
         fields.push(p);
+      }
+
+      if(me.isTreeData){
+        fields.push('$deep');
+        fields.push('leaf');
+        fields.push('parentId');
+        fields.push('expanded');
+        fields.push('child');
       }
 
       return fields;
@@ -255,6 +272,10 @@
 
       if (s.loading) {
         return;
+      }
+
+      if(me.expander){
+        me.expander.reSet();
       }
 
       me.updater.update();
@@ -2236,7 +2257,9 @@
      * @param {Array} data
      */
     setData: function (data) {
-      this.store.setData(data);
+      var me = this;
+
+      me.store.setData(data);
     },
     /*
      *
