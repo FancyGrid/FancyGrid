@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.27',
+  version: '1.7.0',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6073,6 +6073,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
+
       if (me.window === true) {
         el.css({
           display: 'none',
@@ -7282,38 +7286,51 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                   iL = _columns.length,
                   height = 1;
 
-                for (; i < iL; i++) {
-                  var column = _columns[i],
-                    title = column.title;
+                if(grid.searching.items){
+                  F.each(grid.searching.items, function (item) {
+                    items.push({
+                      inputLabel: ' &nbsp;&nbsp;' + item.text,
+                      value: true,
+                      name: item.index
+                    });
 
-                  if (title === undefined) {
-                    title = '';
-                  }
+                    height += grid.fieldHeight;
+                  })
+                }
+                else {
+                  for (; i < iL; i++) {
+                    var column = _columns[i],
+                      title = column.title;
 
-                  if (column.searchable === false) {
-                    continue;
-                  }
+                    if (title === undefined) {
+                      title = '';
+                    }
 
-                  switch (column.type) {
-                    case 'color':
-                    case 'combo':
-                    case 'date':
-                    case 'number':
-                    case 'string':
-                    case 'text':
-                    case 'currency':
-                      break;
-                    default:
+                    if (column.searchable === false) {
                       continue;
+                    }
+
+                    switch (column.type) {
+                      case 'color':
+                      case 'combo':
+                      case 'date':
+                      case 'number':
+                      case 'string':
+                      case 'text':
+                      case 'currency':
+                        break;
+                      default:
+                        continue;
+                    }
+
+                    height += grid.fieldHeight;
+
+                    items.push({
+                      inputLabel: ' &nbsp;&nbsp;' + title,
+                      value: true,
+                      name: column.index
+                    });
                   }
-
-                  height += grid.fieldHeight;
-
-                  items.push({
-                    inputLabel: ' &nbsp;&nbsp;' + title,
-                    value: true,
-                    name: column.index
-                  });
                 }
 
                 if (!me.list) {
@@ -12552,6 +12569,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         return true;
       }
     };
+
+    Fancy.each(me.events, function (e) {
+      for(var p in e){
+        if(p === 'contextmenu'){
+          requiredModules.menu = true;
+        }
+      }
+    });
+
+    Fancy.each(me.controls, function (c) {
+      if(c.event === 'contextmenu'){
+        requiredModules.menu = true;
+      }
+    });
     
     Fancy.each(me.tbar, containsMenu);
     Fancy.each(me.bbar, containsMenu);

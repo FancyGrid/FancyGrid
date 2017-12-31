@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.6.27',
+  version: '1.7.0',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -11318,6 +11318,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
+
       if (me.window === true) {
         el.css({
           display: 'none',
@@ -12555,38 +12559,51 @@ Fancy.define('Fancy.toolbar.Tab', {
                   iL = _columns.length,
                   height = 1;
 
-                for (; i < iL; i++) {
-                  var column = _columns[i],
-                    title = column.title;
+                if(grid.searching.items){
+                  F.each(grid.searching.items, function (item) {
+                    items.push({
+                      inputLabel: ' &nbsp;&nbsp;' + item.text,
+                      value: true,
+                      name: item.index
+                    });
 
-                  if (title === undefined) {
-                    title = '';
-                  }
+                    height += grid.fieldHeight;
+                  })
+                }
+                else {
+                  for (; i < iL; i++) {
+                    var column = _columns[i],
+                      title = column.title;
 
-                  if (column.searchable === false) {
-                    continue;
-                  }
+                    if (title === undefined) {
+                      title = '';
+                    }
 
-                  switch (column.type) {
-                    case 'color':
-                    case 'combo':
-                    case 'date':
-                    case 'number':
-                    case 'string':
-                    case 'text':
-                    case 'currency':
-                      break;
-                    default:
+                    if (column.searchable === false) {
                       continue;
+                    }
+
+                    switch (column.type) {
+                      case 'color':
+                      case 'combo':
+                      case 'date':
+                      case 'number':
+                      case 'string':
+                      case 'text':
+                      case 'currency':
+                        break;
+                      default:
+                        continue;
+                    }
+
+                    height += grid.fieldHeight;
+
+                    items.push({
+                      inputLabel: ' &nbsp;&nbsp;' + title,
+                      value: true,
+                      name: column.index
+                    });
                   }
-
-                  height += grid.fieldHeight;
-
-                  items.push({
-                    inputLabel: ' &nbsp;&nbsp;' + title,
-                    value: true,
-                    name: column.index
-                  });
                 }
 
                 if (!me.list) {
@@ -13227,8 +13244,12 @@ Fancy.define('Fancy.bar.Text', {
      */
     render: function () {
       var me = this,
-        renderTo = me.renderTo,
+        renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div'));
+
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
 
       el.addCls(
         me.cls,
@@ -13245,7 +13266,7 @@ Fancy.define('Fancy.bar.Text', {
 
       el.update(me.tpl.join(' '));
 
-      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+      me.el = F.get(renderTo.dom.appendChild(el.dom));
 
       if (me.panel === undefined) {
         if (me.shadow) {
@@ -21677,9 +21698,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     render: function () {
       var me = this,
-        renderTo = me.renderTo || document.body,
+        renderTo = Fancy.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
+
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
 
       el.addCls(
         F.cls,
@@ -21716,7 +21741,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+      me.el = F.get(renderTo.dom.appendChild(el.dom));
 
       me.setHardBordersWidth();
 
@@ -24027,6 +24052,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         return true;
       }
     };
+
+    Fancy.each(me.events, function (e) {
+      for(var p in e){
+        if(p === 'contextmenu'){
+          requiredModules.menu = true;
+        }
+      }
+    });
+
+    Fancy.each(me.controls, function (c) {
+      if(c.event === 'contextmenu'){
+        requiredModules.menu = true;
+      }
+    });
     
     Fancy.each(me.tbar, containsMenu);
     Fancy.each(me.bbar, containsMenu);
@@ -26057,6 +26096,10 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         w = me.widget;
 
       me.Super('init', arguments);
+
+      if(!w.header){
+        return;
+      }
 
       w.on('render', function () {
         me.render();
@@ -31652,9 +31695,11 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       var me = this,
         w = this.widget;
 
-      me._renderHeaderCheckBox(w.leftHeader, w.leftColumns);
-      me._renderHeaderCheckBox(w.header, w.columns);
-      me._renderHeaderCheckBox(w.rightHeader, w.rightColumns);
+      if(w.header) {
+        me._renderHeaderCheckBox(w.leftHeader, w.leftColumns);
+        me._renderHeaderCheckBox(w.header, w.columns);
+        me._renderHeaderCheckBox(w.rightHeader, w.rightColumns);
+      }
     },
     /*
      * @param {Fancy.Header} header
@@ -36463,6 +36508,9 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
     else {
       me.updateStoreSearches();
+      setTimeout(function () {
+        w.fire('filter', s.filters);
+      },1);
     }
 
     if(w.grouping){

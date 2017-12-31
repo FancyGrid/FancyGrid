@@ -2008,9 +2008,13 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     render: function () {
       var me = this,
-        renderTo = me.renderTo || document.body,
+        renderTo = Fancy.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
+
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
 
       el.addCls(
         F.cls,
@@ -2047,7 +2051,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+      me.el = F.get(renderTo.dom.appendChild(el.dom));
 
       me.setHardBordersWidth();
 
@@ -5292,6 +5296,10 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         w = me.widget;
 
       me.Super('init', arguments);
+
+      if(!w.header){
+        return;
+      }
 
       w.on('render', function () {
         me.render();

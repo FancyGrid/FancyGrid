@@ -112,6 +112,10 @@
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
+
       if (me.window === true) {
         el.css({
           display: 'none',

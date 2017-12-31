@@ -450,38 +450,51 @@
                   iL = _columns.length,
                   height = 1;
 
-                for (; i < iL; i++) {
-                  var column = _columns[i],
-                    title = column.title;
+                if(grid.searching.items){
+                  F.each(grid.searching.items, function (item) {
+                    items.push({
+                      inputLabel: ' &nbsp;&nbsp;' + item.text,
+                      value: true,
+                      name: item.index
+                    });
 
-                  if (title === undefined) {
-                    title = '';
-                  }
+                    height += grid.fieldHeight;
+                  })
+                }
+                else {
+                  for (; i < iL; i++) {
+                    var column = _columns[i],
+                      title = column.title;
 
-                  if (column.searchable === false) {
-                    continue;
-                  }
+                    if (title === undefined) {
+                      title = '';
+                    }
 
-                  switch (column.type) {
-                    case 'color':
-                    case 'combo':
-                    case 'date':
-                    case 'number':
-                    case 'string':
-                    case 'text':
-                    case 'currency':
-                      break;
-                    default:
+                    if (column.searchable === false) {
                       continue;
+                    }
+
+                    switch (column.type) {
+                      case 'color':
+                      case 'combo':
+                      case 'date':
+                      case 'number':
+                      case 'string':
+                      case 'text':
+                      case 'currency':
+                        break;
+                      default:
+                        continue;
+                    }
+
+                    height += grid.fieldHeight;
+
+                    items.push({
+                      inputLabel: ' &nbsp;&nbsp;' + title,
+                      value: true,
+                      name: column.index
+                    });
                   }
-
-                  height += grid.fieldHeight;
-
-                  items.push({
-                    inputLabel: ' &nbsp;&nbsp;' + title,
-                    value: true,
-                    name: column.index
-                  });
                 }
 
                 if (!me.list) {

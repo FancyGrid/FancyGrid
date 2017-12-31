@@ -251,6 +251,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         return true;
       }
     };
+
+    Fancy.each(me.events, function (e) {
+      for(var p in e){
+        if(p === 'contextmenu'){
+          requiredModules.menu = true;
+        }
+      }
+    });
+
+    Fancy.each(me.controls, function (c) {
+      if(c.event === 'contextmenu'){
+        requiredModules.menu = true;
+      }
+    });
     
     Fancy.each(me.tbar, containsMenu);
     Fancy.each(me.bbar, containsMenu);

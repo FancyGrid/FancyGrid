@@ -1557,9 +1557,11 @@
       var me = this,
         w = this.widget;
 
-      me._renderHeaderCheckBox(w.leftHeader, w.leftColumns);
-      me._renderHeaderCheckBox(w.header, w.columns);
-      me._renderHeaderCheckBox(w.rightHeader, w.rightColumns);
+      if(w.header) {
+        me._renderHeaderCheckBox(w.leftHeader, w.leftColumns);
+        me._renderHeaderCheckBox(w.header, w.columns);
+        me._renderHeaderCheckBox(w.rightHeader, w.rightColumns);
+      }
     },
     /*
      * @param {Fancy.Header} header

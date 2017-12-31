@@ -67,6 +67,9 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
     else {
       me.updateStoreSearches();
+      setTimeout(function () {
+        w.fire('filter', s.filters);
+      },1);
     }
 
     if(w.grouping){

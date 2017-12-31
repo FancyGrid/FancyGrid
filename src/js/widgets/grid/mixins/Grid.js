@@ -200,9 +200,13 @@
      */
     render: function () {
       var me = this,
-        renderTo = me.renderTo || document.body,
+        renderTo = Fancy.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
+
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
 
       el.addCls(
         F.cls,
@@ -239,7 +243,7 @@
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+      me.el = F.get(renderTo.dom.appendChild(el.dom));
 
       me.setHardBordersWidth();
 

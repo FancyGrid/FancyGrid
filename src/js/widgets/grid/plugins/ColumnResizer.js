@@ -40,6 +40,10 @@
 
       me.Super('init', arguments);
 
+      if(!w.header){
+        return;
+      }
+
       w.on('render', function () {
         me.render();
         me.ons();

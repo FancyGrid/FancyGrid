@@ -174,8 +174,12 @@
      */
     render: function () {
       var me = this,
-        renderTo = me.renderTo,
+        renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div'));
+
+      if(!renderTo.dom){
+        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      }
 
       el.addCls(
         me.cls,
@@ -192,7 +196,7 @@
 
       el.update(me.tpl.join(' '));
 
-      me.el = F.get(F.get(renderTo).dom.appendChild(el.dom));
+      me.el = F.get(renderTo.dom.appendChild(el.dom));
 
       if (me.panel === undefined) {
         if (me.shadow) {
