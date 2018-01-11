@@ -327,6 +327,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         isTreeData = true;
       }
 
+      if(column.headerCheckBox){
+        column.sortable = false;
+      }
+
       switch(column.type){
         case 'select':
           this.checkboxRowSelection = true;
@@ -347,6 +351,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'currency':
           if(column.format === undefined){
             column.format = 'number';
+          }
+          break;
+        case 'string':
+        case 'number':
+        case 'text':
+          if(column.ellipsis !== false){
+            column.ellipsis = true;
           }
           break;
       }
@@ -921,6 +932,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var checkOnly = false;
       var memory = false;
       var memoryPerformance = true;
+      var selectLeafsOnly = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -937,6 +949,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         if(config.selModel.disabled){
           disabled = true;
         }
+
+        if(config.selModel.selectLeafsOnly){
+          selectLeafsOnly = true;
+        }
+
         config.selModel = config.selModel.type;
       }
 
@@ -951,6 +968,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.memory = memory;
       config.selection.memoryPerformance = memoryPerformance;
       config.selection.disabled = disabled;
+      config.selection.selectLeafsOnly = selectLeafsOnly;
     }
 
     if(config.selection){

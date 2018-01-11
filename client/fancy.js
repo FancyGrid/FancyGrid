@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.0',
+  version: '1.7.1',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6763,6 +6763,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       if (!item.rendered) {
         switch (item.type) {
+          case 'form':
+            me.items[me.activeTab] = new FancyForm(item);
+            break;
           case 'grid':
             me.items[me.activeTab] = new FancyGrid(item);
             break;
@@ -7894,24 +7897,31 @@ Fancy.define('Fancy.Form', {
     Fancy.each(config.buttons, containsMenu);
     Fancy.each(config.subTBar, containsMenu);
 
-    var items = config.items || [],
-      i = 0,
-      iL = items.length,
-      item;
+    var readItems = function (items) {
+      var i = 0,
+        iL = items.length,
+        item;
 
-    for(;i<iL;i++){
-      item = items[i];
+      for(;i<iL;i++){
+        item = items[i];
 
-      if(item.type === 'combo' && item.data && item.data.proxy){
-        requiredModules.ajax = true;
+        if(item.type === 'combo' && item.data && item.data.proxy){
+          requiredModules.ajax = true;
+        }
+
+        if(item.type === 'date'){
+          requiredModules.grid = true;
+          requiredModules.date = true;
+          requiredModules.selection = true;
+        }
+
+        if(item.items){
+          readItems(item.items);
+        }
       }
+    };
 
-      if(item.type === 'date'){
-        requiredModules.grid = true;
-        requiredModules.date = true;
-        requiredModules.selection = true;
-      }
-    }
+    readItems(config.items || []);
 
     me.neededModules = {
       length: 0
@@ -7971,7 +7981,13 @@ var FancyForm = Fancy.Form;
  * @param {String} id
  */
 FancyForm.get = function(id){
-  var formId = Fancy.get(id).select('.fancy-form').dom.id;
+  var el = Fancy.get(id);
+
+  if(!el.dom){
+    return;
+  }
+
+  var formId = el.select('.fancy-form').dom.id;
 
   return Fancy.getWidget(formId);
 };

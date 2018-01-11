@@ -33,6 +33,7 @@
     memory: false,
     memoryPerformance: true,
     disabled: false,
+    selectLeafsOnly: false,
     /*
      * @constructor
      * @param {Object} config
@@ -86,6 +87,8 @@
       w.on('rightlockcolumn', me.onColumnRightLock, me);
       w.on('unlockcolumn', me.onUnColumnLock, me);
       w.on('filter', me.onFilter, me);
+      w.on('expand', me.onExpand, me);
+      w.on('collapse', me.onCollapse, me);
     },
     /*
      *
@@ -368,6 +371,12 @@
 
       if (me.checkOnly && params.column.index !== '$selected') {
         return;
+      }
+
+      if(me.selectLeafsOnly){
+        if(!params.data.leaf){
+          return;
+        }
       }
 
       var e = params.e,
@@ -1908,6 +1917,10 @@
       var me = this,
         w = me.widget;
 
+      if(!me.memory){
+        me.clearSelection();
+      }
+
       if(me.selModel === 'rows') {
         F.each(w.leftColumns, function (column, i) {
           if (column.type === 'select') {
@@ -1935,6 +1948,20 @@
             checkBox.set(false, false);
           }
         });
+      }
+    },
+    onExpand: function () {
+      var me = this;
+
+      if(!me.memory){
+        me.clearSelection();
+      }
+    },
+    onCollapse: function () {
+      var me = this;
+
+      if(!me.memory){
+        me.clearSelection();
       }
     }
   });

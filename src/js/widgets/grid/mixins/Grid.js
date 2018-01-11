@@ -72,6 +72,10 @@
         multiSort: me.multiSort
       };
 
+      if(me.multiSortLimit){
+        storeConfig.multiSortLimit = me.multiSortLimit;
+      }
+
       if (state) {
         if (state.filters) {
           storeConfig.filters = state.filters;
@@ -693,7 +697,11 @@
      * @param {Object} store
      */
     onLoadStore: function (store) {
-      this.fire('load');
+      var me = this;
+
+      setTimeout(function () {
+        me.fire('load');
+      }, 1);
     },
     /*
      * @param {Object} store

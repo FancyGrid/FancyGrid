@@ -183,6 +183,9 @@
 
       if (!item.rendered) {
         switch (item.type) {
+          case 'form':
+            me.items[me.activeTab] = new FancyForm(item);
+            break;
           case 'grid':
             me.items[me.activeTab] = new FancyGrid(item);
             break;

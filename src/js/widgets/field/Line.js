@@ -22,24 +22,49 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
   init: function(){
     var me = this;
 
-    me.addEvents();
-
     me.Super('init', arguments);
 
     var i = 0,
       iL = me.items.length,
       isItemTop;
 
+    if(me.parentSet){
+      var averageWidth = me.width  / me.items.length;
+    }
+
     for(;i<iL;i++){
       var item = me.items[i];
+
+      if(item.width === undefined){
+        item.width = averageWidth;
+      }
 
       item.style = item.style || {};
 
       if( item.labelAlign === 'top' ){
         isItemTop = true;
+
+        if(me.parentSet){
+          item.style['padding'] = '0px';
+        }
+
+        if(item.label){
+          item.labelWidth = item.width - 16;
+          if(item.labelWidth === 100){
+            item.labelWidth = 7 * (item.label.length + 1 + 1);
+          }
+
+          if(item.width < item.labelWidth){
+            item.labelWidth = 7 * (item.label.length + 1 + 1);
+          }
+        }
       }
       else{
-        item.style['padding-top'] = '0px'
+        item.style['padding-top'] = '0px';
+
+        if(!item.labelWidth && item.label){
+          item.labelWidth = 7 * (item.label.length + 1 + 1);
+        }
       }
 
       if( i === 0 ){

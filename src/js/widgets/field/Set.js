@@ -34,6 +34,11 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
           };
         }
       }
+
+      if(item.type === 'line'){
+        item.padding = false;
+        item.parentSet = true;
+      }
     });
 
     me.preRender();

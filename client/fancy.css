@@ -2564,6 +2564,9 @@ vml {
 .fancy-theme-gray .fancy-button-menu .fancy-button-drop {
   background-image: url(images/gray/bottom.png);
 }
+.fancy-theme-gray li {
+  color: #888;
+}
 .fancy-theme-gray.fancy-drag-hint-top {
   background-image: url(images/sand/col-drag-top.png);
 }
@@ -3474,6 +3477,9 @@ vml {
 }
 .fancy-theme-sand .fancy-button-menu .fancy-button-drop {
   background-image: url(images/sand/bottom.png);
+}
+.fancy-theme-sand li {
+  color: #888;
 }
 .fancy-theme-sand.fancy-loadmask .fancy-loadmask-inner {
   background-color: #DDD5B6;

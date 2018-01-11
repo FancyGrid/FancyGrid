@@ -223,7 +223,7 @@
       itemsASC = w.el.select('.' + GRID_COLUMN_SORT_ASC);
       itemsDESC = w.el.select('.' + GRID_COLUMN_SORT_DESC);
 
-      if (itemsASC.length + itemsDESC.length < 3) {
+      if (itemsASC.length + itemsDESC.length < s.multiSortLimit) {
         return;
       }
 

@@ -133,6 +133,11 @@
     initMonthPicker: function () {
       var me = this;
 
+      if(me.monthPicker){
+        me.monthPicker.setDate(me.date);
+        return;
+      }
+
       if (!F.fullBuilt && F.MODULELOAD !== false && F.MODULELOAD !== false && ( me.monthPicker || !F.modules['grid'] )) {
         return;
       }

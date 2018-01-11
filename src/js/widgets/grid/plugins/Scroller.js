@@ -77,6 +77,8 @@
           if (w.panel) {
             w.panel.on('resize', me.onPanelResize, me);
           }
+
+          w.body.el.on('scroll', me.onScrollBodyBugFix, me);
         }
       });
 
@@ -125,6 +127,7 @@
     onGridInit: function () {
       var me = this,
         w = me.widget,
+        s = w.store,
         docEl = F.get(document);
 
       me.setScrollBars();
@@ -135,6 +138,8 @@
       w.on('lockcolumn', me.onLockColumn, me);
       w.on('rightlockcolumn', me.onRightLockColumn, me);
       w.on('unlockcolumn', me.onUnLockColumn, me);
+
+      s.on('changepages', me.onChangePages, me);
 
       setTimeout(function () {
         me.update();
@@ -956,6 +961,26 @@
         w = me.widget;
 
       w.scroll(0, 0);
+    },
+    onChangePages: function () {
+      var me = this,
+        w = me.widget;
+
+      if(!w.nativeScroller && me.scrollTop){
+        setTimeout(function () {
+          me.scrollDelta(0);
+        }, 1);
+
+      }
+    },
+    onScrollBodyBugFix: function () {
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        scrollLeft = body.el.dom.scrollLeft;
+
+      body.el.dom.scrollLeft = me.scrollLeft;
+      w.scroll(me.scrollTop, -me.scrollLeft - scrollLeft);
     }
   });
 

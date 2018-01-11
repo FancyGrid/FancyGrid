@@ -327,6 +327,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         isTreeData = true;
       }
 
+      if(column.headerCheckBox){
+        column.sortable = false;
+      }
+
       switch(column.type){
         case 'select':
           this.checkboxRowSelection = true;
@@ -347,6 +351,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'currency':
           if(column.format === undefined){
             column.format = 'number';
+          }
+          break;
+        case 'string':
+        case 'number':
+        case 'text':
+          if(column.ellipsis !== false){
+            column.ellipsis = true;
           }
           break;
       }
@@ -921,6 +932,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var checkOnly = false;
       var memory = false;
       var memoryPerformance = true;
+      var selectLeafsOnly = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -937,6 +949,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         if(config.selModel.disabled){
           disabled = true;
         }
+
+        if(config.selModel.selectLeafsOnly){
+          selectLeafsOnly = true;
+        }
+
         config.selModel = config.selModel.type;
       }
 
@@ -951,6 +968,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.memory = memory;
       config.selection.memoryPerformance = memoryPerformance;
       config.selection.disabled = disabled;
+      config.selection.selectLeafsOnly = selectLeafsOnly;
     }
 
     if(config.selection){
@@ -1880,6 +1898,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         multiSort: me.multiSort
       };
 
+      if(me.multiSortLimit){
+        storeConfig.multiSortLimit = me.multiSortLimit;
+      }
+
       if (state) {
         if (state.filters) {
           storeConfig.filters = state.filters;
@@ -2501,7 +2523,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {Object} store
      */
     onLoadStore: function (store) {
-      this.fire('load');
+      var me = this;
+
+      setTimeout(function () {
+        me.fire('load');
+      }, 1);
     },
     /*
      * @param {Object} store
@@ -4227,6 +4253,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           if (w.panel) {
             w.panel.on('resize', me.onPanelResize, me);
           }
+
+          w.body.el.on('scroll', me.onScrollBodyBugFix, me);
         }
       });
 
@@ -4275,6 +4303,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     onGridInit: function () {
       var me = this,
         w = me.widget,
+        s = w.store,
         docEl = F.get(document);
 
       me.setScrollBars();
@@ -4285,6 +4314,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       w.on('lockcolumn', me.onLockColumn, me);
       w.on('rightlockcolumn', me.onRightLockColumn, me);
       w.on('unlockcolumn', me.onUnLockColumn, me);
+
+      s.on('changepages', me.onChangePages, me);
 
       setTimeout(function () {
         me.update();
@@ -5106,6 +5137,26 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         w = me.widget;
 
       w.scroll(0, 0);
+    },
+    onChangePages: function () {
+      var me = this,
+        w = me.widget;
+
+      if(!w.nativeScroller && me.scrollTop){
+        setTimeout(function () {
+          me.scrollDelta(0);
+        }, 1);
+
+      }
+    },
+    onScrollBodyBugFix: function () {
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        scrollLeft = body.el.dom.scrollLeft;
+
+      body.el.dom.scrollLeft = me.scrollLeft;
+      w.scroll(me.scrollTop, -me.scrollLeft - scrollLeft);
     }
   });
 

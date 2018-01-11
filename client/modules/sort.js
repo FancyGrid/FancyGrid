@@ -26,6 +26,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     switch(type){
       case 'number':
       case 'checkbox':
+      case 'switcher':
       case 'progressdonut':
       case 'progressbar':
       case 'grossloss':
@@ -677,7 +678,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       itemsASC = w.el.select('.' + GRID_COLUMN_SORT_ASC);
       itemsDESC = w.el.select('.' + GRID_COLUMN_SORT_DESC);
 
-      if (itemsASC.length + itemsDESC.length < 3) {
+      if (itemsASC.length + itemsDESC.length < s.multiSortLimit) {
         return;
       }
 

@@ -20,6 +20,7 @@
     ptype: 'grid.expander',
     inWidgetName: 'expander',
     plusScroll: 0,
+    enabledCollapse: true,
     /*
      * @constructor
      * @param {Object} config
@@ -339,6 +340,10 @@
     reSet: function () {
       var me = this,
         w = me.widget;
+
+      if(me.enabledCollapse === false){
+        return;
+      }
 
       for (var p in me._expandedIds) {
         var item = me._expandedIds[p];

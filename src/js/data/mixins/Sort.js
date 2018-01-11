@@ -26,6 +26,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     switch(type){
       case 'number':
       case 'checkbox':
+      case 'switcher':
       case 'progressdonut':
       case 'progressbar':
       case 'grossloss':

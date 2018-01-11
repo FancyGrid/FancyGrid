@@ -274,6 +274,12 @@
         firstShow = true;
         me.renderPicker();
       }
+      else{
+        if(me.picker.monthPicker){
+          me.picker.monthPicker.hide();
+          me.picker.monthPicker.panel.css('top', '-300px');
+        }
+      }
 
       var offset = input.offset(),
         x = offset.left,

@@ -219,6 +219,8 @@
 
       me.fire('afterrender');
       me.fire('render');
+
+      me.rendered = true;
     },
     /*
      * @param {Array} tbar
@@ -724,8 +726,7 @@
     /*
      * TODO:
      */
-    setWidth: function () {
-    },
+    setWidth: function () {},
     /*
      * @return {Number}
      */

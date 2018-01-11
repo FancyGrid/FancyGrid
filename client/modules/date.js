@@ -1141,6 +1141,12 @@ Fancy.Date = {
         firstShow = true;
         me.renderPicker();
       }
+      else{
+        if(me.picker.monthPicker){
+          me.picker.monthPicker.hide();
+          me.picker.monthPicker.panel.css('top', '-300px');
+        }
+      }
 
       var offset = input.offset(),
         x = offset.left,
@@ -1677,6 +1683,11 @@ Fancy.Date = {
      */
     initMonthPicker: function () {
       var me = this;
+
+      if(me.monthPicker){
+        me.monthPicker.setDate(me.date);
+        return;
+      }
 
       if (!F.fullBuilt && F.MODULELOAD !== false && F.MODULELOAD !== false && ( me.monthPicker || !F.modules['grid'] )) {
         return;
@@ -2631,6 +2642,16 @@ Fancy.Date = {
      */
     onDateClick: function () {
       this.initMonthPicker();
+    },
+    setDate: function (date) {
+      var me = this;
+
+      me.date = date;
+      me.showDate = date;
+
+      var data = me.generateData();
+      me.store.setData(data.items);
+      me.update();
     }
   });
 

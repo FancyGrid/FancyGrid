@@ -136,10 +136,17 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
       order = s.order,
       newCategories = [],
       i = 0,
-      iL = order.length;
+      iL = order? order.length:categories.length;
 
-    for(;i<iL;i++){
-      newCategories.push(categories[order[i]]);
+    if(!order){
+      for (; i < iL; i++) {
+        newCategories.push(categories[i]);
+      }
+    }
+    else {
+      for (; i < iL; i++) {
+        newCategories.push(categories[order[i]]);
+      }
     }
     _chart.xAxis[0].update({categories: newCategories}, true);
 

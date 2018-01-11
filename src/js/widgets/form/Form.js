@@ -97,24 +97,31 @@ Fancy.define('Fancy.Form', {
     Fancy.each(config.buttons, containsMenu);
     Fancy.each(config.subTBar, containsMenu);
 
-    var items = config.items || [],
-      i = 0,
-      iL = items.length,
-      item;
+    var readItems = function (items) {
+      var i = 0,
+        iL = items.length,
+        item;
 
-    for(;i<iL;i++){
-      item = items[i];
+      for(;i<iL;i++){
+        item = items[i];
 
-      if(item.type === 'combo' && item.data && item.data.proxy){
-        requiredModules.ajax = true;
+        if(item.type === 'combo' && item.data && item.data.proxy){
+          requiredModules.ajax = true;
+        }
+
+        if(item.type === 'date'){
+          requiredModules.grid = true;
+          requiredModules.date = true;
+          requiredModules.selection = true;
+        }
+
+        if(item.items){
+          readItems(item.items);
+        }
       }
+    };
 
-      if(item.type === 'date'){
-        requiredModules.grid = true;
-        requiredModules.date = true;
-        requiredModules.selection = true;
-      }
-    }
+    readItems(config.items || []);
 
     me.neededModules = {
       length: 0
@@ -174,7 +181,13 @@ var FancyForm = Fancy.Form;
  * @param {String} id
  */
 FancyForm.get = function(id){
-  var formId = Fancy.get(id).select('.fancy-form').dom.id;
+  var el = Fancy.get(id);
+
+  if(!el.dom){
+    return;
+  }
+
+  var formId = el.select('.fancy-form').dom.id;
 
   return Fancy.getWidget(formId);
 };

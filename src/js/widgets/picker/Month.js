@@ -357,6 +357,16 @@
      */
     onDateClick: function () {
       this.initMonthPicker();
+    },
+    setDate: function (date) {
+      var me = this;
+
+      me.date = date;
+      me.showDate = date;
+
+      var data = me.generateData();
+      me.store.setData(data.items);
+      me.update();
     }
   });
 
