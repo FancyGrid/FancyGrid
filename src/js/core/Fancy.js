@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.1',
+  version: '1.7.2',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -506,6 +506,7 @@ Fancy.apply(Fancy, {
   GRID_CELL_INNER_CLS: 'fancy-grid-cell-inner',
   GRID_CELL_OVER_CLS: 'fancy-grid-cell-over',
   GRID_CELL_SELECTED_CLS: 'fancy-grid-cell-selected',
+  GRID_CELL_ACTIVE_CLS: 'fancy-grid-cell-active',
   GRID_CELL_EVEN_CLS: 'fancy-grid-cell-even',
   GRID_CELL_WRAPPER_CLS: 'fancy-grid-cell-wrapper',
   GRID_CELL_DIRTY_CLS: 'fancy-grid-cell-dirty',

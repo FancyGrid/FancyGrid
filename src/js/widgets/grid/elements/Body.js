@@ -332,7 +332,8 @@
           side: me.side,
           columnIndex: columnIndex,
           column: column,
-          columnDom: columnEl.dom
+          columnDom: columnEl.dom,
+          cell: cellEl.dom
         };
 
       if (w.columnClickData) {
@@ -357,7 +358,8 @@
         side: me.side,
         columnIndex: columnIndex,
         column: column,
-        columnDom: columnEl.dom
+        columnDom: columnEl.dom,
+        cell: e.target
       };
     },
     /*
@@ -411,7 +413,8 @@
           side: params.side,
           columnDom: F.get(params.cell).parent().dom,
           column: params.column,
-          columnIndex: params.columnIndex
+          columnIndex: params.columnIndex,
+          cell: params.cell
         };
 
       w.fire('beforecellmousedown', params);

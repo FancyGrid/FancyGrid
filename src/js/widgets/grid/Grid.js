@@ -38,7 +38,6 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   minColumnWidth: 30,
   emptyValue: '&nbsp;',
   frame: true,
-  keyNavigation: false,
   draggable: false,
   activated: false,
   multiSort: false,

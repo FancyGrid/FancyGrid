@@ -933,6 +933,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var memory = false;
       var memoryPerformance = true;
       var selectLeafsOnly = false;
+      var keyNavigation = true;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -954,6 +955,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           selectLeafsOnly = true;
         }
 
+        if(config.selModel.keyNavigation !== undefined){
+          keyNavigation = config.selModel.keyNavigation;
+        }
+
         config.selModel = config.selModel.type;
       }
 
@@ -969,6 +974,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.memoryPerformance = memoryPerformance;
       config.selection.disabled = disabled;
       config.selection.selectLeafsOnly = selectLeafsOnly;
+      config.selection.keyNavigation = keyNavigation;
     }
 
     if(config.selection){

@@ -18,6 +18,8 @@
   var GRID_LEFT_EMPTY_CLS = F.GRID_LEFT_EMPTY_CLS;
   var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
 
+  var activeGrid;
+
   F.Mixin('Fancy.grid.mixin.Grid', {
     tpl: [
       '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
@@ -1568,9 +1570,15 @@
       var me = this,
         doc = F.get(document);
 
+      if(activeGrid && activeGrid.id !== me.id){
+        activeGrid.fire('deactivate');
+      }
+
       setTimeout(function () {
         doc.on('click', me.onDeactivateClick, me);
       }, 100);
+
+      activeGrid = me;
     },
     /*
      *
@@ -2305,6 +2313,26 @@
       if(s.proxy && s.proxy.params){
         F.apply(s.proxy.params, o);
       }
+    },
+    /*
+     * @param {Object} cell
+     * @return {String}
+     */
+    getSideByCell: function (cell) {
+      var me = this,
+        side;
+
+      if(me.centerEl.within(cell)){
+        side = 'center';
+      }
+      else if(me.leftEl.within(cell)){
+        side = 'left';
+      }
+      else if(me.rightEl.within(cell)){
+        side = 'right';
+      }
+
+      return side;
     }
   });
 

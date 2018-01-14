@@ -13,6 +13,7 @@
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_CELL_OVER_CLS = F.GRID_CELL_OVER_CLS;
   var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+  var GRID_CELL_ACTIVE_CLS = F.GRID_CELL_ACTIVE_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_COLUMN_OVER_CLS = F.GRID_COLUMN_OVER_CLS;
   var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
@@ -34,6 +35,7 @@
     memoryPerformance: true,
     disabled: false,
     selectLeafsOnly: false,
+    keyNavigation: true,
     /*
      * @constructor
      * @param {Object} config
@@ -69,7 +71,8 @@
         me.initCellSelection();
         me.initRowSelection();
         me.initColumnSelection();
-        if (w.keyNavigation) {
+
+        if (me.keyNavigation) {
           me.initNavigation();
         }
         w.on('changepage', me.onChangePage, me);
@@ -438,6 +441,9 @@
         delete me.startCellSelection;
       });
 
+      me.clearActiveCell();
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
+
       w.fire('select');
     },
     /*
@@ -584,6 +590,9 @@
         me.selectColumns(0, w.columns.length, 'center');
         me.selectColumns(end.columnIndex, w.leftColumns.length, 'left');
       }
+
+      me.clearActiveCell();
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      * @param {Object} grid
@@ -650,6 +659,9 @@
           me.deSelectCheckBox(p);
         }
       }
+
+      me.clearActiveCell();
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
       w.fire('select');
     },
@@ -747,6 +759,7 @@
       me.clearSelection();
 
       columnEl.addCls(GRID_COLUMN_SELECTED_CLS);
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      * @param {Fancy.Grid} grid
@@ -781,6 +794,9 @@
       }
 
       me.clearSelection();
+
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
+
 
       var rowCells = w.getDomRow(rowIndex);
 
@@ -983,7 +999,7 @@
 
       me.clearSelection();
 
-      F.get(params.cell).addCls(GRID_CELL_SELECTED_CLS);
+      F.get(params.cell).addCls(GRID_CELL_SELECTED_CLS, GRID_CELL_ACTIVE_CLS);
 
       w.fire('select');
     },
@@ -1032,6 +1048,8 @@
         w.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
         w.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
       }
+
+      me.clearActiveCell();
 
       w.fire('clearselect');
     },
@@ -1212,6 +1230,8 @@
       }
 
       me.endCellRowIndex = end.rowIndex;
+      me.clearActiveCell();
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
       w.fire('select');
     },
@@ -1241,6 +1261,7 @@
         delete me.isMouseDown;
       });
 
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
       w.fire('select');
     },
@@ -1264,7 +1285,8 @@
 
       me.clearSelection();
 
-      cellEl.addCls(GRID_CELL_SELECTED_CLS);
+      w.el.select('.' + GRID_CELL_ACTIVE_CLS).removeCls(GRID_CELL_ACTIVE_CLS);
+      cellEl.addCls(GRID_CELL_SELECTED_CLS, GRID_CELL_ACTIVE_CLS);
       me.isMouseDown = true;
       me.startCellSelection = params.cell;
       me.startCellRowIndex = params.rowIndex;
@@ -1962,6 +1984,280 @@
 
       if(!me.memory){
         me.clearSelection();
+      }
+    },
+    getActiveCell: function () {
+      var me = this,
+        w = me.widget,
+        cell = w.el.select('.' + GRID_CELL_ACTIVE_CLS);
+
+      if(!cell.dom){
+        cell = w.body.getCell(0, 0);
+      }
+
+      return cell;
+    },
+    getActiveCellInfo: function () {
+      var me = this,
+        w = me.widget,
+        cell = me.getActiveCell(),
+        side = w.getSideByCell(cell),
+        rowIndex = Number(cell.attr('index')),
+        columnIndex = Number(cell.parent().attr('index'));
+
+      return {
+        side: side,
+        rowIndex: rowIndex,
+        columnIndex: columnIndex
+      }
+    },
+    clearActiveCell: function () {
+      var me = this,
+        w = me.widget,
+        cell = w.el.select('.' + GRID_CELL_ACTIVE_CLS);
+
+      cell.removeCls(GRID_CELL_ACTIVE_CLS);
+    }
+  });
+
+})();/*
+ * @class Fancy.grid.selection.mixin.Navigation
+ * TODO: write realization for key navigation
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+
+  /*
+   * CONSTANTS
+   */
+  var GRID_CELL_ACTIVE_CLS = F.GRID_CELL_ACTIVE_CLS;
+  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+
+  F.Mixin('Fancy.grid.selection.mixin.Navigation', {
+    /*
+     *
+     */
+    initNavigation: function () {
+      this.addEvents('up', 'down', 'left', 'right');
+      this.onsNav();
+    },
+    /*
+     *
+     */
+    onsNav: function () {
+      var me = this,
+        w = me.widget,
+        doc = Fancy.get(document);
+
+      doc.on('keydown', me.onKeyDown, me);
+      w.el.on('keydown', me.onKeyDown, me);
+    },
+    /*
+     * @param {Object} e
+     */
+    onKeyDown: function (e) {
+      var me = this,
+        w = me.widget,
+        keyCode = e.keyCode,
+        key = Fancy.key;
+
+      if(w.activated === false){
+        return;
+      }
+
+      switch (keyCode) {
+        case key.TAB:
+          break;
+        case key.UP:
+          e.preventDefault();
+          me.moveUp();
+          break;
+        case key.DOWN:
+          e.preventDefault();
+          me.moveDown();
+          break;
+        case key.LEFT:
+          e.preventDefault();
+          me.moveLeft();
+          break;
+        case key.RIGHT:
+          e.preventDefault();
+          me.moveRight();
+          break;
+      }
+    },
+    moveRight: function () {
+      var me = this,
+        w = me.widget,
+        info = me.getActiveCellInfo(),
+        body = w.getBody(info.side),
+        nextCell;
+
+      info.columnIndex++;
+      nextCell = body.getCell(info.rowIndex, info.columnIndex);
+
+      if(!nextCell.dom){
+        switch(info.side){
+          case 'left':
+            if(w.columns){
+              info.columnIndex = 0;
+              body = w.getBody('center');
+              info.side = 'center';
+              nextCell = body.getCell(info.rowIndex, info.columnIndex);
+            }
+            break;
+          case 'center':
+            if(w.rightColumns){
+              info.columnIndex = 0;
+              body = w.getBody('right');
+              info.side = 'right';
+              nextCell = body.getCell(info.rowIndex, info.columnIndex);
+            }
+            break;
+          case 'right':
+            return;
+            break;
+        }
+      }
+
+      if(!nextCell.dom){
+        return;
+      }
+
+      switch(me.selModel){
+        case 'cell':
+        case 'cells':
+          me.clearSelection();
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+        case 'column':
+        case 'columns':
+          me.clearSelection();
+          me.selectColumn(info.columnIndex, info.side);
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+      }
+    },
+    moveLeft: function () {
+      var me = this,
+        w = me.widget,
+        info = me.getActiveCellInfo(),
+        body = w.getBody(info.side),
+        nextCell;
+
+      info.columnIndex--;
+
+      if (info.columnIndex < 0) {
+        switch (info.side) {
+          case 'left':
+            return;
+            break;
+          case 'center':
+            if (w.leftColumns) {
+              info.columnIndex = w.leftColumns.length - 1;
+              body = w.getBody('left');
+              info.side = 'left';
+              nextCell = body.getCell(info.rowIndex, info.columnIndex);
+            }
+            break;
+          case 'right':
+            if (w.columns) {
+              info.columnIndex = w.columns.length - 1;
+              body = w.getBody('center');
+              info.side = 'center';
+              nextCell = body.getCell(info.rowIndex, info.columnIndex);
+            }
+            break;
+        }
+      }
+      else {
+        nextCell = body.getCell(info.rowIndex, info.columnIndex);
+      }
+
+      if(!nextCell.dom){
+        return;
+      }
+
+      switch(me.selModel){
+        case 'cell':
+        case 'cells':
+          me.clearSelection();
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+        case 'column':
+        case 'columns':
+          me.clearSelection();
+          me.selectColumn(info.columnIndex, info.side);
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+      }
+    },
+    moveUp: function () {
+      var me = this,
+        w = me.widget,
+        info = me.getActiveCellInfo(),
+        body = w.getBody(info.side),
+        nextCell;
+
+      info.rowIndex--;
+      if(info.rowIndex < 0){
+        return;
+      }
+      nextCell = body.getCell(info.rowIndex, info.columnIndex);
+
+      if(!nextCell.dom){
+        return;
+      }
+
+      switch(me.selModel){
+        case 'cell':
+        case 'cells':
+          me.clearSelection();
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+        case 'row':
+        case 'rows':
+          me.clearSelection();
+          me.selectRow(info.rowIndex);
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+      }
+    },
+    moveDown: function () {
+      var me = this,
+        w = me.widget,
+        info = me.getActiveCellInfo(),
+        body = w.getBody(info.side),
+        nextCell;
+
+      info.rowIndex++;
+      nextCell = body.getCell(info.rowIndex, info.columnIndex);
+
+      if(!nextCell.dom){
+        return;
+      }
+
+      switch(me.selModel){
+        case 'cell':
+        case 'cells':
+          me.clearSelection();
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
+        case 'row':
+        case 'rows':
+          me.clearSelection();
+          me.selectRow(info.rowIndex);
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          w.scroller.scrollToCell(nextCell.dom, true);
+          break;
       }
     }
   });

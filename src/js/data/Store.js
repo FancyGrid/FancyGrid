@@ -337,7 +337,19 @@ Fancy.define('Fancy.Store', {
       item.set(key, value);
     }
     else {
-      me.dataView[rowIndex].data[key] = value;
+      var _item = me.dataView[rowIndex];
+      if(_item.data.parentId){
+        //TODO: it is bad about perfomance, it needs to redo.
+        var parentItem = me.getById(_item.data.parentId);
+
+        Fancy.each(parentItem.data.child, function (child, i) {
+          if(child.id === _item.id){
+            child[key] = value;
+          }
+        });
+      }
+
+      _item.data[key] = value;
     }
 
     if(me.proxyType === 'server' && me.autoSave){

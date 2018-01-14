@@ -1144,6 +1144,26 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       return rowsAfter;
     },
     /*
+     * @param {Number} rowIndex
+     * @return {Number}
+     */
+    getSpecialRowsAbove: function (rowIndex) {
+      var me = this,
+        w = me.widget,
+        item = w.get(rowIndex),
+        group = me.getGroupById(item.id),
+        rows = 0;
+
+      Fancy.each(me.groups, function (_group) {
+        rows++;
+        if(group === _group){
+          return true;
+        }
+      });
+
+      return rows;
+    },
+    /*
      *
      */
     reGroup: function () {

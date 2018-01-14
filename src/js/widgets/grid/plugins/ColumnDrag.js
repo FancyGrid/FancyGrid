@@ -67,7 +67,7 @@
         w = me.widget,
         cell = Fancy.get(e.currentTarget),
         index = Number(cell.attr('index')),
-        side = me.getSideByCell(cell),
+        side = w.getSideByCell(cell),
         columns = w.getColumns(side),
         column = columns[index],
         targetEl = F.get(e.target);
@@ -251,8 +251,9 @@
     },
     onMouseEnterCell: function(e){
       var me = this,
+        w = me.widget,
         cell = Fancy.get(e.currentTarget),
-        side = me.getSideByCell(cell);
+        side = w.getSideByCell(cell);
 
       me.hideHint();
 
@@ -626,26 +627,6 @@
       body.reSetColumnsCls();
       body.updateColumnsSizes();
       w.update();
-    },
-    /*
-     *
-     */
-    getSideByCell: function (cell) {
-      var me = this,
-        w = me.widget,
-        side;
-
-      if(w.centerEl.within(cell)){
-        side = 'center';
-      }
-      else if(w.leftEl.within(cell)){
-        side = 'left';
-      }
-      else if(w.rightEl.within(cell)){
-        side = 'right';
-      }
-
-      return side;
     },
     /*
      * @param {Object} [cell]

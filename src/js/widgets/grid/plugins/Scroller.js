@@ -659,7 +659,7 @@
         }
 
         if (x !== null && x !== undefined) {
-          w.body.el.dom.scrollLeft = x;
+          w.body.el.dom.scrollLeft = Math.abs(x);
           if (w.header) {
             w.header.scroll(x);
           }
@@ -745,13 +745,27 @@
      * @return {Number}
      */
     getScroll: function () {
-      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
+      var me = this,
+        w = me.widget;
+
+      if(w.nativeScroller){
+        return w.body.el.dom.scrollTop;
+      }
+
+      return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
     },
     /*
      * @return {Number}
      */
     getBottomScroll: function () {
-      return Math.abs(parseInt(this.widget.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
+      var me = this,
+        w = me.widget;
+
+      if(w.nativeScroller){
+        return w.body.el.dom.scrollLeft;
+      }
+
+      return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
     },
     /*
      *
@@ -798,7 +812,7 @@
     /*
      * @param {Fancy.Element} cell
      */
-    scrollToCell: function (cell) {
+    scrollToCell: function (cell, nativeScroll) {
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -810,11 +824,13 @@
         passedHeight = cellHeight * (rowIndex + 1),
         bodyViewHeight = w.getBodyHeight(),
         bottomScroll = me.getBottomScroll(),
+        side = w.getSideByCell(cell),
+        bodyColumnsWidth = w.getColumnsWidth(side),
         bodyViewWidth = parseInt(w.body.el.css('width')),
         passedWidth = 0,
         isCenterBody = columnEl.parent().parent().hasCls(GRID_CENTER_CLS);
 
-      if(w.nativeScroller){
+      if(w.nativeScroller && !nativeScroll){
         return;
       }
 
@@ -822,12 +838,23 @@
         me.scroll(0, 0);
         me.scrollBottomKnob();
         me.scrollRightKnob();
-
         return;
+      }
+
+      if(w.grouping){
+        passedHeight += w.grouping.getSpecialRowsAbove(rowIndex) * w.groupRowHeight;
+      }
+
+      if(w.expander){
+        passedHeight += w.expander.getBeforeHeight(rowIndex);
       }
 
       if (passedHeight - rightScroll > bodyViewHeight) {
         rightScroll += cellHeight;
+        me.scroll(rightScroll);
+      }
+      else if(passedHeight - rightScroll < w.cellHeight){
+        rightScroll -= cellHeight;
         me.scroll(rightScroll);
       }
 
@@ -841,11 +868,22 @@
 
         if (passedWidth - bottomScroll > bodyViewWidth) {
           if (!columns[i]) {
-            me.scroll(rightScroll, -(passedWidth - bottomScroll - bodyViewWidth));
+            //me.scroll(rightScroll, -(passedWidth - bottomScroll - bodyViewWidth));
+            me.scroll(rightScroll, -(bodyColumnsWidth - bodyViewWidth));
           }
           else {
-            me.scroll(rightScroll, -(bottomScroll + columns[i - 1].width));
+            //me.scroll(rightScroll, -(bottomScroll + columns[columnIndex].width));
+            me.scroll(rightScroll, -(bottomScroll + (passedWidth - bottomScroll) - bodyViewWidth));
           }
+        }
+        else if(passedWidth - bottomScroll < columns[columnIndex].width){
+          //var bottomScroll = -(bottomScroll - Math.abs(passedWidth - bottomScroll));
+          var bottomScroll = -(passedWidth - columns[columnIndex].width);
+          if(bottomScroll > 0){
+            bottomScroll = 0;
+          }
+
+          me.scroll(rightScroll, bottomScroll);
         }
         else if (bottomScroll !== 0) {
           if (columnIndex === 0) {
