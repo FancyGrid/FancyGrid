@@ -230,6 +230,10 @@
         el.addCls('fancy-grid-disable-column-lines');
       }
 
+      if (me.rowLines === false) {
+        el.addCls('fancy-grid-disable-row-lines');
+      }
+
       if (me.theme !== 'default' && !me.panel) {
         el.addCls('fancy-theme-' + me.theme);
       }
@@ -2333,6 +2337,65 @@
       }
 
       return side;
+    },
+    /*
+     * @param {Fancy.Model|id|Object} item
+     * @param {Object} o
+     *
+     * Used for tree grid
+     */
+    addChild: function (item, o) {
+      var me = this;
+
+      if(o === undefined){
+        item.$deep = 1;
+        if(item.child === undefined){
+          item.child = [];
+        }
+
+        me.add(item);
+      }
+      else{
+        if(F.isNumber(item)){
+          item = me.getById(item);
+        }
+
+        var fixParent = false;
+
+        if(item.get('leaf') === true){
+          item.set('leaf', false);
+          item.set('expanded', true);
+          item.set('child', []);
+
+          fixParent = true;
+        }
+
+        var $deep = item.get('$deep'),
+          child = item.get('child'),
+          rowIndex = me.getRowById(item.id) + child.length + 1;
+
+        o.$deep = $deep + 1;
+        o.parentId = item.id;
+
+        if(fixParent){
+          var parentItem = me.getById(item.get('parentId'));
+
+          F.each(parentItem.data.child, function (child) {
+            if(child.id === item.id){
+              child.leaf = false;
+              child.expanded = true;
+              child.child = [o];
+
+              return true;
+            }
+          });
+        }
+
+        child.push(o);
+        item.set('child', child);
+
+        me.insert(rowIndex, o);
+      }
     }
   });
 

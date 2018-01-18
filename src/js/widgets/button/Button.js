@@ -190,6 +190,10 @@
         }
       }
 
+      if(me.id){
+        el.attr('id', me.id);
+      }
+
       me.el = F.get(renderTo.appendChild(el.dom));
 
       if (me.disabled) {
@@ -375,11 +379,47 @@
     /*
      * @param {String} text
      */
-    setText: function(text){
+    setText: function(text, width){
       var me = this,
-        el = me.el;
+        el = me.el,
+        charWidth = 7;
 
-      me.css('width', ((parseInt(el.css('font-size')) + 2 ) * text.length) + parseInt(me.css('padding-right')) * 2 + 2  );
+      if(!width){
+        width = 0;
+      }
+
+      if(!width) {
+        if (me.theme && Fancy.themes[me.theme]) {
+          charWidth = Fancy.themes[me.theme].config.charWidth;
+        }
+
+        width += text.length * charWidth + charWidth * 2;
+
+        if (me.imageColor) {
+          me.imageCls = BUTTON_IMAGE_COLOR_CLS;
+        }
+
+        if (width < me.minWidth) {
+          if (me.text && me.text.length > 0) {
+            width = me.minWidth;
+          }
+          else {
+            width = me.minWidth;
+          }
+        }
+
+        if (me.imageCls && me.text) {
+          width += me.imageWidth;
+        }
+
+        if (me.menu) {
+          width += me.rightImageWidth;
+        }
+
+        //me.css('width', ((parseInt(el.css('font-size')) + 2 ) * text.length) + parseInt(me.css('padding-right')) * 2 + 2  );
+      }
+
+      me.css('width', width);
 
       el.select('.' + BUTTON_TEXT_CLS).update(text);
     },

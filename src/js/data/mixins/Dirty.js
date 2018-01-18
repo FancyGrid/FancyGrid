@@ -20,6 +20,9 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       length: 0
     };
 
+    me.undoActions = [];
+    me.redoActions = [];
+
     me.on('remove', me.onDirtyRemove, me);
     me.on('set', me.onDirtySet, me);
     me.on('insert', me.onDirtyInsert, me);
@@ -56,6 +59,31 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
     if(me.changed[id][o.key].value === me.changed[id][o.key].originValue){
       delete me.changed[id][o.key];
       me.changed[id].length--;
+
+      var i = 0,
+        iL = me.undoActions.length - 1;
+
+      for(;i<=iL;i++){
+        var _i = iL - i,
+          action = me.undoActions[_i];
+
+        if(action.id === id && o.key === action.key){
+          var redoAction = me.undoActions.splice(_i, 1);
+          me.redoActions.push(redoAction);
+        }
+      }
+    }
+    else{
+      if(!me.redoing){
+        me.redoActions = [];
+      }
+      me.undoActions.push({
+        id: id,
+        type: 'edit',
+        key: o.key,
+        value: o.value,
+        oldValue: o.oldValue
+      });
     }
 
     if(me.changed[id].length === 0){
@@ -66,15 +94,47 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtyRemove: function(store, id, record){
-    this.removed[id] = record.data;
-    this.removed.length++;
+  onDirtyRemove: function(store, id, record, rowIndex){
+    var me = this;
+
+    me.removed[id] = record.data;
+    me.removed.length++;
+
+    if(me.undoStoppped !== true){
+      if(!me.redoing){
+        me.redoActions = [];
+      }
+      me.undoActions.push({
+        id: id,
+        type: 'remove',
+        data: record.data,
+        rowIndex: rowIndex
+      });
+    }
   },
   /*
    *
    */
   onDirtyInsert: function(store, o){
-    this.inserted[o.id] = o;
-    this.inserted.length++;
+    var me = this;
+
+    if(me.treeExpanding){
+      return;
+    }
+
+    me.inserted[o.id] = o;
+    me.inserted.length++;
+
+    if(me.undoStoppped !== true) {
+      if(!me.redoing){
+        me.redoActions = [];
+      }
+      me.undoActions.push({
+        id: o.id,
+        type: 'insert',
+        data: o.data,
+        rowIndex: o.$index
+      });
+    }
   }
 });

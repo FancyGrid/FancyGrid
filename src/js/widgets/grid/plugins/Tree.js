@@ -52,9 +52,14 @@
     },
     onRowDBLClick: function (grid, o) {
       var me = this,
+        w = me.widget,
         item = o.item;
 
       if (item.get('leaf')) {
+        return;
+      }
+
+      if(w.edit && w.edit.clicksToEdit === 2){
         return;
       }
 
@@ -115,9 +120,11 @@
         i = 0,
         iL = getChildNumber(child);
 
+      w.store.treeCollapsing = true;
       for (; i < iL; i++) {
         w.removeAt(rowIndex + 1);
       }
+      delete w.store.treeCollapsing;
 
       if(!child){
         w.update();
@@ -148,22 +155,26 @@
       var rowIndex = s.getRow(item.get('id')),
         deep = item.get('$deep') + 1;
 
-      var expandChilds = function (child, rowIndex, deep) {
+      var expandChilds = function (child, rowIndex, deep, _id) {
+        _id = _id || id;
+
         Fancy.each(child, function (item) {
           item.$deep = deep;
-          item.parentId = id;
+          item.parentId = _id;
           rowIndex++;
           w.insert(rowIndex, item);
 
           if(item.expanded === true){
-            rowIndex = expandChilds(item.child, rowIndex, deep + 1);
+            rowIndex = expandChilds(item.child, rowIndex, deep + 1, item.id);
           }
         });
 
         return rowIndex;
       };
 
+      w.store.treeExpanding = true;
       expandChilds(child, rowIndex, deep);
+      delete w.store.treeExpanding;
 
       if(!child){
         w.update();

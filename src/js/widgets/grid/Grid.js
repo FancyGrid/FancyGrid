@@ -30,6 +30,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   shadow: true,
   striped: true,
   columnLines: true,
+  rowLines: true,
   textSelection: false,
   width: 200,
   height: 200,

@@ -678,7 +678,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                     grid.remove(o);
                   };
                 }
-
                 break;
               case 'dialog':
                 (function(item) {
@@ -934,6 +933,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var memoryPerformance = true;
       var selectLeafsOnly = false;
       var keyNavigation = true;
+      var allowDeselect = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -955,8 +955,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           selectLeafsOnly = true;
         }
 
-        if(config.selModel.keyNavigation){
-          keyNavigation = true;
+        if(config.selModel.allowDeselect !== undefined){
+          allowDeselect = true;
+        }
+
+        if(config.selModel.keyNavigation !== undefined){
+          keyNavigation = config.selModel.keyNavigation;
         }
 
         config.selModel = config.selModel.type;
@@ -975,6 +979,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.disabled = disabled;
       config.selection.selectLeafsOnly = selectLeafsOnly;
       config.selection.keyNavigation = keyNavigation;
+      config.selection.allowDeselect = allowDeselect;
     }
 
     if(config.selection){
@@ -1553,6 +1558,27 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
               };
             }
             break;
+          case 'undo':
+            if(tbar[i].handler === undefined){
+              tbar[i].handler = function(){
+                me.undo();
+              };
+            }
+            break;
+          case 'undoall':
+            if(tbar[i].handler === undefined){
+              tbar[i].handler = function(){
+                me.undoAll();
+              };
+            }
+            break;
+          case 'redo':
+            if(tbar[i].handler === undefined){
+              tbar[i].handler = function(){
+                me.redo();
+              };
+            }
+            break;
           case 'remove':
             if(tbar[i].handler === undefined){
               tbar[i].disabled = true;
@@ -2060,6 +2086,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (me.columnLines === false) {
         el.addCls('fancy-grid-disable-column-lines');
+      }
+
+      if (me.rowLines === false) {
+        el.addCls('fancy-grid-disable-row-lines');
       }
 
       if (me.theme !== 'default' && !me.panel) {
@@ -4165,6 +4195,65 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       return side;
+    },
+    /*
+     * @param {Fancy.Model|id|Object} item
+     * @param {Object} o
+     *
+     * Used for tree grid
+     */
+    addChild: function (item, o) {
+      var me = this;
+
+      if(o === undefined){
+        item.$deep = 1;
+        if(item.child === undefined){
+          item.child = [];
+        }
+
+        me.add(item);
+      }
+      else{
+        if(F.isNumber(item)){
+          item = me.getById(item);
+        }
+
+        var fixParent = false;
+
+        if(item.get('leaf') === true){
+          item.set('leaf', false);
+          item.set('expanded', true);
+          item.set('child', []);
+
+          fixParent = true;
+        }
+
+        var $deep = item.get('$deep'),
+          child = item.get('child'),
+          rowIndex = me.getRowById(item.id) + child.length + 1;
+
+        o.$deep = $deep + 1;
+        o.parentId = item.id;
+
+        if(fixParent){
+          var parentItem = me.getById(item.get('parentId'));
+
+          F.each(parentItem.data.child, function (child) {
+            if(child.id === item.id){
+              child.leaf = false;
+              child.expanded = true;
+              child.child = [o];
+
+              return true;
+            }
+          });
+        }
+
+        child.push(o);
+        item.set('child', child);
+
+        me.insert(rowIndex, o);
+      }
     }
   });
 
@@ -5061,10 +5150,16 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if (passedHeight - rightScroll > bodyViewHeight) {
         rightScroll += cellHeight;
+        if(rightScroll > passedHeight - bodyViewHeight){
+          rightScroll = passedHeight - bodyViewHeight + 5;
+        }
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){
         rightScroll -= cellHeight;
+        if(rightScroll < 0){
+          rightScroll = 0;
+        }
         me.scroll(rightScroll);
       }
 

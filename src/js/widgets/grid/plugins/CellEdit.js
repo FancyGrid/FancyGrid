@@ -228,6 +228,7 @@
           break;
         case 'image':
         case 'string':
+        case 'tree':
         case 'color':
           editor = new F.StringField({
             renderTo: renderTo,

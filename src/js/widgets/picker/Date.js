@@ -171,7 +171,7 @@
     initDate: function () {
       var me = this;
 
-      if (me.date === undefined) {
+      if (me.date === undefined || me.date.toString() === 'Invalid Date') {
         me.date = new Date();
       }
 
@@ -549,7 +549,9 @@
           date: me.format
         });
 
-      me.tbar[1].setText(value);
+      var width = value.length * 9 + 35;
+
+      me.tbar[1].setText(value, width);
     },
     /*
      *

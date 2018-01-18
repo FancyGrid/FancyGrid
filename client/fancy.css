@@ -400,9 +400,9 @@
   background-color: #F7F7F7;
 }
 .fancy-panel .fancy-panel-bbar .fancy-button {
-  margin-right: 10px;
+  margin-right: 7px;
   float: right;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 .fancy-panel .fancy-panel-buttons {
   padding-right: 3px;
@@ -411,7 +411,7 @@
   background-color: #F7F7F7;
 }
 .fancy-panel .fancy-panel-buttons .fancy-button {
-  margin-right: 10px;
+  margin-right: 7px;
   float: right;
   margin-top: 3px;
 }
@@ -1402,6 +1402,9 @@
 }
 .fancy-grid-row-edit .fancy-field-switcher .fancy-field-text {
   margin-top: 12px;
+}
+.fancy-grid-disable-row-lines .fancy-grid-cell {
+  border-bottom-color: transparent !important;
 }
 /*
  scroll.less

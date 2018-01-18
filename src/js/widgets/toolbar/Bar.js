@@ -114,7 +114,7 @@
         isSide = false,
         barItems = [],
         sidePassed = iL - 1,
-        passedRight = 3;
+        passedRight = 0;
 
       for (; i < iL; i++) {
         var item = items[i];
@@ -186,6 +186,8 @@
           else if(item.width){
             passedRight += item.width + 5;
           }
+
+          passedRight += 3;
         }
       }
 

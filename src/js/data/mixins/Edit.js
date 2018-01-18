@@ -23,6 +23,29 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
         id = o.id || o.data.id;
     }
 
+    if(me.isTree && me.treeCollapsing !== true){
+      var item = me.getById(id),
+        parentItem = me.getById(item.get('parentId'));
+
+      if(item.get('leaf') === false && item.get('expanded')){
+        var _i = item.data.child.length - 1;
+
+        Fancy.each(item.data.child, function (child, i, children) {
+          me.remove(children[_i]);
+          _i--;
+        });
+      }
+
+      if(parentItem){
+        Fancy.each(parentItem.data.child, function (child, i) {
+          if(child.id === id){
+            parentItem.data.child.splice(i, 1);
+            return true;
+          }
+        });
+      }
+    }
+
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
       me.proxyCRUD('DESTROY', id);
       return;
@@ -64,7 +87,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     delete me.map[id];
 
-    me.fire('remove', id, itemData);
+    me.fire('remove', id, itemData, index);
     me.changeDataView();
   },
   /*

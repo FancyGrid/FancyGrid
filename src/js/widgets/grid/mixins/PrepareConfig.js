@@ -678,7 +678,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                     grid.remove(o);
                   };
                 }
-
                 break;
               case 'dialog':
                 (function(item) {
@@ -934,6 +933,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var memoryPerformance = true;
       var selectLeafsOnly = false;
       var keyNavigation = true;
+      var allowDeselect = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
@@ -953,6 +953,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
         if(config.selModel.selectLeafsOnly){
           selectLeafsOnly = true;
+        }
+
+        if(config.selModel.allowDeselect !== undefined){
+          allowDeselect = true;
         }
 
         if(config.selModel.keyNavigation !== undefined){
@@ -975,6 +979,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.disabled = disabled;
       config.selection.selectLeafsOnly = selectLeafsOnly;
       config.selection.keyNavigation = keyNavigation;
+      config.selection.allowDeselect = allowDeselect;
     }
 
     if(config.selection){
@@ -1550,6 +1555,27 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
               tbar[i].handler = function(){
                 me.insert(0, {});
                 me.scroll(0);
+              };
+            }
+            break;
+          case 'undo':
+            if(tbar[i].handler === undefined){
+              tbar[i].handler = function(){
+                me.undo();
+              };
+            }
+            break;
+          case 'undoall':
+            if(tbar[i].handler === undefined){
+              tbar[i].handler = function(){
+                me.undoAll();
+              };
+            }
+            break;
+          case 'redo':
+            if(tbar[i].handler === undefined){
+              tbar[i].handler = function(){
+                me.redo();
               };
             }
             break;

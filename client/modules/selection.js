@@ -36,6 +36,7 @@
     disabled: false,
     selectLeafsOnly: false,
     keyNavigation: true,
+    allowDeselect: false,
     /*
      * @constructor
      * @param {Object} config
@@ -389,7 +390,7 @@
       var rowIndex = params.rowIndex,
         rowCells = w.getDomRow(rowIndex);
 
-      if (isCTRL && w.multiSelect) {
+      if ((isCTRL || me.allowDeselect) && w.multiSelect) {
         if (F.get(rowCells[0]).hasCls(GRID_CELL_SELECTED_CLS)) {
           me.domDeSelectRow(rowIndex);
           if (me.checkboxRow) {
@@ -444,7 +445,7 @@
       me.clearActiveCell();
       F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {Number} rowIndex
@@ -663,7 +664,7 @@
       me.clearActiveCell();
       F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {Number} columnIndex
@@ -793,10 +794,11 @@
         });
       }
 
+      var hasSelection = F.get(params.cell).hasClass(GRID_CELL_SELECTED_CLS);
+
       me.clearSelection();
 
       F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
-
 
       var rowCells = w.getDomRow(rowIndex);
 
@@ -814,12 +816,15 @@
         }
       }
       else if (select) {
-        F.each(rowCells, function (cell) {
-          F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
-        });
+        if((me.allowDeselect) && hasSelection){}
+        else {
+          F.each(rowCells, function (cell) {
+            F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
+          });
 
-        me.selectCheckBox(rowIndex);
-        w.fire('select');
+          me.selectCheckBox(rowIndex);
+        }
+        w.fire('select', me.getSelection());
       }
     },
     /*
@@ -846,8 +851,7 @@
         isCTRL = e.ctrlKey,
         rowIndex = params.rowIndex;
 
-      if (isCTRL && w.multiSelect) {
-      }
+      if ((isCTRL || me.allowDeselect) && w.multiSelect) {}
       else if (params.column.index === '$selected') {
         var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
         if (checkbox.get() === true) {
@@ -950,7 +954,7 @@
         }
       }
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {Number|String} id
@@ -1001,7 +1005,7 @@
 
       F.get(params.cell).addCls(GRID_CELL_SELECTED_CLS, GRID_CELL_ACTIVE_CLS);
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {String} side
@@ -1233,7 +1237,7 @@
       me.clearActiveCell();
       F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {Fancy.Grid} grid
@@ -1263,7 +1267,7 @@
 
       F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {Fancy.Grid} grid
@@ -1298,7 +1302,7 @@
         delete me.startCellSelection;
       });
 
-      w.fire('select');
+      w.fire('select', me.getSelection());
     },
     /*
      * @param {Number} start

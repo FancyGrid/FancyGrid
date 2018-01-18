@@ -851,10 +851,16 @@
 
       if (passedHeight - rightScroll > bodyViewHeight) {
         rightScroll += cellHeight;
+        if(rightScroll > passedHeight - bodyViewHeight){
+          rightScroll = passedHeight - bodyViewHeight + 5;
+        }
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){
         rightScroll -= cellHeight;
+        if(rightScroll < 0){
+          rightScroll = 0;
+        }
         me.scroll(rightScroll);
       }
 

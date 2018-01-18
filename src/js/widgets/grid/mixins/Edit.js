@@ -225,5 +225,72 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     return rowIndex;
+  },
+  /*
+   * TODO: undo by id and key
+   */
+  undo: function () {
+    var me = this,
+      s = me.store,
+      action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
+
+    switch(action.type){
+      case 'edit':
+        me.setById(action.id, action.key, action.oldValue);
+        var value = action.value;
+        action.value = action.oldValue;
+        action.oldValue = value;
+        s.redoActions.push(action);
+        me.fire('undo');
+        break;
+      case 'insert':
+        s.undoStoppped = true;
+        me.remove(action.id);
+        s.undoStoppped = false;
+        s.redoActions.push(action);
+        break;
+      case 'remove':
+        s.undoStoppped = true;
+        me.insert(action.rowIndex, action.data);
+        s.undoStoppped = false;
+        s.redoActions.push(action);
+        break;
+    }
+  },
+  /*
+   *
+   */
+  redo: function () {
+    var me = this,
+      s = me.store,
+      action = s.redoActions.splice(s.redoActions.length - 1, 1)[0];
+
+    s.redoing = true;
+    switch(action.type){
+      case 'edit':
+        me.setById(action.id, action.key, action.oldValue);
+        break;
+      case 'insert':
+        me.insert(action.rowIndex, action.data);
+        break;
+      case 'remove':
+        me.remove(action.id);
+        break;
+    }
+
+    delete s.redoing;
+  },
+  /*
+   *
+   */
+  undoAll: function () {
+    var me = this,
+      s = me.store,
+      i = 0,
+      iL = s.undoActions.length;
+
+    for(;i<iL;i++){
+      me.undo();
+    }
   }
 });
