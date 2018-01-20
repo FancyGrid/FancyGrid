@@ -1038,6 +1038,8 @@
       selection.columns = false;
       selection[type] = true;
 
+      selection.selModel = type;
+
       if (type === 'rows') {
         me.multiSelect = true;
       }
@@ -2395,6 +2397,75 @@
         item.set('child', child);
 
         me.insert(rowIndex, o);
+      }
+    },
+    /*
+     * {Number|String|Object} id
+     */
+    expand: function(id){
+      var item,
+        me = this;
+
+      switch(F.typeOf(id)){
+        case 'number':
+        case 'string':
+          item = me.getById(id);
+          break;
+      }
+
+      if(item.get('expanded') === true){
+        return;
+      }
+
+      me.tree.expandRow(item);
+    },
+    /*
+     * {Number|String|Object} id
+     */
+    collapse: function(id){
+      var item,
+        me = this;
+
+      switch(F.typeOf(id)){
+        case 'number':
+        case 'string':
+          item = me.getById(id);
+          break;
+      }
+
+      if(item.get('expanded') === false){
+        return;
+      }
+
+      me.tree.collapseRow(item);
+    },
+    collapseAll: function () {
+      var me = this,
+        items = me.findItem('$deep', 1);
+
+      F.each(items, function (item) {
+        me.collapse(item.id);
+      });
+    },
+    expandAll: function () {
+      var me = this,
+        items = me.findItem('expanded', false);
+
+      F.each(items, function (item) {
+        me.expand(item.id);
+      });
+
+      items = me.findItem('expanded', false);
+
+      if(items.length){
+        me.expandAll();
+      }
+    },
+    copy: function () {
+      var me = this;
+
+      if(me.selection){
+        me.selection.copy();
       }
     }
   });

@@ -25,11 +25,9 @@
      */
     onsNav: function () {
       var me = this,
-        w = me.widget,
         doc = Fancy.get(document);
 
       doc.on('keydown', me.onKeyDown, me);
-      w.el.on('keydown', me.onKeyDown, me);
     },
     /*
      * @param {Object} e
@@ -44,22 +42,34 @@
         return;
       }
 
+      if(!me.keyNavigating){
+        var docEl = F.get(document);
+
+        docEl.once('keyup', function () {
+          delete me.keyNavigating;
+        });
+      }
+
       switch (keyCode) {
         case key.TAB:
           break;
         case key.UP:
+          me.keyNavigating = true;
           e.preventDefault();
           me.moveUp();
           break;
         case key.DOWN:
+          me.keyNavigating = true;
           e.preventDefault();
           me.moveDown();
           break;
         case key.LEFT:
+          me.keyNavigating = true;
           e.preventDefault();
           me.moveLeft();
           break;
         case key.RIGHT:
+          me.keyNavigating = true;
           e.preventDefault();
           me.moveRight();
           break;

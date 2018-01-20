@@ -386,9 +386,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(isTreeData){
-      config._plugins.push({
+      var treeConfig = {
         type: 'grid.tree'
-      });
+      }
+
+      if(config.singleExpand){
+        treeConfig.singleExpand = config.singleExpand;
+      }
+
+      config._plugins.push(treeConfig);
 
       config.isTreeData = true;
     }
@@ -2896,6 +2902,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       selection.columns = false;
       selection[type] = true;
 
+      selection.selModel = type;
+
       if (type === 'rows') {
         me.multiSelect = true;
       }
@@ -4254,6 +4262,75 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
         me.insert(rowIndex, o);
       }
+    },
+    /*
+     * {Number|String|Object} id
+     */
+    expand: function(id){
+      var item,
+        me = this;
+
+      switch(F.typeOf(id)){
+        case 'number':
+        case 'string':
+          item = me.getById(id);
+          break;
+      }
+
+      if(item.get('expanded') === true){
+        return;
+      }
+
+      me.tree.expandRow(item);
+    },
+    /*
+     * {Number|String|Object} id
+     */
+    collapse: function(id){
+      var item,
+        me = this;
+
+      switch(F.typeOf(id)){
+        case 'number':
+        case 'string':
+          item = me.getById(id);
+          break;
+      }
+
+      if(item.get('expanded') === false){
+        return;
+      }
+
+      me.tree.collapseRow(item);
+    },
+    collapseAll: function () {
+      var me = this,
+        items = me.findItem('$deep', 1);
+
+      F.each(items, function (item) {
+        me.collapse(item.id);
+      });
+    },
+    expandAll: function () {
+      var me = this,
+        items = me.findItem('expanded', false);
+
+      F.each(items, function (item) {
+        me.expand(item.id);
+      });
+
+      items = me.findItem('expanded', false);
+
+      if(items.length){
+        me.expandAll();
+      }
+    },
+    copy: function () {
+      var me = this;
+
+      if(me.selection){
+        me.selection.copy();
+      }
     }
   });
 
@@ -5150,9 +5227,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if (passedHeight - rightScroll > bodyViewHeight) {
         rightScroll += cellHeight;
-        if(rightScroll > passedHeight - bodyViewHeight){
+        //if(rightScroll > passedHeight - bodyViewHeight){
           rightScroll = passedHeight - bodyViewHeight + 5;
-        }
+        //}
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){
@@ -5183,7 +5260,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         }
         else if(passedWidth - bottomScroll < columns[columnIndex].width){
           //var bottomScroll = -(bottomScroll - Math.abs(passedWidth - bottomScroll));
-          var bottomScroll = -(passedWidth - columns[columnIndex].width);
+          bottomScroll = -(passedWidth - columns[columnIndex].width);
           if(bottomScroll > 0){
             bottomScroll = 0;
           }
@@ -8900,6 +8977,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       w.fire('beforecellmousedown', params);
       w.fire('cellmousedown', params);
       w.fire('columnmousedown', columnParams);
+      if (w.activated === false) {
+        w.activated = true;
+        w.fire('activate');
+      }
     },
     /*
      * @param {Object} e

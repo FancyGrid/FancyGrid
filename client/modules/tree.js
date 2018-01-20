@@ -199,6 +199,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     extend: Fancy.Plugin,
     ptype: 'grid.tree',
     inWidgetName: 'tree',
+    singleExpand: false,
     /*
      * @constructor
      * @param {Object} config
@@ -315,6 +316,29 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         child = item.get('child'),
         id = item.get('id'),
         parentId = item.get('parentId');
+
+      if(me.singleExpand){
+        if(parentId){
+          var parent = w.getById(parentId),
+            parentChild = parent.get('child');
+
+          //Bad for performance
+          Fancy.each(parentChild, function (item) {
+            if(item.expanded === true) {
+              me.collapseRow(w.getById(item.id));
+            }
+          });
+        }
+        else{
+          var parentChild = w.findItem('parentId', '');
+
+          Fancy.each(parentChild, function (child) {
+            if(child.get('expanded') === true) {
+              me.collapseRow(child);
+            }
+          });
+        }
+      }
 
       if(parentId){
         var parent = w.getById(parentId),

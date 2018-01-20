@@ -420,6 +420,10 @@
       w.fire('beforecellmousedown', params);
       w.fire('cellmousedown', params);
       w.fire('columnmousedown', columnParams);
+      if (w.activated === false) {
+        w.activated = true;
+        w.fire('activate');
+      }
     },
     /*
      * @param {Object} e

@@ -851,9 +851,9 @@
 
       if (passedHeight - rightScroll > bodyViewHeight) {
         rightScroll += cellHeight;
-        if(rightScroll > passedHeight - bodyViewHeight){
+        //if(rightScroll > passedHeight - bodyViewHeight){
           rightScroll = passedHeight - bodyViewHeight + 5;
-        }
+        //}
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){
@@ -884,7 +884,7 @@
         }
         else if(passedWidth - bottomScroll < columns[columnIndex].width){
           //var bottomScroll = -(bottomScroll - Math.abs(passedWidth - bottomScroll));
-          var bottomScroll = -(passedWidth - columns[columnIndex].width);
+          bottomScroll = -(passedWidth - columns[columnIndex].width);
           if(bottomScroll > 0){
             bottomScroll = 0;
           }

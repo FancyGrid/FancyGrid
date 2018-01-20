@@ -386,9 +386,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(isTreeData){
-      config._plugins.push({
+      var treeConfig = {
         type: 'grid.tree'
-      });
+      }
+
+      if(config.singleExpand){
+        treeConfig.singleExpand = config.singleExpand;
+      }
+
+      config._plugins.push(treeConfig);
 
       config.isTreeData = true;
     }
