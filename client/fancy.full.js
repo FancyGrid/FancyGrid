@@ -1,17 +1,29 @@
+(function(root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = root.document ?
+      factory(root) :
+      factory;
+  }
+  else {
+    root.Fancy = factory(root);
+  }
+}(typeof window !== 'undefined' ? window : this, function(win){
 /**
  * @class Fancy utilities and functions.
  * @singleton
  */
 var Fancy = {
-  global: this,
+  global: window,
   /**
    * The version of the framework
    * @type String
    */
-  version: '1.7.4',
+  version: '1.7.5',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
+
+window.Fancy = Fancy;
 
 /**
  * Copies all the properties of `from` to the specified `to`.
@@ -2845,7 +2857,7 @@ Fancy.define('Fancy.Model', {
   }
 });
 /*
- * @class Fancy.Data
+ * @class Fancy.PluginManager
  * @singleton
  */
 Fancy.define('Fancy.PluginManager', {
@@ -14256,7 +14268,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
  * @class Fancy.Form
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Form', {
+Fancy.define(['Fancy.Form', 'FancyForm'], {
   extend: Fancy.Widget,
   mixins: [
     'Fancy.form.mixin.Form',
@@ -14429,8 +14441,6 @@ Fancy.define('Fancy.Form', {
     }
   }
 });
-
-var FancyForm = Fancy.Form;
 /*
  * @param {String} id
  */
@@ -20284,7 +20294,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             break;
         }
 
-        smartIndex = smartIndex.replace(/(\w+)/g, function(found, found, index, str){
+        smartIndex = smartIndex.replace(/(\w+)/g, function(f, found, index, str){
           if(str[index - 1] === '.'){
             return found;
           }
@@ -46080,3 +46090,6 @@ Fancy.enableCompo = function(){
     }
   });
 };
+
+  return Fancy;
+}));

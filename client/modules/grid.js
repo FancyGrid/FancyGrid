@@ -633,7 +633,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             break;
         }
 
-        smartIndex = smartIndex.replace(/(\w+)/g, function(found, found, index, str){
+        smartIndex = smartIndex.replace(/(\w+)/g, function(f, found, index, str){
           if(str[index - 1] === '.'){
             return found;
           }

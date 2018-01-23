@@ -2,7 +2,7 @@
  * @class Fancy.Form
  * @extends Fancy.Widget
  */
-Fancy.define('Fancy.Form', {
+Fancy.define(['Fancy.Form', 'FancyForm'], {
   extend: Fancy.Widget,
   mixins: [
     'Fancy.form.mixin.Form',
@@ -175,8 +175,6 @@ Fancy.define('Fancy.Form', {
     }
   }
 });
-
-var FancyForm = Fancy.Form;
 /*
  * @param {String} id
  */

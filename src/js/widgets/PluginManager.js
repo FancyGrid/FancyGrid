@@ -1,5 +1,5 @@
 /*
- * @class Fancy.Data
+ * @class Fancy.PluginManager
  * @singleton
  */
 Fancy.define('Fancy.PluginManager', {

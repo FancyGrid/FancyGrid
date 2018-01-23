@@ -3,15 +3,17 @@
  * @singleton
  */
 var Fancy = {
-  global: this,
+  global: window,
   /**
    * The version of the framework
    * @type String
    */
-  version: '1.7.4',
+  version: '1.7.5',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
+
+window.Fancy = Fancy;
 
 /**
  * Copies all the properties of `from` to the specified `to`.

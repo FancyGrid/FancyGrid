@@ -16,18 +16,18 @@ bower install fancygrid
 npm install fancygrid
 ```
 
-#### *code.fancygrid.com*
+#### *CDN*
 ```
-http://code.fancygrid.com/fancy.min.js
-http://code.fancygrid.com/fancy.min.css
+https://cdn.fancygrid.com/fancy.min.js
+https://cdn.fancygrid.com/fancy.min.css
 ```
 
 ## Quick Start
 Include a reference to the FancyGrid library
 
 ```html
-<link href="http://code.fancygrid.com/fancy.min.css" rel="stylesheet">
-<script src="http://code.fancygrid.com/fancy.min.js"></script>
+<link href="https://cdn.fancygrid.com/fancy.min.css" rel="stylesheet">
+<script src="https://cdn.fancygrid.com/fancy.min.js"></script>
 ```
 The `FancyGrid` object is now accessible. Happy griding!
 ```html
@@ -57,6 +57,71 @@ new FancyGrid({
 
 };
 </script>
+```
+
+## Load FancyGrid as a CommonJS module
+FancyGrid is using an UMD module pattern, as a result it has support for CommonJS.
+*The following example presumes you are using npm to install FancyGrid over `npm/bower`.*
+```js
+// Load FancyGrid
+var Fancy = require('fancygrid');
+
+// Generate the grid
+new Fancy.Grid({
+  //config
+});
+
+// Generate the form
+new Fancy.Form({
+  //config
+});
+
+// Generate the tabs
+new Fancy.Tab({
+  //config
+});
+```
+
+## Load FancyGrid as an ES6 module
+Since FancyGrid supports CommonJS, it can be loaded as an ES6 module with the use of transpilers. Two common transpilers are [Babel](https://babeljs.io/) and [TypeScript](https://www.typescriptlang.org/). These have different interpretations of a CommonJS module, which affects your syntax.
+*The following examples presumes you are using npm to install FancyGrid.*
+### Babel
+```js
+import Fancy from 'fancygrid';
+
+// Generate the grid
+Fancy.Grid({
+  // config
+});
+
+// Generate the form
+new Fancy.Form({
+  //config
+});
+
+// Generate the tabs
+new Fancy.Tab({
+  //config
+});
+```
+### TypeScript
+```js
+import * as Fancy from 'fancygrid';
+
+// Generate the grid
+Fancy.Grid({
+  // config
+});
+
+// Generate the form
+new Fancy.Form({
+  //config
+});
+
+// Generate the tabs
+new Fancy.Tab({
+  //config
+});
 ```
 
 ## Component version
