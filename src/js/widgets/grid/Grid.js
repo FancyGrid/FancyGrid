@@ -127,6 +127,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'contextmenu'
     );
 
+    Fancy.loadStyle();
+
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker') {
         me.loadModules();

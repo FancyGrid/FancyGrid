@@ -447,5 +447,13 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     else{
       me.wasHidden = false;
     }
+  },
+  update: function () {
+    var me = this,
+      w = me.widget,
+      s = w.store;
+
+    s.calcPages();
+    me.onChangeStore(s);
   }
 });

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.5',
+  version: '1.7.6',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -816,9 +816,8 @@ var FancyForm = function(){
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       fn = fn || function () {},
-      protocol = location.protocol,
       _v = Fancy.version.replace(/\./g, ''),
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//cdn.fancygrid.com/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/modules/');
 
     if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
       return;
@@ -873,8 +872,7 @@ var FancyForm = function(){
     var  body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       endUrl = '.js',
-      protocol = location.protocol,
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (protocol + '//cdn.fancygrid.com/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/modules/');
 
     _script.src = MODULESDIR + 'i18n/' + i18n + endUrl;
     _script.charset = 'utf-8';
@@ -888,6 +886,56 @@ var FancyForm = function(){
 
     body.appendChild(_script);
   };
+
+  Fancy.loadStyle = function () {
+    var links = document.querySelectorAll('link');
+
+    if(Fancy.stylesLoaded){
+      return;
+    }
+
+    Fancy.each(links, function (link) {
+      if(/fancy\./.test(link.href)){
+        Fancy.stylesLoaded = true;
+      }
+    });
+
+    var links = document.querySelectorAll('link');
+
+    if(Fancy.stylesLoaded){
+      return;
+    }
+
+    Fancy.each(links, function (link) {
+      if(/fancy\./.test(link.href)){
+        Fancy.stylesLoaded = true;
+      }
+    });
+
+    if(!Fancy.stylesLoaded){
+      var head = document.getElementsByTagName('head')[0],
+        _link = document.createElement('link'),
+        name = 'fancy',
+        endUrl = Fancy.DEBUG ? '.css' : '.min.css',
+        _v = Fancy.version.replace(/\./g, ''),
+        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/');
+
+      MODULESDIR = MODULESDIR.replace('modules/', '');
+      MODULESDIR = MODULESDIR.replace('modules', '');
+
+      if(Fancy.DEBUG){
+        endUrl += '?_dc='+(+new Date());
+      }
+      else{
+        endUrl += '?_v=' + _v;
+      }
+
+      _link.href = MODULESDIR + name + endUrl;
+      _link.rel = 'stylesheet';
+
+      head.appendChild(_link);
+    }
+  }
 })();
 Fancy.fullBuilt = true;
 Fancy.themes = {};
@@ -10599,6 +10647,8 @@ Fancy.define('Fancy.toolbar.Tab', {
    */
   init: function(){
     this.Super('init', arguments);
+
+    Fancy.loadStyle();
   },
   cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
@@ -12250,6 +12300,8 @@ Fancy.define('Fancy.toolbar.Tab', {
    */
   init: function(){
     this.Super('init', arguments);
+
+    Fancy.loadStyle();
   },
   cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
@@ -14312,6 +14364,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
         });
       }
     };
+
+    Fancy.loadStyle();
 
     if(!Fancy.modules['form'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       if(Fancy.modules['grid']){
@@ -22123,6 +22177,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       me.setBodysHeight();
+
+      if(me.paging){
+        me.paging.update();
+      }
     },
     /*
      * @param {String} side
@@ -24203,17 +24261,20 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         o.parentId = item.id;
 
         if(fixParent){
-          var parentItem = me.getById(item.get('parentId'));
+          var parentId = item.get('parentId');
+          if(parentId) {
+            var parentItem = me.getById(parentId);
 
-          F.each(parentItem.data.child, function (child) {
-            if(child.id === item.id){
-              child.leaf = false;
-              child.expanded = true;
-              child.child = [o];
+            F.each(parentItem.data.child, function (child) {
+              if (child.id === item.id) {
+                child.leaf = false;
+                child.expanded = true;
+                child.child = [o];
 
-              return true;
-            }
-          });
+                return true;
+              }
+            });
+          }
         }
 
         child.push(o);
@@ -24422,6 +24483,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'filter',
       'contextmenu'
     );
+
+    Fancy.loadStyle();
 
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker') {
@@ -26470,6 +26533,14 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     else{
       me.wasHidden = false;
     }
+  },
+  update: function () {
+    var me = this,
+      w = me.widget,
+      s = w.store;
+
+    s.calcPages();
+    me.onChangeStore(s);
   }
 });
 /*

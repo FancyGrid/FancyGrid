@@ -47,6 +47,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       }
     };
 
+    Fancy.loadStyle();
+
     if(!Fancy.modules['form'] && !Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
       if(Fancy.modules['grid']){
         Fancy.loadModule('form', function(){

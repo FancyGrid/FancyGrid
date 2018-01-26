@@ -2164,6 +2164,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.setBodysHeight();
+
+      if(me.paging){
+        me.paging.update();
+      }
     },
     /*
      * @param {String} side
@@ -4244,17 +4248,20 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         o.parentId = item.id;
 
         if(fixParent){
-          var parentItem = me.getById(item.get('parentId'));
+          var parentId = item.get('parentId');
+          if(parentId) {
+            var parentItem = me.getById(parentId);
 
-          F.each(parentItem.data.child, function (child) {
-            if(child.id === item.id){
-              child.leaf = false;
-              child.expanded = true;
-              child.child = [o];
+            F.each(parentItem.data.child, function (child) {
+              if (child.id === item.id) {
+                child.leaf = false;
+                child.expanded = true;
+                child.child = [o];
 
-              return true;
-            }
-          });
+                return true;
+              }
+            });
+          }
         }
 
         child.push(o);
