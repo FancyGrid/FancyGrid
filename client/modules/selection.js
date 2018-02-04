@@ -2065,7 +2065,7 @@
     /*
      *
      */
-    copy: function(){
+    copy: function(copyHeader){
       var me = this,
         w = me.widget,
         copyEl = me.copyEl,
@@ -2079,11 +2079,27 @@
           var getSelectedData = function (side) {
             var columns = w.getColumns(side),
               selection = me.getSelectedCells(side),
-              i = 0;
+              i = 0,
+              headerCopied = false;
 
             for(var p in selection){
               var item = w.get(p),
                 selectedRow = selection[p];
+
+              if(!headerCopied && copyHeader){
+                data.push([]);
+                for(var q in selectedRow) {
+                  var column = columns[q];
+
+                  if(column.index === ''){
+
+                  }
+
+                  data[0].push(column.title || '');
+                }
+                i++;
+                headerCopied = true;
+              }
 
               for(var q in selectedRow){
                 var column = columns[q];
@@ -2117,10 +2133,25 @@
           var columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns);
           var dataStr = '';
 
+          if(copyHeader){
+            var itemData = [];
+            F.each(columns, function (column) {
+              if(column.index === '$selected'){
+                return
+              }
+
+              itemData.push(column.index || '');
+            });
+            dataStr += itemData.join('\t') + '\n';
+          }
+
           F.each(selection, function (item) {
             var itemData = [];
-
             F.each(columns, function (column) {
+              if(column.index === '$selected'){
+                return
+              }
+
               if(column.index){
                 itemData.push(item[column.index]);
               }
@@ -2144,8 +2175,17 @@
             for(var p in selection){
               var column = columns[p];
 
+              if(copyHeader){
+                data.push([]);
+                data[0].push(column.title || '');
+              }
+
               if(column.index){
                 F.each(dataView, function (item, i) {
+                  if(copyHeader){
+                    i++;
+                  }
+
                   if(data[i] === undefined){
                     data[i] = [];
                   }

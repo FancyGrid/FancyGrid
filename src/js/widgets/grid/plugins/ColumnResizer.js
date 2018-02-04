@@ -96,6 +96,11 @@
         return;
       }
 
+      if(isInTriggerImage){
+        me.removeCellResizeCls(o.cell);
+        return;
+      }
+
       if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
         inOffsetX += 2;
       }

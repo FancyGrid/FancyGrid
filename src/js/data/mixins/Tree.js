@@ -41,6 +41,10 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       dataItem.leaf = !!dataItem.leaf;
       dataItem.expanded = !!dataItem.expanded;
 
+      if(dataItem.child && dataItem.child.length){
+        dataItem.leaf = false;
+      }
+
       if(parentId){
         dataItem.parentId = parentId;
       }

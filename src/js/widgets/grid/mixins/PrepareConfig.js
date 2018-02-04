@@ -39,6 +39,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigFilter(config);
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
+    config = me.prepareConfigContextMenu(config);
     config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
@@ -1014,7 +1015,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       included = false,
       editable = defaults.editable;
 
-    if(config.clicksToEdit){
+    if(config.clicksToEdit !== undefined){
       editPluginConfig.clicksToEdit = config.clicksToEdit;
     }
 
@@ -1127,6 +1128,33 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       config._plugins.push(summaryConfig);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigContextMenu: function(config){
+    if(config.contextmenu){
+      var menuConfig = config.contextmenu;
+
+      if(menuConfig === true){
+        menuConfig = {};
+      }
+
+      if(Fancy.isArray(menuConfig)){
+        menuConfig = {
+          items: menuConfig
+        };
+      }
+
+      Fancy.apply(menuConfig, {
+        type: 'grid.contextmenu'
+      });
+
+      config._plugins.push(menuConfig);
     }
 
     return config;

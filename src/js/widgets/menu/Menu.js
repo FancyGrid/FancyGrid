@@ -7,9 +7,13 @@
   var MENU_ITEM_CLS = F.MENU_ITEM_CLS;
   var MENU_ITEM_IMAGE_CLS =  F.MENU_ITEM_IMAGE_CLS;
   var MENU_ITEM_TEXT_CLS = F.MENU_ITEM_TEXT_CLS;
+  var MENU_ITEM_SIDE_TEXT_CLS = F.MENU_ITEM_SIDE_TEXT_CLS;
   var MENU_ITEM_ACTIVE_CLS = F.MENU_ITEM_ACTIVE_CLS;
   var MENU_ITEM_RIGHT_IMAGE_CLS = F.MENU_ITEM_RIGHT_IMAGE_CLS;
   var MENU_ITEM_EXPAND_CLS = F.MENU_ITEM_EXPAND_CLS;
+  var MENU_ITEM_DISABLED_CLS = F.MENU_ITEM_DISABLED_CLS;
+  var MENU_ITEM_SEP_CLS = F.MENU_ITEM_SEP_CLS;
+  var MENU_ITEM_NO_IMAGE_CLS = F.MENU_ITEM_NO_IMAGE_CLS;
 
   /**
    * @class Fancy.Menu
@@ -99,12 +103,22 @@
      * @return {Number}
      */
     getItemsHeight: function () {
-      var height = 0,
+      var me = this,
+        items = me.items,
+        itemHeight = this.itemHeight,
+        height = 0,
         i = 0,
-        iL = this.items.length;
+        iL = items.length;
 
       for (; i < iL; i++) {
-        height += this.itemHeight;
+        var item = items[i];
+
+        if(item.type === 'sep' || item.type === '-' || item === '-'){
+          height += 2;
+        }
+        else {
+          height += itemHeight;
+        }
       }
 
       return height;
@@ -120,11 +134,23 @@
 
       for(; i < iL; i++){
         item = me.items[i];
+
+        if(item === '-'){
+          item = {
+            type: 'sep'
+          };
+        }
+
         var itemEl = Fancy.get(document.createElement('div'));
         itemEl.attr('index', i);
 
         itemEl.addCls(me.itemCls);
-        itemEl.css('height', me.itemHeight);
+        if(item.type === 'sep'){
+          itemEl.addCls(MENU_ITEM_SEP_CLS);
+        }
+        else{
+          itemEl.css('height', me.itemHeight);
+        }
         me.el.dom.appendChild(itemEl.dom);
         item.el = itemEl;
 
@@ -134,18 +160,33 @@
           itemEl.addCls(item.cls);
         }
 
-        itemEl.update([
-          item.image === false ? '' : '<div class="'+MENU_ITEM_IMAGE_CLS+' ' + imageCls + '"></div>',
-          '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>',
-          '<div class="'+MENU_ITEM_RIGHT_IMAGE_CLS+' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>'
-        ].join(""));
+        if(item.type !== 'sep' && item.type !== '-') {
+          var text = [
+            item.image === false ? '' : '<div class="' + MENU_ITEM_IMAGE_CLS + ' ' + imageCls + '"></div>',
+            '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>'
+          ];
+
+          if(item.sideText){
+            text.push('<div class="' + MENU_ITEM_SIDE_TEXT_CLS + '">' + item.sideText + '</div>');
+          }
+
+          text.push('<div class="' + MENU_ITEM_RIGHT_IMAGE_CLS + ' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>');
+
+          itemEl.update(text.join(""));
+        }
 
         if (item.image === false) {
-          itemEl.addCls('fancy-menu-item-no-image');
+          itemEl.addCls(MENU_ITEM_NO_IMAGE_CLS);
+        }
+
+        if(item.disabled === true){
+          itemEl.addCls(MENU_ITEM_DISABLED_CLS);
         }
 
         switch (item.type) {
           case '':
+          case '-':
+          case 'sep':
             break;
           default:
             itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
@@ -188,7 +229,7 @@
         item = me.items[index],
         args = [me, item];
 
-      if (item.handler) {
+      if (item.handler && !item.disabled) {
         if (item.scope) {
           item.handler.apply(item.scope, args);
         }
@@ -288,9 +329,14 @@
      * @param {Number} index
      */
     activateItem: function (index) {
-      var item = this.items[index];
+      var me = this,
+        item = me.items[index];
 
-      this.activeItem = item;
+      if(item.type === 'sep' || item === '-' || item.disabled){
+        return;
+      }
+
+      me.activeItem = item;
       item.el.addCls(MENU_ITEM_ACTIVE_CLS);
     },
     /*
@@ -311,6 +357,26 @@
      */
     onItemMouseDown: function(e) {
       e.preventDefault();
+    },
+    /*
+     * @param {Number} index
+     */
+    enableItem: function (index) {
+      var me = this,
+        item = me.items[index];
+
+      item.el.removeCls(MENU_ITEM_DISABLED_CLS);
+      item.disabled = false;
+    },
+    /*
+     * @param {Number} index
+     */
+    disableItem: function (index) {
+      var me = this,
+        item = me.items[index];
+
+      item.el.addCls(MENU_ITEM_DISABLED_CLS);
+      item.disabled = true;
     }
   });
 

@@ -18,13 +18,7 @@
   font: normal 11px/16px tahoma, arial, sans-serif;
   color: #2B587A;
   display: flex;
-  &:hover {
-    background: #048DC8;
-    color: #FFFFFF;
-    opacity: 0.8;
-    cursor: pointer;
-  }
-
+  cursor: pointer;
   .transition(background .1s ease-out);
 }
 
@@ -32,6 +26,7 @@
   float: left;
   height: 100%;
   width: 30px;
+  background-repeat: no-repeat;
 }
 
 .fancy-menu-item-text {
@@ -52,8 +47,12 @@
   background: #048DC8;
   color: #FFFFFF;
   opacity: 0.8;
+  cursor: pointer;
 }
 
+.fancy-menu-item.fancy-menu-item-disabled {
+  cursor: default;
+}
 
 .fancy-menu-item-right-image {
   position: absolute;
@@ -64,9 +63,53 @@
 }
 
 .fancy-menu-item-expand {
-  background: url(images/default/menu-expand.png) no-repeat scroll 11px 5px transparent
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%23567699%22%20d%3D%22M24.707%2038.101L4.908%2057.899c-4.686%204.686-4.686%2012.284%200%2016.971L185.607%20256%204.908%20437.13c-4.686%204.686-4.686%2012.284%200%2016.971L24.707%20473.9c4.686%204.686%2012.284%204.686%2016.971%200l209.414-209.414c4.686-4.686%204.686-12.284%200-16.971L41.678%2038.101c-4.687-4.687-12.285-4.687-16.971%200z%22%2F%3E%3C%2Fsvg%3E');
+  background-position-y: 5px;
+  background-position-x: 9px;
+  background-repeat: no-repeat;
 }
 
 .fancy-menu-item-active .fancy-menu-item-expand {
-  background-position-y: -26px;
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M24.707%2038.101L4.908%2057.899c-4.686%204.686-4.686%2012.284%200%2016.971L185.607%20256%204.908%20437.13c-4.686%204.686-4.686%2012.284%200%2016.971L24.707%20473.9c4.686%204.686%2012.284%204.686%2016.971%200l209.414-209.414c4.686-4.686%204.686-12.284%200-16.971L41.678%2038.101c-4.687-4.687-12.285-4.687-16.971%200z%22%2F%3E%3C%2Fsvg%3E');
+  background-position-y: 5px;
+}
+
+.fancy-menu-item-sep {
+  height: 1px;
+  border-top: solid 1px #d0d0d0;
+  background-color: #fff;
+}
+
+.fancy-menu-item-img-delete {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2217%22%20viewBox%3D%220%200%2016%2017%22%3E%3Cpath%20fill%3D%22%23828A99%22%20d%3D%22M2%2015c0%201.1.9%202%202%202h8c1.1%200%202-.9%202-2v-10h-12v10zm8-7c0-.6.4-1%201-1s1%20.4%201%201v6c0%20.6-.4%201-1%201s-1-.4-1-1v-6zm-3%200c0-.6.4-1%201-1s1%20.4%201%201v6c0%20.6-.4%201-1%201s-1-.4-1-1v-6zm-3%200c0-.6.4-1%201-1s1%20.4%201%201v6c0%20.6-.4%201-1%201s-1-.4-1-1v-6zM15%202h-5v-1c0-.6-.4-1-1-1h-2c-.6%200-1%20.4-1%201v1h-5c-.6%200-1%20.4-1%201s.4%201%201%201h14c.6%200%201-.4%201-1s-.4-1-1-1z%22%2F%3E%3C%2Fsvg%3E');
+  background-position-x: 7px;
+  background-position-y: 6px;
+}
+
+.fancy-menu-item-active .fancy-menu-item-img-delete {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2217%22%20viewBox%3D%220%200%2016%2017%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M2%2015c0%201.1.9%202%202%202h8c1.1%200%202-.9%202-2v-10h-12v10zm8-7c0-.6.4-1%201-1s1%20.4%201%201v6c0%20.6-.4%201-1%201s-1-.4-1-1v-6zm-3%200c0-.6.4-1%201-1s1%20.4%201%201v6c0%20.6-.4%201-1%201s-1-.4-1-1v-6zm-3%200c0-.6.4-1%201-1s1%20.4%201%201v6c0%20.6-.4%201-1%201s-1-.4-1-1v-6zM15%202h-5v-1c0-.6-.4-1-1-1h-2c-.6%200-1%20.4-1%201v1h-5c-.6%200-1%20.4-1%201s.4%201%201%201h14c.6%200%201-.4%201-1s-.4-1-1-1z%22%2F%3E%3C%2Fsvg%3E');
+}
+
+.fancy-menu-item-img-edit {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%3Crect%20width%3D%2224%22%20height%3D%2224%22%2F%3E%0A%20%20%20%20%3Cpath%20fill%3D%22%23828A99%22%20d%3D%22M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41Z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E');
+  background-position-x: 9px;
+  background-position-y: 6px;
+}
+
+.fancy-menu-item-active .fancy-menu-item-img-edit {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%3Crect%20width%3D%2224%22%20height%3D%2224%22%2F%3E%0A%20%20%20%20%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41Z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E');
+}
+
+.fancy-menu-item-active .fancy-menu-item-img-edit {
+  color: white;
+}
+
+.fancy-menu-item-img-copy {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2217%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23828A99%22%20d%3D%22M320%20448v40c0%2013.255-10.745%2024-24%2024H24c-13.255%200-24-10.745-24-24V120c0-13.255%2010.745-24%2024-24h72v296c0%2030.879%2025.121%2056%2056%2056h168zm0-344V0H152c-13.255%200-24%2010.745-24%2024v368c0%2013.255%2010.745%2024%2024%2024h272c13.255%200%2024-10.745%2024-24V128H344c-13.2%200-24-10.8-24-24zm120.971-31.029L375.029%207.029A24%2024%200%200%200%20358.059%200H352v96h96v-6.059a24%2024%200%200%200-7.029-16.97z%22%2F%3E%3C%2Fsvg%3E');
+  background-position-x: 7px;
+  background-position-y: 6px;
+}
+
+.fancy-menu-item-active .fancy-menu-item-img-copy {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2217%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M320%20448v40c0%2013.255-10.745%2024-24%2024H24c-13.255%200-24-10.745-24-24V120c0-13.255%2010.745-24%2024-24h72v296c0%2030.879%2025.121%2056%2056%2056h168zm0-344V0H152c-13.255%200-24%2010.745-24%2024v368c0%2013.255%2010.745%2024%2024%2024h272c13.255%200%2024-10.745%2024-24V128H344c-13.2%200-24-10.8-24-24zm120.971-31.029L375.029%207.029A24%2024%200%200%200%20358.059%200H352v96h96v-6.059a24%2024%200%200%200-7.029-16.97z%22%2F%3E%3C%2Fsvg%3E');
 }

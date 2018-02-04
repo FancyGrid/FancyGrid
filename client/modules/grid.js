@@ -39,6 +39,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigFilter(config);
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
+    config = me.prepareConfigContextMenu(config);
     config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
@@ -1014,7 +1015,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       included = false,
       editable = defaults.editable;
 
-    if(config.clicksToEdit){
+    if(config.clicksToEdit !== undefined){
       editPluginConfig.clicksToEdit = config.clicksToEdit;
     }
 
@@ -1127,6 +1128,33 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       config._plugins.push(summaryConfig);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigContextMenu: function(config){
+    if(config.contextmenu){
+      var menuConfig = config.contextmenu;
+
+      if(menuConfig === true){
+        menuConfig = {};
+      }
+
+      if(Fancy.isArray(menuConfig)){
+        menuConfig = {
+          items: menuConfig
+        };
+      }
+
+      Fancy.apply(menuConfig, {
+        type: 'grid.contextmenu'
+      });
+
+      config._plugins.push(menuConfig);
     }
 
     return config;
@@ -4122,21 +4150,21 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         var rowData = [];
 
         F.each(leftColumns, function (column) {
-          if (column.index === undefined) {
+          if (column.index === undefined || column.index === '$selected') {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(columns, function (column) {
-          if (column.index === undefined) {
+          if (column.index === undefined || column.index === '$selected') {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(rightColumns, function (column) {
-          if (column.index === undefined) {
+          if (column.index === undefined || column.index === '$selected') {
             return;
           }
           rowData.push(me.get(i, column.index));
@@ -4267,7 +4295,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         child.push(o);
         item.set('child', child);
 
-        me.insert(rowIndex, o);
+        if(item.get('expanded') === true){
+          me.insert(rowIndex, o);
+        }
       }
     },
     /*
@@ -4332,11 +4362,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.expandAll();
       }
     },
-    copy: function () {
+    copy: function (copyHeader) {
       var me = this;
 
       if(me.selection){
-        me.selection.copy();
+        me.selection.copy(copyHeader);
       }
     }
   });
@@ -5652,6 +5682,11 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       }
 
       if (w.startResizing) {
+        return;
+      }
+
+      if(isInTriggerImage){
+        me.removeCellResizeCls(o.cell);
         return;
       }
 
@@ -8980,6 +9015,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           columnIndex: params.columnIndex,
           cell: params.cell
         };
+
+      //right click
+      if((e.button === 2 && e.buttons === 2) || e.which === 3){
+        return;
+      }
 
       w.fire('beforecellmousedown', params);
       w.fire('cellmousedown', params);

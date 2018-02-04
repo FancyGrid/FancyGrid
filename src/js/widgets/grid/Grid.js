@@ -247,6 +247,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules['selection'] = true;
     }
 
+    if(me.contextmenu){
+      requiredModules['menu'] = true;
+    }
+
     var containsMenu = function (item) {
       if(item.menu){
         requiredModules['menu'] = true;

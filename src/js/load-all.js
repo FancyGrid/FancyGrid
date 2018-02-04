@@ -137,6 +137,8 @@
 
       pathToSrc + 'widgets/grid/plugins/CellTip.js',
 
+      pathToSrc + 'widgets/grid/plugins/ContextMenu.js', // menu module
+
       pathToSrc + 'widgets/grid/plugins/Filter.js', // filter module
       pathToSrc + 'widgets/grid/plugins/Search.js', // search module
 

@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.6',
+  version: '1.7.7',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -560,9 +560,13 @@ Fancy.apply(Fancy, {
   MENU_ITEM_CLS: 'fancy-menu-item',
   MENU_ITEM_IMAGE_CLS: 'fancy-menu-item-image',
   MENU_ITEM_TEXT_CLS: 'fancy-menu-item-text',
+  MENU_ITEM_SIDE_TEXT_CLS: 'fancy-menu-item-side-text',
   MENU_ITEM_ACTIVE_CLS: 'fancy-menu-item-active',
   MENU_ITEM_RIGHT_IMAGE_CLS: 'fancy-menu-item-right-image',
   MENU_ITEM_EXPAND_CLS: 'fancy-menu-item-expand',
+  MENU_ITEM_DISABLED_CLS: 'fancy-menu-item-disabled',
+  MENU_ITEM_SEP_CLS: 'fancy-menu-item-sep',
+  MENU_ITEM_NO_IMAGE_CLS: 'fancy-menu-item-no-image',
   /*
    * Tab cls-s
    */

@@ -160,6 +160,8 @@
             column.menu.hide();
           }
         });
+
+        menu.push('-');
       }
 
       menu.push({
@@ -172,6 +174,7 @@
         case 'left':
         case 'right':
           if (column.lockable !== false) {
+            menu.push('-');
             menu.push({
               text: lang.unlock,
               handler: function () {
@@ -183,6 +186,7 @@
           break;
         case 'center':
           if (columns.length > 1 && (w.leftColumns.length) && column.lockable !== false) {
+            menu.push('-');
             menu.push({
               text: lang.lock,
               handler: function () {
@@ -193,6 +197,9 @@
           }
 
           if (columns.length > 1 && w.rightColumns.length && column.lockable !== false) {
+            if(menu[menu.length - 2] !== '-'){
+              menu.push('-');
+            }
             menu.push({
               text: lang.rightLock,
               handler: function () {

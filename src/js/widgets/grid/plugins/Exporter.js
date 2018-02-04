@@ -76,6 +76,10 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     me.widths = [];
 
     Fancy.each(columns, function(column){
+      if(column.index === '$selected'){
+        return;
+      }
+
       me.widths.push(column.width);
       data.push(column.title || '');
     });

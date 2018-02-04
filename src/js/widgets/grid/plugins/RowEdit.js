@@ -72,7 +72,7 @@
         w = me.widget,
         column = o.column;
 
-      if (column.index === '$selected') {
+      if (column && column.index === '$selected') {
         return;
       }
 
@@ -464,6 +464,10 @@
           cellSize.width--;
         }
 
+        if(side === 'left' && column.type === 'select'){
+          cellSize.width--;
+        }
+
         cellSize.height -= 2;
 
         if (i === iL - 1) {
@@ -655,6 +659,7 @@
     _setValues: function (data, columns) {
       E(columns, function (column) {
         var editor = column.rowEditor;
+
         if (editor) {
           switch (column.type) {
             case 'action':

@@ -417,6 +417,11 @@
           cell: params.cell
         };
 
+      //right click
+      if((e.button === 2 && e.buttons === 2) || e.which === 3){
+        return;
+      }
+
       w.fire('beforecellmousedown', params);
       w.fire('cellmousedown', params);
       w.fire('columnmousedown', columnParams);

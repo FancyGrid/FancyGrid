@@ -7,9 +7,13 @@
   var MENU_ITEM_CLS = F.MENU_ITEM_CLS;
   var MENU_ITEM_IMAGE_CLS =  F.MENU_ITEM_IMAGE_CLS;
   var MENU_ITEM_TEXT_CLS = F.MENU_ITEM_TEXT_CLS;
+  var MENU_ITEM_SIDE_TEXT_CLS = F.MENU_ITEM_SIDE_TEXT_CLS;
   var MENU_ITEM_ACTIVE_CLS = F.MENU_ITEM_ACTIVE_CLS;
   var MENU_ITEM_RIGHT_IMAGE_CLS = F.MENU_ITEM_RIGHT_IMAGE_CLS;
   var MENU_ITEM_EXPAND_CLS = F.MENU_ITEM_EXPAND_CLS;
+  var MENU_ITEM_DISABLED_CLS = F.MENU_ITEM_DISABLED_CLS;
+  var MENU_ITEM_SEP_CLS = F.MENU_ITEM_SEP_CLS;
+  var MENU_ITEM_NO_IMAGE_CLS = F.MENU_ITEM_NO_IMAGE_CLS;
 
   /**
    * @class Fancy.Menu
@@ -99,12 +103,22 @@
      * @return {Number}
      */
     getItemsHeight: function () {
-      var height = 0,
+      var me = this,
+        items = me.items,
+        itemHeight = this.itemHeight,
+        height = 0,
         i = 0,
-        iL = this.items.length;
+        iL = items.length;
 
       for (; i < iL; i++) {
-        height += this.itemHeight;
+        var item = items[i];
+
+        if(item.type === 'sep' || item.type === '-' || item === '-'){
+          height += 2;
+        }
+        else {
+          height += itemHeight;
+        }
       }
 
       return height;
@@ -120,11 +134,23 @@
 
       for(; i < iL; i++){
         item = me.items[i];
+
+        if(item === '-'){
+          item = {
+            type: 'sep'
+          };
+        }
+
         var itemEl = Fancy.get(document.createElement('div'));
         itemEl.attr('index', i);
 
         itemEl.addCls(me.itemCls);
-        itemEl.css('height', me.itemHeight);
+        if(item.type === 'sep'){
+          itemEl.addCls(MENU_ITEM_SEP_CLS);
+        }
+        else{
+          itemEl.css('height', me.itemHeight);
+        }
         me.el.dom.appendChild(itemEl.dom);
         item.el = itemEl;
 
@@ -134,18 +160,33 @@
           itemEl.addCls(item.cls);
         }
 
-        itemEl.update([
-          item.image === false ? '' : '<div class="'+MENU_ITEM_IMAGE_CLS+' ' + imageCls + '"></div>',
-          '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>',
-          '<div class="'+MENU_ITEM_RIGHT_IMAGE_CLS+' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>'
-        ].join(""));
+        if(item.type !== 'sep' && item.type !== '-') {
+          var text = [
+            item.image === false ? '' : '<div class="' + MENU_ITEM_IMAGE_CLS + ' ' + imageCls + '"></div>',
+            '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>'
+          ];
+
+          if(item.sideText){
+            text.push('<div class="' + MENU_ITEM_SIDE_TEXT_CLS + '">' + item.sideText + '</div>');
+          }
+
+          text.push('<div class="' + MENU_ITEM_RIGHT_IMAGE_CLS + ' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>');
+
+          itemEl.update(text.join(""));
+        }
 
         if (item.image === false) {
-          itemEl.addCls('fancy-menu-item-no-image');
+          itemEl.addCls(MENU_ITEM_NO_IMAGE_CLS);
+        }
+
+        if(item.disabled === true){
+          itemEl.addCls(MENU_ITEM_DISABLED_CLS);
         }
 
         switch (item.type) {
           case '':
+          case '-':
+          case 'sep':
             break;
           default:
             itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
@@ -188,7 +229,7 @@
         item = me.items[index],
         args = [me, item];
 
-      if (item.handler) {
+      if (item.handler && !item.disabled) {
         if (item.scope) {
           item.handler.apply(item.scope, args);
         }
@@ -288,9 +329,14 @@
      * @param {Number} index
      */
     activateItem: function (index) {
-      var item = this.items[index];
+      var me = this,
+        item = me.items[index];
 
-      this.activeItem = item;
+      if(item.type === 'sep' || item === '-' || item.disabled){
+        return;
+      }
+
+      me.activeItem = item;
       item.el.addCls(MENU_ITEM_ACTIVE_CLS);
     },
     /*
@@ -311,6 +357,26 @@
      */
     onItemMouseDown: function(e) {
       e.preventDefault();
+    },
+    /*
+     * @param {Number} index
+     */
+    enableItem: function (index) {
+      var me = this,
+        item = me.items[index];
+
+      item.el.removeCls(MENU_ITEM_DISABLED_CLS);
+      item.disabled = false;
+    },
+    /*
+     * @param {Number} index
+     */
+    disableItem: function (index) {
+      var me = this,
+        item = me.items[index];
+
+      item.el.addCls(MENU_ITEM_DISABLED_CLS);
+      item.disabled = true;
     }
   });
 
@@ -368,6 +434,215 @@
       delete me.activeMenu;
     }
   })
+
+})();/*
+ * @class Fancy.grid.plugin.ContextMenu
+ * @extends Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+
+  F.define('Fancy.grid.plugin.ContextMenu', {
+    extend: F.Plugin,
+    ptype: 'grid.contextmenu',
+    inWidgetName: 'contextmenu',
+    defaultItems: [
+      'copy',
+      'copy+',
+      '-',
+      'delete',
+      'edit',
+      '-',
+      'export'
+    ],
+    width: 200,
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document);
+
+      w.on('contextmenu', me.onContextMenu, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onContextMenu: function (grid, o) {
+      var me = this,
+        e = o.e;
+
+      e.preventDefault();
+
+      if(!me.menu){
+        me.initMenu();
+      }
+
+      setTimeout(function (){
+        me.showMenu(e, true);
+      }, 50);
+
+    },
+    initMenu: function () {
+      var me = this,
+        w = me.widget,
+        items = [],
+        _items =  me.items || F.Array.copy(me.defaultItems);
+
+      F.each(_items, function (item, i) {
+        switch (item){
+          case 'copy':
+            items.push({
+              text: 'Copy',
+              //sideText: 'CTRL+C',
+              imageCls: 'fancy-menu-item-img-copy',
+              handler: function(){
+                w.copy();
+              }
+            });
+            break;
+          case 'copyWidthHeader':
+          case 'copy+':
+            items.push({
+              text: 'Copy with Headers',
+              imageCls: 'fancy-menu-item-img-copy',
+              handler: function(){
+                w.copy(true);
+              }
+            });
+            break;
+          case 'delete':
+            items.push({
+              text: 'Delete',
+              imageCls: 'fancy-menu-item-img-delete',
+              handler: function(){
+                switch(w.selection.selModel){
+                  case 'rows':
+                  case 'row':
+                    var selection = w.getSelection();
+                    w.remove(selection);
+                    w.clearSelection();
+                    break;
+                }
+              }
+            });
+            break;
+          case 'edit':
+            me.editItemIndex = i;
+            items.push({
+              text: 'Edit',
+              imageCls: 'fancy-menu-item-img-edit',
+              disabled: true,
+              handler: function(){
+                if(w.rowEdit){
+                  var activeCell = w.selection.getActiveCell(),
+                    side = w.getSideByCell(activeCell),
+                    body = w.getBody(side),
+                    o = body.getEventParams({
+                      currentTarget: activeCell.dom
+                    });
+
+                  w.rowedit.edit(o);
+                }
+              }
+            });
+            break;
+          case 'export':
+            items.push({
+              text: 'Export',
+              items: [{
+                text: 'Excel Export',
+                handler: function(){
+                  w.exportToExcel();
+                }
+              }]
+            });
+            break;
+          default:
+            items.push(item);
+        }
+      });
+
+      me.menu = new Fancy.Menu({
+        width: me.width,
+        theme: w.theme,
+        items: items
+      });
+    },
+    showMenu: function (e, eventPosition) {
+      var me = this,
+        w = me.widget,
+        selection = w.selection,
+        listEl = me.menu.el,
+        el = Fancy.get(e.target),
+        offset = el.offset(),
+        top = offset.top + 40,
+        left = offset.left;
+
+      if(eventPosition){
+        top = e.pageY + 40;
+        left = e.pageX;
+      }
+
+      listEl.css({
+        position: 'absolute',
+        top: top,
+        left: left
+      });
+
+      me.menu.show();
+
+      listEl.animate({
+        duration: 200,
+        top: top - 20
+      });
+
+      if(selection){
+        switch(selection.selModel){
+          case 'rows':
+          case 'row':
+            var selected = w.getSelection();
+
+            if(selected.length === 0 || selected.length > 1){
+              me.menu.disableItem(me.editItemIndex);
+            }
+            else{
+              me.menu.enableItem(me.editItemIndex);
+            }
+            break;
+        }
+      }
+
+      setTimeout(function(){
+        Fancy.get(document).once('click', function(e){
+          me.hideMenu();
+        });
+      }, 50);
+    },
+    hideMenu: function(){
+      var me = this;
+
+      setTimeout(function(){
+        me.menu.hide();
+      }, 50);
+    }
+  });
 
 })();/*
  * @mixin Fancy.grid.header.mixin.Menu
@@ -531,6 +806,8 @@
             column.menu.hide();
           }
         });
+
+        menu.push('-');
       }
 
       menu.push({
@@ -543,6 +820,7 @@
         case 'left':
         case 'right':
           if (column.lockable !== false) {
+            menu.push('-');
             menu.push({
               text: lang.unlock,
               handler: function () {
@@ -554,6 +832,7 @@
           break;
         case 'center':
           if (columns.length > 1 && (w.leftColumns.length) && column.lockable !== false) {
+            menu.push('-');
             menu.push({
               text: lang.lock,
               handler: function () {
@@ -564,6 +843,9 @@
           }
 
           if (columns.length > 1 && w.rightColumns.length && column.lockable !== false) {
+            if(menu[menu.length - 2] !== '-'){
+              menu.push('-');
+            }
             menu.push({
               text: lang.rightLock,
               handler: function () {

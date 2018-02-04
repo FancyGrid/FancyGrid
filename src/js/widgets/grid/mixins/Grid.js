@@ -2258,21 +2258,21 @@
         var rowData = [];
 
         F.each(leftColumns, function (column) {
-          if (column.index === undefined) {
+          if (column.index === undefined || column.index === '$selected') {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(columns, function (column) {
-          if (column.index === undefined) {
+          if (column.index === undefined || column.index === '$selected') {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(rightColumns, function (column) {
-          if (column.index === undefined) {
+          if (column.index === undefined || column.index === '$selected') {
             return;
           }
           rowData.push(me.get(i, column.index));
@@ -2403,7 +2403,9 @@
         child.push(o);
         item.set('child', child);
 
-        me.insert(rowIndex, o);
+        if(item.get('expanded') === true){
+          me.insert(rowIndex, o);
+        }
       }
     },
     /*
@@ -2468,11 +2470,11 @@
         me.expandAll();
       }
     },
-    copy: function () {
+    copy: function (copyHeader) {
       var me = this;
 
       if(me.selection){
-        me.selection.copy();
+        me.selection.copy(copyHeader);
       }
     }
   });

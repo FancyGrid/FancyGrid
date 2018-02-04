@@ -57,7 +57,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     me.on('tab', me.onTab, me);
 
     w.once('init', function(){
-      w.on(clickEventName, me.onClickCellToEdit, me);
+      if(clickEventName !== 'cell'){
+        w.on(clickEventName, me.onClickCellToEdit, me);
+      }
     });
 
     w.on('activate', me.onGridActivate, me);
@@ -257,6 +259,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return 'click';
       case 2:
         return 'dblclick';
+      case false:
+        return '';
     }
   },
   /*

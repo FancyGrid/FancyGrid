@@ -57,7 +57,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     me.on('tab', me.onTab, me);
 
     w.once('init', function(){
-      w.on(clickEventName, me.onClickCellToEdit, me);
+      if(clickEventName !== 'cell'){
+        w.on(clickEventName, me.onClickCellToEdit, me);
+      }
     });
 
     w.on('activate', me.onGridActivate, me);
@@ -257,6 +259,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return 'click';
       case 2:
         return 'dblclick';
+      case false:
+        return '';
     }
   },
   /*
@@ -1110,7 +1114,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         w = me.widget,
         column = o.column;
 
-      if (column.index === '$selected') {
+      if (column && column.index === '$selected') {
         return;
       }
 
@@ -1502,6 +1506,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           cellSize.width--;
         }
 
+        if(side === 'left' && column.type === 'select'){
+          cellSize.width--;
+        }
+
         cellSize.height -= 2;
 
         if (i === iL - 1) {
@@ -1693,6 +1701,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     _setValues: function (data, columns) {
       E(columns, function (column) {
         var editor = column.rowEditor;
+
         if (editor) {
           switch (column.type) {
             case 'action':
