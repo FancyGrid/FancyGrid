@@ -178,6 +178,9 @@
           if(dragged) {
             w.fire('columndrag');
             w.scroller.update();
+            if(w.sorter){
+              w.sorter.updateSortedHeader();
+            }
           }
         }, 10);
       }
@@ -832,6 +835,9 @@
           if(dragged) {
             w.fire('columndrag');
             w.scroller.update();
+            if(w.sorter){
+              w.sorter.updateSortedHeader();
+            }
           }
         }, 10);
       }

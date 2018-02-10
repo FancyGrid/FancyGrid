@@ -369,8 +369,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Array} data
    */
   onCreate: function(store, data){
-    this.widget.updater.update();
-    this.clearDirty();
+    var me = this,
+      w = me.widget;
+
+    w.updater.update();
+    w.fire('insert', data);
+    me.clearDirty();
   }
 });/*
  * @class Fancy.grid.plugin.CellEdit

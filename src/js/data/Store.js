@@ -41,7 +41,7 @@ Fancy.define('Fancy.Store', {
       if (me.data.proxy) {
         me.initProxy();
       }
-      else {
+      else if(!me.widget.isTreeData){
         me.setData(me.data);
       }
     }
@@ -125,7 +125,6 @@ Fancy.define('Fancy.Store', {
     if(me.collapsed) {
       for (; i < iL; i++) {
         item = new model(data[i]);
-        item.$index = i;
 
         me.data[i] = item;
         me.map[item.id] = item;
@@ -136,7 +135,6 @@ Fancy.define('Fancy.Store', {
         //??? It looks like never reacheds
         for (; i < iL; i++) {
           item = new model(data[i]);
-          item.$index = i;
 
           me.data[i] = item;
           me.map[item.id] = item;
@@ -146,7 +144,6 @@ Fancy.define('Fancy.Store', {
         if(me.paging ){
           for (; i < iL; i++) {
             item = new model(data[i]);
-            item.$index = i;
 
             me.data[i] = item;
             if(i < me.pageSize){
@@ -160,7 +157,6 @@ Fancy.define('Fancy.Store', {
         else {
           for (; i < iL; i++) {
             item = new model(data[i]);
-            item.$index = i;
 
             me.data[i] = item;
             me.dataView[i] = item;
@@ -170,6 +166,18 @@ Fancy.define('Fancy.Store', {
           }
         }
       }
+    }
+
+    if(me.isTree){
+      Fancy.each(me.data, function (item, i) {
+        if(item.get('expanded')){
+          Fancy.each(item.data.child, function (_child,_i) {
+            var childItem = me.getById(_child.id);
+
+            item.data.child[_i] = childItem;
+          });
+        }
+      });
     }
   },
   /*
@@ -597,6 +605,8 @@ Fancy.define('Fancy.Store', {
     }
 
     var item;
+
+
 
     if(me.order){
       if(me.grouping){

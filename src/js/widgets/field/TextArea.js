@@ -78,6 +78,12 @@
       if (me.autoHeight) {
         input.on('input', me.onChange, me);
       }
+
+      input.on('mousedown', function (e) {
+        if(me.disabled){
+          e.preventDefault();
+        }
+      });
     },
     /*
      *

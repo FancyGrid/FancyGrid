@@ -71,10 +71,17 @@
     renderButton: function(){
       var me = this;
 
-      new F.Button({
+      me.button = new F.Button({
         renderTo: me.el.select('.' + FIELD_TEXT_CLS).item(0).dom,
         text: me.buttonText,
+        disabled: me.disabled,
+        pressed: me.pressed,
+        enableToggle: me.enableToggle,
         handler: function () {
+          if(me.disabled){
+            return;
+          }
+
           if (me.handler) {
             me.handler();
           }
@@ -85,6 +92,11 @@
      *
      */
     ons: function () {
+      var me = this;
+
+      me.button.on('pressedchange', function (button, value) {
+        me.fire('pressedchange', value);
+      });
     },
     /*
      *
@@ -92,11 +104,18 @@
     onClick: function () {
       var me = this;
 
+      if(me.disabled){
+        return;
+      }
+
       me.fire('click');
 
       if (me.handler) {
         me.handler();
       }
+    },
+    setPressed: function (value) {
+      this.button.setPressed(value);
     }
   });
 })();

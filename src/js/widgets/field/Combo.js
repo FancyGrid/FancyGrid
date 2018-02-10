@@ -18,6 +18,7 @@
   var CLEARFIX_CLS = F.CLEARFIX_CLS;
   var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
   var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
 
   F.define('Fancy.combo.Manager', {
     singleton: true,
@@ -327,6 +328,10 @@
       var me = this,
         list = me.list;
 
+      if(me.disabled){
+        return;
+      }
+
       if (me.editable === true) {
         return;
       }
@@ -344,6 +349,10 @@
     onDropClick: function (e) {
       var me = this,
         list = me.list;
+
+      if(me.disabled){
+        return;
+      }
 
       if (list.css('display') === 'none') {
         F.combo.Manager.add(this);
@@ -373,7 +382,7 @@
 
       me.hideAheadList();
 
-      if (!me.list) {
+      if (!me.list || me.data.length === 0) {
         return;
       }
 
@@ -455,7 +464,7 @@
 
       me.hideList();
 
-      if (!list) {
+      if (!list || me.data.length === 0) {
         return;
       }
 
@@ -526,7 +535,14 @@
      * @param {Object} e
      */
     onInputMouseDown: function (e) {
-      if (this.editable === false) {
+      var me = this;
+
+      if(me.disabled){
+        e.preventDefault();
+        return;
+      }
+
+      if (me.editable === false) {
         e.preventDefault();
       }
     },
@@ -534,6 +550,10 @@
      * @param {Object} e
      */
     onDropMouseDown: function (e) {
+      if(this.disabled){
+        e.stopPropagation();
+      }
+
       e.preventDefault();
     },
     /*
@@ -558,6 +578,10 @@
      * @param {Object} e
      */
     onListItemOver: function (e) {
+      if(this.disabled){
+        return;
+      }
+
       var li = F.get(e.target);
 
       li.addCls(this.focusedItemCls);
@@ -566,6 +590,10 @@
      *
      */
     onListItemLeave: function () {
+      if(this.disabled){
+        return;
+      }
+
       this.clearFocused();
     },
     /*
@@ -577,6 +605,10 @@
         value = li.attr('value'),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
+
+      if(me.disabled){
+        return;
+      }
 
       if (F.nojQuery && value === 0) {
         value = '';
@@ -886,6 +918,10 @@
 
       if (me.editable) {
         me.input.css('cursor', 'auto');
+      }
+
+      if(me.disabled){
+        me.addCls(FIELD_DISABLED_CLS);
       }
 
       me.renderList();
@@ -1541,6 +1577,13 @@
         item = me.data[me.getIndex(me.getValue())];
 
       me.left.update(new F.Template(me.leftTpl).getHTML(item));
+    },
+    setData: function(data){
+      var me = this;
+
+      me.data = data;
+      me.renderList();
+      me.onsList();
     }
   });
 

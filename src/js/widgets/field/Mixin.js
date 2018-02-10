@@ -12,6 +12,7 @@
   var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
   var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
   var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
+  var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
 
   F.ns('Fancy.form.field');
 
@@ -61,6 +62,13 @@
           e.stopPropagation();
         });
       }
+
+      el.on('mousedown', function (e) {
+        if(me.disabled){
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
     },
     /*
      * @param {Object} field
@@ -70,6 +78,10 @@
     onKeyInputFn: function (field, value, e) {
       var keyCode = e.keyCode,
         key = F.key;
+
+      if(me.disabled){
+        return;
+      }
 
       switch (keyCode) {
         case key.ENTER:
@@ -95,6 +107,10 @@
     onMouseOver: function (e) {
       var me = this;
 
+      if(me.disabled){
+        return;
+      }
+
       me.fire('mouseover');
 
       if (me.tip) {
@@ -106,6 +122,10 @@
      */
     onMouseOut: function (e) {
       var me = this;
+
+      if(me.disabled){
+        return;
+      }
 
       me.fire('mouseout');
 
@@ -283,6 +303,15 @@
           }
         }, 1);
       }
+
+      if(me.disabled){
+        switch(me.type){
+          case 'hidden':
+            break;
+          default:
+            me.addCls(FIELD_DISABLED_CLS);
+        }
+      }
     },
     /*
      * @param {Object} e
@@ -291,6 +320,10 @@
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
+
+      if(me.disabled){
+        return;
+      }
 
       //This disable filter expressions in number field
       /*
@@ -393,15 +426,24 @@
      * @param {*} value
      */
     onKey: function (me, value) {
+      if(me.disabled){
+        return;
+      }
+
       if (!me.isValid() || me.checkValidOnTyping) {
         me.validate(value);
       }
     },
     /*
-     *
+     * It used also for validation.
+     * @return {Boolean} - returns true/false if validation passed successful.
      */
     onBlur: function () {
       var me = this;
+
+      if(me.disabled){
+        return true;
+      }
 
       me.fire('blur');
 
@@ -444,7 +486,11 @@
     /*
      *
      */
-    onFocus: function () {
+    onFocus: function (e) {
+      if(this.disabled){
+        return;
+      }
+
       this.fire('focus');
     },
     /*
@@ -455,6 +501,10 @@
         input = me.input,
         value = me.getValue(),
         oldValue = me.acceptedValue;
+
+      if(me.disabled){
+        return;
+      }
 
       me.acceptedValue = me.get();
       me.fire('input', value);
@@ -849,6 +899,10 @@
         //Link on grid if presented
         w = me.widget;
 
+      if(me.disabled){
+        return;
+      }
+
       delete me.tooltipToDestroy;
 
       if(w){
@@ -952,6 +1006,32 @@
         start: start,
         end: end
       };
+    },
+    /*
+     *
+     */
+    enable: function () {
+      var me = this;
+
+      me.disabled = false;
+      me.removeCls(FIELD_DISABLED_CLS);
+
+      if(me.button){
+        me.button.enable();
+      }
+    },
+    /*
+     *
+     */
+    disable: function () {
+      var me = this;
+
+      me.disabled = true;
+      me.addCls(FIELD_DISABLED_CLS);
+
+      if(me.button){
+        me.button.disable();
+      }
     }
   };
 

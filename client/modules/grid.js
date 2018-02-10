@@ -2067,6 +2067,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           data.fields.push('parentId');
           data.fields.push('expanded');
           data.fields.push('child');
+          data.fields.push('filteredChild');
         }
 
         return data.fields;
@@ -2536,6 +2537,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       store.on('change', me.onChangeStore, me);
       store.on('set', me.onSetStore, me);
+      store.on('insert', me.onInsertStore, me);
       store.on('remove', me.onRemoveStore, me);
       store.on('beforesort', me.onBeforeSortStore, me);
       store.on('sort', me.onSortStore, me);
@@ -2594,6 +2596,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this;
 
       me.fire('remove', id, record);
+    },
+    /*
+     * @param {Object} store
+     * @param {Fancy.Model} record
+     */
+    onInsertStore: function (store, record) {
+      var me = this;
+
+      me.fire('insert', record);
     },
     /*
      * @param {Object} store
@@ -3201,6 +3212,48 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         if (column.index === key || column.key === key) {
           return column;
         }
+      }
+    },
+    /*
+     * @param {String} key
+     * @return {Object}
+     */
+    getColumnOrderByKey: function (key) {
+      var me = this,
+        leftColumns = me.leftColumns || [],
+        columns = me.columns || [],
+        rightColumns = me.rightColumns || [],
+        side = '',
+        order;
+
+      F.each(columns, function (column, i) {
+        if(column.index === key){
+          side = 'center';
+          order = i;
+        }
+      });
+
+      if(!side){
+        F.each(leftColumns, function (column, i) {
+          if(column.index === key){
+            side = 'left';
+            order = i;
+          }
+        });
+
+        if(!side){
+          F.each(rightColumns, function (column, i) {
+            if(column.index === key){
+              side = 'left';
+              order = i;
+            }
+          });
+        }
+      }
+
+      return {
+        side: side,
+        order: order
       }
     },
     /*
@@ -4179,9 +4232,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {Array} data
      */
     setData: function (data) {
-      var me = this;
+      var me = this,
+        s = me.store;
 
-      me.store.setData(data);
+      s.setData(data);
+
+      if(s.isTree){
+        s.initTreeData();
+      }
     },
     /*
      *

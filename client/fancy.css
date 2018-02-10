@@ -257,6 +257,48 @@
 .fancy-field-blank-err .fancy-field-error {
   display: block;
 }
+.fancy-field-disabled {
+  opacity: .3;
+}
+.fancy-field-disabled .fancy-field-label {
+  cursor: default;
+}
+.fancy-field-disabled input {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-checkbox-input {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-text {
+  cursor: default;
+}
+.fancy-field-disabled div.fancy-field-text {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-picker-button {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-spin-up {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-spin-down {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-radio-input {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-combo-dropdown-button {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-button {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-field-text-input {
+  cursor: default;
+}
+.fancy-field-disabled .fancy-textarea-text-input {
+  cursor: default;
+}
 .fancy-field-error {
   display: none;
   color: #cf5a65;
@@ -753,10 +795,7 @@
 .fancy-grid-cell .fancy-field-checkbox-input {
   margin-top: 0;
 }
-.fancy-field-checkbox-disabled {
-  opacity: .3;
-}
-.fancy-field-checkbox-disabled .fancy-field-checkbox-input:hover {
+.fancy-field-disabled .fancy-field-checkbox-input:hover {
   background-position: inherit;
 }
 /*

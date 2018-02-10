@@ -110,6 +110,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columndrag',
       'scroll', 'nativescroll',
       'remove',
+      'insert',
       'set',
       'update',
       'beforesort', 'sort',

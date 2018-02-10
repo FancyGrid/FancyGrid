@@ -178,6 +178,10 @@
         timeInterval = 700,
         time = new Date();
 
+      if(me.disabled){
+        return;
+      }
+
       e.preventDefault();
 
       me.mouseDownSpinUp = true;
@@ -212,6 +216,10 @@
         docEl = Fancy.get(document),
         timeInterval = 700,
         time = new Date();
+
+      if(me.disabled){
+        return;
+      }
 
       e.preventDefault();
 

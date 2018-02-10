@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.7',
+  version: '1.7.8',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -435,6 +435,7 @@ Fancy.apply(Fancy, {
   FIELD_CLS: 'fancy-field',
   FIELD_LABEL_CLS: 'fancy-field-label',
   FIELD_EMPTY_CLS: 'fancy-field-empty',
+  FIELD_DISABLED_CLS: 'fancy-field-disabled',
   FIELD_BLANK_ERR_CLS: 'fancy-field-blank-err',
   FIELD_NOT_VALID_CLS: 'fancy-field-not-valid',
   FIELD_TEXT_CLS: 'fancy-field-text',

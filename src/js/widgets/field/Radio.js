@@ -104,6 +104,9 @@
         el = this.el;
 
       el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function () {
+        if(me.disabled){
+          return;
+        }
         me.set(F.get(this).attr('value'));
       });
 
@@ -116,6 +119,10 @@
       var me = this,
         checkedCls = me.checkedCls;
 
+      if(me.disabled){
+        return;
+      }
+
       me.addCls(checkedCls);
       me.toggleCls(checkedCls);
 
@@ -127,7 +134,9 @@
      * @param {Object} e
      */
     onMouseDown: function (e) {
-
+      if(this.disabled){
+        e.stopPropagation();
+      }
       e.preventDefault();
     },
     /*

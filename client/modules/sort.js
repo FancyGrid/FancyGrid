@@ -757,6 +757,30 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
       el.select('.' + GRID_COLUMN_SORT_ASC).removeCls(GRID_COLUMN_SORT_ASC);
       el.select('.' + GRID_COLUMN_SORT_DESC).removeCls(GRID_COLUMN_SORT_DESC);
+    },
+    updateSortedHeader: function () {
+      var me = this,
+        w = me.widget,
+        header,
+        s = w.store;
+
+      me.clearHeaderSortCls();
+
+      F.each(s.sorters, function (sorter, i) {
+        var info = w.getColumnOrderByKey(sorter.key),
+          cls = sorter.dir === 'ASC'? GRID_COLUMN_SORT_ASC : GRID_COLUMN_SORT_DESC;
+
+        if(!info.side){
+          return;
+        }
+
+        header = w.getHeader(info.side);
+        var cell = header.getCell(info.order);
+
+        if(cell){
+          cell.addCls(cls);
+        }
+      });
     }
   });
 

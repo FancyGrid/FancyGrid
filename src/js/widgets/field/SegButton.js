@@ -62,6 +62,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     me.button = new Fancy.SegButton({
       renderTo: me.el.select('.fancy-field-text').item(0).dom,
       items: me.items,
+      disabled: me.disabled,
       multiToggle: me.multiToggle,
       allowToggle: me.allowToggle
     });
@@ -73,6 +74,9 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     var me = this;
 
     me.button.on('toggle', function(){
+      if(me.disabled){
+        return;
+      }
       me.fire('toggle');
     });
   },
@@ -81,6 +85,10 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    */
   onClick: function(){
     var me = this;
+
+    if(me.disabled){
+      return;
+    }
 
     me.fire('click');
 

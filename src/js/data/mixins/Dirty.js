@@ -132,8 +132,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       me.undoActions.push({
         id: o.id,
         type: 'insert',
-        data: o.data,
-        rowIndex: o.$index
+        data: o.data
       });
     }
   }

@@ -6,11 +6,17 @@
 
   var getChildNumber = function (items, num) {
     num = num || 0;
+    var me = this,
+      w = me.widget;
 
     Fancy.each(items, function (item) {
       num++;
-      if(item.child && item.expanded){
-        num += getChildNumber(item.child);
+      var itemData = item.data?item.data:item;
+      //Getting item data from grid
+      itemData = w.getById(itemData.id).data;
+
+      if(itemData.child && itemData.expanded){
+        num += getChildNumber.apply(me, [itemData.child]);
       }
     });
 
@@ -34,6 +40,8 @@
      */
     init: function () {
       var me = this;
+
+      me.expandMap = {};
 
       me.Super('init', arguments);
       me.ons();
@@ -100,26 +108,20 @@
         w = me.widget,
         s = w.store,
         child = item.get('child'),
-        id = item.get('id'),
-        parentId = item.get('parentId');
+        filteredChild = item.get('filteredChild'),
+        id = item.get('id');
+
+      me.expandMap[id] = false;
+
+      if(filteredChild){
+        child = filteredChild;
+      }
 
       item.set('expanded', false);
 
-      if(parentId){
-        var parent = w.getById(parentId),
-          parentChild = parent.get('child');
-
-        //Bad for performance
-        Fancy.each(parentChild, function (item) {
-          if(item.id === id){
-            item.expanded = false;
-          }
-        });
-      }
-
       var rowIndex = s.getRow(item.get('id')),
         i = 0,
-        iL = getChildNumber(child);
+        iL = getChildNumber.apply(this, [child]);
 
       w.store.treeCollapsing = true;
       for (; i < iL; i++) {
@@ -127,17 +129,22 @@
       }
       delete w.store.treeCollapsing;
 
-      if(!child){
+      //if(!child){
         w.update();
-      }
+      //}
     },
     expandRow: function (item) {
       var me = this,
         w = me.widget,
         s = w.store,
         child = item.get('child'),
+        filteredChild = item.get('filteredChild'),
         id = item.get('id'),
         parentId = item.get('parentId');
+
+      if(filteredChild){
+        child = filteredChild;
+      }
 
       if(me.singleExpand){
         if(parentId){
@@ -146,7 +153,13 @@
 
           //Bad for performance
           Fancy.each(parentChild, function (item) {
-            if(item.expanded === true) {
+            var expanded = item.get('expanded');
+
+            if(me.expandMap[item.id] !== undefined){
+              expanded = me.expandMap[item.id];
+            }
+
+            if(expanded === true) {
               me.collapseRow(w.getById(item.id));
             }
           });
@@ -155,41 +168,54 @@
           var parentChild = w.findItem('parentId', '');
 
           Fancy.each(parentChild, function (child) {
-            if(child.get('expanded') === true) {
+            var expanded = child.get('expanded');
+
+            if(me.expandMap[child.id] !== undefined){
+              expanded = me.expandMap[child.id];
+            }
+
+            if(expanded === true) {
               me.collapseRow(child);
             }
           });
         }
       }
 
-      if(parentId){
-        var parent = w.getById(parentId),
-          parentChild = parent.get('child');
-
-        //Bad for performance
-        Fancy.each(parentChild, function (item) {
-          if(item.id === id){
-            item.expanded = true;
-          }
-        });
-      }
+      me.expandMap[id] = true;
 
       item.set('expanded', true);
 
       var rowIndex = s.getRow(item.get('id')),
-        deep = item.get('$deep') + 1;
+        deep = item.get('$deep') + 1,
+        childsModelsRequired = false;
 
       var expandChilds = function (child, rowIndex, deep, _id) {
         _id = _id || id;
 
-        Fancy.each(child, function (item) {
-          item.$deep = deep;
-          item.parentId = _id;
-          rowIndex++;
-          w.insert(rowIndex, item);
+        Fancy.each(child, function (item, i) {
+          var itemData = item.data;
+          if(!item.data){
+            childsModelsRequired = true;
+            itemData = item;
+          }
 
-          if(item.expanded === true){
-            rowIndex = expandChilds(item.child, rowIndex, deep + 1, item.id);
+          itemData.$deep = deep;
+          itemData.parentId = _id;
+          var expanded = itemData.expanded;
+          if(me.expandMap[itemData.id] !== undefined){
+            expanded = me.expandMap[itemData.id];
+            itemData.expanded = expanded;
+          }
+
+          rowIndex++;
+          w.insert(rowIndex, itemData);
+
+          if(expanded === true){
+            var child = itemData.child;
+            if(itemData.filteredChild){
+              child = itemData.filteredChild;
+            }
+            rowIndex = expandChilds(child, rowIndex, deep + 1, itemData.id);
           }
         });
 
@@ -200,12 +226,29 @@
       expandChilds(child, rowIndex, deep);
       delete w.store.treeExpanding;
 
-      if(!child){
-        w.update();
+      if(childsModelsRequired){
+
+        Fancy.each(item.data.child, function (_child, i) {
+          var childItem = s.getById(_child.id);
+
+          //This case could occur for filtered data
+          if(childItem === undefined){
+            return;
+          }
+
+          item.data.child[i] = childItem;
+        });
       }
+
+      //if(!child){
+        w.update();
+      //}
 
       //Sorted
       if(s.sorters){
+        //TODO: needed to do sub sorting of only expanded
+        //If item contains sorted than needs to detirmine that it suits or not
+        //Also it needs to think about multisorting
         var sorter = s.sorters[0];
 
         s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});

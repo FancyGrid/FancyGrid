@@ -41,7 +41,10 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       dataItem.leaf = !!dataItem.leaf;
       dataItem.expanded = !!dataItem.expanded;
 
-      if(dataItem.child && dataItem.child.length){
+      if(Fancy.isArray(dataItem.filteredChild) && dataItem.filteredChild.length){
+        dataItem.leaf = false;
+      }
+      else if(dataItem.child && dataItem.child.length){
         dataItem.leaf = false;
       }
 
@@ -57,7 +60,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       _data.push(dataItem);
 
       if(dataItem.expanded){
-        _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
+        if(Fancy.isArray(dataItem.filteredChild)){
+          _data = _data.concat(me.treeReadData(dataItem.filteredChild || [], deep + 1, dataItem.id));
+        }
+        else {
+          _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
+        }
       }
     });
 
@@ -69,7 +77,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     Fancy.each(me.data, function (item) {
       if(item.get('$deep') === 1){
-        _core.push(item.data);
+        _core.push(item);
       }
     });
 
@@ -83,8 +91,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       sorted = [];
 
     Fancy.each(data, function (item) {
-      _data.push(item[key]);
-      dataValues[item[key]] = item;
+      _data.push(item.data[key]);
+      dataValues[item.data[key]] = item;
     });
 
     var isAllEmpty = false;
@@ -97,15 +105,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       var prevValue;
 
       Fancy.each(data, function (item, i) {
-        if(item[key] !== ''){
+        if(item.data[key] !== ''){
           isAllEmpty = false;
         }
 
-        if(prevValue !== undefined && prevValue !== item[key]){
+        if(prevValue !== undefined && prevValue !== item.data[key]){
           isAllEqual = false;
         }
 
-        prevValue = item[key];
+        prevValue = item.data[key];
       });
     }
 
@@ -142,8 +150,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         item = data[i];
       }
 
-      if(item.child && item.expanded){
-        item.sorted = me.treeSort(item.child, action, key, type);
+      if(item.data.child && item.data.expanded){
+        item.data.sorted = me.treeSort(item.data.child, action, key, type);
       }
 
       sorted.push(item);
@@ -157,9 +165,16 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     Fancy.each(data, function (item) {
       ids.push(item.id);
+      //!important
+      item = me.getById(item.id);
 
-      if(item.sorted && item.expanded){
-        ids = ids.concat(me.treeReadSortedId(item.sorted));
+      if(item.data.expanded){
+        if(item.data.sorted){
+          ids = ids.concat(me.treeReadSortedId(item.data.sorted));
+        }
+        else if(item.data.child){
+          ids = ids.concat(me.treeReadSortedId(item.data.child));
+        }
       }
     });
 

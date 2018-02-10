@@ -476,6 +476,7 @@
         cell.after(newCell.dom);
       }
 
+
       me.updateSizes(side);
       me.updateSide(side);
     },
@@ -483,7 +484,11 @@
      *
      */
     onChangePage: function () {
-      this.update();
+      var me = this;
+
+      setTimeout(function () {
+        me.update();
+      }, 100);
     },
     /*
      *

@@ -7,14 +7,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    * @param {Object} o
    */
-  remove: function(o){
+  remove: function(o) {
     var me = this,
       id = o.id,
       index,
       orderIndex,
       itemData;
 
-    switch(Fancy.typeOf(o)){
+    switch (Fancy.typeOf(o)) {
       case 'string':
       case 'number':
         id = o;
@@ -23,11 +23,11 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
         id = o.id || o.data.id;
     }
 
-    if(me.isTree && me.treeCollapsing !== true){
+    if (me.isTree && me.treeCollapsing !== true) {
       var item = me.getById(id),
         parentItem = me.getById(item.get('parentId'));
 
-      if(item.get('leaf') === false && item.get('expanded')){
+      if (item.get('leaf') === false && item.get('expanded')) {
         var _i = item.data.child.length - 1;
 
         Fancy.each(item.data.child, function (child, i, children) {
@@ -36,9 +36,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
         });
       }
 
-      if(parentItem){
+      if (parentItem) {
         Fancy.each(parentItem.data.child, function (child, i) {
-          if(child.id === id){
+          if (child.id === id) {
             parentItem.data.child.splice(i, 1);
             return true;
           }
@@ -46,40 +46,53 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       }
     }
 
-    if(me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
+    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy) {
       me.proxyCRUD('DESTROY', id);
       return;
     }
 
-    if(o.rowIndex){
+    if (o.rowIndex) {
       index = me.dataViewIndexes[o.rowIndex];
       orderIndex = o.rowIndex;
     }
-    else{
-      //index = o.$index;
+    else {
       index = me.getDataIndex(id);
       orderIndex = me.getRow(id);
       //TODO: absent orderIndex, need to learn where to take it.
     }
 
-    itemData = me.data.splice(index, 1)[0];
+    if (me.isTree && me.treeCollapsing && me.filteredData) {
+      //TODO:
+      var _index;
+      Fancy.each(me.data, function (item, i) {
+        if(item.data.id === id){
+          _index = i;
+          return true;
+        }
+      });
+      itemData = me.data.splice(_index, 1)[0];
+    }
+    else {
+      itemData = me.data.splice(index, 1)[0];
+    }
 
-    if(me.paging){
+
+    if (me.paging) {
       orderIndex += me.showPage * me.pageSize;
     }
 
-    if(me.order){
+    if (me.order) {
       me.order.splice(orderIndex, 1);
     }
 
     //SLOW, needs all redo to another approach
     //Almost the same as resorting
-    if(me.changeOrderIndexes){
+    if (me.changeOrderIndexes) {
       me.changeOrderIndexes(index);
     }
 
-    if(me.paging){
-      if(me.showPage !== 0 && me.showPage * me.pageSize === me.getTotal()){
+    if (me.paging) {
+      if (me.showPage !== 0 && me.showPage * me.pageSize === me.getTotal()) {
         me.showPage--;
       }
       me.calcPages();
@@ -87,7 +100,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     delete me.map[id];
 
-    me.fire('remove', id, itemData, index);
+    if (!me.treeCollapsing) {
+      me.fire('remove', id, itemData, index);
+    }
+
     me.changeDataView();
   },
   /*
@@ -181,11 +197,35 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       item = new model(o),
       index = me.addIndex;
 
-    me.fire('beforeinsert');
+    if(!me.treeExpanding) {
+      me.fire('beforeinsert');
+    }
 
     delete me.addIndex;
-    item.$index = index;
-    me.data.splice(index, 0, item);
+    if(me.treeExpanding && me.filteredData){
+      //Slow but do not see another way to get index of item in data without need to rewrite than indexes
+      var parentId = item.get('parentId'),
+        _index;
+
+      Fancy.each(me.data, function (item, i) {
+        if(item.data.id === parentId){
+          if(item._tempExpandedChild){
+            item._tempExpandedChild++;
+          }
+          else{
+            item._tempExpandedChild = 0;
+          }
+          _index = i;
+          return true;
+        }
+      });
+
+      me.data.splice(_index + 1, 0, item);
+
+    }
+    else {
+      me.data.splice(index, 0, item);
+    }
 
     if(me.order){
       me.order.splice(index, 0, index);
@@ -195,7 +235,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     me.changeDataView();
     me.map[o.id] = item;
-    me.fire('insert', item);
+    if(!me.treeExpanding) {
+      me.fire('insert', item);
+    }
     return item;
   },
   /*

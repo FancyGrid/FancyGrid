@@ -257,8 +257,14 @@
      * @param {Object} e
      */
     onPickerButtonMouseDown: function (e) {
+      var me = this;
+
+      if(me.disabled){
+        return;
+      }
+
       e.preventDefault();
-      this.toggleShowPicker();
+      me.toggleShowPicker();
     },
     /*
      *

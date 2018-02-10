@@ -12,6 +12,30 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       passed = true,
       wait = false;
 
+    if(me.isTree){
+      var child = item.get('child'),
+        expanded = item.get('expanded');
+
+      if(child){
+        var filteredChild = [];
+
+        Fancy.each(child, function (_child, i) {
+          var item = _child.data? _child: new me.model(_child),
+            filterChild = me.filterCheckItem(item);
+
+          if(filterChild){
+            filteredChild.push(_child);
+          }
+        });
+
+        item.set('filteredChild', filteredChild);
+
+        if(filteredChild.length){
+          return true;
+        }
+      }
+    }
+
     for(var p in filters){
       var indexFilters = filters[p],
         indexValue = item.data[p];
@@ -147,8 +171,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
     me.filteredDataMap = {};
 
-    for(;i<iL;i++){
-      if(me.order){
+    for (; i < iL; i++) {
+      if (me.order) {
         filterOrder.push(me.order[i]);
         item = data[me.order[i]];
       }
@@ -157,7 +181,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         item = data[i];
       }
 
-      if(me.filterCheckItem(item)){
+      if (me.filterCheckItem(item)) {
         filteredData.push(item);
         me.filteredDataMap[item.id] = item;
       }
