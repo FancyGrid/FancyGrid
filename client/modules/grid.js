@@ -1758,7 +1758,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.width = width;
     }
 
-    if(config.height === 'fit'){
+    if(config.height === undefined){
+      if(renderTo){
+        config.responsiveHeight = true;
+        config.height = parseInt(el.height());
+      }
+    }
+    else if(config.height === 'fit'){
       var length = 0,
         headerRows = 1;
 
@@ -2552,6 +2558,20 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if (me.responsive) {
         F.$(window).bind('resize', function () {
           me.onWindowResize();
+
+          if(me.intWindowResize){
+            clearInterval(me.intWindowResize);
+          }
+
+          me.intWindowResize = setTimeout(function(){
+            me.onWindowResize();
+            delete me.intWindowResize;
+
+            //Bug fir for Mac
+            setTimeout(function () {
+              me.onWindowResize();
+            }, 300);
+          }, 30);
         });
       }
 
@@ -3285,6 +3305,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
         el = F.get(renderTo);
         me.setWidth(parseInt(el.width()));
+
+        if(me.responsiveHeight){
+          me.setHeight(parseInt(el.height()));
+        }
       }
 
       me.setBodysHeight();
@@ -3309,6 +3333,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       fn(me.columns, me.header);
       fn(me.leftColumns, me.leftHeader);
       fn(me.rightColumns, me.rightHeader);
+
+      me.scroller.scrollDelta(0);
+      me.scroller.update();
     },
     /*
      * @param {Number} width
@@ -3322,7 +3349,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         body = me.body,
         header = me.header;
 
-      me.scroller.scroll(0, 0);
+      //me.scroller.scroll(0, 0);
 
       var calcColumnsWidth = function (columns) {
         var i = 0,
@@ -5242,8 +5269,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     update: function () {
-      this.setScrollBars();
-      this.checkScroll();
+      var me = this;
+
+      me.setScrollBars();
+      me.checkScroll();
+
+      me.scrollRightKnob();
+      me.scrollBottomKnob();
     },
     /*
      *

@@ -452,6 +452,13 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     me.order = order;
+  },
+  reSort: function () {
+    var me = this;
+    
+    Fancy.each(me.sorters, function (sorter) {
+      me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {});
+    });
   }
 });/*
  * @class Fancy.grid.plugin.Sorter

@@ -320,6 +320,10 @@
             me.showAheadList();
           }, 1);
       }
+
+      setTimeout(function () {
+        me.fire('key', me.input.dom.value, e);
+      }, 1);
     },
     /*
      * @param {Object} e
@@ -919,9 +923,18 @@
       if (me.editable) {
         me.input.css('cursor', 'auto');
       }
+      else {
+        if(me.input){
+          me.input.attr('tabIndex', -1);
+        }
+      }
 
       if(me.disabled){
         me.addCls(FIELD_DISABLED_CLS);
+
+        if(me.input){
+          me.input.attr('tabIndex', -1);
+        }
       }
 
       me.renderList();

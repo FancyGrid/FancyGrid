@@ -4420,7 +4420,7 @@ vml {
   border-bottom-color: transparent;
 }
 .fancy-theme-bootstrap-no-borders * {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 .fancy-theme-bootstrap-no-borders .fancy-panel-header-text {
   padding-left: 8px;

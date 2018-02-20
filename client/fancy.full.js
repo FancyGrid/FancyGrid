@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.8',
+  version: '1.7.9',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -2853,12 +2853,13 @@ Fancy.define('Fancy.Model', {
       else{
         Fancy.idSeed++;
         me.id = Fancy.idSeed + 1000;
+        data.id = me.id;
       }
 
       if( me.fields === undefined ){
         fields = [];
         for(var p in data){
-          fields.push(p)
+          fields.push(p);
         }
         me.fields = fields;
       }
@@ -2874,6 +2875,15 @@ Fancy.define('Fancy.Model', {
         else{
           row[p] = data[p];
         }
+      }
+
+      if(!row.id){
+        me.fields.push('id');
+        if(!data.id){
+          data.id = me.id;
+        }
+
+        row.id = data.id;
       }
 
       me.data = row;
@@ -4800,6 +4810,13 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     me.order = order;
+  },
+  reSort: function () {
+    var me = this;
+    
+    Fancy.each(me.sorters, function (sorter) {
+      me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {});
+    });
   }
 });
 /*
@@ -4874,6 +4891,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
           return true;
         }
       });
+
       itemData = me.data.splice(_index, 1)[0];
     }
     else {
@@ -5008,24 +5026,24 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     delete me.addIndex;
     if(me.treeExpanding && me.filteredData){
       //Slow but do not see another way to get index of item in data without need to rewrite than indexes
-      var parentId = item.get('parentId'),
-        _index;
+      //var parentId = item.get('parentId');
 
+      /*
       Fancy.each(me.data, function (item, i) {
         if(item.data.id === parentId){
-          if(item._tempExpandedChild){
+          if(item._tempExpandedChild !== undefined){
             item._tempExpandedChild++;
           }
           else{
             item._tempExpandedChild = 0;
           }
-          _index = i;
+
+          index += item._tempExpandedChild;
           return true;
         }
       });
-
-      me.data.splice(_index + 1, 0, item);
-
+      */
+      me.data.splice(index, 0, item);
     }
     else {
       me.data.splice(index, 0, item);
@@ -5450,7 +5468,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     return true;
   },
   /*
-   *
+   * Problem: filterOrder contains the same value as order.
+   * For usual filtering it is ok, but for Tree Grid it does not suit.
    */
   filterData: function(){
     var me = this,
@@ -5606,12 +5625,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       _data.push(dataItem);
 
       if(dataItem.expanded){
+        /*
         if(Fancy.isArray(dataItem.filteredChild)){
           _data = _data.concat(me.treeReadData(dataItem.filteredChild || [], deep + 1, dataItem.id));
         }
         else {
           _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
         }
+        */
+        _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
       }
     });
 
@@ -5637,8 +5659,18 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       sorted = [];
 
     Fancy.each(data, function (item) {
-      _data.push(item.data[key]);
-      dataValues[item.data[key]] = item;
+      var itemData = item.data || item;
+      _data.push(itemData[key]);
+
+      if(dataValues[itemData[key]] === undefined){
+        dataValues[itemData[key]] = item;
+      }
+      else{
+        if(!Fancy.isArray(dataValues[itemData[key]])){
+          dataValues[itemData[key]] = [dataValues[itemData[key]]];
+        }
+        dataValues[itemData[key]].push(item);
+      }
     });
 
     var isAllEmpty = false;
@@ -5651,15 +5683,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       var prevValue;
 
       Fancy.each(data, function (item, i) {
-        if(item.data[key] !== ''){
+        var itemData = item.data || item;
+
+        if(itemData[key] !== ''){
           isAllEmpty = false;
         }
 
-        if(prevValue !== undefined && prevValue !== item.data[key]){
+        if(prevValue !== undefined && prevValue !== itemData[key]){
           isAllEqual = false;
         }
 
-        prevValue = item.data[key];
+        prevValue = itemData[key];
       });
     }
 
@@ -5692,12 +5726,26 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     Fancy.each(dataSorted, function (v, i) {
       var item = dataValues[v];
 
+      if(Fancy.isArray(item)){
+        item = item.splice(0, 1)[0];
+      }
+
       if(isAllEmpty || isAllEqual){
         item = data[i];
       }
 
-      if(item.data.child && item.data.expanded){
-        item.data.sorted = me.treeSort(item.data.child, action, key, type);
+      var itemData = item.data || item;
+
+      if(itemData.child && itemData.expanded){
+        /*
+        if(itemData.filteredChild){
+          item.data.sorted = me.treeSort(itemData.filteredChild, action, key, type);
+        }
+        else {
+          item.data.sorted = me.treeSort(itemData.child, action, key, type);
+        }
+        */
+        item.data.sorted = me.treeSort(itemData.child, action, key, type);
       }
 
       sorted.push(item);
@@ -5709,7 +5757,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     var me = this,
       ids = [];
 
-    Fancy.each(data, function (item) {
+    Fancy.each(data, function (item, i) {
       ids.push(item.id);
       //!important
       item = me.getById(item.id);
@@ -6416,7 +6464,8 @@ Fancy.define('Fancy.Store', {
         }
         else {
           for (; i < iL; i++) {
-            values.push(data[i].data[key]);
+            var itemData = data[i].data || data[i];
+            values.push(itemData[key]);
           }
         }
       }
@@ -6488,8 +6537,6 @@ Fancy.define('Fancy.Store', {
     }
 
     var item;
-
-
 
     if(me.order){
       if(me.grouping){
@@ -14219,10 +14266,30 @@ Fancy.define('Fancy.bar.Text', {
           case 'line':
             var numOfFields = item.items.length,
               isWidthInit = false,
-              averageWidth = (width - 8 - 8 - 8) / numOfFields;
+              avaliableWidth = width,
+              averageWidth;
+
+            F.each(item.items, function(_item){
+              if(_item.label === undefined && _item.labelAlign !== 'top'){
+                _item.label = false;
+              }
+
+              if(_item.width){
+                avaliableWidth -= _item.width;
+                numOfFields--;
+              }
+            });
+
+            averageWidth = (avaliableWidth - 8 - 8 - 8) / numOfFields;
 
             F.each(item.items, function (_item) {
-              _item.width = averageWidth;
+              if(!_item.width){
+                _item.width = averageWidth;
+              }
+              else{
+                //isWidthInit = true;
+              }
+
               if (_item.labelWidth || _item.inputWidth) {
                 isWidthInit = true;
               }
@@ -14763,7 +14830,8 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Object} e
      */
     onKeyInputFn: function (field, value, e) {
-      var keyCode = e.keyCode,
+      var me = this,
+        keyCode = e.keyCode,
         key = F.key;
 
       if(me.disabled){
@@ -14997,6 +15065,10 @@ if(!Fancy.nojQuery && Fancy.$){
             break;
           default:
             me.addCls(FIELD_DISABLED_CLS);
+        }
+
+        if(me.input){
+          me.input.attr('tabIndex', -1);
         }
       }
     },
@@ -15706,6 +15778,10 @@ if(!Fancy.nojQuery && Fancy.$){
       if(me.button){
         me.button.enable();
       }
+
+      if(me.input){
+        me.input.attr('tabIndex', 0);
+      }
     },
     /*
      *
@@ -15718,6 +15794,10 @@ if(!Fancy.nojQuery && Fancy.$){
 
       if(me.button){
         me.button.disable();
+      }
+
+      if(me.input){
+        me.input.attr('tabIndex', -1);
       }
     }
   };
@@ -17684,6 +17764,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
             me.showAheadList();
           }, 1);
       }
+
+      setTimeout(function () {
+        me.fire('key', me.input.dom.value, e);
+      }, 1);
     },
     /*
      * @param {Object} e
@@ -18283,9 +18367,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       if (me.editable) {
         me.input.css('cursor', 'auto');
       }
+      else {
+        if(me.input){
+          me.input.attr('tabIndex', -1);
+        }
+      }
 
       if(me.disabled){
         me.addCls(FIELD_DISABLED_CLS);
+
+        if(me.input){
+          me.input.attr('tabIndex', -1);
+        }
       }
 
       me.renderList();
@@ -21798,7 +21891,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.width = width;
     }
 
-    if(config.height === 'fit'){
+    if(config.height === undefined){
+      if(renderTo){
+        config.responsiveHeight = true;
+        config.height = parseInt(el.height());
+      }
+    }
+    else if(config.height === 'fit'){
       var length = 0,
         headerRows = 1;
 
@@ -22890,6 +22989,20 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if (me.responsive) {
         F.$(window).bind('resize', function () {
           me.onWindowResize();
+
+          if(me.intWindowResize){
+            clearInterval(me.intWindowResize);
+          }
+
+          me.intWindowResize = setTimeout(function(){
+            me.onWindowResize();
+            delete me.intWindowResize;
+
+            //Bug fir for Mac
+            setTimeout(function () {
+              me.onWindowResize();
+            }, 300);
+          }, 30);
         });
       }
 
@@ -23623,6 +23736,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
         el = F.get(renderTo);
         me.setWidth(parseInt(el.width()));
+
+        if(me.responsiveHeight){
+          me.setHeight(parseInt(el.height()));
+        }
       }
 
       me.setBodysHeight();
@@ -23647,6 +23764,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       fn(me.columns, me.header);
       fn(me.leftColumns, me.leftHeader);
       fn(me.rightColumns, me.rightHeader);
+
+      me.scroller.scrollDelta(0);
+      me.scroller.update();
     },
     /*
      * @param {Number} width
@@ -23660,7 +23780,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         body = me.body,
         header = me.header;
 
-      me.scroller.scroll(0, 0);
+      //me.scroller.scroll(0, 0);
 
       var calcColumnsWidth = function (columns) {
         var i = 0,
@@ -26164,8 +26284,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     update: function () {
-      this.setScrollBars();
-      this.checkScroll();
+      var me = this;
+
+      me.setScrollBars();
+      me.checkScroll();
+
+      me.scrollRightKnob();
+      me.scrollBottomKnob();
     },
     /*
      *
@@ -32288,6 +32413,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       me.clearActiveCell();
 
       w.fire('clearselect');
+      w.fire('select', w.getSelection());
     },
     /*
      *
@@ -32903,6 +33029,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
         checkBox.setValue(true, false);
       });
+
+      w.fire('select', w.getSelection());
     },
     /*
      *
@@ -32926,6 +33054,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
 
       me.clearHeaderCheckBox();
+      w.fire('clearselect');
+      w.fire('select', w.getSelection());
     },
     /*
      *
@@ -36831,11 +36961,27 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
     Fancy.each(items, function (item) {
       num++;
       var itemData = item.data?item.data:item;
-      //Getting item data from grid
-      itemData = w.getById(itemData.id).data;
 
-      if(itemData.child && itemData.expanded){
-        num += getChildNumber.apply(me, [itemData.child]);
+      if(w.store.filteredData){
+        //Getting item data from grid
+        if(itemData.id) {
+          if(w.store.map[itemData.id]){
+            itemData = w.store.map[itemData.id].data
+          }
+        }
+      }
+      else{
+        //Getting item data from grid
+        itemData = w.getById(itemData.id).data;
+      }
+
+      var child = itemData.child;
+      //if(itemData.filteredChild){
+        //child = itemData.filteredChild;
+      //}
+
+      if(child && itemData.expanded){
+        num += getChildNumber.apply(me, [child]);
       }
     });
 
@@ -36933,7 +37079,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       me.expandMap[id] = false;
 
       if(filteredChild){
-        child = filteredChild;
+        //child = filteredChild;
       }
 
       item.set('expanded', false);
@@ -36942,11 +37088,64 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         i = 0,
         iL = getChildNumber.apply(this, [child]);
 
-      w.store.treeCollapsing = true;
-      for (; i < iL; i++) {
-        w.removeAt(rowIndex + 1);
+      if(s.filteredData){
+        var itemId = item.get('id'),
+          startIndex,
+          _parentIds = {};
+
+        _parentIds[itemId] = true;
+
+        var i = 0,
+          iL = s.data.length,
+          deepStart;
+
+        for(;i<iL;i++){
+          item = s.data[i];
+
+          if(deepStart && deepStart >= item.data.$deep){
+            break;
+          }
+
+          if(_parentIds[item.data.parentId]){
+            if(!deepStart){
+              deepStart = item.data.$deep - 1;
+            }
+
+            if(!startIndex){
+              startIndex = i;
+            }
+
+            var removedItem = s.data.splice(startIndex, 1)[0];
+
+            if(removedItem.data.child){
+              _parentIds[removedItem.data.id] = true;
+            }
+
+            delete s.map[removedItem.id];
+            i--;
+            iL--;
+          }
+
+          if(item.data.child && deepStart){
+            _parentIds[item.data.id] = true;
+          }
+        }
+
+        if(s.order){
+          delete s.order;
+          delete s.filterOrder;
+          s.reSort();
+        }
+
+        s.changeDataView();
       }
-      delete w.store.treeCollapsing;
+      else{
+        w.store.treeCollapsing = true;
+        for (; i < iL; i++) {
+          w.removeAt(rowIndex + 1);
+        }
+        delete w.store.treeCollapsing;
+      }
 
       //if(!child){
         w.update();
@@ -36962,7 +37161,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         parentId = item.get('parentId');
 
       if(filteredChild){
-        child = filteredChild;
+        //child = filteredChild;
       }
 
       if(me.singleExpand){
@@ -37008,6 +37207,17 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         deep = item.get('$deep') + 1,
         childsModelsRequired = false;
 
+      if(s.filteredData){
+        //Bad about performance
+        var itemId = item.get('id');
+        Fancy.each(s.data, function (item, i) {
+          if(item.id === itemId){
+            rowIndex = i;
+            return true;
+          }
+        });
+      }
+
       var expandChilds = function (child, rowIndex, deep, _id) {
         _id = _id || id;
 
@@ -37027,12 +37237,13 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           }
 
           rowIndex++;
+
           w.insert(rowIndex, itemData);
 
           if(expanded === true){
             var child = itemData.child;
             if(itemData.filteredChild){
-              child = itemData.filteredChild;
+              //child = itemData.filteredChild;
             }
             rowIndex = expandChilds(child, rowIndex, deep + 1, itemData.id);
           }
@@ -37068,9 +37279,15 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         //TODO: needed to do sub sorting of only expanded
         //If item contains sorted than needs to detirmine that it suits or not
         //Also it needs to think about multisorting
-        var sorter = s.sorters[0];
+        //var sorter = s.sorters[0];
 
-        s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
+        //s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
+
+        if(s.order){
+          delete s.order;
+          delete s.filterOrder;
+          s.reSort();
+        }
       }
     },
     onBeforeSort: function (grid, options) {

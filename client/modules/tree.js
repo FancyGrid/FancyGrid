@@ -60,12 +60,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       _data.push(dataItem);
 
       if(dataItem.expanded){
+        /*
         if(Fancy.isArray(dataItem.filteredChild)){
           _data = _data.concat(me.treeReadData(dataItem.filteredChild || [], deep + 1, dataItem.id));
         }
         else {
           _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
         }
+        */
+        _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
       }
     });
 
@@ -91,8 +94,18 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       sorted = [];
 
     Fancy.each(data, function (item) {
-      _data.push(item.data[key]);
-      dataValues[item.data[key]] = item;
+      var itemData = item.data || item;
+      _data.push(itemData[key]);
+
+      if(dataValues[itemData[key]] === undefined){
+        dataValues[itemData[key]] = item;
+      }
+      else{
+        if(!Fancy.isArray(dataValues[itemData[key]])){
+          dataValues[itemData[key]] = [dataValues[itemData[key]]];
+        }
+        dataValues[itemData[key]].push(item);
+      }
     });
 
     var isAllEmpty = false;
@@ -105,15 +118,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       var prevValue;
 
       Fancy.each(data, function (item, i) {
-        if(item.data[key] !== ''){
+        var itemData = item.data || item;
+
+        if(itemData[key] !== ''){
           isAllEmpty = false;
         }
 
-        if(prevValue !== undefined && prevValue !== item.data[key]){
+        if(prevValue !== undefined && prevValue !== itemData[key]){
           isAllEqual = false;
         }
 
-        prevValue = item.data[key];
+        prevValue = itemData[key];
       });
     }
 
@@ -146,12 +161,26 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     Fancy.each(dataSorted, function (v, i) {
       var item = dataValues[v];
 
+      if(Fancy.isArray(item)){
+        item = item.splice(0, 1)[0];
+      }
+
       if(isAllEmpty || isAllEqual){
         item = data[i];
       }
 
-      if(item.data.child && item.data.expanded){
-        item.data.sorted = me.treeSort(item.data.child, action, key, type);
+      var itemData = item.data || item;
+
+      if(itemData.child && itemData.expanded){
+        /*
+        if(itemData.filteredChild){
+          item.data.sorted = me.treeSort(itemData.filteredChild, action, key, type);
+        }
+        else {
+          item.data.sorted = me.treeSort(itemData.child, action, key, type);
+        }
+        */
+        item.data.sorted = me.treeSort(itemData.child, action, key, type);
       }
 
       sorted.push(item);
@@ -163,7 +192,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     var me = this,
       ids = [];
 
-    Fancy.each(data, function (item) {
+    Fancy.each(data, function (item, i) {
       ids.push(item.id);
       //!important
       item = me.getById(item.id);
@@ -209,11 +238,27 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     Fancy.each(items, function (item) {
       num++;
       var itemData = item.data?item.data:item;
-      //Getting item data from grid
-      itemData = w.getById(itemData.id).data;
 
-      if(itemData.child && itemData.expanded){
-        num += getChildNumber.apply(me, [itemData.child]);
+      if(w.store.filteredData){
+        //Getting item data from grid
+        if(itemData.id) {
+          if(w.store.map[itemData.id]){
+            itemData = w.store.map[itemData.id].data
+          }
+        }
+      }
+      else{
+        //Getting item data from grid
+        itemData = w.getById(itemData.id).data;
+      }
+
+      var child = itemData.child;
+      //if(itemData.filteredChild){
+        //child = itemData.filteredChild;
+      //}
+
+      if(child && itemData.expanded){
+        num += getChildNumber.apply(me, [child]);
       }
     });
 
@@ -311,7 +356,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       me.expandMap[id] = false;
 
       if(filteredChild){
-        child = filteredChild;
+        //child = filteredChild;
       }
 
       item.set('expanded', false);
@@ -320,11 +365,64 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         i = 0,
         iL = getChildNumber.apply(this, [child]);
 
-      w.store.treeCollapsing = true;
-      for (; i < iL; i++) {
-        w.removeAt(rowIndex + 1);
+      if(s.filteredData){
+        var itemId = item.get('id'),
+          startIndex,
+          _parentIds = {};
+
+        _parentIds[itemId] = true;
+
+        var i = 0,
+          iL = s.data.length,
+          deepStart;
+
+        for(;i<iL;i++){
+          item = s.data[i];
+
+          if(deepStart && deepStart >= item.data.$deep){
+            break;
+          }
+
+          if(_parentIds[item.data.parentId]){
+            if(!deepStart){
+              deepStart = item.data.$deep - 1;
+            }
+
+            if(!startIndex){
+              startIndex = i;
+            }
+
+            var removedItem = s.data.splice(startIndex, 1)[0];
+
+            if(removedItem.data.child){
+              _parentIds[removedItem.data.id] = true;
+            }
+
+            delete s.map[removedItem.id];
+            i--;
+            iL--;
+          }
+
+          if(item.data.child && deepStart){
+            _parentIds[item.data.id] = true;
+          }
+        }
+
+        if(s.order){
+          delete s.order;
+          delete s.filterOrder;
+          s.reSort();
+        }
+
+        s.changeDataView();
       }
-      delete w.store.treeCollapsing;
+      else{
+        w.store.treeCollapsing = true;
+        for (; i < iL; i++) {
+          w.removeAt(rowIndex + 1);
+        }
+        delete w.store.treeCollapsing;
+      }
 
       //if(!child){
         w.update();
@@ -340,7 +438,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         parentId = item.get('parentId');
 
       if(filteredChild){
-        child = filteredChild;
+        //child = filteredChild;
       }
 
       if(me.singleExpand){
@@ -386,6 +484,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         deep = item.get('$deep') + 1,
         childsModelsRequired = false;
 
+      if(s.filteredData){
+        //Bad about performance
+        var itemId = item.get('id');
+        Fancy.each(s.data, function (item, i) {
+          if(item.id === itemId){
+            rowIndex = i;
+            return true;
+          }
+        });
+      }
+
       var expandChilds = function (child, rowIndex, deep, _id) {
         _id = _id || id;
 
@@ -405,12 +514,13 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           }
 
           rowIndex++;
+
           w.insert(rowIndex, itemData);
 
           if(expanded === true){
             var child = itemData.child;
             if(itemData.filteredChild){
-              child = itemData.filteredChild;
+              //child = itemData.filteredChild;
             }
             rowIndex = expandChilds(child, rowIndex, deep + 1, itemData.id);
           }
@@ -446,9 +556,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         //TODO: needed to do sub sorting of only expanded
         //If item contains sorted than needs to detirmine that it suits or not
         //Also it needs to think about multisorting
-        var sorter = s.sorters[0];
+        //var sorter = s.sorters[0];
 
-        s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
+        //s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
+
+        if(s.order){
+          delete s.order;
+          delete s.filterOrder;
+          s.reSort();
+        }
       }
     },
     onBeforeSort: function (grid, options) {

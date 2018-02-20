@@ -1758,7 +1758,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.width = width;
     }
 
-    if(config.height === 'fit'){
+    if(config.height === undefined){
+      if(renderTo){
+        config.responsiveHeight = true;
+        config.height = parseInt(el.height());
+      }
+    }
+    else if(config.height === 'fit'){
       var length = 0,
         headerRows = 1;
 

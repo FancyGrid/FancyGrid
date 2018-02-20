@@ -60,12 +60,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       _data.push(dataItem);
 
       if(dataItem.expanded){
+        /*
         if(Fancy.isArray(dataItem.filteredChild)){
           _data = _data.concat(me.treeReadData(dataItem.filteredChild || [], deep + 1, dataItem.id));
         }
         else {
           _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
         }
+        */
+        _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
       }
     });
 
@@ -91,8 +94,18 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       sorted = [];
 
     Fancy.each(data, function (item) {
-      _data.push(item.data[key]);
-      dataValues[item.data[key]] = item;
+      var itemData = item.data || item;
+      _data.push(itemData[key]);
+
+      if(dataValues[itemData[key]] === undefined){
+        dataValues[itemData[key]] = item;
+      }
+      else{
+        if(!Fancy.isArray(dataValues[itemData[key]])){
+          dataValues[itemData[key]] = [dataValues[itemData[key]]];
+        }
+        dataValues[itemData[key]].push(item);
+      }
     });
 
     var isAllEmpty = false;
@@ -105,15 +118,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       var prevValue;
 
       Fancy.each(data, function (item, i) {
-        if(item.data[key] !== ''){
+        var itemData = item.data || item;
+
+        if(itemData[key] !== ''){
           isAllEmpty = false;
         }
 
-        if(prevValue !== undefined && prevValue !== item.data[key]){
+        if(prevValue !== undefined && prevValue !== itemData[key]){
           isAllEqual = false;
         }
 
-        prevValue = item.data[key];
+        prevValue = itemData[key];
       });
     }
 
@@ -146,12 +161,26 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     Fancy.each(dataSorted, function (v, i) {
       var item = dataValues[v];
 
+      if(Fancy.isArray(item)){
+        item = item.splice(0, 1)[0];
+      }
+
       if(isAllEmpty || isAllEqual){
         item = data[i];
       }
 
-      if(item.data.child && item.data.expanded){
-        item.data.sorted = me.treeSort(item.data.child, action, key, type);
+      var itemData = item.data || item;
+
+      if(itemData.child && itemData.expanded){
+        /*
+        if(itemData.filteredChild){
+          item.data.sorted = me.treeSort(itemData.filteredChild, action, key, type);
+        }
+        else {
+          item.data.sorted = me.treeSort(itemData.child, action, key, type);
+        }
+        */
+        item.data.sorted = me.treeSort(itemData.child, action, key, type);
       }
 
       sorted.push(item);
@@ -163,7 +192,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     var me = this,
       ids = [];
 
-    Fancy.each(data, function (item) {
+    Fancy.each(data, function (item, i) {
       ids.push(item.id);
       //!important
       item = me.getById(item.id);

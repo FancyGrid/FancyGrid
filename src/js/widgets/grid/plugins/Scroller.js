@@ -771,8 +771,13 @@
      *
      */
     update: function () {
-      this.setScrollBars();
-      this.checkScroll();
+      var me = this;
+
+      me.setScrollBars();
+      me.checkScroll();
+
+      me.scrollRightKnob();
+      me.scrollBottomKnob();
     },
     /*
      *

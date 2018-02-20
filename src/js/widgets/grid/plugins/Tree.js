@@ -12,11 +12,27 @@
     Fancy.each(items, function (item) {
       num++;
       var itemData = item.data?item.data:item;
-      //Getting item data from grid
-      itemData = w.getById(itemData.id).data;
 
-      if(itemData.child && itemData.expanded){
-        num += getChildNumber.apply(me, [itemData.child]);
+      if(w.store.filteredData){
+        //Getting item data from grid
+        if(itemData.id) {
+          if(w.store.map[itemData.id]){
+            itemData = w.store.map[itemData.id].data
+          }
+        }
+      }
+      else{
+        //Getting item data from grid
+        itemData = w.getById(itemData.id).data;
+      }
+
+      var child = itemData.child;
+      //if(itemData.filteredChild){
+        //child = itemData.filteredChild;
+      //}
+
+      if(child && itemData.expanded){
+        num += getChildNumber.apply(me, [child]);
       }
     });
 
@@ -114,7 +130,7 @@
       me.expandMap[id] = false;
 
       if(filteredChild){
-        child = filteredChild;
+        //child = filteredChild;
       }
 
       item.set('expanded', false);
@@ -123,11 +139,64 @@
         i = 0,
         iL = getChildNumber.apply(this, [child]);
 
-      w.store.treeCollapsing = true;
-      for (; i < iL; i++) {
-        w.removeAt(rowIndex + 1);
+      if(s.filteredData){
+        var itemId = item.get('id'),
+          startIndex,
+          _parentIds = {};
+
+        _parentIds[itemId] = true;
+
+        var i = 0,
+          iL = s.data.length,
+          deepStart;
+
+        for(;i<iL;i++){
+          item = s.data[i];
+
+          if(deepStart && deepStart >= item.data.$deep){
+            break;
+          }
+
+          if(_parentIds[item.data.parentId]){
+            if(!deepStart){
+              deepStart = item.data.$deep - 1;
+            }
+
+            if(!startIndex){
+              startIndex = i;
+            }
+
+            var removedItem = s.data.splice(startIndex, 1)[0];
+
+            if(removedItem.data.child){
+              _parentIds[removedItem.data.id] = true;
+            }
+
+            delete s.map[removedItem.id];
+            i--;
+            iL--;
+          }
+
+          if(item.data.child && deepStart){
+            _parentIds[item.data.id] = true;
+          }
+        }
+
+        if(s.order){
+          delete s.order;
+          delete s.filterOrder;
+          s.reSort();
+        }
+
+        s.changeDataView();
       }
-      delete w.store.treeCollapsing;
+      else{
+        w.store.treeCollapsing = true;
+        for (; i < iL; i++) {
+          w.removeAt(rowIndex + 1);
+        }
+        delete w.store.treeCollapsing;
+      }
 
       //if(!child){
         w.update();
@@ -143,7 +212,7 @@
         parentId = item.get('parentId');
 
       if(filteredChild){
-        child = filteredChild;
+        //child = filteredChild;
       }
 
       if(me.singleExpand){
@@ -189,6 +258,17 @@
         deep = item.get('$deep') + 1,
         childsModelsRequired = false;
 
+      if(s.filteredData){
+        //Bad about performance
+        var itemId = item.get('id');
+        Fancy.each(s.data, function (item, i) {
+          if(item.id === itemId){
+            rowIndex = i;
+            return true;
+          }
+        });
+      }
+
       var expandChilds = function (child, rowIndex, deep, _id) {
         _id = _id || id;
 
@@ -208,12 +288,13 @@
           }
 
           rowIndex++;
+
           w.insert(rowIndex, itemData);
 
           if(expanded === true){
             var child = itemData.child;
             if(itemData.filteredChild){
-              child = itemData.filteredChild;
+              //child = itemData.filteredChild;
             }
             rowIndex = expandChilds(child, rowIndex, deep + 1, itemData.id);
           }
@@ -249,9 +330,15 @@
         //TODO: needed to do sub sorting of only expanded
         //If item contains sorted than needs to detirmine that it suits or not
         //Also it needs to think about multisorting
-        var sorter = s.sorters[0];
+        //var sorter = s.sorters[0];
 
-        s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
+        //s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
+
+        if(s.order){
+          delete s.order;
+          delete s.filterOrder;
+          s.reSort();
+        }
       }
     },
     onBeforeSort: function (grid, options) {

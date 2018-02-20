@@ -76,7 +76,8 @@
      * @param {Object} e
      */
     onKeyInputFn: function (field, value, e) {
-      var keyCode = e.keyCode,
+      var me = this,
+        keyCode = e.keyCode,
         key = F.key;
 
       if(me.disabled){
@@ -310,6 +311,10 @@
             break;
           default:
             me.addCls(FIELD_DISABLED_CLS);
+        }
+
+        if(me.input){
+          me.input.attr('tabIndex', -1);
         }
       }
     },
@@ -1019,6 +1024,10 @@
       if(me.button){
         me.button.enable();
       }
+
+      if(me.input){
+        me.input.attr('tabIndex', 0);
+      }
     },
     /*
      *
@@ -1031,6 +1040,10 @@
 
       if(me.button){
         me.button.disable();
+      }
+
+      if(me.input){
+        me.input.attr('tabIndex', -1);
       }
     }
   };

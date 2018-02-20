@@ -533,7 +533,8 @@ Fancy.define('Fancy.Store', {
         }
         else {
           for (; i < iL; i++) {
-            values.push(data[i].data[key]);
+            var itemData = data[i].data || data[i];
+            values.push(itemData[key]);
           }
         }
       }
@@ -605,8 +606,6 @@ Fancy.define('Fancy.Store', {
     }
 
     var item;
-
-
 
     if(me.order){
       if(me.grouping){

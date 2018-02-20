@@ -1063,6 +1063,7 @@
       me.clearActiveCell();
 
       w.fire('clearselect');
+      w.fire('select', w.getSelection());
     },
     /*
      *
@@ -1678,6 +1679,8 @@
 
         checkBox.setValue(true, false);
       });
+
+      w.fire('select', w.getSelection());
     },
     /*
      *
@@ -1701,6 +1704,8 @@
       }
 
       me.clearHeaderCheckBox();
+      w.fire('clearselect');
+      w.fire('select', w.getSelection());
     },
     /*
      *

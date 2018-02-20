@@ -660,6 +660,20 @@
       if (me.responsive) {
         F.$(window).bind('resize', function () {
           me.onWindowResize();
+
+          if(me.intWindowResize){
+            clearInterval(me.intWindowResize);
+          }
+
+          me.intWindowResize = setTimeout(function(){
+            me.onWindowResize();
+            delete me.intWindowResize;
+
+            //Bug fir for Mac
+            setTimeout(function () {
+              me.onWindowResize();
+            }, 300);
+          }, 30);
         });
       }
 
@@ -1393,6 +1407,10 @@
 
         el = F.get(renderTo);
         me.setWidth(parseInt(el.width()));
+
+        if(me.responsiveHeight){
+          me.setHeight(parseInt(el.height()));
+        }
       }
 
       me.setBodysHeight();
@@ -1417,6 +1435,9 @@
       fn(me.columns, me.header);
       fn(me.leftColumns, me.leftHeader);
       fn(me.rightColumns, me.rightHeader);
+
+      me.scroller.scrollDelta(0);
+      me.scroller.update();
     },
     /*
      * @param {Number} width
@@ -1430,7 +1451,7 @@
         body = me.body,
         header = me.header;
 
-      me.scroller.scroll(0, 0);
+      //me.scroller.scroll(0, 0);
 
       var calcColumnsWidth = function (columns) {
         var i = 0,

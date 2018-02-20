@@ -153,7 +153,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     return true;
   },
   /*
-   *
+   * Problem: filterOrder contains the same value as order.
+   * For usual filtering it is ok, but for Tree Grid it does not suit.
    */
   filterData: function(){
     var me = this,

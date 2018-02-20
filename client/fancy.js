@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.8',
+  version: '1.7.9',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1984,12 +1984,13 @@ Fancy.define('Fancy.Model', {
       else{
         Fancy.idSeed++;
         me.id = Fancy.idSeed + 1000;
+        data.id = me.id;
       }
 
       if( me.fields === undefined ){
         fields = [];
         for(var p in data){
-          fields.push(p)
+          fields.push(p);
         }
         me.fields = fields;
       }
@@ -2005,6 +2006,15 @@ Fancy.define('Fancy.Model', {
         else{
           row[p] = data[p];
         }
+      }
+
+      if(!row.id){
+        me.fields.push('id');
+        if(!data.id){
+          data.id = me.id;
+        }
+
+        row.id = data.id;
       }
 
       me.data = row;
@@ -2515,6 +2525,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
           return true;
         }
       });
+
       itemData = me.data.splice(_index, 1)[0];
     }
     else {
@@ -2649,24 +2660,24 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     delete me.addIndex;
     if(me.treeExpanding && me.filteredData){
       //Slow but do not see another way to get index of item in data without need to rewrite than indexes
-      var parentId = item.get('parentId'),
-        _index;
+      //var parentId = item.get('parentId');
 
+      /*
       Fancy.each(me.data, function (item, i) {
         if(item.data.id === parentId){
-          if(item._tempExpandedChild){
+          if(item._tempExpandedChild !== undefined){
             item._tempExpandedChild++;
           }
           else{
             item._tempExpandedChild = 0;
           }
-          _index = i;
+
+          index += item._tempExpandedChild;
           return true;
         }
       });
-
-      me.data.splice(_index + 1, 0, item);
-
+      */
+      me.data.splice(index, 0, item);
     }
     else {
       me.data.splice(index, 0, item);
@@ -3367,7 +3378,8 @@ Fancy.define('Fancy.Store', {
         }
         else {
           for (; i < iL; i++) {
-            values.push(data[i].data[key]);
+            var itemData = data[i].data || data[i];
+            values.push(itemData[key]);
           }
         }
       }
@@ -3439,8 +3451,6 @@ Fancy.define('Fancy.Store', {
     }
 
     var item;
-
-
 
     if(me.order){
       if(me.grouping){
@@ -8336,7 +8346,8 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Object} e
      */
     onKeyInputFn: function (field, value, e) {
-      var keyCode = e.keyCode,
+      var me = this,
+        keyCode = e.keyCode,
         key = F.key;
 
       if(me.disabled){
@@ -8570,6 +8581,10 @@ if(!Fancy.nojQuery && Fancy.$){
             break;
           default:
             me.addCls(FIELD_DISABLED_CLS);
+        }
+
+        if(me.input){
+          me.input.attr('tabIndex', -1);
         }
       }
     },
@@ -9279,6 +9294,10 @@ if(!Fancy.nojQuery && Fancy.$){
       if(me.button){
         me.button.enable();
       }
+
+      if(me.input){
+        me.input.attr('tabIndex', 0);
+      }
     },
     /*
      *
@@ -9291,6 +9310,10 @@ if(!Fancy.nojQuery && Fancy.$){
 
       if(me.button){
         me.button.disable();
+      }
+
+      if(me.input){
+        me.input.attr('tabIndex', -1);
       }
     }
   };
@@ -10565,6 +10588,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
             me.showAheadList();
           }, 1);
       }
+
+      setTimeout(function () {
+        me.fire('key', me.input.dom.value, e);
+      }, 1);
     },
     /*
      * @param {Object} e
@@ -11164,9 +11191,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       if (me.editable) {
         me.input.css('cursor', 'auto');
       }
+      else {
+        if(me.input){
+          me.input.attr('tabIndex', -1);
+        }
+      }
 
       if(me.disabled){
         me.addCls(FIELD_DISABLED_CLS);
+
+        if(me.input){
+          me.input.attr('tabIndex', -1);
+        }
       }
 
       me.renderList();

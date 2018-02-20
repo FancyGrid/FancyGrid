@@ -35,12 +35,13 @@ Fancy.define('Fancy.Model', {
       else{
         Fancy.idSeed++;
         me.id = Fancy.idSeed + 1000;
+        data.id = me.id;
       }
 
       if( me.fields === undefined ){
         fields = [];
         for(var p in data){
-          fields.push(p)
+          fields.push(p);
         }
         me.fields = fields;
       }
@@ -56,6 +57,15 @@ Fancy.define('Fancy.Model', {
         else{
           row[p] = data[p];
         }
+      }
+
+      if(!row.id){
+        me.fields.push('id');
+        if(!data.id){
+          data.id = me.id;
+        }
+
+        row.id = data.id;
       }
 
       me.data = row;

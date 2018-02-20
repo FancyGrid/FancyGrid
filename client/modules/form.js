@@ -807,10 +807,30 @@ Fancy.define('Fancy.toolbar.Tab', {
           case 'line':
             var numOfFields = item.items.length,
               isWidthInit = false,
-              averageWidth = (width - 8 - 8 - 8) / numOfFields;
+              avaliableWidth = width,
+              averageWidth;
+
+            F.each(item.items, function(_item){
+              if(_item.label === undefined && _item.labelAlign !== 'top'){
+                _item.label = false;
+              }
+
+              if(_item.width){
+                avaliableWidth -= _item.width;
+                numOfFields--;
+              }
+            });
+
+            averageWidth = (avaliableWidth - 8 - 8 - 8) / numOfFields;
 
             F.each(item.items, function (_item) {
-              _item.width = averageWidth;
+              if(!_item.width){
+                _item.width = averageWidth;
+              }
+              else{
+                //isWidthInit = true;
+              }
+
               if (_item.labelWidth || _item.inputWidth) {
                 isWidthInit = true;
               }
