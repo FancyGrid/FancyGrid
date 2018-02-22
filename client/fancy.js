@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.9',
+  version: '1.7.10',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -2658,30 +2658,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     delete me.addIndex;
-    if(me.treeExpanding && me.filteredData){
-      //Slow but do not see another way to get index of item in data without need to rewrite than indexes
-      //var parentId = item.get('parentId');
-
-      /*
-      Fancy.each(me.data, function (item, i) {
-        if(item.data.id === parentId){
-          if(item._tempExpandedChild !== undefined){
-            item._tempExpandedChild++;
-          }
-          else{
-            item._tempExpandedChild = 0;
-          }
-
-          index += item._tempExpandedChild;
-          return true;
-        }
-      });
-      */
-      me.data.splice(index, 0, item);
-    }
-    else {
-      me.data.splice(index, 0, item);
-    }
+    me.data.splice(index, 0, item);
 
     if(me.order){
       me.order.splice(index, 0, index);
@@ -4898,11 +4875,17 @@ Fancy.define('Fancy.DD', {
       clientX = e.clientX,
       clientY = e.clientY,
       deltaX = me.clientX - clientX,
-      deltaY = me.clientY - clientY;
+      deltaY = me.clientY - clientY,
+      left = me.startX - deltaX,
+      top = me.startY - deltaY;
+
+    if(top < 0){
+      top = 0;
+    }
 
     dragEl.css({
-      left: me.startX - deltaX,
-      top: me.startY - deltaY
+      left: left,
+      top: top
     });
   }
 });

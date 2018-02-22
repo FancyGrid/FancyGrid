@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.9',
+  version: '1.7.10',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5024,30 +5024,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     delete me.addIndex;
-    if(me.treeExpanding && me.filteredData){
-      //Slow but do not see another way to get index of item in data without need to rewrite than indexes
-      //var parentId = item.get('parentId');
-
-      /*
-      Fancy.each(me.data, function (item, i) {
-        if(item.data.id === parentId){
-          if(item._tempExpandedChild !== undefined){
-            item._tempExpandedChild++;
-          }
-          else{
-            item._tempExpandedChild = 0;
-          }
-
-          index += item._tempExpandedChild;
-          return true;
-        }
-      });
-      */
-      me.data.splice(index, 0, item);
-    }
-    else {
-      me.data.splice(index, 0, item);
-    }
+    me.data.splice(index, 0, item);
 
     if(me.order){
       me.order.splice(index, 0, index);
@@ -5745,6 +5722,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           item.data.sorted = me.treeSort(itemData.child, action, key, type);
         }
         */
+
         item.data.sorted = me.treeSort(itemData.child, action, key, type);
       }
 
@@ -9852,11 +9830,17 @@ Fancy.define('Fancy.DD', {
       clientX = e.clientX,
       clientY = e.clientY,
       deltaX = me.clientX - clientX,
-      deltaY = me.clientY - clientY;
+      deltaY = me.clientY - clientY,
+      left = me.startX - deltaX,
+      top = me.startY - deltaY;
+
+    if(top < 0){
+      top = 0;
+    }
 
     dragEl.css({
-      left: me.startX - deltaX,
-      top: me.startY - deltaY
+      left: left,
+      top: top
     });
   }
 });
@@ -21654,8 +21638,28 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         valueKey: 'index',
         value: value,
         events: [{
-          change: function(field, value){
+          change: function (field, value) {
+            me.scroll(0, 0);
             me.paging.setPageSize(pageSizeData[value]);
+          }
+        },{
+          render: function (combo) {
+            me.store.on('changepages', function () {
+              if(me.store.pageSize !== Number(combo.input.dom.value)){
+                var index;
+                Fancy.each(combo.data, function (item) {
+                  if(item.value === me.store.pageSize){
+                    index = item.index;
+                    return true;
+                  }
+                });
+
+                if(index !== undefined){
+                  combo.setValue(index, false);
+                }
+                //combo.input.dom.value = me.store.pageSize;
+              }
+            });
           }
         }]
       });
@@ -24636,6 +24640,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         if (column.flex) {
           column.width = Math.floor(column.flex * flexPerCent);
 
+          if(column.minWidth && column.width < column.minWidth){
+            column.width = column.minWidth;
+          }
+
           if (column.minWidth && column.width < column.minWidth) {
             column.width = column.minWidth;
           }
@@ -24759,7 +24767,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      * Used for tree grid
      */
     addChild: function (item, o) {
-      var me = this;
+      var me = this,
+        s = me.store;
 
       if(o === undefined){
         item.$deep = 1;
@@ -24808,7 +24817,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           }
         }
 
-        child.push(o);
+        child.push(new s.model(o));
         item.set('child', child);
 
         if(item.get('expanded') === true){

@@ -2307,6 +2307,10 @@
         if (column.flex) {
           column.width = Math.floor(column.flex * flexPerCent);
 
+          if(column.minWidth && column.width < column.minWidth){
+            column.width = column.minWidth;
+          }
+
           if (column.minWidth && column.width < column.minWidth) {
             column.width = column.minWidth;
           }
@@ -2430,7 +2434,8 @@
      * Used for tree grid
      */
     addChild: function (item, o) {
-      var me = this;
+      var me = this,
+        s = me.store;
 
       if(o === undefined){
         item.$deep = 1;
@@ -2479,7 +2484,7 @@
           }
         }
 
-        child.push(o);
+        child.push(new s.model(o));
         item.set('child', child);
 
         if(item.get('expanded') === true){

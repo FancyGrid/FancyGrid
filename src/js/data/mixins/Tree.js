@@ -180,6 +180,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           item.data.sorted = me.treeSort(itemData.child, action, key, type);
         }
         */
+
         item.data.sorted = me.treeSort(itemData.child, action, key, type);
       }
 

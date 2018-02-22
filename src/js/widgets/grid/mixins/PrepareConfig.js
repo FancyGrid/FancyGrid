@@ -1521,8 +1521,28 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         valueKey: 'index',
         value: value,
         events: [{
-          change: function(field, value){
+          change: function (field, value) {
+            me.scroll(0, 0);
             me.paging.setPageSize(pageSizeData[value]);
+          }
+        },{
+          render: function (combo) {
+            me.store.on('changepages', function () {
+              if(me.store.pageSize !== Number(combo.input.dom.value)){
+                var index;
+                Fancy.each(combo.data, function (item) {
+                  if(item.value === me.store.pageSize){
+                    index = item.index;
+                    return true;
+                  }
+                });
+
+                if(index !== undefined){
+                  combo.setValue(index, false);
+                }
+                //combo.input.dom.value = me.store.pageSize;
+              }
+            });
           }
         }]
       });

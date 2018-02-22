@@ -203,30 +203,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     delete me.addIndex;
-    if(me.treeExpanding && me.filteredData){
-      //Slow but do not see another way to get index of item in data without need to rewrite than indexes
-      //var parentId = item.get('parentId');
-
-      /*
-      Fancy.each(me.data, function (item, i) {
-        if(item.data.id === parentId){
-          if(item._tempExpandedChild !== undefined){
-            item._tempExpandedChild++;
-          }
-          else{
-            item._tempExpandedChild = 0;
-          }
-
-          index += item._tempExpandedChild;
-          return true;
-        }
-      });
-      */
-      me.data.splice(index, 0, item);
-    }
-    else {
-      me.data.splice(index, 0, item);
-    }
+    me.data.splice(index, 0, item);
 
     if(me.order){
       me.order.splice(index, 0, index);

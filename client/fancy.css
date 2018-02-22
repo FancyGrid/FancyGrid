@@ -1380,6 +1380,9 @@
   left: 0;
   right: 0;
 }
+.fancy-grid-editors .fancy-combo-dropdown-button {
+  background-position-y: 16px;
+}
 .fancy-grid-cell-dirty {
   position: relative;
 }

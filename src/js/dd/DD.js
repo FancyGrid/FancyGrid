@@ -79,11 +79,17 @@ Fancy.define('Fancy.DD', {
       clientX = e.clientX,
       clientY = e.clientY,
       deltaX = me.clientX - clientX,
-      deltaY = me.clientY - clientY;
+      deltaY = me.clientY - clientY,
+      left = me.startX - deltaX,
+      top = me.startY - deltaY;
+
+    if(top < 0){
+      top = 0;
+    }
 
     dragEl.css({
-      left: me.startX - deltaX,
-      top: me.startY - deltaY
+      left: left,
+      top: top
     });
   }
 });

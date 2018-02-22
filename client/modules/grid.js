@@ -1521,8 +1521,28 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         valueKey: 'index',
         value: value,
         events: [{
-          change: function(field, value){
+          change: function (field, value) {
+            me.scroll(0, 0);
             me.paging.setPageSize(pageSizeData[value]);
+          }
+        },{
+          render: function (combo) {
+            me.store.on('changepages', function () {
+              if(me.store.pageSize !== Number(combo.input.dom.value)){
+                var index;
+                Fancy.each(combo.data, function (item) {
+                  if(item.value === me.store.pageSize){
+                    index = item.index;
+                    return true;
+                  }
+                });
+
+                if(index !== undefined){
+                  combo.setValue(index, false);
+                }
+                //combo.input.dom.value = me.store.pageSize;
+              }
+            });
           }
         }]
       });
@@ -4205,6 +4225,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         if (column.flex) {
           column.width = Math.floor(column.flex * flexPerCent);
 
+          if(column.minWidth && column.width < column.minWidth){
+            column.width = column.minWidth;
+          }
+
           if (column.minWidth && column.width < column.minWidth) {
             column.width = column.minWidth;
           }
@@ -4328,7 +4352,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * Used for tree grid
      */
     addChild: function (item, o) {
-      var me = this;
+      var me = this,
+        s = me.store;
 
       if(o === undefined){
         item.$deep = 1;
@@ -4377,7 +4402,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           }
         }
 
-        child.push(o);
+        child.push(new s.model(o));
         item.set('child', child);
 
         if(item.get('expanded') === true){
