@@ -186,6 +186,9 @@
       }
 
       me.hideHint();
+      setTimeout(function () {
+        w.updateColumnsVisibilty();
+      }, 100);
     },
     onMouseMove: function (e) {
       var me = this,
@@ -611,6 +614,7 @@
       body.clearColumnsStyles();
       header.updateTitles();
       header.updateCellsSizes();
+      header.reSetCheckBoxes();
       if(w.groupheader){
         w.header.fixGroupHeaderSizing();
         if(w.leftColumns){
@@ -624,11 +628,13 @@
         header.reSetGroupIndexes();
       }
 
-      header.reSetColumnsAlign();
-      header.reSetColumnsCls();
-      body.reSetColumnsAlign();
-      body.reSetColumnsCls();
-      body.updateColumnsSizes();
+      setTimeout(function () {
+        header.reSetColumnsAlign();
+        header.reSetColumnsCls();
+        body.reSetColumnsAlign();
+        body.reSetColumnsCls();
+        body.updateColumnsSizes();
+      }, 100);
       w.update();
     },
     /*

@@ -929,6 +929,8 @@
         }
 
         if (isCheckBoxInside === false) {
+          cellsDomInner.item(j).update('');
+
           new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,

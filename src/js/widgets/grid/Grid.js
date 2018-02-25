@@ -546,6 +546,33 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.rightHeader.fixGroupHeaderSizing();
       }
     }
+
+    me.getHeader(fromSide).reSetCheckBoxes();
+    me.getHeader(toSide).reSetCheckBoxes();
+  },
+  updateColumnsVisibilty: function () {
+    var me = this;
+
+    if(me.columns){
+      if(me.header){
+        me.header.updateCellsVisibility();
+      }
+      me.body.updateColumnsVisibility();
+    }
+
+    if(me.leftColumns){
+      if(me.leftHeader){
+        me.leftHeader.updateCellsVisibility();
+      }
+      me.leftBody.updateColumnsVisibility();
+    }
+
+    if(me.rightColumns){
+      if(me.rightHeader){
+        me.rightHeader.updateCellsVisibility();
+      }
+      me.rightBody.updateColumnsVisibility();
+    }
   }
 });
 

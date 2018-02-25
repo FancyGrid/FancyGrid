@@ -20,6 +20,7 @@
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -254,13 +255,21 @@
         jL = index;
 
       for (; j < jL; j++) {
-        left += columns[j].width;
+        if(!columns[j].hidden){
+          left += columns[j].width;
+        }
       }
 
       var i = index,
         iL = columns.length - 1;
 
       for (; i < iL; i++) {
+        var _column = columns[i];
+
+        if(_column.hidden){
+          continue;
+        }
+
         var _cell = cells.item(i),
           _left = parseInt(_cell.css('left') || 0) + column.width;
 
@@ -809,12 +818,24 @@
       for (; i < iL; i++) {
         var column = columns[i];
 
+        if(F.isObject(column.headerCheckBox)){
+          var el = column.headerCheckBox.el,
+            elId = el.attr('id');
+
+          var el = F.get(elId);
+
+          if(!el.dom){
+            column.headerCheckBox = true;
+          }
+        }
+
         if (column.headerCheckBox === true) {
           var cell = cells.item(i),
             headerCellContainer = cell.firstChild(),
             textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
             text = textEl.dom.innerHTML,
-            label = !text ? false : text,
+            //label = !text ? false : text,
+            label = column.title ? column.title : false,
             labelWidth = 0;
 
           cell.addCls('fancy-grid-header-cell-checkbox');
@@ -882,15 +903,15 @@
     /*
      *
      */
-
-    /*
-     *
-     */
     updateTitles: function(){
       var me = this,
         columns = me.getColumns();
 
       F.each(columns, function (column, i) {
+        if(column.headerCheckBox){
+          return;
+        }
+
         me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"] .' + GRID_HEADER_CELL_TEXT_CLS).update(column.title || '');
       });
     },
@@ -908,6 +929,10 @@
       }
 
       F.each(columns, function (column, i){
+        if(column.hidden){
+          return;
+        }
+
         var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]'),
           currentLeft = parseInt(cell.css('left')),
           currentWidth = parseInt(cell.css('width'));
@@ -1003,7 +1028,6 @@
      */
     reSetColumnsCls: function () {
       var me = this,
-        w = me.widget,
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
@@ -1017,6 +1041,47 @@
           cell.addCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
         }
       });
+    },
+    updateCellsVisibility: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i) {
+        var column = columns[i];
+
+        if(column.hidden){
+          cell.hide();
+        }
+        else if(cell.css('display') === 'none'){
+          cell.show();
+        }
+      });
+    },
+    reSetCheckBoxes: function(){
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      F.each(columns, function (column, i) {
+        var cell = cells.item(i),
+          checkBoxEl = cell.select('.' + FIELD_CHECKBOX_CLS);
+
+        if(checkBoxEl.length){
+          var checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
+          switch(column.type){
+            case 'select':
+            case 'checkbox':
+              break;
+            default:
+              if(!column.headerCheckBox){
+                checkBox.destroy();
+              }
+          }
+        }
+      });
+
+      me.renderHeaderCheckBox();
     }
   });
 

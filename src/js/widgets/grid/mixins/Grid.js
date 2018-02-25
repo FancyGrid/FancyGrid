@@ -1735,10 +1735,15 @@
       }
     },
     /*
-     * @param {String} side
-     * @param {Number} index
+     * @param {String|Number} side
+     * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
+      if(index === undefined){
+        index = side;
+        side = 'center';
+      }
+
       var me = this,
         body = me.getBody(side),
         header = me.getHeader(side),
@@ -1753,13 +1758,20 @@
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      for (; i < iL; i++) {
-        column = columns[i];
+      if(F.isNumber(index)){
+        column = columns[index];
+        orderIndex = index;
+        column.hidden = true;
+      }
+      else {
+        for (; i < iL; i++) {
+          column = columns[i];
 
-        if (column.index === index) {
-          orderIndex = i;
-          column.hidden = true;
-          break;
+          if (column.index === index) {
+            orderIndex = i;
+            column.hidden = true;
+            break;
+          }
         }
       }
 
@@ -1793,10 +1805,15 @@
       }
     },
     /*
-     * @param {String} side
-     * @param {Number} index
+     * @param {String|Number} side
+     * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
+      if(index === undefined){
+        index = side;
+        side = 'center';
+      }
+
       var me = this,
         body = me.getBody(side),
         header = me.getHeader(side),
@@ -1811,13 +1828,20 @@
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      for (; i < iL; i++) {
-        column = columns[i];
+      if(F.isNumber(index)){
+        column = columns[index];
+        orderIndex = index;
+        column.hidden = false;
+      }
+      else {
+        for (; i < iL; i++) {
+          column = columns[i];
 
-        if (column.index === index) {
-          orderIndex = i;
-          column.hidden = false;
-          break;
+          if (column.index === index) {
+            orderIndex = i;
+            column.hidden = false;
+            break;
+          }
         }
       }
 

@@ -3653,10 +3653,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
     },
     /*
-     * @param {String} side
-     * @param {Number} index
+     * @param {String|Number} side
+     * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
+      if(index === undefined){
+        index = side;
+        side = 'center';
+      }
+
       var me = this,
         body = me.getBody(side),
         header = me.getHeader(side),
@@ -3671,13 +3676,20 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      for (; i < iL; i++) {
-        column = columns[i];
+      if(F.isNumber(index)){
+        column = columns[index];
+        orderIndex = index;
+        column.hidden = true;
+      }
+      else {
+        for (; i < iL; i++) {
+          column = columns[i];
 
-        if (column.index === index) {
-          orderIndex = i;
-          column.hidden = true;
-          break;
+          if (column.index === index) {
+            orderIndex = i;
+            column.hidden = true;
+            break;
+          }
         }
       }
 
@@ -3711,10 +3723,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
     },
     /*
-     * @param {String} side
-     * @param {Number} index
+     * @param {String|Number} side
+     * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
+      if(index === undefined){
+        index = side;
+        side = 'center';
+      }
+
       var me = this,
         body = me.getBody(side),
         header = me.getHeader(side),
@@ -3729,13 +3746,20 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      for (; i < iL; i++) {
-        column = columns[i];
+      if(F.isNumber(index)){
+        column = columns[index];
+        orderIndex = index;
+        column.hidden = false;
+      }
+      else {
+        for (; i < iL; i++) {
+          column = columns[i];
 
-        if (column.index === index) {
-          orderIndex = i;
-          column.hidden = false;
-          break;
+          if (column.index === index) {
+            orderIndex = i;
+            column.hidden = false;
+            break;
+          }
         }
       }
 
@@ -7859,6 +7883,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
 
         if (isCheckBoxInside === false) {
+          cellsDomInner.item(j).update('');
+
           new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,
@@ -9332,12 +9358,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       for (; j < jL; j++) {
-        left += _columns[j].width;
+        if(!_columns[j].hidden){
+          left += _columns[j].width;
+        }
       }
 
       passedLeft = left;
 
       for (; i < iL; i++) {
+        if(_columns[i].hidden){
+          continue;
+        }
+
         var _column = columns.item(i);
         left = parseInt(_column.css('left')) + column.width;
 
@@ -9441,6 +9473,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       F.each(columns, function (column, i) {
+        if(column.hidden){
+          return;
+        }
+
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
         if(Fancy.nojQuery){
           //Bug: zepto dom module does not support for 2 animation params.
@@ -9473,7 +9509,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     reSetColumnsCls: function () {
       var me = this,
         columns = me.getColumns(),
-        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
 
       columnEls.each(function(columnEl, i){
         var column = columns[i],
@@ -9510,6 +9546,22 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
+    },
+    updateColumnsVisibility: function () {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
+
+      columnEls.each(function(columnEl, i) {
+        var column = columns[i];
+
+        if(column.hidden){
+          columnEl.hide();
+        }
+        else if(columnEl.css('display') === 'none'){
+          columnEl.show();
+        }
+      });
     }
   });
 
@@ -9550,6 +9602,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -9784,13 +9837,21 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         jL = index;
 
       for (; j < jL; j++) {
-        left += columns[j].width;
+        if(!columns[j].hidden){
+          left += columns[j].width;
+        }
       }
 
       var i = index,
         iL = columns.length - 1;
 
       for (; i < iL; i++) {
+        var _column = columns[i];
+
+        if(_column.hidden){
+          continue;
+        }
+
         var _cell = cells.item(i),
           _left = parseInt(_cell.css('left') || 0) + column.width;
 
@@ -10339,12 +10400,24 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       for (; i < iL; i++) {
         var column = columns[i];
 
+        if(F.isObject(column.headerCheckBox)){
+          var el = column.headerCheckBox.el,
+            elId = el.attr('id');
+
+          var el = F.get(elId);
+
+          if(!el.dom){
+            column.headerCheckBox = true;
+          }
+        }
+
         if (column.headerCheckBox === true) {
           var cell = cells.item(i),
             headerCellContainer = cell.firstChild(),
             textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
             text = textEl.dom.innerHTML,
-            label = !text ? false : text,
+            //label = !text ? false : text,
+            label = column.title ? column.title : false,
             labelWidth = 0;
 
           cell.addCls('fancy-grid-header-cell-checkbox');
@@ -10412,15 +10485,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     /*
      *
      */
-
-    /*
-     *
-     */
     updateTitles: function(){
       var me = this,
         columns = me.getColumns();
 
       F.each(columns, function (column, i) {
+        if(column.headerCheckBox){
+          return;
+        }
+
         me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"] .' + GRID_HEADER_CELL_TEXT_CLS).update(column.title || '');
       });
     },
@@ -10438,6 +10511,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       F.each(columns, function (column, i){
+        if(column.hidden){
+          return;
+        }
+
         var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]'),
           currentLeft = parseInt(cell.css('left')),
           currentWidth = parseInt(cell.css('width'));
@@ -10533,7 +10610,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      */
     reSetColumnsCls: function () {
       var me = this,
-        w = me.widget,
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
@@ -10547,6 +10623,47 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           cell.addCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
         }
       });
+    },
+    updateCellsVisibility: function () {
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      cells.each(function(cell, i) {
+        var column = columns[i];
+
+        if(column.hidden){
+          cell.hide();
+        }
+        else if(cell.css('display') === 'none'){
+          cell.show();
+        }
+      });
+    },
+    reSetCheckBoxes: function(){
+      var me = this,
+        columns = me.getColumns(),
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      F.each(columns, function (column, i) {
+        var cell = cells.item(i),
+          checkBoxEl = cell.select('.' + FIELD_CHECKBOX_CLS);
+
+        if(checkBoxEl.length){
+          var checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
+          switch(column.type){
+            case 'select':
+            case 'checkbox':
+              break;
+            default:
+              if(!column.headerCheckBox){
+                checkBox.destroy();
+              }
+          }
+        }
+      });
+
+      me.renderHeaderCheckBox();
     }
   });
 

@@ -618,12 +618,18 @@
       }
 
       for (; j < jL; j++) {
-        left += _columns[j].width;
+        if(!_columns[j].hidden){
+          left += _columns[j].width;
+        }
       }
 
       passedLeft = left;
 
       for (; i < iL; i++) {
+        if(_columns[i].hidden){
+          continue;
+        }
+
         var _column = columns.item(i);
         left = parseInt(_column.css('left')) + column.width;
 
@@ -727,6 +733,10 @@
       }
 
       F.each(columns, function (column, i) {
+        if(column.hidden){
+          return;
+        }
+
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
         if(Fancy.nojQuery){
           //Bug: zepto dom module does not support for 2 animation params.
@@ -759,7 +769,7 @@
     reSetColumnsCls: function () {
       var me = this,
         columns = me.getColumns(),
-        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
 
       columnEls.each(function(columnEl, i){
         var column = columns[i],
@@ -796,6 +806,22 @@
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
+    },
+    updateColumnsVisibility: function () {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
+
+      columnEls.each(function(columnEl, i) {
+        var column = columns[i];
+
+        if(column.hidden){
+          columnEl.hide();
+        }
+        else if(columnEl.css('display') === 'none'){
+          columnEl.show();
+        }
+      });
     }
   });
 

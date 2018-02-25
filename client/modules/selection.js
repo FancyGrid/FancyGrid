@@ -2377,6 +2377,105 @@
         return;
       }
 
+      switch(info.side){
+        case 'left':
+          var _column = w.leftColumns[info.columnIndex];
+
+          if(_column.hidden) {
+            var i = info.columnIndex,
+              iL = w.leftColumns.length,
+              foundVisibleColumn = false;
+
+            for(;i<iL;i++){
+              _column = w.leftColumns[i];
+
+              if(!_column.hidden){
+                foundVisibleColumn = true;
+                info.columnIndex = i;
+                break;
+              }
+            }
+
+            if(!foundVisibleColumn){
+              info.columnIndex--;
+              //TODO for center side
+              var i = info.columnIndex,
+                iL = w.columns.length,
+                foundVisibleColumn = false;
+
+              for(;i<iL;i++){
+                _column = w.columns[i];
+
+                if(!_column.hidden){
+                  foundVisibleColumn = true;
+                  info.columnIndex = i;
+                  break;
+                }
+              }
+
+              if(foundVisibleColumn){
+                info.side = 'center';
+                body = w.getBody(info.side);
+              }
+            }
+
+            nextCell = body.getCell(info.rowIndex, info.columnIndex);
+          }
+          break;
+        case 'center':
+          //TODO
+          var _column = w.columns[info.columnIndex];
+
+          if(_column.hidden) {
+            var i = info.columnIndex,
+              iL = w.columns.length,
+              foundVisibleColumn = false;
+
+            for(;i<iL;i++){
+              _column = w.columns[i];
+
+              if(!_column.hidden){
+                foundVisibleColumn = true;
+                info.columnIndex = i;
+                break;
+              }
+            }
+
+            if(!foundVisibleColumn){
+              info.columnIndex--;
+              //TODO for right side
+            }
+
+            nextCell = body.getCell(info.rowIndex, info.columnIndex);
+          }
+          break;
+        case 'right':
+          var _column = w.rightColumns[info.columnIndex];
+
+          if(_column.hidden) {
+            var i = info.columnIndex,
+              iL = w.rightColumns.length,
+              foundVisibleColumn = false;
+
+            for(;i<iL;i++){
+              _column = w.rightColumns[i];
+
+              if(!_column.hidden){
+                foundVisibleColumn = true;
+                info.columnIndex = i;
+                break;
+              }
+            }
+
+            if(!foundVisibleColumn){
+              info.columnIndex--;
+            }
+
+            nextCell = body.getCell(info.rowIndex, info.columnIndex);
+          }
+          break;
+      }
+
       switch(me.selModel){
         case 'cell':
         case 'cells':
@@ -2413,6 +2512,24 @@
               body = w.getBody('left');
               info.side = 'left';
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
+
+              var _column = w.leftColumns[info.columnIndex];
+              if(_column.hidden){
+                var i = info.columnIndex - 1,
+                  foundVisibleColumn = false;
+
+                for(;i>=0;i--){
+                  _column = w.leftColumns[i];
+
+                  if(!_column.hidden){
+                    foundVisibleColumn = true;
+                    info.columnIndex = i;
+                    break;
+                  }
+                }
+              }
+
+              nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
             break;
           case 'right':
@@ -2426,6 +2543,111 @@
         }
       }
       else {
+        switch (info.side) {
+          case 'left':
+            var _column = w.leftColumns[info.columnIndex];
+
+            if(_column.hidden){
+              var i = info.columnIndex - 1,
+                foundVisibleColumn = false;
+
+              for(;i>=0;i--){
+                _column = w.leftColumns[i];
+
+                if(!_column.hidden){
+                  foundVisibleColumn = true;
+                  info.columnIndex = i;
+                  break;
+                }
+              }
+
+              if(!foundVisibleColumn){
+                info.columnIndex++;
+              }
+            }
+            break;
+          case 'center':
+            var _column = w.columns[info.columnIndex];
+
+            if(_column.hidden){
+              var i = info.columnIndex - 1,
+                foundVisibleColumn = false;
+
+              for(;i>=0;i--){
+                _column = w.columns[i];
+
+                if(!_column.hidden){
+                  foundVisibleColumn = true;
+                  info.columnIndex = i;
+                  break;
+                }
+              }
+
+              if(!foundVisibleColumn){
+                info.columnIndex++;
+
+                if(w.leftColumns){
+                  var i = w.leftColumns.length - 1,
+                    foundVisibleColumn = false;
+
+                  for(;i>=0;i--){
+                    _column = w.leftColumns[i];
+
+                    if(!_column.hidden){
+                      foundVisibleColumn = true;
+                      info.columnIndex = i;
+                      break;
+                    }
+                  }
+
+                  if(foundVisibleColumn){
+                    side = 'left';
+                    body = w.getBody(side);
+                  }
+                }
+              }
+            }
+            break;
+          case 'right':
+            var _column = w.rightColumns[info.columnIndex];
+
+            if(_column.hidden){
+              var i = info.columnIndex - 1,
+                foundVisibleColumn = false;
+
+              for(;i>=0;i--){
+                _column = w.rightColumns[i];
+
+                if(!_column.hidden){
+                  foundVisibleColumn = true;
+                  info.columnIndex = i;
+                  break;
+                }
+              }
+
+              if(!foundVisibleColumn){
+                info.columnIndex++;
+                //TODO for center side
+
+                var i = w.columns.length - 1,
+                  foundVisibleColumn = false;
+
+                side = 'center';
+                body = w.getBody(side);
+
+                for(;i>=0;i--){
+                  _column = w.columns[i];
+
+                  if(!_column.hidden){
+                    foundVisibleColumn = true;
+                    info.columnIndex = i;
+                    break;
+                  }
+                }
+              }
+            }
+            break;
+        }
         nextCell = body.getCell(info.rowIndex, info.columnIndex);
       }
 
