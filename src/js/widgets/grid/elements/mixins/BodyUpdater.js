@@ -8,6 +8,7 @@
   // CONSTANTS
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_CELL_EVEN_CLS = F.GRID_CELL_EVEN_CLS;
+  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
   var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
@@ -130,6 +131,7 @@
     checkDomCells: function (indexOrder) {
       var me = this,
         w = me.widget,
+        body = w.body,
         s = w.store,
         i = 0,
         iL = s.dataView.length,
@@ -186,6 +188,10 @@
           }
           el.update(cellHTML);
           columnDom.dom.appendChild(el.dom);
+
+          if(body.el.select('.' + GRID_CELL_CLS + '.' + GRID_CELL_SELECTED_CLS + '[index="'+i+'"]').length){
+            el.addCls(GRID_CELL_SELECTED_CLS);
+          }
         }
 
         if (w.nativeScroller && (me.side === 'left' || me.side === 'right')) {
@@ -921,6 +927,11 @@
           else {
             value = false;
             w.selection.domDeSelectRow(j);
+          }
+        }
+        else{
+          if(cellInnerEl.parent().hasClass(GRID_CELL_SELECTED_CLS)){
+            value = true;
           }
         }
 

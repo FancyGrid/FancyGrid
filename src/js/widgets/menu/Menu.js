@@ -289,6 +289,7 @@
       me.css('position', 'absolute');
       me.css('left', x);
       me.css('top', y);
+      me.css('z-index', 1000 + F.zIndex++);
 
       me.el.show();
 

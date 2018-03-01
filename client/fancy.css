@@ -1709,15 +1709,11 @@
 /*
  sparkline.less
 */
-.fancy-grid-column-sparkline canvas,
-svg,
-vml {
+.fancy-grid-column-sparkline canvas svg vml {
   position: relative;
   top: -8px;
 }
-.fancy-grid-column-sparkline-bullet canvas,
-svg,
-vml {
+.fancy-grid-column-sparkline-bullet canvas svg vml {
   top: -3px;
 }
 .jqstooltip {

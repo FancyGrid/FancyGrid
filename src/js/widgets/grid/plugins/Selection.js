@@ -20,6 +20,7 @@
   var GRID_COLUMN_SELECTED_CLS = F.GRID_COLUMN_SELECTED_CLS;
   var GRID_ROW_OVER_CLS = F.GRID_ROW_OVER_CLS;
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
+  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
 
   F.define('Fancy.grid.plugin.Selection', {
     extend: F.Plugin,
@@ -363,6 +364,7 @@
       w.on('cellmousedown', me.onCellMouseDownRows, me);
       w.on('cellclick', me.onCellClickRows, me);
       w.on('rowenter', me.onRowEnterSelection, me);
+      w.on('columndrag', me.onColumnDrag, me);
     },
     /*
      * @param {Object} grid
@@ -371,6 +373,14 @@
     onCellMouseDownRows: function (grid, params) {
       var me = this,
         w = me.widget;
+
+      // console.log(params.e.target);
+      // console.log(params.e.target);
+      // checkOnly
+
+      if(me.checkOnly && !F.get(params.e.target).hasClass('fancy-field-checkbox-input')){
+        return;
+      }
 
       if(me.disabled){
         return;
@@ -504,7 +514,8 @@
         w = me.widget,
         s = w.store,
         rowCells = w.getDomRow(rowIndex),
-        id = s.get(rowIndex, 'id');
+        id = s.get(rowIndex, 'id'),
+        selected = false;
 
       if(w.startResizing){
         return;
@@ -516,19 +527,41 @@
       }
 
       F.each(rowCells, function (cell) {
-        F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
+        cell = F.get(cell);
+        if(cell.hasClass(GRID_CELL_SELECTED_CLS)){
+          selected = true;
+        }
+        else {
+          cell.addCls(GRID_CELL_SELECTED_CLS);
+        }
       });
+
+      if(selected === false){
+        w.fire('selectrow', rowIndex, w.get(rowIndex));
+      }
     },
     /*
      * @param {Number} rowIndex
      */
     domDeSelectRow: function (rowIndex) {
       var w = this.widget,
-        rowCells = w.getDomRow(rowIndex);
+        rowCells = w.getDomRow(rowIndex),
+        selected = true;
 
       F.each(rowCells, function (cell) {
-        F.get(cell).removeCls(GRID_CELL_SELECTED_CLS);
+        cell = F.get(cell);
+
+        if(cell.hasClass(GRID_CELL_SELECTED_CLS)){
+          cell.removeCls(GRID_CELL_SELECTED_CLS);
+        }
+        else {
+          selected = false;
+        }
       });
+
+      if(selected){
+        w.fire('deselectrow', rowIndex, w.get(rowIndex));
+      }
     },
     /*
      * @param {Object} grid
@@ -900,7 +933,8 @@
         me.clearSelection();
       }
 
-      var rowCells = w.getDomRow(rowIndex);
+      var rowCells = w.getDomRow(rowIndex),
+        dataItem = w.get(rowIndex);
 
       if(value){
         F.each(rowCells, function (cell) {
@@ -1612,17 +1646,42 @@
      */
     _renderHeaderCheckBox: function (header, columns) {
       var me = this,
-        memory = me.memory;
+        w = me.widget,
+        memory = me.memory,
+        selected = w.getSelection();
 
       F.each(columns, function (column, i) {
-        if (column.index === '$selected') {
-          var headerCellContainer = header.getCell(i).firstChild(),
-            editable = !me.disabled;
+        if (column.index === '$selected' && column.headerCheckBox !== false) {
+          var cell = header.getCell(i);
+          cell.addCls(GRID_HEADER_CELL_SELECT_CLS);
+          var headerCellContainer = cell.firstChild(),
+            editable = !me.disabled,
+            textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS);
+
+          textEl.update('');
+
+          if(headerCellContainer.select('.'+FIELD_CHECKBOX_CLS).length){
+            var checkbox = F.getWidget(headerCellContainer.select('.'+FIELD_CHECKBOX_CLS).item(0).attr('id'));
+            checkbox.destroy();
+          }
+
+          var value = false;
+
+          if(me.memory){
+            if(memory.all){
+              value = true;
+            }
+          }
+          else{
+            if(selected.length === w.getViewTotal()){
+              value = true;
+            }
+          }
 
           column.headerCheckBox = new F.CheckBox({
             renderTo: headerCellContainer.dom,
             renderId: true,
-            value: false,
+            value: value,
             label: false,
             editable: editable,
             disabled: me.disabled,
@@ -2253,12 +2312,22 @@
 
       switch (keyCode) {
         case key.C:
+          if(w.textSelection){
+            return;
+          }
           me.copy();
           break;
         case key.V:
           //TODO
           break;
       }
+    },
+    onColumnDrag: function(){
+      var me = this;
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
+      }, 100);
     }
   });
 

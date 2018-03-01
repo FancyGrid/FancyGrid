@@ -792,12 +792,17 @@
           columnEl.addCls(column.cls);
         }
 
-        if(column.type === 'order'){
-          columnEl.addCls(GRID_COLUMN_ORDER_CLS);
+        if(column.ellipsis){
+          columnEl.addCls(GRID_COLUMN_ELLIPSIS_CLS);
         }
 
-        if(column.menu){
-
+        switch(column.type){
+          case 'order':
+            columnEl.addCls(GRID_COLUMN_ORDER_CLS);
+            break;
+          case 'select':
+            columnEl.addCls(GRID_COLUMN_SELECT_CLS);
+            break;
         }
       });
     },

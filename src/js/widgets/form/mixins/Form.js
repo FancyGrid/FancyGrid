@@ -608,6 +608,14 @@
       var valid = true;
 
       F.each(this.items, function (item) {
+        switch(item.type){
+          case 'string':
+          case 'number':
+            break;
+          default:
+            return;
+        }
+
         if (valid === true) {
           valid = item.onBlur();
         }

@@ -508,6 +508,13 @@
         left: o.left + plusWidth - Math.ceil(parseInt(bottomEl.css('width'))/2),
         top: bottomTop
       });
+
+      if(w.window){
+        var zIndex = 1000 + F.zIndex++;
+
+        topEl.css('z-index', zIndex);
+        bottomEl.css('z-index', zIndex);
+      }
     },
     hideHint: function(){
       var me = this;
@@ -1171,6 +1178,13 @@
         left: o.left + plusWidth - Math.ceil(parseInt(bottomEl.css('width'))/2),
         top: bottomTop
       });
+
+      if(w.window){
+        var zIndex = 1000 + F.zIndex++;
+
+        topEl.css('z-index', zIndex);
+        bottomEl.css('z-index', zIndex);
+      }
     },
     hideHint: function(){
       var me = this;

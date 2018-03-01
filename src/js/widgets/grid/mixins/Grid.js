@@ -17,6 +17,8 @@
   var GRID_UNSELECTABLE_CLS = F.GRID_UNSELECTABLE_CLS;
   var GRID_LEFT_EMPTY_CLS = F.GRID_LEFT_EMPTY_CLS;
   var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
+  var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
+  var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
 
   var activeGrid;
 
@@ -1760,6 +1762,11 @@
 
       if(F.isNumber(index)){
         column = columns[index];
+
+        if(column.hidden){
+          return;
+        }
+
         orderIndex = index;
         column.hidden = true;
       }
@@ -1768,6 +1775,10 @@
           column = columns[i];
 
           if (column.index === index) {
+            if(column.hidden){
+              return;
+            }
+
             orderIndex = i;
             column.hidden = true;
             break;
@@ -1829,6 +1840,10 @@
         rightHeader = me.rightHeader;
 
       if(F.isNumber(index)){
+        if(!column.hidden){
+          return;
+        }
+
         column = columns[index];
         orderIndex = index;
         column.hidden = false;
@@ -1838,6 +1853,9 @@
           column = columns[i];
 
           if (column.index === index) {
+            if(!column.hidden){
+              return;
+            }
             orderIndex = i;
             column.hidden = false;
             break;
@@ -2556,6 +2574,9 @@
 
       me.tree.collapseRow(item);
     },
+    /*
+     *
+     */
     collapseAll: function () {
       var me = this,
         items = me.findItem('$deep', 1);
@@ -2564,6 +2585,9 @@
         me.collapse(item.id);
       });
     },
+    /*
+     *
+     */
     expandAll: function () {
       var me = this,
         items = me.findItem('expanded', false);
@@ -2578,11 +2602,61 @@
         me.expandAll();
       }
     },
+    /*
+     * @param {Boolean} copyHeader
+     */
     copy: function (copyHeader) {
       var me = this;
 
       if(me.selection){
         me.selection.copy(copyHeader);
+      }
+    },
+    /*
+     * @param {String} key
+     * @param {'ASC'|'DESC'} direction
+     */
+    sort: function (key, direction) {
+      var me = this,
+        column = me.getColumnByIndex(key),
+        o = me.getColumnOrderByKey(key),
+        header,
+        cell;
+
+      if(!o.side){
+        return;
+      }
+
+      header = me.getHeader(o.side);
+      cell = header.getCell(o.order);
+
+      if(!direction){
+        cell.dom.click();
+      }
+      else{
+        direction = direction || 'ASC';
+        cell = header.getCell(o.order);
+
+        direction = direction.toLocaleLowerCase();
+
+        switch(direction){
+          case 'asc':
+            cell.removeCls(GRID_COLUMN_SORT_DESC_CLS);
+            cell.addCls(GRID_COLUMN_SORT_ASC_CLS);
+            break;
+          case 'desc':
+            cell.removeCls(GRID_COLUMN_SORT_ASC_CLS);
+            cell.addCls(GRID_COLUMN_SORT_DESC_CLS);
+            break;
+          case 'drop':
+            cell.removeCls(GRID_COLUMN_SORT_ASC_CLS);
+            cell.removeCls(GRID_COLUMN_SORT_DESC_CLS);
+            break;
+          default:
+            throw new Error('[FancyGrid Error]: sorting type is not right - ' + direction);
+        }
+
+        me.sorter.sort(direction, key, o.side, column, cell);
       }
     }
   });

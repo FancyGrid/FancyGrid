@@ -20,6 +20,7 @@
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
+  var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -829,7 +830,7 @@
           }
         }
 
-        if (column.headerCheckBox === true) {
+        if (column.headerCheckBox === true && column.type !== 'select') {
           var cell = cells.item(i),
             headerCellContainer = cell.firstChild(),
             textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
@@ -838,7 +839,16 @@
             label = column.title ? column.title : false,
             labelWidth = 0;
 
-          cell.addCls('fancy-grid-header-cell-checkbox');
+          switch(column.type) {
+            case 'checkbox':
+            case 'switcher':
+              cell.addCls(GRID_HEADER_CELL_CHECKBOX_CLS);
+              break;
+            case 'select':
+              cell.addCls(GRID_HEADER_CELL_SELECT_CLS);
+              break;
+          }
+
           textEl.update('');
 
           if (label.length) {
@@ -1069,9 +1079,14 @@
 
         if(checkBoxEl.length){
           var checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
+          cell.removeCls(GRID_HEADER_CELL_CHECKBOX_CLS);
+          cell.removeCls(GRID_HEADER_CELL_SELECT_CLS);
           switch(column.type){
             case 'select':
+              cell.addCls(GRID_HEADER_CELL_SELECT_CLS);
+              break;
             case 'checkbox':
+              cell.addCls(GRID_HEADER_CELL_CHECKBOX_CLS);
               break;
             default:
               if(!column.headerCheckBox){
