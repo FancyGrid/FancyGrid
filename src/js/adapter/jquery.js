@@ -482,6 +482,10 @@ Fancy.Element.prototype = {
     var me = this,
       docEl = Fancy.get(document.body);
 
+    if(!Fancy.isTouch){
+      return;
+    }
+
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr';
@@ -575,6 +579,10 @@ Fancy.Element.prototype = {
     var me = this,
       docEl = Fancy.get(document.body),
       arr = [];
+
+    if(!Fancy.isTouch){
+      return;
+    }
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
@@ -693,6 +701,10 @@ Fancy.Element.prototype = {
   onTouchMove: function(eventName, fn, scope){
     var me = this,
       docEl = Fancy.get(document.body);
+
+    if(!Fancy.isTouch){
+      return;
+    }
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),

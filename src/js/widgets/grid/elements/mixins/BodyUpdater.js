@@ -27,6 +27,7 @@
   var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   F.ns('Fancy.grid.body.mixin');
 
@@ -89,6 +90,9 @@
           switch (column.type) {
             case 'order':
               el.addCls(GRID_COLUMN_ORDER_CLS);
+              break;
+            case 'rowdrag':
+              el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
               break;
           }
         }
@@ -322,6 +326,9 @@
           case 'grossloss':
             me.renderGrossLoss(i, rowIndex);
             break;
+          case 'rowdrag':
+            me.renderRowDrag(i, rowIndex);
+            break;
           default:
             throw new Error('[FancyGrid error] - not existed column type ' + column.type);
             break;
@@ -479,6 +486,60 @@
             item: s.getItem(j)
           },
           value = j + 1 + plusValue;
+
+        o.value = value;
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        var cell = cellsDom.item(j);
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        cell.css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     */
+    renderRowDrag: function (i) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j = 0,
+        jL = s.getLength(),
+        plusValue = 0;
+
+      if (w.paging) {
+        plusValue += s.showPage * s.pageSize;
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j)
+          },
+          value = '<svg viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
 
         o.value = value;
 

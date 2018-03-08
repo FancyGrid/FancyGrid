@@ -374,10 +374,6 @@
       var me = this,
         w = me.widget;
 
-      // console.log(params.e.target);
-      // console.log(params.e.target);
-      // checkOnly
-
       if(me.checkOnly && !F.get(params.e.target).hasClass('fancy-field-checkbox-input')){
         return;
       }
@@ -652,6 +648,10 @@
       }
 
       if (!me.rows || me.isMouseDown !== true) {
+        return;
+      }
+
+      if(!me.mouseMoveSelection){
         return;
       }
 
@@ -937,14 +937,20 @@
         dataItem = w.get(rowIndex);
 
       if(value){
+        me.domSelectRow(rowIndex);
+        /*
         F.each(rowCells, function (cell) {
           F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
         });
+        */
       }
       else{
+        me.domDeSelectRow(rowIndex);
+        /*
         F.each(rowCells, function (cell) {
           F.get(cell).removeCls(GRID_CELL_SELECTED_CLS);
         });
+        */
       }
 
       F.each(w.columns, function (column, i) {
@@ -1673,7 +1679,7 @@
             }
           }
           else{
-            if(selected.length === w.getViewTotal()){
+            if(selected.length === w.getViewTotal() && selected.length !== 0){
               value = true;
             }
           }
@@ -2312,6 +2318,9 @@
 
       switch (keyCode) {
         case key.C:
+          if(w.celledit && w.celledit.activeEditor){
+            return;
+          }
           if(w.textSelection){
             return;
           }
@@ -2328,6 +2337,11 @@
       setTimeout(function(){
         me.renderHeaderCheckBox();
       }, 100);
+    },
+    disableSelectionMove: function () {
+      var me = this;
+
+      me.mouseMoveSelection = false;
     }
   });
 
@@ -2429,7 +2443,7 @@
             }
             break;
           case 'center':
-            if(w.rightColumns){
+            if(w.rightColumns && w.rightColumns.length){
               info.columnIndex = 0;
               body = w.getBody('right');
               info.side = 'right';
@@ -2576,7 +2590,7 @@
             return;
             break;
           case 'center':
-            if (w.leftColumns) {
+            if (w.leftColumns && w.leftColumns.length) {
               info.columnIndex = w.leftColumns.length - 1;
               body = w.getBody('left');
               info.side = 'left';
@@ -2600,9 +2614,12 @@
 
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
+            else{
+              return;
+            }
             break;
           case 'right':
-            if (w.columns) {
+            if (w.columns && w.columns.length) {
               info.columnIndex = w.columns.length - 1;
               body = w.getBody('center');
               info.side = 'center';

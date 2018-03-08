@@ -342,6 +342,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.dd = true;
     }
 
+    if(me.rowDragDrop){
+      requiredModules.dd = true;
+    }
+
     me.neededModules = {
       length: 0
     };

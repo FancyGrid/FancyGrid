@@ -70,6 +70,10 @@ module.exports = function(grunt){
 
     this.files.forEach(function (process) {
       var files = process.orig.src.filter(function (file) {
+		if(file.module === 'excel'){
+		  return false;
+		}
+		  
         if (!grunt.file.exists(file.path)) {
           grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
         }
@@ -233,8 +237,12 @@ module.exports = function(grunt){
           "./fancygrid/modules/grouped-header.min.js": ["./fancygrid/modules/grouped-header.js"]
         },{
           "./fancygrid/modules/grouping.min.js": ["./fancygrid/modules/grouping.js"]
+		},{
+          "./fancygrid/modules/column-drag.min.js": ["./fancygrid/modules/column-drag.js"]
         },{
           "./fancygrid/modules/summary.min.js": ["./fancygrid/modules/summary.js"]
+		},{
+          "./fancygrid/modules/tree.min.js": ["./fancygrid/modules/tree.js"]
         },{
           "./fancygrid/modules/filter.min.js": ["./fancygrid/modules/filter.js"]
         },{
@@ -255,6 +263,8 @@ module.exports = function(grunt){
           "./fancygrid/modules/grid.min.js": ["./fancygrid/modules/grid.js"]
 		},{
           "./fancygrid/modules/exporter.min.js": ["./fancygrid/modules/exporter.js"]
+		},{
+          "./fancygrid/modules/excel.min.js": ["./fancygrid/modules/excel.js"]
         }]
       }
     },

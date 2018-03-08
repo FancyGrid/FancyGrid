@@ -25,6 +25,7 @@
     failedValidCls: FIELD_NOT_VALID_CLS,
     cls: '',
     checkValidOnTyping: false,
+    editable: true,
     /*
      *
      */
@@ -492,11 +493,14 @@
      *
      */
     onFocus: function (e) {
-      if(this.disabled){
+      var me = this;
+
+      if(me.disabled || me.editable === false){
+        this.input.blur();
         return;
       }
 
-      this.fire('focus');
+      me.fire('focus');
     },
     /*
      *

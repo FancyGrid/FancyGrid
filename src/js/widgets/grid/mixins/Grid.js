@@ -1269,6 +1269,7 @@
      */
     selectRow: function (rowIndex, value, multi) {
       this.selection.selectRow(rowIndex, value, multi);
+      this.activated = true;
     },
     /*
      * @param {Number|String} id
@@ -1417,7 +1418,7 @@
 
       me.setBodysHeight();
 
-      var fn = function (columns, header) {
+      var fn = function (columns, header, side) {
         Fancy.each(columns, function (column, i) {
           if(column.hidden){
             return;
@@ -1428,15 +1429,17 @@
 
             me.fire('columnresize', {
               cell: cell.dom,
-              width: column.width
+              width: column.width,
+              column: column,
+              side: side
             });
           }
         });
       }
 
-      fn(me.columns, me.header);
-      fn(me.leftColumns, me.leftHeader);
-      fn(me.rightColumns, me.rightHeader);
+      fn(me.columns, me.header, 'center');
+      fn(me.leftColumns, me.leftHeader, 'left');
+      fn(me.rightColumns, me.rightHeader, 'right');
 
       me.scroller.scrollDelta(0);
       me.scroller.update();
@@ -2658,6 +2661,33 @@
 
         me.sorter.sort(direction, key, o.side, column, cell);
       }
+    },
+    flashRow: function (rowIndex) {
+      var me = this,
+        cells = me.getDomRow(rowIndex);
+
+      F.each(cells, function (cell) {
+        cell = F.get(cell);
+
+        cell.addCls('fancy-grid-cell-flash');
+      });
+
+      setTimeout(function () {
+        F.each(cells, function (cell) {
+          cell = F.get(cell);
+
+          cell.addCls('fancy-grid-cell-animation');
+        });
+      }, 200);
+
+      setTimeout(function () {
+        F.each(cells, function (cell) {
+          cell = F.get(cell);
+
+          cell.removeCls('fancy-grid-cell-flash');
+          cell.removeCls('fancy-grid-cell-animation');
+        });
+      }, 700);
     }
   });
 

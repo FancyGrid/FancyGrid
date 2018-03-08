@@ -27,6 +27,7 @@
   var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -182,6 +183,10 @@
         else if (Math.abs(topValue) > scrollRightPath) {
           topValue = -scrollRightPath - knobOffSet;
           o.newScroll = topValue;
+        }
+
+        if(topValue > 0){
+          topValue = 0;
         }
 
         columnEl.css('top', topValue + 'px');
@@ -647,6 +652,9 @@
         switch (column.type) {
           case 'order':
             el.addCls(GRID_COLUMN_ORDER_CLS);
+            break;
+          case 'rowdrag':
+            el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
             break;
         }
       }

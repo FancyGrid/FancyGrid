@@ -264,7 +264,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   prepareConfigColumnMinMaxWidth: function(config){
     Fancy.each(config.columns, function(column){
-      if(column.width === undefined && column.minWidth){
+      if(column.width === undefined && !column.flex && column.minWidth){
         column.width = column.minWidth;
       }
     });
@@ -298,6 +298,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       };
 
       Fancy.apply(pluginConfig, config.gridToGrid);
+
+      config._plugins.push(pluginConfig);
+    }
+
+    if(config.rowDragDrop){
+      var pluginConfig = {
+        type: 'grid.rowdragdrop'
+      };
+
+      Fancy.apply(pluginConfig, config.rowDragDrop);
 
       config._plugins.push(pluginConfig);
     }
@@ -343,6 +353,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].editable = false;
           columns[i].sortable = false;
           columns[i].cellAlign = 'right';
+          break;
+        case 'rowdrag':
+          columns[i].editable = false;
+          columns[i].sortable = false;
+          columns[i].resizable = false;
+          columns[i].width = 30;
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -475,6 +491,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             column.width = 40;
           }
           break;
+        case 'rowdrag':
+          if(column.width === undefined){
+            column.width = 30;
+          }
+          break;
         case 'expand':
           if(column.width === undefined){
             column.width = 38;
@@ -567,6 +588,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         column.width = parseInt(column.width);
+
+        if(column.minWidth && column.width < column.minWidth){
+          column.width = column.minWidth;
+        }
       });
 
       if(_width>= 1){
@@ -941,12 +966,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var selectLeafsOnly = false;
       var keyNavigation = true;
       var allowDeselect = false;
+      var mouseMoveSelection = true;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
 
         if(!config.selModel.type){
           throw new Error('FancyGrid Error 5: Type for selection is not set');
+        }
+
+        if(config.selModel.mouseMoveSelection !== undefined){
+          mouseMoveSelection = config.selModel.mouseMoveSelection;
         }
 
         if(config.selModel.memoryPerfomance !== undefined){
@@ -987,6 +1017,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.selectLeafsOnly = selectLeafsOnly;
       config.selection.keyNavigation = keyNavigation;
       config.selection.allowDeselect = allowDeselect;
+      config.selection.mouseMoveSelection = mouseMoveSelection;
     }
 
     if(config.selection){
@@ -1758,7 +1789,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         hasLocked = false;
 
       Fancy.each(config.columns, function(column){
-        width += column.width;
+        if(!column.hidden){
+          width += column.width;
+        }
         if(column.locked){
           hasLocked = true;
         }

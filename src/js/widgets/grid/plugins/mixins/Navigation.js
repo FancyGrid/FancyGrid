@@ -96,7 +96,7 @@
             }
             break;
           case 'center':
-            if(w.rightColumns){
+            if(w.rightColumns && w.rightColumns.length){
               info.columnIndex = 0;
               body = w.getBody('right');
               info.side = 'right';
@@ -243,7 +243,7 @@
             return;
             break;
           case 'center':
-            if (w.leftColumns) {
+            if (w.leftColumns && w.leftColumns.length) {
               info.columnIndex = w.leftColumns.length - 1;
               body = w.getBody('left');
               info.side = 'left';
@@ -267,9 +267,12 @@
 
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
+            else{
+              return;
+            }
             break;
           case 'right':
-            if (w.columns) {
+            if (w.columns && w.columns.length) {
               info.columnIndex = w.columns.length - 1;
               body = w.getBody('center');
               info.side = 'center';

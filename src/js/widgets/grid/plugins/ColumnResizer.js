@@ -674,7 +674,9 @@
 
       w.fire('columnresize', {
         cell: cellEl.dom,
-        width: cellWidth
+        width: cellWidth,
+        column: column,
+        side: me.activeSide
       });
 
       if (/sparkline/.test(column.type)) {

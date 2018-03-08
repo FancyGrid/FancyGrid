@@ -86,7 +86,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
     me.changeDataView();
     me.fire('sort', {
-      key: 'key',
+      key: key,
       action: action
     });
   },

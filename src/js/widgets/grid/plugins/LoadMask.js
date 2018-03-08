@@ -119,7 +119,27 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   showLoadMask: function(text){
     var me = this,
       w = me.widget,
-      lang = w.lang;
+      lang = w.lang,
+      width = w.getWidth(),
+      height = w.getHeight();
+
+    me.el.css('display', 'block');
+
+    me.el.css({
+      height: height,
+      width: width
+    });
+
+    var innerWidth = Math.abs(me.innerEl.width()),
+      innerHeight = Math.abs(me.innerEl.height());
+
+    var left = width/2 - innerWidth/2,
+      top = height/2 - innerHeight/2;
+
+    me.innerEl.css({
+      left: left,
+      top: top
+    });
 
     if(text){
       me.textEl.update(text);

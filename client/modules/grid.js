@@ -264,7 +264,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   prepareConfigColumnMinMaxWidth: function(config){
     Fancy.each(config.columns, function(column){
-      if(column.width === undefined && column.minWidth){
+      if(column.width === undefined && !column.flex && column.minWidth){
         column.width = column.minWidth;
       }
     });
@@ -298,6 +298,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       };
 
       Fancy.apply(pluginConfig, config.gridToGrid);
+
+      config._plugins.push(pluginConfig);
+    }
+
+    if(config.rowDragDrop){
+      var pluginConfig = {
+        type: 'grid.rowdragdrop'
+      };
+
+      Fancy.apply(pluginConfig, config.rowDragDrop);
 
       config._plugins.push(pluginConfig);
     }
@@ -343,6 +353,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].editable = false;
           columns[i].sortable = false;
           columns[i].cellAlign = 'right';
+          break;
+        case 'rowdrag':
+          columns[i].editable = false;
+          columns[i].sortable = false;
+          columns[i].resizable = false;
+          columns[i].width = 30;
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -475,6 +491,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             column.width = 40;
           }
           break;
+        case 'rowdrag':
+          if(column.width === undefined){
+            column.width = 30;
+          }
+          break;
         case 'expand':
           if(column.width === undefined){
             column.width = 38;
@@ -567,6 +588,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         column.width = parseInt(column.width);
+
+        if(column.minWidth && column.width < column.minWidth){
+          column.width = column.minWidth;
+        }
       });
 
       if(_width>= 1){
@@ -941,12 +966,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var selectLeafsOnly = false;
       var keyNavigation = true;
       var allowDeselect = false;
+      var mouseMoveSelection = true;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
 
         if(!config.selModel.type){
           throw new Error('FancyGrid Error 5: Type for selection is not set');
+        }
+
+        if(config.selModel.mouseMoveSelection !== undefined){
+          mouseMoveSelection = config.selModel.mouseMoveSelection;
         }
 
         if(config.selModel.memoryPerfomance !== undefined){
@@ -987,6 +1017,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.selectLeafsOnly = selectLeafsOnly;
       config.selection.keyNavigation = keyNavigation;
       config.selection.allowDeselect = allowDeselect;
+      config.selection.mouseMoveSelection = mouseMoveSelection;
     }
 
     if(config.selection){
@@ -1758,7 +1789,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         hasLocked = false;
 
       Fancy.each(config.columns, function(column){
-        width += column.width;
+        if(!column.hidden){
+          width += column.width;
+        }
         if(column.locked){
           hasLocked = true;
         }
@@ -3187,6 +3220,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     selectRow: function (rowIndex, value, multi) {
       this.selection.selectRow(rowIndex, value, multi);
+      this.activated = true;
     },
     /*
      * @param {Number|String} id
@@ -3335,7 +3369,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       me.setBodysHeight();
 
-      var fn = function (columns, header) {
+      var fn = function (columns, header, side) {
         Fancy.each(columns, function (column, i) {
           if(column.hidden){
             return;
@@ -3346,15 +3380,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
             me.fire('columnresize', {
               cell: cell.dom,
-              width: column.width
+              width: column.width,
+              column: column,
+              side: side
             });
           }
         });
       }
 
-      fn(me.columns, me.header);
-      fn(me.leftColumns, me.leftHeader);
-      fn(me.rightColumns, me.rightHeader);
+      fn(me.columns, me.header, 'center');
+      fn(me.leftColumns, me.leftHeader, 'left');
+      fn(me.rightColumns, me.rightHeader, 'right');
 
       me.scroller.scrollDelta(0);
       me.scroller.update();
@@ -4576,6 +4612,33 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
         me.sorter.sort(direction, key, o.side, column, cell);
       }
+    },
+    flashRow: function (rowIndex) {
+      var me = this,
+        cells = me.getDomRow(rowIndex);
+
+      F.each(cells, function (cell) {
+        cell = F.get(cell);
+
+        cell.addCls('fancy-grid-cell-flash');
+      });
+
+      setTimeout(function () {
+        F.each(cells, function (cell) {
+          cell = F.get(cell);
+
+          cell.addCls('fancy-grid-cell-animation');
+        });
+      }, 200);
+
+      setTimeout(function () {
+        F.each(cells, function (cell) {
+          cell = F.get(cell);
+
+          cell.removeCls('fancy-grid-cell-flash');
+          cell.removeCls('fancy-grid-cell-animation');
+        });
+      }, 700);
     }
   });
 
@@ -5775,7 +5838,27 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   showLoadMask: function(text){
     var me = this,
       w = me.widget,
-      lang = w.lang;
+      lang = w.lang,
+      width = w.getWidth(),
+      height = w.getHeight();
+
+    me.el.css('display', 'block');
+
+    me.el.css({
+      height: height,
+      width: width
+    });
+
+    var innerWidth = Math.abs(me.innerEl.width()),
+      innerHeight = Math.abs(me.innerEl.height());
+
+    var left = width/2 - innerWidth/2,
+      top = height/2 - innerHeight/2;
+
+    me.innerEl.css({
+      left: left,
+      top: top
+    });
 
     if(text){
       me.textEl.update(text);
@@ -6476,7 +6559,9 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
       w.fire('columnresize', {
         cell: cellEl.dom,
-        width: cellWidth
+        width: cellWidth,
+        column: column,
+        side: me.activeSide
       });
 
       if (/sparkline/.test(column.type)) {
@@ -7055,6 +7140,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   F.ns('Fancy.grid.body.mixin');
 
@@ -7117,6 +7203,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           switch (column.type) {
             case 'order':
               el.addCls(GRID_COLUMN_ORDER_CLS);
+              break;
+            case 'rowdrag':
+              el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
               break;
           }
         }
@@ -7350,6 +7439,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           case 'grossloss':
             me.renderGrossLoss(i, rowIndex);
             break;
+          case 'rowdrag':
+            me.renderRowDrag(i, rowIndex);
+            break;
           default:
             throw new Error('[FancyGrid error] - not existed column type ' + column.type);
             break;
@@ -7507,6 +7599,60 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             item: s.getItem(j)
           },
           value = j + 1 + plusValue;
+
+        o.value = value;
+
+        if (column.render) {
+          o = column.render(o);
+          value = o.value;
+        }
+
+        var cell = cellsDom.item(j);
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        cell.css(o.style);
+        cellsDomInner.item(j).update(value);
+      }
+    },
+    /*
+     * @param {Number} i
+     */
+    renderRowDrag: function (i) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
+        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
+        columnDom = columsDom.item(i),
+        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        j = 0,
+        jL = s.getLength(),
+        plusValue = 0;
+
+      if (w.paging) {
+        plusValue += s.showPage * s.pageSize;
+      }
+
+      for (; j < jL; j++) {
+        var data = s.get(j),
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j)
+          },
+          value = '<svg viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
 
         o.value = value;
 
@@ -8852,6 +8998,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -9007,6 +9154,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         else if (Math.abs(topValue) > scrollRightPath) {
           topValue = -scrollRightPath - knobOffSet;
           o.newScroll = topValue;
+        }
+
+        if(topValue > 0){
+          topValue = 0;
         }
 
         columnEl.css('top', topValue + 'px');
@@ -9472,6 +9623,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         switch (column.type) {
           case 'order':
             el.addCls(GRID_COLUMN_ORDER_CLS);
+            break;
+          case 'rowdrag':
+            el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
             break;
         }
       }
