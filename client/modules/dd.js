@@ -464,6 +464,7 @@
   var GRID_CLS = F.GRID_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
+  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
 
   F.define('Fancy.grid.plugin.RowDragDrop', {
     extend: F.Plugin,
@@ -493,6 +494,8 @@
       me.Super('init', arguments);
       me.addEvents('drop');
       me.ons();
+      me.initDropCls();
+      me.initEnterLeave();
 
       me.disableSelectionMove();
     },
@@ -559,7 +562,9 @@
         docEl.un('mousemove', me.onDocMouseMove);
         me.hideTip();
         me.clearCellsMask();
-        me.fire('drop');
+        if(me.dropOK){
+          me.fire('drop');
+        }
         me.tipShown = false;
       }
     },
@@ -574,6 +579,38 @@
 
       if (me.cellMouseDown !== true || selected.length === 0) {
         return;
+      }
+
+      if(o.rowIndex !== 0){
+        var prevRowIndex = o.rowIndex - 1;
+
+        if(w.body.getCell(prevRowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+          me.dropOK = false;
+
+          me.clearCellsMask();
+          delete me.activeRowIndex;
+          return;
+        }
+        else{
+          me.dropOK = true;
+        }
+
+        var prevItem = w.get(prevRowIndex);
+        me.insertItem = prevItem;
+      }
+      else{
+        if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+          me.dropOK = false;
+
+          me.clearCellsMask();
+          delete me.activeRowIndex;
+          return;
+        }
+        else {
+          me.dropOK = true;
+        }
+
+        me.insertItem = 0;
       }
 
       me.activeRowIndex = o.rowIndex;
@@ -624,7 +661,7 @@
         text = F.String.format(lang.dragText, [selection.length, selection.length > 1 ? 's' : '']);
 
       me.tip.update(text);
-      if(selection.length) {
+      if(selection.length&& me.dropOK != false) {
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
       else{
@@ -660,14 +697,19 @@
       var me = this,
         w = me.widget,
         selection = w.getSelection(),
-        rowIndex = me.activeRowIndex,
-        item = w.get(rowIndex);
+        rowIndex;
 
       w.clearSelection();
 
       w.remove(selection);
       //TODO: If raw is selected that it can not detect row
-      rowIndex = w.getRowById(item.id);
+      if(me.insertItemId === 0){
+        rowIndex = 0;
+      }
+      else{
+        rowIndex = w.getRowById(me.insertItem.id) + 1;
+      }
+
       w.insert(rowIndex, selection);
       F.each(selection, function (item) {
         var rowIndex = w.getRowById(item.id);
@@ -684,6 +726,10 @@
         return;
       }
 
+      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+        return;
+      }
+
       if(o.column.type === 'rowdrag'){
         me.mouseDownDragEl = true;
         docEl.once('mousemove', function (e) {
@@ -695,6 +741,39 @@
       if (selected.length > 1) {
         w.stopSelection();
       }
+    },
+    /*
+     *
+     */
+    initDropCls: function () {
+      var me = this,
+        w = me.widget;
+
+      var dropCls = '#' + w.id + ' .' + me.dropZoneOverClass;
+
+      me.dropCls = dropCls;
+    },
+    /*
+     *
+     */
+    initEnterLeave: function () {
+      var me = this,
+        dropEl = F.select(me.dropCls);
+
+      if (dropEl.length === 0) {
+        setTimeout(function () {
+          me.initEnterLeave();
+        }, 500);
+        return;
+      }
+
+      dropEl.on('mouseleave', me.onMouseLeaveDropGroup, me);
+    },
+    onMouseLeaveDropGroup: function () {
+      var me = this;
+
+      me.dropOK = false;
+      me.clearCellsMask();
     }
   });
 

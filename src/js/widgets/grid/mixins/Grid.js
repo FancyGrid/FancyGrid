@@ -1272,6 +1272,15 @@
       this.activated = true;
     },
     /*
+     * @param {Number} rowIndex
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
+     */
+    deSelectRow: function (rowIndex) {
+      this.selection.selectRow(rowIndex, false, true);
+      this.activated = true;
+    },
+    /*
      * @param {Number|String} id
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
@@ -2662,6 +2671,9 @@
         me.sorter.sort(direction, key, o.side, column, cell);
       }
     },
+    /*
+     * @param {Number} rowIndex
+     */
     flashRow: function (rowIndex) {
       var me = this,
         cells = me.getDomRow(rowIndex);
@@ -2688,6 +2700,40 @@
           cell.removeCls('fancy-grid-cell-animation');
         });
       }, 700);
+    },
+    /*
+     * @param {Number|Object} rowIndex
+     * @param {Number} [columnIndex]
+     * @param {String} [side]
+     */
+    flashCell: function (rowIndex, columnIndex, side) {
+      var me = this,
+        side = side? side: 'center',
+        body = me.getBody(side),
+        cell = Fancy.isObject(rowIndex)? rowIndex : body.getCell(rowIndex, columnIndex);
+
+      cell.addCls('fancy-grid-cell-flash');
+
+      setTimeout(function () {
+        cell.addCls('fancy-grid-cell-animation');
+      }, 200);
+
+      setTimeout(function () {
+        cell.removeCls('fancy-grid-cell-flash');
+        cell.removeCls('fancy-grid-cell-animation');
+      }, 700);
+    },
+    /*
+    * @param {Number} rowIndex
+     */
+    scrollToRow: function(rowIndex){
+      var me = this,
+        cell = me.body.getCell(rowIndex, 0);
+
+      me.scroller.scrollToCell(cell.dom, false, true);
+      me.scroller.update();
+
+      me.flashRow(rowIndex);
     }
   });
 

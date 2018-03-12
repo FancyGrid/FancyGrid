@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.13',
+  version: '1.7.14',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -23666,6 +23666,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       this.activated = true;
     },
     /*
+     * @param {Number} rowIndex
+     * @param {Boolean} [value]
+     * @param {Boolean} [multi]
+     */
+    deSelectRow: function (rowIndex) {
+      this.selection.selectRow(rowIndex, false, true);
+      this.activated = true;
+    },
+    /*
      * @param {Number|String} id
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
@@ -25056,6 +25065,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.sorter.sort(direction, key, o.side, column, cell);
       }
     },
+    /*
+     * @param {Number} rowIndex
+     */
     flashRow: function (rowIndex) {
       var me = this,
         cells = me.getDomRow(rowIndex);
@@ -25082,6 +25094,40 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           cell.removeCls('fancy-grid-cell-animation');
         });
       }, 700);
+    },
+    /*
+     * @param {Number|Object} rowIndex
+     * @param {Number} [columnIndex]
+     * @param {String} [side]
+     */
+    flashCell: function (rowIndex, columnIndex, side) {
+      var me = this,
+        side = side? side: 'center',
+        body = me.getBody(side),
+        cell = Fancy.isObject(rowIndex)? rowIndex : body.getCell(rowIndex, columnIndex);
+
+      cell.addCls('fancy-grid-cell-flash');
+
+      setTimeout(function () {
+        cell.addCls('fancy-grid-cell-animation');
+      }, 200);
+
+      setTimeout(function () {
+        cell.removeCls('fancy-grid-cell-flash');
+        cell.removeCls('fancy-grid-cell-animation');
+      }, 700);
+    },
+    /*
+    * @param {Number} rowIndex
+     */
+    scrollToRow: function(rowIndex){
+      var me = this,
+        cell = me.body.getCell(rowIndex, 0);
+
+      me.scroller.scrollToCell(cell.dom, false, true);
+      me.scroller.update();
+
+      me.flashRow(rowIndex);
     }
   });
 
@@ -26559,7 +26605,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     /*
      * @param {Fancy.Element} cell
      */
-    scrollToCell: function (cell, nativeScroll) {
+    scrollToCell: function (cell, nativeScroll, firstRowIsVisible) {
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -26596,11 +26642,19 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         passedHeight += w.expander.getBeforeHeight(rowIndex);
       }
 
-      if (passedHeight - rightScroll > bodyViewHeight) {
-        rightScroll += cellHeight;
-        //if(rightScroll > passedHeight - bodyViewHeight){
-          rightScroll = passedHeight - bodyViewHeight + 5;
-        //}
+      if (firstRowIsVisible) {
+        var cellViewsHeight = w.getCellsViewHeight();
+
+        rightScroll = passedHeight - cellHeight;
+
+        if(cellViewsHeight - rightScroll < bodyViewHeight){
+          rightScroll -= Math.abs(cellViewsHeight - rightScroll - bodyViewHeight);
+        }
+
+        me.scroll(rightScroll);
+      }
+      else if (passedHeight - rightScroll > bodyViewHeight) {
+        rightScroll = passedHeight - bodyViewHeight + 5;
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){
@@ -32437,6 +32491,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
+      if(me.selectLeafsOnly){
+        if(!params.data.leaf){
+          return;
+        }
+      }
+
       var column = params.column,
         select = true;
 
@@ -32461,9 +32521,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
         if (checkbox.get() === true) {
           me.selectCheckBox(rowIndex);
-          F.each(rowCells, function (cell) {
-            F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
-          });
+          me.domSelectRow(rowIndex);
         }
         else {
           me.deSelectCheckBox(rowIndex);
@@ -32472,10 +32530,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       else if (select) {
         if((me.allowDeselect) && hasSelection){}
         else {
-          F.each(rowCells, function (cell) {
-            F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
-          });
-
+          me.domSelectRow(rowIndex);
           me.selectCheckBox(rowIndex);
         }
         w.fire('select', me.getSelection());
@@ -39894,6 +39949,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
   var GRID_CLS = F.GRID_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
+  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
 
   F.define('Fancy.grid.plugin.RowDragDrop', {
     extend: F.Plugin,
@@ -39923,6 +39979,8 @@ Fancy.define('Fancy.grid.plugin.Search', {
       me.Super('init', arguments);
       me.addEvents('drop');
       me.ons();
+      me.initDropCls();
+      me.initEnterLeave();
 
       me.disableSelectionMove();
     },
@@ -39989,7 +40047,9 @@ Fancy.define('Fancy.grid.plugin.Search', {
         docEl.un('mousemove', me.onDocMouseMove);
         me.hideTip();
         me.clearCellsMask();
-        me.fire('drop');
+        if(me.dropOK){
+          me.fire('drop');
+        }
         me.tipShown = false;
       }
     },
@@ -40004,6 +40064,38 @@ Fancy.define('Fancy.grid.plugin.Search', {
 
       if (me.cellMouseDown !== true || selected.length === 0) {
         return;
+      }
+
+      if(o.rowIndex !== 0){
+        var prevRowIndex = o.rowIndex - 1;
+
+        if(w.body.getCell(prevRowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+          me.dropOK = false;
+
+          me.clearCellsMask();
+          delete me.activeRowIndex;
+          return;
+        }
+        else{
+          me.dropOK = true;
+        }
+
+        var prevItem = w.get(prevRowIndex);
+        me.insertItem = prevItem;
+      }
+      else{
+        if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+          me.dropOK = false;
+
+          me.clearCellsMask();
+          delete me.activeRowIndex;
+          return;
+        }
+        else {
+          me.dropOK = true;
+        }
+
+        me.insertItem = 0;
       }
 
       me.activeRowIndex = o.rowIndex;
@@ -40054,7 +40146,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
         text = F.String.format(lang.dragText, [selection.length, selection.length > 1 ? 's' : '']);
 
       me.tip.update(text);
-      if(selection.length) {
+      if(selection.length&& me.dropOK != false) {
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
       else{
@@ -40090,14 +40182,19 @@ Fancy.define('Fancy.grid.plugin.Search', {
       var me = this,
         w = me.widget,
         selection = w.getSelection(),
-        rowIndex = me.activeRowIndex,
-        item = w.get(rowIndex);
+        rowIndex;
 
       w.clearSelection();
 
       w.remove(selection);
       //TODO: If raw is selected that it can not detect row
-      rowIndex = w.getRowById(item.id);
+      if(me.insertItemId === 0){
+        rowIndex = 0;
+      }
+      else{
+        rowIndex = w.getRowById(me.insertItem.id) + 1;
+      }
+
       w.insert(rowIndex, selection);
       F.each(selection, function (item) {
         var rowIndex = w.getRowById(item.id);
@@ -40114,6 +40211,10 @@ Fancy.define('Fancy.grid.plugin.Search', {
         return;
       }
 
+      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+        return;
+      }
+
       if(o.column.type === 'rowdrag'){
         me.mouseDownDragEl = true;
         docEl.once('mousemove', function (e) {
@@ -40125,6 +40226,39 @@ Fancy.define('Fancy.grid.plugin.Search', {
       if (selected.length > 1) {
         w.stopSelection();
       }
+    },
+    /*
+     *
+     */
+    initDropCls: function () {
+      var me = this,
+        w = me.widget;
+
+      var dropCls = '#' + w.id + ' .' + me.dropZoneOverClass;
+
+      me.dropCls = dropCls;
+    },
+    /*
+     *
+     */
+    initEnterLeave: function () {
+      var me = this,
+        dropEl = F.select(me.dropCls);
+
+      if (dropEl.length === 0) {
+        setTimeout(function () {
+          me.initEnterLeave();
+        }, 500);
+        return;
+      }
+
+      dropEl.on('mouseleave', me.onMouseLeaveDropGroup, me);
+    },
+    onMouseLeaveDropGroup: function () {
+      var me = this;
+
+      me.dropOK = false;
+      me.clearCellsMask();
     }
   });
 
@@ -41288,7 +41422,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             id: id,
             item: s.getItem(j)
           },
-          value = '<svg viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
+          value = '<svg style="opacity: 0;" viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
 
         o.value = value;
 
@@ -42554,6 +42688,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      * @param {Fancy.Element} cell
      */
     enableCellDirty: function (cell) {
+      var me = this,
+        w = me.widget;
+
       if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
         return;
       }
@@ -42635,6 +42772,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
   var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -43418,6 +43556,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             break;
           case 'select':
             columnEl.addCls(GRID_COLUMN_SELECT_CLS);
+            break;
+          case 'rowdrag':
+            columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
             break;
         }
       });

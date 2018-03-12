@@ -817,7 +817,7 @@
     /*
      * @param {Fancy.Element} cell
      */
-    scrollToCell: function (cell, nativeScroll) {
+    scrollToCell: function (cell, nativeScroll, firstRowIsVisible) {
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -854,11 +854,19 @@
         passedHeight += w.expander.getBeforeHeight(rowIndex);
       }
 
-      if (passedHeight - rightScroll > bodyViewHeight) {
-        rightScroll += cellHeight;
-        //if(rightScroll > passedHeight - bodyViewHeight){
-          rightScroll = passedHeight - bodyViewHeight + 5;
-        //}
+      if (firstRowIsVisible) {
+        var cellViewsHeight = w.getCellsViewHeight();
+
+        rightScroll = passedHeight - cellHeight;
+
+        if(cellViewsHeight - rightScroll < bodyViewHeight){
+          rightScroll -= Math.abs(cellViewsHeight - rightScroll - bodyViewHeight);
+        }
+
+        me.scroll(rightScroll);
+      }
+      else if (passedHeight - rightScroll > bodyViewHeight) {
+        rightScroll = passedHeight - bodyViewHeight + 5;
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){

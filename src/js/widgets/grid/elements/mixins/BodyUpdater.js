@@ -539,7 +539,7 @@
             id: id,
             item: s.getItem(j)
           },
-          value = '<svg viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
+          value = '<svg style="opacity: 0;" viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
 
         o.value = value;
 
@@ -1805,6 +1805,9 @@
      * @param {Fancy.Element} cell
      */
     enableCellDirty: function (cell) {
+      var me = this,
+        w = me.widget;
+
       if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
         return;
       }

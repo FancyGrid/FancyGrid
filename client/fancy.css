@@ -1718,6 +1718,7 @@
 }
 .fancy-grid-column-row-drag svg {
   display: inline-block;
+  opacity: 1 !important;
   width: 16px;
   height: 14px;
   vertical-align: middle;
@@ -3276,6 +3277,10 @@
 .fancy-theme-dark .fancy-combo .fancy-combo-input-container {
   background: initial;
 }
+.fancy-theme-dark .fancy-grid-cell-flash {
+  background: #048DC8 !important;
+  color: #ccc;
+}
 .fancy-theme-dark.fancy-combo-result-list li.fancy-combo-item-focused {
   color: white;
 }
@@ -3864,6 +3869,10 @@
 .fancy-theme-sand .fancy-combo-item-selected .fancy-field-checkbox-input:hover {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23E8DFC0%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C8C1A5%22%2F%3E%3Cpath%20stroke%3D%22%23696458%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L6.5%2010%2011%204.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
 }
+.fancy-theme-sand .fancy-grid-cell-flash {
+  background-color: #6A6758 !important;
+  color: #E9E7E2!important;
+}
 .fancy-theme-sand.fancy-combo .fancy-combo-dropdown-button {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%226%22%20viewBox%3D%22944%201152%208%204%22%3E%3Cpath%20fill%3D%22%23696458%22%20d%3D%22M945.2%201152.2C944.9%201152%20944.5%201152%20944.3%201152.3%20944.1%201152.6%20944.1%201153%20944.4%201153.2L947.6%201155.8C947.8%201156%20948.2%201156%20948.4%201155.8L951.6%201153.2C951.9%201153%20951.9%201152.6%20951.7%201152.3%20951.5%201152%20951.1%201152%20950.8%201152.2L948%201154.5%20945.2%201152.2Z%22%2F%3E%3C%2Fsvg%3E');
   background-position: 9px 13px;
@@ -4179,6 +4188,10 @@
 }
 .fancy-theme-bootstrap .fancy-combo-item-selected .fancy-field-checkbox-input:hover {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%23525252%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L6.5%2010%2011%204.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-bootstrap .fancy-grid-cell-flash {
+  background: #428bca !important;
+  color: #fff !important;
 }
 .fancy-theme-bootstrap.fancy-panel {
   border-color: #ccc;

@@ -823,6 +823,12 @@
         return;
       }
 
+      if(me.selectLeafsOnly){
+        if(!params.data.leaf){
+          return;
+        }
+      }
+
       var column = params.column,
         select = true;
 
@@ -847,9 +853,7 @@
 
         if (checkbox.get() === true) {
           me.selectCheckBox(rowIndex);
-          F.each(rowCells, function (cell) {
-            F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
-          });
+          me.domSelectRow(rowIndex);
         }
         else {
           me.deSelectCheckBox(rowIndex);
@@ -858,10 +862,7 @@
       else if (select) {
         if((me.allowDeselect) && hasSelection){}
         else {
-          F.each(rowCells, function (cell) {
-            F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
-          });
-
+          me.domSelectRow(rowIndex);
           me.selectCheckBox(rowIndex);
         }
         w.fire('select', me.getSelection());

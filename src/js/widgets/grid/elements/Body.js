@@ -28,6 +28,7 @@
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
   var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
+  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -810,6 +811,9 @@
             break;
           case 'select':
             columnEl.addCls(GRID_COLUMN_SELECT_CLS);
+            break;
+          case 'rowdrag':
+            columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
             break;
         }
       });
