@@ -2193,8 +2193,10 @@
         s.filters = {};
       }
       else if (sign === undefined) {
-        me.filter.filters[index] = {};
-        s.filters[index] = {};
+        if(s.filters && s.filters[index]){
+          me.filter.filters[index] = {};
+          s.filters[index] = {};
+        }
       }
       else {
         if (me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign]) {

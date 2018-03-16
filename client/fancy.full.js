@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.14',
+  version: '1.7.15',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -20395,6 +20395,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'select':
           case 'order':
           case 'expand':
+          case 'rowdrag':
             return;
             break;
         }
@@ -20481,6 +20482,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.type === 'tree'){
         isTreeData = true;
+      }
+
+      if(column.type === 'rowdrag' && !config.rowDragDrop){
+        config.rowDragDrop = true;
       }
 
       if(column.headerCheckBox){
@@ -25741,7 +25746,13 @@ FancyGrid.addValid = Fancy.addValid;
 
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyGrid = function(o){
-    o.renderTo = $(this.selector)[0].id;
+    if(this.selector){
+      o.renderTo = $(this.selector)[0].id;
+    }
+    else{
+      o.renderTo = this.attr('id');
+    }
+
     return new Fancy.Grid(o);
   };
 }
@@ -33297,6 +33308,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           break;
       }
 
+      F.each(model.items, function(item, i){
+        if(F.isObject(item.data)){
+          model.items[i] = item.data;
+        }
+      });
+
       if (returnModel) {
         return model;
       }
@@ -40005,7 +40022,12 @@ Fancy.define('Fancy.grid.plugin.Search', {
     },
     showTip: function (e) {
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        selection = w.getSelection();
+
+      if(selection.length === 0){
+        return;
+      }
 
       if(!me.tip){
         me.initTip();
@@ -40025,13 +40047,15 @@ Fancy.define('Fancy.grid.plugin.Search', {
       if(me.tip){
         me.tip.hide();
       }
+
+      me.tipShown = false;
     },
-    onCellMouseDown: function () {
+    onCellMouseDown: function (grid, o) {
       var me = this,
         w = me.widget,
         docEl = F.get(document);
 
-      me.cellMouseDown = true;
+      me.cellMouseDown = F.get(o.cell);
       docEl.once('mouseup', me.onDocMouseUp, me);
     },
     onDocMouseUp: function (e) {
@@ -40062,7 +40086,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
         w = me.widget,
         selected = w.getSelection();
 
-      if (me.cellMouseDown !== true || selected.length === 0) {
+      if (!me.cellMouseDown || selected.length === 0 || !me.tipShown) {
         return;
       }
 
@@ -40077,7 +40101,42 @@ Fancy.define('Fancy.grid.plugin.Search', {
           return;
         }
         else{
-          me.dropOK = true;
+          if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS) && selected.length === 1){
+            me.dropOK = false;
+
+            me.clearCellsMask();
+            delete me.activeRowIndex;
+            return;
+          }
+          else {
+            if(selected.length > 1){
+              var rowsGoOneByOne = true,
+                prevRowIndex;
+
+              F.each(selected, function (item) {
+                if(prevRowIndex === undefined){
+                  prevRowIndex = w.getRowById(item.id);
+                  return;
+                }
+
+                var rowIndex = w.getRowById(item.id);
+                if(prevRowIndex !== rowIndex - 1){
+                  rowsGoOneByOne = false;
+                  return true;
+                }
+                prevRowIndex = rowIndex;
+              });
+
+              if(rowsGoOneByOne && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+                me.dropOK = false;
+
+                me.clearCellsMask();
+                delete me.activeRowIndex;
+                return;
+              }
+            }
+            me.dropOK = true;
+          }
         }
 
         var prevItem = w.get(prevRowIndex);
@@ -40085,11 +40144,41 @@ Fancy.define('Fancy.grid.plugin.Search', {
       }
       else{
         if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
-          me.dropOK = false;
+          if(selected.length > 1){
+            var rowsGoOneByOne = true,
+              prevRowIndex;
 
-          me.clearCellsMask();
-          delete me.activeRowIndex;
-          return;
+            F.each(selected, function (item) {
+              if(prevRowIndex === undefined){
+                prevRowIndex = w.getRowById(item.id);
+                return;
+              }
+
+              var rowIndex = w.getRowById(item.id);
+              if(prevRowIndex !== rowIndex - 1){
+                rowsGoOneByOne = false;
+                return true;
+              }
+              prevRowIndex = rowIndex;
+            });
+
+            if(rowsGoOneByOne && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+              me.dropOK = false;
+
+              me.clearCellsMask();
+              delete me.activeRowIndex;
+              return;
+            }
+
+            me.dropOK = true;
+          }
+          else{
+            me.dropOK = false;
+
+            me.clearCellsMask();
+            delete me.activeRowIndex;
+            return;
+          }
         }
         else {
           me.dropOK = true;
@@ -40103,13 +40192,18 @@ Fancy.define('Fancy.grid.plugin.Search', {
     },
     onCellLeave: function (grid, params) {
       var me = this,
-        docEl = F.get(document);
+        docEl = F.get(document),
+        cell = F.get(params.cell);
 
       if(!me.cellMouseDown){
         return;
       }
 
       if(me.tipShown){
+        return;
+      }
+
+      if(!cell.hasClass(GRID_CELL_SELECTED_CLS)){
         return;
       }
 
@@ -40156,7 +40250,12 @@ Fancy.define('Fancy.grid.plugin.Search', {
     onDocMouseMove: function (e) {
       var me = this;
 
-      me.showTip(e);
+      if(me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS)){
+        me.showTip(e);
+      }
+      else{
+        me.hideTip();
+      }
     },
     showCellsDropMask: function () {
       var me = this,
@@ -40184,11 +40283,13 @@ Fancy.define('Fancy.grid.plugin.Search', {
         selection = w.getSelection(),
         rowIndex;
 
-      w.clearSelection();
+      if(!w.selection.memory){
+        w.clearSelection();
+      }
 
       w.remove(selection);
       //TODO: If raw is selected that it can not detect row
-      if(me.insertItemId === 0){
+      if(me.insertItem === 0){
         rowIndex = 0;
       }
       else{
@@ -40211,16 +40312,20 @@ Fancy.define('Fancy.grid.plugin.Search', {
         return;
       }
 
-      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
-        return;
-      }
-
       if(o.column.type === 'rowdrag'){
+        if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+          w.selectRow(o.rowIndex);
+        }
+
         me.mouseDownDragEl = true;
         docEl.once('mousemove', function (e) {
           me.showTip(e);
           docEl.on('mousemove', me.onDocMouseMove, me);
         });
+      }
+
+      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+        return;
       }
 
       if (selected.length > 1) {

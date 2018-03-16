@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.14',
+  version: '1.7.15',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -13456,7 +13456,13 @@ FancyGrid.addValid = Fancy.addValid;
 
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyGrid = function(o){
-    o.renderTo = $(this.selector)[0].id;
+    if(this.selector){
+      o.renderTo = $(this.selector)[0].id;
+    }
+    else{
+      o.renderTo = this.attr('id');
+    }
+
     return new Fancy.Grid(o);
   };
 }

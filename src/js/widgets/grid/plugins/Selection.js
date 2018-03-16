@@ -1629,6 +1629,12 @@
           break;
       }
 
+      F.each(model.items, function(item, i){
+        if(F.isObject(item.data)){
+          model.items[i] = item.data;
+        }
+      });
+
       if (returnModel) {
         return model;
       }

@@ -250,6 +250,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'select':
           case 'order':
           case 'expand':
+          case 'rowdrag':
             return;
             break;
         }
@@ -336,6 +337,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.type === 'tree'){
         isTreeData = true;
+      }
+
+      if(column.type === 'rowdrag' && !config.rowDragDrop){
+        config.rowDragDrop = true;
       }
 
       if(column.headerCheckBox){

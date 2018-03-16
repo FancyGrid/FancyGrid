@@ -67,7 +67,12 @@
     },
     showTip: function (e) {
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        selection = w.getSelection();
+
+      if(selection.length === 0){
+        return;
+      }
 
       if(!me.tip){
         me.initTip();
@@ -87,13 +92,15 @@
       if(me.tip){
         me.tip.hide();
       }
+
+      me.tipShown = false;
     },
-    onCellMouseDown: function () {
+    onCellMouseDown: function (grid, o) {
       var me = this,
         w = me.widget,
         docEl = F.get(document);
 
-      me.cellMouseDown = true;
+      me.cellMouseDown = F.get(o.cell);
       docEl.once('mouseup', me.onDocMouseUp, me);
     },
     onDocMouseUp: function (e) {
@@ -124,7 +131,7 @@
         w = me.widget,
         selected = w.getSelection();
 
-      if (me.cellMouseDown !== true || selected.length === 0) {
+      if (!me.cellMouseDown || selected.length === 0 || !me.tipShown) {
         return;
       }
 
@@ -139,7 +146,42 @@
           return;
         }
         else{
-          me.dropOK = true;
+          if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS) && selected.length === 1){
+            me.dropOK = false;
+
+            me.clearCellsMask();
+            delete me.activeRowIndex;
+            return;
+          }
+          else {
+            if(selected.length > 1){
+              var rowsGoOneByOne = true,
+                prevRowIndex;
+
+              F.each(selected, function (item) {
+                if(prevRowIndex === undefined){
+                  prevRowIndex = w.getRowById(item.id);
+                  return;
+                }
+
+                var rowIndex = w.getRowById(item.id);
+                if(prevRowIndex !== rowIndex - 1){
+                  rowsGoOneByOne = false;
+                  return true;
+                }
+                prevRowIndex = rowIndex;
+              });
+
+              if(rowsGoOneByOne && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+                me.dropOK = false;
+
+                me.clearCellsMask();
+                delete me.activeRowIndex;
+                return;
+              }
+            }
+            me.dropOK = true;
+          }
         }
 
         var prevItem = w.get(prevRowIndex);
@@ -147,11 +189,41 @@
       }
       else{
         if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
-          me.dropOK = false;
+          if(selected.length > 1){
+            var rowsGoOneByOne = true,
+              prevRowIndex;
 
-          me.clearCellsMask();
-          delete me.activeRowIndex;
-          return;
+            F.each(selected, function (item) {
+              if(prevRowIndex === undefined){
+                prevRowIndex = w.getRowById(item.id);
+                return;
+              }
+
+              var rowIndex = w.getRowById(item.id);
+              if(prevRowIndex !== rowIndex - 1){
+                rowsGoOneByOne = false;
+                return true;
+              }
+              prevRowIndex = rowIndex;
+            });
+
+            if(rowsGoOneByOne && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+              me.dropOK = false;
+
+              me.clearCellsMask();
+              delete me.activeRowIndex;
+              return;
+            }
+
+            me.dropOK = true;
+          }
+          else{
+            me.dropOK = false;
+
+            me.clearCellsMask();
+            delete me.activeRowIndex;
+            return;
+          }
         }
         else {
           me.dropOK = true;
@@ -165,13 +237,18 @@
     },
     onCellLeave: function (grid, params) {
       var me = this,
-        docEl = F.get(document);
+        docEl = F.get(document),
+        cell = F.get(params.cell);
 
       if(!me.cellMouseDown){
         return;
       }
 
       if(me.tipShown){
+        return;
+      }
+
+      if(!cell.hasClass(GRID_CELL_SELECTED_CLS)){
         return;
       }
 
@@ -218,7 +295,12 @@
     onDocMouseMove: function (e) {
       var me = this;
 
-      me.showTip(e);
+      if(me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS)){
+        me.showTip(e);
+      }
+      else{
+        me.hideTip();
+      }
     },
     showCellsDropMask: function () {
       var me = this,
@@ -246,11 +328,13 @@
         selection = w.getSelection(),
         rowIndex;
 
-      w.clearSelection();
+      if(!w.selection.memory){
+        w.clearSelection();
+      }
 
       w.remove(selection);
       //TODO: If raw is selected that it can not detect row
-      if(me.insertItemId === 0){
+      if(me.insertItem === 0){
         rowIndex = 0;
       }
       else{
@@ -273,16 +357,20 @@
         return;
       }
 
-      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
-        return;
-      }
-
       if(o.column.type === 'rowdrag'){
+        if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+          w.selectRow(o.rowIndex);
+        }
+
         me.mouseDownDragEl = true;
         docEl.once('mousemove', function (e) {
           me.showTip(e);
           docEl.on('mousemove', me.onDocMouseMove, me);
         });
+      }
+
+      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+        return;
       }
 
       if (selected.length > 1) {
