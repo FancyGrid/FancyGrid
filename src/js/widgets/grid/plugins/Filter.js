@@ -19,6 +19,8 @@
     ptype: 'grid.filter',
     inWidgetName: 'filter',
     autoEnterDelay: 500,
+    caseSensitive: true,
+    successRepeat: 1,
     /*
      * @constructor
      * @param {Object} config

@@ -4,6 +4,8 @@ Fancy.Mixin('Fancy.store.mixin.Search', {
    */
   searchCheckItem: function(item){
     var me = this,
+      w = me.widget,
+      caseSensitive = w.filter.caseSensitive,
       searches = me.searches;
 
     if(!Fancy.isObject(searches)){

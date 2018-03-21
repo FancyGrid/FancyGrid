@@ -264,6 +264,8 @@ module.exports = function(grunt){
 		},{
           "./fancygrid/modules/exporter.min.js": ["./fancygrid/modules/exporter.js"]
 		},{
+          "./fancygrid/modules/state.min.js": ["./fancygrid/modules/state.js"]
+		},{
           "./fancygrid/modules/excel.min.js": ["./fancygrid/modules/excel.js"]
         }]
       }

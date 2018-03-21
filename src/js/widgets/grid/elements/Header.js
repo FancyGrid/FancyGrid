@@ -21,6 +21,8 @@
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
+  var GRID_COLUMN_SORT_ASC = F.GRID_COLUMN_SORT_ASC;
+  var GRID_COLUMN_SORT_DESC = F.GRID_COLUMN_SORT_DESC;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -120,6 +122,11 @@
         numRows++;
       }
 
+      var sorted = {};
+      if(w.state){
+        sorted = w.getStateSorters();
+      }
+
       for (; i < iL; i++) {
         var column = columns[i],
           title = column.title || column.header,
@@ -182,7 +189,7 @@
           height += 'px';
         }
 
-        html += me.cellTpl.getHTML({
+        var cellConfig = {
           cls: cls,
           columnName: title,
           columnWidth: column.width,
@@ -191,7 +198,20 @@
           left: 'initial',
           groupIndex: groupIndex,
           display: column.hidden ? 'none' : ''
-        });
+        };
+
+        if(sorted[column.index]){
+          switch(sorted[column.index].dir){
+            case 'ASC':
+              cellConfig.cls += ' ' + GRID_COLUMN_SORT_ASC;
+              break;
+            case 'DESC':
+              cellConfig.cls += ' ' + GRID_COLUMN_SORT_DESC;
+              break;
+          }
+        }
+
+        html += me.cellTpl.getHTML(cellConfig);
       }
 
       el.css({
@@ -298,6 +318,8 @@
           F.get(cells.item(index).before(cellHTML));
         }
       }
+
+      var cell = me.getCell(index);
 
       me.css('width', parseInt(me.css('width')) + column.width);
     },

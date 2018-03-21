@@ -129,7 +129,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.showPage = 0;
     }
 
-    me.fire('changepages');
+    //TODO: Needs to replace with something else since it is not real change page.???
+    me.fire('changepages', me.showPage);
   },
   /*
    * @param {Number} value
@@ -325,7 +326,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     }
 
     w.setSidesHeight();
-    w.fire('changepage');
+    w.fire('changepage', store.showPage);
   },
   /*
    * @param {Number} value

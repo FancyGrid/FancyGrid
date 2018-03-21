@@ -790,5 +790,4 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       });
     }
   });
-
 })();

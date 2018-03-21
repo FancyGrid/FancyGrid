@@ -145,8 +145,10 @@
       pathToSrc + 'widgets/grid/plugins/GridToGrid.js', // dd module - should be depricated in future
       pathToSrc + 'widgets/grid/plugins/RowDragDrop.js', // dd module
       pathToSrc + 'widgets/grid/plugins/Exporter.js', // export module
+
+      pathToSrc + 'widgets/grid/plugins/State.js', // state module
 	  
-	  pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
+	    pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
 
       pathToSrc + 'widgets/grid/plugins/Licence.js',
 

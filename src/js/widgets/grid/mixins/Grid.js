@@ -1378,7 +1378,7 @@
         if(!side){
           F.each(rightColumns, function (column, i) {
             if(column.index === key){
-              side = 'left';
+              side = 'right';
               order = i;
             }
           });
@@ -1426,6 +1426,13 @@
       }
 
       me.setBodysHeight();
+      me.updateColumnsWidth();
+
+      me.scroller.scrollDelta(0);
+      me.scroller.update();
+    },
+    updateColumnsWidth: function () {
+      var me = this;
 
       var fn = function (columns, header, side) {
         Fancy.each(columns, function (column, i) {
@@ -1444,14 +1451,11 @@
             });
           }
         });
-      }
+      };
 
       fn(me.columns, me.header, 'center');
       fn(me.leftColumns, me.leftHeader, 'left');
       fn(me.rightColumns, me.rightHeader, 'right');
-
-      me.scroller.scrollDelta(0);
-      me.scroller.update();
     },
     /*
      * @param {Number} width
@@ -1826,6 +1830,8 @@
       if(me.grouping){
         me.grouping.updateGroupRows();
       }
+
+      me.onWindowResize();
     },
     /*
      * @param {String|Number} side
@@ -1903,6 +1909,8 @@
       if(me.grouping){
         me.grouping.updateGroupRows();
       }
+
+      me.onWindowResize();
     },
     /*
      * @param {Number} indexOrder
@@ -1988,12 +1996,15 @@
 
       switch (side) {
         case 'center':
+          delete column.rightLocked;
+          delete column.locked;
           me.columns.splice(index, 0, column);
           header.insertCell(index, column);
           header.reSetIndexes();
           body.insertColumn(index, column);
           break;
         case 'left':
+          column.locked = true;
           me.leftColumns.splice(index, 0, column);
           leftHeader.insertCell(index, column);
           leftHeader.reSetIndexes();
@@ -2005,6 +2016,7 @@
           header.el.css('width', parseInt(header.el.css('width')) - column.width);
           break;
         case 'right':
+          column.rightLocked = true;
           me.rightColumns.splice(index, 0, column);
           rightHeader.insertCell(index, column);
           rightHeader.reSetIndexes();
@@ -2040,6 +2052,10 @@
       me.header.destroyMenus();
       me.leftHeader.destroyMenus();
       me.rightHeader.destroyMenus();
+
+      if(me.sorter){
+        me.sorter.updateSortedHeader();
+      }
     },
     /*
      * @param {Number} orderIndex
@@ -2736,6 +2752,26 @@
       me.scroller.update();
 
       me.flashRow(rowIndex);
+    },
+    /*
+     * @return {Object}
+     */
+    getStateSorters: function () {
+      var me = this,
+        o = {},
+        state = JSON.parse(localStorage.getItem(me.id));
+
+      if(!state.sorters){
+        return {};
+      }
+
+      var sorted = JSON.parse(state.sorters);
+
+      F.each(sorted, function (sorter) {
+        o[sorter.key] = sorter;
+      });
+
+      return o;
     }
   });
 

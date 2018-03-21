@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.15',
+  version: '1.7.16',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -12907,6 +12907,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         Fancy.apply(config, params);
       }
 
+      me.initId();
       config = me.prepareConfig(config, me);
       Fancy.applyConfig(me, config);
 
@@ -12947,12 +12948,12 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   init: function(){
     var me = this;
 
-    me.initId();
+    //me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
     me.addEvents(
       'headercellclick', 'headercellmousemove', 'headercellmousedown',
       'docmouseup', 'docclick', 'docmove',
-      'init',
+      'beforeinit', 'init',
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
@@ -13007,6 +13008,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.initTextSelection();
     me.initTouch();
 
+    me.fire('beforeinit');
+
     setTimeout(function(){
       me.inited = true;
       me.fire('init');
@@ -13057,6 +13060,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.clicksToEdit){
       requiredModules.edit = true;
+    }
+
+    if(me.stateful){
+      requiredModules.state = true;
     }
 
     if(Fancy.isObject(me.data)){

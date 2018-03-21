@@ -8,6 +8,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    */
   filterCheckItem: function(item){
     var me = this,
+      w = me.widget,
+      caseSensitive = w.filter.caseSensitive,
+      successRepeat = w.filter.successRepeat,
       filters = me.filters,
       passed = true,
       wait = false;
@@ -51,6 +54,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 	    if(indexFilters.type === 'date'){
 		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
 	    }
+
+	    if(!caseSensitive && Fancy.isString(indexValue)){
+	      indexValue = indexValue.toLocaleLowerCase();
+      }
 	  
       for(var q in indexFilters){
 		    switch(q){
@@ -60,6 +67,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 		    }
 
         var value = indexFilters[q];
+
+        if(!caseSensitive && Fancy.isString(value)){
+          value = value.toLocaleLowerCase();
+        }
 
         switch(q){
           case '<':
@@ -133,6 +144,11 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           default:
             throw new Error('FancyGrid Error 5: Unknown filter ' + q);
+        }
+
+        if(passed === true && successRepeat > 1){
+          successRepeat--;
+          passed = false;
         }
 
         if(wait === true){
@@ -268,6 +284,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     ptype: 'grid.filter',
     inWidgetName: 'filter',
     autoEnterDelay: 500,
+    caseSensitive: true,
+    successRepeat: 1,
     /*
      * @constructor
      * @param {Object} config

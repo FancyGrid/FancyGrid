@@ -36,9 +36,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSelection(config);
     config = me.prepareConfigLoadMask(config, originalConfig);
     config = me.prepareConfigDefaults(config);
-    config = me.prepareConfigFilter(config);
+    config = me.prepareConfigFilter(config, originalConfig);
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
+    config = me.prepareConfigState(config, originalConfig);
     config = me.prepareConfigContextMenu(config);
     config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
@@ -1220,7 +1221,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigFilter: function(config){
+  prepareConfigFilter: function(config, originalConfig){
     var columns = config.columns,
       isFilterable = false,
       isHeaderFilter = false,
@@ -1598,6 +1599,38 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
+  prepareConfigState: function(config){
+    if(config.state || config.stateful){
+      config._plugins.push({
+        type: 'grid.state',
+        startState: config.state
+      });
+
+      var state = localStorage.getItem(this.id);
+
+      if(state){
+        state = JSON.parse(state);
+
+        var stateColumns = state.columns;
+
+        if(stateColumns){
+          stateColumns = JSON.parse(stateColumns);
+
+          Fancy.each(stateColumns, function (stateColumn, i) {
+            Fancy.each(stateColumn, function (v, p) {
+              config.columns[i][p] = v;
+            })
+          });
+        }
+      }
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
   prepareConfigColumnsResizer: function(config){
     var defaults = config.defaults || {};
 
@@ -1636,7 +1669,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       for(;i<iL;i++){
         if(tbar[i].type === 'search'){
           config.searching = config.searching || {};
-          config.filter = true;
+          config.filter = config.filter || true;
         }
 
         switch(tbar[i].action){
