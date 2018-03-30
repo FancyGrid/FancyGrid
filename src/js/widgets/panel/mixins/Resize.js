@@ -59,7 +59,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   onsResizeEls: function(initRun){
     var me = this;
 
-    me.cornerResizeEl.on('mousedown', me.onMouseDownResizeEl, me);
+    if(Fancy.isTouch){
+      me.cornerResizeEl.on('touchstart', me.onMouseDownResizeEl, me);
+    }
+    else {
+      me.cornerResizeEl.on('mousedown', me.onMouseDownResizeEl, me);
+    }
 
     me.on('resize', me.onResize, me);
   },
@@ -71,12 +76,27 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       docEl = Fancy.get(document);
 
     e.preventDefault();
-    docEl.once('mouseup', me.onMouseUpResize, me);
-    docEl.on('mousemove', me.onMouseMoveResize, me);
-    me.renderResizeMask();
 
-    me.startClientX = e.clientX;
-    me.startClientY = e.clientY;
+    if(Fancy.isTouch){
+      var _e = e.originalEvent.changedTouches[0];
+
+      docEl.once('touchend', me.onMouseUpResize, me);
+      docEl.on('touchmove', me.onMouseMoveResize, me);
+
+      me.renderResizeMask();
+
+      me.startClientX = _e.clientX;
+      me.startClientY = _e.clientY;
+    }
+    else{
+      docEl.once('mouseup', me.onMouseUpResize, me);
+      docEl.on('mousemove', me.onMouseMoveResize, me);
+
+      me.renderResizeMask();
+
+      me.startClientX = e.clientX;
+      me.startClientY = e.clientY;
+    }
   },
   /*
    *
@@ -107,8 +127,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   onMouseMoveResize: function(e){
     var me = this,
       clientX = e.clientX,
-      clientY = e.clientY,
-      deltaX = me.startClientX - clientX,
+      clientY = e.clientY;
+
+    if(Fancy.isTouch){
+      var _e = e.originalEvent.changedTouches[0];
+
+      clientX = _e.clientX;
+      clientY = _e.clientY;
+    }
+
+    var deltaX = me.startClientX - clientX,
       deltaY = me.startClientY - clientY,
       newWidth = me.startResizeWidth - deltaX,
       newHeight = me.startResizeHeight - deltaY;

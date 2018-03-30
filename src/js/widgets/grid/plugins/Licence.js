@@ -89,13 +89,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       return;
     }
 
-    console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license for legal usage!\nSales email: sales@fancygrid.com",
+    console.log("%cFancy%cGrid%c %cTrial%c Version!",
       'color:#A2CFE8;font-size: 14px;font-weight: bold;',
       'color:#088EC7;font-size: 14px;font-weight: bold;',
       'font-weight:bold;color: #515151;font-size: 12px;',
       'color: red;font-weight: bold;font-size: 14px;',
       'font-weight:bold;color: #515151;font-size: 12px;'
     );
+
+    console.log("%cPurchase license for legal usage!\nSales email: sales@fancygrid.com", 'font-weight:bold;color: #515151;font-size: 12px;');
   },
   /*
    *

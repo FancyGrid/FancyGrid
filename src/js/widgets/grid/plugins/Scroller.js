@@ -653,6 +653,10 @@
         w = me.widget,
         scrollInfo;
 
+      if(x > 0){
+        x = 0;
+      }
+
       if (w.nativeScroller) {
         if (y !== null && y !== undefined) {
           w.body.el.dom.scrollTop = y;

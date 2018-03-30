@@ -800,7 +800,7 @@
       if (itemsWidth > barWidth) {
         me.enableScroll();
       }
-      else {
+      else if(me.barScrollEnabled) {
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
       }
@@ -810,6 +810,10 @@
      */
     enableScroll: function () {
       var me = this;
+
+      if(!me.barScrollEnabled){
+        return;
+      }
 
       me.leftScroller.el.show();
       me.rightScroller.el.show();

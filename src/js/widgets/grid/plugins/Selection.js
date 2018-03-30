@@ -2046,7 +2046,9 @@
             var cell = w.leftHeader.getCell(i),
               checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
 
-            checkBox.set(false, false);
+            if(checkBox){
+              checkBox.set(false, false);
+            }
           }
         });
 
@@ -2055,7 +2057,9 @@
             var cell = w.header.getCell(i),
               checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
 
-            checkBox.set(false, false);
+            if(checkBox){
+              checkBox.set(false, false);
+            }
           }
         });
 
@@ -2064,7 +2068,9 @@
             var cell = w.rightHeader.getCell(i),
               checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
 
-            checkBox.set(false, false);
+            if(checkBox){
+              checkBox.set(false, false);
+            }
           }
         });
       }

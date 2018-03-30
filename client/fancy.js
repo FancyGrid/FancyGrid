@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.16',
+  version: '1.7.17',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6110,7 +6110,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   onsResizeEls: function(initRun){
     var me = this;
 
-    me.cornerResizeEl.on('mousedown', me.onMouseDownResizeEl, me);
+    if(Fancy.isTouch){
+      me.cornerResizeEl.on('touchstart', me.onMouseDownResizeEl, me);
+    }
+    else {
+      me.cornerResizeEl.on('mousedown', me.onMouseDownResizeEl, me);
+    }
 
     me.on('resize', me.onResize, me);
   },
@@ -6122,12 +6127,27 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       docEl = Fancy.get(document);
 
     e.preventDefault();
-    docEl.once('mouseup', me.onMouseUpResize, me);
-    docEl.on('mousemove', me.onMouseMoveResize, me);
-    me.renderResizeMask();
 
-    me.startClientX = e.clientX;
-    me.startClientY = e.clientY;
+    if(Fancy.isTouch){
+      var _e = e.originalEvent.changedTouches[0];
+
+      docEl.once('touchend', me.onMouseUpResize, me);
+      docEl.on('touchmove', me.onMouseMoveResize, me);
+
+      me.renderResizeMask();
+
+      me.startClientX = _e.clientX;
+      me.startClientY = _e.clientY;
+    }
+    else{
+      docEl.once('mouseup', me.onMouseUpResize, me);
+      docEl.on('mousemove', me.onMouseMoveResize, me);
+
+      me.renderResizeMask();
+
+      me.startClientX = e.clientX;
+      me.startClientY = e.clientY;
+    }
   },
   /*
    *
@@ -6158,8 +6178,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   onMouseMoveResize: function(e){
     var me = this,
       clientX = e.clientX,
-      clientY = e.clientY,
-      deltaX = me.startClientX - clientX,
+      clientY = e.clientY;
+
+    if(Fancy.isTouch){
+      var _e = e.originalEvent.changedTouches[0];
+
+      clientX = _e.clientX;
+      clientY = _e.clientY;
+    }
+
+    var deltaX = me.startClientX - clientX,
       deltaY = me.startClientY - clientY,
       newWidth = me.startResizeWidth - deltaX,
       newHeight = me.startResizeHeight - deltaY;
@@ -7901,7 +7929,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       if (itemsWidth > barWidth) {
         me.enableScroll();
       }
-      else {
+      else if(me.barScrollEnabled) {
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
       }
@@ -7911,6 +7939,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      */
     enableScroll: function () {
       var me = this;
+
+      if(!me.barScrollEnabled){
+        return;
+      }
 
       me.leftScroller.el.show();
       me.rightScroller.el.show();
@@ -8843,6 +8875,11 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.validate(value);
     },
+    setLabel: function (value) {
+      var me = this;
+
+      me.el.select('.' + FIELD_LABEL_CLS).update(value);
+    },
     /*
      * @param {*} value
      * @param {Boolean} onInput
@@ -9358,6 +9395,28 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       me.input.attr({
         "type": "password"
       });
+
+      if(me.showPassTip) {
+        me.el.select('.fancy-field-text').item(0).append('<div class="fancy-field-pass-tip">abc</div>');
+        me.passTipEl = me.el.select('.fancy-field-pass-tip').item(0);
+
+        me.passTipEl.on('mousedown', function (e) {
+          e.preventDefault();
+        });
+
+        me.passTipEl.on('click', function () {
+          if(me.input.attr('type') !== 'password'){
+            me.passTipEl.update('abc');
+            me.input.attr('type', 'password');
+            me.passTipEl.css('line-height', '22px');
+          }
+          else {
+            me.passTipEl.update('***');
+            me.input.attr('type', '');
+            me.passTipEl.css('line-height', '28px');
+          }
+        });
+      }
     }
 
     if( me.hidden ){
@@ -12907,6 +12966,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         Fancy.apply(config, params);
       }
 
+      if(config.id){
+        me.id = config.id;
+      }
       me.initId();
       config = me.prepareConfig(config, me);
       Fancy.applyConfig(me, config);
@@ -12958,6 +13020,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
       'columndrag',
+      'columnhide', 'columnshow',
       'scroll', 'nativescroll',
       'remove',
       'insert',
@@ -13062,7 +13125,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.edit = true;
     }
 
-    if(me.stateful){
+    if(me.stateful || me.state){
       requiredModules.state = true;
     }
 

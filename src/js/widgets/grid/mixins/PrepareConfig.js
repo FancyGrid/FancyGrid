@@ -16,6 +16,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     config._plugins = config._plugins || [];
 
+    config = me.generateColumnsFromData(config, originalConfig);
     /*
      * prevent columns linking if one columns object for several grids
      */
@@ -68,6 +69,36 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(originalConfig.columns){
       originalConfig.columns = Fancy.Array.copy(originalConfig.columns);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @return {Object}
+   */
+  generateColumnsFromData: function (config, originalConfig) {
+    if(!config.columns && config.data && config.data.length && Fancy.isArray(config.data[0])){
+      var firstDataRow = config.data[0] || config.data[0],
+        columns = [],
+        fields = [];
+
+      Fancy.each(firstDataRow, function (value, i) {
+        columns.push({
+          index: 'autoIndex' + i
+        });
+
+        fields.push('autoIndex' + i);
+      });
+
+      config.columns = columns;
+      config.data = {
+        items: config.data,
+        fields: fields
+      };
+
+      originalConfig.data = config.data;
     }
 
     return config;
@@ -1600,13 +1631,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigState: function(config){
-    if(config.state || config.stateful){
+    if(config.stateful){
       config._plugins.push({
         type: 'grid.state',
+        stateful: true,
         startState: config.state
       });
 
-      var state = localStorage.getItem(this.id);
+      var state = localStorage.getItem(this.getStateName());
 
       if(state){
         state = JSON.parse(state);
@@ -1623,6 +1655,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           });
         }
       }
+    }
+    else if(config.state){
+      config._plugins.push({
+        type: 'grid.state',
+        startState: config.state
+      });
     }
 
     return config;
@@ -1793,6 +1831,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
       panelBodyBorders = config.panelBodyBorders,
+      gridWithoutPanelBorders = config.gridWithoutPanelBorders,
       gridBorders = config.gridBorders;
 
     if(config.width === undefined){
@@ -1839,7 +1878,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];
       }
       else{
-        width += gridBorders[1] + gridBorders[3];
+        width += gridWithoutPanelBorders[1] + gridWithoutPanelBorders[3] + gridBorders[1] + gridBorders[3];
       }
 
       if(hasLocked){
@@ -1920,7 +1959,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
       }
       else{
-        height += gridBorders[0] + gridBorders[2];
+        height += gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2] + gridBorders[0] + gridBorders[2];
       }
 
       if(config.minHeight && height < config.minHeight){

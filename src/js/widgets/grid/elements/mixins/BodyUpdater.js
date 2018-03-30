@@ -643,6 +643,8 @@
       var me = this,
         w = me.widget,
         s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
@@ -669,7 +671,7 @@
         if (isCheckBoxInside === false) {
           cellsDomInner.item(j).update('');
 
-          new F.CheckBox({
+          checkBox = new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,
             value: false,
@@ -702,6 +704,26 @@
           }
           else {
             checkBox.set(false, false);
+          }
+        }
+
+        var data = s.get(j),
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j)
+          };
+
+        if(column.render){
+          if(column.render(o).hidden === true){
+            checkBox.hide();
+          }
+          else{
+            checkBox.show();
           }
         }
       }

@@ -289,6 +289,10 @@
 
         me._expandedIds[id].rightEl = rightEl;
       }
+
+      setTimeout(function () {
+        w.scroller.update();
+      }, 100);
     },
     /*
      * @param {Number} rowIndex

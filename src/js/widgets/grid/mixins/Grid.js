@@ -1325,7 +1325,7 @@
       }
 
       if (side) {
-        me.selection.selectColumns(columnIndex, side);
+        me.selection.selectColumn(columnIndex, side);
       }
     },
     /*
@@ -1832,6 +1832,7 @@
       }
 
       me.onWindowResize();
+      me.fire('columnhide');
     },
     /*
      * @param {String|Number} side
@@ -1858,11 +1859,11 @@
         rightHeader = me.rightHeader;
 
       if(F.isNumber(index)){
+        column = columns[index];
         if(!column.hidden){
           return;
         }
 
-        column = columns[index];
         orderIndex = index;
         column.hidden = false;
       }
@@ -1911,6 +1912,7 @@
       }
 
       me.onWindowResize();
+      me.fire('columnhide');
     },
     /*
      * @param {Number} indexOrder
@@ -2759,7 +2761,11 @@
     getStateSorters: function () {
       var me = this,
         o = {},
-        state = JSON.parse(localStorage.getItem(me.id));
+        state = JSON.parse(localStorage.getItem(me.getStateName()));
+
+      if(!state){
+        return;
+      }
 
       if(!state.sorters){
         return {};
@@ -2772,6 +2778,17 @@
       });
 
       return o;
+    },
+    /*
+     *
+     */
+    getStateName: function () {
+      var me = this,
+        w = me.widget,
+        id = me.id,
+        url = location.host + '-' + location.pathname;
+
+      return id + url;
     }
   });
 

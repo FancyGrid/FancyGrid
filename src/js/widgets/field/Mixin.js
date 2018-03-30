@@ -575,6 +575,11 @@
 
       me.validate(value);
     },
+    setLabel: function (value) {
+      var me = this;
+
+      me.el.select('.' + FIELD_LABEL_CLS).update(value);
+    },
     /*
      * @param {*} value
      * @param {Boolean} onInput

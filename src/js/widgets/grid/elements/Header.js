@@ -122,11 +122,6 @@
         numRows++;
       }
 
-      var sorted = {};
-      if(w.state){
-        sorted = w.getStateSorters();
-      }
-
       for (; i < iL; i++) {
         var column = columns[i],
           title = column.title || column.header,
@@ -199,17 +194,6 @@
           groupIndex: groupIndex,
           display: column.hidden ? 'none' : ''
         };
-
-        if(sorted[column.index]){
-          switch(sorted[column.index].dir){
-            case 'ASC':
-              cellConfig.cls += ' ' + GRID_COLUMN_SORT_ASC;
-              break;
-            case 'DESC':
-              cellConfig.cls += ' ' + GRID_COLUMN_SORT_DESC;
-              break;
-          }
-        }
 
         html += me.cellTpl.getHTML(cellConfig);
       }

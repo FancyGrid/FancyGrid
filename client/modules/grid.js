@@ -16,6 +16,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     config._plugins = config._plugins || [];
 
+    config = me.generateColumnsFromData(config, originalConfig);
     /*
      * prevent columns linking if one columns object for several grids
      */
@@ -68,6 +69,36 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(originalConfig.columns){
       originalConfig.columns = Fancy.Array.copy(originalConfig.columns);
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @return {Object}
+   */
+  generateColumnsFromData: function (config, originalConfig) {
+    if(!config.columns && config.data && config.data.length && Fancy.isArray(config.data[0])){
+      var firstDataRow = config.data[0] || config.data[0],
+        columns = [],
+        fields = [];
+
+      Fancy.each(firstDataRow, function (value, i) {
+        columns.push({
+          index: 'autoIndex' + i
+        });
+
+        fields.push('autoIndex' + i);
+      });
+
+      config.columns = columns;
+      config.data = {
+        items: config.data,
+        fields: fields
+      };
+
+      originalConfig.data = config.data;
     }
 
     return config;
@@ -1600,13 +1631,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigState: function(config){
-    if(config.state || config.stateful){
+    if(config.stateful){
       config._plugins.push({
         type: 'grid.state',
+        stateful: true,
         startState: config.state
       });
 
-      var state = localStorage.getItem(this.id);
+      var state = localStorage.getItem(this.getStateName());
 
       if(state){
         state = JSON.parse(state);
@@ -1623,6 +1655,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           });
         }
       }
+    }
+    else if(config.state){
+      config._plugins.push({
+        type: 'grid.state',
+        startState: config.state
+      });
     }
 
     return config;
@@ -1793,6 +1831,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
       panelBodyBorders = config.panelBodyBorders,
+      gridWithoutPanelBorders = config.gridWithoutPanelBorders,
       gridBorders = config.gridBorders;
 
     if(config.width === undefined){
@@ -1839,7 +1878,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];
       }
       else{
-        width += gridBorders[1] + gridBorders[3];
+        width += gridWithoutPanelBorders[1] + gridWithoutPanelBorders[3] + gridBorders[1] + gridBorders[3];
       }
 
       if(hasLocked){
@@ -1920,7 +1959,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
       }
       else{
-        height += gridBorders[0] + gridBorders[2];
+        height += gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2] + gridBorders[0] + gridBorders[2];
       }
 
       if(config.minHeight && height < config.minHeight){
@@ -3314,7 +3353,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (side) {
-        me.selection.selectColumns(columnIndex, side);
+        me.selection.selectColumn(columnIndex, side);
       }
     },
     /*
@@ -3821,6 +3860,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.onWindowResize();
+      me.fire('columnhide');
     },
     /*
      * @param {String|Number} side
@@ -3847,11 +3887,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         rightHeader = me.rightHeader;
 
       if(F.isNumber(index)){
+        column = columns[index];
         if(!column.hidden){
           return;
         }
 
-        column = columns[index];
         orderIndex = index;
         column.hidden = false;
       }
@@ -3900,6 +3940,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.onWindowResize();
+      me.fire('columnhide');
     },
     /*
      * @param {Number} indexOrder
@@ -4748,7 +4789,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     getStateSorters: function () {
       var me = this,
         o = {},
-        state = JSON.parse(localStorage.getItem(me.id));
+        state = JSON.parse(localStorage.getItem(me.getStateName()));
+
+      if(!state){
+        return;
+      }
 
       if(!state.sorters){
         return {};
@@ -4761,6 +4806,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       });
 
       return o;
+    },
+    /*
+     *
+     */
+    getStateName: function () {
+      var me = this,
+        w = me.widget,
+        id = me.id,
+        url = location.host + '-' + location.pathname;
+
+      return id + url;
     }
   });
 
@@ -5458,6 +5514,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       var me = this,
         w = me.widget,
         scrollInfo;
+
+      if(x > 0){
+        x = 0;
+      }
 
       if (w.nativeScroller) {
         if (y !== null && y !== undefined) {
@@ -6901,13 +6961,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       return;
     }
 
-    console.log("%cFancy%cGrid%c %cTrial%c Version! \nPurchase license for legal usage!\nSales email: sales@fancygrid.com",
+    console.log("%cFancy%cGrid%c %cTrial%c Version!",
       'color:#A2CFE8;font-size: 14px;font-weight: bold;',
       'color:#088EC7;font-size: 14px;font-weight: bold;',
       'font-weight:bold;color: #515151;font-size: 12px;',
       'color: red;font-weight: bold;font-size: 14px;',
       'font-weight:bold;color: #515151;font-size: 12px;'
     );
+
+    console.log("%cPurchase license for legal usage!\nSales email: sales@fancygrid.com", 'font-weight:bold;color: #515151;font-size: 12px;');
   },
   /*
    *
@@ -7886,6 +7948,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       var me = this,
         w = me.widget,
         s = w.store,
+        columns = me.getColumns(),
+        column = columns[i],
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
@@ -7912,7 +7976,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if (isCheckBoxInside === false) {
           cellsDomInner.item(j).update('');
 
-          new F.CheckBox({
+          checkBox = new F.CheckBox({
             renderTo: cellsDomInner.item(j).dom,
             renderId: true,
             value: false,
@@ -7945,6 +8009,26 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
           else {
             checkBox.set(false, false);
+          }
+        }
+
+        var data = s.get(j),
+          id = s.getId(j),
+          o = {
+            rowIndex: j,
+            data: data,
+            style: {},
+            column: column,
+            id: id,
+            item: s.getItem(j)
+          };
+
+        if(column.render){
+          if(column.render(o).hidden === true){
+            checkBox.hide();
+          }
+          else{
+            checkBox.show();
           }
         }
       }
@@ -9132,7 +9216,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
   var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
-  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -10085,11 +10168,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         numRows++;
       }
 
-      var sorted = {};
-      if(w.state){
-        sorted = w.getStateSorters();
-      }
-
       for (; i < iL; i++) {
         var column = columns[i],
           title = column.title || column.header,
@@ -10162,17 +10240,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupIndex: groupIndex,
           display: column.hidden ? 'none' : ''
         };
-
-        if(sorted[column.index]){
-          switch(sorted[column.index].dir){
-            case 'ASC':
-              cellConfig.cls += ' ' + GRID_COLUMN_SORT_ASC;
-              break;
-            case 'DESC':
-              cellConfig.cls += ' ' + GRID_COLUMN_SORT_DESC;
-              break;
-          }
-        }
 
         html += me.cellTpl.getHTML(cellConfig);
       }

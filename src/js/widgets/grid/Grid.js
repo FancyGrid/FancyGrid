@@ -58,6 +58,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         Fancy.apply(config, params);
       }
 
+      if(config.id){
+        me.id = config.id;
+      }
       me.initId();
       config = me.prepareConfig(config, me);
       Fancy.applyConfig(me, config);
@@ -109,6 +112,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
       'columndrag',
+      'columnhide', 'columnshow',
       'scroll', 'nativescroll',
       'remove',
       'insert',
@@ -213,7 +217,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.edit = true;
     }
 
-    if(me.stateful){
+    if(me.stateful || me.state){
       requiredModules.state = true;
     }
 
