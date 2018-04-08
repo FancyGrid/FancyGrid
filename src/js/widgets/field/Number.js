@@ -207,6 +207,8 @@
       docEl.once('mouseup', function () {
         clearInterval(me.spinInterval);
       });
+
+      me.focus();
     },
     /*
      * @param {Object} e
@@ -247,6 +249,8 @@
       docEl.once('mouseup', function () {
         clearInterval(me.spinInterval);
       });
+
+      me.focus();
     },
     /*
      *

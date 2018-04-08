@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.17',
+  version: '1.7.18',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -9651,6 +9651,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       docEl.once('mouseup', function () {
         clearInterval(me.spinInterval);
       });
+
+      me.focus();
     },
     /*
      * @param {Object} e
@@ -9691,6 +9693,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       docEl.once('mouseup', function () {
         clearInterval(me.spinInterval);
       });
+
+      me.focus();
     },
     /*
      *
@@ -11227,11 +11231,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           display: 'block',
           width: me.leftWidth
         });
-
-        if(value){
-          me.updateLeft();
-        }
-
       }
 
       me.setSize();
@@ -11267,6 +11266,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       me.renderList();
+
+      if(me.leftTpl) {
+        setTimeout(function () {
+          me.updateLeft();
+        }, 1);
+      }
 
       me.fire('afterrender');
       me.fire('render');
@@ -11780,6 +11785,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           notFocused = true;
           activeLi = list.firstChild();
         }
+
+        //console.log(activeLi);
 
         var activeLiHeight = parseInt(activeLi.css('height')),
           index = activeLi.index(),

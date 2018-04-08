@@ -1585,10 +1585,10 @@
           model.rows = me.getSelectedRows();
           if (me.memory && me.memory.all) {
             if(s.filteredDataMap){
-              model.items = s.filteredData;
+              model.items = Fancy.Array.copy(s.filteredData);
             }
             else{
-              model.items = s.data;
+              model.items = Fancy.Array.copy(s.data);
             }
           }
           else {

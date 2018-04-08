@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.17',
+  version: '1.7.18',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -16162,6 +16162,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       docEl.once('mouseup', function () {
         clearInterval(me.spinInterval);
       });
+
+      me.focus();
     },
     /*
      * @param {Object} e
@@ -16202,6 +16204,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       docEl.once('mouseup', function () {
         clearInterval(me.spinInterval);
       });
+
+      me.focus();
     },
     /*
      *
@@ -18430,11 +18434,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           display: 'block',
           width: me.leftWidth
         });
-
-        if(value){
-          me.updateLeft();
-        }
-
       }
 
       me.setSize();
@@ -18470,6 +18469,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       me.renderList();
+
+      if(me.leftTpl) {
+        setTimeout(function () {
+          me.updateLeft();
+        }, 1);
+      }
 
       me.fire('afterrender');
       me.fire('render');
@@ -18983,6 +18988,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           notFocused = true;
           activeLi = list.firstChild();
         }
+
+        //console.log(activeLi);
 
         var activeLiHeight = parseInt(activeLi.css('height')),
           index = activeLi.index(),
@@ -20631,6 +20638,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'string':
         case 'number':
         case 'text':
+        case 'date':
+        case 'combo':
           if(column.ellipsis !== false){
             column.ellipsis = true;
           }
@@ -30427,6 +30436,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             theme = undefined;
           }
 
+          if(column.minListWidth){
+            itemConfig.minListWidth = column.minListWidth;
+          }
+
           Fancy.apply(itemConfig, {
             theme: theme,
             data: data,
@@ -30586,6 +30599,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       me.activeEditor = editor;
       me.setEditorValue(o);
+      if(o.rowIndex === 0){
+        cellSize.height++;
+      }
+
+      if(column.minEditorWidth && cellSize.width < column.minEditorWidth){
+        cellSize.width = column.minEditorWidth;
+      }
+
       me.setEditorSize(cellSize);
       editor.show();
       editor.el.css(cellXY);
@@ -31214,6 +31235,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               else {
                 itemConfig.displayKey = 'text';
                 itemConfig.valueKey = 'text';
+              }
+
+              if(column.minListWidth){
+                itemConfig.minListWidth = column.minListWidth;
               }
 
               editor = new F.Combo(itemConfig);
@@ -33481,10 +33506,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           model.rows = me.getSelectedRows();
           if (me.memory && me.memory.all) {
             if(s.filteredDataMap){
-              model.items = s.filteredData;
+              model.items = Fancy.Array.copy(s.filteredData);
             }
             else{
-              model.items = s.data;
+              model.items = Fancy.Array.copy(s.data);
             }
           }
           else {
@@ -41599,6 +41624,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             case 'string':
             case 'text':
             case 'number':
+            case 'date':
+            case 'combo':
               el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
               break;
           }
@@ -44045,6 +44072,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           case 'string':
           case 'text':
           case 'number':
+          case 'date':
+          case 'combo':
             el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
             break;
         }

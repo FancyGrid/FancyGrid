@@ -552,6 +552,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             theme = undefined;
           }
 
+          if(column.minListWidth){
+            itemConfig.minListWidth = column.minListWidth;
+          }
+
           Fancy.apply(itemConfig, {
             theme: theme,
             data: data,
@@ -711,6 +715,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       me.activeEditor = editor;
       me.setEditorValue(o);
+      if(o.rowIndex === 0){
+        cellSize.height++;
+      }
+
+      if(column.minEditorWidth && cellSize.width < column.minEditorWidth){
+        cellSize.width = column.minEditorWidth;
+      }
+
       me.setEditorSize(cellSize);
       editor.show();
       editor.el.css(cellXY);
@@ -1338,6 +1350,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               else {
                 itemConfig.displayKey = 'text';
                 itemConfig.valueKey = 'text';
+              }
+
+              if(column.minListWidth){
+                itemConfig.minListWidth = column.minListWidth;
               }
 
               editor = new F.Combo(itemConfig);

@@ -294,6 +294,10 @@
                 itemConfig.valueKey = 'text';
               }
 
+              if(column.minListWidth){
+                itemConfig.minListWidth = column.minListWidth;
+              }
+
               editor = new F.Combo(itemConfig);
               break;
             case 'checkbox':

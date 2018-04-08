@@ -174,6 +174,10 @@
             theme = undefined;
           }
 
+          if(column.minListWidth){
+            itemConfig.minListWidth = column.minListWidth;
+          }
+
           Fancy.apply(itemConfig, {
             theme: theme,
             data: data,
@@ -333,6 +337,14 @@
 
       me.activeEditor = editor;
       me.setEditorValue(o);
+      if(o.rowIndex === 0){
+        cellSize.height++;
+      }
+
+      if(column.minEditorWidth && cellSize.width < column.minEditorWidth){
+        cellSize.width = column.minEditorWidth;
+      }
+
       me.setEditorSize(cellSize);
       editor.show();
       editor.el.css(cellXY);

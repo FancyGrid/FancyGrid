@@ -410,6 +410,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'string':
         case 'number':
         case 'text':
+        case 'date':
+        case 'combo':
           if(column.ellipsis !== false){
             column.ellipsis = true;
           }

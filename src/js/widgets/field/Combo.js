@@ -898,11 +898,6 @@
           display: 'block',
           width: me.leftWidth
         });
-
-        if(value){
-          me.updateLeft();
-        }
-
       }
 
       me.setSize();
@@ -938,6 +933,12 @@
       }
 
       me.renderList();
+
+      if(me.leftTpl) {
+        setTimeout(function () {
+          me.updateLeft();
+        }, 1);
+      }
 
       me.fire('afterrender');
       me.fire('render');
@@ -1451,6 +1452,8 @@
           notFocused = true;
           activeLi = list.firstChild();
         }
+
+        //console.log(activeLi);
 
         var activeLiHeight = parseInt(activeLi.css('height')),
           index = activeLi.index(),

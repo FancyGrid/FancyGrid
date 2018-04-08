@@ -410,6 +410,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'string':
         case 'number':
         case 'text':
+        case 'date':
+        case 'combo':
           if(column.ellipsis !== false){
             column.ellipsis = true;
           }
@@ -7424,6 +7426,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             case 'string':
             case 'text':
             case 'number':
+            case 'date':
+            case 'combo':
               el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
               break;
           }
@@ -9869,6 +9873,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           case 'string':
           case 'text':
           case 'number':
+          case 'date':
+          case 'combo':
             el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
             break;
         }

@@ -681,6 +681,8 @@
           case 'string':
           case 'text':
           case 'number':
+          case 'date':
+          case 'combo':
             el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
             break;
         }
