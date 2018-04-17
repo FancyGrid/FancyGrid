@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.18',
+  version: '1.7.19',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -11271,6 +11271,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         setTimeout(function () {
           me.updateLeft();
         }, 1);
+
+        //Bug fix with images
+        setTimeout(function () {
+          me.updateLeft();
+        }, 500);
+
+        //Bug fix with images
+        setTimeout(function () {
+          me.updateLeft();
+        }, 1000);
       }
 
       me.fire('afterrender');
@@ -11785,8 +11795,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           notFocused = true;
           activeLi = list.firstChild();
         }
-
-        //console.log(activeLi);
 
         var activeLiHeight = parseInt(activeLi.css('height')),
           index = activeLi.index(),

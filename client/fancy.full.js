@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.18',
+  version: '1.7.19',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -18474,6 +18474,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         setTimeout(function () {
           me.updateLeft();
         }, 1);
+
+        //Bug fix with images
+        setTimeout(function () {
+          me.updateLeft();
+        }, 500);
+
+        //Bug fix with images
+        setTimeout(function () {
+          me.updateLeft();
+        }, 1000);
       }
 
       me.fire('afterrender');
@@ -18989,8 +18999,6 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           activeLi = list.firstChild();
         }
 
-        //console.log(activeLi);
-
         var activeLiHeight = parseInt(activeLi.css('height')),
           index = activeLi.index(),
           lis = list.select('li'),
@@ -19490,6 +19498,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   ],
   extend: Fancy.Widget,
   type: 'field.set',
+  padding: '8px 11px 0px 8px',
   /*
    * @constructor
    * @param {Object} config
@@ -21989,6 +21998,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
                     grid.on('select', function(){
                       var selection = grid.getSelection();
+
                       if(selection.length === 0){
                         me.disable();
                       }
@@ -32779,6 +32789,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         else {
           me.deSelectCheckBox(rowIndex);
         }
+
+        w.fire('select', me.getSelection());
       }
       else if (select) {
         if((me.allowDeselect) && hasSelection){}
@@ -33487,7 +33499,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       var me = this,
         w = me.widget,
         s = w.store,
-        model = {};
+        model = {},
+        excepted;
 
       switch (me.selModel) {
         case 'row':
@@ -33505,6 +33518,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         case 'rows':
           model.rows = me.getSelectedRows();
           if (me.memory && me.memory.all) {
+            excepted = me.memory.except;
             if(s.filteredDataMap){
               model.items = Fancy.Array.copy(s.filteredData);
             }
@@ -33550,16 +33564,35 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           break;
       }
 
-      F.each(model.items, function(item, i){
-        if(F.isObject(item.data)){
-          model.items[i] = item.data;
-        }
-      });
+      if(excepted){
+        var items = [];
+
+        F.each(model.items, function (item, i) {
+          if (F.isObject(item.data)) {
+            model.items[i] = item.data;
+          }
+
+          var id = model.items[i].id;
+          if(!excepted[id]){
+            items.push(model.items[i]);
+          }
+        });
+
+        model.items = items;
+      }
+      else {
+        F.each(model.items, function (item, i) {
+          if (F.isObject(item.data)) {
+            model.items[i] = item.data;
+          }
+        });
+      }
 
       if (returnModel) {
         return model;
       }
-      return model.items;
+
+      return model.items || [];
     },
     /*
      *
@@ -42464,7 +42497,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
-        if (dirty) {
+        if (dirty && w.dirtyEnabled) {
           var cell = cellsDom.item(j);
           me.enableCellDirty(cell);
         }
@@ -43334,9 +43367,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      * @param {Fancy.Element} cell
      */
     enableCellDirty: function (cell) {
-      var me = this,
-        w = me.widget;
-
       if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
         return;
       }

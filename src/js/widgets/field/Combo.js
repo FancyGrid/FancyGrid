@@ -938,6 +938,16 @@
         setTimeout(function () {
           me.updateLeft();
         }, 1);
+
+        //Bug fix with images
+        setTimeout(function () {
+          me.updateLeft();
+        }, 500);
+
+        //Bug fix with images
+        setTimeout(function () {
+          me.updateLeft();
+        }, 1000);
       }
 
       me.fire('afterrender');
@@ -1452,8 +1462,6 @@
           notFocused = true;
           activeLi = list.firstChild();
         }
-
-        //console.log(activeLi);
 
         var activeLiHeight = parseInt(activeLi.css('height')),
           index = activeLi.index(),

@@ -959,7 +959,7 @@
           }
         }
 
-        if (dirty) {
+        if (dirty && w.dirtyEnabled) {
           var cell = cellsDom.item(j);
           me.enableCellDirty(cell);
         }
@@ -1829,9 +1829,6 @@
      * @param {Fancy.Element} cell
      */
     enableCellDirty: function (cell) {
-      var me = this,
-        w = me.widget;
-
       if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
         return;
       }

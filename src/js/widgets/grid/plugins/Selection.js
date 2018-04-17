@@ -858,6 +858,8 @@
         else {
           me.deSelectCheckBox(rowIndex);
         }
+
+        w.fire('select', me.getSelection());
       }
       else if (select) {
         if((me.allowDeselect) && hasSelection){}
@@ -1566,7 +1568,8 @@
       var me = this,
         w = me.widget,
         s = w.store,
-        model = {};
+        model = {},
+        excepted;
 
       switch (me.selModel) {
         case 'row':
@@ -1584,6 +1587,7 @@
         case 'rows':
           model.rows = me.getSelectedRows();
           if (me.memory && me.memory.all) {
+            excepted = me.memory.except;
             if(s.filteredDataMap){
               model.items = Fancy.Array.copy(s.filteredData);
             }
@@ -1629,16 +1633,35 @@
           break;
       }
 
-      F.each(model.items, function(item, i){
-        if(F.isObject(item.data)){
-          model.items[i] = item.data;
-        }
-      });
+      if(excepted){
+        var items = [];
+
+        F.each(model.items, function (item, i) {
+          if (F.isObject(item.data)) {
+            model.items[i] = item.data;
+          }
+
+          var id = model.items[i].id;
+          if(!excepted[id]){
+            items.push(model.items[i]);
+          }
+        });
+
+        model.items = items;
+      }
+      else {
+        F.each(model.items, function (item, i) {
+          if (F.isObject(item.data)) {
+            model.items[i] = item.data;
+          }
+        });
+      }
 
       if (returnModel) {
         return model;
       }
-      return model.items;
+
+      return model.items || [];
     },
     /*
      *

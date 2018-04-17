@@ -1761,6 +1761,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
                     grid.on('select', function(){
                       var selection = grid.getSelection();
+
                       if(selection.length === 0){
                         me.disable();
                       }

@@ -8,6 +8,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   ],
   extend: Fancy.Widget,
   type: 'field.set',
+  padding: '8px 11px 0px 8px',
   /*
    * @constructor
    * @param {Object} config
