@@ -43,6 +43,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     this.remove(o, true);
   },
   /*
+   * @param {Number} row
+   */
+  removeRow: function(row){
+    this.remove(row, true);
+  },
+  /*
+   * @param {*} id
+   */
+  removeRowById: function(id){
+    this.remove(id);
+  },
+  /*
+   * @param {*} id
+   */
+  removeRowByID: function(id){
+    this.remove(id);
+  },
+  /*
    *
    */
   removeAll: function () {

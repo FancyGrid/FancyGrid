@@ -37,6 +37,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   minWidth: 200,
   minHeight: 200,
   minColumnWidth: 30,
+  defaultColumnWidth: 100,
   emptyValue: '&nbsp;',
   frame: true,
   draggable: false,

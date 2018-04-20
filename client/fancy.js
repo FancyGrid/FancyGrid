@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.19',
+  version: '1.7.20',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -464,6 +464,10 @@ Fancy.apply(Fancy, {
   FIELD_COMBO_CLS: 'fancy-combo',
   FIELD_COMBO_SELECTED_ITEM_CLS: 'fancy-combo-item-selected',
   FIELD_COMBO_FOCUSED_ITEM_CLS: 'fancy-combo-item-focused',
+  FIELD_COMBO_DROPDOWN_BUTTON_CLS: 'fancy-combo-dropdown-button',
+  FIELD_COMBO_INPUT_CONTAINER_CLS: 'fancy-combo-input-container',
+  FIELD_COMBO_LIST_VALUE_CLS: 'fancy-combo-list-value',
+  FIELD_COMBO_LEFT_EL_CLS: 'fancy-combo-left-el',
   FIELD_SEARCH_CLS: 'fancy-field-search',
   FIELD_SEARCH_LIST_CLS: 'fancy-field-search-list',
   FIELD_SEARCH_PARAMS_LINK_CLS: 'fancy-field-search-params-link',
@@ -2517,6 +2521,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       index = me.getDataIndex(id);
       orderIndex = me.getRow(id);
       //TODO: absent orderIndex, need to learn where to take it.
+      if(index === undefined && orderIndex === undefined){
+        return;
+      }
     }
 
     if (me.isTree && me.treeCollapsing && me.filteredData) {
@@ -10344,14 +10351,21 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
   var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
-  var FIELD_COMBO_SELECTED_ITEM_CLS = 'fancy-combo-item-selected';
-  var FIELD_COMBO_FOCUSED_ITEM_CLS = 'fancy-combo-item-focused';
+  var FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
+  var FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
   var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
   var CLEARFIX_CLS = F.CLEARFIX_CLS;
   var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
   var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
   var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
+  var FIELD_COMBO_DROPDOWN_BUTTON_CLS = F.FIELD_COMBO_DROPDOWN_BUTTON_CLS;
+  var FIELD_COMBO_INPUT_CONTAINER_CLS = F.FIELD_COMBO_INPUT_CONTAINER_CLS;
+  var FIELD_COMBO_LEFT_EL_CLS = F.FIELD_COMBO_LEFT_EL_CLS;
+  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
+  var FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
+  var FIELD_COMBO_LIST_VALUE_CLS = F.FIELD_COMBO_LIST_VALUE_CLS;
 
   F.define('Fancy.combo.Manager', {
     singleton: true,
@@ -10399,10 +10413,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         '{label}',
       '</div>',
       '<div class="' + FIELD_TEXT_CLS + '">',
-        '<div class="fancy-combo-input-container" style="{inputWidth}{inputHeight}">',
-          '<div class="fancy-combo-left-el" style="{inputHeight}cursor:default;">&nbsp;</div>',
+        '<div class="' + FIELD_COMBO_INPUT_CONTAINER_CLS + '" style="{inputWidth}{inputHeight}">',
+          '<div class="' + FIELD_COMBO_LEFT_EL_CLS + '" style="{inputHeight}cursor:default;">&nbsp;</div>',
           '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputHeight}cursor:default;" value="{value}">',
-          '<div class="fancy-combo-dropdown-button">&nbsp;</div>',
+          '<div class="' + FIELD_COMBO_DROPDOWN_BUTTON_CLS + '">&nbsp;</div>',
         '</div>',
       '</div>',
       '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
@@ -10447,6 +10461,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       /*
        * Bug fix: #1074
+       * Theme is not applied to list element.
        */
       setTimeout(function () {
         me.applyTheme();
@@ -10564,10 +10579,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     ons: function () {
       var me = this,
-        drop = me.el.select('.fancy-combo-dropdown-button');
+        drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
 
       me.input = me.el.getByTag('input');
-      me.inputContainer = me.el.select('.fancy-combo-input-container');
+      me.inputContainer = me.el.select('.' + FIELD_COMBO_INPUT_CONTAINER_CLS);
       me.drop = drop;
 
       me.onsList();
@@ -10915,11 +10930,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} e
      */
     onListItemOver: function (e) {
-      if(this.disabled){
+      if(this.disabled) {
         return;
       }
 
       var li = F.get(e.target);
+      if(li.prop('tagName').toLocaleLowerCase() !== 'li'){
+        return;
+      }
 
       li.addCls(this.focusedItemCls);
     },
@@ -11221,11 +11239,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.setStyle();
 
       me.input = me.el.getByTag('input');
-      me.inputContainer = me.el.select('.fancy-combo-input-container');
-      me.drop = me.el.select('.fancy-combo-dropdown-button');
+      me.inputContainer = me.el.select('.' + FIELD_COMBO_INPUT_CONTAINER_CLS);
+      me.drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
 
       if(me.leftTpl){
-        me.left = me.el.select('.fancy-combo-left-el');
+        me.left = me.el.select('.' + FIELD_COMBO_LEFT_EL_CLS);
 
         me.left.css({
           display: 'block',
@@ -11237,11 +11255,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       renderTo.appendChild(el.dom);
 
       if (me.labelAlign === 'top') {
-        me.el.addCls('fancy-field-label-align-top');
+        me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
       }
       else if (me.labelAlign === 'right') {
-        me.el.addCls('fancy-field-label-align-right');
-        F.$(el.dom).find('.fancy-field-label').insertAfter(F.$(el.dom).find('.fancy-field-text'));
+        me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
+        F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
       }
 
       if (me.valueIndex) {
@@ -11318,10 +11336,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
 
         if (me.multiSelect && me.itemCheckBox) {
-          listHtml.push('<li value="' + value + '" class="' + isActive + '"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-value">' + displayValue + '</span></li>');
+          listHtml.push('<li value="' + value + '" class="' + isActive + '"><div class="' + FIELD_CHECKBOX_INPUT_CLS + '" style=""></div><span class="' + FIELD_COMBO_LIST_VALUE_CLS + '">' + displayValue + '</span></li>');
         }
         else {
-          listHtml.push('<li value="' + value + '" class="' + isActive + '"><span class="fancy-combo-list-value">' + displayValue + '</span></li>');
+          listHtml.push('<li value="' + value + '" class="' + isActive + '"><span class="' + FIELD_COMBO_LIST_VALUE_CLS + '">' + displayValue + '</span></li>');
         }
       });
 
@@ -11346,6 +11364,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       document.body.appendChild(list.dom);
       me.list = list;
+
+      me.applyTheme();
     },
     /*
      * @return {Number}
@@ -11444,7 +11464,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           displayValue = listTpl.getHTML(row);
         }
 
-        listHtml.push('<li value="' + value + '" class="' + isActive + '"><span class="fancy-combo-list-value">' + displayValue + '</span></li>');
+        listHtml.push('<li value="' + value + '" class="' + isActive + '"><span class="' + FIELD_COMBO_LIST_VALUE_CLS + '">' + displayValue + '</span></li>');
       });
 
       listHtml.push('</ul>');
@@ -12670,6 +12690,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     this.remove(o, true);
   },
   /*
+   * @param {Number} row
+   */
+  removeRow: function(row){
+    this.remove(row, true);
+  },
+  /*
+   * @param {*} id
+   */
+  removeRowById: function(id){
+    this.remove(id);
+  },
+  /*
+   * @param {*} id
+   */
+  removeRowByID: function(id){
+    this.remove(id);
+  },
+  /*
    *
    */
   removeAll: function () {
@@ -12960,6 +12998,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   minWidth: 200,
   minHeight: 200,
   minColumnWidth: 30,
+  defaultColumnWidth: 100,
   emptyValue: '&nbsp;',
   frame: true,
   draggable: false,

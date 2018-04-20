@@ -59,6 +59,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       index = me.getDataIndex(id);
       orderIndex = me.getRow(id);
       //TODO: absent orderIndex, need to learn where to take it.
+      if(index === undefined && orderIndex === undefined){
+        return;
+      }
     }
 
     if (me.isTree && me.treeCollapsing && me.filteredData) {

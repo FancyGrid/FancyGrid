@@ -3963,10 +3963,52 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         rightHeader = me.rightHeader,
         column;
 
+      if(side === undefined){
+        side = 'center';
+      }
+
+      if(F.isString(indexOrder)){
+        var columns = me.getColumns(side);
+
+        F.each(columns, function(column, i){
+          if(column.index === indexOrder){
+            indexOrder = i;
+            return true;
+          }
+        });
+
+        if(F.isString(indexOrder) && side === 'center'){
+          columns = me.getColumns('left');
+
+          F.each(columns, function(column, i){
+            if(column.index === indexOrder){
+              indexOrder = i;
+              side = 'left';
+              return true;
+            }
+          });
+
+          if(F.isString(indexOrder)){
+            columns = me.getColumns('right');
+
+            F.each(columns, function(column, i){
+              if(column.index === indexOrder){
+                indexOrder = i;
+                side = 'right';
+                return true;
+              }
+            });
+
+            if(F.isString(indexOrder)){
+              throw new Error('FancyGrid Error 7: Column was not found for method removeColumn');
+            }
+          }
+        }
+      }
+
       switch (side) {
         case 'left':
           column = me.leftColumns[indexOrder];
-
           me.leftColumns.splice(indexOrder, 1);
           leftHeader.removeCell(indexOrder);
           leftHeader.reSetIndexes();
@@ -4089,6 +4131,33 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if(me.sorter){
         me.sorter.updateSortedHeader();
       }
+    },
+    /*
+     * @param {Object} column
+     * @param {String} side
+     * @param {Number} orderIndex
+     */
+    addColumn: function (column, side, orderIndex) {
+      var me = this,
+        side = side || 'center';
+
+      if(!column.type){
+        column.type = 'string';
+      }
+
+      if(!column.width){
+        column.width = me.defaultColumnWidth;
+      }
+
+      if(orderIndex === undefined){
+        var columns = me.getColumns(side);
+
+        orderIndex = columns.length;
+      }
+
+      me.insertColumn(column, orderIndex, side);
+
+      me.scroller.update();
     },
     /*
      * @param {Number} orderIndex
