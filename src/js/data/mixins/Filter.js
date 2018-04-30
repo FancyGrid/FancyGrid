@@ -10,7 +10,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     var me = this,
       w = me.widget,
       caseSensitive = w.filter.caseSensitive,
-      successRepeat = w.filter.successRepeat,
       filters = me.filters,
       passed = true,
       wait = false;
@@ -125,15 +124,32 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             }
             break;
           case '':
-            value = String(value).toLocaleLowerCase();
-            indexValue = String(indexValue).toLocaleLowerCase();
+            var checkEqual = function (value, indexValue) {
+              value = String(value).toLocaleLowerCase();
+              indexValue = String(indexValue).toLocaleLowerCase();
 
-            value = value.replace(/\(/g, 'bracketleft');
-            value = value.replace(/\)/g, 'bracketright');
-            indexValue = indexValue.replace(/\(/g, 'bracketleft');
-            indexValue = indexValue.replace(/\)/g, 'bracketright');
+              value = value.replace(/\(/g, 'bracketleft');
+              value = value.replace(/\)/g, 'bracketright');
+              indexValue = indexValue.replace(/\(/g, 'bracketleft');
+              indexValue = indexValue.replace(/\)/g, 'bracketright');
 
-            passed = new RegExp(value).test(indexValue);
+              return new RegExp(value).test(indexValue);
+            };
+
+            if(Fancy.isArray(value)){
+              var i = 0,
+                iL = value.length;
+
+              for(;i<iL;i++){
+                passed = checkEqual(value[i], indexValue);
+                if(passed === false){
+                  break;
+                }
+              }
+            }
+            else {
+              passed = checkEqual(value, indexValue);
+            }
             break;
           case '*':
             passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
@@ -144,11 +160,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           default:
             throw new Error('FancyGrid Error 5: Unknown filter ' + q);
-        }
-
-        if(passed === true && successRepeat > 1){
-          successRepeat--;
-          passed = false;
         }
 
         if(wait === true){

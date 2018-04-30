@@ -402,6 +402,10 @@
               var me = this,
                 grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
+              if(grid.filter && grid.filter.autoEnterDelay === false){
+                return;
+              }
+
               if (!me.autoEnterTime) {
                 me.autoEnterTime = new Date();
               }

@@ -455,22 +455,32 @@
       if(F.isArray(me.menu)){
         me.initMenu();
       }
+      else if(!me.menu.type){
+        me.initMenu();
+      }
 
       setTimeout(function () {
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
     initMenu: function () {
-      var me = this;
+      var me = this,
+        config = {
+          theme: me.theme,
+          events: [{
+            hide: me.onMenuHide,
+            scope: me
+          }]
+        };
 
-      me.menu = new F.Menu({
-        items: me.menu,
-        theme: me.theme,
-        events: [{
-          hide: me.onMenuHide,
-          scope: me
-        }]
-      });
+      if(F.isObject(me.menu)){
+        F.apply(config, me.menu);
+      }
+      else{
+        config.items = me.menu;
+      }
+
+      me.menu = new F.Menu(config);
     },
     onMenuHide: function(){
       this.setPressed(false);

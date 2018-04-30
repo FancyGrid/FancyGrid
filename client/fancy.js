@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.20',
+  version: '1.7.21',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5651,22 +5651,32 @@ Fancy.define('Fancy.Plugin', {
       if(F.isArray(me.menu)){
         me.initMenu();
       }
+      else if(!me.menu.type){
+        me.initMenu();
+      }
 
       setTimeout(function () {
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
     initMenu: function () {
-      var me = this;
+      var me = this,
+        config = {
+          theme: me.theme,
+          events: [{
+            hide: me.onMenuHide,
+            scope: me
+          }]
+        };
 
-      me.menu = new F.Menu({
-        items: me.menu,
-        theme: me.theme,
-        events: [{
-          hide: me.onMenuHide,
-          scope: me
-        }]
-      });
+      if(F.isObject(me.menu)){
+        F.apply(config, me.menu);
+      }
+      else{
+        config.items = me.menu;
+      }
+
+      me.menu = new F.Menu(config);
     },
     onMenuHide: function(){
       this.setPressed(false);
@@ -7537,6 +7547,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             key: function (field, value) {
               var me = this,
                 grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+
+              if(grid.filter && grid.filter.autoEnterDelay === false){
+                return;
+              }
 
               if (!me.autoEnterTime) {
                 me.autoEnterTime = new Date();

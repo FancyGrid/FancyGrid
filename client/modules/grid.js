@@ -6416,11 +6416,29 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         index = o.index;
         if (isLeft) {
           index--;
+
+          column = columns[index];
+          if(index > 0 && columns[index].hidden){
+            index--;
+          }
         }
         if (isNaN(index)) {
           return;
         }
+
         column = columns[index];
+
+        if(index === 0 && column.hidden){
+          if(o.side === 'center' && w.leftColumns){}
+          else {
+            return false;
+          }
+        }
+
+        if(column.hidden){
+          return false;
+        }
+
         return column.resizable === true;
       }
       else {
@@ -6861,7 +6879,16 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           break;
       }
 
-      return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index - 1).dom;
+      var cell = header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index - 1).dom,
+        cellEl = F.get(cell);
+
+      if(cellEl.css('display') === 'none' && o.index !== 0){
+        o.cell = cell;
+        o.index--;
+        return me.getPrevCell(o);
+      }
+
+      return cell;
     },
     /*
      * @param {Object} o

@@ -20,7 +20,6 @@
     inWidgetName: 'filter',
     autoEnterDelay: 500,
     caseSensitive: true,
-    successRepeat: 1,
     /*
      * @constructor
      * @param {Object} config
@@ -372,6 +371,7 @@
             multiSelect: column.multiSelect,
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
+            listItemTpl: column.listItemTpl,
             events: [{
               change: me.onEnter,
               scope: me
@@ -545,7 +545,18 @@
           }
         }
 
-        me.filters[filterIndex][filter.operator] = filter.value;
+        if(filter.separator === '&'){
+          if(F.isArray(me.filters[filterIndex][filter.operator])){
+            me.filters[filterIndex][filter.operator].push(filter.value);
+          }
+          else{
+            me.filters[filterIndex][filter.operator] = [filter.value];
+          }
+        }
+        else {
+          me.filters[filterIndex][filter.operator] = filter.value;
+        }
+
         if (filter.operator !== '|') {
           //F.apply(me.filters[filterIndex], options);
         }
@@ -585,7 +596,6 @@
     onEnterSelect: function (field, value, options) {
       var me = this,
         w = me.widget,
-        s = w.store,
         selected = w.getSelection(),
         ids = [];
 
@@ -646,7 +656,13 @@
         return filters;
       }
 
-      splitted = value.split(',');
+      var separator = ',';
+
+      if(/\&/.test(value)){
+        separator = '&';
+      }
+
+      splitted = value.split(separator);
       j = 0;
       jL = splitted.length;
 
@@ -678,7 +694,8 @@
 
         filters.push({
           operator: operator,
-          value: _value
+          value: _value,
+          separator: separator
         });
       }
 

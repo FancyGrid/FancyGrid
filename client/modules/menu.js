@@ -87,6 +87,13 @@
         height: me.getItemsHeight()
       });
 
+      if(me.height){
+        el.css({
+          'height': me.height,
+          'overflow-y': 'scroll'
+        });
+      }
+
       renderTo = Fancy.get(me.renderTo || document.body);
 
       me.el = renderTo.dom.appendChild(el.dom);

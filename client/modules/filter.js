@@ -10,7 +10,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     var me = this,
       w = me.widget,
       caseSensitive = w.filter.caseSensitive,
-      successRepeat = w.filter.successRepeat,
       filters = me.filters,
       passed = true,
       wait = false;
@@ -125,15 +124,32 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             }
             break;
           case '':
-            value = String(value).toLocaleLowerCase();
-            indexValue = String(indexValue).toLocaleLowerCase();
+            var checkEqual = function (value, indexValue) {
+              value = String(value).toLocaleLowerCase();
+              indexValue = String(indexValue).toLocaleLowerCase();
 
-            value = value.replace(/\(/g, 'bracketleft');
-            value = value.replace(/\)/g, 'bracketright');
-            indexValue = indexValue.replace(/\(/g, 'bracketleft');
-            indexValue = indexValue.replace(/\)/g, 'bracketright');
+              value = value.replace(/\(/g, 'bracketleft');
+              value = value.replace(/\)/g, 'bracketright');
+              indexValue = indexValue.replace(/\(/g, 'bracketleft');
+              indexValue = indexValue.replace(/\)/g, 'bracketright');
 
-            passed = new RegExp(value).test(indexValue);
+              return new RegExp(value).test(indexValue);
+            };
+
+            if(Fancy.isArray(value)){
+              var i = 0,
+                iL = value.length;
+
+              for(;i<iL;i++){
+                passed = checkEqual(value[i], indexValue);
+                if(passed === false){
+                  break;
+                }
+              }
+            }
+            else {
+              passed = checkEqual(value, indexValue);
+            }
             break;
           case '*':
             passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
@@ -144,11 +160,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           default:
             throw new Error('FancyGrid Error 5: Unknown filter ' + q);
-        }
-
-        if(passed === true && successRepeat > 1){
-          successRepeat--;
-          passed = false;
         }
 
         if(wait === true){
@@ -285,7 +296,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     inWidgetName: 'filter',
     autoEnterDelay: 500,
     caseSensitive: true,
-    successRepeat: 1,
     /*
      * @constructor
      * @param {Object} config
@@ -637,6 +647,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             multiSelect: column.multiSelect,
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
+            listItemTpl: column.listItemTpl,
             events: [{
               change: me.onEnter,
               scope: me
@@ -810,7 +821,18 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           }
         }
 
-        me.filters[filterIndex][filter.operator] = filter.value;
+        if(filter.separator === '&'){
+          if(F.isArray(me.filters[filterIndex][filter.operator])){
+            me.filters[filterIndex][filter.operator].push(filter.value);
+          }
+          else{
+            me.filters[filterIndex][filter.operator] = [filter.value];
+          }
+        }
+        else {
+          me.filters[filterIndex][filter.operator] = filter.value;
+        }
+
         if (filter.operator !== '|') {
           //F.apply(me.filters[filterIndex], options);
         }
@@ -850,7 +872,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     onEnterSelect: function (field, value, options) {
       var me = this,
         w = me.widget,
-        s = w.store,
         selected = w.getSelection(),
         ids = [];
 
@@ -911,7 +932,13 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         return filters;
       }
 
-      splitted = value.split(',');
+      var separator = ',';
+
+      if(/\&/.test(value)){
+        separator = '&';
+      }
+
+      splitted = value.split(separator);
       j = 0;
       jL = splitted.length;
 
@@ -943,7 +970,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
         filters.push({
           operator: operator,
-          value: _value
+          value: _value,
+          separator: separator
         });
       }
 
