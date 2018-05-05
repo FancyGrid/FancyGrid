@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.21',
+  version: '1.7.22',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3716,6 +3716,19 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.loadedTimes++;
         me.loading = false;
         me.defineModel(o[me.readerRootProperty]);
+
+        if(me.widget.isTreeData){
+          me.data = o[me.readerRootProperty];
+          me.initTreeData();
+
+          me.widget.setSidesHeight();
+
+          me.fire('change');
+          me.fire('load');
+
+          me.fire('serversuccess', o, request);
+          return;
+        }
 
         if(me.paging) {
           me.processPagingData(o);
@@ -23798,6 +23811,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       else {
         me.el.hide();
       }
+
+      if(me.celledit){
+        var editor = me.celledit.activeEditor;
+
+        if(editor){
+          editor.hide();
+        }
+      }
     },
     /*
      *
@@ -35123,6 +35144,26 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         w = me.widget,
         item = me._expandedIds[id];
 
+      if(me._expandedIds[id].timeOutCheckHeight1){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight1);
+        delete me._expandedIds[id].timeOutCheckHeight1;
+      }
+
+      if(me._expandedIds[id].timeOutCheckHeight2){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight2);
+        delete me._expandedIds[id].timeOutCheckHeight2;
+      }
+
+      if(me._expandedIds[id].timeOutCheckHeight3){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight3);
+        delete me._expandedIds[id].timeOutCheckHeight3;
+      }
+
+      if(me._expandedIds[id].timeOutCheckHeight4){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight4);
+        delete me._expandedIds[id].timeOutCheckHeight4;
+      }
+
       item.el.hide();
       item.hidden = true;
 
@@ -35213,6 +35254,23 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       if (me.render) {
         /*renderTo, data, width*/
         me.render(el.dom, data, w.getCenterFullWidth());
+
+        var checkHeight = function(){
+          var _height = parseInt(el.css('height'));
+
+          if(height !== _height){
+            me._expandedIds[id].height = _height;
+            leftEl.css('height', _height);
+            rightEl.css('height', _height);
+
+            me.addMargin(Number(rowIndex) + 1, id);
+          }
+        };
+
+        me._expandedIds[id].timeOutCheckHeight1 = setTimeout(checkHeight, 100);
+        me._expandedIds[id].timeOutCheckHeight2 = setTimeout(checkHeight, 500);
+        me._expandedIds[id].timeOutCheckHeight3 = setTimeout(checkHeight, 1000);
+        me._expandedIds[id].timeOutCheckHeight4 = setTimeout(checkHeight, 3000);
       }
 
       height = parseInt(el.css('height'));

@@ -2352,6 +2352,7 @@
   background-color: white;
   z-index: 3;
   display: none;
+  overflow: hidden;
 }
 .fancy-menu .fancy-menu-item-disabled {
   opacity: 0.3;

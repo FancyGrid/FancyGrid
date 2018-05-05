@@ -156,6 +156,19 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.loading = false;
         me.defineModel(o[me.readerRootProperty]);
 
+        if(me.widget.isTreeData){
+          me.data = o[me.readerRootProperty];
+          me.initTreeData();
+
+          me.widget.setSidesHeight();
+
+          me.fire('change');
+          me.fire('load');
+
+          me.fire('serversuccess', o, request);
+          return;
+        }
+
         if(me.paging) {
           me.processPagingData(o);
         }

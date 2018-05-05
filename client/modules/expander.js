@@ -163,6 +163,26 @@
         w = me.widget,
         item = me._expandedIds[id];
 
+      if(me._expandedIds[id].timeOutCheckHeight1){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight1);
+        delete me._expandedIds[id].timeOutCheckHeight1;
+      }
+
+      if(me._expandedIds[id].timeOutCheckHeight2){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight2);
+        delete me._expandedIds[id].timeOutCheckHeight2;
+      }
+
+      if(me._expandedIds[id].timeOutCheckHeight3){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight3);
+        delete me._expandedIds[id].timeOutCheckHeight3;
+      }
+
+      if(me._expandedIds[id].timeOutCheckHeight4){
+        clearTimeout(me._expandedIds[id].timeOutCheckHeight4);
+        delete me._expandedIds[id].timeOutCheckHeight4;
+      }
+
       item.el.hide();
       item.hidden = true;
 
@@ -253,6 +273,23 @@
       if (me.render) {
         /*renderTo, data, width*/
         me.render(el.dom, data, w.getCenterFullWidth());
+
+        var checkHeight = function(){
+          var _height = parseInt(el.css('height'));
+
+          if(height !== _height){
+            me._expandedIds[id].height = _height;
+            leftEl.css('height', _height);
+            rightEl.css('height', _height);
+
+            me.addMargin(Number(rowIndex) + 1, id);
+          }
+        };
+
+        me._expandedIds[id].timeOutCheckHeight1 = setTimeout(checkHeight, 100);
+        me._expandedIds[id].timeOutCheckHeight2 = setTimeout(checkHeight, 500);
+        me._expandedIds[id].timeOutCheckHeight3 = setTimeout(checkHeight, 1000);
+        me._expandedIds[id].timeOutCheckHeight4 = setTimeout(checkHeight, 3000);
       }
 
       height = parseInt(el.css('height'));

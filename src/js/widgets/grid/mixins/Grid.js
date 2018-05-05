@@ -1162,6 +1162,14 @@
       else {
         me.el.hide();
       }
+
+      if(me.celledit){
+        var editor = me.celledit.activeEditor;
+
+        if(editor){
+          editor.hide();
+        }
+      }
     },
     /*
      *
