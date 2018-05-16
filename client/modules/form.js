@@ -410,8 +410,10 @@ Fancy.define('Fancy.toolbar.Tab', {
           case 'row':
           case 'set':
           case 'fieldset':
-          case 'tab':
             me.renderItems(_item.el.select('.' + FIELD_TEXT_CLS).dom, _item.items);
+            break;
+          case 'tab':
+            me.renderItems(_item.el.select('.fancy-field-tab-items').dom, _item.items);
             break;
           default:
             me._items.push(_item);

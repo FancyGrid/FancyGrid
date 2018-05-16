@@ -354,6 +354,12 @@
             data = me.configComboData(column.data);
           }
 
+          var selectAllText;
+
+          if(column.filter && column.filter.selectAll){
+            selectAllText = column.filter.selectAll;
+          }
+
           field = new F.Combo({
             renderTo: dom.dom,
             label: false,
@@ -372,6 +378,7 @@
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
             listItemTpl: column.listItemTpl,
+            selectAllText: selectAllText,
             events: [{
               change: me.onEnter,
               scope: me

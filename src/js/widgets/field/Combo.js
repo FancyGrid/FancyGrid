@@ -10,6 +10,7 @@
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_COMBO_RESULT_LIST_CLS = F.FIELD_COMBO_RESULT_LIST_CLS;
   var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
   var FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
   var FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
@@ -577,6 +578,10 @@
       me.list.on('click', me.onListItemClick, me, 'li');
       me.list.on('mouseenter', me.onListItemOver, me, 'li');
       me.list.on('mouseleave', me.onListItemLeave, me, 'li');
+
+      if(me.selectAllText){
+        me.list.select('.fancy-combo-list-select-all').on('click', me.onSelectAllClick, me);
+      }
     },
     /*
      *
@@ -644,7 +649,11 @@
         }
         else {
           me.removeValue(value);
-          me.clearFocused()
+          me.clearFocused();
+
+          if(me.selectAllText){
+            me.list.select('.fancy-combo-list-select-all').removeCls('fancy-combo-item-selected');
+          }
         }
 
         me.updateInput();
@@ -970,13 +979,19 @@
     renderList: function () {
       var me = this,
         list = F.get(document.createElement('div')),
-        listHtml = [
-          '<ul style="position: relative;">'
-        ];
+        listHtml = [];
+
+      if(me.selectAllText){
+        listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
+      }
 
       if (me.list) {
         me.list.destroy();
       }
+
+      listHtml.push([
+        '<ul style="position: relative;">'
+      ]);
 
       F.each(me.data, function (row, i) {
         var isActive = '',
@@ -1004,8 +1019,7 @@
       });
 
       listHtml.push('</ul>');
-
-      list.addCls('fancy fancy-combo-result-list');
+      list.addCls(F.cls, FIELD_COMBO_RESULT_LIST_CLS);
       list.update(listHtml.join(""));
 
       list.css({
@@ -1016,7 +1030,13 @@
       });
 
       if (me.data.length > 9) {
+        /*
         list.css({
+          height: me.listRowHeight * 9 + 'px',
+          overflow: 'auto'
+        });
+        */
+        list.select('ul').item(0).css({
           height: me.listRowHeight * 9 + 'px',
           overflow: 'auto'
         });
@@ -1609,18 +1629,57 @@
 
       return _values;
     },
+    /*
+     *
+     */
     updateLeft: function () {
       var me = this,
         item = me.data[me.getIndex(me.getValue())];
 
       me.left.update(new F.Template(me.leftTpl).getHTML(item));
     },
+    /*
+     *
+     */
     setData: function(data){
       var me = this;
 
       me.data = data;
       me.renderList();
       me.onsList();
+    },
+    /*
+     *
+     */
+    onSelectAllClick: function (e) {
+      var me = this,
+        lis = me.list.select('li'),
+        selectAllEl = me.list.select('.fancy-combo-list-select-all').item(0),
+        value = selectAllEl.hasClass('fancy-combo-item-selected');
+
+      setTimeout(function() {
+        if (value) {
+          selectAllEl.removeCls('fancy-combo-item-selected');
+        }
+        else {
+          selectAllEl.addCls('fancy-combo-item-selected');
+        }
+      }, 100);
+
+      lis.each(function (li, i) {
+        if(value){
+          if(li.hasClass('fancy-combo-item-selected')){
+            li.dom.click();
+          }
+        }
+        else{
+          if(li.hasClass('fancy-combo-item-selected')){}
+          else{
+            li.dom.click();
+          }
+        }
+
+      });
     }
   });
 

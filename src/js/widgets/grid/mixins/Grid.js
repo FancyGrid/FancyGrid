@@ -1840,7 +1840,11 @@
       }
 
       me.onWindowResize();
-      me.fire('columnhide');
+      me.fire('columnhide', {
+        column: column,
+        side: side,
+        orderIndex: orderIndex
+      });
     },
     /*
      * @param {String|Number} side
@@ -1920,7 +1924,11 @@
       }
 
       me.onWindowResize();
-      me.fire('columnhide');
+      me.fire('columnshow', {
+        column: column,
+        side: side,
+        orderIndex: orderIndex
+      });
     },
     /*
      * @param {Number} indexOrder

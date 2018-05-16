@@ -38,9 +38,15 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
     }
 
+
     for(var p in filters){
-      var indexFilters = filters[p],
+      var column = w.getColumnByIndex(p),
+        indexFilters = filters[p],
         indexValue = item.data[p];
+
+      if(column && column.filter && column.filter.fn){
+        return column.filter.fn(indexValue, filters, item);
+      }
 
       if(me.smartIndexes && me.smartIndexes[p]){
         indexValue = me.smartIndexes[p](item.data);
@@ -630,6 +636,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             data = me.configComboData(column.data);
           }
 
+          var selectAllText;
+
+          if(column.filter && column.filter.selectAll){
+            selectAllText = column.filter.selectAll;
+          }
+
           field = new F.Combo({
             renderTo: dom.dom,
             label: false,
@@ -648,6 +660,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
             listItemTpl: column.listItemTpl,
+            selectAllText: selectAllText,
             events: [{
               change: me.onEnter,
               scope: me

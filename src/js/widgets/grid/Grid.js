@@ -430,7 +430,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
 
-    me.fire('lockcolumn');
+    me.fire('lockcolumn', {
+      column: removedColumn
+    });
   },
   /*
    * @param {Number} indexOrder
@@ -447,7 +449,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    me.fire('rightlockcolumn');
+    me.fire('rightlockcolumn', {
+      column: removedColumn
+    });
   },
   /*
    * @param {Number} indexOrder
@@ -472,7 +476,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.grouping.insertGroupEls();
     }
 
-    me.fire('unlockcolumn');
+    me.fire('unlockcolumn', {
+      column: removedColumn
+    });
   },
   /*
    * @param {String} fromSide

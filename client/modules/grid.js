@@ -396,6 +396,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].sortable = false;
           columns[i].resizable = false;
           columns[i].width = 30;
+          columns[i].index = '$rowdrag';
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -3871,7 +3872,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.onWindowResize();
-      me.fire('columnhide');
+      me.fire('columnhide', {
+        column: column,
+        side: side,
+        orderIndex: orderIndex
+      });
     },
     /*
      * @param {String|Number} side
@@ -3951,7 +3956,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.onWindowResize();
-      me.fire('columnhide');
+      me.fire('columnshow', {
+        column: column,
+        side: side,
+        orderIndex: orderIndex
+      });
     },
     /*
      * @param {Number} indexOrder

@@ -396,6 +396,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].sortable = false;
           columns[i].resizable = false;
           columns[i].width = 30;
+          columns[i].index = '$rowdrag';
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){

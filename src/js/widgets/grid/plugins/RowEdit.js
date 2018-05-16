@@ -472,7 +472,7 @@
           cellSize.width--;
         }
 
-        cellSize.height -= 2;
+        cellSize.height -= 1;
 
         if (i === iL - 1) {
           editor.el.css('width', (cellSize.width - 2));

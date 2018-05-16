@@ -52,7 +52,8 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
   width: 100,
   emptyText: '',
   tpl: [
-    '<div class="fancy-field-text fancy-field-tab-items">',
+    //'<div class="fancy-field-text fancy-field-tab-items">',
+    '<div class="fancy-field-tab-items">',
     '</div>'
   ]
 });

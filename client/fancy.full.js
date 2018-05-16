@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.22',
+  version: '1.7.23',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -468,6 +468,7 @@ Fancy.apply(Fancy, {
   FIELD_COMBO_INPUT_CONTAINER_CLS: 'fancy-combo-input-container',
   FIELD_COMBO_LIST_VALUE_CLS: 'fancy-combo-list-value',
   FIELD_COMBO_LEFT_EL_CLS: 'fancy-combo-left-el',
+  FIELD_COMBO_RESULT_LIST_CLS: 'fancy-combo-result-list',
   FIELD_SEARCH_CLS: 'fancy-field-search',
   FIELD_SEARCH_LIST_CLS: 'fancy-field-search-list',
   FIELD_SEARCH_PARAMS_LINK_CLS: 'fancy-field-search-params-link',
@@ -5354,9 +5355,15 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
     }
 
+
     for(var p in filters){
-      var indexFilters = filters[p],
+      var column = w.getColumnByIndex(p),
+        indexFilters = filters[p],
         indexValue = item.data[p];
+
+      if(column && column.filter && column.filter.fn){
+        return column.filter.fn(indexValue, filters, item);
+      }
 
       if(me.smartIndexes && me.smartIndexes[p]){
         indexValue = me.smartIndexes[p](item.data);
@@ -13970,8 +13977,10 @@ Fancy.define('Fancy.bar.Text', {
           case 'row':
           case 'set':
           case 'fieldset':
-          case 'tab':
             me.renderItems(_item.el.select('.' + FIELD_TEXT_CLS).dom, _item.items);
+            break;
+          case 'tab':
+            me.renderItems(_item.el.select('.fancy-field-tab-items').dom, _item.items);
             break;
           default:
             me._items.push(_item);
@@ -17598,6 +17607,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_COMBO_RESULT_LIST_CLS = F.FIELD_COMBO_RESULT_LIST_CLS;
   var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
   var FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
   var FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
@@ -18165,6 +18175,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.list.on('click', me.onListItemClick, me, 'li');
       me.list.on('mouseenter', me.onListItemOver, me, 'li');
       me.list.on('mouseleave', me.onListItemLeave, me, 'li');
+
+      if(me.selectAllText){
+        me.list.select('.fancy-combo-list-select-all').on('click', me.onSelectAllClick, me);
+      }
     },
     /*
      *
@@ -18232,7 +18246,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
         else {
           me.removeValue(value);
-          me.clearFocused()
+          me.clearFocused();
+
+          if(me.selectAllText){
+            me.list.select('.fancy-combo-list-select-all').removeCls('fancy-combo-item-selected');
+          }
         }
 
         me.updateInput();
@@ -18558,13 +18576,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     renderList: function () {
       var me = this,
         list = F.get(document.createElement('div')),
-        listHtml = [
-          '<ul style="position: relative;">'
-        ];
+        listHtml = [];
+
+      if(me.selectAllText){
+        listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
+      }
 
       if (me.list) {
         me.list.destroy();
       }
+
+      listHtml.push([
+        '<ul style="position: relative;">'
+      ]);
 
       F.each(me.data, function (row, i) {
         var isActive = '',
@@ -18592,8 +18616,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       listHtml.push('</ul>');
-
-      list.addCls('fancy fancy-combo-result-list');
+      list.addCls(F.cls, FIELD_COMBO_RESULT_LIST_CLS);
       list.update(listHtml.join(""));
 
       list.css({
@@ -18604,7 +18627,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       if (me.data.length > 9) {
+        /*
         list.css({
+          height: me.listRowHeight * 9 + 'px',
+          overflow: 'auto'
+        });
+        */
+        list.select('ul').item(0).css({
           height: me.listRowHeight * 9 + 'px',
           overflow: 'auto'
         });
@@ -19197,18 +19226,57 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       return _values;
     },
+    /*
+     *
+     */
     updateLeft: function () {
       var me = this,
         item = me.data[me.getIndex(me.getValue())];
 
       me.left.update(new F.Template(me.leftTpl).getHTML(item));
     },
+    /*
+     *
+     */
     setData: function(data){
       var me = this;
 
       me.data = data;
       me.renderList();
       me.onsList();
+    },
+    /*
+     *
+     */
+    onSelectAllClick: function (e) {
+      var me = this,
+        lis = me.list.select('li'),
+        selectAllEl = me.list.select('.fancy-combo-list-select-all').item(0),
+        value = selectAllEl.hasClass('fancy-combo-item-selected');
+
+      setTimeout(function() {
+        if (value) {
+          selectAllEl.removeCls('fancy-combo-item-selected');
+        }
+        else {
+          selectAllEl.addCls('fancy-combo-item-selected');
+        }
+      }, 100);
+
+      lis.each(function (li, i) {
+        if(value){
+          if(li.hasClass('fancy-combo-item-selected')){
+            li.dom.click();
+          }
+        }
+        else{
+          if(li.hasClass('fancy-combo-item-selected')){}
+          else{
+            li.dom.click();
+          }
+        }
+
+      });
     }
   });
 
@@ -19750,7 +19818,8 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
   width: 100,
   emptyText: '',
   tpl: [
-    '<div class="fancy-field-text fancy-field-tab-items">',
+    //'<div class="fancy-field-text fancy-field-tab-items">',
+    '<div class="fancy-field-tab-items">',
     '</div>'
   ]
 });
@@ -20698,6 +20767,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].sortable = false;
           columns[i].resizable = false;
           columns[i].width = 30;
+          columns[i].index = '$rowdrag';
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -24489,7 +24559,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       me.onWindowResize();
-      me.fire('columnhide');
+      me.fire('columnhide', {
+        column: column,
+        side: side,
+        orderIndex: orderIndex
+      });
     },
     /*
      * @param {String|Number} side
@@ -24569,7 +24643,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       me.onWindowResize();
-      me.fire('columnhide');
+      me.fire('columnshow', {
+        column: column,
+        side: side,
+        orderIndex: orderIndex
+      });
     },
     /*
      * @param {Number} indexOrder
@@ -25951,7 +26029,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
 
-    me.fire('lockcolumn');
+    me.fire('lockcolumn', {
+      column: removedColumn
+    });
   },
   /*
    * @param {Number} indexOrder
@@ -25968,7 +26048,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    me.fire('rightlockcolumn');
+    me.fire('rightlockcolumn', {
+      column: removedColumn
+    });
   },
   /*
    * @param {Number} indexOrder
@@ -25993,7 +26075,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.grouping.insertGroupEls();
     }
 
-    me.fire('unlockcolumn');
+    me.fire('unlockcolumn', {
+      column: removedColumn
+    });
   },
   /*
    * @param {String} fromSide
@@ -28947,13 +29031,18 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         dragged = true;
       }
 
+      var columnDragParams = {
+        column: me.activeColumn,
+        fromSide: me.activeSide,
+        toSide: me.inSide
+      };
+
       delete me.inUpGroupCell;
       delete me.inUnderGroup;
       delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
       delete me.activeCell;
-      delete me.activeIndex;
       delete me.activeIndex;
       delete me.activeColumn;
       delete me.mouseDownX;
@@ -28971,7 +29060,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         setTimeout(function () {
           me.status = 'none';
           if(dragged) {
-            w.fire('columndrag');
+            w.fire('columndrag', columnDragParams);
             w.scroller.update();
             if(w.sorter){
               w.sorter.updateSortedHeader();
@@ -31613,7 +31702,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           cellSize.width--;
         }
 
-        cellSize.height -= 2;
+        cellSize.height -= 1;
 
         if (i === iL - 1) {
           editor.el.css('width', (cellSize.width - 2));
@@ -37085,13 +37174,18 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         dragged = true;
       }
 
+      var columnDragParams = {
+        column: me.activeColumn,
+        fromSide: me.activeSide,
+        toSide: me.inSide
+      };
+
       delete me.inUpGroupCell;
       delete me.inUnderGroup;
       delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
       delete me.activeCell;
-      delete me.activeIndex;
       delete me.activeIndex;
       delete me.activeColumn;
       delete me.mouseDownX;
@@ -37109,7 +37203,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         setTimeout(function () {
           me.status = 'none';
           if(dragged) {
-            w.fire('columndrag');
+            w.fire('columndrag', columnDragParams);
             w.scroller.update();
             if(w.sorter){
               w.sorter.updateSortedHeader();
@@ -39175,6 +39269,12 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
             data = me.configComboData(column.data);
           }
 
+          var selectAllText;
+
+          if(column.filter && column.filter.selectAll){
+            selectAllText = column.filter.selectAll;
+          }
+
           field = new F.Combo({
             renderTo: dom.dom,
             label: false,
@@ -39193,6 +39293,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
             listItemTpl: column.listItemTpl,
+            selectAllText: selectAllText,
             events: [{
               change: me.onEnter,
               scope: me

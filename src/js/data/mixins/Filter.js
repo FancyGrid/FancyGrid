@@ -38,9 +38,15 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
     }
 
+
     for(var p in filters){
-      var indexFilters = filters[p],
+      var column = w.getColumnByIndex(p),
+        indexFilters = filters[p],
         indexValue = item.data[p];
+
+      if(column && column.filter && column.filter.fn){
+        return column.filter.fn(indexValue, filters, item);
+      }
 
       if(me.smartIndexes && me.smartIndexes[p]){
         indexValue = me.smartIndexes[p](item.data);

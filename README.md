@@ -1,6 +1,6 @@
 # FancyGrid
 
-Build v1.7.22
+Build v1.7.23
 
 FancyGrid - JavaScript grid library with charts integration and server communication.
   
@@ -33,7 +33,7 @@ The `FancyGrid` object is now accessible. Happy griding!
 ```html
 <div id="grid"></div>
 <script>
-window.onload = function() {
+document.addEventListener("DOMContentLoaded", function() {
 
 new FancyGrid({
   renderTo: 'grid',
@@ -55,7 +55,7 @@ new FancyGrid({
   }]
 });
 
-};
+});
 </script>
 ```
 

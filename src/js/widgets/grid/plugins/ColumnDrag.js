@@ -152,13 +152,18 @@
         dragged = true;
       }
 
+      var columnDragParams = {
+        column: me.activeColumn,
+        fromSide: me.activeSide,
+        toSide: me.inSide
+      };
+
       delete me.inUpGroupCell;
       delete me.inUnderGroup;
       delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
       delete me.activeCell;
-      delete me.activeIndex;
       delete me.activeIndex;
       delete me.activeColumn;
       delete me.mouseDownX;
@@ -176,7 +181,7 @@
         setTimeout(function () {
           me.status = 'none';
           if(dragged) {
-            w.fire('columndrag');
+            w.fire('columndrag', columnDragParams);
             w.scroller.update();
             if(w.sorter){
               w.sorter.updateSortedHeader();
