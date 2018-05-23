@@ -524,6 +524,9 @@
         if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
           me.css('z-index', 1000 + F.zIndex++);
         }
+
+        F.get(document.body).select('.fancy-active-panel').removeCls('fancy-active-panel');
+        me.el.addCls('fancy-active-panel');
       });
     }
   });

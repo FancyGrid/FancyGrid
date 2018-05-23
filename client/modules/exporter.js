@@ -6,6 +6,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   extend: Fancy.Plugin,
   ptype: 'grid.exporter',
   inWidgetName: 'exporter',
+  csvSeparator: ',',
+  csvHeader: false,
+  csvFileName: 'export',
   /*
    * @param {Object} config
    */
@@ -67,6 +70,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), ws_name + ".xlsx")
   },
+  /*
+   * @return {Array}
+   */
   getColumnsData: function(){
     var me = this,
       w = me.widget,
@@ -86,6 +92,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     return data;
   },
+  /*
+   * @return {Array}
+   */
   getData: function(){
     var me = this,
       w = me.widget,
@@ -104,6 +113,11 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     return data;
   },
+  /*
+   * @param {Array} data
+   * @param {Array} opts
+   * @return {Object}
+   */
   sheet_from_array_of_arrays: function(data, opts){
     var ws = {},
       range = {
@@ -182,5 +196,79 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     }
 
     return ws;
+  },
+  /*
+   * @param {Object} o
+   * @return {String}
+   */
+  getDataAsCsv: function (o) {
+    var me = this,
+      w = me.widget,
+      data = me.getData(),
+      str = '',
+      o = o || {},
+      separator = o.separator || me.csvSeparator,
+      header = o.header || me.csvHeader;
+
+    if(header){
+      var fn = function(column){
+        if(column.hidden){
+          return;
+        }
+
+        str += '"' + column.title + '"' + separator;
+      };
+
+      Fancy.each(w.leftColumns, fn);
+      Fancy.each(w.columns, fn);
+      Fancy.each(w.rightColumns, fn);
+
+      str = str.substring(0, str.length - 1);
+      str += '\n';
+    }
+
+    Fancy.each(data, function (row, i) {
+      Fancy.each(row, function (value, j) {
+        if(Fancy.isString(value)){
+          value = '"' + value + '"';
+        }
+        str += value + separator;
+      });
+
+      str = str.substring(0, str.length - 1);
+
+      str += '\r\n';
+    });
+    
+    return str;
+  },
+  /*
+   * @param {Object} o
+   * @return {String}
+   */
+  exportToCSV: function (o) {
+    var me = this,
+      csvData = me.getDataAsCsv(),
+      o = o || {},
+      fileName = o.fileName || me.csvFileName;
+
+    //var blobObject = new Blob(["\ufeff", csvData], {
+    var blobObject = new Blob([csvData], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    // Internet Explorer
+    if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blobObject, fileName);
+    }
+    else {
+      // Chrome
+      var downloadLink = document.createElement("a");
+      downloadLink.href = window.URL.createObjectURL(blobObject);
+      downloadLink.download = fileName + '.csv';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
   }
 });

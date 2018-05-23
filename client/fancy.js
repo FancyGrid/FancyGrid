@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.23',
+  version: '1.7.24',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6793,6 +6793,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
           me.css('z-index', 1000 + F.zIndex++);
         }
+
+        F.get(document.body).select('.fancy-active-panel').removeCls('fancy-active-panel');
+        me.el.addCls('fancy-active-panel');
       });
     }
   });

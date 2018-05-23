@@ -4527,21 +4527,21 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         var rowData = [];
 
         F.each(leftColumns, function (column) {
-          if (column.index === undefined || column.index === '$selected') {
+          if (column.index === undefined || column.index === '$selected' || column.hidden) {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(columns, function (column) {
-          if (column.index === undefined || column.index === '$selected') {
+          if (column.index === undefined || column.index === '$selected' || column.hidden) {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(rightColumns, function (column) {
-          if (column.index === undefined || column.index === '$selected') {
+          if (column.index === undefined || column.index === '$selected' || column.hidden) {
             return;
           }
           rowData.push(me.get(i, column.index));
@@ -4576,6 +4576,38 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
     },
     /*
+     * @params {Object} o
+     */
+    getDataAsCsv: function(o){
+      var me = this;
+
+      if (me.exporter) {
+        return me.exporter.getDataAsCsv(o);
+      }
+    },
+    /*
+     * @params {Object} o
+     */
+    getDataAsCSV: function(o){
+      return this.getDataAsCsv(o);
+    },
+    /*
+     * @params {Object} o
+     */
+    exportToCSV: function (o) {
+      var me = this;
+
+      if (me.exporter) {
+        return me.exporter.exportToCSV(o);
+      }
+    },
+    /*
+     * @params {Object} o
+     */
+    exportToCsv: function (o) {
+      return this.exportToCSV(o);
+    },
+    /*
      *
      */
     enableSelection: function () {
@@ -4594,8 +4626,35 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this,
         s = me.store;
 
-      if(s.proxy && s.proxy.params){
+      if(s.proxy){
+        s.proxy.params = s.proxy.params || {};
+
         F.apply(s.proxy.params, o);
+      }
+    },
+    /*
+     * @param {String|Object} url
+     */
+    setUrl: function (url) {
+      var me = this,
+        s = me.store;
+
+      if(F.isString(url)){
+        if (s.proxy && s.proxy.api) {
+          if(s.proxy.type === 'rest'){
+            for(var p in s.proxy.api){
+              s.proxy.api[p] = url;
+            }
+          }
+          else {
+            s.proxy.api.read = url;
+          }
+        }
+      }
+      else {
+        if (s.proxy && s.proxy.api) {
+          F.apply(s.proxy.api, url);
+        }
       }
     },
     /*

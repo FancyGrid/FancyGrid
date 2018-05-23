@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.23',
+  version: '1.7.24',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -12241,6 +12241,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
           me.css('z-index', 1000 + F.zIndex++);
         }
+
+        F.get(document.body).select('.fancy-active-panel').removeCls('fancy-active-panel');
+        me.el.addCls('fancy-active-panel');
       });
     }
   });
@@ -25214,21 +25217,21 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         var rowData = [];
 
         F.each(leftColumns, function (column) {
-          if (column.index === undefined || column.index === '$selected') {
+          if (column.index === undefined || column.index === '$selected' || column.hidden) {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(columns, function (column) {
-          if (column.index === undefined || column.index === '$selected') {
+          if (column.index === undefined || column.index === '$selected' || column.hidden) {
             return;
           }
           rowData.push(me.get(i, column.index));
         });
 
         F.each(rightColumns, function (column) {
-          if (column.index === undefined || column.index === '$selected') {
+          if (column.index === undefined || column.index === '$selected' || column.hidden) {
             return;
           }
           rowData.push(me.get(i, column.index));
@@ -25263,6 +25266,38 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
     },
     /*
+     * @params {Object} o
+     */
+    getDataAsCsv: function(o){
+      var me = this;
+
+      if (me.exporter) {
+        return me.exporter.getDataAsCsv(o);
+      }
+    },
+    /*
+     * @params {Object} o
+     */
+    getDataAsCSV: function(o){
+      return this.getDataAsCsv(o);
+    },
+    /*
+     * @params {Object} o
+     */
+    exportToCSV: function (o) {
+      var me = this;
+
+      if (me.exporter) {
+        return me.exporter.exportToCSV(o);
+      }
+    },
+    /*
+     * @params {Object} o
+     */
+    exportToCsv: function (o) {
+      return this.exportToCSV(o);
+    },
+    /*
      *
      */
     enableSelection: function () {
@@ -25281,8 +25316,35 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var me = this,
         s = me.store;
 
-      if(s.proxy && s.proxy.params){
+      if(s.proxy){
+        s.proxy.params = s.proxy.params || {};
+
         F.apply(s.proxy.params, o);
+      }
+    },
+    /*
+     * @param {String|Object} url
+     */
+    setUrl: function (url) {
+      var me = this,
+        s = me.store;
+
+      if(F.isString(url)){
+        if (s.proxy && s.proxy.api) {
+          if(s.proxy.type === 'rest'){
+            for(var p in s.proxy.api){
+              s.proxy.api[p] = url;
+            }
+          }
+          else {
+            s.proxy.api.read = url;
+          }
+        }
+      }
+      else {
+        if (s.proxy && s.proxy.api) {
+          F.apply(s.proxy.api, url);
+        }
       }
     },
     /*
@@ -41006,6 +41068,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   extend: Fancy.Plugin,
   ptype: 'grid.exporter',
   inWidgetName: 'exporter',
+  csvSeparator: ',',
+  csvHeader: false,
+  csvFileName: 'export',
   /*
    * @param {Object} config
    */
@@ -41067,6 +41132,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), ws_name + ".xlsx")
   },
+  /*
+   * @return {Array}
+   */
   getColumnsData: function(){
     var me = this,
       w = me.widget,
@@ -41086,6 +41154,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     return data;
   },
+  /*
+   * @return {Array}
+   */
   getData: function(){
     var me = this,
       w = me.widget,
@@ -41104,6 +41175,11 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     return data;
   },
+  /*
+   * @param {Array} data
+   * @param {Array} opts
+   * @return {Object}
+   */
   sheet_from_array_of_arrays: function(data, opts){
     var ws = {},
       range = {
@@ -41182,6 +41258,80 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     }
 
     return ws;
+  },
+  /*
+   * @param {Object} o
+   * @return {String}
+   */
+  getDataAsCsv: function (o) {
+    var me = this,
+      w = me.widget,
+      data = me.getData(),
+      str = '',
+      o = o || {},
+      separator = o.separator || me.csvSeparator,
+      header = o.header || me.csvHeader;
+
+    if(header){
+      var fn = function(column){
+        if(column.hidden){
+          return;
+        }
+
+        str += '"' + column.title + '"' + separator;
+      };
+
+      Fancy.each(w.leftColumns, fn);
+      Fancy.each(w.columns, fn);
+      Fancy.each(w.rightColumns, fn);
+
+      str = str.substring(0, str.length - 1);
+      str += '\n';
+    }
+
+    Fancy.each(data, function (row, i) {
+      Fancy.each(row, function (value, j) {
+        if(Fancy.isString(value)){
+          value = '"' + value + '"';
+        }
+        str += value + separator;
+      });
+
+      str = str.substring(0, str.length - 1);
+
+      str += '\r\n';
+    });
+    
+    return str;
+  },
+  /*
+   * @param {Object} o
+   * @return {String}
+   */
+  exportToCSV: function (o) {
+    var me = this,
+      csvData = me.getDataAsCsv(),
+      o = o || {},
+      fileName = o.fileName || me.csvFileName;
+
+    //var blobObject = new Blob(["\ufeff", csvData], {
+    var blobObject = new Blob([csvData], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    // Internet Explorer
+    if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blobObject, fileName);
+    }
+    else {
+      // Chrome
+      var downloadLink = document.createElement("a");
+      downloadLink.href = window.URL.createObjectURL(blobObject);
+      downloadLink.download = fileName + '.csv';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
   }
 });
 /*
