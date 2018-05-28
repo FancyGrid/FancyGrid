@@ -358,7 +358,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       i = 0,
       iL = columns.length,
       isDraggable = false,
-      isTreeData = false;
+      isTreeData = false,
+      $selected = 0,
+      $order = 0,
+      $rowdrag = 0;
+
 
     for(;i<iL;i++){
       var column = columns[i];
@@ -385,11 +389,22 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           this.multiSelect = true;
           columns[i].index = '$selected';
           columns[i].editable = true;
+          $selected++;
+
+          if($selected > 1){
+            //columns[i].index += $selected;
+          }
           break;
         case 'order':
           columns[i].editable = false;
           columns[i].sortable = false;
+          columns[i].index = '$order';
           columns[i].cellAlign = 'right';
+          $order++;
+
+          if($order > 1){
+            //columns[i].index += $order;
+          }
           break;
         case 'rowdrag':
           columns[i].editable = false;
@@ -397,6 +412,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].resizable = false;
           columns[i].width = 30;
           columns[i].index = '$rowdrag';
+          $rowdrag++;
+
+          if($rowdrag > 1){
+            //columns[i].index += $rowdrag;
+          }
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){

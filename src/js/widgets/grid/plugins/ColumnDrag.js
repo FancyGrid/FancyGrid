@@ -182,7 +182,7 @@
           me.status = 'none';
           if(dragged) {
             w.fire('columndrag', columnDragParams);
-            w.scroller.update();
+            //w.scroller.update();
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }

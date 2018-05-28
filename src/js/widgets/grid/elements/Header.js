@@ -960,8 +960,13 @@
 
         if(Fancy.nojQuery){
           //Bug fix for dom fx without jQuery
-          cell.animate({width: column.width}, ANIMATE_DURATION);
-          cell.animate({left: left}, ANIMATE_DURATION);
+          //It is not fix.
+          //cell.animate({width: column.width}, ANIMATE_DURATION);
+          //cell.animate({left: left}, ANIMATE_DURATION);
+          cell.css({
+            width: column.width,
+            left: left
+          });
         }
         else {
           cell.animate({

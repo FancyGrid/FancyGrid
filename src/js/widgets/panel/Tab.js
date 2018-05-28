@@ -250,7 +250,12 @@
 
   if (!F.nojQuery && F.$) {
     F.$.fn.FancyTab = function (o) {
-      o.renderTo = $(this.selector)[0].id;
+      if(this.selector){
+        o.renderTo = $(this.selector)[0].id;
+      }
+      else{
+        o.renderTo = this.attr('id');
+      }
 
       return new FancyTab(o);
     };

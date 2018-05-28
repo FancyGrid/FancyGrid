@@ -317,6 +317,7 @@
 
       switch (side) {
         case 'center':
+        case undefined:
           return me.getCenterFullWidth();
         case 'left':
           return me.getLeftFullWidth();
@@ -671,7 +672,7 @@
             me.onWindowResize();
             delete me.intWindowResize;
 
-            //Bug fir for Mac
+            //Bug fix for Mac
             setTimeout(function () {
               me.onWindowResize();
             }, 300);
@@ -1425,7 +1426,12 @@
       if (me.panel) {
         renderTo = me.panel.renderTo;
 
-        el = F.get(renderTo);
+        if(me.responsive) {
+          el = F.get(renderTo);
+        }
+        else{
+          el = me.panel.el;
+        }
         me.setWidth(parseInt(el.width()));
 
         if(me.responsiveHeight){

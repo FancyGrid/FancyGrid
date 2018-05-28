@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.24',
+  version: '1.7.25',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -10932,6 +10932,7 @@ Fancy.define('Fancy.toolbar.Tab', {
     extraCls: '',
     width: 142,
     itemHeight: 30,
+    maxHeight: 200,
     rendered: false,
     theme: 'default',
     render: function(){
@@ -10950,7 +10951,7 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.widgetCls,
         me.cls,
         me.extraCls
-    );
+      );
 
       el.css({
         width: me.width,
@@ -10975,6 +10976,21 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.fire('render');
 
       me.rendered = true;
+
+      me.checkHeight();
+    },
+    /*
+     *
+     */
+    checkHeight: function(){
+      var me = this,
+        height = parseInt(me.el.css('height'));
+
+      if(height > me.maxHeight){
+        me.el.css({
+          'overflow-y': 'scroll'
+        });
+      }
     },
     /*
      * @return {Number}
@@ -11159,8 +11175,9 @@ Fancy.define('Fancy.toolbar.Tab', {
     /*
      * @param {Number} x
      * @param {Number} y
+     * @param {Boolean} [checkPostion]
      */
-    showAt: function(x, y){
+    showAt: function(x, y, checkPostion){
       var me = this;
 
       me.css('position', 'absolute');
@@ -11169,6 +11186,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.css('z-index', 1000 + F.zIndex++);
 
       me.el.show();
+
+      if(checkPostion !== false){
+        me.checkPosition();
+      }
 
       if(me.parentMenu){
         return;
@@ -11255,6 +11276,40 @@ Fancy.define('Fancy.toolbar.Tab', {
 
       item.el.addCls(MENU_ITEM_DISABLED_CLS);
       item.disabled = true;
+    },
+    /*
+     *
+     */
+    checkPosition: function () {
+      var me = this,
+        el = me.el,
+        offset = el.offset(),
+        height = parseInt(el.css('height')),
+        width = parseInt(el.css('width')),
+        viewSize = F.getViewSize(),
+        scroll = F.getScroll(),
+        rightBottomPointTop = offset.top + height,
+        rightBottomPointLeft = offset.left + width,
+        newTop = offset.top,
+        newLeft = offset.left,
+        scrollingWidth = 20;
+
+      if(rightBottomPointTop > viewSize[0] + scroll[0] - scrollingWidth){
+        newTop = offset.top - (rightBottomPointTop - (viewSize[0] + scroll[0])) - scrollingWidth;
+      }
+
+      if(rightBottomPointLeft > viewSize[1] + scroll[1] - scrollingWidth){
+        if(me.parentMenu){
+          var parentLeft = parseInt(me.parentMenu.el.css('left'));
+
+          newLeft = parentLeft - width;
+        }
+        else{
+          newLeft = offset.left - (rightBottomPointLeft - (viewSize[1] + scroll[1])) - scrollingWidth;
+        }
+      }
+
+      me.showAt(newLeft, newTop, false);
     }
   });
 
@@ -12589,7 +12644,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
   if (!F.nojQuery && F.$) {
     F.$.fn.FancyTab = function (o) {
-      o.renderTo = $(this.selector)[0].id;
+      if(this.selector){
+        o.renderTo = $(this.selector)[0].id;
+      }
+      else{
+        o.renderTo = this.attr('id');
+      }
 
       return new FancyTab(o);
     };
@@ -14869,7 +14929,13 @@ FancyForm.addValid = Fancy.addValid;
 
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyForm = function(o){
-    o.renderTo = $(this.selector)[0].id;
+    if(this.selector){
+      o.renderTo = $(this.selector)[0].id;
+    }
+    else{
+      o.renderTo = this.attr('id');
+    }
+
     return new Fancy.Form(o);
   };
 }
@@ -20732,7 +20798,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       i = 0,
       iL = columns.length,
       isDraggable = false,
-      isTreeData = false;
+      isTreeData = false,
+      $selected = 0,
+      $order = 0,
+      $rowdrag = 0;
+
 
     for(;i<iL;i++){
       var column = columns[i];
@@ -20759,11 +20829,22 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           this.multiSelect = true;
           columns[i].index = '$selected';
           columns[i].editable = true;
+          $selected++;
+
+          if($selected > 1){
+            //columns[i].index += $selected;
+          }
           break;
         case 'order':
           columns[i].editable = false;
           columns[i].sortable = false;
+          columns[i].index = '$order';
           columns[i].cellAlign = 'right';
+          $order++;
+
+          if($order > 1){
+            //columns[i].index += $order;
+          }
           break;
         case 'rowdrag':
           columns[i].editable = false;
@@ -20771,6 +20852,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].resizable = false;
           columns[i].width = 30;
           columns[i].index = '$rowdrag';
+          $rowdrag++;
+
+          if($rowdrag > 1){
+            //columns[i].index += $rowdrag;
+          }
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -23039,6 +23125,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       switch (side) {
         case 'center':
+        case undefined:
           return me.getCenterFullWidth();
         case 'left':
           return me.getLeftFullWidth();
@@ -23393,7 +23480,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             me.onWindowResize();
             delete me.intWindowResize;
 
-            //Bug fir for Mac
+            //Bug fix for Mac
             setTimeout(function () {
               me.onWindowResize();
             }, 300);
@@ -24147,7 +24234,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if (me.panel) {
         renderTo = me.panel.renderTo;
 
-        el = F.get(renderTo);
+        if(me.responsive) {
+          el = F.get(renderTo);
+        }
+        else{
+          el = me.panel.el;
+        }
         me.setWidth(parseInt(el.width()));
 
         if(me.responsiveHeight){
@@ -26986,8 +27078,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     /*
      * @param {Number} y
      * @param {Number} x
+     * @param {Boolean} [animate]
      */
-    scroll: function (y, x) {
+    scroll: function (y, x, animate) {
       var me = this,
         w = me.widget,
         scrollInfo;
@@ -27004,7 +27097,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         if (x !== null && x !== undefined) {
           w.body.el.dom.scrollLeft = Math.abs(x);
           if (w.header) {
-            w.header.scroll(x);
+            w.header.scroll(x, true);
           }
         }
 
@@ -27013,7 +27106,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       w.leftBody.scroll(y);
-      scrollInfo = w.body.scroll(y, x);
+      scrollInfo = w.body.scroll(y, x, animate);
       w.rightBody.scroll(y);
 
       if (scrollInfo.scrollTop !== undefined) {
@@ -27148,7 +27241,17 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         w = me.widget,
         rightScrolled = me.getScroll(),
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
-        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0);
+        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
+        centerColumnsWidth = w.getCenterFullWidth(),
+        viewWidth = w.getCenterViewWidth();
+
+      if(centerColumnsWidth < me.scrollLeft + viewWidth){
+        setTimeout(function () {
+          var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
+          w.scroll(me.scrollTop, -(me.scrollLeft + delta), true);
+        }, 10);
+        return;
+      }
 
       if (rightScrolled && cellsViewHeight < bodyViewHeight) {
         me.scroll(0);
@@ -29123,7 +29226,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           me.status = 'none';
           if(dragged) {
             w.fire('columndrag', columnDragParams);
-            w.scroller.update();
+            //w.scroller.update();
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }
@@ -37266,7 +37369,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           me.status = 'none';
           if(dragged) {
             w.fire('columndrag', columnDragParams);
-            w.scroller.update();
+            //w.scroller.update();
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }
@@ -41310,8 +41413,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   exportToCSV: function (o) {
     var me = this,
-      csvData = me.getDataAsCsv(),
       o = o || {},
+      csvData = me.getDataAsCsv(o),
       fileName = o.fileName || me.csvFileName;
 
     //var blobObject = new Blob(["\ufeff", csvData], {
@@ -44664,8 +44767,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
         if(Fancy.nojQuery){
           //Bug: zepto dom module does not support for 2 animation params.
-          el.animate({'width': column.width}, ANIMATE_DURATION);
-          el.animate({'left': left}, ANIMATE_DURATION);
+          //It is not fix
+          //el.animate({'width': column.width}, ANIMATE_DURATION);
+          //el.animate({'left': left}, ANIMATE_DURATION);
+          el.css({
+            width: column.width,
+            left: left
+          });
         }
         else{
           el.animate({
@@ -46095,8 +46203,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         if(Fancy.nojQuery){
           //Bug fix for dom fx without jQuery
-          cell.animate({width: column.width}, ANIMATE_DURATION);
-          cell.animate({left: left}, ANIMATE_DURATION);
+          //It is not fix.
+          //cell.animate({width: column.width}, ANIMATE_DURATION);
+          //cell.animate({left: left}, ANIMATE_DURATION);
+          cell.css({
+            width: column.width,
+            left: left
+          });
         }
         else {
           cell.animate({

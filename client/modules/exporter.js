@@ -248,8 +248,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   exportToCSV: function (o) {
     var me = this,
-      csvData = me.getDataAsCsv(),
       o = o || {},
+      csvData = me.getDataAsCsv(o),
       fileName = o.fileName || me.csvFileName;
 
     //var blobObject = new Blob(["\ufeff", csvData], {

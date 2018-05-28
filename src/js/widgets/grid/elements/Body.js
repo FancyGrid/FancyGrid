@@ -750,8 +750,13 @@
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
         if(Fancy.nojQuery){
           //Bug: zepto dom module does not support for 2 animation params.
-          el.animate({'width': column.width}, ANIMATE_DURATION);
-          el.animate({'left': left}, ANIMATE_DURATION);
+          //It is not fix
+          //el.animate({'width': column.width}, ANIMATE_DURATION);
+          //el.animate({'left': left}, ANIMATE_DURATION);
+          el.css({
+            width: column.width,
+            left: left
+          });
         }
         else{
           el.animate({

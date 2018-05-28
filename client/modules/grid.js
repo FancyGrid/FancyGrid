@@ -358,7 +358,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       i = 0,
       iL = columns.length,
       isDraggable = false,
-      isTreeData = false;
+      isTreeData = false,
+      $selected = 0,
+      $order = 0,
+      $rowdrag = 0;
+
 
     for(;i<iL;i++){
       var column = columns[i];
@@ -385,11 +389,22 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           this.multiSelect = true;
           columns[i].index = '$selected';
           columns[i].editable = true;
+          $selected++;
+
+          if($selected > 1){
+            //columns[i].index += $selected;
+          }
           break;
         case 'order':
           columns[i].editable = false;
           columns[i].sortable = false;
+          columns[i].index = '$order';
           columns[i].cellAlign = 'right';
+          $order++;
+
+          if($order > 1){
+            //columns[i].index += $order;
+          }
           break;
         case 'rowdrag':
           columns[i].editable = false;
@@ -397,6 +412,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           columns[i].resizable = false;
           columns[i].width = 30;
           columns[i].index = '$rowdrag';
+          $rowdrag++;
+
+          if($rowdrag > 1){
+            //columns[i].index += $rowdrag;
+          }
           break;
         case 'checkbox':
           if(column.cellAlign === undefined){
@@ -2349,6 +2369,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       switch (side) {
         case 'center':
+        case undefined:
           return me.getCenterFullWidth();
         case 'left':
           return me.getLeftFullWidth();
@@ -2703,7 +2724,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
             me.onWindowResize();
             delete me.intWindowResize;
 
-            //Bug fir for Mac
+            //Bug fix for Mac
             setTimeout(function () {
               me.onWindowResize();
             }, 300);
@@ -3457,7 +3478,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if (me.panel) {
         renderTo = me.panel.renderTo;
 
-        el = F.get(renderTo);
+        if(me.responsive) {
+          el = F.get(renderTo);
+        }
+        else{
+          el = me.panel.el;
+        }
         me.setWidth(parseInt(el.width()));
 
         if(me.responsiveHeight){
@@ -5657,8 +5683,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     /*
      * @param {Number} y
      * @param {Number} x
+     * @param {Boolean} [animate]
      */
-    scroll: function (y, x) {
+    scroll: function (y, x, animate) {
       var me = this,
         w = me.widget,
         scrollInfo;
@@ -5675,7 +5702,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         if (x !== null && x !== undefined) {
           w.body.el.dom.scrollLeft = Math.abs(x);
           if (w.header) {
-            w.header.scroll(x);
+            w.header.scroll(x, true);
           }
         }
 
@@ -5684,7 +5711,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       w.leftBody.scroll(y);
-      scrollInfo = w.body.scroll(y, x);
+      scrollInfo = w.body.scroll(y, x, animate);
       w.rightBody.scroll(y);
 
       if (scrollInfo.scrollTop !== undefined) {
@@ -5819,7 +5846,17 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         w = me.widget,
         rightScrolled = me.getScroll(),
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
-        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0);
+        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
+        centerColumnsWidth = w.getCenterFullWidth(),
+        viewWidth = w.getCenterViewWidth();
+
+      if(centerColumnsWidth < me.scrollLeft + viewWidth){
+        setTimeout(function () {
+          var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
+          w.scroll(me.scrollTop, -(me.scrollLeft + delta), true);
+        }, 10);
+        return;
+      }
 
       if (rightScrolled && cellsViewHeight < bodyViewHeight) {
         me.scroll(0);
@@ -10112,8 +10149,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
         if(Fancy.nojQuery){
           //Bug: zepto dom module does not support for 2 animation params.
-          el.animate({'width': column.width}, ANIMATE_DURATION);
-          el.animate({'left': left}, ANIMATE_DURATION);
+          //It is not fix
+          //el.animate({'width': column.width}, ANIMATE_DURATION);
+          //el.animate({'left': left}, ANIMATE_DURATION);
+          el.css({
+            width: column.width,
+            left: left
+          });
         }
         else{
           el.animate({
@@ -11182,8 +11224,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         if(Fancy.nojQuery){
           //Bug fix for dom fx without jQuery
-          cell.animate({width: column.width}, ANIMATE_DURATION);
-          cell.animate({left: left}, ANIMATE_DURATION);
+          //It is not fix.
+          //cell.animate({width: column.width}, ANIMATE_DURATION);
+          //cell.animate({left: left}, ANIMATE_DURATION);
+          cell.css({
+            width: column.width,
+            left: left
+          });
         }
         else {
           cell.animate({

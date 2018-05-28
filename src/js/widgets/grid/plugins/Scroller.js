@@ -647,8 +647,9 @@
     /*
      * @param {Number} y
      * @param {Number} x
+     * @param {Boolean} [animate]
      */
-    scroll: function (y, x) {
+    scroll: function (y, x, animate) {
       var me = this,
         w = me.widget,
         scrollInfo;
@@ -665,7 +666,7 @@
         if (x !== null && x !== undefined) {
           w.body.el.dom.scrollLeft = Math.abs(x);
           if (w.header) {
-            w.header.scroll(x);
+            w.header.scroll(x, true);
           }
         }
 
@@ -674,7 +675,7 @@
       }
 
       w.leftBody.scroll(y);
-      scrollInfo = w.body.scroll(y, x);
+      scrollInfo = w.body.scroll(y, x, animate);
       w.rightBody.scroll(y);
 
       if (scrollInfo.scrollTop !== undefined) {
@@ -809,7 +810,17 @@
         w = me.widget,
         rightScrolled = me.getScroll(),
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
-        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0);
+        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
+        centerColumnsWidth = w.getCenterFullWidth(),
+        viewWidth = w.getCenterViewWidth();
+
+      if(centerColumnsWidth < me.scrollLeft + viewWidth){
+        setTimeout(function () {
+          var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
+          w.scroll(me.scrollTop, -(me.scrollLeft + delta), true);
+        }, 10);
+        return;
+      }
 
       if (rightScrolled && cellsViewHeight < bodyViewHeight) {
         me.scroll(0);

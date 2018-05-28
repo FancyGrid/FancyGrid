@@ -198,7 +198,13 @@ FancyForm.addValid = Fancy.addValid;
 
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyForm = function(o){
-    o.renderTo = $(this.selector)[0].id;
+    if(this.selector){
+      o.renderTo = $(this.selector)[0].id;
+    }
+    else{
+      o.renderTo = this.attr('id');
+    }
+
     return new Fancy.Form(o);
   };
 }

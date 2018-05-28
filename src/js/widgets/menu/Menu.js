@@ -62,6 +62,7 @@
     extraCls: '',
     width: 142,
     itemHeight: 30,
+    maxHeight: 200,
     rendered: false,
     theme: 'default',
     render: function(){
@@ -80,7 +81,7 @@
         me.widgetCls,
         me.cls,
         me.extraCls
-    );
+      );
 
       el.css({
         width: me.width,
@@ -105,6 +106,21 @@
       me.fire('render');
 
       me.rendered = true;
+
+      me.checkHeight();
+    },
+    /*
+     *
+     */
+    checkHeight: function(){
+      var me = this,
+        height = parseInt(me.el.css('height'));
+
+      if(height > me.maxHeight){
+        me.el.css({
+          'overflow-y': 'scroll'
+        });
+      }
     },
     /*
      * @return {Number}
@@ -289,8 +305,9 @@
     /*
      * @param {Number} x
      * @param {Number} y
+     * @param {Boolean} [checkPostion]
      */
-    showAt: function(x, y){
+    showAt: function(x, y, checkPostion){
       var me = this;
 
       me.css('position', 'absolute');
@@ -299,6 +316,10 @@
       me.css('z-index', 1000 + F.zIndex++);
 
       me.el.show();
+
+      if(checkPostion !== false){
+        me.checkPosition();
+      }
 
       if(me.parentMenu){
         return;
@@ -385,6 +406,40 @@
 
       item.el.addCls(MENU_ITEM_DISABLED_CLS);
       item.disabled = true;
+    },
+    /*
+     *
+     */
+    checkPosition: function () {
+      var me = this,
+        el = me.el,
+        offset = el.offset(),
+        height = parseInt(el.css('height')),
+        width = parseInt(el.css('width')),
+        viewSize = F.getViewSize(),
+        scroll = F.getScroll(),
+        rightBottomPointTop = offset.top + height,
+        rightBottomPointLeft = offset.left + width,
+        newTop = offset.top,
+        newLeft = offset.left,
+        scrollingWidth = 20;
+
+      if(rightBottomPointTop > viewSize[0] + scroll[0] - scrollingWidth){
+        newTop = offset.top - (rightBottomPointTop - (viewSize[0] + scroll[0])) - scrollingWidth;
+      }
+
+      if(rightBottomPointLeft > viewSize[1] + scroll[1] - scrollingWidth){
+        if(me.parentMenu){
+          var parentLeft = parseInt(me.parentMenu.el.css('left'));
+
+          newLeft = parentLeft - width;
+        }
+        else{
+          newLeft = offset.left - (rightBottomPointLeft - (viewSize[1] + scroll[1])) - scrollingWidth;
+        }
+      }
+
+      me.showAt(newLeft, newTop, false);
     }
   });
 
