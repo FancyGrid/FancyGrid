@@ -118,6 +118,7 @@
 
       if(height > me.maxHeight){
         me.el.css({
+          height: me.maxHeight,
           'overflow-y': 'scroll'
         });
       }

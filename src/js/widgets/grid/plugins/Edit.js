@@ -175,7 +175,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     //TODO: function that get next editable cell(checkbox does not suit)
     //maybe in future to learn how other frameworks does it and checkbox also to add.
 
-    key = nextColumn.index || nextColumn.key;
+    key = nextColumn.index;
     id = s.getId(rowIndex);
 
     return {

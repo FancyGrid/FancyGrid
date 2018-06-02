@@ -817,7 +817,12 @@
       if(centerColumnsWidth < me.scrollLeft + viewWidth){
         setTimeout(function () {
           var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
-          w.scroll(me.scrollTop, -(me.scrollLeft + delta), true);
+          if(me.scrollLeft + delta < 0){
+            w.scroll(me.scrollTop, 0, true);
+          }
+          else {
+            w.scroll(me.scrollTop, (me.scrollLeft + delta), true);
+          }
         }, 10);
         return;
       }

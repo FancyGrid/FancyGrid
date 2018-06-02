@@ -9,6 +9,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   csvSeparator: ',',
   csvHeader: false,
   csvFileName: 'export',
+  excelFileName: 'export',
   /*
    * @param {Object} config
    */
@@ -26,12 +27,13 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   /*
    *
    */
-  exportToExcel: function(){
+  exportToExcel: function(o){
     var me = this,
       w = me.widget,
+      o = o || {},
       columnsData = me.getColumnsData(),
       data = me.getData(),
-      dataToExport = [columnsData].concat(data),
+      dataToExport = o.header === false? data : [columnsData].concat(data),
       Workbook = function(){
         if(!(this instanceof Workbook)) return new Workbook();
         this.SheetNames = [];
@@ -50,11 +52,14 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     var title = w.title;
 
-    if(Fancy.isObject(title)){
+    if(o.fileName){
+      title = o.fileName;
+    }
+    else if(Fancy.isObject(title)){
       title = title.text;
     }
 
-    var ws_name = title || 'grid_data';
+    var ws_name = title || me.excelFileName;
 
     /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);
@@ -248,6 +253,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   exportToCSV: function (o) {
     var me = this,
+      w = me.widget,
       o = o || {},
       csvData = me.getDataAsCsv(o),
       fileName = o.fileName || me.csvFileName;

@@ -106,7 +106,7 @@
       }
 
       column = columns[index];
-      key = column.index || column.key;
+      key = column.index;
 
       me.sort(action, key, side, column, cellEl);
     },

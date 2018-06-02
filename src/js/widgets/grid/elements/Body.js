@@ -296,7 +296,7 @@
       var columnIndex = parseInt(columnEl.attr('index')),
         rowIndex = parseInt(cellEl.attr('index')),
         column = columns[columnIndex],
-        key = column.index || column.key,
+        key = column.index,
         value = s.get(rowIndex, key),
         id = s.getId(rowIndex),
         data = s.get(rowIndex),
@@ -577,6 +577,40 @@
           left = parseInt(_column.css('left')) + columnWidth;
 
         _column.css('left', left);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showColumnNew: function (orderIndex) {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS),
+        columnEl = columnEls.item(orderIndex),
+        left = 0,
+        i = 0,
+        iL = columns.length;
+
+      columnEl.show();
+
+      for (; i < iL; i++) {
+        var columnEl = columnEls.item(i),
+          column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
+
+        if(F.nojQuery){
+          columnEl.css('left', left);
+        }
+        else{
+          columnEl.animate({
+            left: left
+          });
+        }
+
+        left += column.width;
       }
     },
     /*

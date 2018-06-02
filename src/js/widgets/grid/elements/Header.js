@@ -752,6 +752,56 @@
     /*
      * @param {Number} orderIndex
      */
+    showCellNew: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth,
+        left = 0,
+        i = 0,
+        iL = cells.length,
+        columns = me.getColumns();
+
+      cell.show();
+
+      cellWidth = parseInt(cell.css('width'));
+
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
+
+        groupCell.css('width', groupCellWidth + cellWidth);
+      }
+
+      var groups = {};
+
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
+
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
+        }
+        _cell.css('left', left);
+
+        left += column.width;
+      }
+
+      for (var p in groups) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
     removeCell: function (orderIndex) {
       var me = this,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),

@@ -77,7 +77,7 @@
         w = me.widget,
         s = w.store,
         name = w.getStateName(),
-        o = localStorage.getItem(name);
+        o = localStorage.getItem(name) || '{}';
 
       if (!o) {
         o = {};
@@ -116,7 +116,7 @@
       var me = this,
         w = me.widget,
         name = w.getStateName(),
-        o = localStorage.getItem(name);
+        o = localStorage.getItem(name) || '{}';
 
       if (!o) {
         o = {};
@@ -147,7 +147,7 @@
       var me = this,
         w = me.widget,
         name = w.getStateName(),
-        state = localStorage.getItem(name),
+        state = localStorage.getItem(name) || '{}';
         startState = me.startState;
 
       if(startState){
@@ -224,7 +224,7 @@
       var me = this,
         w = me.widget,
         name = w.getStateName(),
-        state = localStorage.getItem(name);
+        state = localStorage.getItem(name) || '{}';
 
       if(page === undefined){
         return;

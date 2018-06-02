@@ -1314,7 +1314,7 @@
 
         for (; i < iL; i++) {
           var column = columns[i];
-          if (column.index === key || column.key === key) {
+          if (column.index === key) {
             columnIndex = i;
             return true;
           }
@@ -1352,7 +1352,7 @@
 
       for (; i < iL; i++) {
         var column = _columns[i];
-        if (column.index === key || column.key === key) {
+        if (column.index === key) {
           return column;
         }
       }
@@ -2406,6 +2406,10 @@
       var me = this,
         scroller = me.scroller;
 
+      if(y !== undefined && y > 0){
+        y = -y;
+      }
+
       scroller.scroll(x, y);
 
       scroller.scrollBottomKnob();
@@ -2540,17 +2544,17 @@
       }
     },
     /*
-     *
+     * @params {Object} [o]
      */
-    exportToExcel: function () {
+    exportToExcel: function (o) {
       var me = this;
 
       if (me.exporter) {
-        me.exporter.exportToExcel();
+        me.exporter.exportToExcel(o);
       }
     },
     /*
-     * @params {Object} o
+     * @params {Object} [o]
      */
     getDataAsCsv: function(o){
       var me = this;
@@ -2566,7 +2570,7 @@
       return this.getDataAsCsv(o);
     },
     /*
-     * @params {Object} o
+     * @params {Object} [o]
      */
     exportToCSV: function (o) {
       var me = this;
@@ -2934,9 +2938,12 @@
      */
     getStateName: function () {
       var me = this,
-        w = me.widget,
         id = me.id,
         url = location.host + '-' + location.pathname;
+
+      if(me.stateId){
+        return me.stateId;
+      }
 
       return id + url;
     }

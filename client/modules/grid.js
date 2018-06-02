@@ -3366,7 +3366,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
         for (; i < iL; i++) {
           var column = columns[i];
-          if (column.index === key || column.key === key) {
+          if (column.index === key) {
             columnIndex = i;
             return true;
           }
@@ -3404,7 +3404,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       for (; i < iL; i++) {
         var column = _columns[i];
-        if (column.index === key || column.key === key) {
+        if (column.index === key) {
           return column;
         }
       }
@@ -4458,6 +4458,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this,
         scroller = me.scroller;
 
+      if(y !== undefined && y > 0){
+        y = -y;
+      }
+
       scroller.scroll(x, y);
 
       scroller.scrollBottomKnob();
@@ -4592,17 +4596,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
     },
     /*
-     *
+     * @params {Object} [o]
      */
-    exportToExcel: function () {
+    exportToExcel: function (o) {
       var me = this;
 
       if (me.exporter) {
-        me.exporter.exportToExcel();
+        me.exporter.exportToExcel(o);
       }
     },
     /*
-     * @params {Object} o
+     * @params {Object} [o]
      */
     getDataAsCsv: function(o){
       var me = this;
@@ -4618,7 +4622,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       return this.getDataAsCsv(o);
     },
     /*
-     * @params {Object} o
+     * @params {Object} [o]
      */
     exportToCSV: function (o) {
       var me = this;
@@ -4986,9 +4990,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     getStateName: function () {
       var me = this,
-        w = me.widget,
         id = me.id,
         url = location.host + '-' + location.pathname;
+
+      if(me.stateId){
+        return me.stateId;
+      }
 
       return id + url;
     }
@@ -5853,7 +5860,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       if(centerColumnsWidth < me.scrollLeft + viewWidth){
         setTimeout(function () {
           var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
-          w.scroll(me.scrollTop, -(me.scrollLeft + delta), true);
+          if(me.scrollLeft + delta < 0){
+            w.scroll(me.scrollTop, 0, true);
+          }
+          else {
+            w.scroll(me.scrollTop, (me.scrollLeft + delta), true);
+          }
         }, 10);
         return;
       }
@@ -7877,10 +7889,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         jL,
         currencySign = lang.currencySign;
 
-      if (column.key !== undefined) {
-        key = column.key;
-      }
-      else if (column.index !== undefined) {
+      if (column.index !== undefined) {
         key = column.index;
       }
       else {
@@ -8267,7 +8276,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8324,7 +8333,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8368,7 +8377,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8492,7 +8501,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
@@ -8575,7 +8584,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8633,7 +8642,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         columns = me.getColumns(),
         column = columns[i],
         columnWidth = column.width,
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8735,7 +8744,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8811,7 +8820,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8886,7 +8895,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -8972,7 +8981,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -9138,7 +9147,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
@@ -9695,7 +9704,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       var columnIndex = parseInt(columnEl.attr('index')),
         rowIndex = parseInt(cellEl.attr('index')),
         column = columns[columnIndex],
-        key = column.index || column.key,
+        key = column.index,
         value = s.get(rowIndex, key),
         id = s.getId(rowIndex),
         data = s.get(rowIndex),
@@ -9976,6 +9985,40 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           left = parseInt(_column.css('left')) + columnWidth;
 
         _column.css('left', left);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showColumnNew: function (orderIndex) {
+      var me = this,
+        columns = me.getColumns(),
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS),
+        columnEl = columnEls.item(orderIndex),
+        left = 0,
+        i = 0,
+        iL = columns.length;
+
+      columnEl.show();
+
+      for (; i < iL; i++) {
+        var columnEl = columnEls.item(i),
+          column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
+
+        if(F.nojQuery){
+          columnEl.css('left', left);
+        }
+        else{
+          columnEl.animate({
+            left: left
+          });
+        }
+
+        left += column.width;
       }
     },
     /*
@@ -11006,6 +11049,56 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
         _cell.css('left', left);
+      }
+
+      for (var p in groups) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
+    showCellNew: function (orderIndex) {
+      var me = this,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth,
+        left = 0,
+        i = 0,
+        iL = cells.length,
+        columns = me.getColumns();
+
+      cell.show();
+
+      cellWidth = parseInt(cell.css('width'));
+
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
+
+        groupCell.css('width', groupCellWidth + cellWidth);
+      }
+
+      var groups = {};
+
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
+
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
+        }
+        _cell.css('left', left);
+
+        left += column.width;
       }
 
       for (var p in groups) {

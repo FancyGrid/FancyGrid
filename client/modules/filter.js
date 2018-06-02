@@ -1408,7 +1408,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
       var fields = [];
 
       Fancy.each(columns, function (column) {
-        var index = column.index || column.key;
+        var index = column.index;
 
         if(column.searchable === false){
           return;

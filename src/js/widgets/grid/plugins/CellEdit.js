@@ -621,7 +621,7 @@
     getActiveColumnKey: function () {
       var o = this.activeCellEditParams,
         column = o.column,
-        key = column.key || column.index;
+        key = column.index;
 
       return key;
     },
@@ -632,7 +632,7 @@
       var me = this,
         w = me.widget,
         column = o.column,
-        key = column.key || column.index,
+        key = column.index,
         s = w.store,
         value = me.checkBoxChangedValue;
 

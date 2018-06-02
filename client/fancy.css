@@ -2118,6 +2118,11 @@
   border: 1px solid #d3dbe1;
   z-index: 1;
   padding: 1px 5px 5px 5px;
+  -webkit-border-radius: 0px 0px 3px 3px;
+  -moz-border-radius: 0px 0px 3px 3px;
+  -ms-border-radius: 0px 0px 3px 3px;
+  -o-border-radius: 0px 0px 3px 3px;
+  border-radius: 0px 0px 3px 3px;
 }
 .fancy-edit-row-button-cancel {
   margin-left: 5px;

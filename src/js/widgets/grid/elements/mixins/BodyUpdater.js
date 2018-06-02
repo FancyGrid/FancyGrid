@@ -360,10 +360,7 @@
         jL,
         currencySign = lang.currencySign;
 
-      if (column.key !== undefined) {
-        key = column.key;
-      }
-      else if (column.index !== undefined) {
+      if (column.index !== undefined) {
         key = column.index;
       }
       else {
@@ -750,7 +747,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -807,7 +804,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -851,7 +848,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -975,7 +972,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
@@ -1058,7 +1055,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -1116,7 +1113,7 @@
         columns = me.getColumns(),
         column = columns[i],
         columnWidth = column.width,
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -1218,7 +1215,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -1294,7 +1291,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -1369,7 +1366,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -1455,7 +1452,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
@@ -1621,7 +1618,7 @@
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.key || column.index,
+        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
