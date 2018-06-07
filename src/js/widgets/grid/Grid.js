@@ -126,7 +126,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'activate', 'deactivate',
       'beforeedit',
       'startedit',
-      'changepage',
+      'changepage', 'changepagesize',
       'dropitems',
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',

@@ -708,6 +708,79 @@
     /*
      * @param {Number} orderIndex
      */
+    hideCellNew: function (orderIndex) {
+      var me = this,
+        w = me.widget,
+        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cell = cells.item(orderIndex),
+        cellWidth = parseInt(cell.css('width')),
+        i = 0,
+        iL = cells.length,
+        columns = me.getColumns();
+
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        var groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+          groupCellWidth = parseInt(groupCell.css('width'));
+
+        groupCell.css('width', groupCellWidth - cellWidth);
+      }
+
+      var cellLeft = parseInt(cell.css('left'));
+
+      cell.hide();
+
+      var groups = {},
+        left = 0,
+        scrollLeft = 0;
+
+      if(me.side === 'center'){
+        scrollLeft = w.scroller.scrollLeft;
+        left -= scrollLeft;
+
+        /*
+        if(cellLeft < scrollLeft){
+          left += cellWidth;
+        }
+        */
+      }
+
+      for (; i < iL; i++) {
+        var _cell = cells.item(i),
+          column = columns[i];
+
+        if(column.hidden){
+          continue;
+        }
+
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
+            groups[column.grouping] = true;
+          }
+        }
+
+        if(F.nojQuery){
+          _cell.css('left', left);
+        }
+        else{
+
+          _cell.animate({
+            left: left
+          }, ANIMATE_DURATION);
+        }
+
+        left += column.width;
+      }
+
+      F.each(groups, function (group, p) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+
+        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
+      });
+    },
+    /*
+     * @param {Number} orderIndex
+     */
     showCell: function (orderIndex) {
       var me = this,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -754,6 +827,7 @@
      */
     showCellNew: function (orderIndex) {
       var me = this,
+        w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
         cell = cells.item(orderIndex),
         cellWidth,
@@ -774,6 +848,13 @@
         groupCell.css('width', groupCellWidth + cellWidth);
       }
 
+      var scrollLeft = 0;
+
+      if(me.side === 'center'){
+        scrollLeft = w.scroller.scrollLeft;
+        left -= scrollLeft;
+      }
+
       var groups = {};
 
       for (; i < iL; i++) {
@@ -789,7 +870,15 @@
             groups[column.grouping] = true;
           }
         }
-        _cell.css('left', left);
+
+        if(F.nojQuery){
+          _cell.css('left', left);
+        }
+        else{
+          _cell.animate({
+            left: left
+          }, ANIMATE_DURATION);
+        }
 
         left += column.width;
       }

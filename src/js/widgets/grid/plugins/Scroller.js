@@ -817,6 +817,7 @@
       if(centerColumnsWidth < me.scrollLeft + viewWidth){
         setTimeout(function () {
           var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
+
           if(me.scrollLeft + delta < 0){
             w.scroll(me.scrollTop, 0, true);
           }

@@ -672,7 +672,6 @@
         imageWidth: 20,
         width: 0,
         text: false,
-        id: 'my',
         style: {
           position: 'absolute',
           left: -1,

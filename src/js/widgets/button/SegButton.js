@@ -93,6 +93,10 @@ Fancy.define('Fancy.SegButton', {
           'border-top-right-radius': 0,
           'border-bottom-right-radius': 0
         };
+
+        if(iL === 1){
+          delete item.style['border-right-width'];
+        }
       }
       else if(i > 1){
         item.style = {
@@ -148,5 +152,25 @@ Fancy.define('Fancy.SegButton', {
     for(;i<iL;i++){
       items[i].setPressed(false, fire);
     }
+  },
+  /*
+   *
+   */
+  setItems: function (values) {
+    var me = this;
+
+    me.el.update('');
+
+    me.items = values;
+    me.renderButtons();
+  },
+  /*
+   *
+   */
+  setActiveItem: function (index, fire) {
+    var me = this,
+      items = me.items;
+
+    items[index].setPressed(true, fire);
   }
 });

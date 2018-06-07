@@ -304,6 +304,7 @@
           field;
 
         item.theme = me.theme;
+        item.i18n = me.i18n;
 
         switch (item.type) {
           case 'pass':

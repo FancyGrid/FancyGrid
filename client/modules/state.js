@@ -58,14 +58,9 @@
         w = me.widget,
         s = w.store,
         name = w.getStateName(),
-        o = localStorage.getItem(name);
+        o = localStorage.getItem(name) || '{}';
 
-      if (!o) {
-        o = {};
-      }
-      else {
-        o = JSON.parse(o);
-      }
+      o = JSON.parse(o);
 
       o.sorters = JSON.stringify(s.sorters);
 
@@ -79,12 +74,7 @@
         name = w.getStateName(),
         o = localStorage.getItem(name) || '{}';
 
-      if (!o) {
-        o = {};
-      }
-      else {
-        o = JSON.parse(o);
-      }
+      o = JSON.parse(o);
 
       o.filters = JSON.stringify(s.filters);
 
@@ -118,12 +108,7 @@
         name = w.getStateName(),
         o = localStorage.getItem(name) || '{}';
 
-      if (!o) {
-        o = {};
-      }
-      else {
-        o = JSON.parse(o);
-      }
+      o = JSON.parse(o);
 
       var columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns),
         _columns = [];
@@ -141,6 +126,7 @@
       });
 
       o.columns = JSON.stringify(_columns);
+
       localStorage.setItem(name, JSON.stringify(o));
     },
     onBeforeInit: function () {
@@ -181,10 +167,6 @@
             w.setPage(Number(startState.page) + 1);
           }, 100);
         }
-      }
-
-      if(!state){
-        return;
       }
 
       state = JSON.parse(state);

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.26',
+  version: '1.7.27',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5779,6 +5779,10 @@ Fancy.define('Fancy.SegButton', {
           'border-top-right-radius': 0,
           'border-bottom-right-radius': 0
         };
+
+        if(iL === 1){
+          delete item.style['border-right-width'];
+        }
       }
       else if(i > 1){
         item.style = {
@@ -5834,6 +5838,26 @@ Fancy.define('Fancy.SegButton', {
     for(;i<iL;i++){
       items[i].setPressed(false, fire);
     }
+  },
+  /*
+   *
+   */
+  setItems: function (values) {
+    var me = this;
+
+    me.el.update('');
+
+    me.items = values;
+    me.renderButtons();
+  },
+  /*
+   *
+   */
+  setActiveItem: function (index, fire) {
+    var me = this,
+      items = me.items;
+
+    items[index].setPressed(true, fire);
   }
 });
 /**
@@ -7827,7 +7851,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         imageWidth: 20,
         width: 0,
         text: false,
-        id: 'my',
         style: {
           position: 'absolute',
           left: -1,
@@ -13176,7 +13199,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'activate', 'deactivate',
       'beforeedit',
       'startedit',
-      'changepage',
+      'changepage', 'changepagesize',
       'dropitems',
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',

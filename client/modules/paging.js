@@ -214,7 +214,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
    * @param {Number} value
    */
   setPageSize: function(value){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
     me.pageSize = value;
 
@@ -226,6 +227,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     else {
       me.changeDataView();
     }
+
+    w.fire('changepagesize', value);
   }
 });/*
  * @class Fancy.grid.plugin.Paging
@@ -326,7 +329,14 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     }
 
     w.setSidesHeight();
-    w.fire('changepage', store.showPage);
+    if(me.$prevPage === undefined){
+      w.fire('changepage', store.showPage);
+    }
+    else if(me.$prevPage !== store.showPage){
+      w.fire('changepage', store.showPage);
+    }
+
+    me.$prevPage = store.showPage
   },
   /*
    * @param {Number} value

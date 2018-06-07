@@ -97,7 +97,14 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     }
 
     w.setSidesHeight();
-    w.fire('changepage', store.showPage);
+    if(me.$prevPage === undefined){
+      w.fire('changepage', store.showPage);
+    }
+    else if(me.$prevPage !== store.showPage){
+      w.fire('changepage', store.showPage);
+    }
+
+    me.$prevPage = store.showPage
   },
   /*
    * @param {Number} value

@@ -1661,7 +1661,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         startState: config.state
       });
 
-      var state = localStorage.getItem(this.getStateName());
+      var name = config.stateId || this.getStateName(),
+        state = localStorage.getItem(name);
 
       if(state){
         state = JSON.parse(state);

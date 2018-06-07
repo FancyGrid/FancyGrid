@@ -214,7 +214,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
    * @param {Number} value
    */
   setPageSize: function(value){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
     me.pageSize = value;
 
@@ -226,5 +227,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     else {
       me.changeDataView();
     }
+
+    w.fire('changepagesize', value);
   }
 });

@@ -560,6 +560,47 @@
     /*
      * @param {Number} orderIndex
      */
+    hideColumnNew: function (orderIndex) {
+      var me = this,
+        w = me.widget,
+        columns = me.getColumns(),
+        columnEls = me.el.select('.' + GRID_COLUMN_CLS),
+        columnEl = columnEls.item(orderIndex),
+        i = 0,
+        iL = columns.length,
+        left = 0,
+        scrollLeft = 0;
+
+      if(me.side === 'center'){
+        scrollLeft = w.scroller.scrollLeft;
+        left -= scrollLeft;
+      }
+
+      columnEl.hide();
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+        columnEl = columnEls.item(i);
+
+        if(column.hidden){
+          continue;
+        }
+
+        if(F.nojQuery) {
+          columnEl.css('left', left);
+        }
+        else {
+          columnEl.animate({
+            left: left
+          }, ANIMATE_DURATION);
+        }
+
+        left += column.width;
+      }
+    },
+    /*
+     * @param {Number} orderIndex
+     */
     showColumn: function (orderIndex) {
       var me = this,
         columns = me.el.select('.' + GRID_COLUMN_CLS),
@@ -584,12 +625,19 @@
      */
     showColumnNew: function (orderIndex) {
       var me = this,
+        w = me.widget,
         columns = me.getColumns(),
         columnEls = me.el.select('.' + GRID_COLUMN_CLS),
         columnEl = columnEls.item(orderIndex),
         left = 0,
         i = 0,
-        iL = columns.length;
+        iL = columns.length,
+        scrollLeft = 0;
+
+      if(me.side === 'center'){
+        scrollLeft = w.scroller.scrollLeft;
+        left -= scrollLeft;
+      }
 
       columnEl.show();
 
