@@ -373,6 +373,7 @@
     renderButtons: function () {
       var me = this,
         w = me.widget,
+        lang = w.lang,
         container = F.get(document.createElement('div')),
         el;
 
@@ -385,7 +386,7 @@
       me.buttonUpdate = new F.Button({
         cls: GRID_ROW_EDIT_BUTTON_UPDATE_CLS,
         renderTo: el.dom,
-        text: 'Update',
+        text: lang.update,
         events: [{
           click: me.onClickUpdate,
           scope: me
@@ -395,7 +396,7 @@
       me.buttonCancel = new F.Button({
         cls: GRID_ROW_EDIT_BUTTON_CANCEL_CLS,
         renderTo: el.dom,
-        text: 'Cancel',
+        text: lang.cancel,
         events: [{
           click: me.onClickCancel,
           scope: me

@@ -221,7 +221,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
           return;
         }
 
-        str += '"' + column.title + '"' + separator;
+        str += '"' + (column.title || '') + '"' + separator;
       };
 
       Fancy.each(w.leftColumns, fn);
@@ -229,7 +229,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       Fancy.each(w.rightColumns, fn);
 
       str = str.substring(0, str.length - 1);
-      str += '\n';
+      str += '\r\n';
     }
 
     Fancy.each(data, function (row, i) {

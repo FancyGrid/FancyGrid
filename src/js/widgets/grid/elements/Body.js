@@ -120,8 +120,9 @@
     },
     /*
      * @param {Number} scrollLeft
+     * @param {Boolean} animate
      */
-    setColumnsPosition: function (scrollLeft) {
+    setColumnsPosition: function (scrollLeft, animate) {
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -137,9 +138,16 @@
         var column = columns[i],
           columnEl = bodyDomColumns.item(i);
 
-        columnEl.css({
-          left: columnsWidth + 'px'
-        });
+        if(animate) {
+          columnEl.animate({
+            left: columnsWidth + 'px'
+          }, F.ANIMATE_DURATION);
+        }
+        else{
+          columnEl.css({
+            left: columnsWidth + 'px'
+          });
+        }
 
         if (!column.hidden) {
           columnsWidth += column.width;
@@ -199,9 +207,10 @@
     /*
      * @param {Number} y
      * @param {Number} x
+     * @param {Boolean} [animate]
      * @return {Object}
      */
-    scroll: function (y, x) {
+    scroll: function (y, x, animate) {
       var me = this,
         w = me.widget,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
@@ -220,10 +229,10 @@
       if (x !== false && x !== null && x !== undefined) {
         o.scrollLeft = x;
         if (w.header) {
-          w.header.scroll(x);
+          w.header.scroll(x, animate);
         }
         me.scrollLeft = x;
-        w.body.setColumnsPosition(x);
+        w.body.setColumnsPosition(x, animate);
 
         if (me.side === 'center') {
           if (w.grouping) {
@@ -560,7 +569,7 @@
     /*
      * @param {Number} orderIndex
      */
-    hideColumnNew: function (orderIndex) {
+    hideColumn: function (orderIndex) {
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -579,17 +588,15 @@
       columnEl.hide();
 
       for (; i < iL; i++) {
-        var column = columns[i];
-        columnEl = columnEls.item(i);
+        var column = columns[i],
+          columnEl = columnEls.item(i),
+          columnLeft = parseInt(columnEl.css('left'));
 
         if(column.hidden){
           continue;
         }
 
-        if(F.nojQuery) {
-          columnEl.css('left', left);
-        }
-        else {
+        if(columnLeft !== left){
           columnEl.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -623,7 +630,7 @@
     /*
      * @param {Number} orderIndex
      */
-    showColumnNew: function (orderIndex) {
+    showColumn: function (orderIndex) {
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -643,19 +650,17 @@
 
       for (; i < iL; i++) {
         var columnEl = columnEls.item(i),
+          columnLeft = parseInt(columnEl.css('left')),
           column = columns[i];
 
         if(column.hidden){
           continue;
         }
 
-        if(F.nojQuery){
-          columnEl.css('left', left);
-        }
-        else{
+        if(columnLeft !== left) {
           columnEl.animate({
             left: left
-          });
+          }, ANIMATE_DURATION);
         }
 
         left += column.width;
@@ -786,6 +791,10 @@
           el.css('left', passedLeft + 'px');
           me.el.dom.insertBefore(el.dom, columns.item(index).dom);
         }
+      }
+      else{
+        el.css('left', left + 'px');
+        me.el.dom.appendChild(el.dom);
       }
 
       me.checkDomCells();

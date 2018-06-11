@@ -42,5 +42,5 @@ Fancy.i18n.nl = {
   sortDesc: 'Laatste/eerste',
   lock: 'Opslot',
   unlock: 'Open',
-  rightLock: 'Right Lock'
+  rightLock: 'Recht Slot'
 };

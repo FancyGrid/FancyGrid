@@ -226,9 +226,17 @@
         columns = me.getColumns(),
         cls = '',
         title = column.title || column.header,
-        cellHeight = parseInt(cells.item(0).css('height')),
+        cellHeight,
         groupIndex = '',
         left = 0;
+
+      if(cells.length){
+        cellHeight = parseInt(cells.item(0).css('height'));
+      }
+      else{
+        var _cells = w.header.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cellHeight = parseInt(_cells.item(0).css('height'));
+      }
 
       if(me.side === 'center'){
         left = -w.scroller.scrollLeft;
@@ -302,6 +310,9 @@
           F.get(cells.item(index).before(cellHTML));
         }
       }
+      else{
+        me.el.append(cellHTML);
+      }
 
       var cell = me.getCell(index);
 
@@ -326,9 +337,9 @@
     },
     onAfterRender: function () {},
     /*
-     *
+     * @param {Boolean} [animate]
      */
-    setCellsPosition: function () {
+    setCellsPosition: function (animate) {
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -345,10 +356,18 @@
           top = w.cellHeaderHeight + 'px';
         }
 
-        cellEl.css({
-          top: top,
-          left: cellsWidth + 'px'
-        });
+        if(animate && !F.nojQuery){
+          cellEl.animate({
+            top: top,
+            left: cellsWidth + 'px'
+          }, F.ANIMATE_DURATION);
+        }
+        else {
+          cellEl.css({
+            top: top,
+            left: cellsWidth + 'px'
+          });
+        }
 
         if (!column.hidden) {
           cellsWidth += column.width;
@@ -598,10 +617,11 @@
     },
     /*
      * @param {Number} value
+     * @param {Boolean} [animate]
      */
-    scroll: function (value) {
+    scroll: function (value, animate) {
       this.scrollLeft = value;
-      this.setCellsPosition();
+      this.setCellsPosition(animate);
     },
     /*
      * @param {Array} groups
@@ -708,7 +728,7 @@
     /*
      * @param {Number} orderIndex
      */
-    hideCellNew: function (orderIndex) {
+    hideCell: function (orderIndex) {
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -726,8 +746,6 @@
         groupCell.css('width', groupCellWidth - cellWidth);
       }
 
-      var cellLeft = parseInt(cell.css('left'));
-
       cell.hide();
 
       var groups = {},
@@ -737,16 +755,11 @@
       if(me.side === 'center'){
         scrollLeft = w.scroller.scrollLeft;
         left -= scrollLeft;
-
-        /*
-        if(cellLeft < scrollLeft){
-          left += cellWidth;
-        }
-        */
       }
 
       for (; i < iL; i++) {
         var _cell = cells.item(i),
+          cellLeft = parseInt(_cell.css('left')),
           column = columns[i];
 
         if(column.hidden){
@@ -759,11 +772,7 @@
           }
         }
 
-        if(F.nojQuery){
-          _cell.css('left', left);
-        }
-        else{
-
+        if(cellLeft !== left){
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -825,7 +834,7 @@
     /*
      * @param {Number} orderIndex
      */
-    showCellNew: function (orderIndex) {
+    showCell: function (orderIndex) {
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -859,6 +868,7 @@
 
       for (; i < iL; i++) {
         var _cell = cells.item(i),
+          cellLeft = parseInt(_cell.css('left')),
           column = columns[i];
 
         if(column.hidden){
@@ -871,10 +881,7 @@
           }
         }
 
-        if(F.nojQuery){
-          _cell.css('left', left);
-        }
-        else{
+        if(cellLeft !== left){
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);

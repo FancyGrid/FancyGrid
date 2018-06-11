@@ -40,7 +40,7 @@ Fancy.i18n.ja = {
   sortAsc: '昇順',
   sortDesc: '降順',
   columns: 'カラム',
-  lock: 'Lock',
-  unlock: 'Unlock',
-  rightLock: 'Right Lock'
+  lock: 'ロック',
+  unlock: 'ロック解除',
+  rightLock: '右のロック'
 };

@@ -1884,6 +1884,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             config.width = el.parent().width()
           }
         }
+
+        if(config.width === 0){
+          config.width = parseInt(el.parent().width());
+        }
       }
     }
     else if(config.width === 'fit'){
@@ -1916,7 +1920,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.height === undefined){
       if(renderTo){
         config.responsiveHeight = true;
-        config.height = parseInt(el.height());
+        var height = parseInt(el.height());
+        if(height < 50){
+          height = parseInt(el.parent().css('height'));
+        }
+
+        config.height = height;
       }
     }
     else if(config.height === 'fit'){

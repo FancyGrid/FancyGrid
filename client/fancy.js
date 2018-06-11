@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.27',
+  version: '1.7.28',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -13489,7 +13489,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
   },
   /*
-   * @param {Number} indexOrder
+   * @param {Number|String} indexOrder
    * @param {String} side
    */
   lockColumn: function(indexOrder, side){
@@ -13497,6 +13497,15 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.columns.length === 1){
       return false;
+    }
+
+    if(Fancy.isString(indexOrder)){
+      Fancy.each(me.columns, function (column, i) {
+        if(column.index === indexOrder){
+          indexOrder = i;
+          return true;
+        }
+      });
     }
 
     var removedColumn = me.removeColumn(indexOrder, side);
@@ -13508,7 +13517,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     });
   },
   /*
-   * @param {Number} indexOrder
+   * @param {Number|String} indexOrder
    * @param {String} side
    */
   rightLockColumn: function(indexOrder, side){
@@ -13516,6 +13525,15 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.columns.length === 1){
       return false;
+    }
+
+    if(Fancy.isString(indexOrder)){
+      Fancy.each(me.columns, function (column, i) {
+        if(column.index === indexOrder){
+          indexOrder = i;
+          return true;
+        }
+      });
     }
 
     var removedColumn = me.removeColumn(indexOrder, side);
@@ -13527,21 +13545,54 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     });
   },
   /*
-   * @param {Number} indexOrder
+   * @param {Number|String} indexOrder
    * @param {String} side
    */
   unLockColumn: function(indexOrder, side){
     var me = this,
       removedColumn;
 
+    if(side === undefined){
+      side = 'left';
+    }
+
     switch(side){
       case 'left':
+        if(Fancy.isString(indexOrder)){
+          Fancy.each(me.leftColumns, function (column, i) {
+            if(column.index === indexOrder){
+              indexOrder = i;
+              return true;
+            }
+          });
+        }
+
         removedColumn = me.removeColumn(indexOrder, side);
         me.insertColumn(removedColumn, 0, 'center', 'left');
+
+        if(me.leftColumns.length === 0){
+          me.leftEl.addCls(Fancy.GRID_LEFT_EMPTY_CLS);
+          me.centerEl.css('left', '0px');
+        }
         break;
       case 'right':
+        if(Fancy.isString(indexOrder)){
+          Fancy.each(me.rightColumns, function (column, i) {
+            if(column.index === indexOrder){
+              indexOrder = i;
+              return true;
+            }
+          });
+        }
+
         removedColumn = me.removeColumn(indexOrder, side);
         me.insertColumn(removedColumn, me.columns.length, 'center', 'right');
+
+        if(me.rightColumns.length === 0){
+          me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
+          var bodyWidth = parseInt(me.body.el.css('width'));
+          me.body.el.css('width', bodyWidth + 2);
+        }
         break;
     }
 

@@ -185,29 +185,22 @@
           }
           break;
         case 'center':
-          if (columns.length > 1 && (w.leftColumns.length) && column.lockable !== false) {
-            menu.push('-');
-            menu.push({
-              text: lang.lock,
-              handler: function () {
-                column.menu.hide();
-                w.lockColumn(indexOrder, me.side);
-              }
-            });
-          }
-
-          if (columns.length > 1 && w.rightColumns.length && column.lockable !== false) {
-            if(menu[menu.length - 2] !== '-'){
-              menu.push('-');
+          menu.push('-');
+          menu.push({
+            text: lang.lock,
+            handler: function () {
+              column.menu.hide();
+              w.lockColumn(indexOrder, me.side);
             }
-            menu.push({
-              text: lang.rightLock,
-              handler: function () {
-                column.menu.hide();
-                w.rightLockColumn(indexOrder, me.side);
-              }
-            });
-          }
+          });
+
+          menu.push({
+            text: lang.rightLock,
+            handler: function () {
+              column.menu.hide();
+              w.rightLockColumn(indexOrder, me.side);
+            }
+          });
           break;
       }
 

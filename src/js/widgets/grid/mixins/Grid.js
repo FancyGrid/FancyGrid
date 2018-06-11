@@ -20,6 +20,8 @@
   var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
   var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
 
+  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
   var activeGrid;
 
   F.Mixin('Fancy.grid.mixin.Grid', {
@@ -1425,18 +1427,34 @@
 
       if (me.panel) {
         renderTo = me.panel.renderTo;
+      }
 
-        if(me.responsive) {
-          el = F.get(renderTo);
-        }
-        else{
-          el = me.panel.el;
-        }
-        me.setWidth(parseInt(el.width()));
+      if(me.responsive) {
+        el = F.get(renderTo);
+      }
+      else if(me.panel){
+        el = me.panel.el;
+      }
+      else{
+        el = F.get(renderTo);
+      }
 
-        if(me.responsiveHeight){
-          me.setHeight(parseInt(el.height()));
+      var newWidth = el.width();
+
+      if(newWidth === 0){
+        newWidth = el.parent().width();
+      }
+
+      me.setWidth(newWidth);
+
+      if(me.responsiveHeight){
+        var height = parseInt(el.height());
+
+        if(height === 0){
+          height = parseInt(el.parent().height());
         }
+
+        me.setHeight(height);
       }
 
       me.setBodysHeight();
@@ -1825,19 +1843,19 @@
 
       switch (side) {
         case 'left':
-          leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
-          leftHeader.css('width', parseInt(leftHeader.css('width')) - column.width);
-          centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
-          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-          me.body.css('width', parseInt(me.body.css('width')) + column.width);
-          me.header.css('width', parseInt(me.header.css('width')) + column.width);
+          leftEl.animate({width: parseInt(leftEl.css('width')) - column.width}, ANIMATE_DURATION);
+          leftHeader.el.animate({width: parseInt(leftHeader.css('width')) - column.width}, ANIMATE_DURATION);
+          centerEl.animate({left: parseInt(centerEl.css('left')) - column.width}, ANIMATE_DURATION);
+          centerEl.animate({width: parseInt(centerEl.css('width')) + column.width}, ANIMATE_DURATION);
+          me.body.el.animate({width: parseInt(me.body.css('width')) + column.width}, ANIMATE_DURATION);
+          me.header.el.animate({width: parseInt(me.header.css('width')) + column.width}, ANIMATE_DURATION);
           break;
         case 'right':
-          rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
-          rightHeader.css('width', parseInt(rightHeader.css('width')) - column.width);
-          centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
-          me.body.css('width', parseInt(me.body.css('width')) + column.width);
-          me.header.css('width', parseInt(me.header.css('width')) + column.width);
+          rightEl.animate({width: parseInt(rightEl.css('width')) - column.width}, ANIMATE_DURATION);
+          rightHeader.el.animate({width: parseInt(rightHeader.css('width')) - column.width}, ANIMATE_DURATION);
+          centerEl.animate({width: parseInt(centerEl.css('width')) + column.width}, ANIMATE_DURATION);
+          me.body.el.animate({width: parseInt(me.body.css('width')) + column.width}, ANIMATE_DURATION);
+          me.header.el.animate({width: parseInt(me.header.css('width')) + column.width}, ANIMATE_DURATION);
           break;
       }
 
@@ -1909,19 +1927,19 @@
 
       switch (side) {
         case 'left':
-          leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
-          leftHeader.css('width', parseInt(leftHeader.css('width')) + column.width);
-          centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
-          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-          me.body.css('width', parseInt(me.body.css('width')) - column.width);
-          me.header.css('width', parseInt(me.header.css('width')) - column.width);
+          leftEl.animate({width: parseInt(leftEl.css('width')) + column.width});
+          leftHeader.el.animate({width: parseInt(leftHeader.css('width')) + column.width});
+          centerEl.animate({left: parseInt(centerEl.css('left')) + column.width});
+          centerEl.animate({width: parseInt(centerEl.css('width')) - column.width});
+          me.body.el.animate({width: parseInt(me.body.css('width')) - column.width});
+          me.header.el.animate({width: parseInt(me.header.css('width')) - column.width});
           break;
         case 'right':
-          rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
-          rightHeader.css('width', parseInt(rightHeader.css('width')) + column.width);
-          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-          me.body.css('width', parseInt(me.body.css('width')) - column.width);
-          me.header.css('width', parseInt(me.header.css('width')) - column.width);
+          rightEl.animate({width: parseInt(rightEl.css('width')) + column.width});
+          rightHeader.el.animate({width: parseInt(rightHeader.css('width')) + column.width});
+          centerEl.animate({width: parseInt(centerEl.css('width')) - column.width});
+          me.body.el.animate({width: parseInt(me.body.css('width')) - column.width});
+          me.header.el.animate({width: parseInt(me.header.css('width')) - column.width});
           break;
       }
 
@@ -2071,26 +2089,42 @@
           break;
         case 'left':
           column.locked = true;
+          var extraLeft = 0;
+          if(me.leftColumns.length === 0){
+            extraLeft = 1;
+            me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
+          }
+
           me.leftColumns.splice(index, 0, column);
           leftHeader.insertCell(index, column);
           leftHeader.reSetIndexes();
           leftBody.insertColumn(index, column);
           leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
           centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-          centerEl.css('left', parseInt(centerEl.css('left')) + column.width);
+          centerEl.css('left', parseInt(centerEl.css('left')) + column.width + extraLeft);
           body.el.css('width', parseInt(body.el.css('width')) - column.width);
           header.el.css('width', parseInt(header.el.css('width')) - column.width);
           break;
         case 'right':
           column.rightLocked = true;
+
+          var extraLeft = 0,
+            extraWidth = 0;
+
+          if(me.rightColumns.length === 0){
+            extraLeft = 1;
+            extraWidth = 2;
+            me.rightEl.removeCls(GRID_RIGHT_EMPTY_CLS);
+          }
+
           me.rightColumns.splice(index, 0, column);
           rightHeader.insertCell(index, column);
           rightHeader.reSetIndexes();
           rightBody.insertColumn(index, column);
           rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
-          centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
-          body.css('width', parseInt(body.css('width')) - column.width);
-          header.css('width', parseInt(header.css('width')) - column.width);
+          centerEl.css('width', parseInt(centerEl.css('width')) - column.width - extraLeft);
+          body.css('width', parseInt(body.css('width')) - column.width - extraWidth);
+          header.css('width', parseInt(header.css('width')) - column.width - extraWidth);
           break;
       }
 
@@ -2401,8 +2435,9 @@
     /*
      * @param {Number} x
      * @param {Number} y
+     * @param {Boolean} [animate]
      */
-    scroll: function (x, y) {
+    scroll: function (x, y, animate) {
       var me = this,
         scroller = me.scroller;
 
@@ -2410,7 +2445,7 @@
         y = -y;
       }
 
-      scroller.scroll(x, y);
+      scroller.scroll(x, y, animate);
 
       scroller.scrollBottomKnob();
       scroller.scrollRightKnob();
@@ -2501,29 +2536,26 @@
         columns = me.columns,
         rightColumns = me.rightColumns;
 
+      var fn = function (column) {
+        if (column.index === undefined || column.index === '$selected' || column.hidden) {
+          return;
+        }
+
+        switch(column.type){
+          case 'order':
+            rowData.push(i + 1);
+            break;
+          default:
+            rowData.push(me.get(i, column.index));
+        }
+      };
+
       for (; i < viewTotal; i++) {
         var rowData = [];
 
-        F.each(leftColumns, function (column) {
-          if (column.index === undefined || column.index === '$selected' || column.hidden) {
-            return;
-          }
-          rowData.push(me.get(i, column.index));
-        });
-
-        F.each(columns, function (column) {
-          if (column.index === undefined || column.index === '$selected' || column.hidden) {
-            return;
-          }
-          rowData.push(me.get(i, column.index));
-        });
-
-        F.each(rightColumns, function (column) {
-          if (column.index === undefined || column.index === '$selected' || column.hidden) {
-            return;
-          }
-          rowData.push(me.get(i, column.index));
-        });
+        F.each(leftColumns, fn);
+        F.each(columns, fn);
+        F.each(rightColumns, fn);
 
         data.push(rowData);
       }

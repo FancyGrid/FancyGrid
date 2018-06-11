@@ -483,6 +483,8 @@
       w.startResizing = false;
       me.moveLeftResizer = false;
       delete me.cellWidth;
+
+      w.scroller.update();
     },
     /*
      *

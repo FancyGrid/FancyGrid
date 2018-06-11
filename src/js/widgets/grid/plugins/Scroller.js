@@ -824,7 +824,7 @@
           else {
             w.scroll(me.scrollTop, (me.scrollLeft + delta), true);
           }
-        }, 10);
+        }, F.nojQuery? 10: F.ANIMATE_DURATION);
         return;
       }
 
