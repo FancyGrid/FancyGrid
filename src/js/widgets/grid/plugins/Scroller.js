@@ -11,13 +11,17 @@
    */
   var RIGHT_SCROLL_CLS = 'fancy-scroll-right';
   var BOTTOM_SCROLL_CLS = 'fancy-scroll-bottom';
+  var TOP_SCROLL_CLS = 'fancy-scroll-top';
   var RIGHT_SCROLL_INNER_CLS = 'fancy-scroll-right-inner';
   var BOTTOM_SCROLL_INNER_CLS = 'fancy-scroll-bottom-inner';
+  var TOP_SCROLL_INNER_CLS = 'fancy-scroll-top-inner';
   var NATIVE_SCROLLER_CLS = 'fancy-grid-native-scroller';
   var RIGHT_SCROLL_HOVER_CLS = 'fancy-scroll-right-hover';
   var BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
+  var TOP_SCROLL_HOVER_CLS = 'fancy-scroll-top-hover';
   var RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
   var BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
+  var TOP_SCROLL_ACTIVE_CLS = 'fancy-scroll-top-active';
   var HIDDEN_CLS = F.HIDDEN_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
@@ -154,6 +158,7 @@
         body = w.body,
         rightScrollEl = F.get(document.createElement('div')),
         bottomScrollEl = F.get(document.createElement('div')),
+        topScrollEl = F.get(document.createElement('div')),
         right = 1;
 
       if (w.nativeScroller) {
@@ -178,6 +183,17 @@
 
         F.get(body.el.append(bottomScrollEl.dom));
         me.scrollBottomEl = body.el.select('.fancy-scroll-bottom');
+
+        if(w.doubleHorizontalScroll){
+          topScrollEl.addCls(TOP_SCROLL_CLS, HIDDEN_CLS);
+
+          topScrollEl.update([
+            '<div class="' + TOP_SCROLL_INNER_CLS + '"></div>'
+          ].join(" "));
+
+          F.get(body.el.append(topScrollEl.dom));
+          me.scrollTopEl = body.el.select('.fancy-scroll-top');
+        }
       }
 
       me.fire('render');
@@ -229,6 +245,18 @@
         }, function () {
           me.scrollBottomEl.removeCls(BOTTOM_SCROLL_HOVER_CLS);
         });
+
+        if(w.doubleHorizontalScroll){
+          me.scrollTopEl.hover(function () {
+            if (me.bottomKnobDown !== true) {
+              me.scrollTopEl.addCls(TOP_SCROLL_HOVER_CLS);
+            }
+          }, function () {
+            if (me.bottomKnobDown !== true) {
+              me.scrollTopEl.removeCls(TOP_SCROLL_HOVER_CLS);
+            }
+          });
+        }
 
         me.initRightScroll();
         me.initBottomScroll();
@@ -286,6 +314,10 @@
 
       me.bottomKnobLeft = parseInt(me.bottomKnob.css('margin-left'));
       me.scrollBottomEl.addCls(BOTTOM_SCROLL_ACTIVE_CLS);
+
+      if(w.doubleHorizontalScroll){
+        me.scrollTopEl.addCls(TOP_SCROLL_ACTIVE_CLS);
+      }
     },
     /*
      *
@@ -341,10 +373,16 @@
      *
      */
     initBottomScroll: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.bottomKnob = me.scrollBottomEl.select('.' + BOTTOM_SCROLL_INNER_CLS);
       me.scrollBottomEl.on('mousedown', me.onMouseDownBottomSpin, me);
+
+      if(w.doubleHorizontalScroll){
+        me.topKnob = me.scrollTopEl.select('.' + TOP_SCROLL_INNER_CLS);
+        me.scrollTopEl.on('mousedown', me.onMouseDownBottomSpin, me);
+      }
     },
     /*
      * @param {Object} e
@@ -371,7 +409,8 @@
      * @param {Object} e
      */
     onMouseDownBottomSpin: function (e) {
-      var me = this;
+      var me = this,
+        targetEl = F.get(e.target);
 
       e.preventDefault();
 
@@ -383,12 +422,17 @@
 
       me.bottomKnobLeft = parseInt(me.bottomKnob.css('margin-left'));
       me.scrollBottomEl.addCls(BOTTOM_SCROLL_ACTIVE_CLS);
+
+      if(targetEl.hasClass()){
+        me.scrollTopEl.addCls(TOP_SCROLL_INNER_CLS);
+      }
     },
     /*
      *
      */
     onMouseUpDoc: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
         return;
@@ -398,6 +442,11 @@
       me.scrollBottomEl.removeCls(BOTTOM_SCROLL_ACTIVE_CLS);
       me.rightKnobDown = false;
       me.bottomKnobDown = false;
+
+      if(w.doubleHorizontalScroll){
+        me.scrollTopEl.removeCls(TOP_SCROLL_ACTIVE_CLS);
+        me.scrollTopEl.removeCls(TOP_SCROLL_HOVER_CLS);
+      }
     },
     /*
      * @param {Object} e
@@ -437,8 +486,15 @@
           marginTop = 0;
         }
 
-        me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
         topScroll = me.rightScrollScale * marginTop;
+
+        if(w.doubleHorizontalScroll && me.scrollBottomEl.css('display') !== 'none'){
+          if(marginTop < me.cornerSize){
+            marginTop = me.cornerSize;
+          }
+        }
+
+        me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
 
         me.scroll(topScroll);
       }
@@ -470,6 +526,10 @@
 
         me.bottomKnob.css('margin-left', marginLeft + 'px');
         bottomScroll = Math.ceil(me.bottomScrollScale * (marginLeft - 1));
+
+        if(w.doubleHorizontalScroll){
+          me.topKnob.css('margin-left', marginLeft + 'px');
+        }
 
         me.scroll(false, bottomScroll);
       }
@@ -558,6 +618,10 @@
 
       if (knobHeight < me.minRightKnobHeight) {
         knobHeight = me.minRightKnobHeight;
+
+        if(w.doubleHorizontalScroll){
+          knobHeight += me.minRightKnobHeight;
+        }
       }
 
       if (me.corner === false) {
@@ -595,10 +659,18 @@
         if (centerViewWidth > centerFullWidth) {
           showBottomScroll = false;
           me.scrollBottomEl.addCls(HIDDEN_CLS);
+
+          if(w.doubleHorizontalScroll){
+            me.scrollTopEl.addCls(HIDDEN_CLS);
+          }
         }
         else {
           showBottomScroll = true;
           me.scrollBottomEl.removeCls(HIDDEN_CLS);
+
+          if(w.doubleHorizontalScroll){
+            me.scrollTopEl.removeCls(HIDDEN_CLS);
+          }
         }
       }
 
@@ -640,6 +712,12 @@
 
       me.bottomKnob.stop();
       me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+
+      if(w.doubleHorizontalScroll){
+        me.topKnob.stop();
+        me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      }
+
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
       me.bottomScrollScale = (centerViewWidth - centerFullWidth) / (centerViewWidth - knobWidth - 2 - 1);
@@ -725,6 +803,10 @@
         return;
       }
 
+      if (w.doubleHorizontalScroll) {
+        newKnobScroll += me.cornerSize;
+      }
+
       me.rightKnob.css('margin-top', newKnobScroll + 'px');
     },
     /*
@@ -745,6 +827,10 @@
       }
 
       me.bottomKnob.css('margin-left', -newKnobScroll + 'px');
+
+      if(w.doubleHorizontalScroll){
+        me.topKnob.css('margin-left', -newKnobScroll + 'px');
+      }
     },
     /*
      * @return {Number}
@@ -908,16 +994,13 @@
 
         if (passedWidth - bottomScroll > bodyViewWidth) {
           if (!columns[i]) {
-            //me.scroll(rightScroll, -(passedWidth - bottomScroll - bodyViewWidth));
             me.scroll(rightScroll, -(bodyColumnsWidth - bodyViewWidth));
           }
           else {
-            //me.scroll(rightScroll, -(bottomScroll + columns[columnIndex].width));
             me.scroll(rightScroll, -(bottomScroll + (passedWidth - bottomScroll) - bodyViewWidth));
           }
         }
         else if(passedWidth - bottomScroll < columns[columnIndex].width){
-          //var bottomScroll = -(bottomScroll - Math.abs(passedWidth - bottomScroll));
           bottomScroll = -(passedWidth - columns[columnIndex].width);
           if(bottomScroll > 0){
             bottomScroll = 0;

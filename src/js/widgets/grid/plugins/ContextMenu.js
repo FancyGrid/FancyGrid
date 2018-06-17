@@ -6,6 +6,11 @@
   //SHORTCUTS
   var F = Fancy;
 
+  //CONSTANTS
+  var MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
+  var MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
+  var MENU_ITEM_IMG_EDIT_CLS =  F.MENU_ITEM_IMG_EDIT_CLS;
+
   F.define('Fancy.grid.plugin.ContextMenu', {
     extend: F.Plugin,
     ptype: 'grid.contextmenu',
@@ -13,9 +18,7 @@
     defaultItems: [
       'copy',
       'copy+',
-      '-',
       'delete',
-      'edit',
       '-',
       'export'
     ],
@@ -38,8 +41,7 @@
      */
     ons: function () {
       var me = this,
-        w = me.widget,
-        docEl = F.get(document);
+        w = me.widget;
 
       w.on('contextmenu', me.onContextMenu, me);
     },
@@ -73,8 +75,8 @@
           case 'copy':
             items.push({
               text: 'Copy',
-              //sideText: 'CTRL+C',
-              imageCls: 'fancy-menu-item-img-copy',
+              sideText: 'CTRL+C',
+              imageCls: MENU_ITEM_IMG_COPY_CLS,
               handler: function(){
                 w.copy();
               }
@@ -84,7 +86,7 @@
           case 'copy+':
             items.push({
               text: 'Copy with Headers',
-              imageCls: 'fancy-menu-item-img-copy',
+              imageCls: MENU_ITEM_IMG_COPY_CLS,
               handler: function(){
                 w.copy(true);
               }
@@ -93,7 +95,7 @@
           case 'delete':
             items.push({
               text: 'Delete',
-              imageCls: 'fancy-menu-item-img-delete',
+              imageCls: MENU_ITEM_IMG_DELETE_CLS,
               handler: function(){
                 switch(w.selection.selModel){
                   case 'rows':
@@ -110,7 +112,7 @@
             me.editItemIndex = i;
             items.push({
               text: 'Edit',
-              imageCls: 'fancy-menu-item-img-edit',
+              imageCls: MENU_ITEM_IMG_EDIT_CLS,
               disabled: true,
               handler: function(){
                 if(w.rowEdit){
@@ -130,9 +132,18 @@
             items.push({
               text: 'Export',
               items: [{
+                text: 'CSV Export',
+                handler: function(){
+                  w.exportToCSV({
+                    header: true
+                  });
+                }
+              },{
                 text: 'Excel Export',
                 handler: function(){
-                  w.exportToExcel();
+                  w.exportToExcel({
+                    header: true
+                  });
                 }
               }]
             });
@@ -176,7 +187,7 @@
         top: top - 20
       });
 
-      if(selection){
+      if(selection && me.editItemIndex){
         switch(selection.selModel){
           case 'rows':
           case 'row':

@@ -551,26 +551,6 @@
      */
     hideColumn: function (orderIndex) {
       var me = this,
-        columns = me.el.select('.' + GRID_COLUMN_CLS),
-        column = columns.item(orderIndex),
-        columnWidth = parseInt(column.css('width')),
-        i = orderIndex + 1,
-        iL = columns.length;
-
-      column.hide();
-
-      for (; i < iL; i++) {
-        var _column = columns.item(i),
-          left = parseInt(_column.css('left')) - columnWidth;
-
-        _column.css('left', left);
-      }
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    hideColumn: function (orderIndex) {
-      var me = this,
         w = me.widget,
         columns = me.getColumns(),
         columnEls = me.el.select('.' + GRID_COLUMN_CLS),
@@ -603,28 +583,6 @@
         }
 
         left += column.width;
-      }
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    showColumn: function (orderIndex) {
-      var me = this,
-        columns = me.el.select('.' + GRID_COLUMN_CLS),
-        column = columns.item(orderIndex),
-        columnWidth,
-        i = orderIndex + 1,
-        iL = columns.length;
-
-      column.show();
-
-      columnWidth = parseInt(column.css('width'));
-
-      for (; i < iL; i++) {
-        var _column = columns.item(i),
-          left = parseInt(_column.css('left')) + columnWidth;
-
-        _column.css('left', left);
       }
     },
     /*

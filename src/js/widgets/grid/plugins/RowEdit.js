@@ -45,6 +45,10 @@
       w.on('scroll', me.onScroll, me);
       w.on('columnresize', me.onColumnResize, me);
 
+      w.on('lockcolumn', me.onLockColumn, me);
+      w.on('rightlockcolumn', me.onRightLockColumn, me);
+      w.on('unlockcolumn', me.onUnLockColumn, me);
+
       w.on('columndrag', me.onColumnDrag, me);
 
       if (w.grouping) {
@@ -169,10 +173,14 @@
 
         switch (side) {
           case 'right':
-            renderBefore = fieldEls.item(order);
+            if(fieldEls.length) {
+              renderBefore = fieldEls.item(order);
+            }
             break;
           case 'left':
-            renderAfter = fieldEls.item(order);
+            if(fieldEls.length){
+              renderAfter = fieldEls.item(order);
+            }
             break;
           case 'center':
             switch (fromSide) {
@@ -187,8 +195,14 @@
         }
       }
 
+      if(i === -1){
+        i = 0;
+        iL = 1;
+      }
+
       for (; i < iL; i++) {
         column = columns[i];
+
         var columnWidth = column.width;
 
         var itemConfig = {
@@ -213,10 +227,20 @@
 
         switch (side) {
           case 'left':
-            itemConfig.renderAfter = renderAfter;
+            if(renderAfter){
+              itemConfig.renderAfter = renderAfter;
+            }
+            else{
+              itemConfig.renderTo = renderTo.dom;
+            }
             break;
           case 'right':
-            itemConfig.renderBefore = renderBefore;
+            if(renderBefore){
+              itemConfig.renderBefore = renderBefore;
+            }
+            else{
+              itemConfig.renderTo = renderTo.dom;
+            }
             break;
           case 'center':
             switch (fromSide) {
@@ -880,8 +904,12 @@
         value = item.get(column.index),
         field;
 
+      if(!rowEditRowEl.dom){
+        return;
+      }
+
       if (me.activeId === undefined) {
-        value = s.get(me.activeRowIndex)[column.index];
+        value = s.ge1t(me.activeRowIndex)[column.index];
       }
 
       editor.destroy();
@@ -912,7 +940,7 @@
           break;
       }
 
-      field = F.getWidget(body.el.select('.' + FIELD_CLS).item(index).attr('id'));
+      field = F.getWidget(body.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS).item(index).attr('id'));
 
       return field;
     },
@@ -920,26 +948,45 @@
      *
      */
     reSetColumnsEditorsLinks: function () {
-      var w = me.widget,
-        cells = w.body.el.select('.' + FIELD_CLS);
+      var me = this,
+        w = me.widget,
+        cells = w.body.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
       E(w.columns, function (column, i) {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
-      cells = w.leftBody.el.select('.' + FIELD_CLS);
+      cells = w.leftBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
       E(w.leftColumns, function (column, i) {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
-      cells = w.rightBody.el.select('.' + FIELD_CLS);
+      cells = w.rightBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
       E(w.rightColumns, function (column, i) {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
     onColumnDrag: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
+    onLockColumn: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
+    onRightLockColumn: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
+    onUnLockColumn:  function () {
       var me = this;
 
       me.destroyEls();
@@ -953,24 +1000,24 @@
         me.rendered = false;
 
         if (w.leftColumns) {
-          me.leftEl.destroy();
           F.each(w.leftColumns, function (column) {
             column.rowEditor.destroy();
           });
+          me.leftEl.destroy();
         }
 
         if (w.columns) {
-          me.el.destroy();
           F.each(w.columns, function (column) {
             column.rowEditor.destroy();
           });
+          me.el.destroy();
         }
 
         if (w.rightColumns) {
-          me.rightEl.destroy();
           F.each(w.rightColumns, function (column) {
             column.rowEditor.destroy();
           });
+          me.rightEl.destroy();
         }
       }
     }

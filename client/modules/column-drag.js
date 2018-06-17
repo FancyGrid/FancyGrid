@@ -194,6 +194,8 @@
       setTimeout(function () {
         w.updateColumnsVisibilty();
       }, 100);
+
+      w.scroller.update();
     },
     onMouseMove: function (e) {
       var me = this,
@@ -869,6 +871,8 @@
       setTimeout(function () {
         w.updateColumnsVisibilty();
       }, 100);
+
+      w.scroller.update();
     },
     onMouseMove: function (e) {
       var me = this,

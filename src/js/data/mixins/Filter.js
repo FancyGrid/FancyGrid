@@ -136,8 +136,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
               value = value.replace(/\(/g, 'bracketleft');
               value = value.replace(/\)/g, 'bracketright');
+              value = value.replace(/\+/g, 'plus');
+              value = value.replace(/\-/g, 'minus');
               indexValue = indexValue.replace(/\(/g, 'bracketleft');
               indexValue = indexValue.replace(/\)/g, 'bracketright');
+              indexValue = indexValue.replace(/\+/g, 'plus');
+              indexValue = indexValue.replace(/\-/g, 'minus');
 
               return new RegExp(value).test(indexValue);
             };
@@ -158,7 +162,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             }
             break;
           case '*':
-            passed = new RegExp(String(value).toLocaleLowerCase()).test(String(indexValue).toLocaleLowerCase());
+            value = String(value).toLocaleLowerCase();
+
+            passed = new RegExp(value).test(String(indexValue).toLocaleLowerCase());
             wait = true;
             break;
           case '|':

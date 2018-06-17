@@ -190,6 +190,12 @@
      */
     toggle: function () {
       this.set(!this.value);
+    },
+    /*
+     *
+     */
+    destroy: function () {
+      this.Super('destroy', arguments);
     }
   });
 

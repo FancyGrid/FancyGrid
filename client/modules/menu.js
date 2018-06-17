@@ -212,6 +212,28 @@
           case '-':
           case 'sep':
             break;
+          case 'number':
+            me.items[i].field = new Fancy.NumberField({
+              label: false,
+              theme: me.theme,
+              padding: '1px 0px 0px',
+              width: 90,
+              renderAfter: itemEl.select('.' + MENU_ITEM_IMAGE_CLS).item(0).dom,
+              events: me.items[i].events,
+              value: item.value || ''
+            });
+            break;
+          case 'string':
+            me.items[i].field = new Fancy.StringField({
+              label: false,
+              theme: me.theme,
+              padding: '1px 0px 0px',
+              width: 90,
+              renderAfter: itemEl.select('.' + MENU_ITEM_IMAGE_CLS).item(0).dom,
+              events: me.items[i].events,
+              value: item.value || ''
+            });
+            break;
           default:
             itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
         }
@@ -386,7 +408,12 @@
      * @param {Object} e
      */
     onItemMouseDown: function(e) {
-      e.preventDefault();
+      var target = e.target;
+
+      if(target.tagName.toLocaleLowerCase() === 'input'){}
+      else{
+        e.preventDefault();
+      }
     },
     /*
      * @param {Number} index
@@ -507,6 +534,11 @@
   //SHORTCUTS
   var F = Fancy;
 
+  //CONSTANTS
+  var MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
+  var MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
+  var MENU_ITEM_IMG_EDIT_CLS =  F.MENU_ITEM_IMG_EDIT_CLS;
+
   F.define('Fancy.grid.plugin.ContextMenu', {
     extend: F.Plugin,
     ptype: 'grid.contextmenu',
@@ -514,9 +546,7 @@
     defaultItems: [
       'copy',
       'copy+',
-      '-',
       'delete',
-      'edit',
       '-',
       'export'
     ],
@@ -539,8 +569,7 @@
      */
     ons: function () {
       var me = this,
-        w = me.widget,
-        docEl = F.get(document);
+        w = me.widget;
 
       w.on('contextmenu', me.onContextMenu, me);
     },
@@ -574,8 +603,8 @@
           case 'copy':
             items.push({
               text: 'Copy',
-              //sideText: 'CTRL+C',
-              imageCls: 'fancy-menu-item-img-copy',
+              sideText: 'CTRL+C',
+              imageCls: MENU_ITEM_IMG_COPY_CLS,
               handler: function(){
                 w.copy();
               }
@@ -585,7 +614,7 @@
           case 'copy+':
             items.push({
               text: 'Copy with Headers',
-              imageCls: 'fancy-menu-item-img-copy',
+              imageCls: MENU_ITEM_IMG_COPY_CLS,
               handler: function(){
                 w.copy(true);
               }
@@ -594,7 +623,7 @@
           case 'delete':
             items.push({
               text: 'Delete',
-              imageCls: 'fancy-menu-item-img-delete',
+              imageCls: MENU_ITEM_IMG_DELETE_CLS,
               handler: function(){
                 switch(w.selection.selModel){
                   case 'rows':
@@ -611,7 +640,7 @@
             me.editItemIndex = i;
             items.push({
               text: 'Edit',
-              imageCls: 'fancy-menu-item-img-edit',
+              imageCls: MENU_ITEM_IMG_EDIT_CLS,
               disabled: true,
               handler: function(){
                 if(w.rowEdit){
@@ -631,9 +660,18 @@
             items.push({
               text: 'Export',
               items: [{
+                text: 'CSV Export',
+                handler: function(){
+                  w.exportToCSV({
+                    header: true
+                  });
+                }
+              },{
                 text: 'Excel Export',
                 handler: function(){
-                  w.exportToExcel();
+                  w.exportToExcel({
+                    header: true
+                  });
                 }
               }]
             });
@@ -677,7 +715,7 @@
         top: top - 20
       });
 
-      if(selection){
+      if(selection && me.editItemIndex){
         switch(selection.selModel){
           case 'rows':
           case 'row':
@@ -850,6 +888,26 @@
         cls = 'fancy-menu-item-disabled';
       }
 
+      /*
+      if(column.titleEditable){
+        menu.push({
+          type: 'string',
+          value: column.title,
+          events: [{
+            input: function (field, value) {
+              w.setColumnTitle(column.index, value, me.side);
+            }
+          },{
+            enter: function (field) {
+              me.hideMenu();
+            }
+          }]
+        });
+        
+        menu.push('-');
+      }
+      */
+
       if (column.sortable) {
         menu.push({
           text: lang.sortAsc,
@@ -895,22 +953,24 @@
           }
           break;
         case 'center':
-          menu.push('-');
-          menu.push({
-            text: lang.lock,
-            handler: function () {
-              column.menu.hide();
-              w.lockColumn(indexOrder, me.side);
-            }
-          });
+          if (column.lockable !== false) {
+            menu.push('-');
+            menu.push({
+              text: lang.lock,
+              handler: function () {
+                column.menu.hide();
+                w.lockColumn(indexOrder, me.side);
+              }
+            });
 
-          menu.push({
-            text: lang.rightLock,
-            handler: function () {
-              column.menu.hide();
-              w.rightLockColumn(indexOrder, me.side);
-            }
-          });
+            menu.push({
+              text: lang.rightLock,
+              handler: function () {
+                column.menu.hide();
+                w.rightLockColumn(indexOrder, me.side);
+              }
+            });
+          }
           break;
       }
 

@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.28',
+  version: '1.7.29',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -563,7 +563,7 @@ Fancy.apply(Fancy, {
   //grid body
   GRID_BODY_CLS: 'fancy-grid-body',
   /*
-   * Menu cls-S
+   * Menu cls-s
    */
   MENU_CLS: 'fancy-menu',
   MENU_ITEM_CLS: 'fancy-menu-item',
@@ -576,6 +576,12 @@ Fancy.apply(Fancy, {
   MENU_ITEM_DISABLED_CLS: 'fancy-menu-item-disabled',
   MENU_ITEM_SEP_CLS: 'fancy-menu-item-sep',
   MENU_ITEM_NO_IMAGE_CLS: 'fancy-menu-item-no-image',
+  /*
+   * Context Menu cls-s
+   */
+  MENU_ITEM_IMG_COPY_CLS: 'fancy-menu-item-img-copy',
+  MENU_ITEM_IMG_DELETE_CLS: 'fancy-menu-item-img-delete',
+  MENU_ITEM_IMG_EDIT_CLS: 'fancy-menu-item-img-edit',
   /*
    * Tab cls-s
    */

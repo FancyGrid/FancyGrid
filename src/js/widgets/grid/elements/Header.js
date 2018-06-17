@@ -89,6 +89,7 @@
       el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
       el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
       el.on('mousedown', me.onMouseDown, me);
+      el.on('dblclick', me.onCellTextDBLClick, me, '.' + GRID_HEADER_CELL_TEXT_CLS);
     },
     /*
      *
@@ -381,8 +382,18 @@
           var groupName = groupCell.attr('index');
 
           var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
-            groupCellLeft = parseInt(underGroupCells.item(0).css('left')),
+            groupCellLeft = me.scrollLeft || 0,
             groupCellWidth = 0;
+
+          F.each(columns, function (column) {
+            if (column.grouping === groupName) {
+              return true;
+            }
+
+            if(!column.hidden){
+              groupCellLeft += column.width;
+            }
+          });
 
           F.each(columns, function (column) {
             if (column.grouping === groupName && !column.hidden) {
@@ -390,8 +401,18 @@
             }
           });
 
-          groupCell.css('left', groupCellLeft);
-          groupCell.css('width', groupCellWidth);
+          if(animate && !F.nojQuery){
+            groupCell.animate({
+              left: groupCellLeft,
+              width: groupCellWidth
+            }, ANIMATE_DURATION);
+          }
+          else{
+            groupCell.css({
+              left: groupCellLeft,
+              width: groupCellWidth
+            });
+          }
         });
       }
     },
@@ -541,7 +562,9 @@
         columndrag = w.columndrag,
         cell = e.currentTarget,
         target = F.get(e.target),
-        index = parseInt(F.get(cell).attr('index'));
+        index = parseInt(F.get(cell).attr('index')),
+        columns = me.getColumns(),
+        column = columns[index];
 
       if(columndrag && columndrag.status === 'dragging'){
         return;
@@ -559,12 +582,36 @@
         return;
       }
 
-      w.fire('headercellclick', {
-        e: e,
-        side: me.side,
-        cell: cell,
-        index: index
-      });
+      if(me.textDBLClick){
+        return;
+      }
+
+      if(column.titleEditable){
+        setTimeout(function(){
+          if(me.textDBLClick){
+            setTimeout(function(){
+              delete me.textDBLClick;
+            }, 400);
+          }
+          else{
+            w.fire('headercellclick', {
+              e: e,
+              side: me.side,
+              cell: cell,
+              index: index
+            });
+          }
+
+        }, 300);
+      }
+      else {
+        w.fire('headercellclick', {
+          e: e,
+          side: me.side,
+          cell: cell,
+          index: index
+        });
+      }
     },
     /*
      * @param {Event} e
@@ -686,50 +733,6 @@
      */
     hideCell: function (orderIndex) {
       var me = this,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
-        cell = cells.item(orderIndex),
-        cellWidth = parseInt(cell.css('width')),
-        i = orderIndex + 1,
-        iL = cells.length,
-        columns = me.getColumns();
-
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
-        var groupIndex = cell.attr('group-index'),
-          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
-          groupCellWidth = parseInt(groupCell.css('width'));
-
-        groupCell.css('width', groupCellWidth - cellWidth);
-      }
-
-      cell.hide();
-
-      var groups = {};
-
-      for (; i < iL; i++) {
-        var _cell = cells.item(i),
-          left = parseInt(_cell.css('left')) - cellWidth,
-          column = columns[i];
-
-        if (column.grouping) {
-          if (columns[orderIndex].grouping !== column.grouping) {
-            groups[column.grouping] = true;
-          }
-        }
-
-        _cell.css('left', left);
-      }
-
-      F.each(groups, function (group, p) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
-
-        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-      });
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    hideCell: function (orderIndex) {
-      var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
         cell = cells.item(orderIndex),
@@ -743,7 +746,9 @@
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
-        groupCell.css('width', groupCellWidth - cellWidth);
+        groupCell.animate({
+          width: groupCellWidth - cellWidth
+        }, ANIMATE_DURATION);
       }
 
       cell.hide();
@@ -781,55 +786,31 @@
         left += column.width;
       }
 
-      F.each(groups, function (group, p) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+      F.each(groups, function (value, group) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
+          left = 0;
 
-        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-      });
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    showCell: function (orderIndex) {
-      var me = this,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
-        cell = cells.item(orderIndex),
-        cellWidth,
-        i = orderIndex + 1,
-        iL = cells.length,
-        columns = me.getColumns();
-
-      cell.show();
-
-      cellWidth = parseInt(cell.css('width'));
-
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
-        var groupIndex = cell.attr('group-index'),
-          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
-          groupCellWidth = parseInt(groupCell.css('width'));
-
-        groupCell.css('width', groupCellWidth + cellWidth);
-      }
-
-      var groups = {};
-
-      for (; i < iL; i++) {
-        var _cell = cells.item(i),
-          left = parseInt(_cell.css('left')) + cellWidth,
-          column = columns[i];
-
-        if (column.grouping) {
-          if (columns[orderIndex].grouping !== column.grouping) {
-            groups[column.grouping] = true;
-          }
+        if(me.side === 'center'){
+          scrollLeft = w.scroller.scrollLeft;
+          left -= scrollLeft;
         }
-        _cell.css('left', left);
-      }
 
-      for (var p in groups) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
-        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-      }
+        F.each(columns, function (column, i) {
+          if(column.hidden){
+            return;
+          }
+
+          if(column.grouping === group){
+            return true;
+          }
+
+          left += column.width;
+        });
+
+        groupCell.animate({
+          left: left
+        }, ANIMATE_DURATION);
+      });
     },
     /*
      * @param {Number} orderIndex
@@ -854,7 +835,9 @@
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
-        groupCell.css('width', groupCellWidth + cellWidth);
+        groupCell.animate({
+          width: groupCellWidth + cellWidth
+        }, ANIMATE_DURATION);
       }
 
       var scrollLeft = 0;
@@ -890,10 +873,31 @@
         left += column.width;
       }
 
-      for (var p in groups) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
-        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-      }
+      F.each(groups, function (value, group) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
+          left = 0;
+
+        if(me.side === 'center'){
+          scrollLeft = w.scroller.scrollLeft;
+          left -= scrollLeft;
+        }
+
+        F.each(columns, function (column) {
+          if(column.hidden){
+            return;
+          }
+
+          if(column.grouping === group){
+            return true;
+          }
+
+          left += column.width;
+        });
+
+        groupCell.animate({
+          left: left
+        }, ANIMATE_DURATION);
+      });
     },
     /*
      * @param {Number} orderIndex
@@ -1254,6 +1258,70 @@
       });
 
       me.renderHeaderCheckBox();
+    },
+    onCellTextDBLClick: function (e) {
+      var me = this,
+        w = me.widget,
+        targetEl = Fancy.get(e.target),
+        cell = targetEl.parent().parent(),
+        index = cell.attr('index'),
+        columns = me.getColumns(),
+        column = columns[index],
+        oldValue = column.title;
+
+      if(!column.titleEditable){
+        return;
+      }
+
+      me.textDBLClick = true;
+
+      if(me.activeEditColumnField){
+        me.activeEditColumnField.destroy();
+        delete me.activeEditColumnField;
+      }
+
+      me.activeEditColumnField = new Fancy.StringField({
+        renderTo: me.el.dom,
+        label: false,
+        theme: w.theme,
+        padding: '0px 0px 0px',
+        width: column.width + 1,
+        value: column.title || '',
+        inputHeight: w.cellHeaderHeight + 1,
+        events: [{
+          enter: function (field) {
+            field.destroy();
+          }
+        }, {
+          esc: function (field) {
+            w.setColumnTitle(column.index, oldValue, me.side);
+            field.destroy();
+            delete me.activeEditColumnField;
+          }
+        }, {
+          input: function (field, value) {
+            w.setColumnTitle(column.index, value, me.side);
+            delete me.activeEditColumnField;
+          }
+        },{
+          render: function(field){
+            field.focus();
+            delete me.activeEditColumnField;
+          }
+        }],
+        style: {
+          position: 'absolute',
+          top: -1,
+          left: parseInt(cell.css('left')) - 1
+        }
+      });
+
+      w.once('scroll', function(){
+        if(me.activeEditColumnField){
+          me.activeEditColumnField.destroy();
+          delete me.activeEditColumnField;
+        }
+      });
     }
   });
 

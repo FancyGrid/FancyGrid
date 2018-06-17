@@ -1441,11 +1441,20 @@
 
       var newWidth = el.width();
 
+      if(el.dom === undefined){
+        return;
+      }
+
       if(newWidth === 0){
         newWidth = el.parent().width();
       }
 
-      me.setWidth(newWidth);
+      if(me.responsive) {
+        me.setWidth(newWidth);
+      }
+      else if(me.fitWidth){
+        //me.setWidthFit();
+      }
 
       if(me.responsiveHeight){
         var height = parseInt(el.height());
@@ -1864,6 +1873,7 @@
       }
 
       me.onWindowResize();
+
       me.fire('columnhide', {
         column: column,
         side: side,
@@ -2978,6 +2988,70 @@
       }
 
       return id + url;
+    },
+    /*
+     *
+     */
+    setWidthFit: function () {
+      var me = this,
+        panelBodyBorders = me.panelBodyBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+        gridBorders = me.gridBorders,
+        width = 0,
+        hasLocked = false,
+        columns = [].concat(me.leftColumns).concat(me.columns).concat(me.rightColumns);
+
+      Fancy.each(columns, function(column){
+        if(!column.hidden){
+          width += column.width;
+        }
+        if(column.locked){
+          hasLocked = true;
+        }
+      });
+
+      if(me.panel){
+        width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];
+      }
+      else{
+        width += gridWithoutPanelBorders[1] + gridWithoutPanelBorders[3] + gridBorders[1] + gridBorders[3];
+      }
+
+      if(hasLocked){
+        width--;
+      }
+
+      me.setWidth(width);
+    },
+    /*
+     * @param {Number|String} index
+     * @param {String} value
+     * @param {String} [side]
+     */
+    setColumnTitle: function(index, value, side){
+      var me = this,
+        side = side || 'center',
+        header = me.getHeader(side),
+        cell,
+        column,
+        columns = header.getColumns();
+
+      if(Fancy.isString(index)){
+        index = me.getColumnOrderByKey(index).order;
+      }
+
+      column = columns[index];
+      column.title = value;
+
+      cell = header.getCell(index);
+      cell.select('.' + Fancy.GRID_HEADER_CELL_TEXT_CLS).item(0).update(value);
+
+      me.fire('columntitlechange', {
+        orderIndex: index,
+        index: column.index,
+        value: value,
+        side: side
+      });
     }
   });
 

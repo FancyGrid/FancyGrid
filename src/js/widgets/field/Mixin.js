@@ -242,6 +242,7 @@
       }
 
       if (renderAfter) {
+        renderAfter = F.get(renderAfter);
         el = renderAfter.after(el.dom.outerHTML).next();
       }
       else if (renderBefore) {

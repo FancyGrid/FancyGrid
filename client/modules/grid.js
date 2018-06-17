@@ -1894,6 +1894,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var width = 0,
         hasLocked = false;
 
+      this.fitWidth = true;
+
       Fancy.each(config.columns, function(column){
         if(!column.hidden){
           width += column.width;
@@ -3503,11 +3505,20 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       var newWidth = el.width();
 
+      if(el.dom === undefined){
+        return;
+      }
+
       if(newWidth === 0){
         newWidth = el.parent().width();
       }
 
-      me.setWidth(newWidth);
+      if(me.responsive) {
+        me.setWidth(newWidth);
+      }
+      else if(me.fitWidth){
+        //me.setWidthFit();
+      }
 
       if(me.responsiveHeight){
         var height = parseInt(el.height());
@@ -3926,6 +3937,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.onWindowResize();
+
       me.fire('columnhide', {
         column: column,
         side: side,
@@ -5040,6 +5052,70 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       return id + url;
+    },
+    /*
+     *
+     */
+    setWidthFit: function () {
+      var me = this,
+        panelBodyBorders = me.panelBodyBorders,
+        gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+        gridBorders = me.gridBorders,
+        width = 0,
+        hasLocked = false,
+        columns = [].concat(me.leftColumns).concat(me.columns).concat(me.rightColumns);
+
+      Fancy.each(columns, function(column){
+        if(!column.hidden){
+          width += column.width;
+        }
+        if(column.locked){
+          hasLocked = true;
+        }
+      });
+
+      if(me.panel){
+        width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];
+      }
+      else{
+        width += gridWithoutPanelBorders[1] + gridWithoutPanelBorders[3] + gridBorders[1] + gridBorders[3];
+      }
+
+      if(hasLocked){
+        width--;
+      }
+
+      me.setWidth(width);
+    },
+    /*
+     * @param {Number|String} index
+     * @param {String} value
+     * @param {String} [side]
+     */
+    setColumnTitle: function(index, value, side){
+      var me = this,
+        side = side || 'center',
+        header = me.getHeader(side),
+        cell,
+        column,
+        columns = header.getColumns();
+
+      if(Fancy.isString(index)){
+        index = me.getColumnOrderByKey(index).order;
+      }
+
+      column = columns[index];
+      column.title = value;
+
+      cell = header.getCell(index);
+      cell.select('.' + Fancy.GRID_HEADER_CELL_TEXT_CLS).item(0).update(value);
+
+      me.fire('columntitlechange', {
+        orderIndex: index,
+        index: column.index,
+        value: value,
+        side: side
+      });
     }
   });
 
@@ -5096,13 +5172,17 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    */
   var RIGHT_SCROLL_CLS = 'fancy-scroll-right';
   var BOTTOM_SCROLL_CLS = 'fancy-scroll-bottom';
+  var TOP_SCROLL_CLS = 'fancy-scroll-top';
   var RIGHT_SCROLL_INNER_CLS = 'fancy-scroll-right-inner';
   var BOTTOM_SCROLL_INNER_CLS = 'fancy-scroll-bottom-inner';
+  var TOP_SCROLL_INNER_CLS = 'fancy-scroll-top-inner';
   var NATIVE_SCROLLER_CLS = 'fancy-grid-native-scroller';
   var RIGHT_SCROLL_HOVER_CLS = 'fancy-scroll-right-hover';
   var BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
+  var TOP_SCROLL_HOVER_CLS = 'fancy-scroll-top-hover';
   var RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
   var BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
+  var TOP_SCROLL_ACTIVE_CLS = 'fancy-scroll-top-active';
   var HIDDEN_CLS = F.HIDDEN_CLS;
   var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
@@ -5239,6 +5319,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         body = w.body,
         rightScrollEl = F.get(document.createElement('div')),
         bottomScrollEl = F.get(document.createElement('div')),
+        topScrollEl = F.get(document.createElement('div')),
         right = 1;
 
       if (w.nativeScroller) {
@@ -5263,6 +5344,17 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
         F.get(body.el.append(bottomScrollEl.dom));
         me.scrollBottomEl = body.el.select('.fancy-scroll-bottom');
+
+        if(w.doubleHorizontalScroll){
+          topScrollEl.addCls(TOP_SCROLL_CLS, HIDDEN_CLS);
+
+          topScrollEl.update([
+            '<div class="' + TOP_SCROLL_INNER_CLS + '"></div>'
+          ].join(" "));
+
+          F.get(body.el.append(topScrollEl.dom));
+          me.scrollTopEl = body.el.select('.fancy-scroll-top');
+        }
       }
 
       me.fire('render');
@@ -5314,6 +5406,18 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         }, function () {
           me.scrollBottomEl.removeCls(BOTTOM_SCROLL_HOVER_CLS);
         });
+
+        if(w.doubleHorizontalScroll){
+          me.scrollTopEl.hover(function () {
+            if (me.bottomKnobDown !== true) {
+              me.scrollTopEl.addCls(TOP_SCROLL_HOVER_CLS);
+            }
+          }, function () {
+            if (me.bottomKnobDown !== true) {
+              me.scrollTopEl.removeCls(TOP_SCROLL_HOVER_CLS);
+            }
+          });
+        }
 
         me.initRightScroll();
         me.initBottomScroll();
@@ -5371,6 +5475,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       me.bottomKnobLeft = parseInt(me.bottomKnob.css('margin-left'));
       me.scrollBottomEl.addCls(BOTTOM_SCROLL_ACTIVE_CLS);
+
+      if(w.doubleHorizontalScroll){
+        me.scrollTopEl.addCls(TOP_SCROLL_ACTIVE_CLS);
+      }
     },
     /*
      *
@@ -5426,10 +5534,16 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     initBottomScroll: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.bottomKnob = me.scrollBottomEl.select('.' + BOTTOM_SCROLL_INNER_CLS);
       me.scrollBottomEl.on('mousedown', me.onMouseDownBottomSpin, me);
+
+      if(w.doubleHorizontalScroll){
+        me.topKnob = me.scrollTopEl.select('.' + TOP_SCROLL_INNER_CLS);
+        me.scrollTopEl.on('mousedown', me.onMouseDownBottomSpin, me);
+      }
     },
     /*
      * @param {Object} e
@@ -5456,7 +5570,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {Object} e
      */
     onMouseDownBottomSpin: function (e) {
-      var me = this;
+      var me = this,
+        targetEl = F.get(e.target);
 
       e.preventDefault();
 
@@ -5468,12 +5583,17 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       me.bottomKnobLeft = parseInt(me.bottomKnob.css('margin-left'));
       me.scrollBottomEl.addCls(BOTTOM_SCROLL_ACTIVE_CLS);
+
+      if(targetEl.hasClass()){
+        me.scrollTopEl.addCls(TOP_SCROLL_INNER_CLS);
+      }
     },
     /*
      *
      */
     onMouseUpDoc: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
         return;
@@ -5483,6 +5603,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.scrollBottomEl.removeCls(BOTTOM_SCROLL_ACTIVE_CLS);
       me.rightKnobDown = false;
       me.bottomKnobDown = false;
+
+      if(w.doubleHorizontalScroll){
+        me.scrollTopEl.removeCls(TOP_SCROLL_ACTIVE_CLS);
+        me.scrollTopEl.removeCls(TOP_SCROLL_HOVER_CLS);
+      }
     },
     /*
      * @param {Object} e
@@ -5522,8 +5647,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           marginTop = 0;
         }
 
-        me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
         topScroll = me.rightScrollScale * marginTop;
+
+        if(w.doubleHorizontalScroll && me.scrollBottomEl.css('display') !== 'none'){
+          if(marginTop < me.cornerSize){
+            marginTop = me.cornerSize;
+          }
+        }
+
+        me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
 
         me.scroll(topScroll);
       }
@@ -5555,6 +5687,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
         me.bottomKnob.css('margin-left', marginLeft + 'px');
         bottomScroll = Math.ceil(me.bottomScrollScale * (marginLeft - 1));
+
+        if(w.doubleHorizontalScroll){
+          me.topKnob.css('margin-left', marginLeft + 'px');
+        }
 
         me.scroll(false, bottomScroll);
       }
@@ -5643,6 +5779,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if (knobHeight < me.minRightKnobHeight) {
         knobHeight = me.minRightKnobHeight;
+
+        if(w.doubleHorizontalScroll){
+          knobHeight += me.minRightKnobHeight;
+        }
       }
 
       if (me.corner === false) {
@@ -5680,10 +5820,18 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         if (centerViewWidth > centerFullWidth) {
           showBottomScroll = false;
           me.scrollBottomEl.addCls(HIDDEN_CLS);
+
+          if(w.doubleHorizontalScroll){
+            me.scrollTopEl.addCls(HIDDEN_CLS);
+          }
         }
         else {
           showBottomScroll = true;
           me.scrollBottomEl.removeCls(HIDDEN_CLS);
+
+          if(w.doubleHorizontalScroll){
+            me.scrollTopEl.removeCls(HIDDEN_CLS);
+          }
         }
       }
 
@@ -5725,6 +5873,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       me.bottomKnob.stop();
       me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+
+      if(w.doubleHorizontalScroll){
+        me.topKnob.stop();
+        me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      }
+
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
       me.bottomScrollScale = (centerViewWidth - centerFullWidth) / (centerViewWidth - knobWidth - 2 - 1);
@@ -5810,6 +5964,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         return;
       }
 
+      if (w.doubleHorizontalScroll) {
+        newKnobScroll += me.cornerSize;
+      }
+
       me.rightKnob.css('margin-top', newKnobScroll + 'px');
     },
     /*
@@ -5830,6 +5988,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       me.bottomKnob.css('margin-left', -newKnobScroll + 'px');
+
+      if(w.doubleHorizontalScroll){
+        me.topKnob.css('margin-left', -newKnobScroll + 'px');
+      }
     },
     /*
      * @return {Number}
@@ -5993,16 +6155,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
         if (passedWidth - bottomScroll > bodyViewWidth) {
           if (!columns[i]) {
-            //me.scroll(rightScroll, -(passedWidth - bottomScroll - bodyViewWidth));
             me.scroll(rightScroll, -(bodyColumnsWidth - bodyViewWidth));
           }
           else {
-            //me.scroll(rightScroll, -(bottomScroll + columns[columnIndex].width));
             me.scroll(rightScroll, -(bottomScroll + (passedWidth - bottomScroll) - bodyViewWidth));
           }
         }
         else if(passedWidth - bottomScroll < columns[columnIndex].width){
-          //var bottomScroll = -(bottomScroll - Math.abs(passedWidth - bottomScroll));
           bottomScroll = -(passedWidth - columns[columnIndex].width);
           if(bottomScroll > 0){
             bottomScroll = 0;
@@ -8463,6 +8622,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             value: value
           };
 
+
+
         if (s.changed[o.id] && s.changed[o.id][column.index]) {
           dirty = true;
         }
@@ -10004,26 +10165,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      */
     hideColumn: function (orderIndex) {
       var me = this,
-        columns = me.el.select('.' + GRID_COLUMN_CLS),
-        column = columns.item(orderIndex),
-        columnWidth = parseInt(column.css('width')),
-        i = orderIndex + 1,
-        iL = columns.length;
-
-      column.hide();
-
-      for (; i < iL; i++) {
-        var _column = columns.item(i),
-          left = parseInt(_column.css('left')) - columnWidth;
-
-        _column.css('left', left);
-      }
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    hideColumn: function (orderIndex) {
-      var me = this,
         w = me.widget,
         columns = me.getColumns(),
         columnEls = me.el.select('.' + GRID_COLUMN_CLS),
@@ -10056,28 +10197,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
 
         left += column.width;
-      }
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    showColumn: function (orderIndex) {
-      var me = this,
-        columns = me.el.select('.' + GRID_COLUMN_CLS),
-        column = columns.item(orderIndex),
-        columnWidth,
-        i = orderIndex + 1,
-        iL = columns.length;
-
-      column.show();
-
-      columnWidth = parseInt(column.css('width'));
-
-      for (; i < iL; i++) {
-        var _column = columns.item(i),
-          left = parseInt(_column.css('left')) + columnWidth;
-
-        _column.css('left', left);
       }
     },
     /*
@@ -10498,6 +10617,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
       el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
       el.on('mousedown', me.onMouseDown, me);
+      el.on('dblclick', me.onCellTextDBLClick, me, '.' + GRID_HEADER_CELL_TEXT_CLS);
     },
     /*
      *
@@ -10790,8 +10910,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           var groupName = groupCell.attr('index');
 
           var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
-            groupCellLeft = parseInt(underGroupCells.item(0).css('left')),
+            groupCellLeft = me.scrollLeft || 0,
             groupCellWidth = 0;
+
+          F.each(columns, function (column) {
+            if (column.grouping === groupName) {
+              return true;
+            }
+
+            if(!column.hidden){
+              groupCellLeft += column.width;
+            }
+          });
 
           F.each(columns, function (column) {
             if (column.grouping === groupName && !column.hidden) {
@@ -10799,8 +10929,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             }
           });
 
-          groupCell.css('left', groupCellLeft);
-          groupCell.css('width', groupCellWidth);
+          if(animate && !F.nojQuery){
+            groupCell.animate({
+              left: groupCellLeft,
+              width: groupCellWidth
+            }, ANIMATE_DURATION);
+          }
+          else{
+            groupCell.css({
+              left: groupCellLeft,
+              width: groupCellWidth
+            });
+          }
         });
       }
     },
@@ -10950,7 +11090,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         columndrag = w.columndrag,
         cell = e.currentTarget,
         target = F.get(e.target),
-        index = parseInt(F.get(cell).attr('index'));
+        index = parseInt(F.get(cell).attr('index')),
+        columns = me.getColumns(),
+        column = columns[index];
 
       if(columndrag && columndrag.status === 'dragging'){
         return;
@@ -10968,12 +11110,36 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         return;
       }
 
-      w.fire('headercellclick', {
-        e: e,
-        side: me.side,
-        cell: cell,
-        index: index
-      });
+      if(me.textDBLClick){
+        return;
+      }
+
+      if(column.titleEditable){
+        setTimeout(function(){
+          if(me.textDBLClick){
+            setTimeout(function(){
+              delete me.textDBLClick;
+            }, 400);
+          }
+          else{
+            w.fire('headercellclick', {
+              e: e,
+              side: me.side,
+              cell: cell,
+              index: index
+            });
+          }
+
+        }, 300);
+      }
+      else {
+        w.fire('headercellclick', {
+          e: e,
+          side: me.side,
+          cell: cell,
+          index: index
+        });
+      }
     },
     /*
      * @param {Event} e
@@ -11095,50 +11261,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      */
     hideCell: function (orderIndex) {
       var me = this,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
-        cell = cells.item(orderIndex),
-        cellWidth = parseInt(cell.css('width')),
-        i = orderIndex + 1,
-        iL = cells.length,
-        columns = me.getColumns();
-
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
-        var groupIndex = cell.attr('group-index'),
-          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
-          groupCellWidth = parseInt(groupCell.css('width'));
-
-        groupCell.css('width', groupCellWidth - cellWidth);
-      }
-
-      cell.hide();
-
-      var groups = {};
-
-      for (; i < iL; i++) {
-        var _cell = cells.item(i),
-          left = parseInt(_cell.css('left')) - cellWidth,
-          column = columns[i];
-
-        if (column.grouping) {
-          if (columns[orderIndex].grouping !== column.grouping) {
-            groups[column.grouping] = true;
-          }
-        }
-
-        _cell.css('left', left);
-      }
-
-      F.each(groups, function (group, p) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
-
-        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-      });
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    hideCell: function (orderIndex) {
-      var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
         cell = cells.item(orderIndex),
@@ -11152,7 +11274,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
-        groupCell.css('width', groupCellWidth - cellWidth);
+        groupCell.animate({
+          width: groupCellWidth - cellWidth
+        }, ANIMATE_DURATION);
       }
 
       cell.hide();
@@ -11190,55 +11314,31 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         left += column.width;
       }
 
-      F.each(groups, function (group, p) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
+      F.each(groups, function (value, group) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
+          left = 0;
 
-        groupCell.css('left', parseInt(groupCell.css('left')) - cellWidth);
-      });
-    },
-    /*
-     * @param {Number} orderIndex
-     */
-    showCell: function (orderIndex) {
-      var me = this,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
-        cell = cells.item(orderIndex),
-        cellWidth,
-        i = orderIndex + 1,
-        iL = cells.length,
-        columns = me.getColumns();
-
-      cell.show();
-
-      cellWidth = parseInt(cell.css('width'));
-
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
-        var groupIndex = cell.attr('group-index'),
-          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
-          groupCellWidth = parseInt(groupCell.css('width'));
-
-        groupCell.css('width', groupCellWidth + cellWidth);
-      }
-
-      var groups = {};
-
-      for (; i < iL; i++) {
-        var _cell = cells.item(i),
-          left = parseInt(_cell.css('left')) + cellWidth,
-          column = columns[i];
-
-        if (column.grouping) {
-          if (columns[orderIndex].grouping !== column.grouping) {
-            groups[column.grouping] = true;
-          }
+        if(me.side === 'center'){
+          scrollLeft = w.scroller.scrollLeft;
+          left -= scrollLeft;
         }
-        _cell.css('left', left);
-      }
 
-      for (var p in groups) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
-        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-      }
+        F.each(columns, function (column, i) {
+          if(column.hidden){
+            return;
+          }
+
+          if(column.grouping === group){
+            return true;
+          }
+
+          left += column.width;
+        });
+
+        groupCell.animate({
+          left: left
+        }, ANIMATE_DURATION);
+      });
     },
     /*
      * @param {Number} orderIndex
@@ -11263,7 +11363,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
-        groupCell.css('width', groupCellWidth + cellWidth);
+        groupCell.animate({
+          width: groupCellWidth + cellWidth
+        }, ANIMATE_DURATION);
       }
 
       var scrollLeft = 0;
@@ -11299,10 +11401,31 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         left += column.width;
       }
 
-      for (var p in groups) {
-        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + p + '"]').item(0);
-        groupCell.css('left', parseInt(groupCell.css('left')) + cellWidth);
-      }
+      F.each(groups, function (value, group) {
+        var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
+          left = 0;
+
+        if(me.side === 'center'){
+          scrollLeft = w.scroller.scrollLeft;
+          left -= scrollLeft;
+        }
+
+        F.each(columns, function (column) {
+          if(column.hidden){
+            return;
+          }
+
+          if(column.grouping === group){
+            return true;
+          }
+
+          left += column.width;
+        });
+
+        groupCell.animate({
+          left: left
+        }, ANIMATE_DURATION);
+      });
     },
     /*
      * @param {Number} orderIndex
@@ -11663,6 +11786,70 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       });
 
       me.renderHeaderCheckBox();
+    },
+    onCellTextDBLClick: function (e) {
+      var me = this,
+        w = me.widget,
+        targetEl = Fancy.get(e.target),
+        cell = targetEl.parent().parent(),
+        index = cell.attr('index'),
+        columns = me.getColumns(),
+        column = columns[index],
+        oldValue = column.title;
+
+      if(!column.titleEditable){
+        return;
+      }
+
+      me.textDBLClick = true;
+
+      if(me.activeEditColumnField){
+        me.activeEditColumnField.destroy();
+        delete me.activeEditColumnField;
+      }
+
+      me.activeEditColumnField = new Fancy.StringField({
+        renderTo: me.el.dom,
+        label: false,
+        theme: w.theme,
+        padding: '0px 0px 0px',
+        width: column.width + 1,
+        value: column.title || '',
+        inputHeight: w.cellHeaderHeight + 1,
+        events: [{
+          enter: function (field) {
+            field.destroy();
+          }
+        }, {
+          esc: function (field) {
+            w.setColumnTitle(column.index, oldValue, me.side);
+            field.destroy();
+            delete me.activeEditColumnField;
+          }
+        }, {
+          input: function (field, value) {
+            w.setColumnTitle(column.index, value, me.side);
+            delete me.activeEditColumnField;
+          }
+        },{
+          render: function(field){
+            field.focus();
+            delete me.activeEditColumnField;
+          }
+        }],
+        style: {
+          position: 'absolute',
+          top: -1,
+          left: parseInt(cell.css('left')) - 1
+        }
+      });
+
+      w.once('scroll', function(){
+        if(me.activeEditColumnField){
+          me.activeEditColumnField.destroy();
+          delete me.activeEditColumnField;
+        }
+      });
     }
   });
 

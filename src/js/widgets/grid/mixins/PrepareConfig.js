@@ -1894,6 +1894,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var width = 0,
         hasLocked = false;
 
+      this.fitWidth = true;
+
       Fancy.each(config.columns, function(column){
         if(!column.hidden){
           width += column.width;

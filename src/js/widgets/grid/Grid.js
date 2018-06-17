@@ -109,7 +109,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'headercellclick', 'headercellmousemove', 'headercellmousedown',
       'docmouseup', 'docclick', 'docmove',
       'beforeinit', 'init',
-      'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown',
+      'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown', 'columntitlechange',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
       'columndrag',
@@ -518,6 +518,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         if(me.rightColumns.length === 0){
           me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
           var bodyWidth = parseInt(me.body.el.css('width'));
+
           me.body.el.css('width', bodyWidth + 2);
         }
         break;

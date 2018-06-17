@@ -212,6 +212,28 @@
           case '-':
           case 'sep':
             break;
+          case 'number':
+            me.items[i].field = new Fancy.NumberField({
+              label: false,
+              theme: me.theme,
+              padding: '1px 0px 0px',
+              width: 90,
+              renderAfter: itemEl.select('.' + MENU_ITEM_IMAGE_CLS).item(0).dom,
+              events: me.items[i].events,
+              value: item.value || ''
+            });
+            break;
+          case 'string':
+            me.items[i].field = new Fancy.StringField({
+              label: false,
+              theme: me.theme,
+              padding: '1px 0px 0px',
+              width: 90,
+              renderAfter: itemEl.select('.' + MENU_ITEM_IMAGE_CLS).item(0).dom,
+              events: me.items[i].events,
+              value: item.value || ''
+            });
+            break;
           default:
             itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
         }
@@ -386,7 +408,12 @@
      * @param {Object} e
      */
     onItemMouseDown: function(e) {
-      e.preventDefault();
+      var target = e.target;
+
+      if(target.tagName.toLocaleLowerCase() === 'input'){}
+      else{
+        e.preventDefault();
+      }
     },
     /*
      * @param {Number} index

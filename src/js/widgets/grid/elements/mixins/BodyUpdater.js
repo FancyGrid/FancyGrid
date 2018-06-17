@@ -889,6 +889,8 @@
             value: value
           };
 
+
+
         if (s.changed[o.id] && s.changed[o.id][column.index]) {
           dirty = true;
         }
