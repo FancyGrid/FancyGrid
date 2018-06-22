@@ -41,7 +41,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
     config = me.prepareConfigState(config, originalConfig);
-    config = me.prepareConfigContextMenu(config);
     config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
@@ -50,6 +49,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
     config = me.prepareConfigSize(config, originalConfig);
+    config = me.prepareConfigContextMenu(config, originalConfig);
     config = me.prepareConfigColumns(config);
     config = me.prepareConfigColumnsResizer(config);
     config = me.prepareConfigFooter(config);
@@ -1230,6 +1230,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   prepareConfigContextMenu: function(config){
     if(config.contextmenu){
       var menuConfig = config.contextmenu;
+
+      if(Fancy.isArray(config.contextmenu)){
+        Fancy.each(config.contextmenu, function (value) {
+          if(value === 'export'){
+            config.exporter = true;
+          }
+        });
+      }
 
       if(menuConfig === true){
         menuConfig = {};
@@ -4367,8 +4375,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {String} index
      * @param {Mixed} value
      * @param {String} sign
+     * @param {Boolean} [updateHeaderFilter]
      */
-    addFilter: function (index, value, sign) {
+    addFilter: function (index, value, sign, updateHeaderFilter) {
       var me = this,
         filter = me.filter.filters[index],
         sign = sign || '';
@@ -4385,31 +4394,37 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         value = Number(value);
       }
 
+      /*
       if (value === '') {
         delete filter[sign];
       }
       else {
         filter[sign] = value;
       }
+      */
+      filter[sign] = value;
 
       me.filter.filters[index] = filter;
       me.filter.updateStoreFilters();
 
-      me.filter.addValuesInColumnFields(index, value, sign);
+      if(updateHeaderFilter !== false) {
+        me.filter.addValuesInColumnFields(index, value, sign);
+      }
     },
     /*
      * @param {String} [index]
      * @param {String} [sign]
+     * @param {Boolean} [updateHeaderField]
      */
-    clearFilter: function (index, sign) {
+    clearFilter: function (index, sign, updateHeaderField) {
       var me = this,
         s = me.store;
 
-      if (index === undefined) {
+      if (index === undefined || index === null) {
         me.filter.filters = {};
         s.filters = {};
       }
-      else if (sign === undefined) {
+      else if (sign === undefined || sign === null) {
         if(s.filters && s.filters[index]){
           me.filter.filters[index] = {};
           s.filters[index] = {};
@@ -4425,7 +4440,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       s.changeDataView();
       me.update();
 
-      if (me.filter) {
+      if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
     },

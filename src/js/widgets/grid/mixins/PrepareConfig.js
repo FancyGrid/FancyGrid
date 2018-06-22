@@ -41,7 +41,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
     config = me.prepareConfigState(config, originalConfig);
-    config = me.prepareConfigContextMenu(config);
     config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
@@ -50,6 +49,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
     config = me.prepareConfigSize(config, originalConfig);
+    config = me.prepareConfigContextMenu(config, originalConfig);
     config = me.prepareConfigColumns(config);
     config = me.prepareConfigColumnsResizer(config);
     config = me.prepareConfigFooter(config);
@@ -1230,6 +1230,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   prepareConfigContextMenu: function(config){
     if(config.contextmenu){
       var menuConfig = config.contextmenu;
+
+      if(Fancy.isArray(config.contextmenu)){
+        Fancy.each(config.contextmenu, function (value) {
+          if(value === 'export'){
+            config.exporter = true;
+          }
+        });
+      }
 
       if(menuConfig === true){
         menuConfig = {};

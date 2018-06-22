@@ -2303,8 +2303,9 @@
      * @param {String} index
      * @param {Mixed} value
      * @param {String} sign
+     * @param {Boolean} [updateHeaderFilter]
      */
-    addFilter: function (index, value, sign) {
+    addFilter: function (index, value, sign, updateHeaderFilter) {
       var me = this,
         filter = me.filter.filters[index],
         sign = sign || '';
@@ -2321,31 +2322,37 @@
         value = Number(value);
       }
 
+      /*
       if (value === '') {
         delete filter[sign];
       }
       else {
         filter[sign] = value;
       }
+      */
+      filter[sign] = value;
 
       me.filter.filters[index] = filter;
       me.filter.updateStoreFilters();
 
-      me.filter.addValuesInColumnFields(index, value, sign);
+      if(updateHeaderFilter !== false) {
+        me.filter.addValuesInColumnFields(index, value, sign);
+      }
     },
     /*
      * @param {String} [index]
      * @param {String} [sign]
+     * @param {Boolean} [updateHeaderField]
      */
-    clearFilter: function (index, sign) {
+    clearFilter: function (index, sign, updateHeaderField) {
       var me = this,
         s = me.store;
 
-      if (index === undefined) {
+      if (index === undefined || index === null) {
         me.filter.filters = {};
         s.filters = {};
       }
-      else if (sign === undefined) {
+      else if (sign === undefined || sign === null) {
         if(s.filters && s.filters[index]){
           me.filter.filters[index] = {};
           s.filters[index] = {};
@@ -2361,7 +2368,7 @@
       s.changeDataView();
       me.update();
 
-      if (me.filter) {
+      if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
     },

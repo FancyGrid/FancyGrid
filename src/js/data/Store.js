@@ -567,6 +567,11 @@ Fancy.define('Fancy.Store', {
 
       if (!me.remoteFilter) {
         data = me.filteredData;
+
+        if(data === undefined){
+          data = me.data;
+        }
+
         iL = data.length;
       }
     }

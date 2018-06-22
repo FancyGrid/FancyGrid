@@ -46,6 +46,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   tabEdit: true,
   dirtyEnabled: true,
   barScrollEnabled: true,
+  startResizing: false,
   /*
    * @constructor
    * @param {Object} config

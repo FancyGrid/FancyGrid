@@ -588,7 +588,7 @@
 
       var values = me.get();
 
-      F.apply(me.params, values);
+      F.applyIf(me.params, values);
 
       if (me.params.recaptcha === 'wait') {
         me.submit(o);

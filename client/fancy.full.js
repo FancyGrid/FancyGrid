@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.29',
+  version: '1.7.30',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6549,6 +6549,11 @@ Fancy.define('Fancy.Store', {
 
       if (!me.remoteFilter) {
         data = me.filteredData;
+
+        if(data === undefined){
+          data = me.data;
+        }
+
         iL = data.length;
       }
     }
@@ -14313,7 +14318,7 @@ Fancy.define('Fancy.bar.Text', {
 
       var values = me.get();
 
-      F.apply(me.params, values);
+      F.applyIf(me.params, values);
 
       if (me.params.recaptcha === 'wait') {
         me.submit(o);
@@ -20555,7 +20560,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSearch(config);
     config = me.prepareConfigSummary(config);
     config = me.prepareConfigState(config, originalConfig);
-    config = me.prepareConfigContextMenu(config);
     config = me.prepareConfigExporter(config);
     config = me.prepareConfigSmartIndex(config);
     config = me.prepareConfigActionColumn(config);
@@ -20564,6 +20568,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
     config = me.prepareConfigSize(config, originalConfig);
+    config = me.prepareConfigContextMenu(config, originalConfig);
     config = me.prepareConfigColumns(config);
     config = me.prepareConfigColumnsResizer(config);
     config = me.prepareConfigFooter(config);
@@ -21744,6 +21749,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   prepareConfigContextMenu: function(config){
     if(config.contextmenu){
       var menuConfig = config.contextmenu;
+
+      if(Fancy.isArray(config.contextmenu)){
+        Fancy.each(config.contextmenu, function (value) {
+          if(value === 'export'){
+            config.exporter = true;
+          }
+        });
+      }
 
       if(menuConfig === true){
         menuConfig = {};
@@ -25197,8 +25210,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      * @param {String} index
      * @param {Mixed} value
      * @param {String} sign
+     * @param {Boolean} [updateHeaderFilter]
      */
-    addFilter: function (index, value, sign) {
+    addFilter: function (index, value, sign, updateHeaderFilter) {
       var me = this,
         filter = me.filter.filters[index],
         sign = sign || '';
@@ -25215,31 +25229,37 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         value = Number(value);
       }
 
+      /*
       if (value === '') {
         delete filter[sign];
       }
       else {
         filter[sign] = value;
       }
+      */
+      filter[sign] = value;
 
       me.filter.filters[index] = filter;
       me.filter.updateStoreFilters();
 
-      me.filter.addValuesInColumnFields(index, value, sign);
+      if(updateHeaderFilter !== false) {
+        me.filter.addValuesInColumnFields(index, value, sign);
+      }
     },
     /*
      * @param {String} [index]
      * @param {String} [sign]
+     * @param {Boolean} [updateHeaderField]
      */
-    clearFilter: function (index, sign) {
+    clearFilter: function (index, sign, updateHeaderField) {
       var me = this,
         s = me.store;
 
-      if (index === undefined) {
+      if (index === undefined || index === null) {
         me.filter.filters = {};
         s.filters = {};
       }
-      else if (sign === undefined) {
+      else if (sign === undefined || sign === null) {
         if(s.filters && s.filters[index]){
           me.filter.filters[index] = {};
           s.filters[index] = {};
@@ -25255,7 +25275,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       s.changeDataView();
       me.update();
 
-      if (me.filter) {
+      if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
     },
@@ -25998,6 +26018,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   tabEdit: true,
   dirtyEnabled: true,
   barScrollEnabled: true,
+  startResizing: false,
   /*
    * @constructor
    * @param {Object} config
@@ -34396,8 +34417,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           }
           break;
         case 'cells':
+          model.items = me.getSelectedData();
           break;
         case 'cell':
+          model.items = me.getSelectedData();
           break;
         case 'column':
           break;
@@ -34941,7 +34964,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       me.copyEl = F.get(w.el.dom.appendChild(el.dom));
     },
     /*
-     *
+     * @param {Boolean} copyHeader
      */
     copy: function(copyHeader){
       var me = this,
@@ -34952,51 +34975,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       switch(me.selModel){
         case 'cells':
         case 'cell':
-          var data = [];
-
-          var getSelectedData = function (side) {
-            var columns = w.getColumns(side),
-              selection = me.getSelectedCells(side),
-              i = 0,
-              headerCopied = false;
-
-            for(var p in selection){
-              var item = w.get(p),
-                selectedRow = selection[p];
-
-              if(!headerCopied && copyHeader){
-                data.push([]);
-                for(var q in selectedRow) {
-                  var column = columns[q];
-
-                  if(column.index === ''){
-
-                  }
-
-                  data[0].push(column.title || '');
-                }
-                i++;
-                headerCopied = true;
-              }
-
-              for(var q in selectedRow){
-                var column = columns[q];
-                if(!data[i]){
-                  data[i] = [];
-                }
-
-                if(column.index){
-                  data[i].push(item.get(column.index));
-                }
-              }
-              i++;
-            }
-          };
-
-          getSelectedData('left');
-          getSelectedData('center');
-          getSelectedData('right');
-
+          var data = me.getSelectedData(copyHeader);
           var dataStr = '';
 
           F.each(data, function (dataItem) {
@@ -35150,6 +35129,59 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       var me = this;
 
       me.mouseMoveSelection = false;
+    },
+    /*
+     * @return {Array}
+     */
+    getSelectedData: function(copyHeader){
+      var me = this,
+        w = me.widget,
+        data = [];
+
+      var getSelectedDataInSide = function (side) {
+        var columns = w.getColumns(side),
+          selection = me.getSelectedCells(side),
+          i = 0,
+          headerCopied = false;
+
+        for(var p in selection){
+          var item = w.get(p),
+            selectedRow = selection[p];
+
+          if(!headerCopied && copyHeader){
+            data.push([]);
+            for(var q in selectedRow) {
+              var column = columns[q];
+
+              if(column.index === ''){
+
+              }
+
+              data[0].push(column.title || '');
+            }
+            i++;
+            headerCopied = true;
+          }
+
+          for(var q in selectedRow){
+            var column = columns[q];
+            if(!data[i]){
+              data[i] = [];
+            }
+
+            if(column.index){
+              data[i].push(item.get(column.index));
+            }
+          }
+          i++;
+        }
+      };
+
+      getSelectedDataInSide('left');
+      getSelectedDataInSide('center');
+      getSelectedDataInSide('right');
+
+      return data;
     }
   });
 
@@ -35911,7 +35943,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         var checkHeight = function(){
           var _height = parseInt(el.css('height'));
 
-          if(height !== _height){
+          if(height !== _height && me._expandedIds[id]){
             me._expandedIds[id].height = _height;
             leftEl.css('height', _height);
             rightEl.css('height', _height);
@@ -39745,146 +39777,208 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         theme = w.theme,
         tip = filter.tip;
 
-      switch (type) {
-        case 'date':
-          var events = [];
+      if(Fancy.isObject(filter.header)){
+        var fieldConfig = filter.header;
 
-          events.push({
-            change: me.onDateChange,
-            scope: me
-          });
+        F.apply(fieldConfig, {
+          renderTo: dom.dom,
+          label: false,
+          style: style,
+          theme: theme,
+          widget: w,
+          tip: tip,
+          padding: false
+         });
 
-          var format;
+        var widgets = {
+          combo: 'Combo'
+        };
 
-          if (F.isString(column.format)) {
-            switch (column.format) {
-              case 'date':
-                format = column.format;
-                break;
-            }
-          }
-
-          field = new F.DateRangeField({
-            renderTo: dom.dom,
-            value: new Date(),
-            format: column.format,
-            label: false,
-            padding: false,
-            style: style,
-            events: events,
+        if(fieldConfig.type === 'combo'){
+          F.apply(fieldConfig, {
             width: column.width - 8,
-            emptyText: filter.emptyText,
-            dateImage: false,
-            theme: theme
-          });
-          break;
-        case 'string':
-          var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-          if (me.autoEnterDelay !== false) {
-            events.push({
-              key: me.onKey,
-              scope: me
-            });
-          }
-
-          field = new F.StringField({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            events: events,
-            emptyText: filter.emptyText,
-            tip: tip,
-            widget: w
-          });
-          break;
-        case 'number':
-        case 'grossloss':
-        case 'progressbar':
-        case 'progressdonut':
-          var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-          if (me.autoEnterDelay !== false) {
-            events.push({
-              key: me.onKey,
-              scope: me
-            });
-          }
-
-          field = new F.NumberField({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            emptyText: filter.emptyText,
-            events: events,
-            widget: w,
-            tip: tip
-          });
-          break;
-        case 'combo':
-          var displayKey = 'text',
-            valueKey = 'text',
-            data;
-
-          if (column.displayKey !== undefined) {
-            displayKey = column.displayKey;
-            valueKey = displayKey;
-          }
-
-          if (F.isObject(column.data) || F.isObject(column.data[0])) {
-            data = column.data;
-          }
-          else {
-            data = me.configComboData(column.data);
-          }
-
-          var selectAllText;
-
-          if(column.filter && column.filter.selectAll){
-            selectAllText = column.filter.selectAll;
-          }
-
-          field = new F.Combo({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            width: column.width - 8,
-            displayKey: displayKey,
-            valueKey: valueKey,
-            value: '',
             height: 28,
-            emptyText: filter.emptyText,
-            theme: theme,
-            widget: w,
-            tip: tip,
             multiSelect: column.multiSelect,
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
-            listItemTpl: column.listItemTpl,
-            selectAllText: selectAllText,
-            events: [{
-              change: me.onEnter,
-              scope: me
-            }, {
-              empty: function () {
-                this.set(-1);
-              }
-            }],
-            data: data
+            listItemTpl: column.listItemTpl
           });
+        }
 
-          break;
-        case 'select':
-          if(w.selection && /row/.test(w.selection.selModel)){
+        var widgetName = widgets[fieldConfig.type];
+
+        field = new F[widgetName](fieldConfig);
+      }
+      else {
+        switch (type) {
+          case 'date':
+            var events = [];
+
+            events.push({
+              change: me.onDateChange,
+              scope: me
+            });
+
+            var format;
+
+            if (F.isString(column.format)) {
+              switch (column.format) {
+                case 'date':
+                  format = column.format;
+                  break;
+              }
+            }
+
+            field = new F.DateRangeField({
+              renderTo: dom.dom,
+              value: new Date(),
+              format: column.format,
+              label: false,
+              padding: false,
+              style: style,
+              events: events,
+              width: column.width - 8,
+              emptyText: filter.emptyText,
+              dateImage: false,
+              theme: theme
+            });
+            break;
+          case 'string':
+            var events = [{
+              enter: me.onEnter,
+              scope: me
+            }];
+
+            if (me.autoEnterDelay !== false) {
+              events.push({
+                key: me.onKey,
+                scope: me
+              });
+            }
+
+            field = new F.StringField({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              events: events,
+              emptyText: filter.emptyText,
+              tip: tip,
+              widget: w
+            });
+            break;
+          case 'number':
+          case 'grossloss':
+          case 'progressbar':
+          case 'progressdonut':
+            var events = [{
+              enter: me.onEnter,
+              scope: me
+            }];
+
+            if (me.autoEnterDelay !== false) {
+              events.push({
+                key: me.onKey,
+                scope: me
+              });
+            }
+
+            field = new F.NumberField({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              emptyText: filter.emptyText,
+              events: events,
+              widget: w,
+              tip: tip
+            });
+            break;
+          case 'combo':
+            var displayKey = 'text',
+              valueKey = 'text',
+              data;
+
+            if (column.displayKey !== undefined) {
+              displayKey = column.displayKey;
+              valueKey = displayKey;
+            }
+
+            if (F.isObject(column.data) || F.isObject(column.data[0])) {
+              data = column.data;
+            }
+            else {
+              data = me.configComboData(column.data);
+            }
+
+            var selectAllText;
+
+            if (column.filter && column.filter.selectAll) {
+              selectAllText = column.filter.selectAll;
+            }
+
+            field = new F.Combo({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              width: column.width - 8,
+              displayKey: displayKey,
+              valueKey: valueKey,
+              value: '',
+              height: 28,
+              emptyText: filter.emptyText,
+              theme: theme,
+              widget: w,
+              tip: tip,
+              multiSelect: column.multiSelect,
+              itemCheckBox: column.itemCheckBox,
+              minListWidth: column.minListWidth,
+              listItemTpl: column.listItemTpl,
+              selectAllText: selectAllText,
+              events: [{
+                change: me.onEnter,
+                scope: me
+              }, {
+                empty: function () {
+                  this.set(-1);
+                }
+              }],
+              data: data
+            });
+
+            break;
+          case 'select':
+            if (w.selection && /row/.test(w.selection.selModel)) {
+              field = new F.Combo({
+                renderTo: dom.dom,
+                label: false,
+                padding: false,
+                style: style,
+                displayKey: 'text',
+                valueKey: 'value',
+                width: column.width - 8,
+                emptyText: filter.emptyText,
+                value: '',
+                editable: false,
+                events: [{
+                  change: me.onEnterSelect,
+                  scope: me
+                }],
+                data: [{
+                  value: '',
+                  text: ''
+                }, {
+                  value: 'false',
+                  text: w.lang.no
+                }, {
+                  value: 'true',
+                  text: w.lang.yes
+                }]
+              });
+            }
+            break;
+          case 'checkbox':
             field = new F.Combo({
               renderTo: dom.dom,
               label: false,
@@ -39897,7 +39991,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
               value: '',
               editable: false,
               events: [{
-                change: me.onEnterSelect,
+                change: me.onEnter,
                 scope: me
               }],
               data: [{
@@ -39911,58 +40005,30 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                 text: w.lang.yes
               }]
             });
-          }
-          break;
-        case 'checkbox':
-          field = new F.Combo({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            displayKey: 'text',
-            valueKey: 'value',
-            width: column.width - 8,
-            emptyText: filter.emptyText,
-            value: '',
-            editable: false,
-            events: [{
-              change: me.onEnter,
-              scope: me
-            }],
-            data: [{
-              value: '',
-              text: ''
-            }, {
-              value: 'false',
-              text: w.lang.no
-            }, {
-              value: 'true',
-              text: w.lang.yes
-            }]
-          });
 
-          break;
-        default:
-          var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-          if (me.autoEnterDelay !== false) {
-            events.push({
-              key: me.onKey,
+            break;
+          default:
+            var events = [{
+              enter: me.onEnter,
               scope: me
+            }];
+
+            if (me.autoEnterDelay !== false) {
+              events.push({
+                key: me.onKey,
+                scope: me
+              });
+            }
+
+            field = new F.StringField({
+              renderTo: dom.dom,
+              label: false,
+              style: style,
+              padding: false,
+              emptyText: filter.emptyText,
+              events: events
             });
-          }
-
-          field = new F.StringField({
-            renderTo: dom.dom,
-            label: false,
-            style: style,
-            padding: false,
-            emptyText: filter.emptyText,
-            events: events
-          });
+        }
       }
 
       field.filterIndex = column.index;

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.29',
+  version: '1.7.30',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3406,6 +3406,11 @@ Fancy.define('Fancy.Store', {
 
       if (!me.remoteFilter) {
         data = me.filteredData;
+
+        if(data === undefined){
+          data = me.data;
+        }
+
         iL = data.length;
       }
     }
@@ -13132,6 +13137,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   tabEdit: true,
   dirtyEnabled: true,
   barScrollEnabled: true,
+  startResizing: false,
   /*
    * @constructor
    * @param {Object} config

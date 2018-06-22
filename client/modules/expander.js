@@ -277,7 +277,7 @@
         var checkHeight = function(){
           var _height = parseInt(el.css('height'));
 
-          if(height !== _height){
+          if(height !== _height && me._expandedIds[id]){
             me._expandedIds[id].height = _height;
             leftEl.css('height', _height);
             rightEl.css('height', _height);

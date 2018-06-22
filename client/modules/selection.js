@@ -1624,8 +1624,10 @@
           }
           break;
         case 'cells':
+          model.items = me.getSelectedData();
           break;
         case 'cell':
+          model.items = me.getSelectedData();
           break;
         case 'column':
           break;
@@ -2169,7 +2171,7 @@
       me.copyEl = F.get(w.el.dom.appendChild(el.dom));
     },
     /*
-     *
+     * @param {Boolean} copyHeader
      */
     copy: function(copyHeader){
       var me = this,
@@ -2180,51 +2182,7 @@
       switch(me.selModel){
         case 'cells':
         case 'cell':
-          var data = [];
-
-          var getSelectedData = function (side) {
-            var columns = w.getColumns(side),
-              selection = me.getSelectedCells(side),
-              i = 0,
-              headerCopied = false;
-
-            for(var p in selection){
-              var item = w.get(p),
-                selectedRow = selection[p];
-
-              if(!headerCopied && copyHeader){
-                data.push([]);
-                for(var q in selectedRow) {
-                  var column = columns[q];
-
-                  if(column.index === ''){
-
-                  }
-
-                  data[0].push(column.title || '');
-                }
-                i++;
-                headerCopied = true;
-              }
-
-              for(var q in selectedRow){
-                var column = columns[q];
-                if(!data[i]){
-                  data[i] = [];
-                }
-
-                if(column.index){
-                  data[i].push(item.get(column.index));
-                }
-              }
-              i++;
-            }
-          };
-
-          getSelectedData('left');
-          getSelectedData('center');
-          getSelectedData('right');
-
+          var data = me.getSelectedData(copyHeader);
           var dataStr = '';
 
           F.each(data, function (dataItem) {
@@ -2378,6 +2336,59 @@
       var me = this;
 
       me.mouseMoveSelection = false;
+    },
+    /*
+     * @return {Array}
+     */
+    getSelectedData: function(copyHeader){
+      var me = this,
+        w = me.widget,
+        data = [];
+
+      var getSelectedDataInSide = function (side) {
+        var columns = w.getColumns(side),
+          selection = me.getSelectedCells(side),
+          i = 0,
+          headerCopied = false;
+
+        for(var p in selection){
+          var item = w.get(p),
+            selectedRow = selection[p];
+
+          if(!headerCopied && copyHeader){
+            data.push([]);
+            for(var q in selectedRow) {
+              var column = columns[q];
+
+              if(column.index === ''){
+
+              }
+
+              data[0].push(column.title || '');
+            }
+            i++;
+            headerCopied = true;
+          }
+
+          for(var q in selectedRow){
+            var column = columns[q];
+            if(!data[i]){
+              data[i] = [];
+            }
+
+            if(column.index){
+              data[i].push(item.get(column.index));
+            }
+          }
+          i++;
+        }
+      };
+
+      getSelectedDataInSide('left');
+      getSelectedDataInSide('center');
+      getSelectedDataInSide('right');
+
+      return data;
     }
   });
 

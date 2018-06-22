@@ -253,146 +253,208 @@
         theme = w.theme,
         tip = filter.tip;
 
-      switch (type) {
-        case 'date':
-          var events = [];
+      if(Fancy.isObject(filter.header)){
+        var fieldConfig = filter.header;
 
-          events.push({
-            change: me.onDateChange,
-            scope: me
-          });
+        F.apply(fieldConfig, {
+          renderTo: dom.dom,
+          label: false,
+          style: style,
+          theme: theme,
+          widget: w,
+          tip: tip,
+          padding: false
+         });
 
-          var format;
+        var widgets = {
+          combo: 'Combo'
+        };
 
-          if (F.isString(column.format)) {
-            switch (column.format) {
-              case 'date':
-                format = column.format;
-                break;
-            }
-          }
-
-          field = new F.DateRangeField({
-            renderTo: dom.dom,
-            value: new Date(),
-            format: column.format,
-            label: false,
-            padding: false,
-            style: style,
-            events: events,
+        if(fieldConfig.type === 'combo'){
+          F.apply(fieldConfig, {
             width: column.width - 8,
-            emptyText: filter.emptyText,
-            dateImage: false,
-            theme: theme
-          });
-          break;
-        case 'string':
-          var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-          if (me.autoEnterDelay !== false) {
-            events.push({
-              key: me.onKey,
-              scope: me
-            });
-          }
-
-          field = new F.StringField({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            events: events,
-            emptyText: filter.emptyText,
-            tip: tip,
-            widget: w
-          });
-          break;
-        case 'number':
-        case 'grossloss':
-        case 'progressbar':
-        case 'progressdonut':
-          var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-          if (me.autoEnterDelay !== false) {
-            events.push({
-              key: me.onKey,
-              scope: me
-            });
-          }
-
-          field = new F.NumberField({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            emptyText: filter.emptyText,
-            events: events,
-            widget: w,
-            tip: tip
-          });
-          break;
-        case 'combo':
-          var displayKey = 'text',
-            valueKey = 'text',
-            data;
-
-          if (column.displayKey !== undefined) {
-            displayKey = column.displayKey;
-            valueKey = displayKey;
-          }
-
-          if (F.isObject(column.data) || F.isObject(column.data[0])) {
-            data = column.data;
-          }
-          else {
-            data = me.configComboData(column.data);
-          }
-
-          var selectAllText;
-
-          if(column.filter && column.filter.selectAll){
-            selectAllText = column.filter.selectAll;
-          }
-
-          field = new F.Combo({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            width: column.width - 8,
-            displayKey: displayKey,
-            valueKey: valueKey,
-            value: '',
             height: 28,
-            emptyText: filter.emptyText,
-            theme: theme,
-            widget: w,
-            tip: tip,
             multiSelect: column.multiSelect,
             itemCheckBox: column.itemCheckBox,
             minListWidth: column.minListWidth,
-            listItemTpl: column.listItemTpl,
-            selectAllText: selectAllText,
-            events: [{
-              change: me.onEnter,
-              scope: me
-            }, {
-              empty: function () {
-                this.set(-1);
-              }
-            }],
-            data: data
+            listItemTpl: column.listItemTpl
           });
+        }
 
-          break;
-        case 'select':
-          if(w.selection && /row/.test(w.selection.selModel)){
+        var widgetName = widgets[fieldConfig.type];
+
+        field = new F[widgetName](fieldConfig);
+      }
+      else {
+        switch (type) {
+          case 'date':
+            var events = [];
+
+            events.push({
+              change: me.onDateChange,
+              scope: me
+            });
+
+            var format;
+
+            if (F.isString(column.format)) {
+              switch (column.format) {
+                case 'date':
+                  format = column.format;
+                  break;
+              }
+            }
+
+            field = new F.DateRangeField({
+              renderTo: dom.dom,
+              value: new Date(),
+              format: column.format,
+              label: false,
+              padding: false,
+              style: style,
+              events: events,
+              width: column.width - 8,
+              emptyText: filter.emptyText,
+              dateImage: false,
+              theme: theme
+            });
+            break;
+          case 'string':
+            var events = [{
+              enter: me.onEnter,
+              scope: me
+            }];
+
+            if (me.autoEnterDelay !== false) {
+              events.push({
+                key: me.onKey,
+                scope: me
+              });
+            }
+
+            field = new F.StringField({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              events: events,
+              emptyText: filter.emptyText,
+              tip: tip,
+              widget: w
+            });
+            break;
+          case 'number':
+          case 'grossloss':
+          case 'progressbar':
+          case 'progressdonut':
+            var events = [{
+              enter: me.onEnter,
+              scope: me
+            }];
+
+            if (me.autoEnterDelay !== false) {
+              events.push({
+                key: me.onKey,
+                scope: me
+              });
+            }
+
+            field = new F.NumberField({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              emptyText: filter.emptyText,
+              events: events,
+              widget: w,
+              tip: tip
+            });
+            break;
+          case 'combo':
+            var displayKey = 'text',
+              valueKey = 'text',
+              data;
+
+            if (column.displayKey !== undefined) {
+              displayKey = column.displayKey;
+              valueKey = displayKey;
+            }
+
+            if (F.isObject(column.data) || F.isObject(column.data[0])) {
+              data = column.data;
+            }
+            else {
+              data = me.configComboData(column.data);
+            }
+
+            var selectAllText;
+
+            if (column.filter && column.filter.selectAll) {
+              selectAllText = column.filter.selectAll;
+            }
+
+            field = new F.Combo({
+              renderTo: dom.dom,
+              label: false,
+              padding: false,
+              style: style,
+              width: column.width - 8,
+              displayKey: displayKey,
+              valueKey: valueKey,
+              value: '',
+              height: 28,
+              emptyText: filter.emptyText,
+              theme: theme,
+              widget: w,
+              tip: tip,
+              multiSelect: column.multiSelect,
+              itemCheckBox: column.itemCheckBox,
+              minListWidth: column.minListWidth,
+              listItemTpl: column.listItemTpl,
+              selectAllText: selectAllText,
+              events: [{
+                change: me.onEnter,
+                scope: me
+              }, {
+                empty: function () {
+                  this.set(-1);
+                }
+              }],
+              data: data
+            });
+
+            break;
+          case 'select':
+            if (w.selection && /row/.test(w.selection.selModel)) {
+              field = new F.Combo({
+                renderTo: dom.dom,
+                label: false,
+                padding: false,
+                style: style,
+                displayKey: 'text',
+                valueKey: 'value',
+                width: column.width - 8,
+                emptyText: filter.emptyText,
+                value: '',
+                editable: false,
+                events: [{
+                  change: me.onEnterSelect,
+                  scope: me
+                }],
+                data: [{
+                  value: '',
+                  text: ''
+                }, {
+                  value: 'false',
+                  text: w.lang.no
+                }, {
+                  value: 'true',
+                  text: w.lang.yes
+                }]
+              });
+            }
+            break;
+          case 'checkbox':
             field = new F.Combo({
               renderTo: dom.dom,
               label: false,
@@ -405,7 +467,7 @@
               value: '',
               editable: false,
               events: [{
-                change: me.onEnterSelect,
+                change: me.onEnter,
                 scope: me
               }],
               data: [{
@@ -419,58 +481,30 @@
                 text: w.lang.yes
               }]
             });
-          }
-          break;
-        case 'checkbox':
-          field = new F.Combo({
-            renderTo: dom.dom,
-            label: false,
-            padding: false,
-            style: style,
-            displayKey: 'text',
-            valueKey: 'value',
-            width: column.width - 8,
-            emptyText: filter.emptyText,
-            value: '',
-            editable: false,
-            events: [{
-              change: me.onEnter,
-              scope: me
-            }],
-            data: [{
-              value: '',
-              text: ''
-            }, {
-              value: 'false',
-              text: w.lang.no
-            }, {
-              value: 'true',
-              text: w.lang.yes
-            }]
-          });
 
-          break;
-        default:
-          var events = [{
-            enter: me.onEnter,
-            scope: me
-          }];
-
-          if (me.autoEnterDelay !== false) {
-            events.push({
-              key: me.onKey,
+            break;
+          default:
+            var events = [{
+              enter: me.onEnter,
               scope: me
+            }];
+
+            if (me.autoEnterDelay !== false) {
+              events.push({
+                key: me.onKey,
+                scope: me
+              });
+            }
+
+            field = new F.StringField({
+              renderTo: dom.dom,
+              label: false,
+              style: style,
+              padding: false,
+              emptyText: filter.emptyText,
+              events: events
             });
-          }
-
-          field = new F.StringField({
-            renderTo: dom.dom,
-            label: false,
-            style: style,
-            padding: false,
-            emptyText: filter.emptyText,
-            events: events
-          });
+        }
       }
 
       field.filterIndex = column.index;
