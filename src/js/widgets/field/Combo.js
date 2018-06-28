@@ -248,10 +248,12 @@
 
       me.onsList();
 
+      me.input.on('blur', me.onBlur, me);
       me.input.on('mousedown', me.onInputMouseDown, me);
       me.input.on('click', me.onInputClick, me);
       drop.on('mousedown', me.onDropMouseDown, me);
       drop.on('click', me.onDropClick, me);
+      me.on('key', me.onKey, me);
 
       if (me.typeAhead && me.editable) {
         me.input.on('keydown', me.onKeyDown, me);
@@ -575,6 +577,7 @@
     onsList: function () {
       var me = this;
 
+      me.list.on('mousedown', me.onListItemMouseDown, me, 'li');
       me.list.on('click', me.onListItemClick, me, 'li');
       me.list.on('mouseenter', me.onListItemOver, me, 'li');
       me.list.on('mouseleave', me.onListItemLeave, me, 'li');
@@ -615,6 +618,15 @@
       }
 
       this.clearFocused();
+    },
+    onListItemMouseDown: function(){
+      var me = this;
+
+      me.listItemClicked = true;
+
+      setTimeout(function(){
+        delete me.listItemClicked;
+      }, 1000);
     },
     /*
      * @param {Object} e
@@ -744,6 +756,8 @@
       if(me.left){
         me.updateLeft();
       }
+
+      me.validate(valueStr);
     },
     /*
      * Method used only for multiSelect

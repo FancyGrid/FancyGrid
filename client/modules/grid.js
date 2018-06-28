@@ -9809,6 +9809,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           deltaScroll: 30 * delta
         };
 
+      if(scrollRightPath < 0 ){
+        scrollRightPath = 0;
+      }
+
       for (; i < iL; i++) {
         var columnEl = columnsDom.item(i),
           topValue = parseInt(columnEl.css('top')) + 30 * delta;
@@ -9825,6 +9829,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(topValue > 0){
           topValue = 0;
         }
+
+
 
         columnEl.css('top', topValue + 'px');
       }

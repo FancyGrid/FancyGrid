@@ -455,7 +455,17 @@
       me.fire('blur');
 
       if (me.input) {
-        return me.validate(me.input.dom.value);
+        if(me.type === 'combo'){
+          setTimeout(function () {
+            if(me.listItemClicked){}
+            else{
+              me.validate(me.input.dom.value);
+            }
+          }, 100);
+        }
+        else {
+          return me.validate(me.input.dom.value);
+        }
       }
 
       return true;

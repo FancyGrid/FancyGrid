@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.30',
+  version: '1.7.31',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -8825,7 +8825,17 @@ if(!Fancy.nojQuery && Fancy.$){
       me.fire('blur');
 
       if (me.input) {
-        return me.validate(me.input.dom.value);
+        if(me.type === 'combo'){
+          setTimeout(function () {
+            if(me.listItemClicked){}
+            else{
+              me.validate(me.input.dom.value);
+            }
+          }, 100);
+        }
+        else {
+          return me.validate(me.input.dom.value);
+        }
       }
 
       return true;
@@ -10658,10 +10668,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.onsList();
 
+      me.input.on('blur', me.onBlur, me);
       me.input.on('mousedown', me.onInputMouseDown, me);
       me.input.on('click', me.onInputClick, me);
       drop.on('mousedown', me.onDropMouseDown, me);
       drop.on('click', me.onDropClick, me);
+      me.on('key', me.onKey, me);
 
       if (me.typeAhead && me.editable) {
         me.input.on('keydown', me.onKeyDown, me);
@@ -10985,6 +10997,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     onsList: function () {
       var me = this;
 
+      me.list.on('mousedown', me.onListItemMouseDown, me, 'li');
       me.list.on('click', me.onListItemClick, me, 'li');
       me.list.on('mouseenter', me.onListItemOver, me, 'li');
       me.list.on('mouseleave', me.onListItemLeave, me, 'li');
@@ -11025,6 +11038,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       this.clearFocused();
+    },
+    onListItemMouseDown: function(){
+      var me = this;
+
+      me.listItemClicked = true;
+
+      setTimeout(function(){
+        delete me.listItemClicked;
+      }, 1000);
     },
     /*
      * @param {Object} e
@@ -11154,6 +11176,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       if(me.left){
         me.updateLeft();
       }
+
+      me.validate(valueStr);
     },
     /*
      * Method used only for multiSelect

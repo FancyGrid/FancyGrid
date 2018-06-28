@@ -2371,6 +2371,8 @@
       if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
+
+      me.fire('filter', s.filters);
     },
     /*
      * @param {String} text
