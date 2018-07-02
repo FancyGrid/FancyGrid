@@ -462,8 +462,14 @@
       });
     },
     /*
+     * @return {Object}
+     */
+    getValues: function(){
+      return this.get();
+    },
+    /*
      * @param {String} name
-     * @return {Array|String|Number}
+     * @return {Array|String|Number|Object}
      */
     get: function (name) {
       var me = this;

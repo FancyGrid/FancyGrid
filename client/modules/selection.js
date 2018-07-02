@@ -2200,8 +2200,10 @@
           if(copyHeader){
             var itemData = [];
             F.each(columns, function (column) {
-              if(column.index === '$selected'){
-                return
+              switch(column.index){
+                case '$selected':
+                case '$rowdrag':
+                  return;
               }
 
               itemData.push(column.index || '');
@@ -2212,8 +2214,10 @@
           F.each(selection, function (item) {
             var itemData = [];
             F.each(columns, function (column) {
-              if(column.index === '$selected'){
-                return
+              switch(column.index){
+                case '$selected':
+                case '$rowdrag':
+                  return;
               }
 
               if(column.index){

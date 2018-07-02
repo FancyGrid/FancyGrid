@@ -266,6 +266,75 @@
       });
     },
     /*
+     * Light render method to add group rows for case when lock columns.
+     *
+     * @param {String} side
+     */
+    softRenderGroupedRows: function(side){
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        leftWidth,
+        rightWidth,
+        groupEls;
+
+      switch(side){
+        case 'left':
+          if( leftBody.el.select('.' + GRID_ROW_GROUP_CLS).length ){
+            var groupInnerEls = body.el.select('.' + GRID_ROW_GROUP_INNER_CLS);
+
+            if(groupInnerEls.length){
+              groupInnerEls.destroy();
+            }
+            return;
+          }
+
+          groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS);
+          leftWidth = w.getLeftFullWidth();
+
+          E(me.groups, function (groupText, i) {
+            var groupCount = me.groupsCounts[groupText],
+              groupEl = groupEls.item(i),
+              top = parseInt(groupEl.css('top')),
+              el = me.generateGroupRow(groupText, groupCount, true, top);
+
+            if(!groupEl.hasClass(GRID_ROW_GROUP_COLLAPSED_CLS)){
+              el.removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+            }
+
+            groupEl.select('.'+ GRID_ROW_GROUP_INNER_CLS).destroy();
+
+            el.css('width', leftWidth);
+            leftBody.el.dom.appendChild(el.dom);
+          });
+
+          break;
+        case 'right':
+          if( rightBody.el.select('.' + GRID_ROW_GROUP_CLS).length ){
+            return;
+          }
+
+          rightWidth = w.getRightFullWidth();
+          groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS);
+
+          E(me.groups, function (groupText, i) {
+            var groupCount = me.groupsCounts[groupText],
+              groupEl = groupEls.item(i),
+              top = parseInt(groupEl.css('top')),
+              el = me.generateGroupRow(groupText, groupCount, false, top);
+
+
+            el.css('width', rightWidth);
+            rightBody.el.dom.appendChild(el.dom);
+          });
+          break;
+      }
+
+
+    },
+    /*
      *
      */
     removeGroupRows: function () {

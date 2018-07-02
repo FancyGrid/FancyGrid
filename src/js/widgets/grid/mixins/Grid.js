@@ -2101,7 +2101,9 @@
           column.locked = true;
           var extraLeft = 0;
           if(me.leftColumns.length === 0){
-            extraLeft = 1;
+            if(!F.nojQuery){
+              extraLeft = 1;
+            }
             me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
           }
 
@@ -2122,8 +2124,10 @@
             extraWidth = 0;
 
           if(me.rightColumns.length === 0){
-            extraLeft = 1;
-            extraWidth = 2;
+            if(!F.nojQuery){
+              extraLeft = 1;
+              extraWidth = 2;
+            }
             me.rightEl.removeCls(GRID_RIGHT_EMPTY_CLS);
           }
 
@@ -2143,6 +2147,19 @@
       }
 
       if (me.grouping) {
+        switch (side) {
+          case 'left':
+            if(me.leftColumns.length === 1){
+              me.grouping.softRenderGroupedRows('left');
+            }
+            break;
+          case 'right':
+            if(me.rightColumns.length === 1){
+              me.grouping.softRenderGroupedRows('right');
+            }
+            break;
+        }
+
         me.grouping.updateGroupRows();
         me.grouping.setCellsPosition(index, side);
       }

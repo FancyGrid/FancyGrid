@@ -1065,6 +1065,14 @@
       if(me.input){
         me.input.attr('tabIndex', -1);
       }
+    },
+    /*
+     *
+     */
+    getInputValue: function () {
+      var me = this;
+
+      return me.input.dom.value;
     }
   };
 

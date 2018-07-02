@@ -1208,7 +1208,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
      * @param {Boolean} update
      */
     clearFilter: function (index, operator, update) {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (operator === undefined) {
         delete me.filters[index];

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.31',
+  version: '1.7.32',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -14192,8 +14192,14 @@ Fancy.define('Fancy.bar.Text', {
       });
     },
     /*
+     * @return {Object}
+     */
+    getValues: function(){
+      return this.get();
+    },
+    /*
      * @param {String} name
-     * @return {Array|String|Number}
+     * @return {Array|String|Number|Object}
      */
     get: function (name) {
       var me = this;
@@ -16078,6 +16084,14 @@ if(!Fancy.nojQuery && Fancy.$){
       if(me.input){
         me.input.attr('tabIndex', -1);
       }
+    },
+    /*
+     *
+     */
+    getInputValue: function () {
+      var me = this;
+
+      return me.input.dom.value;
     }
   };
 
@@ -25032,7 +25046,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           column.locked = true;
           var extraLeft = 0;
           if(me.leftColumns.length === 0){
-            extraLeft = 1;
+            if(!F.nojQuery){
+              extraLeft = 1;
+            }
             me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
           }
 
@@ -25053,8 +25069,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             extraWidth = 0;
 
           if(me.rightColumns.length === 0){
-            extraLeft = 1;
-            extraWidth = 2;
+            if(!F.nojQuery){
+              extraLeft = 1;
+              extraWidth = 2;
+            }
             me.rightEl.removeCls(GRID_RIGHT_EMPTY_CLS);
           }
 
@@ -25074,6 +25092,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.grouping) {
+        switch (side) {
+          case 'left':
+            if(me.leftColumns.length === 1){
+              me.grouping.softRenderGroupedRows('left');
+            }
+            break;
+          case 'right':
+            if(me.rightColumns.length === 1){
+              me.grouping.softRenderGroupedRows('right');
+            }
+            break;
+        }
+
         me.grouping.updateGroupRows();
         me.grouping.setCellsPosition(index, side);
       }
@@ -25302,6 +25333,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
+
+      me.fire('filter', s.filters);
     },
     /*
      * @param {String} text
@@ -26477,7 +26510,28 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       removedColumn;
 
     if(side === undefined){
-      side = 'left';
+      if(Fancy.isString(indexOrder)) {
+        Fancy.each(me.leftColumns, function (column, i) {
+          if (column.index === indexOrder) {
+            side = 'left';
+            indexOrder = i;
+            return true;
+          }
+        });
+
+        if(side === undefined){
+          Fancy.each(me.rightColumns, function (column, i) {
+            if (column.index === indexOrder) {
+              side = 'right';
+              indexOrder = i;
+              return true;
+            }
+          });
+        }
+      }
+      else{
+        side = 'left';
+      }
     }
 
     switch(side){
@@ -35017,8 +35071,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           if(copyHeader){
             var itemData = [];
             F.each(columns, function (column) {
-              if(column.index === '$selected'){
-                return
+              switch(column.index){
+                case '$selected':
+                case '$rowdrag':
+                  return;
               }
 
               itemData.push(column.index || '');
@@ -35029,8 +35085,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           F.each(selection, function (item) {
             var itemData = [];
             F.each(columns, function (column) {
-              if(column.index === '$selected'){
-                return
+              switch(column.index){
+                case '$selected':
+                case '$rowdrag':
+                  return;
               }
 
               if(column.index){
@@ -36858,6 +36916,75 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           passedTop += w.groupRowHeight;
         }
       });
+    },
+    /*
+     * Light render method to add group rows for case when lock columns.
+     *
+     * @param {String} side
+     */
+    softRenderGroupedRows: function(side){
+      var me = this,
+        w = me.widget,
+        body = w.body,
+        leftBody = w.leftBody,
+        rightBody = w.rightBody,
+        leftWidth,
+        rightWidth,
+        groupEls;
+
+      switch(side){
+        case 'left':
+          if( leftBody.el.select('.' + GRID_ROW_GROUP_CLS).length ){
+            var groupInnerEls = body.el.select('.' + GRID_ROW_GROUP_INNER_CLS);
+
+            if(groupInnerEls.length){
+              groupInnerEls.destroy();
+            }
+            return;
+          }
+
+          groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS);
+          leftWidth = w.getLeftFullWidth();
+
+          E(me.groups, function (groupText, i) {
+            var groupCount = me.groupsCounts[groupText],
+              groupEl = groupEls.item(i),
+              top = parseInt(groupEl.css('top')),
+              el = me.generateGroupRow(groupText, groupCount, true, top);
+
+            if(!groupEl.hasClass(GRID_ROW_GROUP_COLLAPSED_CLS)){
+              el.removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+            }
+
+            groupEl.select('.'+ GRID_ROW_GROUP_INNER_CLS).destroy();
+
+            el.css('width', leftWidth);
+            leftBody.el.dom.appendChild(el.dom);
+          });
+
+          break;
+        case 'right':
+          if( rightBody.el.select('.' + GRID_ROW_GROUP_CLS).length ){
+            return;
+          }
+
+          rightWidth = w.getRightFullWidth();
+          groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS);
+
+          E(me.groups, function (groupText, i) {
+            var groupCount = me.groupsCounts[groupText],
+              groupEl = groupEls.item(i),
+              top = parseInt(groupEl.css('top')),
+              el = me.generateGroupRow(groupText, groupCount, false, top);
+
+
+            el.css('width', rightWidth);
+            rightBody.el.dom.appendChild(el.dom);
+          });
+          break;
+      }
+
+
     },
     /*
      *
@@ -40468,7 +40595,8 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
      * @param {Boolean} update
      */
     clearFilter: function (index, operator, update) {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (operator === undefined) {
         delete me.filters[index];
@@ -46076,20 +46204,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
       }
 
-      var i = index,
-        iL = columns.length - 1;
-
-      for (; i < iL; i++) {
-        var _column = columns[i];
-
-        if(_column.hidden){
-          continue;
-        }
-
-        var _cell = cells.item(i),
-          _left = parseInt(_cell.css('left') || 0) + column.width;
-
-        _cell.css('left', _left);
+      if(me.side === 'center'){
+        left += w.scroller.scrollLeft || 0;
       }
 
       var cellHTML = me.cellTpl.getHTML({
@@ -46117,9 +46233,34 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         me.el.append(cellHTML);
       }
 
-      var cell = me.getCell(index);
+      //var i = index,
+      var i = 0,
+        iL = columns.length,
+        width = 0,
+        left = 0;
 
-      me.css('width', parseInt(me.css('width')) + column.width);
+      if(me.side === 'center'){
+        left -= w.scroller.scrollLeft;
+      }
+
+      cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+
+      for (; i < iL; i++) {
+        var column = columns[i];
+
+        if (column.hidden) {
+          continue;
+        }
+
+        var cell = cells.item(i);
+
+        cell.css('left', left);
+        left += column.width;
+        width += column.width;
+      }
+
+      //me.css('width', parseInt(me.css('width')) + column.width);
+      me.css('width', width);
     },
     /*
      *

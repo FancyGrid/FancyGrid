@@ -481,7 +481,28 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       removedColumn;
 
     if(side === undefined){
-      side = 'left';
+      if(Fancy.isString(indexOrder)) {
+        Fancy.each(me.leftColumns, function (column, i) {
+          if (column.index === indexOrder) {
+            side = 'left';
+            indexOrder = i;
+            return true;
+          }
+        });
+
+        if(side === undefined){
+          Fancy.each(me.rightColumns, function (column, i) {
+            if (column.index === indexOrder) {
+              side = 'right';
+              indexOrder = i;
+              return true;
+            }
+          });
+        }
+      }
+      else{
+        side = 'left';
+      }
     }
 
     switch(side){

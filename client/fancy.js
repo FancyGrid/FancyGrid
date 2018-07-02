@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.31',
+  version: '1.7.32',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -9435,6 +9435,14 @@ if(!Fancy.nojQuery && Fancy.$){
       if(me.input){
         me.input.attr('tabIndex', -1);
       }
+    },
+    /*
+     *
+     */
+    getInputValue: function () {
+      var me = this;
+
+      return me.input.dom.value;
     }
   };
 
@@ -13596,7 +13604,28 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       removedColumn;
 
     if(side === undefined){
-      side = 'left';
+      if(Fancy.isString(indexOrder)) {
+        Fancy.each(me.leftColumns, function (column, i) {
+          if (column.index === indexOrder) {
+            side = 'left';
+            indexOrder = i;
+            return true;
+          }
+        });
+
+        if(side === undefined){
+          Fancy.each(me.rightColumns, function (column, i) {
+            if (column.index === indexOrder) {
+              side = 'right';
+              indexOrder = i;
+              return true;
+            }
+          });
+        }
+      }
+      else{
+        side = 'left';
+      }
     }
 
     switch(side){
