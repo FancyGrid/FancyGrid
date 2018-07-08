@@ -49,11 +49,21 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   startResizing: false,
   /*
    * @constructor
-   * @param {Object} config
+   * @param {*} renderTo
+   * @param {Object} [config]
    */
-  constructor: function(config){
-    var me = this,
+  constructor: function(renderTo, config){
+    var me = this;
+
+    if(Fancy.isDom(renderTo)){
       config = config || {};
+      config.renderTo = renderTo;
+    }
+    else{
+      config = renderTo;
+    }
+
+    config = config || {};
 
     var fn = function(params){
       if(params){

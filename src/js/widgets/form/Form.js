@@ -22,9 +22,18 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
-    var me = this,
+  constructor: function(renderTo, config){
+    var me = this;
+
+    if(Fancy.isDom(renderTo)){
       config = config || {};
+      config.renderTo = renderTo;
+    }
+    else{
+      config = renderTo;
+    }
+
+    config = config || {};
 
     var fn = function(params){
       if(params){

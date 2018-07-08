@@ -1663,10 +1663,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    */
   prepareConfigState: function(config){
     if(config.stateful){
+      var log = {};
+
+      if(Fancy.isObject(config.stateful)){
+        log = config.stateful;
+      }
+
       config._plugins.push({
         type: 'grid.state',
         stateful: true,
-        startState: config.state
+        startState: config.state,
+        log: log
       });
 
       var name = config.stateId || this.getStateName(),

@@ -60,6 +60,7 @@
     listRowHeight: 25,
     dropButtonWidth: 27,
     leftWidth: 20,
+    maxListRows: 9,
     emptyText: '',
     editable: true,
     typeAhead: true, // not right name
@@ -999,6 +1000,10 @@
         listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
       }
 
+      if(me.editable === false){
+        listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
+      }
+
       if (me.list) {
         me.list.destroy();
       }
@@ -1043,7 +1048,7 @@
         width: me.getListWidth()
       });
 
-      if (me.data.length > 9) {
+      if (me.data.length > me.maxListRows) {
         /*
         list.css({
           height: me.listRowHeight * 9 + 'px',
@@ -1051,13 +1056,32 @@
         });
         */
         list.select('ul').item(0).css({
-          height: me.listRowHeight * 9 + 'px',
+          height: me.listRowHeight * me.maxListRows + 'px',
           overflow: 'auto'
         });
       }
 
       document.body.appendChild(list.dom);
       me.list = list;
+
+      if(me.editable === false && me.type !== 'checkbox'){
+        me.subSearchField = new F.StringField({
+          renderTo: me.list.select('.fancy-combo-list-sub-search-container').item(0).dom,
+          label: false,
+          style: {
+            padding: '2px 2px 0px 2px'
+          },
+          events: [{
+            change: me.onSubSearchChange,
+            scope: me
+          }]
+        });
+
+        me.subSearchField.setInputSize({
+          width: me.getListWidth() - 6,
+          height: 25
+        });
+      }
 
       me.applyTheme();
     },
@@ -1172,7 +1196,7 @@
       });
 
       list.css({
-        'max-height': me.listRowHeight * 9 + 'px',
+        'max-height': me.listRowHeight * me.maxListRows + 'px',
         overflow: 'auto'
       });
 
@@ -1694,6 +1718,37 @@
         }
 
       });
+    },
+    /*
+     * @param {Object} field
+     * @param {String} value
+     */
+    onSubSearchChange: function (field, value) {
+      var me = this,
+        lis = me.list.select('li'),
+        height = 0,
+        maxListHeight = me.listRowHeight * me.maxListRows;
+
+      value = value.toLocaleLowerCase();
+
+      F.each(me.data, function (item, i){
+        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())) {
+          lis.item(i).css('display', 'block');
+          height += parseInt(lis.item(i).css('height'));
+        }
+        else{
+          lis.item(i).css('display', 'none');
+        }
+      });
+
+      var listUl = me.list.select('ul').item(0);
+
+      if(height > maxListHeight){
+        listUl.css('height', maxListHeight);
+      }
+      else{
+        listUl.css('height', height);
+      }
     }
   });
 

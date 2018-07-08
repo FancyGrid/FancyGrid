@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.32',
+  version: '1.7.33',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -195,6 +195,26 @@ Fancy.isString = function(value){
  */
 Fancy.isNumber = function(value){
   return typeof value === 'number' && isFinite(value);
+};
+
+/**
+ * Returns true if the passed value is a dom element.
+ * @param {*} value The value to test
+ * @return {Boolean}
+ */
+Fancy.isDom = function(value){
+  try {
+    //Using W3 DOM2 (works for FF, Opera and Chrome)
+    return value instanceof HTMLElement;
+  }
+  catch(e){
+    //Browsers not supporting W3 DOM2 don't have HTMLElement and
+    //an exception is thrown and we end up here. Testing some
+    //properties that all elements have (works on IE7)
+    return (typeof value === "object") &&
+      (value.nodeType===1) && (typeof value.style === "object") &&
+      (typeof value.ownerDocument ==="object");
+  }
 };
 
 /**
@@ -5880,9 +5900,8 @@ Fancy.define('Fancy.toolbar.Tab', {
   /*
    * @constructor
    * @param config
-   * @param scope
    */
-  constructor: function(config, scope){
+  constructor: function(config){
     this.Super('const', arguments);
   },
   /*
@@ -8182,9 +8201,18 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
-    var me = this,
+  constructor: function(renderTo, config){
+    var me = this;
+
+    if(Fancy.isDom(renderTo)){
       config = config || {};
+      config.renderTo = renderTo;
+    }
+    else{
+      config = renderTo;
+    }
+
+    config = config || {};
 
     var fn = function(params){
       if(params){
@@ -10488,6 +10516,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     listRowHeight: 25,
     dropButtonWidth: 27,
     leftWidth: 20,
+    maxListRows: 9,
     emptyText: '',
     editable: true,
     typeAhead: true, // not right name
@@ -11427,6 +11456,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
       }
 
+      if(me.editable === false){
+        listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
+      }
+
       if (me.list) {
         me.list.destroy();
       }
@@ -11471,7 +11504,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         width: me.getListWidth()
       });
 
-      if (me.data.length > 9) {
+      if (me.data.length > me.maxListRows) {
         /*
         list.css({
           height: me.listRowHeight * 9 + 'px',
@@ -11479,13 +11512,32 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         });
         */
         list.select('ul').item(0).css({
-          height: me.listRowHeight * 9 + 'px',
+          height: me.listRowHeight * me.maxListRows + 'px',
           overflow: 'auto'
         });
       }
 
       document.body.appendChild(list.dom);
       me.list = list;
+
+      if(me.editable === false && me.type !== 'checkbox'){
+        me.subSearchField = new F.StringField({
+          renderTo: me.list.select('.fancy-combo-list-sub-search-container').item(0).dom,
+          label: false,
+          style: {
+            padding: '2px 2px 0px 2px'
+          },
+          events: [{
+            change: me.onSubSearchChange,
+            scope: me
+          }]
+        });
+
+        me.subSearchField.setInputSize({
+          width: me.getListWidth() - 6,
+          height: 25
+        });
+      }
 
       me.applyTheme();
     },
@@ -11600,7 +11652,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       list.css({
-        'max-height': me.listRowHeight * 9 + 'px',
+        'max-height': me.listRowHeight * me.maxListRows + 'px',
         overflow: 'auto'
       });
 
@@ -12122,6 +12174,37 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
 
       });
+    },
+    /*
+     * @param {Object} field
+     * @param {String} value
+     */
+    onSubSearchChange: function (field, value) {
+      var me = this,
+        lis = me.list.select('li'),
+        height = 0,
+        maxListHeight = me.listRowHeight * me.maxListRows;
+
+      value = value.toLocaleLowerCase();
+
+      F.each(me.data, function (item, i){
+        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())) {
+          lis.item(i).css('display', 'block');
+          height += parseInt(lis.item(i).css('height'));
+        }
+        else{
+          lis.item(i).css('display', 'none');
+        }
+      });
+
+      var listUl = me.list.select('ul').item(0);
+
+      if(height > maxListHeight){
+        listUl.css('height', maxListHeight);
+      }
+      else{
+        listUl.css('height', height);
+      }
     }
   });
 
@@ -13172,11 +13255,21 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   startResizing: false,
   /*
    * @constructor
-   * @param {Object} config
+   * @param {*} renderTo
+   * @param {Object} [config]
    */
-  constructor: function(config){
-    var me = this,
+  constructor: function(renderTo, config){
+    var me = this;
+
+    if(Fancy.isDom(renderTo)){
       config = config || {};
+      config.renderTo = renderTo;
+    }
+    else{
+      config = renderTo;
+    }
+
+    config = config || {};
 
     var fn = function(params){
       if(params){

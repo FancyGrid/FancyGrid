@@ -556,6 +556,8 @@
           item.clear();
         }
 
+        delete item.acceptValue;
+
         if (me.hasCls(FIELD_NOT_VALID_CLS)) {
           me.removeCls(FIELD_NOT_VALID_CLS);
           me.css('height', ( parseInt(me.css('height')) - 6) + 'px');
@@ -576,15 +578,29 @@
     submit: function (o) {
       var me = this,
         o = o || {},
-        params = me.params || {};
+        params = o.params || {},
+        values = me.get();
 
-      me.params = me.params || {};
+      if(o.method){
+        me.method = o.method;
+      }
+      else{
+        me.method = 'GET';
+      }
 
-      F.apply(me, o);
 
-      if (o.params) {
-        F.apply(params, me.params);
-        me.params = params;
+      if(o.failure){
+        me.failure = o.failure;
+      }
+      else{
+        delete me.failure;
+      }
+
+      if(o.success){
+        me.success = o.success;
+      }
+      else{
+        delete me.success;
       }
 
       me.clear(false);
@@ -592,18 +608,23 @@
         return;
       }
 
-      var values = me.get();
-
-      F.applyIf(me.params, values);
-
-      if (me.params.recaptcha === 'wait') {
+      if (me.params && me.params.recaptcha === 'wait') {
         me.submit(o);
         return;
       }
 
-      if (me.params.recaptcha === '') {
+      if (me.params && me.params.recaptcha === '') {
         return;
       }
+
+      F.applyIf(params, values);
+
+      me.params = me.params || {};
+
+      F.applyIf(params, values);
+      F.applyIf(params, me.params);
+
+      me.params = params;
 
       me.params['g-recaptcha-response'] = me.params.recaptcha;
       delete me.params.recaptcha;

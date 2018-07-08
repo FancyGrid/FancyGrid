@@ -573,8 +573,6 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
           });
           break;
       }
-
-
     },
     /*
      *

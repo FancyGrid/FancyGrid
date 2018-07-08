@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.32',
+  version: '1.7.33',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -195,6 +195,26 @@ Fancy.isString = function(value){
  */
 Fancy.isNumber = function(value){
   return typeof value === 'number' && isFinite(value);
+};
+
+/**
+ * Returns true if the passed value is a dom element.
+ * @param {*} value The value to test
+ * @return {Boolean}
+ */
+Fancy.isDom = function(value){
+  try {
+    //Using W3 DOM2 (works for FF, Opera and Chrome)
+    return value instanceof HTMLElement;
+  }
+  catch(e){
+    //Browsers not supporting W3 DOM2 don't have HTMLElement and
+    //an exception is thrown and we end up here. Testing some
+    //properties that all elements have (works on IE7)
+    return (typeof value === "object") &&
+      (value.nodeType===1) && (typeof value.style === "object") &&
+      (typeof value.ownerDocument ==="object");
+  }
 };
 
 /**
@@ -10891,9 +10911,8 @@ Fancy.define('Fancy.toolbar.Tab', {
   /*
    * @constructor
    * @param config
-   * @param scope
    */
-  constructor: function(config, scope){
+  constructor: function(config){
     this.Super('const', arguments);
   },
   /*
@@ -12737,9 +12756,8 @@ Fancy.define('Fancy.toolbar.Tab', {
   /*
    * @constructor
    * @param config
-   * @param scope
    */
-  constructor: function(config, scope){
+  constructor: function(config){
     this.Super('const', arguments);
   },
   /*
@@ -14286,6 +14304,8 @@ Fancy.define('Fancy.bar.Text', {
           item.clear();
         }
 
+        delete item.acceptValue;
+
         if (me.hasCls(FIELD_NOT_VALID_CLS)) {
           me.removeCls(FIELD_NOT_VALID_CLS);
           me.css('height', ( parseInt(me.css('height')) - 6) + 'px');
@@ -14306,15 +14326,29 @@ Fancy.define('Fancy.bar.Text', {
     submit: function (o) {
       var me = this,
         o = o || {},
-        params = me.params || {};
+        params = o.params || {},
+        values = me.get();
 
-      me.params = me.params || {};
+      if(o.method){
+        me.method = o.method;
+      }
+      else{
+        me.method = 'GET';
+      }
 
-      F.apply(me, o);
 
-      if (o.params) {
-        F.apply(params, me.params);
-        me.params = params;
+      if(o.failure){
+        me.failure = o.failure;
+      }
+      else{
+        delete me.failure;
+      }
+
+      if(o.success){
+        me.success = o.success;
+      }
+      else{
+        delete me.success;
       }
 
       me.clear(false);
@@ -14322,18 +14356,23 @@ Fancy.define('Fancy.bar.Text', {
         return;
       }
 
-      var values = me.get();
-
-      F.applyIf(me.params, values);
-
-      if (me.params.recaptcha === 'wait') {
+      if (me.params && me.params.recaptcha === 'wait') {
         me.submit(o);
         return;
       }
 
-      if (me.params.recaptcha === '') {
+      if (me.params && me.params.recaptcha === '') {
         return;
       }
+
+      F.applyIf(params, values);
+
+      me.params = me.params || {};
+
+      F.applyIf(params, values);
+      F.applyIf(params, me.params);
+
+      me.params = params;
 
       me.params['g-recaptcha-response'] = me.params.recaptcha;
       delete me.params.recaptcha;
@@ -14831,9 +14870,18 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
-    var me = this,
+  constructor: function(renderTo, config){
+    var me = this;
+
+    if(Fancy.isDom(renderTo)){
       config = config || {};
+      config.renderTo = renderTo;
+    }
+    else{
+      config = renderTo;
+    }
+
+    config = config || {};
 
     var fn = function(params){
       if(params){
@@ -17829,6 +17877,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     listRowHeight: 25,
     dropButtonWidth: 27,
     leftWidth: 20,
+    maxListRows: 9,
     emptyText: '',
     editable: true,
     typeAhead: true, // not right name
@@ -18768,6 +18817,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
       }
 
+      if(me.editable === false){
+        listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
+      }
+
       if (me.list) {
         me.list.destroy();
       }
@@ -18812,7 +18865,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         width: me.getListWidth()
       });
 
-      if (me.data.length > 9) {
+      if (me.data.length > me.maxListRows) {
         /*
         list.css({
           height: me.listRowHeight * 9 + 'px',
@@ -18820,13 +18873,32 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         });
         */
         list.select('ul').item(0).css({
-          height: me.listRowHeight * 9 + 'px',
+          height: me.listRowHeight * me.maxListRows + 'px',
           overflow: 'auto'
         });
       }
 
       document.body.appendChild(list.dom);
       me.list = list;
+
+      if(me.editable === false && me.type !== 'checkbox'){
+        me.subSearchField = new F.StringField({
+          renderTo: me.list.select('.fancy-combo-list-sub-search-container').item(0).dom,
+          label: false,
+          style: {
+            padding: '2px 2px 0px 2px'
+          },
+          events: [{
+            change: me.onSubSearchChange,
+            scope: me
+          }]
+        });
+
+        me.subSearchField.setInputSize({
+          width: me.getListWidth() - 6,
+          height: 25
+        });
+      }
 
       me.applyTheme();
     },
@@ -18941,7 +19013,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       list.css({
-        'max-height': me.listRowHeight * 9 + 'px',
+        'max-height': me.listRowHeight * me.maxListRows + 'px',
         overflow: 'auto'
       });
 
@@ -19463,6 +19535,37 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
 
       });
+    },
+    /*
+     * @param {Object} field
+     * @param {String} value
+     */
+    onSubSearchChange: function (field, value) {
+      var me = this,
+        lis = me.list.select('li'),
+        height = 0,
+        maxListHeight = me.listRowHeight * me.maxListRows;
+
+      value = value.toLocaleLowerCase();
+
+      F.each(me.data, function (item, i){
+        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())) {
+          lis.item(i).css('display', 'block');
+          height += parseInt(lis.item(i).css('height'));
+        }
+        else{
+          lis.item(i).css('display', 'none');
+        }
+      });
+
+      var listUl = me.list.select('ul').item(0);
+
+      if(height > maxListHeight){
+        listUl.css('height', maxListHeight);
+      }
+      else{
+        listUl.css('height', height);
+      }
     }
   });
 
@@ -22220,10 +22323,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    */
   prepareConfigState: function(config){
     if(config.stateful){
+      var log = {};
+
+      if(Fancy.isObject(config.stateful)){
+        log = config.stateful;
+      }
+
       config._plugins.push({
         type: 'grid.state',
         stateful: true,
-        startState: config.state
+        startState: config.state,
+        log: log
       });
 
       var name = config.stateId || this.getStateName(),
@@ -26078,11 +26188,21 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   startResizing: false,
   /*
    * @constructor
-   * @param {Object} config
+   * @param {*} renderTo
+   * @param {Object} [config]
    */
-  constructor: function(config){
-    var me = this,
+  constructor: function(renderTo, config){
+    var me = this;
+
+    if(Fancy.isDom(renderTo)){
       config = config || {};
+      config.renderTo = renderTo;
+    }
+    else{
+      config = renderTo;
+    }
+
+    config = config || {};
 
     var fn = function(params){
       if(params){
@@ -36983,8 +37103,6 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           });
           break;
       }
-
-
     },
     /*
      *
@@ -42086,6 +42204,15 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     ptype: 'grid.state',
     inWidgetName: 'state',
     stateful: false,
+    $log: {
+      filter: true,
+      sort: true,
+      columnresize: true,
+      columndrag: true,
+      changepage: true,
+      columnhide: true,
+      resize: true
+    },
     /*
      * @param {Object} config
      */
@@ -42100,6 +42227,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
       me.Super('init', arguments);
 
+      me.initLog();
+
       me.ons();
     },
     ons: function () {
@@ -42109,21 +42238,34 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       //w.on('init', me.onInit, me);
       w.on('beforeinit', me.onBeforeInit, me);
       if(me.stateful){
-        w.on('sort', me.onSort, me);
-        w.on('filter', me.onFilter, me);
-        w.on('filter', me.onFilter, me);
-        w.on('columnresize', me.onColumnResize, me);
-        w.on('columndrag', me.onColumnDrag, me);
-        w.on('lockcolumn', me.onColumnLock, me);
-        w.on('rightlockcolumn', me.onColumnRightLock, me);
-        w.on('unlockcolumn', me.onColumnUnLock, me);
-        w.on('changepage', me.onChangePage, me);
-        w.on('columnhide', me.onColumnHide, me);
-        w.on('columnshow', me.onColumnShow, me);
+        if(me.log.sort){
+          w.on('sort', me.onSort, me);
+        }
+        if(me.log.filter) {
+          w.on('filter', me.onFilter, me);
+        }
+        if(me.log.columnresize) {
+          w.on('columnresize', me.onColumnResize, me);
+        }
+        if(me.log.columndrag) {
+          w.on('columndrag', me.onColumnDrag, me);
+          w.on('lockcolumn', me.onColumnLock, me);
+          w.on('rightlockcolumn', me.onColumnRightLock, me);
+          w.on('unlockcolumn', me.onColumnUnLock, me);
+        }
+        if(me.log.changepage){
+          w.on('changepage', me.onChangePage, me);
+        }
+        if(me.log.columnhide) {
+          w.on('columnhide', me.onColumnHide, me);
+          w.on('columnshow', me.onColumnShow, me);
+        }
 
         w.on('init', function () {
           if(w.panel){
-            w.panel.on('resize', me.onResize, me);
+            if(me.log.resize){
+              w.panel.on('resize', me.onResize, me);
+            }
           }
         });
       }
@@ -42312,6 +42454,14 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       state.height = o.height;
 
       localStorage.setItem(name, JSON.stringify(state));
+    },
+    /*
+     *
+     */
+    initLog: function(){
+      var me = this;
+
+      F.applyIf(me.log, me.$log);
     }
   });
 

@@ -11,6 +11,15 @@
     ptype: 'grid.state',
     inWidgetName: 'state',
     stateful: false,
+    $log: {
+      filter: true,
+      sort: true,
+      columnresize: true,
+      columndrag: true,
+      changepage: true,
+      columnhide: true,
+      resize: true
+    },
     /*
      * @param {Object} config
      */
@@ -25,6 +34,8 @@
 
       me.Super('init', arguments);
 
+      me.initLog();
+
       me.ons();
     },
     ons: function () {
@@ -34,21 +45,34 @@
       //w.on('init', me.onInit, me);
       w.on('beforeinit', me.onBeforeInit, me);
       if(me.stateful){
-        w.on('sort', me.onSort, me);
-        w.on('filter', me.onFilter, me);
-        w.on('filter', me.onFilter, me);
-        w.on('columnresize', me.onColumnResize, me);
-        w.on('columndrag', me.onColumnDrag, me);
-        w.on('lockcolumn', me.onColumnLock, me);
-        w.on('rightlockcolumn', me.onColumnRightLock, me);
-        w.on('unlockcolumn', me.onColumnUnLock, me);
-        w.on('changepage', me.onChangePage, me);
-        w.on('columnhide', me.onColumnHide, me);
-        w.on('columnshow', me.onColumnShow, me);
+        if(me.log.sort){
+          w.on('sort', me.onSort, me);
+        }
+        if(me.log.filter) {
+          w.on('filter', me.onFilter, me);
+        }
+        if(me.log.columnresize) {
+          w.on('columnresize', me.onColumnResize, me);
+        }
+        if(me.log.columndrag) {
+          w.on('columndrag', me.onColumnDrag, me);
+          w.on('lockcolumn', me.onColumnLock, me);
+          w.on('rightlockcolumn', me.onColumnRightLock, me);
+          w.on('unlockcolumn', me.onColumnUnLock, me);
+        }
+        if(me.log.changepage){
+          w.on('changepage', me.onChangePage, me);
+        }
+        if(me.log.columnhide) {
+          w.on('columnhide', me.onColumnHide, me);
+          w.on('columnshow', me.onColumnShow, me);
+        }
 
         w.on('init', function () {
           if(w.panel){
-            w.panel.on('resize', me.onResize, me);
+            if(me.log.resize){
+              w.panel.on('resize', me.onResize, me);
+            }
           }
         });
       }
@@ -237,6 +261,14 @@
       state.height = o.height;
 
       localStorage.setItem(name, JSON.stringify(state));
+    },
+    /*
+     *
+     */
+    initLog: function(){
+      var me = this;
+
+      F.applyIf(me.log, me.$log);
     }
   });
 

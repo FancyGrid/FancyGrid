@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.32',
+  version: '1.7.33',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -185,6 +185,26 @@ Fancy.isString = function(value){
  */
 Fancy.isNumber = function(value){
   return typeof value === 'number' && isFinite(value);
+};
+
+/**
+ * Returns true if the passed value is a dom element.
+ * @param {*} value The value to test
+ * @return {Boolean}
+ */
+Fancy.isDom = function(value){
+  try {
+    //Using W3 DOM2 (works for FF, Opera and Chrome)
+    return value instanceof HTMLElement;
+  }
+  catch(e){
+    //Browsers not supporting W3 DOM2 don't have HTMLElement and
+    //an exception is thrown and we end up here. Testing some
+    //properties that all elements have (works on IE7)
+    return (typeof value === "object") &&
+      (value.nodeType===1) && (typeof value.style === "object") &&
+      (typeof value.ownerDocument ==="object");
+  }
 };
 
 /**

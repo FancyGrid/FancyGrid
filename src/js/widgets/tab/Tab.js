@@ -7,9 +7,8 @@ Fancy.define('Fancy.toolbar.Tab', {
   /*
    * @constructor
    * @param config
-   * @param scope
    */
-  constructor: function(config, scope){
+  constructor: function(config){
     this.Super('const', arguments);
   },
   /*
