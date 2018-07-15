@@ -383,7 +383,8 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       pages = s.pages,
       panel = w.panel,
       barType = barType || me.barType,
-      barRoles = panel['_' + barType].roles,
+      bar = panel['_' + barType],
+      barRoles = bar.roles,
       pageField = barRoles.pagenumber,
       ofText = barRoles.ofText,
       info = barRoles.info,
@@ -425,6 +426,11 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     else{
       last.enable();
       next.enable();
+    }
+
+    if(parseInt(w.el.css('width')) < 300){
+      info.hide();
+      bar.checkScroll();
     }
   },
   /*

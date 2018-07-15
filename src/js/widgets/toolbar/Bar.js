@@ -719,6 +719,10 @@
       var width = 0;
 
       F.each(this.items, function (item) {
+        if(item.el.css('display') === 'none' ){
+          return;
+        }
+
         width += item.el.width();
         width += parseInt(item.el.css('margin-left'));
         width += parseInt(item.el.css('margin-right'));

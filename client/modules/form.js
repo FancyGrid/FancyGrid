@@ -616,7 +616,6 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.method = 'GET';
       }
 
-
       if(o.failure){
         me.failure = o.failure;
       }
@@ -629,6 +628,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
       else{
         delete me.success;
+      }
+
+      if(o.url){
+        me.url = o.url;
       }
 
       me.clear(false);

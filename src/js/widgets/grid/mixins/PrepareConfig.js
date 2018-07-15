@@ -1619,6 +1619,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         displayKey: 'value',
         valueKey: 'index',
         value: value,
+        subSearch: false,
         events: [{
           change: function (field, value) {
             me.scroll(0, 0);

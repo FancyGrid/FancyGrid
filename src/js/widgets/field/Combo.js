@@ -466,6 +466,13 @@
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
       }
+
+      if(me.subSearch !== false && me.subSearchField){
+        me.subSearchField.setInputSize({
+          width: me.getListWidth() - 6,
+          height: 25
+        });
+      }
     },
     /*
      *
@@ -1000,7 +1007,7 @@
         listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
       }
 
-      if(me.editable === false){
+      if(me.editable === false && me.subSearch !== false && me.type !== 'checkbox'){
         listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
       }
 
@@ -1064,7 +1071,7 @@
       document.body.appendChild(list.dom);
       me.list = list;
 
-      if(me.editable === false && me.type !== 'checkbox'){
+      if(me.editable === false && me.type !== 'checkbox' && me.subSearch !== false){
         me.subSearchField = new F.StringField({
           renderTo: me.list.select('.fancy-combo-list-sub-search-container').item(0).dom,
           label: false,

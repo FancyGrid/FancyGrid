@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.33',
+  version: '1.7.34',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -13497,6 +13497,10 @@ Fancy.define('Fancy.toolbar.Tab', {
       var width = 0;
 
       F.each(this.items, function (item) {
+        if(item.el.css('display') === 'none' ){
+          return;
+        }
+
         width += item.el.width();
         width += parseInt(item.el.css('margin-left'));
         width += parseInt(item.el.css('margin-right'));
@@ -14336,7 +14340,6 @@ Fancy.define('Fancy.bar.Text', {
         me.method = 'GET';
       }
 
-
       if(o.failure){
         me.failure = o.failure;
       }
@@ -14349,6 +14352,10 @@ Fancy.define('Fancy.bar.Text', {
       }
       else{
         delete me.success;
+      }
+
+      if(o.url){
+        me.url = o.url;
       }
 
       me.clear(false);
@@ -18283,6 +18290,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
       }
+
+      if(me.subSearch !== false && me.subSearchField){
+        me.subSearchField.setInputSize({
+          width: me.getListWidth() - 6,
+          height: 25
+        });
+      }
     },
     /*
      *
@@ -18817,7 +18831,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listHtml.push('<div class="fancy-combo-list-select-all"><div class="fancy-field-checkbox-input" style=""></div><span class="fancy-combo-list-select-all-text">' + me.selectAllText + '</span></div>');
       }
 
-      if(me.editable === false){
+      if(me.editable === false && me.subSearch !== false && me.type !== 'checkbox'){
         listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
       }
 
@@ -18881,7 +18895,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       document.body.appendChild(list.dom);
       me.list = list;
 
-      if(me.editable === false && me.type !== 'checkbox'){
+      if(me.editable === false && me.type !== 'checkbox' && me.subSearch !== false){
         me.subSearchField = new F.StringField({
           renderTo: me.list.select('.fancy-combo-list-sub-search-container').item(0).dom,
           label: false,
@@ -22279,6 +22293,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         displayKey: 'value',
         valueKey: 'index',
         value: value,
+        subSearch: false,
         events: [{
           change: function (field, value) {
             me.scroll(0, 0);
@@ -28531,7 +28546,8 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       pages = s.pages,
       panel = w.panel,
       barType = barType || me.barType,
-      barRoles = panel['_' + barType].roles,
+      bar = panel['_' + barType],
+      barRoles = bar.roles,
       pageField = barRoles.pagenumber,
       ofText = barRoles.ofText,
       info = barRoles.info,
@@ -28573,6 +28589,11 @@ Fancy.define('Fancy.grid.plugin.Paging', {
     else{
       last.enable();
       next.enable();
+    }
+
+    if(parseInt(w.el.css('width')) < 300){
+      info.hide();
+      bar.checkScroll();
     }
   },
   /*
@@ -40259,6 +40280,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
               emptyText: filter.emptyText,
               value: '',
               editable: false,
+              subSearch: false,
               events: [{
                 change: me.onEnter,
                 scope: me

@@ -588,7 +588,6 @@
         me.method = 'GET';
       }
 
-
       if(o.failure){
         me.failure = o.failure;
       }
@@ -601,6 +600,10 @@
       }
       else{
         delete me.success;
+      }
+
+      if(o.url){
+        me.url = o.url;
       }
 
       me.clear(false);
