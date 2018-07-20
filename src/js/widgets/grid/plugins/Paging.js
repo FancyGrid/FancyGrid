@@ -161,7 +161,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       next = barRoles.next,
       last = barRoles.last,
       infoStart = showPage * pageSize + 1,
-      infoEnd = infoStart + pageSize,
+      infoEnd = infoStart + pageSize - 1,
       infoTotal = s.getTotal() || 0,
       lang = w.lang;
 
@@ -171,6 +171,10 @@ Fancy.define('Fancy.grid.plugin.Paging', {
 
     if(infoEnd === 0){
       infoStart = 0;
+    }
+
+    if(infoStart > infoEnd){
+      infoEnd = infoStart;
     }
 
     pageField.setValue(s.showPage + 1);

@@ -20,6 +20,8 @@
   var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
   var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
 
+  var PANEL_CLS = F.PANEL_CLS;
+
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   var activeGrid;
@@ -215,6 +217,10 @@
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
 
+      if(me.renderOuter){
+        el = renderTo;
+      }
+
       if(!renderTo.dom){
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
@@ -258,7 +264,12 @@
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      me.el = F.get(renderTo.dom.appendChild(el.dom));
+      if(me.renderOuter){
+        me.el = el;
+      }
+      else {
+        me.el = F.get(renderTo.dom.appendChild(el.dom));
+      }
 
       me.setHardBordersWidth();
 
@@ -524,6 +535,7 @@
       var me = this,
         panelConfig = {
           renderTo: me.renderTo,
+          renderOuter: me.renderOuter,
           title: me.title,
           subTitle: me.subTitle,
           width: me.width,
@@ -2610,6 +2622,8 @@
       if(s.isTree){
         s.initTreeData();
       }
+
+      me.setSidesHeight();
     },
     /*
      * @params {Object} [o]

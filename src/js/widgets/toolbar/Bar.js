@@ -351,6 +351,16 @@
           field = new F.NumberField(item);
 
           break;
+        case 'checkbox':
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          field = new F.CheckBox(item);
+
+          break;
         case 'switcher':
           F.applyIf(item.style, {
             'padding-left': '0px',

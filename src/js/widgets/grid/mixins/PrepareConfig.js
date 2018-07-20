@@ -16,6 +16,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     config._plugins = config._plugins || [];
 
+    if(config.renderOuter){
+      config.renderTo = config.renderOuter;
+    }
+
     config = me.generateColumnsFromData(config, originalConfig);
     /*
      * prevent columns linking if one columns object for several grids

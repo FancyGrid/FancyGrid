@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.34',
+  version: '1.7.35',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -11975,6 +11975,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
+      if(me.renderOuter){
+        el = renderTo;
+      }
+
       if(!renderTo.dom){
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
@@ -12096,8 +12100,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
-      me.el = renderTo.dom.appendChild(el.dom);
-      me.el = F.get(me.el);
+      if(me.renderOuter){
+        me.el = el;
+      }
+      else {
+        me.el = renderTo.dom.appendChild(el.dom);
+        me.el = F.get(me.el);
+      }
 
       if (me.modal) {
         if (F.select(MODAL_CLS).length === 0) {
@@ -12105,7 +12114,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         }
       }
 
-      if (me.id) {
+      if (me.id && !me.el.attr('id')) {
         me.el.attr('id', me.id);
       }
 
@@ -13127,6 +13136,16 @@ Fancy.define('Fancy.toolbar.Tab', {
           });
 
           field = new F.NumberField(item);
+
+          break;
+        case 'checkbox':
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          field = new F.CheckBox(item);
 
           break;
         case 'switcher':
@@ -20690,6 +20709,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     config._plugins = config._plugins || [];
 
+    if(config.renderOuter){
+      config.renderTo = config.renderOuter;
+    }
+
     config = me.generateColumnsFromData(config, originalConfig);
     /*
      * prevent columns linking if one columns object for several grids
@@ -23090,6 +23113,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
   var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
 
+  var PANEL_CLS = F.PANEL_CLS;
+
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   var activeGrid;
@@ -23285,6 +23310,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
 
+      if(me.renderOuter){
+        el = renderTo;
+      }
+
       if(!renderTo.dom){
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
@@ -23328,7 +23357,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      me.el = F.get(renderTo.dom.appendChild(el.dom));
+      if(me.renderOuter){
+        me.el = el;
+      }
+      else {
+        me.el = F.get(renderTo.dom.appendChild(el.dom));
+      }
 
       me.setHardBordersWidth();
 
@@ -23594,6 +23628,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var me = this,
         panelConfig = {
           renderTo: me.renderTo,
+          renderOuter: me.renderOuter,
           title: me.title,
           subTitle: me.subTitle,
           width: me.width,
@@ -25680,6 +25715,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if(s.isTree){
         s.initTreeData();
       }
+
+      me.setSidesHeight();
     },
     /*
      * @params {Object} [o]
@@ -26296,7 +26333,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
-      'contextmenu'
+      'contextmenu',
+      'statechange'
     );
 
     Fancy.loadStyle();
@@ -28556,7 +28594,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       next = barRoles.next,
       last = barRoles.last,
       infoStart = showPage * pageSize + 1,
-      infoEnd = infoStart + pageSize,
+      infoEnd = infoStart + pageSize - 1,
       infoTotal = s.getTotal() || 0,
       lang = w.lang;
 
@@ -28566,6 +28604,10 @@ Fancy.define('Fancy.grid.plugin.Paging', {
 
     if(infoEnd === 0){
       infoStart = 0;
+    }
+
+    if(infoStart > infoEnd){
+      infoEnd = infoStart;
     }
 
     pageField.setValue(s.showPage + 1);
@@ -42305,6 +42347,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
+
+      me.widget.fire('statechange', me.getState());
     },
     onFilter: function () {
       var me = this,
@@ -42319,27 +42363,50 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
+
+      me.widget.fire('statechange', me.getState());
     },
     onColumnResize: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnDrag: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnLock: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnRightLock: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnUnLock: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnHide: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnShow: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     copyColumns: function () {
       var me = this,
@@ -42463,6 +42530,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       state.page = page;
 
       localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
     },
     onResize: function (panel, o) {
       var me = this,
@@ -42476,6 +42545,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       state.height = o.height;
 
       localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
     },
     /*
      *
@@ -42484,6 +42555,17 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       var me = this;
 
       F.applyIf(me.log, me.$log);
+    },
+    /*
+     *
+     */
+    getState: function () {
+      var me = this,
+        w = me.widget,
+        name = w.getStateName(),
+        state = localStorage.getItem(name) || '{}';
+
+      return state;
     }
   });
 

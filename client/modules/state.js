@@ -90,6 +90,8 @@
 
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
+
+      me.widget.fire('statechange', me.getState());
     },
     onFilter: function () {
       var me = this,
@@ -104,27 +106,50 @@
 
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
+
+      me.widget.fire('statechange', me.getState());
     },
     onColumnResize: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnDrag: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnLock: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnRightLock: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnUnLock: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnHide: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     onColumnShow: function () {
-      this.copyColumns();
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
     },
     copyColumns: function () {
       var me = this,
@@ -248,6 +273,8 @@
       state.page = page;
 
       localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
     },
     onResize: function (panel, o) {
       var me = this,
@@ -261,6 +288,8 @@
       state.height = o.height;
 
       localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
     },
     /*
      *
@@ -269,6 +298,17 @@
       var me = this;
 
       F.applyIf(me.log, me.$log);
+    },
+    /*
+     *
+     */
+    getState: function () {
+      var me = this,
+        w = me.widget,
+        name = w.getStateName(),
+        state = localStorage.getItem(name) || '{}';
+
+      return state;
     }
   });
 

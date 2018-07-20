@@ -16,6 +16,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     config._plugins = config._plugins || [];
 
+    if(config.renderOuter){
+      config.renderTo = config.renderOuter;
+    }
+
     config = me.generateColumnsFromData(config, originalConfig);
     /*
      * prevent columns linking if one columns object for several grids
@@ -2100,6 +2104,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
   var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
 
+  var PANEL_CLS = F.PANEL_CLS;
+
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   var activeGrid;
@@ -2295,6 +2301,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
 
+      if(me.renderOuter){
+        el = renderTo;
+      }
+
       if(!renderTo.dom){
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
@@ -2338,7 +2348,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      me.el = F.get(renderTo.dom.appendChild(el.dom));
+      if(me.renderOuter){
+        me.el = el;
+      }
+      else {
+        me.el = F.get(renderTo.dom.appendChild(el.dom));
+      }
 
       me.setHardBordersWidth();
 
@@ -2604,6 +2619,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this,
         panelConfig = {
           renderTo: me.renderTo,
+          renderOuter: me.renderOuter,
           title: me.title,
           subTitle: me.subTitle,
           width: me.width,
@@ -4690,6 +4706,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if(s.isTree){
         s.initTreeData();
       }
+
+      me.setSidesHeight();
     },
     /*
      * @params {Object} [o]

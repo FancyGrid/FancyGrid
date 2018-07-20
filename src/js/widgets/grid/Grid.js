@@ -142,7 +142,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
-      'contextmenu'
+      'contextmenu',
+      'statechange'
     );
 
     Fancy.loadStyle();

@@ -112,6 +112,10 @@
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
+      if(me.renderOuter){
+        el = renderTo;
+      }
+
       if(!renderTo.dom){
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
@@ -233,8 +237,13 @@
         el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
-      me.el = renderTo.dom.appendChild(el.dom);
-      me.el = F.get(me.el);
+      if(me.renderOuter){
+        me.el = el;
+      }
+      else {
+        me.el = renderTo.dom.appendChild(el.dom);
+        me.el = F.get(me.el);
+      }
 
       if (me.modal) {
         if (F.select(MODAL_CLS).length === 0) {
@@ -242,7 +251,7 @@
         }
       }
 
-      if (me.id) {
+      if (me.id && !me.el.attr('id')) {
         me.el.attr('id', me.id);
       }
 

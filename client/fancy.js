@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.34',
+  version: '1.7.35',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6435,6 +6435,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
+      if(me.renderOuter){
+        el = renderTo;
+      }
+
       if(!renderTo.dom){
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
@@ -6556,8 +6560,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
-      me.el = renderTo.dom.appendChild(el.dom);
-      me.el = F.get(me.el);
+      if(me.renderOuter){
+        me.el = el;
+      }
+      else {
+        me.el = renderTo.dom.appendChild(el.dom);
+        me.el = F.get(me.el);
+      }
 
       if (me.modal) {
         if (F.select(MODAL_CLS).length === 0) {
@@ -6565,7 +6574,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         }
       }
 
-      if (me.id) {
+      if (me.id && !me.el.attr('id')) {
         me.el.attr('id', me.id);
       }
 
@@ -7558,6 +7567,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           });
 
           field = new F.NumberField(item);
+
+          break;
+        case 'checkbox':
+          F.applyIf(item.style, {
+            'padding-left': '0px',
+            'margin-right': '8px',
+            'margin-top': '4px'
+          });
+
+          field = new F.CheckBox(item);
 
           break;
         case 'switcher':
@@ -13359,7 +13378,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
-      'contextmenu'
+      'contextmenu',
+      'statechange'
     );
 
     Fancy.loadStyle();
