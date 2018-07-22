@@ -109,8 +109,10 @@
       body.el.un(mouseWheelEventName, me.onMouseWheel, me);
       rightBody.el.un(mouseWheelEventName, me.onMouseWheel, me);
 
-      me.scrollBottomEl.un('mousedown', me.onMouseDownBottomSpin, me);
-      me.scrollRightEl.un('mousedown', me.onMouseDownRightSpin, me);
+      if(!w.nativeScroller){
+        me.scrollBottomEl.un('mousedown', me.onMouseDownBottomSpin, me);
+        me.scrollRightEl.un('mousedown', me.onMouseDownRightSpin, me);
+      }
 
       if (F.isTouch) {
         leftBody.el.un('touchstart', me.onBodyTouchStart, me);

@@ -10,6 +10,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   prepareConfig: function(config, originalConfig){
     var me = this;
 
+    if(config.renderOuter){
+      config.renderTo = config.renderOuter;
+    }
+
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
     config = me.prepareConfigDefaults(config);

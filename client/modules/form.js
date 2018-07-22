@@ -100,6 +100,7 @@ Fancy.define('Fancy.toolbar.Tab', {
       var me = this,
         panelConfig = {
           renderTo: me.renderTo,
+          renderOuter: me.renderOuter,
           title: me.title,
           subTitle: me.subTitle,
           subTitleHeight: me.subTitleHeight,
@@ -205,7 +206,11 @@ Fancy.define('Fancy.toolbar.Tab', {
         renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div'));
 
-      if(!renderTo.dom){
+      if (me.renderOuter && !me.panel) {
+        el = renderTo;
+      }
+
+      if (!renderTo.dom) {
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
 
@@ -215,7 +220,9 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.widgetCls
       );
 
-      el.attr('id', me.id);
+      if(!el.attr('id')){
+        el.attr('id', me.id);
+      }
 
       el.css({
         width: me.width + 'px',
@@ -224,7 +231,16 @@ Fancy.define('Fancy.toolbar.Tab', {
 
       el.update(me.tpl.join(' '));
 
-      me.el = F.get(renderTo.dom.appendChild(el.dom));
+      if (me.renderOuter && !me.panel) {
+        me.el = el;
+
+        if(F.isObject(me.style)){
+          me.el.css(me.style);
+        }
+      }
+      else {
+        me.el = F.get(renderTo.dom.appendChild(el.dom));
+      }
 
       if (me.panel === undefined) {
         if (me.shadow) {
@@ -1070,6 +1086,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    */
   prepareConfig: function(config, originalConfig){
     var me = this;
+
+    if(config.renderOuter){
+      config.renderTo = config.renderOuter;
+    }
 
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
