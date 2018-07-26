@@ -844,6 +844,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           }
           break;
         case 'date':
+          if(!o.value){
+            o.value = '';
+          }
           var format = o.column.format,
             date = F.Date.parse(o.value, format.read, format.mode);
 

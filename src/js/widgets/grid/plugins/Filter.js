@@ -228,7 +228,7 @@
       var me = this,
         w = me.widget;
 
-      if(value === undefined || value.length === 0){
+      if(value === undefined || value === null || value.length === 0){
         return;
       }
 

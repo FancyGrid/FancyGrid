@@ -57,7 +57,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
 
 	    if(indexFilters.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
+        if(indexValue === null){
+          indexValue = Math.NEGATIVE_INFINITY;
+        }
+        else {
+          indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
+        }
 	    }
 
 	    if(!caseSensitive && Fancy.isString(indexValue)){

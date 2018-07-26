@@ -24,6 +24,8 @@
      * @param {Object} config
      */
     constructor: function (config) {
+      this.log = this.log || {};
+
       this.Super('const', arguments);
     },
     /*

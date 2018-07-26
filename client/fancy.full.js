@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.36',
+  version: '1.7.37',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5403,7 +5403,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
 
 	    if(indexFilters.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
+        if(indexValue === null){
+          indexValue = Math.NEGATIVE_INFINITY;
+        }
+        else {
+          indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
+        }
 	    }
 
 	    if(!caseSensitive && Fancy.isString(indexValue)){
@@ -6512,7 +6517,14 @@ Fancy.define('Fancy.Store', {
       if(options.format){
         if(options.type === 'date'){
           for (; i < iL; i++) {
-            values.push(Fancy.Date.parse(data[i].data[key], options.format, options.mode));
+            var value = data[i].data[key];
+
+            if(value === null){
+              values.push(Math.NEGATIVE_INFINITY);
+            }
+            else {
+              values.push(Fancy.Date.parse(value, options.format, options.mode));
+            }
           }
         }
         else{
@@ -25515,6 +25527,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       me.fire('filter', s.filters);
+
+      me.setSidesHeight();
     },
     /*
      * @param {String} text
@@ -31835,6 +31849,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           }
           break;
         case 'date':
+          if(!o.value){
+            o.value = '';
+          }
           var format = o.column.format,
             date = F.Date.parse(o.value, format.read, format.mode);
 
@@ -40106,7 +40123,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       var me = this,
         w = me.widget;
 
-      if(value === undefined || value.length === 0){
+      if(value === undefined || value === null || value.length === 0){
         return;
       }
 
@@ -42303,6 +42320,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
      * @param {Object} config
      */
     constructor: function (config) {
+      this.log = this.log || {};
+
       this.Super('const', arguments);
     },
     /*
@@ -44810,7 +44829,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       switch (format.type) {
         case 'date':
           return function (value) {
-            if (value.length === 0) {
+            if (!value || value.length === 0) {
               return '';
             }
             var date = F.Date.parse(value, format.read, format.mode);

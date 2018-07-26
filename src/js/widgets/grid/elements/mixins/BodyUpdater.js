@@ -1782,7 +1782,7 @@
       switch (format.type) {
         case 'date':
           return function (value) {
-            if (value.length === 0) {
+            if (!value || value.length === 0) {
               return '';
             }
             var date = F.Date.parse(value, format.read, format.mode);

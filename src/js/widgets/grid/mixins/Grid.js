@@ -2402,6 +2402,8 @@
       }
 
       me.fire('filter', s.filters);
+
+      me.setSidesHeight();
     },
     /*
      * @param {String} text
