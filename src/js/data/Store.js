@@ -132,7 +132,7 @@ Fancy.define('Fancy.Store', {
     }
     else {
       if(me.expanded){
-        //??? It looks like never reacheds
+        //??? It looks like never reaches
         for (; i < iL; i++) {
           item = new model(data[i]);
 
@@ -896,5 +896,19 @@ Fancy.define('Fancy.Store', {
     if(numOfSmartIndexes){
       me.smartIndexes = smartIndexes;
     }
+  },
+  destroy: function () {
+    var me = this;
+
+    Fancy.each(me.data, function (item) {
+      delete item.data;
+      delete item.id;
+    });
+
+    me.data = [];
+    me.map = {};
+    me.dataView = [];
+    me.dataViewIndexes = {};
+    me.dataViewMap = {};
   }
 });

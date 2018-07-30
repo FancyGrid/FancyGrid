@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.37',
+  version: '1.7.38',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -2991,7 +2991,7 @@ Fancy.define('Fancy.Store', {
     }
     else {
       if(me.expanded){
-        //??? It looks like never reacheds
+        //??? It looks like never reaches
         for (; i < iL; i++) {
           item = new model(data[i]);
 
@@ -3755,6 +3755,20 @@ Fancy.define('Fancy.Store', {
     if(numOfSmartIndexes){
       me.smartIndexes = smartIndexes;
     }
+  },
+  destroy: function () {
+    var me = this;
+
+    Fancy.each(me.data, function (item) {
+      delete item.data;
+      delete item.id;
+    });
+
+    me.data = [];
+    me.map = {};
+    me.dataView = [];
+    me.dataViewIndexes = {};
+    me.dataViewMap = {};
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -4767,6 +4781,10 @@ Fancy.Ajax = function(o){
     _o.data = o.params;
   }
 
+  if(o.dataType){
+    _o.dataType = o.dataType;
+  }
+
   if(o.sendJSON){
     _o.dataType = 'json';
     _o.contentType = "application/json; charset=utf-8";
@@ -5519,7 +5537,7 @@ Fancy.define('Fancy.Plugin', {
 
       if(me.disabled !== true){
         if(handler){
-          if(F.isString(handler)){
+          if(F.isString(handler)) {
             handler = me.getHandler(handler);
           }
 
@@ -7499,7 +7517,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         case 'button':
           item.extraCls = BAR_BUTTON_CLS;
 
-          item.scope = me.scope;
+          item.scope = item.scope || me.scope;
 
           field = new F.Button(item);
           break;

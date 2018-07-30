@@ -1008,6 +1008,10 @@ Fancy.Ajax = function(o){
     _o.data = o.params;
   }
 
+  if(o.dataType){
+    _o.dataType = o.dataType;
+  }
+
   if(o.sendJSON){
     _o.dataType = 'json';
     _o.contentType = "application/json; charset=utf-8";

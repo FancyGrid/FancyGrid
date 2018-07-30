@@ -940,6 +940,10 @@ Fancy.Date = {
       if (!F.isDate(me.value)) {
         me.initDate();
       }
+      else{
+        me.date = me.value;
+      }
+
       me.changeInputValue();
       me.initPicker();
     },

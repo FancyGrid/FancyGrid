@@ -274,7 +274,7 @@
         case 'button':
           item.extraCls = BAR_BUTTON_CLS;
 
-          item.scope = me.scope;
+          item.scope = item.scope || me.scope;
 
           field = new F.Button(item);
           break;

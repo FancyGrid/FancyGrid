@@ -1118,6 +1118,7 @@
      */
     destroy: function () {
       var me = this,
+        s = me.store,
         docEl = F.get(document);
 
       docEl.un('mouseup', me.onDocMouseUp, me);
@@ -1139,6 +1140,15 @@
       if (me.panel) {
         me.panel.el.destroy();
       }
+
+      s.destroy();
+    },
+    clearData: function(){
+      var me = this;
+
+      me.setData([]);
+      me.update();
+      me.scroller.update();
     },
     /*
      *

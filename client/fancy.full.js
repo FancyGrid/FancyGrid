@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.37',
+  version: '1.7.38',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6139,7 +6139,7 @@ Fancy.define('Fancy.Store', {
     }
     else {
       if(me.expanded){
-        //??? It looks like never reacheds
+        //??? It looks like never reaches
         for (; i < iL; i++) {
           item = new model(data[i]);
 
@@ -6903,6 +6903,20 @@ Fancy.define('Fancy.Store', {
     if(numOfSmartIndexes){
       me.smartIndexes = smartIndexes;
     }
+  },
+  destroy: function () {
+    var me = this;
+
+    Fancy.each(me.data, function (item) {
+      delete item.data;
+      delete item.id;
+    });
+
+    me.data = [];
+    me.map = {};
+    me.dataView = [];
+    me.dataViewIndexes = {};
+    me.dataViewMap = {};
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -7913,6 +7927,10 @@ Fancy.Ajax = function(o){
 
   if( o.params ){
     _o.data = o.params;
+  }
+
+  if(o.dataType){
+    _o.dataType = o.dataType;
   }
 
   if(o.sendJSON){
@@ -10535,7 +10553,7 @@ Fancy.define('Fancy.Plugin', {
 
       if(me.disabled !== true){
         if(handler){
-          if(F.isString(handler)){
+          if(F.isString(handler)) {
             handler = me.getHandler(handler);
           }
 
@@ -13073,7 +13091,7 @@ Fancy.define('Fancy.toolbar.Tab', {
         case 'button':
           item.extraCls = BAR_BUTTON_CLS;
 
-          item.scope = me.scope;
+          item.scope = item.scope || me.scope;
 
           field = new F.Button(item);
           break;
@@ -13877,6 +13895,30 @@ Fancy.define('Fancy.bar.Text', {
           panelBodyBorders: me.panelBodyBorders,
           resizable: me.resizable
         };
+
+      F.each(me.buttons, function (item) {
+        if(F.isObject(item)){
+         item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.bbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.tbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.tbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
 
       if(me.cls){
         panelConfig.cls = me.cls;
@@ -16666,6 +16708,10 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       if (!F.isDate(me.value)) {
         me.initDate();
       }
+      else{
+        me.date = me.value;
+      }
+
       me.changeInputValue();
       me.initPicker();
     },
@@ -24243,6 +24289,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     destroy: function () {
       var me = this,
+        s = me.store,
         docEl = F.get(document);
 
       docEl.un('mouseup', me.onDocMouseUp, me);
@@ -24264,6 +24311,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if (me.panel) {
         me.panel.el.destroy();
       }
+
+      s.destroy();
+    },
+    clearData: function(){
+      var me = this;
+
+      me.setData([]);
+      me.update();
+      me.scroller.update();
     },
     /*
      *

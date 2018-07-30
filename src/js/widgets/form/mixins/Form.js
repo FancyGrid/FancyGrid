@@ -95,6 +95,36 @@
           resizable: me.resizable
         };
 
+      F.each(me.buttons, function (item) {
+        if(F.isObject(item)){
+         item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.bbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.tbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.tbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.subTBar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
       if(me.cls){
         panelConfig.cls = me.cls;
         delete me.cls;

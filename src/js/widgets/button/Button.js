@@ -284,7 +284,7 @@
 
       if(me.disabled !== true){
         if(handler){
-          if(F.isString(handler)){
+          if(F.isString(handler)) {
             handler = me.getHandler(handler);
           }
 
