@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.38',
+  version: '1.7.39',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5293,7 +5293,7 @@ Fancy.define('Fancy.Plugin', {
         toggleGroups[config.toggleGroup].items.push(me);
       }
 
-      me.scope = scope;
+      me.scope = scope || config.scope || me.scope || me;
 
       me.Super('const', arguments);
     },
@@ -7462,8 +7462,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         });
       }
 
-      if (!item.scope && me.items) {
-        item.scope = me.items[0];
+      if (!item.scope && me.scope) {
+        item.scope = me.scope;
       }
 
       switch (item.type) {
@@ -7516,7 +7516,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         case undefined:
         case 'button':
           item.extraCls = BAR_BUTTON_CLS;
-
           item.scope = item.scope || me.scope;
 
           field = new F.Button(item);
@@ -12348,8 +12347,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
             return;
           }
 
-          if (me.handler) {
-            me.handler();
+          if (me.scope) {
+            me.handler.apply(me.scope, [me]);
+          }
+          else {
+            me.handler(me);
           }
         }
       });

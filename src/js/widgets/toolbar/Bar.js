@@ -219,8 +219,8 @@
         });
       }
 
-      if (!item.scope && me.items) {
-        item.scope = me.items[0];
+      if (!item.scope && me.scope) {
+        item.scope = me.scope;
       }
 
       switch (item.type) {
@@ -273,7 +273,6 @@
         case undefined:
         case 'button':
           item.extraCls = BAR_BUTTON_CLS;
-
           item.scope = item.scope || me.scope;
 
           field = new F.Button(item);

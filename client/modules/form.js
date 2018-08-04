@@ -147,6 +147,12 @@ Fancy.define('Fancy.toolbar.Tab', {
         }
       });
 
+      F.each(me.subTBar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
       if(me.cls){
         panelConfig.cls = me.cls;
         delete me.cls;

@@ -2404,6 +2404,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if(me.paging){
         me.paging.update();
       }
+
+      me.scroller.update();
     },
     /*
      * @param {String} side

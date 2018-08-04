@@ -432,7 +432,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       next.enable();
     }
 
-    if(parseInt(w.el.css('width')) < 300){
+    if(parseInt(w.el.css('width')) < 350){
       info.hide();
       bar.checkScroll();
     }

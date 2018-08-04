@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.38',
+  version: '1.7.39',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -10309,7 +10309,7 @@ Fancy.define('Fancy.Plugin', {
         toggleGroups[config.toggleGroup].items.push(me);
       }
 
-      me.scope = scope;
+      me.scope = scope || config.scope || me.scope || me;
 
       me.Super('const', arguments);
     },
@@ -13036,8 +13036,8 @@ Fancy.define('Fancy.toolbar.Tab', {
         });
       }
 
-      if (!item.scope && me.items) {
-        item.scope = me.items[0];
+      if (!item.scope && me.scope) {
+        item.scope = me.scope;
       }
 
       switch (item.type) {
@@ -13090,7 +13090,6 @@ Fancy.define('Fancy.toolbar.Tab', {
         case undefined:
         case 'button':
           item.extraCls = BAR_BUTTON_CLS;
-
           item.scope = item.scope || me.scope;
 
           field = new F.Button(item);
@@ -13915,6 +13914,12 @@ Fancy.define('Fancy.bar.Text', {
       });
 
       F.each(me.tbar, function (item) {
+        if(F.isObject(item)){
+          item.scope = item.scope || me;
+        }
+      });
+
+      F.each(me.subTBar, function (item) {
         if(F.isObject(item)){
           item.scope = item.scope || me;
         }
@@ -19765,8 +19770,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
             return;
           }
 
-          if (me.handler) {
-            me.handler();
+          if (me.scope) {
+            me.handler.apply(me.scope, [me]);
+          }
+          else {
+            me.handler(me);
           }
         }
       });
@@ -23491,6 +23499,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if(me.paging){
         me.paging.update();
       }
+
+      me.scroller.update();
     },
     /*
      * @param {String} side
@@ -28725,7 +28735,7 @@ Fancy.define('Fancy.grid.plugin.Paging', {
       next.enable();
     }
 
-    if(parseInt(w.el.css('width')) < 300){
+    if(parseInt(w.el.css('width')) < 350){
       info.hide();
       bar.checkScroll();
     }

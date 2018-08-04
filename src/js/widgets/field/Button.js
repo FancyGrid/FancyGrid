@@ -82,8 +82,11 @@
             return;
           }
 
-          if (me.handler) {
-            me.handler();
+          if (me.scope) {
+            me.handler.apply(me.scope, [me]);
+          }
+          else {
+            me.handler(me);
           }
         }
       });

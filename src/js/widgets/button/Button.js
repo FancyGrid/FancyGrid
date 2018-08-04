@@ -40,7 +40,7 @@
         toggleGroups[config.toggleGroup].items.push(me);
       }
 
-      me.scope = scope;
+      me.scope = scope || config.scope || me.scope || me;
 
       me.Super('const', arguments);
     },

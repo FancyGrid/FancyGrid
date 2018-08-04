@@ -1,8 +1,8 @@
 {
   "name": "fancygrid",
-  "version": "1.7.38",
+  "version": "1.7.39",
   "description": "JavaScript grid library with charts integration and server communication",
-  "main" : "index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/FancyGrid/FancyGrid.git"
