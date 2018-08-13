@@ -705,6 +705,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
               minListWidth: column.minListWidth,
               listItemTpl: column.listItemTpl,
               selectAllText: selectAllText,
+              subSearch: column.subSearch,
               events: [{
                 change: me.onEnter,
                 scope: me

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.39',
+  version: '1.7.40',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -18031,6 +18031,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       );
       me.Super('init', arguments);
 
+      if(me.subSearch){
+        me.editable = false;
+      }
+
       if (!me.loadListData()) {
         me.data = me.configData(me.data);
       }
@@ -18190,6 +18194,26 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.on('enter', me.onEnter, me);
       me.on('up', me.onUp, me);
       me.on('down', me.onDown, me);
+    },
+    onSubSearchKeyDown: function (e) {
+      var me = this,
+        keyCode = e.keyCode,
+        key = F.key;
+
+      switch (keyCode) {
+        case key.ESC:
+          me.fire('esc', e);
+          break;
+        case key.ENTER:
+          me.fire('enter', e);
+          break;
+        case key.UP:
+          me.fire('up', e);
+          break;
+        case key.DOWN:
+          me.fire('down', e);
+          break;
+      }
     },
     /*
      * @param {Object} e
@@ -18398,6 +18422,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           width: me.getListWidth() - 6,
           height: 25
         });
+
+        me.subSearchField.input.focus();
       }
     },
     /*
@@ -18691,7 +18717,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.updateLeft();
       }
 
-      me.validate(valueStr);
+      if(!Fancy.isObject(me.data)){
+        me.validate(valueStr);
+      }
     },
     /*
      * Method used only for multiSelect
@@ -19014,6 +19042,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           width: me.getListWidth() - 6,
           height: 25
         });
+
+        me.subSearchField.input.on('keydown', me.onSubSearchKeyDown, me);
       }
 
       me.applyTheme();
@@ -19409,16 +19439,26 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     onUp: function (field, e) {
       var me = this,
         list = me.getActiveList(),
-        focusedItemCls = me.focusedItemCls;
+        focusedItemCls = me.focusedItemCls,
+        selectedItemCls = me.selectedItemCls;
 
       if (list) {
+        list = me.getActiveList().select('ul');
         e.preventDefault();
         var activeLi = list.select('.' + focusedItemCls),
           notFocused = false;
 
         if (!activeLi.dom) {
+          activeLi = list.select('.' + selectedItemCls);
+        }
+
+        if (!activeLi.dom) {
           notFocused = true;
           activeLi = list.lastChild();
+        }
+
+        if(activeLi.length > 1){
+          activeLi = activeLi.item(0);
         }
 
         var index = activeLi.index(),
@@ -19433,7 +19473,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
 
         var nextActiveLi = lis.item(index),
-          top = nextActiveLi.position().top;
+          top = nextActiveLi.dom.offsetTop;
 
         if (top - list.dom.scrollTop > height) {
           list.dom.scrollTop = 10000;
@@ -19454,17 +19494,27 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     onDown: function (field, e) {
       var me = this,
         list = me.getActiveList(),
-        focusedItemCls = me.focusedItemCls;
+        focusedItemCls = me.focusedItemCls,
+        selectedItemCls = me.selectedItemCls;
 
       if (list) {
+        list = me.getActiveList().select('ul');
         e.preventDefault();
 
         var activeLi = list.select('.' + focusedItemCls),
           notFocused = false;
 
         if (!activeLi.dom) {
+          activeLi = list.select('.' + selectedItemCls);
+        }
+
+        if (!activeLi.dom) {
           notFocused = true;
           activeLi = list.firstChild();
+        }
+
+        if(activeLi.length > 1){
+          activeLi = activeLi.item(0);
         }
 
         var activeLiHeight = parseInt(activeLi.css('height')),
@@ -19480,7 +19530,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
 
         var nextActiveLi = lis.item(index),
-          top = nextActiveLi.position().top,
+          top = nextActiveLi.dom.offsetTop,
           nextActiveLiHeight = parseInt(nextActiveLi.css('height'));
 
         if (top - list.dom.scrollTop < 0) {
@@ -19503,10 +19553,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     scrollToListItem: function (index) {
       var me = this,
-        list = me.getActiveList(),
+        list = me.getActiveList().select('ul'),
         lis = list.select('li'),
         item = lis.item(index),
-        top = item.position().top,
+        //top = item.position().top,
+        top = item.dom.offsetTop,
         height = parseInt(list.css('height'));
 
       if (index === 0) {
@@ -31627,6 +31678,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             itemConfig.minListWidth = column.minListWidth;
           }
 
+          if(column.subSearch){
+            itemConfig.subSearch = column.subSearch;
+          }
+
           Fancy.apply(itemConfig, {
             theme: theme,
             data: data,
@@ -32455,6 +32510,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
                 itemConfig.minListWidth = column.minListWidth;
               }
 
+              if(column.subSearch){
+                itemConfig.subSearch = column.subSearch;
+              }
+
               editor = new F.Combo(itemConfig);
               break;
             case 'checkbox':
@@ -32655,13 +32714,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @return {Object}
      */
     getCellSize: function (cell) {
-      var w = this.widget,
-        cellEl = F.get(cell),
+      var cellEl = F.get(cell),
         width = cellEl.width(),
         height = cellEl.height(),
         coeficient = 2;
 
-      if (F.nojQuery && w.panelBorderWidth === 2) {
+      //if (F.nojQuery && w.panelBorderWidth === 2) {
+      if (F.nojQuery) {
         coeficient = 1;
       }
 
@@ -32829,6 +32888,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             case 'order':
             case 'select':
             case 'expand':
+            case 'rowdrag':
               break;
             default:
               editor.set(data[column.index], false);
@@ -40373,6 +40433,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
               minListWidth: column.minListWidth,
               listItemTpl: column.listItemTpl,
               selectAllText: selectAllText,
+              subSearch: column.subSearch,
               events: [{
                 change: me.onEnter,
                 scope: me

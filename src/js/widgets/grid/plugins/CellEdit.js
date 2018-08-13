@@ -178,6 +178,10 @@
             itemConfig.minListWidth = column.minListWidth;
           }
 
+          if(column.subSearch){
+            itemConfig.subSearch = column.subSearch;
+          }
+
           Fancy.apply(itemConfig, {
             theme: theme,
             data: data,

@@ -322,6 +322,10 @@
                 itemConfig.minListWidth = column.minListWidth;
               }
 
+              if(column.subSearch){
+                itemConfig.subSearch = column.subSearch;
+              }
+
               editor = new F.Combo(itemConfig);
               break;
             case 'checkbox':
@@ -522,13 +526,13 @@
      * @return {Object}
      */
     getCellSize: function (cell) {
-      var w = this.widget,
-        cellEl = F.get(cell),
+      var cellEl = F.get(cell),
         width = cellEl.width(),
         height = cellEl.height(),
         coeficient = 2;
 
-      if (F.nojQuery && w.panelBorderWidth === 2) {
+      //if (F.nojQuery && w.panelBorderWidth === 2) {
+      if (F.nojQuery) {
         coeficient = 1;
       }
 
@@ -696,6 +700,7 @@
             case 'order':
             case 'select':
             case 'expand':
+            case 'rowdrag':
               break;
             default:
               editor.set(data[column.index], false);
