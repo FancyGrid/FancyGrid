@@ -148,7 +148,9 @@
 
       pathToSrc + 'widgets/grid/plugins/State.js', // state module
 	  
-	    pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
+	  pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
+		
+      pathToSrc + 'widgets/grid/plugins/RowHeight.js',
 
       pathToSrc + 'widgets/grid/plugins/Licence.js',
 

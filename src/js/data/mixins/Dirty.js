@@ -135,5 +135,23 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
         data: o.data
       });
     }
+  },
+  clearDirty: function () {
+    var me = this;
+
+    me.changed = {
+      length: 0
+    };
+
+    me.removed = {
+      length: 0
+    };
+
+    me.inserted = {
+      length: 0
+    };
+
+    me.undoActions = [];
+    me.redoActions = [];
   }
 });

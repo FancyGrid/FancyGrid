@@ -450,6 +450,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
+    me.body.reSetIndexes();
+    me.leftBody.reSetIndexes();
 
     me.fire('lockcolumn', {
       column: removedColumn
@@ -478,6 +480,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
+    me.body.reSetIndexes();
+    me.rightBody.reSetIndexes();
 
     me.fire('rightlockcolumn', {
       column: removedColumn
@@ -560,6 +564,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     if(side === 'left' && me.grouping && me.leftColumns.length === 0){
       me.grouping.insertGroupEls();
     }
+
+    me.body.reSetIndexes();
+    me.leftBody.reSetIndexes();
+    me.rightBody.reSetIndexes();
 
     me.fire('unlockcolumn', {
       column: removedColumn

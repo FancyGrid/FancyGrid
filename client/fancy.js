@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.40',
+  version: '1.7.41',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -2855,6 +2855,24 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
         data: o.data
       });
     }
+  },
+  clearDirty: function () {
+    var me = this;
+
+    me.changed = {
+      length: 0
+    };
+
+    me.removed = {
+      length: 0
+    };
+
+    me.inserted = {
+      length: 0
+    };
+
+    me.undoActions = [];
+    me.redoActions = [];
   }
 });
 /*
@@ -9121,6 +9139,10 @@ if(!Fancy.nojQuery && Fancy.$){
     setInputSize: function (o) {
       var me = this;
 
+      if(me.type === 'combo'){
+        me.inputContainer.css('width', o.width);
+      }
+
       if (o.width) {
         me.input.css('width', o.width);
       }
@@ -13764,6 +13786,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
+    me.body.reSetIndexes();
+    me.leftBody.reSetIndexes();
 
     me.fire('lockcolumn', {
       column: removedColumn
@@ -13792,6 +13816,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
+    me.body.reSetIndexes();
+    me.rightBody.reSetIndexes();
 
     me.fire('rightlockcolumn', {
       column: removedColumn
@@ -13874,6 +13900,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     if(side === 'left' && me.grouping && me.leftColumns.length === 0){
       me.grouping.insertGroupEls();
     }
+
+    me.body.reSetIndexes();
+    me.leftBody.reSetIndexes();
+    me.rightBody.reSetIndexes();
 
     me.fire('unlockcolumn', {
       column: removedColumn
@@ -14034,6 +14064,111 @@ if(!Fancy.nojQuery && Fancy.$){
     return new Fancy.Grid(o);
   };
 }
+/*
+ * @class Fancy.grid.plugin.RowHeight
+ * @extends Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+
+  F.define('Fancy.grid.plugin.RowHeight', {
+    extend: F.Plugin,
+    ptype: 'grid.rowheight',
+    inWidgetName: 'rowheight',
+    cellTip: '{value}',
+    stopped: true,
+    /*
+     * @param {Object} config
+     */
+    constructor: function (config) {
+      this.Super('const', arguments);
+
+      this.rows = {};
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget;
+
+      w.on('init', me.onInit, me);
+      w.on('update', me.onUpdate, me);
+    },
+    onInit: function () {
+      var me = this,
+        w = me.widget;
+
+      setTimeout(function () {
+        w.scroller.update(me.totalHeight);
+      }, 50);
+    },
+    /*
+     *
+     */
+    onUpdate: function () {
+      var me = this,
+        w = me.widget,
+        viewData = w.getDataView(),
+        totalHeight = 0;
+
+      F.each(viewData, function (item) {
+        var id = item.id,
+          height = me.rows[id],
+          rowIndex = w.getRowById(id),
+          cells = w.getDomRow(rowIndex);
+
+        F.each(cells, function (cellDom) {
+          var cell = F.get(cellDom);
+
+          cell.css('height', height);
+        });
+
+        totalHeight += height;
+      });
+
+      me.totalHeight = totalHeight;
+
+      if(w.grouping){
+        me.totalHeight += w.grouping.getGroupRowsHeight();
+      }
+
+      setTimeout(function () {
+        w.scroller.update(me.totalHeight);
+      }, 50);
+    },
+    /*
+     *
+     */
+    add: function (id, height) {
+      this.rows[id] = height;
+    },
+    /*
+     *
+     */
+    getRowsHeight: function (items) {
+      var me = this,
+        height = 0;
+
+      F.each(items, function (item) {
+        var id = item.get('id');
+
+        height += me.rows[id];
+      });
+
+      return height;
+    }
+  });
+
+})();
 /*
  * @class Fancy.grid.plugin.CellTip
  * @extends Fancy.Plugin

@@ -450,6 +450,17 @@
         if (!o.column.widget) {
           inner.update(value);
         }
+
+        if(o.column.autoHeight){
+          cell.css('height', '');
+          var cellHeight = parseInt(cell.css('height')) + 4;
+
+          if(cellHeight < w.cellHeight){
+            cellHeight = w.cellHeight;
+          }
+
+          w.rowheight.add(id, cellHeight);
+        }
       }
     },
     /*

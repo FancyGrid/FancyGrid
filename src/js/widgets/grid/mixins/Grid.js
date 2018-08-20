@@ -8,6 +8,7 @@
   //CONSTANTS
   var TOUCH_CLS = F.TOUCH_CLS;
   var HIDDEN_CLS = F.HIDDEN_CLS;
+  var GRID_CLS = F.GRID_CLS;
   var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
   var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
   var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
@@ -449,9 +450,9 @@
       me.rightBody.setColumnsPosition();
     },
     /*
-     *
+     * @param {Number} [viewHeight]
      */
-    setSidesHeight: function () {
+    setSidesHeight: function (viewHeight) {
       var me = this,
         s = me.store,
         height = 1,
@@ -492,7 +493,11 @@
         height += me.summary.topOffSet;
       }
 
-      height += s.getLength() * me.cellHeight - 1;
+      if(me.rowheight && me.rowheight.totalHeight){
+        viewHeight = me.rowheight.totalHeight;
+      }
+
+      height += viewHeight || (s.getLength() * me.cellHeight - 1);
 
       if (me.paging && me.summary && me.summary.position === 'bottom') {
         height = me.height;
@@ -1461,6 +1466,10 @@
       }
       else{
         el = F.get(renderTo);
+      }
+
+      if(el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)){
+        el = el.parent();
       }
 
       var newWidth = el.width();
@@ -3106,6 +3115,17 @@
         value: value,
         side: side
       });
+    },
+    /*
+     *
+     */
+    clearDirty: function () {
+      var me = this;
+
+      me.store.clearDirty();
+      me.body.clearDirty();
+      me.leftBody.clearDirty();
+      me.rightBody.clearDirty();
     }
   });
 

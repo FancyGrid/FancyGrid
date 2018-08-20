@@ -520,9 +520,10 @@
      */
     getDomCell: function (row, column) {
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        dom = me.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]').dom;
 
-      return me.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]').dom;
+      return dom;
     },
     /*
      * @param {Number} index
@@ -766,10 +767,10 @@
     },
     reSetIndexes: function () {
       var me = this,
-        columns = me.getColumns();
+        columnsDom = me.el.select('.' + GRID_COLUMN_CLS);
 
-      F.each(columns, function (column, i) {
-        me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]').attr('index', i);
+      columnsDom.each(function(el, i){
+        el.attr('index', i);
       });
     },
     /*

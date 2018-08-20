@@ -1956,9 +1956,9 @@
       selectModel = me.getSelection(true);
 
       //reselecting rows
-      F.each(selectModel, function (rowIndex) {
-        w.selectRow(rowIndex);
-      });
+      F.each(selectModel.rows, function (rowIndex) {
+        w.selectRow(rowIndex, true, w.selModel === 'rows');
+      }, 100);
     },
     /*
      *
@@ -1973,12 +1973,14 @@
         return;
       }
 
-      selectModel = me.getSelection(true);
+      setTimeout(function(){
+        selectModel = me.getSelection(true);
 
-      //reselecting rows
-      F.each(selectModel, function (rowIndex) {
-        w.selectRow(rowIndex);
-      });
+        //reselecting rows
+        F.each(selectModel.rows, function (rowIndex) {
+          w.selectRow(rowIndex, true, w.selModel === 'rows');
+        });
+      }, 100);
     },
     /*
      *
@@ -1993,12 +1995,14 @@
         return;
       }
 
-      selectModel = me.getSelection(true);
+      setTimeout(function(){
+        selectModel = me.getSelection(true);
 
-      //reselecting rows
-      F.each(selectModel, function (rowIndex) {
-        w.selectRow(rowIndex);
-      });
+        //reselecting rows
+        F.each(selectModel.rows, function (rowIndex) {
+          w.selectRow(rowIndex, true, w.selModel === 'rows');
+        });
+      }, 100);
     },
     /*
      *

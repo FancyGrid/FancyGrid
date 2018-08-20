@@ -676,6 +676,10 @@
     setInputSize: function (o) {
       var me = this;
 
+      if(me.type === 'combo'){
+        me.inputContainer.css('width', o.width);
+      }
+
       if (o.width) {
         me.input.css('width', o.width);
       }

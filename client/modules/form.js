@@ -45,6 +45,7 @@ Fancy.define('Fancy.toolbar.Tab', {
   var FIELD_TAB_CLS = F.FIELD_TAB_CLS;
   var FIELD_TAB_ACTIVE_CLS = F.FIELD_TAB_ACTIVE_CLS;
   var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
+  var PANEL_CLS = F.PANEL_CLS;
   var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
   var TAB_TBAR_CLS = F.TAB_TBAR_CLS;
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
@@ -522,6 +523,26 @@ Fancy.define('Fancy.toolbar.Tab', {
             item.on('change', me.onChange, me);
         }
       });
+
+      if (me.responsive) {
+        F.$(window).bind('resize', function () {
+          me.onWindowResize();
+
+          if(me.intWindowResize){
+            clearInterval(me.intWindowResize);
+          }
+
+          me.intWindowResize = setTimeout(function(){
+            me.onWindowResize();
+            delete me.intWindowResize;
+
+            //Bug fix for Mac
+            setTimeout(function () {
+              me.onWindowResize();
+            }, 300);
+          }, 30);
+        });
+      }
     },
     /*
      * @param {Object} field
@@ -839,9 +860,115 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.css('height', height);
     },
     /*
-     * TODO:
+     * @param {Number} value
      */
-    setWidth: function () {},
+    setWidth: function (value) {
+      var me = this;
+
+      if (me.panel) {
+        me.panel.css('width', value);
+
+        value -= me.panelBodyBorders[1];
+        value -= me.panelBodyBorders[3];
+      }
+
+      me.css('width', value);
+
+      var inLineFields = {};
+
+      F.each(me.items, function (item) {
+        if(item.lineName){
+          inLineFields[item.lineName] = inLineFields[item.lineName] || [];
+          inLineFields[item.lineName].push(item);
+          return;
+        }
+
+        switch(item.type){
+          case 'line':
+            var _value = value,
+              lineFieldNumber = 0,
+              _itemsWidth = 0;
+
+            _value -= parseInt(item.css('margin-left'));
+            _value -= parseInt(item.css('margin-right'));
+
+            F.each(item.items, function (_item) {
+              switch(_item.type){
+                case 'button':
+                  _value -= _item.css('width');
+
+                  _value -= parseInt(_item.css('margin-left'));
+                  _value -= parseInt(_item.css('margin-right'));
+
+                  break;
+                default:
+                  lineFieldNumber++;
+                  _itemsWidth += _item.css('width');
+              }
+            });
+            break;
+          default:
+            var _value = value;
+
+            _value -= parseInt(item.css('margin-left'));
+            _value -= parseInt(item.css('margin-right'));
+
+            item.setWidth(_value);
+        }
+      });
+
+      F.each(inLineFields, function (lineFields) {
+        var widths = [],
+          _value = value,
+          totalWidth = 0;
+
+        F.each(lineFields, function (item, i) {
+          var width = parseInt(item.el.css('width'));
+
+          _value -= parseInt(item.css('padding-left'));
+
+          if(i === lineFields.length - 1){
+            _value -= parseInt(item.css('padding-right'));
+          }
+
+          switch(item.type){
+            case 'button':
+              _value -= width;
+              return;
+              break;
+            case 'textarea':
+              //_value -= parseInt(item.css('padding-right'));
+              break;
+          }
+
+          totalWidth += width;
+
+          widths.push(width);
+        });
+
+        var _lineFields = [];
+
+        F.each(lineFields, function (item) {
+          switch(item.type){
+            case 'button':
+              break;
+            default:
+              _lineFields.push(item);
+          }
+        });
+
+        var percent = totalWidth/100,
+          newPercent = _value/100;
+
+        F.each(widths, function (value, i) {
+          var percents = value/percent,
+            newValue = percents * newPercent,
+            item = _lineFields[i];
+
+          item.setWidth(newValue);
+        });
+      });
+    },
     /*
      * @return {Number}
      */
@@ -1102,6 +1229,43 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
 
       me.setActiveTab();
+    },
+    onWindowResize: function () {
+      var me = this,
+        renderTo = me.renderTo,
+        el;
+
+      if (me.panel) {
+        renderTo = me.panel.renderTo;
+      }
+
+      if(me.responsive) {
+        el = F.get(renderTo);
+      }
+      else if(me.panel){
+        el = me.panel.el;
+      }
+      else{
+        el = F.get(renderTo);
+      }
+
+      if(el.hasClass(PANEL_CLS) || el.hasClass(FORM_CLS)){
+        el = el.parent();
+      }
+
+      var newWidth = el.width();
+
+      if(el.dom === undefined){
+        return;
+      }
+
+      if(newWidth === 0){
+        newWidth = el.parent().width();
+      }
+
+      if(me.responsive) {
+        me.setWidth(newWidth);
+      }
     }
   });
 
@@ -1122,10 +1286,31 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     config = me.prepareConfigTheme(config, originalConfig);
+    config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigItems(config);
     config = me.prepareConfigFooter(config);
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @return {Object}
+   */
+  prepareConfigSize: function (config, originalConfig) {
+    var el,
+      renderTo = config.renderTo;
+
+    if(config.width === undefined) {
+      if (renderTo) {
+        config.responsive = true;
+        el = Fancy.get(renderTo);
+
+        config.width = parseInt(el.width());
+      }
+    }
 
     return config;
   },
@@ -1205,7 +1390,8 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
 
     var i = 0,
       iL = me.items.length,
-      isItemTop;
+      isItemTop,
+      lineName = Fancy.id(null, 'fancy-line-');
 
     if(me.parentSet){
       var averageWidth = me.width  / me.items.length;
@@ -1219,6 +1405,7 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
       }
 
       item.style = item.style || {};
+      item.lineName = lineName;
 
       if( item.labelAlign === 'top' ){
         isItemTop = true;

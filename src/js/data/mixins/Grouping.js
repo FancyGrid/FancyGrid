@@ -239,5 +239,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     me.changeDataView({
       doNotFired: true
     });
+  },
+  /*
+   * @param {String} groupName
+   */
+  /*
+   * TODO: needs some map of elements for fast getting elements.
+   */
+  getItemsByGroup: function (groupName) {
+    var me = this,
+      items = me.findItem(me.grouping.by, groupName);
+
+    return items;
   }
 });

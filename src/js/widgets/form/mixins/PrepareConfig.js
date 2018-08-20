@@ -15,10 +15,31 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     config = me.prepareConfigTheme(config, originalConfig);
+    config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigItems(config);
     config = me.prepareConfigFooter(config);
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @return {Object}
+   */
+  prepareConfigSize: function (config, originalConfig) {
+    var el,
+      renderTo = config.renderTo;
+
+    if(config.width === undefined) {
+      if (renderTo) {
+        config.responsive = true;
+        el = Fancy.get(renderTo);
+
+        config.width = parseInt(el.width());
+      }
+    }
 
     return config;
   },

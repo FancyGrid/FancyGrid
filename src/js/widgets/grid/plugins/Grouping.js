@@ -548,6 +548,7 @@
     setPositions: function () {
       var me = this,
         w = me.widget,
+        s = w.store,
         top = -w.scroller.scrollTop || 0,
         leftRows = w.leftBody.el.select('.' + GRID_ROW_GROUP_CLS),
         rows = w.body.el.select('.' + GRID_ROW_GROUP_CLS),
@@ -579,7 +580,19 @@
         top += w.groupRowHeight;
 
         if (me._expanded[groupName] === true) {
-          top += me.groupsCounts[groupName] * w.cellHeight;
+          if(w.rowheight){
+            var items = s.getItemsByGroup(groupName),
+              groupRowsHeight = w.rowheight.getRowsHeight(items);
+
+            if(isNaN(top)){
+              return true;
+            }
+
+            top += groupRowsHeight;
+          }
+          else {
+            top += me.groupsCounts[groupName] * w.cellHeight;
+          }
         }
       });
     },
@@ -1109,6 +1122,22 @@
           groupEl.removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
         }
       }
+    },
+    /*
+     *
+     */
+    getGroupRowsHeight: function () {
+      var me = this,
+        w = me.widget,
+        numberFilledGroups = 0;
+
+      F.each(me.groupsCounts, function (value) {
+        if(value){
+          numberFilledGroups++;
+        }
+      });
+
+      return numberFilledGroups * w.groupRowHeight;
     }
   });
 

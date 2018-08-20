@@ -122,6 +122,9 @@ Fancy.Date = {
           }
 
           break;
+        case 'T':
+          value += 'T';
+          break;
         case 'n':
           value += date.getMonth();
           break;

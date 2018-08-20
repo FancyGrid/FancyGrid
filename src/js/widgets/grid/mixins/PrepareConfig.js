@@ -363,6 +363,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       iL = columns.length,
       isDraggable = false,
       isTreeData = false,
+      autoHeight = false,
       $selected = 0,
       $order = 0,
       $rowdrag = 0;
@@ -385,6 +386,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.headerCheckBox){
         column.sortable = false;
+      }
+
+      if(column.autoHeight){
+        autoHeight = true;
       }
 
       switch(column.type){
@@ -458,6 +463,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL--;
         continue;
       }
+    }
+
+    if(autoHeight){
+      config._plugins.push({
+        type: 'grid.rowheight'
+      });
     }
 
     if(isDraggable){

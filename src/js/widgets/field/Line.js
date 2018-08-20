@@ -26,7 +26,8 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
 
     var i = 0,
       iL = me.items.length,
-      isItemTop;
+      isItemTop,
+      lineName = Fancy.id(null, 'fancy-line-');
 
     if(me.parentSet){
       var averageWidth = me.width  / me.items.length;
@@ -40,6 +41,7 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
       }
 
       item.style = item.style || {};
+      item.lineName = lineName;
 
       if( item.labelAlign === 'top' ){
         isItemTop = true;

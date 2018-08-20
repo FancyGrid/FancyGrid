@@ -537,15 +537,15 @@
       }
     },
     /*
-     *
+     * @param {Number} [viewHeight]
      */
-    setScrollBars: function () {
+    setScrollBars: function (viewHeight) {
       var me = this,
         w = me.widget;
 
       //me.checkRightScroll();
       setTimeout(function () {
-        me.checkRightScroll();
+        me.checkRightScroll(viewHeight);
       }, 1);
 
       if (!me.checkBottomScroll()) {
@@ -556,20 +556,20 @@
 
       if (!w.nativeScroller) {
         me.checkCorner();
-        me.setRightKnobSize();
+        me.setRightKnobSize(viewHeight);
         me.setBottomKnobSize();
       }
     },
     /*
-     *
+     * @param {Number} [viewHeight]
      */
-    checkRightScroll: function () {
+    checkRightScroll: function (viewHeight) {
       var me = this,
         w = me.widget,
         body = w.body,
         gridBorders = w.gridBorders,
         bodyViewHeight = w.getBodyHeight(),
-        cellsViewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2];
+        cellsViewHeight = (viewHeight || w.getCellsViewHeight()) - gridBorders[0] - gridBorders[2];
 
       if (w.nativeScroller) {
         if (bodyViewHeight >= cellsViewHeight) {
@@ -601,9 +601,9 @@
       return !this.scrollRightEl.hasCls(HIDDEN_CLS);
     },
     /*
-     *
+     * @param {Number} [viewHeight]
      */
-    setRightKnobSize: function () {
+    setRightKnobSize: function (viewHeight) {
       var me = this,
         w = me.widget;
 
@@ -612,7 +612,7 @@
       }
 
       var bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0) - 2,
-        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
+        cellsViewHeight = (viewHeight || w.getCellsViewHeight()) - (me.corner ? me.cornerSize : 0),
         scrollRightPath = cellsViewHeight - bodyViewHeight,
         percents = 100 - scrollRightPath / (bodyViewHeight / 100),
         knobHeight = bodyViewHeight * (percents / 100),
@@ -861,13 +861,13 @@
       return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
     },
     /*
-     *
+     * @param {Number} [viewHeight]
      */
-    update: function () {
+    update: function (viewHeight) {
       var me = this;
 
-      me.setScrollBars();
-      me.checkScroll();
+      me.setScrollBars(viewHeight);
+      me.checkScroll(viewHeight);
 
       me.scrollRightKnob();
       me.scrollBottomKnob();
@@ -891,14 +891,14 @@
       }, Fancy.ANIMATE_DURATION + 20);
     },
     /*
-     *
+     * @param {Number} [viewHeight]
      */
-    checkScroll: function () {
+    checkScroll: function (viewHeight) {
       var me = this,
         w = me.widget,
         rightScrolled = me.getScroll(),
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
-        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0),
+        cellsViewHeight = (viewHeight || w.getCellsViewHeight()) - (me.corner ? me.cornerSize : 0),
         centerColumnsWidth = w.getCenterFullWidth(),
         viewWidth = w.getCenterViewWidth();
 
