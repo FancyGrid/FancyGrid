@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.41',
+  version: '1.7.42',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -10425,7 +10425,7 @@ Fancy.define('Fancy.Plugin', {
         width = me.width;
       }
       else{
-        if(me.text !== false){
+        if(me.text !== false && me.text !== undefined){
           width += me.text.length * charWidth + charWidth*2;
         }
       }
@@ -13037,6 +13037,15 @@ Fancy.define('Fancy.toolbar.Tab', {
             passedRight += item.width + 5;
           }
 
+          if(item.imageCls){
+            if(item.imageWidth){
+              passedRight += item.imageWidth;
+            }
+            else{
+              passedRight += 20;
+            }
+          }
+
           passedRight += 3;
         }
       }
@@ -13783,6 +13792,7 @@ Fancy.define('Fancy.bar.Text', {
   widgetCls: Fancy.BAR_TEXT_CLS,
   cls: '',
   text: '',
+  tipTpl: '{value}',
   /*
    * @constructor
    * @param {Object} config
@@ -13795,8 +13805,11 @@ Fancy.define('Fancy.bar.Text', {
    *
    */
   init: function(){
-    this.Super('init', arguments);
-    this.render();
+    var me = this;
+
+    me.Super('init', arguments);
+    me.render();
+    me.ons();
   },
   /*
    *
@@ -13817,6 +13830,14 @@ Fancy.define('Fancy.bar.Text', {
     if(me.hidden){
       me.el.css('display', 'none');
     }
+
+    if(me.id){
+      me.el.attr('id', me.id);
+    }
+
+    if(me.width){
+      me.el.css('width', me.width);
+    }
   },
   /*
    * @return {String}
@@ -13829,7 +13850,85 @@ Fancy.define('Fancy.bar.Text', {
    */
   getValue: function () {
     return this.get();
-  }
+  },
+  /*
+   * @param {String} value
+   */
+  set: function (value) {
+    this.el.dom.innerHTML = value;
+  },
+  /*
+   *
+   */
+  ons: function () {
+    var me = this,
+      el = me.el;
+
+    el.on('mouseover', me.onMouseOver, me);
+    el.on('mouseout', me.onMouseOut, me);
+
+    if(me.tip){
+      me.el.on('mousemove', me.onMouseMove, me);
+    }
+  },
+  /*
+   *
+   */
+  onMouseMove: function(e){
+    var me = this;
+
+    if(me.tip && me.tooltip){
+      me.tooltip.show(e.pageX + 15, e.pageY - 25);
+    }
+  },
+  /*
+     * @param {Object} e
+     */
+  onMouseOver: function(e){
+    var me = this;
+
+    me.fire('mouseover');
+
+    if(me.tip){
+      me.renderTip(e);
+    }
+  },
+  /*
+   * @param {Object} e
+   */
+  renderTip: function(e){
+    var me = this;
+
+    if(me.tooltip){
+      me.tooltip.destroy();
+    }
+
+    if(me.tip === true) {
+      me.tip = new Fancy.Template(me.tipTpl).getHTML({
+        value: me.get()
+      })
+    }
+
+    me.tooltip = new Fancy.ToolTip({
+      text: me.tip
+    });
+
+    me.tooltip.css('display', 'block');
+    me.tooltip.show(e.pageX + 15, e.pageY - 25);
+  },
+  /*
+   *
+   */
+  onMouseOut: function(){
+    var me = this;
+
+    me.fire('mouseout');
+
+    if(me.tooltip){
+      me.tooltip.destroy();
+      delete me.tooltip;
+    }
+  },
 });
 /*
  * @mixin Fancy.form.mixin.Form
@@ -13852,6 +13951,9 @@ Fancy.define('Fancy.bar.Text', {
   var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
   var PANEL_CLS = F.PANEL_CLS;
   var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
   var TAB_TBAR_CLS = F.TAB_TBAR_CLS;
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
@@ -15070,6 +15172,74 @@ Fancy.define('Fancy.bar.Text', {
 
       if(me.responsive) {
         me.setWidth(newWidth);
+      }
+    },
+    /*
+     * @param {String} bar
+     */
+    hideBar: function (bar) {
+      var me = this,
+        barCls,
+        barEl;
+
+      switch(bar){
+        case 'tbar':
+          barCls = PANEL_TBAR_CLS;
+          break;
+        case 'subtbar':
+          barCls = PANEL_SUB_TBAR_CLS;
+          break;
+        case 'bbar':
+          barCls = PANEL_BBAR_CLS;
+          break;
+        case 'buttons':
+          barCls = PANEL_BUTTONS_CLS;
+          break;
+        default:
+          throw new Error('FancyGrid Error: bar does not exist');
+      }
+
+      barEl = me.panel.el.select('.' + barCls);
+
+      if(barEl.css('display') !== 'none'){
+        barEl.hide();
+
+        var panelHeight = parseInt(me.panel.el.css('height'));
+        me.panel.el.css('height', panelHeight - me.barHeight);
+      }
+    },
+    /*
+     * @param {String} bar
+     */
+    showBar: function (bar) {
+      var me = this,
+        barCls,
+        barEl;
+
+      switch(bar){
+        case 'tbar':
+          barCls = PANEL_TBAR_CLS;
+          break;
+        case 'subtbar':
+          barCls = PANEL_SUB_TBAR_CLS;
+          break;
+        case 'bbar':
+          barCls = PANEL_BBAR_CLS;
+          break;
+        case 'buttons':
+          barCls = PANEL_BUTTONS_CLS;
+          break;
+        default:
+          throw new Error('FancyGrid Error: bar does not exist');
+      }
+
+      barEl = me.panel.el.select('.' + barCls);
+
+      if(barEl.css('display') == 'none'){
+        barEl.show();
+
+        var panelHeight = parseInt(me.panel.el.css('height'));
+        me.panel.el.css('height', panelHeight + me.barHeight);
       }
     }
   });
@@ -20038,6 +20208,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         disabled: me.disabled,
         pressed: me.pressed,
         enableToggle: me.enableToggle,
+        imageCls: me.imageCls,
         handler: function () {
           if(me.disabled){
             return;
@@ -21708,7 +21879,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(flexTotal){
       Fancy.each(flexColumns, function(value){
         column = columns[value];
-        lastColumn = column;
         if(isOverFlow){
           column.width = defaultWidth * column.flex;
         }
@@ -22938,6 +23108,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    */
   prepareConfigSize: function(config, originalConfig){
     var renderTo = config.renderTo,
+      length,
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
       panelBodyBorders = config.panelBodyBorders,
@@ -27852,7 +28023,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           marginTop = me.bodyViewHeight - me.rightKnobHeight;
         }
 
-        if (marginTop < me.rightScrollScale) {
+        //if (marginTop < me.rightScrollScale) {
+        if (marginTop < 0) {
           marginTop = 0;
         }
 

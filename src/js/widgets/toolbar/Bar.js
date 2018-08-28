@@ -187,6 +187,15 @@
             passedRight += item.width + 5;
           }
 
+          if(item.imageCls){
+            if(item.imageWidth){
+              passedRight += item.imageWidth;
+            }
+            else{
+              passedRight += 20;
+            }
+          }
+
           passedRight += 3;
         }
       }

@@ -19,6 +19,9 @@
   var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
   var PANEL_CLS = F.PANEL_CLS;
   var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
   var TAB_TBAR_CLS = F.TAB_TBAR_CLS;
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
@@ -1237,6 +1240,74 @@
 
       if(me.responsive) {
         me.setWidth(newWidth);
+      }
+    },
+    /*
+     * @param {String} bar
+     */
+    hideBar: function (bar) {
+      var me = this,
+        barCls,
+        barEl;
+
+      switch(bar){
+        case 'tbar':
+          barCls = PANEL_TBAR_CLS;
+          break;
+        case 'subtbar':
+          barCls = PANEL_SUB_TBAR_CLS;
+          break;
+        case 'bbar':
+          barCls = PANEL_BBAR_CLS;
+          break;
+        case 'buttons':
+          barCls = PANEL_BUTTONS_CLS;
+          break;
+        default:
+          throw new Error('FancyGrid Error: bar does not exist');
+      }
+
+      barEl = me.panel.el.select('.' + barCls);
+
+      if(barEl.css('display') !== 'none'){
+        barEl.hide();
+
+        var panelHeight = parseInt(me.panel.el.css('height'));
+        me.panel.el.css('height', panelHeight - me.barHeight);
+      }
+    },
+    /*
+     * @param {String} bar
+     */
+    showBar: function (bar) {
+      var me = this,
+        barCls,
+        barEl;
+
+      switch(bar){
+        case 'tbar':
+          barCls = PANEL_TBAR_CLS;
+          break;
+        case 'subtbar':
+          barCls = PANEL_SUB_TBAR_CLS;
+          break;
+        case 'bbar':
+          barCls = PANEL_BBAR_CLS;
+          break;
+        case 'buttons':
+          barCls = PANEL_BUTTONS_CLS;
+          break;
+        default:
+          throw new Error('FancyGrid Error: bar does not exist');
+      }
+
+      barEl = me.panel.el.select('.' + barCls);
+
+      if(barEl.css('display') == 'none'){
+        barEl.show();
+
+        var panelHeight = parseInt(me.panel.el.css('height'));
+        me.panel.el.css('height', panelHeight + me.barHeight);
       }
     }
   });

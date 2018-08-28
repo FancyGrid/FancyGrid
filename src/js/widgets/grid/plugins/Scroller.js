@@ -484,7 +484,8 @@
           marginTop = me.bodyViewHeight - me.rightKnobHeight;
         }
 
-        if (marginTop < me.rightScrollScale) {
+        //if (marginTop < me.rightScrollScale) {
+        if (marginTop < 0) {
           marginTop = 0;
         }
 

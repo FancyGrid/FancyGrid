@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.41',
+  version: '1.7.42',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5394,7 +5394,7 @@ Fancy.define('Fancy.Plugin', {
         width = me.width;
       }
       else{
-        if(me.text !== false){
+        if(me.text !== false && me.text !== undefined){
           width += me.text.length * charWidth + charWidth*2;
         }
       }
@@ -7448,6 +7448,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             passedRight += item.width + 5;
           }
 
+          if(item.imageCls){
+            if(item.imageWidth){
+              passedRight += item.imageWidth;
+            }
+            else{
+              passedRight += 20;
+            }
+          }
+
           passedRight += 3;
         }
       }
@@ -8194,6 +8203,7 @@ Fancy.define('Fancy.bar.Text', {
   widgetCls: Fancy.BAR_TEXT_CLS,
   cls: '',
   text: '',
+  tipTpl: '{value}',
   /*
    * @constructor
    * @param {Object} config
@@ -8206,8 +8216,11 @@ Fancy.define('Fancy.bar.Text', {
    *
    */
   init: function(){
-    this.Super('init', arguments);
-    this.render();
+    var me = this;
+
+    me.Super('init', arguments);
+    me.render();
+    me.ons();
   },
   /*
    *
@@ -8228,6 +8241,14 @@ Fancy.define('Fancy.bar.Text', {
     if(me.hidden){
       me.el.css('display', 'none');
     }
+
+    if(me.id){
+      me.el.attr('id', me.id);
+    }
+
+    if(me.width){
+      me.el.css('width', me.width);
+    }
   },
   /*
    * @return {String}
@@ -8240,7 +8261,85 @@ Fancy.define('Fancy.bar.Text', {
    */
   getValue: function () {
     return this.get();
-  }
+  },
+  /*
+   * @param {String} value
+   */
+  set: function (value) {
+    this.el.dom.innerHTML = value;
+  },
+  /*
+   *
+   */
+  ons: function () {
+    var me = this,
+      el = me.el;
+
+    el.on('mouseover', me.onMouseOver, me);
+    el.on('mouseout', me.onMouseOut, me);
+
+    if(me.tip){
+      me.el.on('mousemove', me.onMouseMove, me);
+    }
+  },
+  /*
+   *
+   */
+  onMouseMove: function(e){
+    var me = this;
+
+    if(me.tip && me.tooltip){
+      me.tooltip.show(e.pageX + 15, e.pageY - 25);
+    }
+  },
+  /*
+     * @param {Object} e
+     */
+  onMouseOver: function(e){
+    var me = this;
+
+    me.fire('mouseover');
+
+    if(me.tip){
+      me.renderTip(e);
+    }
+  },
+  /*
+   * @param {Object} e
+   */
+  renderTip: function(e){
+    var me = this;
+
+    if(me.tooltip){
+      me.tooltip.destroy();
+    }
+
+    if(me.tip === true) {
+      me.tip = new Fancy.Template(me.tipTpl).getHTML({
+        value: me.get()
+      })
+    }
+
+    me.tooltip = new Fancy.ToolTip({
+      text: me.tip
+    });
+
+    me.tooltip.css('display', 'block');
+    me.tooltip.show(e.pageX + 15, e.pageY - 25);
+  },
+  /*
+   *
+   */
+  onMouseOut: function(){
+    var me = this;
+
+    me.fire('mouseout');
+
+    if(me.tooltip){
+      me.tooltip.destroy();
+      delete me.tooltip;
+    }
+  },
 });
 /**
  * @class Fancy.Form
@@ -12415,6 +12514,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         disabled: me.disabled,
         pressed: me.pressed,
         enableToggle: me.enableToggle,
+        imageCls: me.imageCls,
         handler: function () {
           if(me.disabled){
             return;

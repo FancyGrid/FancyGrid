@@ -654,7 +654,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(flexTotal){
       Fancy.each(flexColumns, function(value){
         column = columns[value];
-        lastColumn = column;
         if(isOverFlow){
           column.width = defaultWidth * column.flex;
         }
@@ -1884,6 +1883,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    */
   prepareConfigSize: function(config, originalConfig){
     var renderTo = config.renderTo,
+      length,
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
       panelBodyBorders = config.panelBodyBorders,
@@ -5750,7 +5750,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           marginTop = me.bodyViewHeight - me.rightKnobHeight;
         }
 
-        if (marginTop < me.rightScrollScale) {
+        //if (marginTop < me.rightScrollScale) {
+        if (marginTop < 0) {
           marginTop = 0;
         }
 

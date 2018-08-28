@@ -77,6 +77,7 @@
         disabled: me.disabled,
         pressed: me.pressed,
         enableToggle: me.enableToggle,
+        imageCls: me.imageCls,
         handler: function () {
           if(me.disabled){
             return;

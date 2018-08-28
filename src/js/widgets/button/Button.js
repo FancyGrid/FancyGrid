@@ -123,7 +123,7 @@
         width = me.width;
       }
       else{
-        if(me.text !== false){
+        if(me.text !== false && me.text !== undefined){
           width += me.text.length * charWidth + charWidth*2;
         }
       }
