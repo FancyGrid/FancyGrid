@@ -1549,7 +1549,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   init: function(){
     var me = this;
 
-    me.addEvents('beforecollapse', 'collapse', 'expanded');
+    me.addEvents('beforecollapse', 'collapse', 'expanded', 'expand', 'beforeexpand', 'beforeexpanded');
 
     me.Super('init', arguments);
 
@@ -1632,9 +1632,11 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
 
       if( isChecked ){
         me.fire('beforeexpanded');
+        me.fire('beforeexpand');
         itemsEl.css('display', '');
         me.removeCls('fancy-set-collapsed');
         me.fire('expanded');
+        me.fire('expand');
       }
       else{
         me.fire('beforecollapse');

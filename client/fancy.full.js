@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.42',
+  version: '1.7.43',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -16076,6 +16076,12 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
+    blur: function () {
+      this.input.blur();
+    },
+    /*
+     *
+     */
     onInput: function () {
       var me = this,
         input = me.input,
@@ -20500,7 +20506,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   init: function(){
     var me = this;
 
-    me.addEvents('beforecollapse', 'collapse', 'expanded');
+    me.addEvents('beforecollapse', 'collapse', 'expanded', 'expand', 'beforeexpand', 'beforeexpanded');
 
     me.Super('init', arguments);
 
@@ -20583,9 +20589,11 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
 
       if( isChecked ){
         me.fire('beforeexpanded');
+        me.fire('beforeexpand');
         itemsEl.css('display', '');
         me.removeCls('fancy-set-collapsed');
         me.fire('expanded');
+        me.fire('expand');
       }
       else{
         me.fire('beforecollapse');

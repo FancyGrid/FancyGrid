@@ -516,6 +516,12 @@
     /*
      *
      */
+    blur: function () {
+      this.input.blur();
+    },
+    /*
+     *
+     */
     onInput: function () {
       var me = this,
         input = me.input,
