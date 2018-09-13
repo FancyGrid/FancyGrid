@@ -12,6 +12,8 @@
   var TAB_ACTIVE_WRAPPER_CLS = F.TAB_ACTIVE_WRAPPER_CLS;
   var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
   var PANEL_TAB_CLS = F.PANEL_TAB_CLS;
+  var PANEL_CLS = F.PANEL_CLS;
+  var GRID_CLS = F.GRID_CLS;
 
   F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     extend: F.Panel,
@@ -21,8 +23,11 @@
      * @param scope
      */
     constructor: function (config, scope) {
-      this.prepareConfigTheme(config);
-      this.Super('const', arguments);
+      var me = this;
+
+      me.prepareConfigTheme(config);
+      me.prepareConfigSize(config);
+      me.Super('const', arguments);
     },
     /*
      *
@@ -34,6 +39,7 @@
       me.Super('init', arguments);
 
       me.setActiveTab(me.activeTab);
+      me.ons();
     },
     activeTab: 0,
     theme: 'default',
@@ -57,6 +63,79 @@
       me.el.addCls(PANEL_TAB_CLS);
 
       me.rendered = true;
+    },
+    ons: function () {
+      var me = this;
+
+      if (me.responsive) {
+        F.$(window).bind('resize', function () {
+          me.onWindowResize();
+
+          if(me.intWindowResize){
+            clearInterval(me.intWindowResize);
+          }
+
+          me.intWindowResize = setTimeout(function(){
+            me.onWindowResize();
+            delete me.intWindowResize;
+
+            //Bug fix for Mac
+            setTimeout(function () {
+              me.onWindowResize();
+            }, 300);
+          }, 30);
+        });
+      }
+    },
+    onWindowResize: function () {
+      var me = this,
+        renderTo = me.renderTo,
+        el;
+
+      if (me.panel) {
+        renderTo = me.panel.renderTo;
+      }
+
+      if(me.responsive) {
+        el = F.get(renderTo);
+      }
+      else if(me.panel){
+        el = me.panel.el;
+      }
+      else{
+        el = F.get(renderTo);
+      }
+
+      if(el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)){
+        el = el.parent();
+      }
+
+      var newWidth = el.width();
+
+      if(el.dom === undefined){
+        return;
+      }
+
+      if(newWidth === 0){
+        newWidth = el.parent().width();
+      }
+
+      if(me.responsive) {
+        me.setWidth(newWidth);
+      }
+      else if(me.fitWidth){
+        //me.setWidthFit();
+      }
+
+      if(me.responsiveHeight){
+        var height = parseInt(el.height());
+
+        if(height === 0){
+          height = parseInt(el.parent().height());
+        }
+
+        me.setHeight(height);
+      }
     },
     setPanelBodySize: function () {
       var me = this,
@@ -102,6 +181,9 @@
       me.panelBodyWidth = me.width - panelBodyBorders[1] - panelBodyBorders[3];
       //me.panelBodyWidth = me.width;
     },
+    /*
+     * @param {Object} config
+     */
     prepareConfigTheme: function (config) {
       var me = this,
         themeName = config.theme || me.theme,
@@ -116,6 +198,25 @@
       F.applyIf(config, themeConfig);
       F.apply(me, config);
     },
+    /*
+     * @param {Object} config
+     */
+    prepareConfigSize: function (config) {
+      var me = this,
+        renderTo = config.renderTo,
+        el;
+
+      if (config.width === undefined) {
+        if (renderTo) {
+          config.responsive = true;
+          el = Fancy.get(renderTo);
+          config.width = parseInt(el.width());
+        }
+      }
+    },
+    /*
+     *
+     */
     prepareTabs: function () {
       var me = this,
         tabs = [],

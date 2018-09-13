@@ -39,6 +39,7 @@
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
+    tabScrollStep: 30,
     barScrollEnabled: true,
     /*
      * constructor
@@ -754,14 +755,14 @@
      *
      */
     onPrevScrollClick: function () {
-      this.scrolled += 30;
+      this.scrolled += this.tabScrollStep;
       this.applyScrollChanges();
     },
     /*
      *
      */
     onNextScrollClick: function () {
-      this.scrolled -= 30;
+      this.scrolled -= this.tabScrollStep;
       this.applyScrollChanges();
     },
     /*
@@ -779,7 +780,8 @@
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
 
-        me.containerEl.css('margin-left', '0px');
+        me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
+        //me.containerEl.css('margin-left', '0px');
 
         return;
       }
@@ -797,7 +799,8 @@
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
+      //me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
+      me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
     },
     /*
      *

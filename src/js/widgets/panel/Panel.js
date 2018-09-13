@@ -32,6 +32,7 @@
   F.define('Fancy.Panel', {
     extend: F.Widget,
     barScrollEnabled: true,
+    tabScrollStep: 30,
     mixins: [
       'Fancy.panel.mixin.DD',
       'Fancy.panel.mixin.Resize'
@@ -313,6 +314,7 @@
           height: me.barHeight,
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -326,6 +328,7 @@
           items: me.buttons,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -340,6 +343,7 @@
           height: me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -354,6 +358,7 @@
           height: me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -368,6 +373,7 @@
           items: me.footer,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });

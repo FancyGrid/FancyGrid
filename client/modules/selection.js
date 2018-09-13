@@ -2475,6 +2475,16 @@
           e.preventDefault();
           me.moveRight();
           break;
+        case key.PAGE_UP:
+          //me.keyNavigating = true;
+          //e.preventDefault();
+          me.scrollPageUP();
+          break;
+        case key.PAGE_DOWN:
+          //me.keyNavigating = true;
+          //e.preventDefault();
+          me.scrollPageDOWN();
+          break;
       }
     },
     moveRight: function () {
@@ -2874,7 +2884,9 @@
           w.scroller.scrollToCell(nextCell.dom, true);
           break;
       }
-    }
+    },
+    scrollPageUP: function () {},
+    scrollPageDOWN: function () {}
   });
 
 })();

@@ -329,6 +329,12 @@
         width += column.width;
       }
 
+      var oldWidth = parseInt(me.css('width'));
+
+      if(oldWidth > width){
+        width = oldWidth;
+      }
+
       //me.css('width', parseInt(me.css('width')) + column.width);
       me.css('width', width);
     },

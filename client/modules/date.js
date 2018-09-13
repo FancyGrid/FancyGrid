@@ -1117,6 +1117,7 @@ Fancy.Date = {
       else {
         me.pickerButton = me.el.select('.fancy-field-picker-button');
         me.pickerButton.on('mousedown', me.onPickerButtonMouseDown, me);
+        me.input.on('mousedown', me.onInputMouseDown, me);
       }
     },
     /*
@@ -1124,8 +1125,18 @@ Fancy.Date = {
      */
     onInputClick: function (e) {
       e.preventDefault();
-
       this.toggleShowPicker();
+    },
+    /*
+     *
+     */
+    onInputMouseDown: function (e) {
+      var me = this,
+        picker = me.picker;
+
+      if(picker && picker.el && picker.el.css('display') !== 'none'){
+        e.stopPropagation()
+      }
     },
     /*
      * @param {Object} e

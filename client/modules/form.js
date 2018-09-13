@@ -124,7 +124,8 @@ Fancy.define('Fancy.toolbar.Tab', {
           minWidth: me.minWidth,
           minHeight: me.minHeight,
           panelBodyBorders: me.panelBodyBorders,
-          resizable: me.resizable
+          resizable: me.resizable,
+          tabScrollStep: me.tabScrollStep
         };
 
       F.each(me.buttons, function (item) {

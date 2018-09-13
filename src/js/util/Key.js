@@ -64,7 +64,9 @@ Fancy.key = {
   X: 88,
   Y: 89,
   Z: 90,
-  DOT: 190
+  DOT: 190,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34
 };
 
 Fancy.Key = {

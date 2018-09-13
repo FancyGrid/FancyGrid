@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.43',
+  version: '1.7.44',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -535,7 +535,7 @@ Fancy.apply(Fancy, {
   GRID_HEADER_CELL_SELECT_CLS: 'fancy-grid-header-cell-select',
   GRID_HEADER_CELL_TRIGGER_UP_CLS: 'fancy-grid-header-cell-trigger-up',
   GRID_HEADER_CELL_TRIGGER_DOWN_CLS: 'fancy-grid-header-cell-trigger-down',
-  GRID_HEADER_COLUMN_TRIGGERED_CLS: 'fancy-gridf-header-column-triggered',
+  GRID_HEADER_COLUMN_TRIGGERED_CLS: 'fancy-grid-header-column-triggered',
   GRID_HEADER_CELL_FILTER_CLS: 'fancy-grid-header-filter-cell',
   GRID_HEADER_CELL_FILTER_FULL_CLS: 'fancy-grid-header-filter-cell-full',
   GRID_HEADER_CELL_FILTER_SMALL_CLS: 'fancy-grid-header-filter-cell-small',
@@ -1546,7 +1546,9 @@ Fancy.key = {
   X: 88,
   Y: 89,
   Z: 90,
-  DOT: 190
+  DOT: 190,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34
 };
 
 Fancy.Key = {
@@ -6398,6 +6400,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   F.define('Fancy.Panel', {
     extend: F.Widget,
     barScrollEnabled: true,
+    tabScrollStep: 30,
     mixins: [
       'Fancy.panel.mixin.DD',
       'Fancy.panel.mixin.Resize'
@@ -6679,6 +6682,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           height: me.barHeight,
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -6692,6 +6696,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           items: me.buttons,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -6706,6 +6711,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           height: me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -6720,6 +6726,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           height: me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -6734,6 +6741,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           items: me.footer,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
+          tabScrollStep: me.tabScrollStep,
           scope: scope,
           theme: theme
         });
@@ -7009,6 +7017,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   var TAB_ACTIVE_WRAPPER_CLS = F.TAB_ACTIVE_WRAPPER_CLS;
   var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
   var PANEL_TAB_CLS = F.PANEL_TAB_CLS;
+  var PANEL_CLS = F.PANEL_CLS;
+  var GRID_CLS = F.GRID_CLS;
 
   F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     extend: F.Panel,
@@ -7018,8 +7028,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param scope
      */
     constructor: function (config, scope) {
-      this.prepareConfigTheme(config);
-      this.Super('const', arguments);
+      var me = this;
+
+      me.prepareConfigTheme(config);
+      me.prepareConfigSize(config);
+      me.Super('const', arguments);
     },
     /*
      *
@@ -7031,6 +7044,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.Super('init', arguments);
 
       me.setActiveTab(me.activeTab);
+      me.ons();
     },
     activeTab: 0,
     theme: 'default',
@@ -7054,6 +7068,79 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.el.addCls(PANEL_TAB_CLS);
 
       me.rendered = true;
+    },
+    ons: function () {
+      var me = this;
+
+      if (me.responsive) {
+        F.$(window).bind('resize', function () {
+          me.onWindowResize();
+
+          if(me.intWindowResize){
+            clearInterval(me.intWindowResize);
+          }
+
+          me.intWindowResize = setTimeout(function(){
+            me.onWindowResize();
+            delete me.intWindowResize;
+
+            //Bug fix for Mac
+            setTimeout(function () {
+              me.onWindowResize();
+            }, 300);
+          }, 30);
+        });
+      }
+    },
+    onWindowResize: function () {
+      var me = this,
+        renderTo = me.renderTo,
+        el;
+
+      if (me.panel) {
+        renderTo = me.panel.renderTo;
+      }
+
+      if(me.responsive) {
+        el = F.get(renderTo);
+      }
+      else if(me.panel){
+        el = me.panel.el;
+      }
+      else{
+        el = F.get(renderTo);
+      }
+
+      if(el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)){
+        el = el.parent();
+      }
+
+      var newWidth = el.width();
+
+      if(el.dom === undefined){
+        return;
+      }
+
+      if(newWidth === 0){
+        newWidth = el.parent().width();
+      }
+
+      if(me.responsive) {
+        me.setWidth(newWidth);
+      }
+      else if(me.fitWidth){
+        //me.setWidthFit();
+      }
+
+      if(me.responsiveHeight){
+        var height = parseInt(el.height());
+
+        if(height === 0){
+          height = parseInt(el.parent().height());
+        }
+
+        me.setHeight(height);
+      }
     },
     setPanelBodySize: function () {
       var me = this,
@@ -7099,6 +7186,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.panelBodyWidth = me.width - panelBodyBorders[1] - panelBodyBorders[3];
       //me.panelBodyWidth = me.width;
     },
+    /*
+     * @param {Object} config
+     */
     prepareConfigTheme: function (config) {
       var me = this,
         themeName = config.theme || me.theme,
@@ -7113,6 +7203,25 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       F.applyIf(config, themeConfig);
       F.apply(me, config);
     },
+    /*
+     * @param {Object} config
+     */
+    prepareConfigSize: function (config) {
+      var me = this,
+        renderTo = config.renderTo,
+        el;
+
+      if (config.width === undefined) {
+        if (renderTo) {
+          config.responsive = true;
+          el = Fancy.get(renderTo);
+          config.width = parseInt(el.width());
+        }
+      }
+    },
+    /*
+     *
+     */
     prepareTabs: function () {
       var me = this,
         tabs = [],
@@ -7300,6 +7409,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
+    tabScrollStep: 30,
     barScrollEnabled: true,
     /*
      * constructor
@@ -8015,14 +8125,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     onPrevScrollClick: function () {
-      this.scrolled += 30;
+      this.scrolled += this.tabScrollStep;
       this.applyScrollChanges();
     },
     /*
      *
      */
     onNextScrollClick: function () {
-      this.scrolled -= 30;
+      this.scrolled -= this.tabScrollStep;
       this.applyScrollChanges();
     },
     /*
@@ -8040,7 +8150,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
 
-        me.containerEl.css('margin-left', '0px');
+        me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
+        //me.containerEl.css('margin-left', '0px');
 
         return;
       }
@@ -8058,7 +8169,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
+      //me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
+      me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
     },
     /*
      *
