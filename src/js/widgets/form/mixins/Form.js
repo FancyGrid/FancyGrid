@@ -26,6 +26,7 @@
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
   F.Mixin('Fancy.form.mixin.Form', {
+    tabScrollStep: 50,
     /*
      *
      */
@@ -35,7 +36,7 @@
       me.calcFieldSize();
       me.Super('init', arguments);
 
-      me.addEvents('init', 'set');
+      me.addEvents('init', 'set', 'changetab');
 
       if (F.fullBuilt !== true && F.MODULELOAD !== false && F.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true) {
         me.loadModules();
@@ -268,6 +269,10 @@
         me.setActiveTab();
       }
 
+      if(me.$tabs){
+        me.$prepareTabs();
+      }
+
       me.fire('afterrender');
       me.fire('render');
 
@@ -336,6 +341,8 @@
         toolbarTabs.removeCls(TAB_TBAR_ACTIVE_CLS);
         toolbarTabs.item(me.activeTab).addCls(TAB_TBAR_ACTIVE_CLS);
       }
+
+      me.fire('changetab', me.activeTab);
     },
     /*
      * @param {HTMLElement} renderTo
@@ -382,6 +389,8 @@
           case 'tab':
             field = F.form.field.Tab;
             item = me.applyDefaults(item);
+            me.$tabs = me.$tabs || [];
+            me.$tabs.push(item.items);
             break;
           case 'string':
           case undefined:
@@ -1310,6 +1319,24 @@
         var panelHeight = parseInt(me.panel.el.css('height'));
         me.panel.el.css('height', panelHeight + me.barHeight);
       }
+    },
+    /*
+     *
+     */
+    $prepareTabs: function () {
+      var me = this,
+        i = 0,
+        tabIndex = 0;
+
+      F.each(me.items, function (item) {
+        me.$tabs[tabIndex][i] = item;
+        i++;
+
+        if(!me.$tabs[tabIndex][i]){
+          i = 0;
+          tabIndex++;
+        }
+      });
     }
   });
 

@@ -58,6 +58,12 @@ Fancy.Element.prototype = {
   remove: function(){
     this.$dom.remove();
   },
+  /*
+   *
+   */
+  finish: function(){
+    this.$dom.finish();
+  },
   //Not Used
   /*
    *
@@ -462,7 +468,33 @@ Fancy.Element.prototype = {
    * @param {Function} callback
    */
   animate: function(style,speed,easing,callback){
-    this.$dom.animate(style,speed,easing,callback);
+    var _style = {},
+      doAnimating = false;
+
+    for(var p in style){
+      var newValue = style[p];
+
+      if(Fancy.isString(newValue)){
+        newValue = Number(newValue.replace('px', ''));
+      }
+
+      var oldValue = this.css(p);
+
+      if(Fancy.isString(oldValue)){
+        oldValue = Number(oldValue.replace('px', ''));
+      }
+
+      if(newValue !== oldValue){
+        _style[p] = style[p];
+        doAnimating = true;
+      }
+    }
+
+    if(doAnimating === false){
+      return;
+    }
+
+    this.$dom.animate(_style,speed,easing,callback);
   },
   /*
    *
@@ -784,6 +816,18 @@ Fancy.Elements.prototype = {
    */
   addClass: function(cls){
     this.addCls.apply(this, arguments);
+  },
+  /*
+   *
+   */
+  finish: function(){
+    var me = this,
+      i = 0,
+      iL = me.length;
+
+    for(;i<iL;i++){
+      Fancy.get(me.$dom[i]).finish();
+    }
   },
   /*
    * @param {String} cls

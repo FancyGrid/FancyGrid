@@ -54,6 +54,7 @@ Fancy.define('Fancy.toolbar.Tab', {
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
   F.Mixin('Fancy.form.mixin.Form', {
+    tabScrollStep: 50,
     /*
      *
      */
@@ -63,7 +64,7 @@ Fancy.define('Fancy.toolbar.Tab', {
       me.calcFieldSize();
       me.Super('init', arguments);
 
-      me.addEvents('init', 'set');
+      me.addEvents('init', 'set', 'changetab');
 
       if (F.fullBuilt !== true && F.MODULELOAD !== false && F.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true) {
         me.loadModules();
@@ -296,6 +297,10 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.setActiveTab();
       }
 
+      if(me.$tabs){
+        me.$prepareTabs();
+      }
+
       me.fire('afterrender');
       me.fire('render');
 
@@ -364,6 +369,8 @@ Fancy.define('Fancy.toolbar.Tab', {
         toolbarTabs.removeCls(TAB_TBAR_ACTIVE_CLS);
         toolbarTabs.item(me.activeTab).addCls(TAB_TBAR_ACTIVE_CLS);
       }
+
+      me.fire('changetab', me.activeTab);
     },
     /*
      * @param {HTMLElement} renderTo
@@ -410,6 +417,8 @@ Fancy.define('Fancy.toolbar.Tab', {
           case 'tab':
             field = F.form.field.Tab;
             item = me.applyDefaults(item);
+            me.$tabs = me.$tabs || [];
+            me.$tabs.push(item.items);
             break;
           case 'string':
           case undefined:
@@ -1338,6 +1347,24 @@ Fancy.define('Fancy.toolbar.Tab', {
         var panelHeight = parseInt(me.panel.el.css('height'));
         me.panel.el.css('height', panelHeight + me.barHeight);
       }
+    },
+    /*
+     *
+     */
+    $prepareTabs: function () {
+      var me = this,
+        i = 0,
+        tabIndex = 0;
+
+      F.each(me.items, function (item) {
+        me.$tabs[tabIndex][i] = item;
+        i++;
+
+        if(!me.$tabs[tabIndex][i]){
+          i = 0;
+          tabIndex++;
+        }
+      });
     }
   });
 
@@ -1373,6 +1400,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    */
   prepareConfigSize: function (config, originalConfig) {
     var el,
+      me = this,
       renderTo = config.renderTo;
 
     if(config.width === undefined) {
@@ -1382,6 +1410,16 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
 
         config.width = parseInt(el.width());
       }
+    }
+
+    if(config.height === undefined){
+
+    }
+    else if(config.height === 'fit'){
+      setTimeout(function () {
+        me.setHeightFit();
+        me.on('changetab', me.onChangeTab, me);
+      });
     }
 
     return config;
@@ -1433,6 +1471,79 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     Fancy.each(config.items, fn);
 
     return config;
+  },
+  /*
+   *
+   */
+  setHeightFit: function () {
+    var me = this,
+      isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
+      panelBodyBorders = me.panelBodyBorders,
+      gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+      gridBorders = me.gridBorders;
+
+    me.heightFit = true;
+
+    var height = me.fieldHeight;
+    var items = me.items;
+
+    if(me.$tabs){
+      var activeTab = me.activeTab || 0;
+
+      items = me.$tabs[activeTab];
+    }
+
+    Fancy.each(items, function(field){
+      if(field.hidden){}
+      else{
+        height += parseInt(field.css('height'));
+      }
+    });
+
+    if(me.title){
+      height += me.titleHeight;
+    }
+
+    if(me.tbar || me.tabs){
+      height += me.barHeight;
+    }
+
+    if(me.bbar){
+      height += me.barHeight;
+    }
+
+    if(me.buttons){
+      height += me.barHeight;
+    }
+
+    if(me.subTBar){
+      height += me.barHeight;
+    }
+
+    if(me.footer){
+      height += me.barHeight;
+    }
+
+    if( isPanel ){
+      height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
+    }
+    else{
+      height += gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2] + gridBorders[0] + gridBorders[2];
+    }
+
+    if(me.minHeight && height < me.minHeight){
+      height = me.minHeight;
+    }
+
+    me.setHeight(height);
+  },
+  /*
+   *
+   */
+  onChangeTab: function () {
+    var me = this;
+
+    me.setHeightFit();
   }
 });/*
  * @class Fancy.FieldLine

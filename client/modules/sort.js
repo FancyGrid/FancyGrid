@@ -113,6 +113,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
+    me.once('serversuccess', function () {
+      me.fire('sort', {
+        key: key,
+        action: action
+      });
+    });
     me.loadData();
   },
   /*

@@ -39,7 +39,7 @@
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
-    tabScrollStep: 30,
+    tabScrollStep: 50,
     barScrollEnabled: true,
     /*
      * constructor

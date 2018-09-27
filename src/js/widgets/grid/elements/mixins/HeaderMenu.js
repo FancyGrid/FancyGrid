@@ -41,7 +41,9 @@
         });
       }
       else {
-        me.updateColumnsMenu(column, columns);
+        if(column.menuColumns !== false){
+          me.updateColumnsMenu(column, columns);
+        }
       }
 
       column.menu.showAt(offset.left + parseInt(cell.css('width')) - 26, offset.top + parseInt(cell.css('height')) - 1);
@@ -124,10 +126,36 @@
         w = me.widget,
         lang = w.lang,
         menu = [],
-        cls = '',
+        cls = column.sortable === false? 'fancy-menu-item-disabled' : '',
         indexOrder,
+        menuSortable = column.sortable && column.menuSortable !== false,
+        menuLockable = column.lockable !== false && column.menuLockable !== false,
+        menuColumns = column.menuColumns !== false,
         i = 0,
-        iL = columns.length;
+        iL = columns.length,
+        itemSortAsc = {
+          text: lang.sortAsc,
+          cls: cls,
+          imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
+          handler: function () {
+            w.sorter.sort('asc', column.index, me.side);
+            column.menu.hide();
+          }
+        },
+        itemSortDesc = {
+          text: lang.sortDesc,
+          cls: cls,
+          imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
+          handler: function () {
+            w.sorter.sort('desc', column.index, me.side);
+            column.menu.hide();
+          }
+        },
+        itemColumns = {
+          text: lang.columns,
+          index: 'columns',
+          items: me.prepareColumns(columns)
+        };
 
       for (; i < iL; i++) {
         if (column.index === columns[i].index) {
@@ -136,94 +164,105 @@
         }
       }
 
-      if (column.sortable === false) {
-        cls = 'fancy-menu-item-disabled';
-      }
+      if(Fancy.isArray(column.menu)){
+        F.each(column.menu, function (item) {
+          switch (item){
+            case '|':
+              menu.push('-');
+              break;
+            case 'sort':
+              menu.push(itemSortAsc);
+              menu.push(itemSortDesc);
+              break;
+            case 'columns':
+              menu.push(itemColumns);
+              break;
+            case 'lock':
+              switch (me.side) {
+                case 'left':
+                case 'right':
+                  menu.push({
+                    text: lang.unlock,
+                    handler: function () {
+                      column.menu.hide();
+                      w.unLockColumn(indexOrder, me.side);
+                    }
+                  });
+                  break;
+                case 'center':
+                  menu.push({
+                    text: lang.lock,
+                    handler: function () {
+                      column.menu.hide();
+                      w.lockColumn(indexOrder, me.side);
+                    }
+                  });
 
-      /*
-      if(column.titleEditable){
-        menu.push({
-          type: 'string',
-          value: column.title,
-          events: [{
-            input: function (field, value) {
-              w.setColumnTitle(column.index, value, me.side);
-            }
-          },{
-            enter: function (field) {
-              me.hideMenu();
-            }
-          }]
-        });
-        
-        menu.push('-');
-      }
-      */
-
-      if (column.sortable) {
-        menu.push({
-          text: lang.sortAsc,
-          cls: cls,
-          imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
-          handler: function () {
-            w.sorter.sort('asc', column.index, me.side);
-            column.menu.hide();
-          }
-        });
-
-        menu.push({
-          text: lang.sortDesc,
-          cls: cls,
-          imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
-          handler: function () {
-            w.sorter.sort('desc', column.index, me.side);
-            column.menu.hide();
-          }
-        });
-
-        menu.push('-');
-      }
-
-      menu.push({
-        text: lang.columns,
-        index: 'columns',
-        items: me.prepareColumns(columns)
-      });
-
-      switch (me.side) {
-        case 'left':
-        case 'right':
-          if (column.lockable !== false) {
-            menu.push('-');
-            menu.push({
-              text: lang.unlock,
-              handler: function () {
-                column.menu.hide();
-                w.unLockColumn(indexOrder, me.side);
+                  menu.push({
+                    text: lang.rightLock,
+                    handler: function () {
+                      column.menu.hide();
+                      w.rightLockColumn(indexOrder, me.side);
+                    }
+                  });
+                  break;
               }
-            });
+              break;
+            default:
+              menu.push(item);
           }
-          break;
-        case 'center':
-          if (column.lockable !== false) {
-            menu.push('-');
-            menu.push({
-              text: lang.lock,
-              handler: function () {
-                column.menu.hide();
-                w.lockColumn(indexOrder, me.side);
-              }
-            });
+        });
+      }
+      else {
+        if (menuSortable) {
+          menu.push(itemSortAsc);
+          menu.push(itemSortDesc);
+          menu.push('-');
+        }
 
-            menu.push({
-              text: lang.rightLock,
-              handler: function () {
-                column.menu.hide();
-                w.rightLockColumn(indexOrder, me.side);
+        if (menuColumns) {
+          menu.push(itemColumns);
+        }
+
+        if (menuLockable) {
+          switch (me.side) {
+            case 'left':
+            case 'right':
+              if (column.menuColumns !== false) {
+                menu.push('-');
               }
-            });
+
+              menu.push({
+                text: lang.unlock,
+                handler: function () {
+                  column.menu.hide();
+                  w.unLockColumn(indexOrder, me.side);
+                }
+              });
+              break;
+            case 'center':
+              if (column.menuColumns !== false) {
+                menu.push('-');
+              }
+
+              menu.push({
+                text: lang.lock,
+                handler: function () {
+                  column.menu.hide();
+                  w.lockColumn(indexOrder, me.side);
+                }
+              });
+
+              menu.push({
+                text: lang.rightLock,
+                handler: function () {
+                  column.menu.hide();
+                  w.rightLockColumn(indexOrder, me.side);
+                }
+              });
+              break;
           }
-          break;
+        }
       }
 
       return menu;
@@ -331,6 +370,11 @@
           columnsMenu = item;
           break;
         }
+      }
+
+      if(!columnsMenu){
+        return;
+
       }
 
       i = 0;

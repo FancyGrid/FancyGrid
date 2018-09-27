@@ -30,6 +30,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    */
   prepareConfigSize: function (config, originalConfig) {
     var el,
+      me = this,
       renderTo = config.renderTo;
 
     if(config.width === undefined) {
@@ -39,6 +40,16 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
 
         config.width = parseInt(el.width());
       }
+    }
+
+    if(config.height === undefined){
+
+    }
+    else if(config.height === 'fit'){
+      setTimeout(function () {
+        me.setHeightFit();
+        me.on('changetab', me.onChangeTab, me);
+      });
     }
 
     return config;
@@ -90,5 +101,78 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     Fancy.each(config.items, fn);
 
     return config;
+  },
+  /*
+   *
+   */
+  setHeightFit: function () {
+    var me = this,
+      isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
+      panelBodyBorders = me.panelBodyBorders,
+      gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+      gridBorders = me.gridBorders;
+
+    me.heightFit = true;
+
+    var height = me.fieldHeight;
+    var items = me.items;
+
+    if(me.$tabs){
+      var activeTab = me.activeTab || 0;
+
+      items = me.$tabs[activeTab];
+    }
+
+    Fancy.each(items, function(field){
+      if(field.hidden){}
+      else{
+        height += parseInt(field.css('height'));
+      }
+    });
+
+    if(me.title){
+      height += me.titleHeight;
+    }
+
+    if(me.tbar || me.tabs){
+      height += me.barHeight;
+    }
+
+    if(me.bbar){
+      height += me.barHeight;
+    }
+
+    if(me.buttons){
+      height += me.barHeight;
+    }
+
+    if(me.subTBar){
+      height += me.barHeight;
+    }
+
+    if(me.footer){
+      height += me.barHeight;
+    }
+
+    if( isPanel ){
+      height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
+    }
+    else{
+      height += gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2] + gridBorders[0] + gridBorders[2];
+    }
+
+    if(me.minHeight && height < me.minHeight){
+      height = me.minHeight;
+    }
+
+    me.setHeight(height);
+  },
+  /*
+   *
+   */
+  onChangeTab: function () {
+    var me = this;
+
+    me.setHeightFit();
   }
 });

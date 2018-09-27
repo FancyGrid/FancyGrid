@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.44',
+  version: '1.7.45',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -4527,6 +4527,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
+    me.once('serversuccess', function () {
+      me.fire('sort', {
+        key: key,
+        action: action
+      });
+    });
     me.loadData();
   },
   /*
@@ -7014,6 +7020,12 @@ Fancy.Element.prototype = {
   remove: function(){
     this.$dom.remove();
   },
+  /*
+   *
+   */
+  finish: function(){
+    this.$dom.finish();
+  },
   //Not Used
   /*
    *
@@ -7418,7 +7430,33 @@ Fancy.Element.prototype = {
    * @param {Function} callback
    */
   animate: function(style,speed,easing,callback){
-    this.$dom.animate(style,speed,easing,callback);
+    var _style = {},
+      doAnimating = false;
+
+    for(var p in style){
+      var newValue = style[p];
+
+      if(Fancy.isString(newValue)){
+        newValue = Number(newValue.replace('px', ''));
+      }
+
+      var oldValue = this.css(p);
+
+      if(Fancy.isString(oldValue)){
+        oldValue = Number(oldValue.replace('px', ''));
+      }
+
+      if(newValue !== oldValue){
+        _style[p] = style[p];
+        doAnimating = true;
+      }
+    }
+
+    if(doAnimating === false){
+      return;
+    }
+
+    this.$dom.animate(_style,speed,easing,callback);
   },
   /*
    *
@@ -7740,6 +7778,18 @@ Fancy.Elements.prototype = {
    */
   addClass: function(cls){
     this.addCls.apply(this, arguments);
+  },
+  /*
+   *
+   */
+  finish: function(){
+    var me = this,
+      i = 0,
+      iL = me.length;
+
+    for(;i<iL;i++){
+      Fancy.get(me.$dom[i]).finish();
+    }
   },
   /*
    * @param {String} cls
@@ -11960,7 +12010,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   F.define('Fancy.Panel', {
     extend: F.Widget,
     barScrollEnabled: true,
-    tabScrollStep: 30,
+    tabScrollStep: 50,
     mixins: [
       'Fancy.panel.mixin.DD',
       'Fancy.panel.mixin.Resize'
@@ -12998,7 +13048,7 @@ Fancy.define('Fancy.toolbar.Tab', {
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
-    tabScrollStep: 30,
+    tabScrollStep: 50,
     barScrollEnabled: true,
     /*
      * constructor
@@ -14070,6 +14120,7 @@ Fancy.define('Fancy.bar.Text', {
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
   F.Mixin('Fancy.form.mixin.Form', {
+    tabScrollStep: 50,
     /*
      *
      */
@@ -14079,7 +14130,7 @@ Fancy.define('Fancy.bar.Text', {
       me.calcFieldSize();
       me.Super('init', arguments);
 
-      me.addEvents('init', 'set');
+      me.addEvents('init', 'set', 'changetab');
 
       if (F.fullBuilt !== true && F.MODULELOAD !== false && F.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true) {
         me.loadModules();
@@ -14312,6 +14363,10 @@ Fancy.define('Fancy.bar.Text', {
         me.setActiveTab();
       }
 
+      if(me.$tabs){
+        me.$prepareTabs();
+      }
+
       me.fire('afterrender');
       me.fire('render');
 
@@ -14380,6 +14435,8 @@ Fancy.define('Fancy.bar.Text', {
         toolbarTabs.removeCls(TAB_TBAR_ACTIVE_CLS);
         toolbarTabs.item(me.activeTab).addCls(TAB_TBAR_ACTIVE_CLS);
       }
+
+      me.fire('changetab', me.activeTab);
     },
     /*
      * @param {HTMLElement} renderTo
@@ -14426,6 +14483,8 @@ Fancy.define('Fancy.bar.Text', {
           case 'tab':
             field = F.form.field.Tab;
             item = me.applyDefaults(item);
+            me.$tabs = me.$tabs || [];
+            me.$tabs.push(item.items);
             break;
           case 'string':
           case undefined:
@@ -15354,6 +15413,24 @@ Fancy.define('Fancy.bar.Text', {
         var panelHeight = parseInt(me.panel.el.css('height'));
         me.panel.el.css('height', panelHeight + me.barHeight);
       }
+    },
+    /*
+     *
+     */
+    $prepareTabs: function () {
+      var me = this,
+        i = 0,
+        tabIndex = 0;
+
+      F.each(me.items, function (item) {
+        me.$tabs[tabIndex][i] = item;
+        i++;
+
+        if(!me.$tabs[tabIndex][i]){
+          i = 0;
+          tabIndex++;
+        }
+      });
     }
   });
 
@@ -15390,6 +15467,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    */
   prepareConfigSize: function (config, originalConfig) {
     var el,
+      me = this,
       renderTo = config.renderTo;
 
     if(config.width === undefined) {
@@ -15399,6 +15477,16 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
 
         config.width = parseInt(el.width());
       }
+    }
+
+    if(config.height === undefined){
+
+    }
+    else if(config.height === 'fit'){
+      setTimeout(function () {
+        me.setHeightFit();
+        me.on('changetab', me.onChangeTab, me);
+      });
     }
 
     return config;
@@ -15450,6 +15538,79 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     Fancy.each(config.items, fn);
 
     return config;
+  },
+  /*
+   *
+   */
+  setHeightFit: function () {
+    var me = this,
+      isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
+      panelBodyBorders = me.panelBodyBorders,
+      gridWithoutPanelBorders = me.gridWithoutPanelBorders,
+      gridBorders = me.gridBorders;
+
+    me.heightFit = true;
+
+    var height = me.fieldHeight;
+    var items = me.items;
+
+    if(me.$tabs){
+      var activeTab = me.activeTab || 0;
+
+      items = me.$tabs[activeTab];
+    }
+
+    Fancy.each(items, function(field){
+      if(field.hidden){}
+      else{
+        height += parseInt(field.css('height'));
+      }
+    });
+
+    if(me.title){
+      height += me.titleHeight;
+    }
+
+    if(me.tbar || me.tabs){
+      height += me.barHeight;
+    }
+
+    if(me.bbar){
+      height += me.barHeight;
+    }
+
+    if(me.buttons){
+      height += me.barHeight;
+    }
+
+    if(me.subTBar){
+      height += me.barHeight;
+    }
+
+    if(me.footer){
+      height += me.barHeight;
+    }
+
+    if( isPanel ){
+      height += panelBodyBorders[0] + panelBodyBorders[2] + gridBorders[0] + gridBorders[2];
+    }
+    else{
+      height += gridWithoutPanelBorders[0] + gridWithoutPanelBorders[2] + gridBorders[0] + gridBorders[2];
+    }
+
+    if(me.minHeight && height < me.minHeight){
+      height = me.minHeight;
+    }
+
+    me.setHeight(height);
+  },
+  /*
+   *
+   */
+  onChangeTab: function () {
+    var me = this;
+
+    me.setHeightFit();
   }
 });
 /**
@@ -23800,6 +23961,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   var activeGrid;
 
   F.Mixin('Fancy.grid.mixin.Grid', {
+    tabScrollStep: 50,
     tpl: [
       '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
       '<div class="' + GRID_CENTER_CLS + '"></div>',
@@ -41422,6 +41584,9 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
       if (s.remoteFilter) {
         s.filters = me.filters;
+        s.once('serversuccess', function () {
+          w.fire('filter', me.filters);
+        });
         s.serverFilter();
       }
       else {
@@ -46820,7 +46985,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         });
       }
       else {
-        me.updateColumnsMenu(column, columns);
+        if(column.menuColumns !== false){
+          me.updateColumnsMenu(column, columns);
+        }
       }
 
       column.menu.showAt(offset.left + parseInt(cell.css('width')) - 26, offset.top + parseInt(cell.css('height')) - 1);
@@ -46903,10 +47070,36 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         w = me.widget,
         lang = w.lang,
         menu = [],
-        cls = '',
+        cls = column.sortable === false? 'fancy-menu-item-disabled' : '',
         indexOrder,
+        menuSortable = column.sortable && column.menuSortable !== false,
+        menuLockable = column.lockable !== false && column.menuLockable !== false,
+        menuColumns = column.menuColumns !== false,
         i = 0,
-        iL = columns.length;
+        iL = columns.length,
+        itemSortAsc = {
+          text: lang.sortAsc,
+          cls: cls,
+          imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
+          handler: function () {
+            w.sorter.sort('asc', column.index, me.side);
+            column.menu.hide();
+          }
+        },
+        itemSortDesc = {
+          text: lang.sortDesc,
+          cls: cls,
+          imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
+          handler: function () {
+            w.sorter.sort('desc', column.index, me.side);
+            column.menu.hide();
+          }
+        },
+        itemColumns = {
+          text: lang.columns,
+          index: 'columns',
+          items: me.prepareColumns(columns)
+        };
 
       for (; i < iL; i++) {
         if (column.index === columns[i].index) {
@@ -46915,94 +47108,105 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
       }
 
-      if (column.sortable === false) {
-        cls = 'fancy-menu-item-disabled';
-      }
+      if(Fancy.isArray(column.menu)){
+        F.each(column.menu, function (item) {
+          switch (item){
+            case '|':
+              menu.push('-');
+              break;
+            case 'sort':
+              menu.push(itemSortAsc);
+              menu.push(itemSortDesc);
+              break;
+            case 'columns':
+              menu.push(itemColumns);
+              break;
+            case 'lock':
+              switch (me.side) {
+                case 'left':
+                case 'right':
+                  menu.push({
+                    text: lang.unlock,
+                    handler: function () {
+                      column.menu.hide();
+                      w.unLockColumn(indexOrder, me.side);
+                    }
+                  });
+                  break;
+                case 'center':
+                  menu.push({
+                    text: lang.lock,
+                    handler: function () {
+                      column.menu.hide();
+                      w.lockColumn(indexOrder, me.side);
+                    }
+                  });
 
-      /*
-      if(column.titleEditable){
-        menu.push({
-          type: 'string',
-          value: column.title,
-          events: [{
-            input: function (field, value) {
-              w.setColumnTitle(column.index, value, me.side);
-            }
-          },{
-            enter: function (field) {
-              me.hideMenu();
-            }
-          }]
-        });
-        
-        menu.push('-');
-      }
-      */
-
-      if (column.sortable) {
-        menu.push({
-          text: lang.sortAsc,
-          cls: cls,
-          imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
-          handler: function () {
-            w.sorter.sort('asc', column.index, me.side);
-            column.menu.hide();
-          }
-        });
-
-        menu.push({
-          text: lang.sortDesc,
-          cls: cls,
-          imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
-          handler: function () {
-            w.sorter.sort('desc', column.index, me.side);
-            column.menu.hide();
-          }
-        });
-
-        menu.push('-');
-      }
-
-      menu.push({
-        text: lang.columns,
-        index: 'columns',
-        items: me.prepareColumns(columns)
-      });
-
-      switch (me.side) {
-        case 'left':
-        case 'right':
-          if (column.lockable !== false) {
-            menu.push('-');
-            menu.push({
-              text: lang.unlock,
-              handler: function () {
-                column.menu.hide();
-                w.unLockColumn(indexOrder, me.side);
+                  menu.push({
+                    text: lang.rightLock,
+                    handler: function () {
+                      column.menu.hide();
+                      w.rightLockColumn(indexOrder, me.side);
+                    }
+                  });
+                  break;
               }
-            });
+              break;
+            default:
+              menu.push(item);
           }
-          break;
-        case 'center':
-          if (column.lockable !== false) {
-            menu.push('-');
-            menu.push({
-              text: lang.lock,
-              handler: function () {
-                column.menu.hide();
-                w.lockColumn(indexOrder, me.side);
-              }
-            });
+        });
+      }
+      else {
+        if (menuSortable) {
+          menu.push(itemSortAsc);
+          menu.push(itemSortDesc);
+          menu.push('-');
+        }
 
-            menu.push({
-              text: lang.rightLock,
-              handler: function () {
-                column.menu.hide();
-                w.rightLockColumn(indexOrder, me.side);
+        if (menuColumns) {
+          menu.push(itemColumns);
+        }
+
+        if (menuLockable) {
+          switch (me.side) {
+            case 'left':
+            case 'right':
+              if (column.menuColumns !== false) {
+                menu.push('-');
               }
-            });
+
+              menu.push({
+                text: lang.unlock,
+                handler: function () {
+                  column.menu.hide();
+                  w.unLockColumn(indexOrder, me.side);
+                }
+              });
+              break;
+            case 'center':
+              if (column.menuColumns !== false) {
+                menu.push('-');
+              }
+
+              menu.push({
+                text: lang.lock,
+                handler: function () {
+                  column.menu.hide();
+                  w.lockColumn(indexOrder, me.side);
+                }
+              });
+
+              menu.push({
+                text: lang.rightLock,
+                handler: function () {
+                  column.menu.hide();
+                  w.rightLockColumn(indexOrder, me.side);
+                }
+              });
+              break;
           }
-          break;
+        }
       }
 
       return menu;
@@ -47110,6 +47314,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           columnsMenu = item;
           break;
         }
+      }
+
+      if(!columnsMenu){
+        return;
+
       }
 
       i = 0;

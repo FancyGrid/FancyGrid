@@ -32,6 +32,7 @@
   var activeGrid;
 
   F.Mixin('Fancy.grid.mixin.Grid', {
+    tabScrollStep: 50,
     tpl: [
       '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
       '<div class="' + GRID_CENTER_CLS + '"></div>',

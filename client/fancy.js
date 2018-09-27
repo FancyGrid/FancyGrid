@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.44',
+  version: '1.7.45',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3851,6 +3851,12 @@ Fancy.Element.prototype = {
   remove: function(){
     this.$dom.remove();
   },
+  /*
+   *
+   */
+  finish: function(){
+    this.$dom.finish();
+  },
   //Not Used
   /*
    *
@@ -4255,7 +4261,33 @@ Fancy.Element.prototype = {
    * @param {Function} callback
    */
   animate: function(style,speed,easing,callback){
-    this.$dom.animate(style,speed,easing,callback);
+    var _style = {},
+      doAnimating = false;
+
+    for(var p in style){
+      var newValue = style[p];
+
+      if(Fancy.isString(newValue)){
+        newValue = Number(newValue.replace('px', ''));
+      }
+
+      var oldValue = this.css(p);
+
+      if(Fancy.isString(oldValue)){
+        oldValue = Number(oldValue.replace('px', ''));
+      }
+
+      if(newValue !== oldValue){
+        _style[p] = style[p];
+        doAnimating = true;
+      }
+    }
+
+    if(doAnimating === false){
+      return;
+    }
+
+    this.$dom.animate(_style,speed,easing,callback);
   },
   /*
    *
@@ -4577,6 +4609,18 @@ Fancy.Elements.prototype = {
    */
   addClass: function(cls){
     this.addCls.apply(this, arguments);
+  },
+  /*
+   *
+   */
+  finish: function(){
+    var me = this,
+      i = 0,
+      iL = me.length;
+
+    for(;i<iL;i++){
+      Fancy.get(me.$dom[i]).finish();
+    }
   },
   /*
    * @param {String} cls
@@ -6400,7 +6444,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   F.define('Fancy.Panel', {
     extend: F.Widget,
     barScrollEnabled: true,
-    tabScrollStep: 30,
+    tabScrollStep: 50,
     mixins: [
       'Fancy.panel.mixin.DD',
       'Fancy.panel.mixin.Resize'
@@ -7409,7 +7453,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
-    tabScrollStep: 30,
+    tabScrollStep: 50,
     barScrollEnabled: true,
     /*
      * constructor

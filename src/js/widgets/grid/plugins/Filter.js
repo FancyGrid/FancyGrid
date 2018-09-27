@@ -611,6 +611,9 @@
 
       if (s.remoteFilter) {
         s.filters = me.filters;
+        s.once('serversuccess', function () {
+          w.fire('filter', me.filters);
+        });
         s.serverFilter();
       }
       else {
