@@ -40,6 +40,10 @@
      */
     scrollLeft: 0,
     /*
+     * @private
+     */
+    scrollTop: 0,
+    /*
      * @constructor
      * @param {Object} config
      */

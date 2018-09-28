@@ -2885,8 +2885,40 @@
           break;
       }
     },
-    scrollPageUP: function () {},
-    scrollPageDOWN: function () {}
+    /*
+     *
+     */
+    scrollPageUP: function () {
+      var me = this,
+        w = me.widget,
+        bodyHeight = parseInt(w.body.el.height()),
+        scroller = w.scroller,
+        newScroll = scroller.scrollTop - bodyHeight;
+
+      if(newScroll < 0){
+        newScroll = 0;
+      }
+
+      w.scroll(newScroll);
+    },
+    /*
+     *
+     */
+    scrollPageDOWN: function () {
+      var me = this,
+        w = me.widget,
+        gridBorders = w.gridBorders,
+        bodyViewHeight = w.getBodyHeight() - gridBorders[0] - gridBorders[2],
+        viewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2],
+        scroller = w.scroller,
+        newScroll = scroller.scrollTop + bodyViewHeight;
+
+      if(newScroll > viewHeight - bodyViewHeight){
+        newScroll = viewHeight - bodyViewHeight;
+      }
+
+      w.scroll(newScroll);
+    }
   });
 
 })();

@@ -3099,6 +3099,30 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       return header;
     },
     /*
+     * @param {String|Number} index
+     * @param {String} [side]
+     * @return {Fancy.Element}
+     */
+    getHeaderCell: function(index, side){
+      var me = this,
+        cell,
+        header;
+
+      if(F.isString(index)){
+        var o = me.getColumnOrderByKey(index);
+
+        header = me.getHeader(o.side);
+        cell = header.getCell(o.order);
+      }
+      else{
+        side = side || 'center';
+        header = me.getHeader(side);
+        cell = header.getCell(index);
+      }
+
+      return cell;
+    },
+    /*
      * @param {Number} rowIndex
      * @return {Array}
      */
@@ -5379,6 +5403,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @private
      */
     scrollLeft: 0,
+    /*
+     * @private
+     */
+    scrollTop: 0,
     /*
      * @constructor
      * @param {Object} config

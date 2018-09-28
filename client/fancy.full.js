@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.45',
+  version: '1.7.46',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -24933,6 +24933,30 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return header;
     },
     /*
+     * @param {String|Number} index
+     * @param {String} [side]
+     * @return {Fancy.Element}
+     */
+    getHeaderCell: function(index, side){
+      var me = this,
+        cell,
+        header;
+
+      if(F.isString(index)){
+        var o = me.getColumnOrderByKey(index);
+
+        header = me.getHeader(o.side);
+        cell = header.getCell(o.order);
+      }
+      else{
+        side = side || 'center';
+        header = me.getHeader(side);
+        cell = header.getCell(index);
+      }
+
+      return cell;
+    },
+    /*
      * @param {Number} rowIndex
      * @return {Array}
      */
@@ -27452,7 +27476,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         requiredModules.edit = true;
       }
 
-      if(column.menu === true){
+      if(column.menu){
         requiredModules.menu = true;
       }
 
@@ -27945,6 +27969,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @private
      */
     scrollLeft: 0,
+    /*
+     * @private
+     */
+    scrollTop: 0,
     /*
      * @constructor
      * @param {Object} config
@@ -36907,8 +36935,40 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           break;
       }
     },
-    scrollPageUP: function () {},
-    scrollPageDOWN: function () {}
+    /*
+     *
+     */
+    scrollPageUP: function () {
+      var me = this,
+        w = me.widget,
+        bodyHeight = parseInt(w.body.el.height()),
+        scroller = w.scroller,
+        newScroll = scroller.scrollTop - bodyHeight;
+
+      if(newScroll < 0){
+        newScroll = 0;
+      }
+
+      w.scroll(newScroll);
+    },
+    /*
+     *
+     */
+    scrollPageDOWN: function () {
+      var me = this,
+        w = me.widget,
+        gridBorders = w.gridBorders,
+        bodyViewHeight = w.getBodyHeight() - gridBorders[0] - gridBorders[2],
+        viewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2],
+        scroller = w.scroller,
+        newScroll = scroller.scrollTop + bodyViewHeight;
+
+      if(newScroll > viewHeight - bodyViewHeight){
+        newScroll = viewHeight - bodyViewHeight;
+      }
+
+      w.scroll(newScroll);
+    }
   });
 
 })();

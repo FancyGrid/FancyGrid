@@ -317,7 +317,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         requiredModules.edit = true;
       }
 
-      if(column.menu === true){
+      if(column.menu){
         requiredModules.menu = true;
       }
 

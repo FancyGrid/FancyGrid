@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.45',
+  version: '1.7.46',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -13915,7 +13915,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         requiredModules.edit = true;
       }
 
-      if(column.menu === true){
+      if(column.menu){
         requiredModules.menu = true;
       }
 
