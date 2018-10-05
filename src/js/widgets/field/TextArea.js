@@ -108,7 +108,7 @@
       if (me.height) {
         height = me.height;
         if (me.maxHeight < me.height) {
-          me.maxHeight = me.height;
+          //me.maxHeight = me.height;
           setTimeout(function () {
             me.input.css({
               'overflow-y': 'scroll'
@@ -133,10 +133,10 @@
       }
 
       if (height < me.minHeight) {
-        height = me.minHeight;
+        //height = me.minHeight;
       }
       else if (height > me.maxHeight) {
-        height = me.maxHeight;
+        //height = me.maxHeight;
         setTimeout(function () {
           me.input.css({
             'overflow-y': 'scroll'

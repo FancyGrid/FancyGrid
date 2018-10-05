@@ -236,7 +236,7 @@
     initPicker: function () {
       var me = this;
 
-      if (me.picker === false) {
+      if (me.picker === false || me.editable === false) {
         return;
       }
 

@@ -2163,6 +2163,7 @@
         case 'left':
           column.locked = true;
           var extraLeft = 0;
+          var extraHeaderWidth = 0;
           if(me.leftColumns.length === 0){
             if(!F.nojQuery){
               extraLeft = 1;
@@ -2170,11 +2171,17 @@
             me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
           }
 
+          if(!F.nojQuery){
+            extraHeaderWidth = 0;
+          }
+
           me.leftColumns.splice(index, 0, column);
           leftHeader.insertCell(index, column);
           leftHeader.reSetIndexes();
+          leftHeader.css('width', parseInt(leftHeader.css('width')) + extraHeaderWidth);
           leftBody.insertColumn(index, column);
           leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          //leftEl.css('width', parseInt(leftHeader.css('width')));
           centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
           centerEl.css('left', parseInt(centerEl.css('left')) + column.width + extraLeft);
           body.el.css('width', parseInt(body.el.css('width')) - column.width);

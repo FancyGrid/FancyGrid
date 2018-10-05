@@ -75,12 +75,12 @@
           break;
         case key.PAGE_UP:
           //me.keyNavigating = true;
-          //e.preventDefault();
+          e.preventDefault();
           me.scrollPageUP();
           break;
         case key.PAGE_DOWN:
           //me.keyNavigating = true;
-          //e.preventDefault();
+          e.preventDefault();
           me.scrollPageDOWN();
           break;
       }

@@ -72,6 +72,10 @@
         column = columns[index],
         targetEl = F.get(e.target);
 
+      if(column && column.titleEditable){
+        return;
+      }
+
       if(targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_CLS) || targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)){
         return;
       }

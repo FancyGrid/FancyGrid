@@ -294,6 +294,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         if(column[p] === undefined){
           column[p] = config.defaults[p];
         }
+
+        if(p === 'width' && column[p].flex){
+          delete column[p].width;
+        }
       });
     });
 
@@ -503,6 +507,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   prepareConfigColumnsWidth: function(config){
     var columns = config.columns,
       width = config.width,
+      gridBorders = config.gridBorders,
+      gridWithoutPanelBorders = config.gridWithoutPanelBorders,
+      panelBodyBorders = config.panelBodyBorders,
       columnsWithoutWidth = [],
       flexColumns = [],
       maxWidth = 100,
@@ -1402,6 +1409,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
             if(column.defaults){
               Fancy.applyIf(column.columns[j], column.defaults);
+
+              if(column.defaults.width && column.columns[j].flex){
+                delete column.columns[j].width;
+              }
             }
           }
 

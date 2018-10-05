@@ -236,15 +236,18 @@
       }
       else{
         var _cells = w.header.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
-        cellHeight = parseInt(_cells.item(0).css('height'));
+        //cellHeight = parseInt(_cells.item(0).css('height'));
+        //cellHeight = parseInt(w.header.el.css('height'));
       }
+
+      cellHeight = parseInt(w.header.el.css('height'));
 
       if(me.side === 'center'){
         left = -w.scroller.scrollLeft;
       }
 
       if (w.groupheader) {
-        cellHeight = w.cellHeight * 2;
+        //cellHeight = w.cellHeight * 2;
         var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
         //BUG: possible bug for dragging column

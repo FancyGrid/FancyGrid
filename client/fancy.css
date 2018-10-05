@@ -2689,6 +2689,11 @@
   background: #F7F7F7;
   color: #4C6B8F;
 }
+.fancy-theme-blue .fancy-panel-sub-header {
+  border-right-width: 0;
+  border-left-width: 0;
+  color: #51677a;
+}
 .fancy-theme-blue.fancy-panel-grid-inside {
   border-bottom-width: 0;
 }
@@ -2937,6 +2942,16 @@
 .fancy-theme-gray .fancy-field-pass-tip {
   background: #F7F7F7;
   color: #8E8E8E;
+}
+.fancy-theme-gray .fancy-panel-sub-header {
+  border-right-width: 0;
+  border-left-width: 0;
+  color: #515151;
+  border-bottom: 1px solid #d3dbe1;
+}
+.fancy-theme-gray .fancy-panel-sub-header-text {
+  border-right-width: 0;
+  border-left-width: 0;
 }
 .fancy-theme-gray.fancy-drag-hint-top {
   background-image: url(images/sand/col-drag-top.png);
@@ -3401,6 +3416,18 @@
 .fancy-theme-dark .fancy-field-pass-tip {
   background: #3C3C3C;
   color: #ccc;
+}
+.fancy-theme-dark .fancy-panel-sub-header {
+  border-right-width: 0;
+  border-left-width: 0;
+  color: #ccc;
+  background-color: #363636;
+  border-bottom: 1px solid #000;
+}
+.fancy-theme-dark .fancy-panel-sub-header-text {
+  border-left-width: 0;
+  border-right-width: 0;
+  border-top-width: 0;
 }
 .fancy-theme-dark.fancy-combo-result-list li.fancy-combo-item-focused {
   color: white;
@@ -4004,6 +4031,13 @@
 .fancy-theme-sand .fancy-field-spin-down:hover {
   background-color: rgba(232, 223, 192, 0.07);
 }
+.fancy-theme-sand .fancy-panel-sub-header {
+  border-right-width: 0;
+  border-left-width: 0;
+  background: #DDD5B6;
+  color: #696558;
+  border-bottom: 1px solid #C8C1A5;
+}
 .fancy-theme-sand.fancy-combo .fancy-combo-dropdown-button {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%226%22%20viewBox%3D%22944%201152%208%204%22%3E%3Cpath%20fill%3D%22%23696458%22%20d%3D%22M945.2%201152.2C944.9%201152%20944.5%201152%20944.3%201152.3%20944.1%201152.6%20944.1%201153%20944.4%201153.2L947.6%201155.8C947.8%201156%20948.2%201156%20948.4%201155.8L951.6%201153.2C951.9%201153%20951.9%201152.6%20951.7%201152.3%20951.5%201152%20951.1%201152%20950.8%201152.2L948%201154.5%20945.2%201152.2Z%22%2F%3E%3C%2Fsvg%3E');
   background-position: 9px 13px;
@@ -4326,6 +4360,11 @@
 }
 .fancy-theme-bootstrap .fancy-field-pass-tip {
   background: #F7F7F7;
+  color: #333;
+}
+.fancy-theme-bootstrap .fancy-panel-sub-header {
+  border-right-width: 0;
+  border-left-width: 0;
   color: #333;
 }
 .fancy-theme-bootstrap.fancy-panel {

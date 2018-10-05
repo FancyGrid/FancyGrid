@@ -294,6 +294,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         if(column[p] === undefined){
           column[p] = config.defaults[p];
         }
+
+        if(p === 'width' && column[p].flex){
+          delete column[p].width;
+        }
       });
     });
 
@@ -503,6 +507,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   prepareConfigColumnsWidth: function(config){
     var columns = config.columns,
       width = config.width,
+      gridBorders = config.gridBorders,
+      gridWithoutPanelBorders = config.gridWithoutPanelBorders,
+      panelBodyBorders = config.panelBodyBorders,
       columnsWithoutWidth = [],
       flexColumns = [],
       maxWidth = 100,
@@ -1402,6 +1409,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
             if(column.defaults){
               Fancy.applyIf(column.columns[j], column.defaults);
+
+              if(column.defaults.width && column.columns[j].flex){
+                delete column.columns[j].width;
+              }
             }
           }
 
@@ -4258,6 +4269,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         case 'left':
           column.locked = true;
           var extraLeft = 0;
+          var extraHeaderWidth = 0;
           if(me.leftColumns.length === 0){
             if(!F.nojQuery){
               extraLeft = 1;
@@ -4265,11 +4277,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
             me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
           }
 
+          if(!F.nojQuery){
+            extraHeaderWidth = 0;
+          }
+
           me.leftColumns.splice(index, 0, column);
           leftHeader.insertCell(index, column);
           leftHeader.reSetIndexes();
+          leftHeader.css('width', parseInt(leftHeader.css('width')) + extraHeaderWidth);
           leftBody.insertColumn(index, column);
           leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          //leftEl.css('width', parseInt(leftHeader.css('width')));
           centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
           centerEl.css('left', parseInt(centerEl.css('left')) + column.width + extraLeft);
           body.el.css('width', parseInt(body.el.css('width')) - column.width);
@@ -10992,15 +11010,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
       else{
         var _cells = w.header.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
-        cellHeight = parseInt(_cells.item(0).css('height'));
+        //cellHeight = parseInt(_cells.item(0).css('height'));
+        //cellHeight = parseInt(w.header.el.css('height'));
       }
+
+      cellHeight = parseInt(w.header.el.css('height'));
 
       if(me.side === 'center'){
         left = -w.scroller.scrollLeft;
       }
 
       if (w.groupheader) {
-        cellHeight = w.cellHeight * 2;
+        //cellHeight = w.cellHeight * 2;
         var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
         //BUG: possible bug for dragging column

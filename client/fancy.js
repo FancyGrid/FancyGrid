@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.46',
+  version: '1.7.47',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -10415,7 +10415,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       if (me.height) {
         height = me.height;
         if (me.maxHeight < me.height) {
-          me.maxHeight = me.height;
+          //me.maxHeight = me.height;
           setTimeout(function () {
             me.input.css({
               'overflow-y': 'scroll'
@@ -10440,10 +10440,10 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       }
 
       if (height < me.minHeight) {
-        height = me.minHeight;
+        //height = me.minHeight;
       }
       else if (height > me.maxHeight) {
-        height = me.maxHeight;
+        //height = me.maxHeight;
         setTimeout(function () {
           me.input.css({
             'overflow-y': 'scroll'
