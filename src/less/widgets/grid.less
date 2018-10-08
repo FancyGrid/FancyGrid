@@ -279,8 +279,8 @@
 }
 
 .fancy-grid-copy-textarea {
-  width: 0px !important;
-  height: 0px !important;
+  width: 0 !important;
+  height: 0 !important;
   position: absolute;
   left: -1000px;
   top: -1000px;
@@ -298,4 +298,46 @@
 .fancy-grid-cell-flash-animation {
   background-color: transparent;
   transition: background-color 1s;
+}
+
+.fancy-grid-animation {
+  .fancy-grid-column {
+    transition: left 0.4s, width 0.4s;
+  }
+
+  .fancy-grid-header-cell {
+    transition: left 0.4s, width 0.4s;
+  }
+
+  .fancy-grid-left {
+    transition: left 0.4s, width 0.4s;
+  }
+
+  .fancy-grid-center {
+    transition: left 0.4s, width 0.4s;
+  }
+
+  .fancy-grid-right {
+    transition: left 0.4s, width 0.4s;
+  }
+
+  .fancy-grid-header {
+    transition: width 0.4s;
+  }
+
+  .fancy-grid-body {
+    transition: width 0.4s;
+  }
+
+  .fancy-grid-row-edit {
+    transition: top 0.4s;
+  }
+
+  .fancy-grid-row-edit-buttons {
+    transition: top 0.4s;
+  }
+
+  .fancy-loadmask {
+    transition: opacity 0.4s;
+  }
 }

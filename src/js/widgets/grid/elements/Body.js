@@ -138,7 +138,7 @@
         var column = columns[i],
           columnEl = bodyDomColumns.item(i);
 
-        if(animate) {
+        if(animate && !F.nojQuery) {
           columnEl.animate({
             left: columnsWidth + 'px'
           }, F.ANIMATE_DURATION);

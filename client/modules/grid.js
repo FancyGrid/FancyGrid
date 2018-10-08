@@ -2343,6 +2343,33 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.cls
       );
 
+      if( Fancy.loadingStyle ){
+        if(me.panel){
+          me.panel.el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.panel.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+        else {
+          el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+      }
+
       el.attr('id', me.id);
 
       if (me.panel === undefined && me.shadow) {
@@ -2384,6 +2411,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.setHardBordersWidth();
+
+      setTimeout(function(){
+        if(Fancy.nojQuery){
+          me.el.addCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }, 100);
 
       me.rendered = true;
     },
@@ -4573,13 +4606,13 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {String} text
      */
     showLoadMask: function (text) {
-      this.loadmask.showLoadMask(text);
+      this.loadmask.show(text);
     },
     /*
      *
      */
     hideLoadMask: function () {
-      this.loadmask.hideLoadMask();
+      this.loadmask.hide();
     },
     /*
      *
@@ -5533,6 +5566,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       s.on('changepages', me.onChangePages, me);
 
+      w.on('columndrag', me.onColumnDrag, me);
+
       setTimeout(function () {
         me.update();
       }, 1);
@@ -5776,10 +5811,20 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {Object} e
      */
     onMouseDownRightSpin: function (e) {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (F.isTouch) {
         return;
+      }
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
       }
 
       e.preventDefault();
@@ -5798,9 +5843,19 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     onMouseDownBottomSpin: function (e) {
       var me = this,
+        w = me.widget,
         targetEl = F.get(e.target);
 
       e.preventDefault();
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }
 
       me.bottomKnobDown = true;
       me.mouseDownXY = {
@@ -5824,6 +5879,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
         return;
+      }
+
+      if(Fancy.nojQuery){
+        w.addCls(Fancy.GRID_ANIMATION_CLS);
       }
 
       me.scrollRightEl.removeCls(RIGHT_SCROLL_ACTIVE_CLS);
@@ -6486,22 +6545,69 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
+    },
+    /*
+     *
+     */
+    onColumnDrag: function () {
+      var me = this;
+
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.update();
+        }, F.ANIMATE_DURATION);
+      }
+
+      /*
+
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.update();
+          me.widget.setColumnsPosition(true);
+        }, F.ANIMATE_DURATION);
+      }
+      else{
+        me.update();
+        me.widget.setColumnsPosition(true);
+      }
+      */
     },
     /*
      *
      */
     onRightLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
     },
     /*
      *
      */
     onUnLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
     },
     /*
      *
@@ -6633,49 +6739,38 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     }
     else{
       el.css('display', 'block');
-      me.showLoadMask();
+      //me.show();
     }
-    el.css('opacity', 1);
+
+    //el.css('opacity', 1);
   },
   /*
    *
    */
   onBeforeLoad: function(){
-    this.showLoadMask();
+    this.show();
   },
   /*
    *
    */
   onLoad: function(){
-    this.hideLoadMask();
+    this.hide();
   },
   /*
    * @param {String} text
    */
-  showLoadMask: function(text){
+  show: function(text){
     var me = this,
+      el = me.el,
       w = me.widget,
-      lang = w.lang,
-      width = w.getWidth(),
-      height = w.getHeight();
+      lang = w.lang;
+
+    el.stop();
+    el.css('opacity', 1);
 
     me.el.css('display', 'block');
 
-    me.el.css({
-      height: height,
-      width: width
-    });
-
-    var innerWidth = Math.abs(me.innerEl.width()),
-      innerHeight = Math.abs(me.innerEl.height());
-
-    var left = width/2 - innerWidth/2,
-      top = height/2 - innerHeight/2;
-
-    me.innerEl.css({
-      left: left,
-      top: top
-    });
+    me.updateSize();
 
     if(text){
       me.textEl.update(text);
@@ -6696,9 +6791,47 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  hideLoadMask: function(){
-    this.loaded = true;
-    this.el.css('display', 'none');
+  hide: function(){
+    var me = this,
+      w = me.widget,
+      el = me.el;
+
+    el.stop();
+    el.css('opacity', 1);
+    el.animate({
+      opacity: 0,
+      force: true
+    }, {
+      complete: function () {
+        me.loaded = true;
+        el.css('display', 'none');
+      }
+    });
+  },
+  /*
+   *
+   */
+  updateSize: function(){
+    var me = this,
+      w = me.widget,
+      width = w.getWidth(),
+      height = w.getHeight();
+
+    me.el.css({
+      height: height,
+      width: width
+    });
+
+    var innerWidth = Math.abs(me.innerEl.width()),
+      innerHeight = Math.abs(me.innerEl.height());
+
+    var left = width/2 - innerWidth/2,
+      top = height/2 - innerHeight/2;
+
+    me.innerEl.css({
+      left: left,
+      top: top
+    });
   }
 });/*
  * @class Fancy.grid.plugin.ColumnResizer
@@ -9991,7 +10124,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         var column = columns[i],
           columnEl = bodyDomColumns.item(i);
 
-        if(animate) {
+        if(animate && !F.nojQuery) {
           columnEl.animate({
             left: columnsWidth + 'px'
           }, F.ANIMATE_DURATION);

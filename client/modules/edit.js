@@ -1114,6 +1114,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.on('rightlockcolumn', me.onRightLockColumn, me);
       w.on('unlockcolumn', me.onUnLockColumn, me);
 
+      w.on('beforecolumndrag', me.onBeforeColumnDrag, me);
       w.on('columndrag', me.onColumnDrag, me);
 
       if (w.grouping) {
@@ -1701,6 +1702,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         buttonTop = newTop + w.cellHeight;
       }
 
+      if(F.nojQuery){
+        buttonTop += 1;
+      }
+
       if (animate !== false) {
         me.buttonsEl.animate({
           top: buttonTop
@@ -1797,9 +1802,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
-      setTimeout(function () {
-        me.setSizes();
-      }, ANIMATE_DURATION);
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.setSizes();
+        }, 400);
+      }
+      else {
+        setTimeout(function () {
+          me.setSizes();
+        }, ANIMATE_DURATION);
+      }
     },
     /*
      *
@@ -2038,6 +2050,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
+    onBeforeColumnDrag: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
     onColumnDrag: function () {
       var me = this;
 
@@ -2072,6 +2090,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         if (w.leftColumns) {
           F.each(w.leftColumns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.leftEl.destroy();
         }
@@ -2079,6 +2098,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         if (w.columns) {
           F.each(w.columns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.el.destroy();
         }
@@ -2086,6 +2106,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         if (w.rightColumns) {
           F.each(w.rightColumns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.rightEl.destroy();
         }

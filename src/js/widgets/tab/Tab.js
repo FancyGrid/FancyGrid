@@ -16,8 +16,6 @@ Fancy.define('Fancy.toolbar.Tab', {
    */
   init: function(){
     this.Super('init', arguments);
-
-    Fancy.loadStyle();
   },
   cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*

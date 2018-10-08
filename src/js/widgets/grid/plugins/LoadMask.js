@@ -97,49 +97,38 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     }
     else{
       el.css('display', 'block');
-      me.showLoadMask();
+      //me.show();
     }
-    el.css('opacity', 1);
+
+    //el.css('opacity', 1);
   },
   /*
    *
    */
   onBeforeLoad: function(){
-    this.showLoadMask();
+    this.show();
   },
   /*
    *
    */
   onLoad: function(){
-    this.hideLoadMask();
+    this.hide();
   },
   /*
    * @param {String} text
    */
-  showLoadMask: function(text){
+  show: function(text){
     var me = this,
+      el = me.el,
       w = me.widget,
-      lang = w.lang,
-      width = w.getWidth(),
-      height = w.getHeight();
+      lang = w.lang;
+
+    el.stop();
+    el.css('opacity', 1);
 
     me.el.css('display', 'block');
 
-    me.el.css({
-      height: height,
-      width: width
-    });
-
-    var innerWidth = Math.abs(me.innerEl.width()),
-      innerHeight = Math.abs(me.innerEl.height());
-
-    var left = width/2 - innerWidth/2,
-      top = height/2 - innerHeight/2;
-
-    me.innerEl.css({
-      left: left,
-      top: top
-    });
+    me.updateSize();
 
     if(text){
       me.textEl.update(text);
@@ -160,8 +149,46 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  hideLoadMask: function(){
-    this.loaded = true;
-    this.el.css('display', 'none');
+  hide: function(){
+    var me = this,
+      w = me.widget,
+      el = me.el;
+
+    el.stop();
+    el.css('opacity', 1);
+    el.animate({
+      opacity: 0,
+      force: true
+    }, {
+      complete: function () {
+        me.loaded = true;
+        el.css('display', 'none');
+      }
+    });
+  },
+  /*
+   *
+   */
+  updateSize: function(){
+    var me = this,
+      w = me.widget,
+      width = w.getWidth(),
+      height = w.getHeight();
+
+    me.el.css({
+      height: height,
+      width: width
+    });
+
+    var innerWidth = Math.abs(me.innerEl.width()),
+      innerHeight = Math.abs(me.innerEl.height());
+
+    var left = width/2 - innerWidth/2,
+      top = height/2 - innerHeight/2;
+
+    me.innerEl.css({
+      left: left,
+      top: top
+    });
   }
 });

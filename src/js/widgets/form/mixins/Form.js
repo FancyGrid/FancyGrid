@@ -228,6 +228,33 @@
         me.widgetCls
       );
 
+      if( Fancy.loadingStyle ){
+        if(me.panel){
+          me.panel.el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.panel.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+        else {
+          el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+      }
+
       if(!el.attr('id')){
         el.attr('id', me.id);
       }

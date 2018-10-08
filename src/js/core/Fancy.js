@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.47',
+  version: '1.7.48',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -554,6 +554,7 @@ Fancy.apply(Fancy, {
   GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
   GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
   GRID_COLUMN_ROW_DRAG_CLS: 'fancy-grid-column-row-drag',
+  GRID_ANIMATION_CLS: 'fancy-grid-animation',
   //grid spark column
   GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
   GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
@@ -653,7 +654,8 @@ Fancy.apply(Fancy, {
 });
 
 // Animation duration for all animations
-Fancy.ANIMATE_DURATION = 300;
+//Fancy.ANIMATE_DURATION = 300;
+Fancy.ANIMATE_DURATION = 400;
 
 (function(){
 
@@ -961,6 +963,12 @@ var FancyForm = function(){
 
       _link.href = MODULESDIR + name + endUrl;
       _link.rel = 'stylesheet';
+
+      Fancy.loadingStyle = true;
+
+      _link.onload = function(){
+        Fancy.loadingStyle = false;
+      };
 
       head.appendChild(_link);
     }

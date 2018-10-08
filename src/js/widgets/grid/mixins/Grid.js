@@ -237,6 +237,33 @@
         me.cls
       );
 
+      if( Fancy.loadingStyle ){
+        if(me.panel){
+          me.panel.el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.panel.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+        else {
+          el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+      }
+
       el.attr('id', me.id);
 
       if (me.panel === undefined && me.shadow) {
@@ -278,6 +305,12 @@
       }
 
       me.setHardBordersWidth();
+
+      setTimeout(function(){
+        if(Fancy.nojQuery){
+          me.el.addCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }, 100);
 
       me.rendered = true;
     },
@@ -2467,13 +2500,13 @@
      * @param {String} text
      */
     showLoadMask: function (text) {
-      this.loadmask.showLoadMask(text);
+      this.loadmask.show(text);
     },
     /*
      *
      */
     hideLoadMask: function () {
-      this.loadmask.hideLoadMask();
+      this.loadmask.hide();
     },
     /*
      *

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.47',
+  version: '1.7.48',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -564,6 +564,7 @@ Fancy.apply(Fancy, {
   GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
   GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
   GRID_COLUMN_ROW_DRAG_CLS: 'fancy-grid-column-row-drag',
+  GRID_ANIMATION_CLS: 'fancy-grid-animation',
   //grid spark column
   GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
   GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
@@ -663,7 +664,8 @@ Fancy.apply(Fancy, {
 });
 
 // Animation duration for all animations
-Fancy.ANIMATE_DURATION = 300;
+//Fancy.ANIMATE_DURATION = 300;
+Fancy.ANIMATE_DURATION = 400;
 
 (function(){
 
@@ -971,6 +973,12 @@ var FancyForm = function(){
 
       _link.href = MODULESDIR + name + endUrl;
       _link.rel = 'stylesheet';
+
+      Fancy.loadingStyle = true;
+
+      _link.onload = function(){
+        Fancy.loadingStyle = false;
+      };
 
       head.appendChild(_link);
     }
@@ -4262,7 +4270,17 @@ Fancy.Element.prototype = {
    */
   animate: function(style,speed,easing,callback){
     var _style = {},
-      doAnimating = false;
+      doAnimating = false,
+      force = style.force;
+
+    if(!Fancy.nojQuery){
+      doAnimating = true;
+      force = true;
+    }
+
+    if(Fancy.isObject(style)){
+      delete style.force;
+    }
 
     for(var p in style){
       var newValue = style[p];
@@ -4287,7 +4305,12 @@ Fancy.Element.prototype = {
       return;
     }
 
-    this.$dom.animate(_style,speed,easing,callback);
+    if(force){
+      this.$dom.animate(_style,speed,easing,callback);
+    }
+    else {
+      this.$dom.css(_style);
+    }
   },
   /*
    *
@@ -5998,8 +6021,6 @@ Fancy.define('Fancy.toolbar.Tab', {
    */
   init: function(){
     this.Super('init', arguments);
-
-    Fancy.loadStyle();
   },
   cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
@@ -6289,6 +6310,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
     e.preventDefault();
 
+    if(Fancy.nojQuery){
+      me.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+    }
+
     if(Fancy.isTouch){
       var _e = e.originalEvent.changedTouches[0];
 
@@ -6332,6 +6357,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       width: me.newResizeWidth,
       height: me.newResizeHeight
     });
+
+    if(Fancy.nojQuery){
+      me.el.select('.fancy-grid').addCls(Fancy.GRID_ANIMATION_CLS);
+    }
   },
   /*
    * @param {Object} e
@@ -7074,6 +7103,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     constructor: function (config, scope) {
       var me = this;
 
+      Fancy.loadStyle();
+
       me.prepareConfigTheme(config);
       me.prepareConfigSize(config);
       me.Super('const', arguments);
@@ -7099,6 +7130,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var me = this;
 
       me.Super('render', arguments);
+
+      if( Fancy.loadingStyle ){
+        me.el.css('opacity', 0);
+        me.intervalStyleLoad = setInterval(function(){
+          if(!Fancy.loadingStyle){
+            clearInterval(me.intervalStyleLoad);
+            me.el.animate({
+              'opacity': 1,
+              force: true
+            });
+          }
+        }, 100);
+      }
 
       me.panelBodyEl = me.el.select('.' + PANEL_BODY_INNER_CLS).item(0);
 
@@ -13721,7 +13765,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown', 'columntitlechange',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
-      'columndrag',
+      'beforecolumndrag', 'columndrag',
       'columnhide', 'columnshow',
       'scroll', 'nativescroll',
       'remove',

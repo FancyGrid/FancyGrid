@@ -77,6 +77,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
     e.preventDefault();
 
+    if(Fancy.nojQuery){
+      me.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+    }
+
     if(Fancy.isTouch){
       var _e = e.originalEvent.changedTouches[0];
 
@@ -120,6 +124,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       width: me.newResizeWidth,
       height: me.newResizeHeight
     });
+
+    if(Fancy.nojQuery){
+      me.el.select('.fancy-grid').addCls(Fancy.GRID_ANIMATION_CLS);
+    }
   },
   /*
    * @param {Object} e

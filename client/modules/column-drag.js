@@ -135,6 +135,8 @@
       w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
 
       if(me.ok){
+        me.fire('beforecolumndrag');
+
         if(me.inSide === me.activeSide){
           me.dragColumn(me.inSide);
         }
@@ -143,6 +145,7 @@
           if(me.okPosition === 'right'){
             inIndex++;
           }
+
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
@@ -816,6 +819,8 @@
       w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
 
       if(me.ok){
+        me.fire('beforecolumndrag');
+
         if(me.inSide === me.activeSide){
           me.dragColumn(me.inSide);
         }
@@ -824,6 +829,7 @@
           if(me.okPosition === 'right'){
             inIndex++;
           }
+
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{

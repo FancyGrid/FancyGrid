@@ -151,6 +151,8 @@
 
       s.on('changepages', me.onChangePages, me);
 
+      w.on('columndrag', me.onColumnDrag, me);
+
       setTimeout(function () {
         me.update();
       }, 1);
@@ -394,10 +396,20 @@
      * @param {Object} e
      */
     onMouseDownRightSpin: function (e) {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (F.isTouch) {
         return;
+      }
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
       }
 
       e.preventDefault();
@@ -416,9 +428,19 @@
      */
     onMouseDownBottomSpin: function (e) {
       var me = this,
+        w = me.widget,
         targetEl = F.get(e.target);
 
       e.preventDefault();
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }
 
       me.bottomKnobDown = true;
       me.mouseDownXY = {
@@ -442,6 +464,10 @@
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
         return;
+      }
+
+      if(Fancy.nojQuery){
+        w.addCls(Fancy.GRID_ANIMATION_CLS);
       }
 
       me.scrollRightEl.removeCls(RIGHT_SCROLL_ACTIVE_CLS);
@@ -1104,22 +1130,69 @@
      *
      */
     onLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
+    },
+    /*
+     *
+     */
+    onColumnDrag: function () {
+      var me = this;
+
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.update();
+        }, F.ANIMATE_DURATION);
+      }
+
+      /*
+
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.update();
+          me.widget.setColumnsPosition(true);
+        }, F.ANIMATE_DURATION);
+      }
+      else{
+        me.update();
+        me.widget.setColumnsPosition(true);
+      }
+      */
     },
     /*
      *
      */
     onRightLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
     },
     /*
      *
      */
     onUnLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
     },
     /*
      *

@@ -49,6 +49,7 @@
       w.on('rightlockcolumn', me.onRightLockColumn, me);
       w.on('unlockcolumn', me.onUnLockColumn, me);
 
+      w.on('beforecolumndrag', me.onBeforeColumnDrag, me);
       w.on('columndrag', me.onColumnDrag, me);
 
       if (w.grouping) {
@@ -636,6 +637,10 @@
         buttonTop = newTop + w.cellHeight;
       }
 
+      if(F.nojQuery){
+        buttonTop += 1;
+      }
+
       if (animate !== false) {
         me.buttonsEl.animate({
           top: buttonTop
@@ -732,9 +737,16 @@
         return;
       }
 
-      setTimeout(function () {
-        me.setSizes();
-      }, ANIMATE_DURATION);
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.setSizes();
+        }, 400);
+      }
+      else {
+        setTimeout(function () {
+          me.setSizes();
+        }, ANIMATE_DURATION);
+      }
     },
     /*
      *
@@ -973,6 +985,12 @@
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
+    onBeforeColumnDrag: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
     onColumnDrag: function () {
       var me = this;
 
@@ -1007,6 +1025,7 @@
         if (w.leftColumns) {
           F.each(w.leftColumns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.leftEl.destroy();
         }
@@ -1014,6 +1033,7 @@
         if (w.columns) {
           F.each(w.columns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.el.destroy();
         }
@@ -1021,6 +1041,7 @@
         if (w.rightColumns) {
           F.each(w.rightColumns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.rightEl.destroy();
         }

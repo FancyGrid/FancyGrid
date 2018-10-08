@@ -25,6 +25,8 @@
     constructor: function (config, scope) {
       var me = this;
 
+      Fancy.loadStyle();
+
       me.prepareConfigTheme(config);
       me.prepareConfigSize(config);
       me.Super('const', arguments);
@@ -50,6 +52,19 @@
       var me = this;
 
       me.Super('render', arguments);
+
+      if( Fancy.loadingStyle ){
+        me.el.css('opacity', 0);
+        me.intervalStyleLoad = setInterval(function(){
+          if(!Fancy.loadingStyle){
+            clearInterval(me.intervalStyleLoad);
+            me.el.animate({
+              'opacity': 1,
+              force: true
+            });
+          }
+        }, 100);
+      }
 
       me.panelBodyEl = me.el.select('.' + PANEL_BODY_INNER_CLS).item(0);
 

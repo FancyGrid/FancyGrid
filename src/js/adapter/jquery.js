@@ -469,7 +469,17 @@ Fancy.Element.prototype = {
    */
   animate: function(style,speed,easing,callback){
     var _style = {},
-      doAnimating = false;
+      doAnimating = false,
+      force = style.force;
+
+    if(!Fancy.nojQuery){
+      doAnimating = true;
+      force = true;
+    }
+
+    if(Fancy.isObject(style)){
+      delete style.force;
+    }
 
     for(var p in style){
       var newValue = style[p];
@@ -494,7 +504,12 @@ Fancy.Element.prototype = {
       return;
     }
 
-    this.$dom.animate(_style,speed,easing,callback);
+    if(force){
+      this.$dom.animate(_style,speed,easing,callback);
+    }
+    else {
+      this.$dom.css(_style);
+    }
   },
   /*
    *

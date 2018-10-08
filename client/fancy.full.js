@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.47',
+  version: '1.7.48',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -564,6 +564,7 @@ Fancy.apply(Fancy, {
   GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
   GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
   GRID_COLUMN_ROW_DRAG_CLS: 'fancy-grid-column-row-drag',
+  GRID_ANIMATION_CLS: 'fancy-grid-animation',
   //grid spark column
   GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
   GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
@@ -663,7 +664,8 @@ Fancy.apply(Fancy, {
 });
 
 // Animation duration for all animations
-Fancy.ANIMATE_DURATION = 300;
+//Fancy.ANIMATE_DURATION = 300;
+Fancy.ANIMATE_DURATION = 400;
 
 (function(){
 
@@ -971,6 +973,12 @@ var FancyForm = function(){
 
       _link.href = MODULESDIR + name + endUrl;
       _link.rel = 'stylesheet';
+
+      Fancy.loadingStyle = true;
+
+      _link.onload = function(){
+        Fancy.loadingStyle = false;
+      };
 
       head.appendChild(_link);
     }
@@ -7431,7 +7439,17 @@ Fancy.Element.prototype = {
    */
   animate: function(style,speed,easing,callback){
     var _style = {},
-      doAnimating = false;
+      doAnimating = false,
+      force = style.force;
+
+    if(!Fancy.nojQuery){
+      doAnimating = true;
+      force = true;
+    }
+
+    if(Fancy.isObject(style)){
+      delete style.force;
+    }
 
     for(var p in style){
       var newValue = style[p];
@@ -7456,7 +7474,12 @@ Fancy.Element.prototype = {
       return;
     }
 
-    this.$dom.animate(_style,speed,easing,callback);
+    if(force){
+      this.$dom.animate(_style,speed,easing,callback);
+    }
+    else {
+      this.$dom.css(_style);
+    }
   },
   /*
    *
@@ -11035,8 +11058,6 @@ Fancy.define('Fancy.toolbar.Tab', {
    */
   init: function(){
     this.Super('init', arguments);
-
-    Fancy.loadStyle();
   },
   cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
@@ -11855,6 +11876,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
     e.preventDefault();
 
+    if(Fancy.nojQuery){
+      me.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+    }
+
     if(Fancy.isTouch){
       var _e = e.originalEvent.changedTouches[0];
 
@@ -11898,6 +11923,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       width: me.newResizeWidth,
       height: me.newResizeHeight
     });
+
+    if(Fancy.nojQuery){
+      me.el.select('.fancy-grid').addCls(Fancy.GRID_ANIMATION_CLS);
+    }
   },
   /*
    * @param {Object} e
@@ -12640,6 +12669,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     constructor: function (config, scope) {
       var me = this;
 
+      Fancy.loadStyle();
+
       me.prepareConfigTheme(config);
       me.prepareConfigSize(config);
       me.Super('const', arguments);
@@ -12665,6 +12696,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var me = this;
 
       me.Super('render', arguments);
+
+      if( Fancy.loadingStyle ){
+        me.el.css('opacity', 0);
+        me.intervalStyleLoad = setInterval(function(){
+          if(!Fancy.loadingStyle){
+            clearInterval(me.intervalStyleLoad);
+            me.el.animate({
+              'opacity': 1,
+              force: true
+            });
+          }
+        }, 100);
+      }
 
       me.panelBodyEl = me.el.select('.' + PANEL_BODY_INNER_CLS).item(0);
 
@@ -12996,8 +13040,6 @@ Fancy.define('Fancy.toolbar.Tab', {
    */
   init: function(){
     this.Super('init', arguments);
-
-    Fancy.loadStyle();
   },
   cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
   /*
@@ -14321,6 +14363,33 @@ Fancy.define('Fancy.bar.Text', {
         F.cls,
         me.widgetCls
       );
+
+      if( Fancy.loadingStyle ){
+        if(me.panel){
+          me.panel.el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.panel.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+        else {
+          el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+      }
 
       if(!el.attr('id')){
         el.attr('id', me.id);
@@ -24177,6 +24246,33 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.cls
       );
 
+      if( Fancy.loadingStyle ){
+        if(me.panel){
+          me.panel.el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.panel.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+        else {
+          el.css('opacity', 0);
+          me.intervalStyleLoad = setInterval(function(){
+            if(!Fancy.loadingStyle){
+              clearInterval(me.intervalStyleLoad);
+              me.el.animate({
+                'opacity': 1,
+                force: true
+              });
+            }
+          }, 100);
+        }
+      }
+
       el.attr('id', me.id);
 
       if (me.panel === undefined && me.shadow) {
@@ -24218,6 +24314,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       me.setHardBordersWidth();
+
+      setTimeout(function(){
+        if(Fancy.nojQuery){
+          me.el.addCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }, 100);
 
       me.rendered = true;
     },
@@ -26407,13 +26509,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      * @param {String} text
      */
     showLoadMask: function (text) {
-      this.loadmask.showLoadMask(text);
+      this.loadmask.show(text);
     },
     /*
      *
      */
     hideLoadMask: function () {
-      this.loadmask.hideLoadMask();
+      this.loadmask.hide();
     },
     /*
      *
@@ -27300,7 +27402,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown', 'columntitlechange',
       'cellclick', 'celldblclick', 'cellenter', 'cellleave', 'cellmousedown', 'beforecellmousedown',
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
-      'columndrag',
+      'beforecolumndrag', 'columndrag',
       'columnhide', 'columnshow',
       'scroll', 'nativescroll',
       'remove',
@@ -28099,6 +28201,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       s.on('changepages', me.onChangePages, me);
 
+      w.on('columndrag', me.onColumnDrag, me);
+
       setTimeout(function () {
         me.update();
       }, 1);
@@ -28342,10 +28446,20 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {Object} e
      */
     onMouseDownRightSpin: function (e) {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (F.isTouch) {
         return;
+      }
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
       }
 
       e.preventDefault();
@@ -28364,9 +28478,19 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     onMouseDownBottomSpin: function (e) {
       var me = this,
+        w = me.widget,
         targetEl = F.get(e.target);
 
       e.preventDefault();
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }
 
       me.bottomKnobDown = true;
       me.mouseDownXY = {
@@ -28390,6 +28514,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
         return;
+      }
+
+      if(Fancy.nojQuery){
+        w.addCls(Fancy.GRID_ANIMATION_CLS);
       }
 
       me.scrollRightEl.removeCls(RIGHT_SCROLL_ACTIVE_CLS);
@@ -29052,22 +29180,69 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
+    },
+    /*
+     *
+     */
+    onColumnDrag: function () {
+      var me = this;
+
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.update();
+        }, F.ANIMATE_DURATION);
+      }
+
+      /*
+
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.update();
+          me.widget.setColumnsPosition(true);
+        }, F.ANIMATE_DURATION);
+      }
+      else{
+        me.update();
+        me.widget.setColumnsPosition(true);
+      }
+      */
     },
     /*
      *
      */
     onRightLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
     },
     /*
      *
      */
     onUnLockColumn: function () {
-      this.update();
-      this.widget.setColumnsPosition();
+      var me = this;
+
+      me.update();
+      me.widget.setColumnsPosition();
+
+      setTimeout(function () {
+        me.update();
+        me.widget.setColumnsPosition();
+      }, F.ANIMATE_DURATION);
     },
     /*
      *
@@ -29779,49 +29954,38 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     }
     else{
       el.css('display', 'block');
-      me.showLoadMask();
+      //me.show();
     }
-    el.css('opacity', 1);
+
+    //el.css('opacity', 1);
   },
   /*
    *
    */
   onBeforeLoad: function(){
-    this.showLoadMask();
+    this.show();
   },
   /*
    *
    */
   onLoad: function(){
-    this.hideLoadMask();
+    this.hide();
   },
   /*
    * @param {String} text
    */
-  showLoadMask: function(text){
+  show: function(text){
     var me = this,
+      el = me.el,
       w = me.widget,
-      lang = w.lang,
-      width = w.getWidth(),
-      height = w.getHeight();
+      lang = w.lang;
+
+    el.stop();
+    el.css('opacity', 1);
 
     me.el.css('display', 'block');
 
-    me.el.css({
-      height: height,
-      width: width
-    });
-
-    var innerWidth = Math.abs(me.innerEl.width()),
-      innerHeight = Math.abs(me.innerEl.height());
-
-    var left = width/2 - innerWidth/2,
-      top = height/2 - innerHeight/2;
-
-    me.innerEl.css({
-      left: left,
-      top: top
-    });
+    me.updateSize();
 
     if(text){
       me.textEl.update(text);
@@ -29842,9 +30006,47 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  hideLoadMask: function(){
-    this.loaded = true;
-    this.el.css('display', 'none');
+  hide: function(){
+    var me = this,
+      w = me.widget,
+      el = me.el;
+
+    el.stop();
+    el.css('opacity', 1);
+    el.animate({
+      opacity: 0,
+      force: true
+    }, {
+      complete: function () {
+        me.loaded = true;
+        el.css('display', 'none');
+      }
+    });
+  },
+  /*
+   *
+   */
+  updateSize: function(){
+    var me = this,
+      w = me.widget,
+      width = w.getWidth(),
+      height = w.getHeight();
+
+    me.el.css({
+      height: height,
+      width: width
+    });
+
+    var innerWidth = Math.abs(me.innerEl.width()),
+      innerHeight = Math.abs(me.innerEl.height());
+
+    var left = width/2 - innerWidth/2,
+      top = height/2 - innerHeight/2;
+
+    me.innerEl.css({
+      left: left,
+      top: top
+    });
   }
 });
 /*
@@ -30811,6 +31013,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
 
       if(me.ok){
+        me.fire('beforecolumndrag');
+
         if(me.inSide === me.activeSide){
           me.dragColumn(me.inSide);
         }
@@ -30819,6 +31023,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           if(me.okPosition === 'right'){
             inIndex++;
           }
+
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
@@ -33089,6 +33294,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.on('rightlockcolumn', me.onRightLockColumn, me);
       w.on('unlockcolumn', me.onUnLockColumn, me);
 
+      w.on('beforecolumndrag', me.onBeforeColumnDrag, me);
       w.on('columndrag', me.onColumnDrag, me);
 
       if (w.grouping) {
@@ -33676,6 +33882,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         buttonTop = newTop + w.cellHeight;
       }
 
+      if(F.nojQuery){
+        buttonTop += 1;
+      }
+
       if (animate !== false) {
         me.buttonsEl.animate({
           top: buttonTop
@@ -33772,9 +33982,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
-      setTimeout(function () {
-        me.setSizes();
-      }, ANIMATE_DURATION);
+      if(F.nojQuery){
+        setTimeout(function () {
+          me.setSizes();
+        }, 400);
+      }
+      else {
+        setTimeout(function () {
+          me.setSizes();
+        }, ANIMATE_DURATION);
+      }
     },
     /*
      *
@@ -34013,6 +34230,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
+    onBeforeColumnDrag: function () {
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
     onColumnDrag: function () {
       var me = this;
 
@@ -34047,6 +34270,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         if (w.leftColumns) {
           F.each(w.leftColumns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.leftEl.destroy();
         }
@@ -34054,6 +34278,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         if (w.columns) {
           F.each(w.columns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.el.destroy();
         }
@@ -34061,6 +34286,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         if (w.rightColumns) {
           F.each(w.rightColumns, function (column) {
             column.rowEditor.destroy();
+            delete column.rowEditor;
           });
           me.rightEl.destroy();
         }
@@ -39179,6 +39405,8 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
 
       if(me.ok){
+        me.fire('beforecolumndrag');
+
         if(me.inSide === me.activeSide){
           me.dragColumn(me.inSide);
         }
@@ -39187,6 +39415,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           if(me.okPosition === 'right'){
             inIndex++;
           }
+
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
@@ -46246,7 +46475,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         var column = columns[i],
           columnEl = bodyDomColumns.item(i);
 
-        if(animate) {
+        if(animate && !F.nojQuery) {
           columnEl.animate({
             left: columnsWidth + 'px'
           }, F.ANIMATE_DURATION);
