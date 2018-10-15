@@ -396,6 +396,10 @@
         }
       }
 
+      if(document.activeElement){
+        document.activeElement.blur();
+      }
+
       var e = params.e,
         target = e.target,
         isCTRL = e.ctrlKey;
@@ -1302,6 +1306,10 @@
         return;
       }
 
+      if(document.activeElement){
+        document.activeElement.blur();
+      }
+
       var columnEl = F.get(params.columnDom);
 
       me.isMouseDown = true;
@@ -1334,6 +1342,10 @@
 
       if (!me.cells || !me.enabled) {
         return;
+      }
+
+      if(document.activeElement){
+        document.activeElement.blur();
       }
 
       var cellEl = F.get(params.cell);

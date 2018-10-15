@@ -18,6 +18,7 @@
     ptype: 'grid.grouping',
     inWidgetName: 'grouping',
     tpl: '{text}:{number}',
+    sortGroups: 'asc',
     _renderFirstTime: true,
     /*
      * @constructor
@@ -114,7 +115,9 @@
       var me = this,
         w = me.widget,
         s = w.store,
-        o = s.initGroups(dataProperty);
+        o;
+
+      o = s.initGroups(dataProperty);
 
       me.groups = o.groups;
       me.groupsCounts = o._groups;
@@ -163,7 +166,7 @@
             //TODO
             break;
           case 'array':
-            //TODO
+            groups = me.order;
             break;
         }
       }
@@ -179,7 +182,19 @@
           upperGroups.push(upperGroup);
         });
 
-        upperGroups = upperGroups.sort();
+        switch(me.sortGroups){
+          case 'asc':
+          case 'ASC':
+          case true:
+            upperGroups = upperGroups.sort();
+            break;
+          case 'desc':
+          case 'DESC':
+            upperGroups = upperGroups.sort().reverse();
+            break;
+          case false:
+            break;
+        }
 
         for (; i < iL; i++) {
           groups[i] = groupNameUpperCase[upperGroups[i]];

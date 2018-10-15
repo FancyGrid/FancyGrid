@@ -19,14 +19,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    */
   init: function(){},
   /*
-   *
+   * @param {String} [type]
    */
-  update: function(){
-    var w = this.widget;
+  update: function(type){
+    var w = this.widget,
+      type = type || '';
 
-    w.leftBody.update();
-    w.body.update();
-    w.rightBody.update();
+    w.leftBody.update(type);
+    w.body.update(type);
+    w.rightBody.update(type);
   },
   /*
    * @param {Number} rowIndex

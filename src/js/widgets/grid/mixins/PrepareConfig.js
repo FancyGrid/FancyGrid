@@ -220,12 +220,24 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigData: function(config, originalConfig){
+    if(!config.data){
+      config.data = [];
+    }
+
     if(Fancy.isArray(config.data) && config.data.length === 0 && config.columns){
       var fields = [];
 
       Fancy.each(config.columns, function(column){
         if(column.index){
           fields.push(column.index || column.key);
+        }
+
+        if(column.columns){
+          Fancy.each(column.columns, function (column) {
+            if(column.index){
+              fields.push(column.index || column.key);
+            }
+          })
         }
       });
 
@@ -295,8 +307,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           column[p] = config.defaults[p];
         }
 
-        if(p === 'width' && column[p].flex){
-          delete column[p].width;
+        if(p === 'width' && column.flex){
+          delete column.width;
         }
       });
     });

@@ -38,21 +38,69 @@
 
   F.grid.body.mixin.Updater.prototype = {
     /*
-     *
+     * @param {String} type
      */
-    update: function () {
+    update: function (type) {
       var me = this,
         w = me.widget,
         s = w.store;
 
-      me.checkDomColumns();
+      switch (type){
+        case 'cell':
+        case 'cells':
+          break;
+        default:
+          me.checkDomColumns();
+      }
 
       if (s.loading) {
         return;
       }
 
-      me.checkDomCells();
-      me.updateRows();
+      switch (type){
+        case 'row':
+        case 'rows':
+          var changes = s.changed;
+
+          for(var id in changes){
+            var item = changes[id],
+              rowIndex = w.getRowById(id);
+
+            for(var key in item){
+              switch (key){
+                case 'length':
+                  break;
+                default:
+                  me.updateRows(rowIndex);
+              }
+            }
+          }
+          break;
+        case 'cell':
+        case 'cells':
+          var changes = s.changed;
+
+          for(var id in changes){
+            var item = changes[id],
+              rowIndex = w.getRowById(id);
+
+            for(var key in item){
+              switch (key){
+                case 'length':
+                  break;
+                default:
+                  var _o = w.getColumnOrderByKey(key);
+
+                  me.updateRows(rowIndex, _o.order);
+              }
+            }
+          }
+
+          break;
+        default:
+          me.checkDomCells();
+          me.updateRows();
+      }
 
       me.showEmptyText();
     },
@@ -253,6 +301,10 @@
       if (columnIndex !== undefined) {
         i = columnIndex;
         iL = columnIndex + 1;
+
+        if(iL >= columns.length){
+          return;
+        }
       }
 
       for (; i < iL; i++) {

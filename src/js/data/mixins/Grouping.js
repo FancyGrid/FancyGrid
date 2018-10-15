@@ -213,7 +213,19 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       upperGroups.push(upperGroup);
     });
 
-    upperGroups = upperGroups.sort();
+    switch(me.widget.grouping.sortGroups){
+      case 'asc':
+      case 'ASC':
+      case true:
+        upperGroups = upperGroups.sort();
+        break;
+      case 'desc':
+      case 'DESC':
+        upperGroups = upperGroups.sort().reverse();
+        break;
+      case false:
+        break;
+    }
 
     var i = 0,
       iL = groups.length;

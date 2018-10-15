@@ -456,6 +456,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.fire('lockcolumn', {
       column: removedColumn
     });
+
+    me.update();
   },
   /*
    * @param {Number|String} indexOrder
@@ -486,6 +488,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.fire('rightlockcolumn', {
       column: removedColumn
     });
+
+    me.update();
   },
   /*
    * @param {Number|String} indexOrder
