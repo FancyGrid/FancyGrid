@@ -3,6 +3,7 @@
  */
 Fancy.define('Fancy.spark.ProgressBar', {
   tipTpl: '{value} {suffix}',
+  tip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -56,17 +57,30 @@ Fancy.define('Fancy.spark.ProgressBar', {
   onMouseEnter: function(e){
     var me = this,
       value = me.el.attr('value'),
-      suffix = '%';
+      suffix = '%',
+      text;
 
     if(me.percents === false){
       suffix = '';
     }
 
-    var tpl = new Fancy.Template(me.tipTpl),
+    if(me.tip === false || !me.tipTpl){
+      return;
+    }
+
+    if(Fancy.isFunction(me.tipTpl)){
+      text = me.tipTpl({
+        value: value,
+        suffix: suffix
+      });
+    }
+    else {
+      var tpl = new Fancy.Template(me.tipTpl);
       text = tpl.getHTML({
         value: value,
         suffix: suffix
       });
+    }
 
     Fancy.tip.update(text);
   },
@@ -74,12 +88,18 @@ Fancy.define('Fancy.spark.ProgressBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
+    if(!this.tip || !this.tipTpl){
+      return;
+    }
     Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
+    if(!this.tip || !this.tipTpl){
+      return;
+    }
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*

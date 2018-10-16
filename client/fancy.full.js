@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.49',
+  version: '1.7.50',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1348,6 +1348,10 @@ Fancy.Date = {
       m,
       mode = mode || '';
 
+    if(date.toString() === 'Invalid Date'){
+      return '';
+    }
+
     mode = mode.toLocaleLowerCase();
 
     if(lang === undefined){
@@ -2212,6 +2216,13 @@ Fancy.Number = {
    */
   correctFloat: function(value){
     return parseFloat(value.toPrecision(14));
+  },
+  /**
+   * @param {Number} value
+   * @return {String}
+   */
+  format: function (value, sep) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep || ',');
   }
 };
 /*
@@ -16264,6 +16275,7 @@ if(!Fancy.nojQuery && Fancy.$){
           switch(me.type) {
             case 'field.number':
             case 'field.string':
+            case 'field.date':
               setTimeout(function () {
                 if(me.getValue() === ''){
                   me.fire('empty');
@@ -23028,9 +23040,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           }
 
           _columns = _columns.concat(column.columns);
-
-          isGrouped = true;
-          groups.push(column);
         }
         else{
           _columns = _columns.concat( columns.slice(i, i+1) );
@@ -23504,7 +23513,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigSize: function(config, originalConfig){
-    var renderTo = config.renderTo,
+    var me = this,
+      renderTo = config.renderTo,
       length,
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
@@ -23658,6 +23668,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.heightFit = true;
 
       config.height = height;
+    }
+
+    if(isPanel && !config.title){
+      config.panelBodyBorders = [0,0,0,0];
+      setTimeout(function () {
+        if(me.panel){
+          me.panel.css('border-bottom-width', 0);
+        }
+      },1);
     }
 
     return config;
@@ -24399,8 +24418,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.paging.update();
       }
 
-      me.scroller.update();
-
       if(o && o.flash){
         var changes = me.store.changed;
 
@@ -24435,6 +24452,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
 
         me.clearDirty();
+      }
+      else{
+        me.scroller.update();
       }
     },
     /*
@@ -26399,7 +26419,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       me.columns[orderIndex].disabled[legend] = true;
 
-      me.body.updateRows(undefined, orderIndex);
+      //me.body.updateRows(undefined, orderIndex);
+      me.update();
     },
     /*
      * @param {Number} orderIndex
@@ -26411,7 +26432,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       delete me.columns[orderIndex].disabled[legend];
 
-      me.body.updateRows(undefined, orderIndex);
+      //me.body.updateRows(undefined, orderIndex);
+      me.update();
     },
     /*
      *
@@ -33056,7 +33078,11 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           key = me.getActiveColumnKey();
           value = me.prepareValue(value);
 
-          s.set(o.rowIndex, key, value);
+          //date field when data item value is null
+          if(value === '' && s.get(o.rowIndex, key) === null){}
+          else{
+            s.set(o.rowIndex, key, value);
+          }
         }
 
         editor.hide();
@@ -33262,7 +33288,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         case 'date':
           if (column.format && column.format.read) {
             var date = column.editor.getDate();
-            value = F.Date.format(date, column.format.read, undefined, column.format.mode);
+
+            if(value){
+              value = F.Date.format(date, column.format.read, undefined, column.format.mode);
+            }
           }
           break;
       }
@@ -33436,6 +33465,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       me.changed = {};
 
+      for(var p in o.data){
+        if(o.data[p] === null){
+          o.data[p] = '';
+        }
+      }
+
       if (!me.rendered) {
         me.render();
         me.changePosition(o.rowIndex, false);
@@ -33562,6 +33597,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           checkValidOnTyping: true,
           events: [{
             change: me.onFieldChange,
+            delay: 100,
+            scope: me
+          },{
+            empty: me.onFieldEmpty,
             delay: 100,
             scope: me
           }, {
@@ -34205,6 +34244,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
       else {
         me.changed[field.index] = newValue;
+      }
+    },
+    onFieldEmpty: function (field) {
+      var me = this;
+
+      if (field.vtype && !field.isValid()) {
+        delete me.changed[field.index];
+      }
+      else {
+        me.changed[field.index] = '';
       }
     },
     /*
@@ -41134,7 +41183,6 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
         F.tip.update(tpl.getHTML(data));
         F.tip.show(e.pageX + 15, e.pageY - 25);
-
       }
     },
     /*
@@ -50321,6 +50369,13 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   svgns: 'http://www.w3.org/2000/svg',
   sum: 100,
   prefix: 'fancy-spark-progress-donut-',
+  colorBGPlus: '#eee',
+  colorPlus: '#44A4D3',
+  colorBGMinus: '#F9DDE0',
+  colorMinus: '#EA7369',
+  tipTpl: '{value}',
+  tip: true,
+  tooltip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -50383,16 +50438,16 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this,
       value = me.el.attr('value');
 
-    if(me.tipTpl){
-      var tpl = new Fancy.Template(me.tipTpl);
-      value = tpl.getHTML({
-        value: value
-      });
+    if(!me.tip || !me.tipTpl){
+      return;
     }
 
-    me.tooltip = new Fancy.ToolTip({
-      text: '<span style="color: '+me.color+';">●</span> ' + value
+    var tpl = new Fancy.Template(me.tipTpl);
+    value = tpl.getHTML({
+      value: value
     });
+
+    Fancy.tip.update('<span style="color: '+me.color+';">●</span> ' + value);
   },
   /*
    * @param {Object} e
@@ -50400,7 +50455,11 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   onMouseLeave: function(e){
     var me = this;
 
-    me.tooltip.destroy();
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
+    Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
@@ -50413,8 +50472,11 @@ Fancy.define('Fancy.spark.ProgressDonut', {
       return;
     }
 
-    me.tooltip.css('display', 'block');
-    me.tooltip.show(e.pageX + 15, e.pageY - 25);
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
+    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *
@@ -50423,12 +50485,12 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this;
     
     if(me.value < 0){
-      me.backColor = '#F9DDE0';
-      me.color = '#EA7369';
+      me.backColor = me.colorBGMinus;
+      me.color = me.colorPlus;
     }
     else{
-      me.backColor = '#eee';
-      me.color = '#44A4D3';
+      me.backColor = me.colorBGPlus;
+      me.color = me.colorPlus;
     }
   },
   /*
@@ -50632,6 +50694,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
 Fancy.define('Fancy.spark.GrossLoss', {
   maxValue: 100,
   tipTpl: '<span style="color: {color};">●</span> {value} {suffix}',
+  tip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -50673,6 +50736,10 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix = '',
       text;
 
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
     if(me.percents){
       suffix = ' %';
     }
@@ -50684,22 +50751,29 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix: suffix
     });
 
-    me.tooltip = new Fancy.ToolTip({
-      text: text
-    });
+    Fancy.tip.update(text);
   },
   /*
    *
    */
   onMouseLeave: function(){
-    this.tooltip.destroy();
+    var me = this;
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
+    Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    this.tooltip.el.css('display', 'block');
-    this.tooltip.show(e.pageX + 15, e.pageY - 25);
+    var me = this;
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
+    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *
@@ -50750,6 +50824,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
  */
 Fancy.define('Fancy.spark.ProgressBar', {
   tipTpl: '{value} {suffix}',
+  tip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -50803,17 +50878,30 @@ Fancy.define('Fancy.spark.ProgressBar', {
   onMouseEnter: function(e){
     var me = this,
       value = me.el.attr('value'),
-      suffix = '%';
+      suffix = '%',
+      text;
 
     if(me.percents === false){
       suffix = '';
     }
 
-    var tpl = new Fancy.Template(me.tipTpl),
+    if(me.tip === false || !me.tipTpl){
+      return;
+    }
+
+    if(Fancy.isFunction(me.tipTpl)){
+      text = me.tipTpl({
+        value: value,
+        suffix: suffix
+      });
+    }
+    else {
+      var tpl = new Fancy.Template(me.tipTpl);
       text = tpl.getHTML({
         value: value,
         suffix: suffix
       });
+    }
 
     Fancy.tip.update(text);
   },
@@ -50821,12 +50909,18 @@ Fancy.define('Fancy.spark.ProgressBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
+    if(!this.tip || !this.tipTpl){
+      return;
+    }
     Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
+    if(!this.tip || !this.tipTpl){
+      return;
+    }
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
@@ -50995,6 +51089,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
  */
 Fancy.define('Fancy.spark.HBar', {
   tipTpl: '{value}',
+  tip: true,
   maxValue: 100,
   stacked: false,
   fullStack: false,
@@ -51056,6 +51151,10 @@ Fancy.define('Fancy.spark.HBar', {
       value = Number(el.attr('value')),
       percents = Number(el.attr('percents'));
 
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     if(me.tipFormat){
       var config = {
         value: value,
@@ -51080,12 +51179,22 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
+    var me = this;
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
+    var me = this;
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*

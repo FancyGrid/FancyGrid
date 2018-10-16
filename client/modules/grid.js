@@ -1429,9 +1429,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           }
 
           _columns = _columns.concat(column.columns);
-
-          isGrouped = true;
-          groups.push(column);
         }
         else{
           _columns = _columns.concat( columns.slice(i, i+1) );
@@ -1905,7 +1902,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigSize: function(config, originalConfig){
-    var renderTo = config.renderTo,
+    var me = this,
+      renderTo = config.renderTo,
       length,
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
@@ -2059,6 +2057,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.heightFit = true;
 
       config.height = height;
+    }
+
+    if(isPanel && !config.title){
+      config.panelBodyBorders = [0,0,0,0];
+      setTimeout(function () {
+        if(me.panel){
+          me.panel.css('border-bottom-width', 0);
+        }
+      },1);
     }
 
     return config;
@@ -2484,8 +2491,6 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.paging.update();
       }
 
-      me.scroller.update();
-
       if(o && o.flash){
         var changes = me.store.changed;
 
@@ -2520,6 +2525,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
 
         me.clearDirty();
+      }
+      else{
+        me.scroller.update();
       }
     },
     /*
@@ -4484,7 +4492,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       me.columns[orderIndex].disabled[legend] = true;
 
-      me.body.updateRows(undefined, orderIndex);
+      //me.body.updateRows(undefined, orderIndex);
+      me.update();
     },
     /*
      * @param {Number} orderIndex
@@ -4496,7 +4505,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       delete me.columns[orderIndex].disabled[legend];
 
-      me.body.updateRows(undefined, orderIndex);
+      //me.body.updateRows(undefined, orderIndex);
+      me.update();
     },
     /*
      *

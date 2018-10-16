@@ -3,6 +3,7 @@
  */
 Fancy.define('Fancy.spark.HBar', {
   tipTpl: '{value}',
+  tip: true,
   maxValue: 100,
   stacked: false,
   fullStack: false,
@@ -64,6 +65,10 @@ Fancy.define('Fancy.spark.HBar', {
       value = Number(el.attr('value')),
       percents = Number(el.attr('percents'));
 
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     if(me.tipFormat){
       var config = {
         value: value,
@@ -88,12 +93,22 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
+    var me = this;
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
+    var me = this;
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*

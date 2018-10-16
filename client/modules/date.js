@@ -30,6 +30,10 @@ Fancy.Date = {
       m,
       mode = mode || '';
 
+    if(date.toString() === 'Invalid Date'){
+      return '';
+    }
+
     mode = mode.toLocaleLowerCase();
 
     if(lang === undefined){

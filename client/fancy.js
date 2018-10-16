@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.49',
+  version: '1.7.50',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1340,6 +1340,13 @@ Fancy.Number = {
    */
   correctFloat: function(value){
     return parseFloat(value.toPrecision(14));
+  },
+  /**
+   * @param {Number} value
+   * @return {String}
+   */
+  format: function (value, sep) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep || ',');
   }
 };
 /*
@@ -9111,6 +9118,7 @@ if(!Fancy.nojQuery && Fancy.$){
           switch(me.type) {
             case 'field.number':
             case 'field.string':
+            case 'field.date':
               setTimeout(function () {
                 if(me.getValue() === ''){
                   me.fire('empty');
@@ -14557,7 +14565,6 @@ if(!Fancy.nojQuery && Fancy.$){
 
         F.tip.update(tpl.getHTML(data));
         F.tip.show(e.pageX + 15, e.pageY - 25);
-
       }
     },
     /*

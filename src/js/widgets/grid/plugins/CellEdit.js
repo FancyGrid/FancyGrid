@@ -400,7 +400,11 @@
           key = me.getActiveColumnKey();
           value = me.prepareValue(value);
 
-          s.set(o.rowIndex, key, value);
+          //date field when data item value is null
+          if(value === '' && s.get(o.rowIndex, key) === null){}
+          else{
+            s.set(o.rowIndex, key, value);
+          }
         }
 
         editor.hide();
@@ -606,7 +610,10 @@
         case 'date':
           if (column.format && column.format.read) {
             var date = column.editor.getDate();
-            value = F.Date.format(date, column.format.read, undefined, column.format.mode);
+
+            if(value){
+              value = F.Date.format(date, column.format.read, undefined, column.format.mode);
+            }
           }
           break;
       }

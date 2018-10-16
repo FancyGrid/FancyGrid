@@ -349,6 +349,7 @@
           switch(me.type) {
             case 'field.number':
             case 'field.string':
+            case 'field.date':
               setTimeout(function () {
                 if(me.getValue() === ''){
                   me.fire('empty');

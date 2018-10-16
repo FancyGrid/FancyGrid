@@ -778,7 +778,11 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           key = me.getActiveColumnKey();
           value = me.prepareValue(value);
 
-          s.set(o.rowIndex, key, value);
+          //date field when data item value is null
+          if(value === '' && s.get(o.rowIndex, key) === null){}
+          else{
+            s.set(o.rowIndex, key, value);
+          }
         }
 
         editor.hide();
@@ -984,7 +988,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         case 'date':
           if (column.format && column.format.read) {
             var date = column.editor.getDate();
-            value = F.Date.format(date, column.format.read, undefined, column.format.mode);
+
+            if(value){
+              value = F.Date.format(date, column.format.read, undefined, column.format.mode);
+            }
           }
           break;
       }
@@ -1157,6 +1164,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       me.changed = {};
 
+      for(var p in o.data){
+        if(o.data[p] === null){
+          o.data[p] = '';
+        }
+      }
+
       if (!me.rendered) {
         me.render();
         me.changePosition(o.rowIndex, false);
@@ -1283,6 +1296,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           checkValidOnTyping: true,
           events: [{
             change: me.onFieldChange,
+            delay: 100,
+            scope: me
+          },{
+            empty: me.onFieldEmpty,
             delay: 100,
             scope: me
           }, {
@@ -1926,6 +1943,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
       else {
         me.changed[field.index] = newValue;
+      }
+    },
+    onFieldEmpty: function (field) {
+      var me = this;
+
+      if (field.vtype && !field.isValid()) {
+        delete me.changed[field.index];
+      }
+      else {
+        me.changed[field.index] = '';
       }
     },
     /*

@@ -366,8 +366,6 @@
         me.paging.update();
       }
 
-      me.scroller.update();
-
       if(o && o.flash){
         var changes = me.store.changed;
 
@@ -402,6 +400,9 @@
         }
 
         me.clearDirty();
+      }
+      else{
+        me.scroller.update();
       }
     },
     /*
@@ -2366,7 +2367,8 @@
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       me.columns[orderIndex].disabled[legend] = true;
 
-      me.body.updateRows(undefined, orderIndex);
+      //me.body.updateRows(undefined, orderIndex);
+      me.update();
     },
     /*
      * @param {Number} orderIndex
@@ -2378,7 +2380,8 @@
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       delete me.columns[orderIndex].disabled[legend];
 
-      me.body.updateRows(undefined, orderIndex);
+      //me.body.updateRows(undefined, orderIndex);
+      me.update();
     },
     /*
      *

@@ -23,5 +23,12 @@ Fancy.Number = {
    */
   correctFloat: function(value){
     return parseFloat(value.toPrecision(14));
+  },
+  /**
+   * @param {Number} value
+   * @return {String}
+   */
+  format: function (value, sep) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep || ',');
   }
 };

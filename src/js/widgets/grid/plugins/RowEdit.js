@@ -92,6 +92,12 @@
 
       me.changed = {};
 
+      for(var p in o.data){
+        if(o.data[p] === null){
+          o.data[p] = '';
+        }
+      }
+
       if (!me.rendered) {
         me.render();
         me.changePosition(o.rowIndex, false);
@@ -218,6 +224,10 @@
           checkValidOnTyping: true,
           events: [{
             change: me.onFieldChange,
+            delay: 100,
+            scope: me
+          },{
+            empty: me.onFieldEmpty,
             delay: 100,
             scope: me
           }, {
@@ -861,6 +871,16 @@
       }
       else {
         me.changed[field.index] = newValue;
+      }
+    },
+    onFieldEmpty: function (field) {
+      var me = this;
+
+      if (field.vtype && !field.isValid()) {
+        delete me.changed[field.index];
+      }
+      else {
+        me.changed[field.index] = '';
       }
     },
     /*

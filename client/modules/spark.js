@@ -5,6 +5,13 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   svgns: 'http://www.w3.org/2000/svg',
   sum: 100,
   prefix: 'fancy-spark-progress-donut-',
+  colorBGPlus: '#eee',
+  colorPlus: '#44A4D3',
+  colorBGMinus: '#F9DDE0',
+  colorMinus: '#EA7369',
+  tipTpl: '{value}',
+  tip: true,
+  tooltip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -67,16 +74,16 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this,
       value = me.el.attr('value');
 
-    if(me.tipTpl){
-      var tpl = new Fancy.Template(me.tipTpl);
-      value = tpl.getHTML({
-        value: value
-      });
+    if(!me.tip || !me.tipTpl){
+      return;
     }
 
-    me.tooltip = new Fancy.ToolTip({
-      text: '<span style="color: '+me.color+';">●</span> ' + value
+    var tpl = new Fancy.Template(me.tipTpl);
+    value = tpl.getHTML({
+      value: value
     });
+
+    Fancy.tip.update('<span style="color: '+me.color+';">●</span> ' + value);
   },
   /*
    * @param {Object} e
@@ -84,7 +91,11 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   onMouseLeave: function(e){
     var me = this;
 
-    me.tooltip.destroy();
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
+    Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
@@ -97,8 +108,11 @@ Fancy.define('Fancy.spark.ProgressDonut', {
       return;
     }
 
-    me.tooltip.css('display', 'block');
-    me.tooltip.show(e.pageX + 15, e.pageY - 25);
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
+    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *
@@ -107,12 +121,12 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this;
     
     if(me.value < 0){
-      me.backColor = '#F9DDE0';
-      me.color = '#EA7369';
+      me.backColor = me.colorBGMinus;
+      me.color = me.colorPlus;
     }
     else{
-      me.backColor = '#eee';
-      me.color = '#44A4D3';
+      me.backColor = me.colorBGPlus;
+      me.color = me.colorPlus;
     }
   },
   /*
@@ -315,6 +329,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
 Fancy.define('Fancy.spark.GrossLoss', {
   maxValue: 100,
   tipTpl: '<span style="color: {color};">●</span> {value} {suffix}',
+  tip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -356,6 +371,10 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix = '',
       text;
 
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
     if(me.percents){
       suffix = ' %';
     }
@@ -367,22 +386,29 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix: suffix
     });
 
-    me.tooltip = new Fancy.ToolTip({
-      text: text
-    });
+    Fancy.tip.update(text);
   },
   /*
    *
    */
   onMouseLeave: function(){
-    this.tooltip.destroy();
+    var me = this;
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
+    Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    this.tooltip.el.css('display', 'block');
-    this.tooltip.show(e.pageX + 15, e.pageY - 25);
+    var me = this;
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
+    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *
@@ -432,6 +458,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
  */
 Fancy.define('Fancy.spark.ProgressBar', {
   tipTpl: '{value} {suffix}',
+  tip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -485,17 +512,30 @@ Fancy.define('Fancy.spark.ProgressBar', {
   onMouseEnter: function(e){
     var me = this,
       value = me.el.attr('value'),
-      suffix = '%';
+      suffix = '%',
+      text;
 
     if(me.percents === false){
       suffix = '';
     }
 
-    var tpl = new Fancy.Template(me.tipTpl),
+    if(me.tip === false || !me.tipTpl){
+      return;
+    }
+
+    if(Fancy.isFunction(me.tipTpl)){
+      text = me.tipTpl({
+        value: value,
+        suffix: suffix
+      });
+    }
+    else {
+      var tpl = new Fancy.Template(me.tipTpl);
       text = tpl.getHTML({
         value: value,
         suffix: suffix
       });
+    }
 
     Fancy.tip.update(text);
   },
@@ -503,12 +543,18 @@ Fancy.define('Fancy.spark.ProgressBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
+    if(!this.tip || !this.tipTpl){
+      return;
+    }
     Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
+    if(!this.tip || !this.tipTpl){
+      return;
+    }
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
@@ -676,6 +722,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
  */
 Fancy.define('Fancy.spark.HBar', {
   tipTpl: '{value}',
+  tip: true,
   maxValue: 100,
   stacked: false,
   fullStack: false,
@@ -737,6 +784,10 @@ Fancy.define('Fancy.spark.HBar', {
       value = Number(el.attr('value')),
       percents = Number(el.attr('percents'));
 
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     if(me.tipFormat){
       var config = {
         value: value,
@@ -761,12 +812,22 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} e
    */
   onMouseLeave: function(e){
+    var me = this;
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
+    var me = this;
+    if(!me.tip || !me.tipTpl){
+      return;
+    }
+
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*

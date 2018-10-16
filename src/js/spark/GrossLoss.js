@@ -4,6 +4,7 @@
 Fancy.define('Fancy.spark.GrossLoss', {
   maxValue: 100,
   tipTpl: '<span style="color: {color};">●</span> {value} {suffix}',
+  tip: true,
   /*
    * @constructor
    * @param {Object} o
@@ -45,6 +46,10 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix = '',
       text;
 
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
     if(me.percents){
       suffix = ' %';
     }
@@ -56,22 +61,29 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix: suffix
     });
 
-    me.tooltip = new Fancy.ToolTip({
-      text: text
-    });
+    Fancy.tip.update(text);
   },
   /*
    *
    */
   onMouseLeave: function(){
-    this.tooltip.destroy();
+    var me = this;
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
+    Fancy.tip.hide(500);
   },
   /*
    * @param {Object} e
    */
   onMouseMove:  function(e){
-    this.tooltip.el.css('display', 'block');
-    this.tooltip.show(e.pageX + 15, e.pageY - 25);
+    var me = this;
+    if(!me.tipTpl || !me.tip){
+      return;
+    }
+
+    Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
    *

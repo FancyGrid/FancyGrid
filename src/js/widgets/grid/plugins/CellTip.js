@@ -76,7 +76,6 @@
 
         F.tip.update(tpl.getHTML(data));
         F.tip.show(e.pageX + 15, e.pageY - 25);
-
       }
     },
     /*
