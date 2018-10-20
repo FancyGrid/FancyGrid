@@ -42,7 +42,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -850,8 +850,6 @@
 
       F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
 
-      var rowCells = w.getDomRow(rowIndex);
-
       if (params.column.index === '$selected') {
         var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
 
@@ -866,7 +864,7 @@
         w.fire('select', me.getSelection());
       }
       else if (select) {
-        if((me.allowDeselect) && hasSelection){}
+        if((me.allowDeselect) && hasSelection) {}
         else {
           me.domSelectRow(rowIndex);
           me.selectCheckBox(rowIndex);
@@ -940,24 +938,11 @@
         me.clearSelection();
       }
 
-      var rowCells = w.getDomRow(rowIndex),
-        dataItem = w.get(rowIndex);
-
       if(value){
         me.domSelectRow(rowIndex);
-        /*
-        F.each(rowCells, function (cell) {
-          F.get(cell).addCls(GRID_CELL_SELECTED_CLS);
-        });
-        */
       }
       else{
         me.domDeSelectRow(rowIndex);
-        /*
-        F.each(rowCells, function (cell) {
-          F.get(cell).removeCls(GRID_CELL_SELECTED_CLS);
-        });
-        */
       }
 
       F.each(w.columns, function (column, i) {
@@ -1931,26 +1916,6 @@
           }
         }, 20);
       }
-    },
-    /*
-     *
-     */
-    onColumnDrag: function () {
-      var me = this,
-        w = me.widget,
-        selectModel;
-
-      if(me.cells || me.cell || me.column || me.columns){
-        me.clearSelection();
-        return;
-      }
-
-      selectModel = me.getSelection(true);
-
-      //reselecting rows
-      F.each(selectModel, function (rowIndex) {
-        w.selectRow(rowIndex);
-      });
     },
     /*
      *

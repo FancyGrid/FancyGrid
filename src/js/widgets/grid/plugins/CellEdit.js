@@ -18,7 +18,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -62,8 +62,7 @@
       else if (o.column.type === 'date') {
         return;
       }
-      else if (o.column.type === 'combo') {
-      }
+      else if (o.column.type === 'combo') {}
       else {
         var cellEl = targetEl.closest('.' + GRID_CELL_CLS);
 
@@ -401,7 +400,7 @@
           value = me.prepareValue(value);
 
           //date field when data item value is null
-          if(value === '' && s.get(o.rowIndex, key) === null){}
+          if(value === '' && s.get(o.rowIndex, key) === null) {}
           else{
             s.set(o.rowIndex, key, value);
           }
@@ -503,8 +502,7 @@
      * @param {Object} editor
      * @param {String} value
      */
-    onKey: function (editor, value) {
-    },
+    onKey: function (editor, value) {},
     /*
      * @param {String} value
      */

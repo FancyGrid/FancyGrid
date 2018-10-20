@@ -115,7 +115,6 @@
             break;
           case 'right':
             return;
-            break;
         }
       }
 
@@ -243,7 +242,8 @@
         w = me.widget,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
-        nextCell;
+        nextCell,
+        side;
 
       info.columnIndex--;
 
@@ -251,7 +251,6 @@
         switch (info.side) {
           case 'left':
             return;
-            break;
           case 'center':
             if (w.leftColumns && w.leftColumns.length) {
               info.columnIndex = w.leftColumns.length - 1;

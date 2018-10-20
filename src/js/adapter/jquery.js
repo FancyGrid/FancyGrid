@@ -11,13 +11,10 @@ Fancy.get = function(id){
   switch(type){
     case 'string':
       return new Fancy.Element(Fancy.$('#'+id)[0]);
-      break;
     case 'array':
       return new Fancy.Elements(id);
-      break;
     default:
       return new Fancy.Element(id);
-      break;
   }
 };
 

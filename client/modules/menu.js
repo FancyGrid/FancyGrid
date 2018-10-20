@@ -322,9 +322,9 @@
       }
     },
     /*
-     * @param {Object} e
+     *
      */
-    onItemLeave: function (e) {},
+    onItemLeave: function () {},
     /*
      * @param {Number} x
      * @param {Number} y
@@ -554,7 +554,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*

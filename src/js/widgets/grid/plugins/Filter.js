@@ -24,7 +24,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.filters = {};
       this.Super('const', arguments);
     },
@@ -790,8 +790,7 @@
         fieldEl = cell.select('.' + FIELD_CLS),
         field;
 
-      if (fieldEl.length === 0) {
-      }
+      if (fieldEl.length === 0) {}
       else if (fieldEl.length === 2) {
         field = F.getWidget(fieldEl.item(0).dom.id);
 
@@ -925,8 +924,7 @@
      * @param {Boolean} update
      */
     clearFilter: function (index, operator, update) {
-      var me = this,
-        w = me.widget;
+      var me = this;
 
       if (operator === undefined) {
         delete me.filters[index];

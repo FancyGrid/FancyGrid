@@ -116,8 +116,8 @@ Fancy.ClassManager = new ClassManager();
  * @param {Object} config
  */
 Fancy.define = function(name, config){
-  var config = config || {},
-    names = [];
+  config = config || {};
+  var names = [];
   
   if( Fancy.isArray(name) ){
     names = name;

@@ -9,7 +9,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*

@@ -23,7 +23,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.log = this.log || {};
 
       this.Super('const', arguments);
@@ -184,7 +184,7 @@
       var me = this,
         w = me.widget,
         name = w.getStateName(),
-        state = localStorage.getItem(name) || '{}';
+        state = localStorage.getItem(name) || '{}',
         startState = me.startState;
 
       if(startState){

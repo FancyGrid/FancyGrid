@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.50',
+  version: '1.7.51',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -269,12 +269,14 @@ Fancy.each = function(arrayObject, fn){
  */
 Fancy.mixin = function(proto, classes){
    var i = 0,
-    iL = classes.length;
+    iL = classes.length,
+     item;
 
   if( Fancy.typeOf( classes[0] ) === 'object' ){
     for(;i<iL;i++){
-      var item = classes[i],
-        _class = item._class,
+      item = classes[i];
+
+      var _class = item._class,
         methods = item.methods,
         j = 0,
         jL = methods.length;
@@ -287,7 +289,7 @@ Fancy.mixin = function(proto, classes){
   }
   else{
     for(;i<iL;i++){
-      var item = classes[i];
+      item = classes[i];
 
       if(Fancy.isString(item)){
         var _item = Fancy.ClassManager.getMixin(item);
@@ -333,8 +335,8 @@ Fancy.Mixin = function(name, config){
   if(waiters){
     waiters = waiters.waiters;
 
-    var i = 0,
-        iL = waiters.length;
+    i = 0;
+    iL = waiters.length;
 
     for(;i<iL;i++){
       Fancy.apply(waiters[i], config);
@@ -351,8 +353,8 @@ Fancy.Mixin = function(name, config){
  * @return {Object}
  */
 Fancy.applyConfig = function(object, config){
-  var property,
-    config = config || {};
+  var property;
+  config = config || {};
 
   if(object.plugins && config.plugins){
     object.plugins = object.plugins.concat(config.plugins);
@@ -688,18 +690,21 @@ var userAgent = navigator.userAgent.toLowerCase(),
     }
   }(),
   getInternetExplorerVersion = function(){
-    var rv = -1;
+    var rv = -1,
+      ua,
+      re;
+
     if (navigator.appName == 'Microsoft Internet Explorer') {
-      var ua = navigator.userAgent,
-        re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+      ua = navigator.userAgent;
+      re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
 
       if (re.exec(ua) != null) {
         rv = parseFloat(RegExp.$1);
       }
     }
     else if (navigator.appName == 'Netscape') {
-      var ua = navigator.userAgent,
-        re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+      ua = navigator.userAgent;
+      re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
 
       if (re.exec(ua) != null) {
         rv = parseFloat(RegExp.$1);
@@ -846,9 +851,10 @@ var FancyForm = function(){
       _script = document.createElement('script'),
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
-      fn = fn || function () {},
       _v = Fancy.version.replace(/\./g, ''),
       MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/modules/');
+
+    fn = fn || function () {};
 
     if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
       return;
@@ -931,7 +937,7 @@ var FancyForm = function(){
       }
     });
 
-    var links = document.querySelectorAll('link');
+    links = document.querySelectorAll('link');
 
     if(Fancy.stylesLoaded){
       return;

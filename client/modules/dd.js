@@ -26,7 +26,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -165,8 +165,7 @@
         return;
       }
 
-      if (o.column.index === '$selected') {
-      }
+      if (o.column.index === '$selected') {}
       else {
         w.clearSelection();
       }
@@ -461,9 +460,7 @@
 
   //CONSTANTS
   var GRID_BODY_CLS = F.GRID_BODY_CLS;
-  var GRID_CLS = F.GRID_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
   var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
 
   F.define('Fancy.grid.plugin.RowDragDrop', {
@@ -482,7 +479,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -550,7 +547,6 @@
     },
     onCellMouseDown: function (grid, o) {
       var me = this,
-        w = me.widget,
         docEl = F.get(document);
 
       me.cellMouseDown = F.get(o.cell);

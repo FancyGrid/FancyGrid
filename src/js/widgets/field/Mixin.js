@@ -91,7 +91,6 @@
         case key.LEFT:
         case key.RIGHT:
           return;
-          break;
       }
 
       this.formatValue(value);
@@ -525,7 +524,6 @@
      */
     onInput: function () {
       var me = this,
-        input = me.input,
         value = me.getValue(),
         oldValue = me.acceptedValue;
 
@@ -545,8 +543,7 @@
 
       if (me.format) {
         //Place of bugs
-        if (F.isString(me.format)) {
-        }
+        if (F.isString(me.format)) {}
         else if (F.isObject(me.format)) {
           if (me.format.inputFn) {
             if (me.type === 'number' || me.type === 'field.number') {
@@ -720,22 +717,9 @@
      *
      */
     show: function () {
-      var me = this,
-        animate = false;
+      var me = this;
 
-      /*
-      if(me.css('display') === 'none'){
-        me.css('opacity', 0);
-        animate = true;
-      }
-      */
       me.css('display', 'block');
-
-      /*
-      if(animate){
-        me.el.animate({opacity: 1}, F.ANIMATE_DURATION);
-      }
-      */
     },
     /*
      * @param {Number|Object} width
@@ -748,7 +732,6 @@
         case 'set':
         case 'line':
           return;
-          break;
       }
 
       if (width === undefined && height === undefined) {
@@ -813,8 +796,7 @@
         if (F.isNumber(padding)) {
           padding = padding + 'px';
         }
-        else if (F.isString(padding)) {
-        }
+        else if (F.isString(padding)) {}
 
         if (style.padding === undefined) {
           style.padding = padding;

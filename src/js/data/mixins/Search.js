@@ -4,8 +4,6 @@ Fancy.Mixin('Fancy.store.mixin.Search', {
    */
   searchCheckItem: function(item){
     var me = this,
-      w = me.widget,
-      caseSensitive = w.filter.caseSensitive,
       searches = me.searches;
 
     if(!Fancy.isObject(searches)){
@@ -19,62 +17,6 @@ Fancy.Mixin('Fancy.store.mixin.Search', {
     }
 
     return false;
-
-    for(var p in searches){
-      var indexSearches = searches[p],
-        indexValue = item.data[p];
-
-	    if(indexSearches.type === 'date'){
-		    indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.edit, indexFilters.format.mode));
-	    }
-	  
-      for(var q in indexFilters){
-		    switch(q){
-		      case 'type':
-		      case 'format':
-			      continue;
-		    }
-		
-        var value = indexFilters[q];
-
-        switch(q){
-          case '<':
-            passed = indexValue < value;
-            break;
-          case '>':
-            passed = indexValue > value;
-            break;
-          case '<=':
-            passed = indexValue <= value;
-            break;
-          case '>=':
-            passed = indexValue >= value;
-            break;
-          case '=':
-          case '==':
-            passed = indexValue == value;
-            break;
-          case '===':
-            passed = indexValue === value;
-            break;
-          case '!==':
-            passed = indexValue !== value;
-            break;
-          case '!=':
-            passed = indexValue != value;
-            break;
-          case '':
-            passed = new RegExp(value).test(String(indexValue));
-            break;
-        }
-
-        if(passed === false){
-          return false
-        }
-      }
-    }
-
-    return true;
   },
   searchData: function(){
     var me = this,

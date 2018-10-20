@@ -22,8 +22,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
    * @param {String} [type]
    */
   update: function(type){
-    var w = this.widget,
-      type = type || '';
+    var w = this.widget;
+    type = type || '';
 
     w.leftBody.update(type);
     w.body.update(type);

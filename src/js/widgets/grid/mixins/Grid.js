@@ -454,8 +454,7 @@
         centerWidth = me.width - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
       }
 
-      if (leftWidth === 0 && rightWidth === 0) {
-      }
+      if (leftWidth === 0 && rightWidth === 0) {}
       else if (rightWidth === 0) {
         centerWidth -= leftWidth;
       }
@@ -2336,8 +2335,8 @@
      * @param {Number} orderIndex
      */
     addColumn: function (column, side, orderIndex) {
-      var me = this,
-        side = side || 'center';
+      var me = this;
+      side = side || 'center';
 
       if(!column.type){
         column.type = 'string';
@@ -2472,8 +2471,8 @@
      */
     addFilter: function (index, value, sign, updateHeaderFilter) {
       var me = this,
-        filter = me.filter.filters[index],
-        sign = sign || '';
+        filter = me.filter.filters[index];
+      sign = sign || '';
 
       if (filter === undefined) {
         filter = {};
@@ -2804,12 +2803,6 @@
      */
     exportToCsv: function (o) {
       return this.exportToCSV(o);
-    },
-    /*
-     *
-     */
-    enableSelection: function () {
-      this.selection.enableSelection()
     },
     /*
      *

@@ -24,7 +24,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -245,6 +245,7 @@
         body = w.body,
         leftBody = w.leftBody,
         rightBody = w.rightBody,
+        groupRowHeight = w.groupRowHeight,
         width = w.getCenterFullWidth(),
         leftWidth = w.getLeftFullWidth(),
         rightWidth = w.getRightFullWidth(),
@@ -257,26 +258,30 @@
         if (leftWidth) {
           el = me.generateGroupRow(groupText, groupCount, true, passedTop);
           el.css('width', leftWidth);
+          el.css('height', groupRowHeight);
           leftBody.el.dom.appendChild(el.dom);
 
           el = me.generateGroupRow(groupText, groupCount, false, passedTop);
           el.css('width', width);
+          el.css('height', groupRowHeight);
           body.el.dom.appendChild(el.dom);
         }
         else {
           el = me.generateGroupRow(groupText, groupCount, true, passedTop);
           el.css('width', width);
+          el.css('height', groupRowHeight);
           body.el.dom.appendChild(el.dom);
         }
 
         if (rightWidth) {
           el = me.generateGroupRow(groupText, groupCount, false, passedTop);
           el.css('width', rightWidth);
+          el.css('height', groupRowHeight);
           rightBody.el.dom.appendChild(el.dom);
         }
 
         if (me.collapsed) {
-          passedTop += w.groupRowHeight;
+          passedTop += groupRowHeight;
         }
       });
     },
@@ -465,7 +470,7 @@
         body = w.body;
 
       if (w.leftColumns.length) {
-        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).each(function (el) {
+        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).each(function (el, i) {
           var groupText = me.groups[i];
 
           el.update('<div class="' + GRID_ROW_GROUP_INNER_CLS + '">' + groupText + '</div>');
@@ -834,8 +839,8 @@
      * @params {Array|undefined} rows
      */
     clearMargins: function (rows) {
-      var me = this,
-        rows = rows || me.prevRows;
+      var me = this;
+      rows = rows || me.prevRows;
 
       if (rows === undefined) {
         return;

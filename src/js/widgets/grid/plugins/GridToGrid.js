@@ -26,7 +26,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -165,8 +165,7 @@
         return;
       }
 
-      if (o.column.index === '$selected') {
-      }
+      if (o.column.index === '$selected') {}
       else {
         w.clearSelection();
       }

@@ -25,7 +25,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -690,8 +690,7 @@
 
       w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').addCls(GRID_ROW_EXPAND_OVER_CLS);
 
-      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {
-      }
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {}
       else {
         w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').addCls(GRID_ROW_OVER_CLS);
       }
@@ -708,8 +707,7 @@
 
       w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_EXPAND_OVER_CLS);
 
-      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {
-      }
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {}
       else {
         w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_OVER_CLS);
       }

@@ -491,7 +491,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*

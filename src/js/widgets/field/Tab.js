@@ -27,15 +27,12 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
     me.Super('init', arguments);
 
     var i = 0,
-      iL = me.items.length,
-      isItemTop;
+      iL = me.items.length;
 
     for(;i<iL;i++){
       var item = me.items[i];
 
       if( item.labelAlign === 'top' ){
-        isItemTop = true;
-        //break;
         if( i === 0 ){
           item.style = {
             'padding-left': '0px'

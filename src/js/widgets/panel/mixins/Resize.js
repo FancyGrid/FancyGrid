@@ -54,9 +54,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     }
   },
   /*
-   * @param {Boolean} initRun
+   *
    */
-  onsResizeEls: function(initRun){
+  onsResizeEls: function(){
     var me = this;
 
     if(Fancy.isTouch){

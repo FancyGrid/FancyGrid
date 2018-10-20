@@ -22,7 +22,7 @@
      * @param config
      * @param scope
      */
-    constructor: function (config, scope) {
+    constructor: function (config) {
       var me = this;
 
       Fancy.loadStyle();
@@ -217,8 +217,7 @@
      * @param {Object} config
      */
     prepareConfigSize: function (config) {
-      var me = this,
-        renderTo = config.renderTo,
+      var renderTo = config.renderTo,
         el;
 
       if (config.width === undefined) {
@@ -367,7 +366,7 @@
   if (!F.nojQuery && F.$) {
     F.$.fn.FancyTab = function (o) {
       if(this.selector){
-        o.renderTo = $(this.selector)[0].id;
+        o.renderTo = F.$(this.selector)[0].id;
       }
       else{
         o.renderTo = this.attr('id');

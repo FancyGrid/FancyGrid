@@ -18,7 +18,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -290,7 +290,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w = me.widget,
       column = o.column;
 
-    if(w.rowedit){}
+    if(w.rowedit) {}
     else if(w.celledit){
       w.celledit.hideEditor();
     }

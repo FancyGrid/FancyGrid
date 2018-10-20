@@ -19,7 +19,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -82,7 +82,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function (grid, o) {
+    onCellLeave: function () {
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -90,7 +90,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function (grid, o) {
+    onTouchEnd: function () {
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },

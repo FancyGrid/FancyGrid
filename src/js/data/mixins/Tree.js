@@ -117,7 +117,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
       var prevValue;
 
-      Fancy.each(data, function (item, i) {
+      Fancy.each(data, function (item) {
         var itemData = item.data || item;
 
         if(itemData[key] !== ''){
@@ -193,7 +193,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     var me = this,
       ids = [];
 
-    Fancy.each(data, function (item, i) {
+    Fancy.each(data, function (item) {
       ids.push(item.id);
       //!important
       item = me.getById(item.id);

@@ -131,3 +131,21 @@ Fancy.defineTheme('bootstrap-no-borders', {
     charWidth: 8
   }
 });
+
+Fancy.defineTheme('material', {
+  config: {
+    columnLines: false,
+    cellHeaderHeight: 40,
+    panelBorderWidth: 0,
+    cellHeight: 40,
+    titleHeight: 48,
+    barHeight: 48,
+    subTitleHeight: 48,
+    groupRowHeight: 40,
+    //borders: [0,0,1,0],
+    gridBorders: [0,0,1,0],
+    gridWithoutPanelBorders: [1,1,1,1],
+    panelBodyBorders: [0,0,0,0],
+    charWidth: 7
+  }
+});

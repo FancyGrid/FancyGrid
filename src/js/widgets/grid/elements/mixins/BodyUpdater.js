@@ -191,8 +191,7 @@
         iL = s.dataView.length,
         j = 0,
         jL,
-        columns,
-        column;
+        columns;
 
       switch (me.side) {
         case 'left':
@@ -222,7 +221,6 @@
       }
 
       for (; j < jL; j++) {
-        column = columns[j];
         var columnDom = columsDom.item(j);
         i = 0;
         var delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
@@ -385,7 +383,6 @@
             break;
           default:
             throw new Error('[FancyGrid error] - not existed column type ' + column.type);
-            break;
         }
       }
 
@@ -1607,7 +1604,7 @@
         }
       }
 
-      maxValue = Math.max.apply(Math, sum);
+      var maxValue = Math.max.apply(Math, sum);
 
       sparkConfig.maxItemValue = maxItemValue;
 
@@ -1831,7 +1828,6 @@
           return function (value) {
             return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
           };
-          break;
         case 'date':
           return function (value) {
             var date = F.Date.parse(value, lang.date.read, format.mode);
@@ -1839,7 +1835,6 @@
 
             return value;
           };
-          break;
       }
 
       switch (format.type) {
@@ -1854,7 +1849,6 @@
 
             return value;
           };
-          break;
       }
 
       if (format.inputFn) {

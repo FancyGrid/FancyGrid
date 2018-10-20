@@ -27,8 +27,8 @@ Fancy.Date = {
       u,
       U,
       d,
-      m,
-      mode = mode || '';
+      m;
+    mode = mode || '';
 
     if(date.toString() === 'Invalid Date'){
       return '';
@@ -125,9 +125,6 @@ Fancy.Date = {
             value += lang.date.PM;
           }
 
-          break;
-        case 'T':
-          value += 'T';
           break;
         case 'n':
           value += date.getMonth();
@@ -405,8 +402,8 @@ Fancy.Date = {
       hour = 0,
       minute = 0,
       second = 0,
-      millisecond = 0,
-      mode = mode || '';
+      millisecond = 0;
+    mode = mode || '';
 
     mode = mode.toLocaleLowerCase();
 

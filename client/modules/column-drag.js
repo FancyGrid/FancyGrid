@@ -36,7 +36,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -314,7 +314,7 @@
       }
 
       if(me.activeCellTopGroup){
-        if(me.inUpGroupCell){}
+        if(me.inUpGroupCell) {}
         else{
           var startIndex = me.activeCellTopGroup.start,
             endIndex = me.activeCellTopGroup.end;
@@ -720,7 +720,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -998,7 +998,7 @@
       }
 
       if(me.activeCellTopGroup){
-        if(me.inUpGroupCell){}
+        if(me.inUpGroupCell) {}
         else{
           var startIndex = me.activeCellTopGroup.start,
             endIndex = me.activeCellTopGroup.end;

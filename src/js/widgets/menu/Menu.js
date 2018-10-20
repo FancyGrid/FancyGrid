@@ -322,9 +322,9 @@
       }
     },
     /*
-     * @param {Object} e
+     *
      */
-    onItemLeave: function (e) {},
+    onItemLeave: function () {},
     /*
      * @param {Number} x
      * @param {Number} y

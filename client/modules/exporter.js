@@ -13,7 +13,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   /*
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
 
     if(Fancy.fullBuilt){
@@ -253,7 +253,6 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   exportToCSV: function (o) {
     var me = this,
-      w = me.widget,
       o = o || {},
       csvData = me.getDataAsCsv(o),
       fileName = o.fileName || me.csvFileName;

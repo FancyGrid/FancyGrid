@@ -36,7 +36,7 @@
       pathToSrc + 'data/mixins/Filter.js', // filter module
       //pathToSrc + 'data/mixins/Search.js', // search module
       pathToSrc + 'data/mixins/Dirty.js', // edit module
-    pathToSrc + 'data/mixins/Tree.js', // tree module
+      pathToSrc + 'data/mixins/Tree.js', // tree module
       pathToSrc + 'data/Store.js',
 
       pathToSrc + 'adapter/jquery.js',
@@ -147,8 +147,7 @@
       pathToSrc + 'widgets/grid/plugins/Exporter.js', // export module
 
       pathToSrc + 'widgets/grid/plugins/State.js', // state module
-	  
-	  pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
+      pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
 		
       pathToSrc + 'widgets/grid/plugins/RowHeight.js',
 

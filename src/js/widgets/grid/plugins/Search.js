@@ -10,7 +10,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.searches = {};
     this.Super('const', arguments);
   },

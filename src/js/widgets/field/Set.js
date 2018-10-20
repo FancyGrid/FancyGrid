@@ -83,7 +83,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     var itemsEl = me.el.select('.fancy-field-set-items');
 
     setTimeout(function(){
-      if( me.checkbox === true ){}
+      if( me.checkbox === true ) {}
       else{
         me.fire('collapse');
       }

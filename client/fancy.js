@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.50',
+  version: '1.7.51',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -279,12 +279,14 @@ Fancy.each = function(arrayObject, fn){
  */
 Fancy.mixin = function(proto, classes){
    var i = 0,
-    iL = classes.length;
+    iL = classes.length,
+     item;
 
   if( Fancy.typeOf( classes[0] ) === 'object' ){
     for(;i<iL;i++){
-      var item = classes[i],
-        _class = item._class,
+      item = classes[i];
+
+      var _class = item._class,
         methods = item.methods,
         j = 0,
         jL = methods.length;
@@ -297,7 +299,7 @@ Fancy.mixin = function(proto, classes){
   }
   else{
     for(;i<iL;i++){
-      var item = classes[i];
+      item = classes[i];
 
       if(Fancy.isString(item)){
         var _item = Fancy.ClassManager.getMixin(item);
@@ -343,8 +345,8 @@ Fancy.Mixin = function(name, config){
   if(waiters){
     waiters = waiters.waiters;
 
-    var i = 0,
-        iL = waiters.length;
+    i = 0;
+    iL = waiters.length;
 
     for(;i<iL;i++){
       Fancy.apply(waiters[i], config);
@@ -361,8 +363,8 @@ Fancy.Mixin = function(name, config){
  * @return {Object}
  */
 Fancy.applyConfig = function(object, config){
-  var property,
-    config = config || {};
+  var property;
+  config = config || {};
 
   if(object.plugins && config.plugins){
     object.plugins = object.plugins.concat(config.plugins);
@@ -698,18 +700,21 @@ var userAgent = navigator.userAgent.toLowerCase(),
     }
   }(),
   getInternetExplorerVersion = function(){
-    var rv = -1;
+    var rv = -1,
+      ua,
+      re;
+
     if (navigator.appName == 'Microsoft Internet Explorer') {
-      var ua = navigator.userAgent,
-        re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+      ua = navigator.userAgent;
+      re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
 
       if (re.exec(ua) != null) {
         rv = parseFloat(RegExp.$1);
       }
     }
     else if (navigator.appName == 'Netscape') {
-      var ua = navigator.userAgent,
-        re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+      ua = navigator.userAgent;
+      re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
 
       if (re.exec(ua) != null) {
         rv = parseFloat(RegExp.$1);
@@ -856,9 +861,10 @@ var FancyForm = function(){
       _script = document.createElement('script'),
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
-      fn = fn || function () {},
       _v = Fancy.version.replace(/\./g, ''),
       MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/modules/');
+
+    fn = fn || function () {};
 
     if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
       return;
@@ -941,7 +947,7 @@ var FancyForm = function(){
       }
     });
 
-    var links = document.querySelectorAll('link');
+    links = document.querySelectorAll('link');
 
     if(Fancy.stylesLoaded){
       return;
@@ -1115,6 +1121,24 @@ Fancy.defineTheme('bootstrap-no-borders', {
     panelBodyBorders: [0,0,0,0],
     columnLines: false,
     charWidth: 8
+  }
+});
+
+Fancy.defineTheme('material', {
+  config: {
+    columnLines: false,
+    cellHeaderHeight: 40,
+    panelBorderWidth: 0,
+    cellHeight: 40,
+    titleHeight: 48,
+    barHeight: 48,
+    subTitleHeight: 48,
+    groupRowHeight: 40,
+    //borders: [0,0,1,0],
+    gridBorders: [0,0,1,0],
+    gridWithoutPanelBorders: [1,1,1,1],
+    panelBodyBorders: [0,0,0,0],
+    charWidth: 7
   }
 });
 /**
@@ -1763,8 +1787,8 @@ Fancy.ClassManager = new ClassManager();
  * @param {Object} config
  */
 Fancy.define = function(name, config){
-  var config = config || {},
-    names = [];
+  config = config || {};
+  var names = [];
   
   if( Fancy.isArray(name) ){
     names = name;
@@ -3819,13 +3843,10 @@ Fancy.get = function(id){
   switch(type){
     case 'string':
       return new Fancy.Element(Fancy.$('#'+id)[0]);
-      break;
     case 'array':
       return new Fancy.Elements(id);
-      break;
     default:
       return new Fancy.Element(id);
-      break;
   }
 };
 
@@ -5320,7 +5341,7 @@ Fancy.define('Fancy.Plugin', {
   /*
    * @constructor {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
     this.init();
   },
@@ -6066,6 +6087,10 @@ Fancy.define('Fancy.toolbar.Tab', {
 
       Fancy.applyIf(config, themeConfig);
 
+      if(config.theme) {
+        this.theme = config.theme;
+      }
+
       return config;
     },
     //The same in grid
@@ -6294,9 +6319,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     }
   },
   /*
-   * @param {Boolean} initRun
+   *
    */
-  onsResizeEls: function(initRun){
+  onsResizeEls: function(){
     var me = this;
 
     if(Fancy.isTouch){
@@ -7107,7 +7132,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param config
      * @param scope
      */
-    constructor: function (config, scope) {
+    constructor: function (config) {
       var me = this;
 
       Fancy.loadStyle();
@@ -7302,8 +7327,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} config
      */
     prepareConfigSize: function (config) {
-      var me = this,
-        renderTo = config.renderTo,
+      var renderTo = config.renderTo,
         el;
 
       if (config.width === undefined) {
@@ -7452,7 +7476,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   if (!F.nojQuery && F.$) {
     F.$.fn.FancyTab = function (o) {
       if(this.selector){
-        o.renderTo = $(this.selector)[0].id;
+        o.renderTo = F.$(this.selector)[0].id;
       }
       else{
         o.renderTo = this.attr('id');
@@ -7628,11 +7652,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
               style: style
             }));
             continue;
-            break;
           case 'side':
             isSide = true;
             continue;
-            break;
           default:
             if (isSide) {
               barItems[sidePassed] = me.renderItem(item);
@@ -8337,7 +8359,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           case 'date':
             item.on('tab', me.onTabLastInput, me);
             return;
-            break;
         }
       }
     },
@@ -8758,7 +8779,7 @@ FancyForm.addValid = Fancy.addValid;
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyForm = function(o){
     if(this.selector){
-      o.renderTo = $(this.selector)[0].id;
+      o.renderTo = Fancy.$(this.selector)[0].id;
     }
     else{
       o.renderTo = this.attr('id');
@@ -8860,7 +8881,6 @@ if(!Fancy.nojQuery && Fancy.$){
         case key.LEFT:
         case key.RIGHT:
           return;
-          break;
       }
 
       this.formatValue(value);
@@ -9294,7 +9314,6 @@ if(!Fancy.nojQuery && Fancy.$){
      */
     onInput: function () {
       var me = this,
-        input = me.input,
         value = me.getValue(),
         oldValue = me.acceptedValue;
 
@@ -9314,8 +9333,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
       if (me.format) {
         //Place of bugs
-        if (F.isString(me.format)) {
-        }
+        if (F.isString(me.format)) {}
         else if (F.isObject(me.format)) {
           if (me.format.inputFn) {
             if (me.type === 'number' || me.type === 'field.number') {
@@ -9489,22 +9507,9 @@ if(!Fancy.nojQuery && Fancy.$){
      *
      */
     show: function () {
-      var me = this,
-        animate = false;
+      var me = this;
 
-      /*
-      if(me.css('display') === 'none'){
-        me.css('opacity', 0);
-        animate = true;
-      }
-      */
       me.css('display', 'block');
-
-      /*
-      if(animate){
-        me.el.animate({opacity: 1}, F.ANIMATE_DURATION);
-      }
-      */
     },
     /*
      * @param {Number|Object} width
@@ -9517,7 +9522,6 @@ if(!Fancy.nojQuery && Fancy.$){
         case 'set':
         case 'line':
           return;
-          break;
       }
 
       if (width === undefined && height === undefined) {
@@ -9582,8 +9586,7 @@ if(!Fancy.nojQuery && Fancy.$){
         if (F.isNumber(padding)) {
           padding = padding + 'px';
         }
-        else if (F.isString(padding)) {
-        }
+        else if (F.isString(padding)) {}
 
         if (style.padding === undefined) {
           style.padding = padding;
@@ -12932,15 +12935,12 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
     me.Super('init', arguments);
 
     var i = 0,
-      iL = me.items.length,
-      isItemTop;
+      iL = me.items.length;
 
     for(;i<iL;i++){
       var item = me.items[i];
 
       if( item.labelAlign === 'top' ){
-        isItemTop = true;
-        //break;
         if( i === 0 ){
           item.style = {
             'padding-left': '0px'
@@ -14399,7 +14399,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
 
       this.rows = {};
@@ -14508,7 +14508,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -14571,7 +14571,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function (grid, o) {
+    onCellLeave: function () {
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -14579,7 +14579,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function (grid, o) {
+    onTouchEnd: function () {
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -14639,7 +14639,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*

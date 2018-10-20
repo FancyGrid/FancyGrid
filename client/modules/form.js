@@ -614,7 +614,6 @@ Fancy.define('Fancy.toolbar.Tab', {
             case 'html':
             case 'button':
               return;
-              break;
           }
 
           if (item.name === name) {
@@ -632,7 +631,6 @@ Fancy.define('Fancy.toolbar.Tab', {
             case 'html':
             case 'button':
               return;
-              break;
           }
 
           if (item.name === undefined) {
@@ -973,7 +971,6 @@ Fancy.define('Fancy.toolbar.Tab', {
             case 'button':
               _value -= width;
               return;
-              break;
             case 'textarea':
               //_value -= parseInt(item.css('padding-right'));
               break;
@@ -1746,7 +1743,7 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     var itemsEl = me.el.select('.fancy-field-set-items');
 
     setTimeout(function(){
-      if( me.checkbox === true ){}
+      if( me.checkbox === true ) {}
       else{
         me.fire('collapse');
       }

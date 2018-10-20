@@ -25,7 +25,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -488,7 +488,6 @@
         column,
         cellSize,
         cell,
-        cellEl,
         editor,
         borderWidth = 1,
         offset = 2;
@@ -496,7 +495,6 @@
       for (; i < iL; i++) {
         column = columns[i];
         cell = firstRowCells.item(i).dom;
-        cellEl = F.get(cell);
         cellSize = me.getCellSize(cell);
         editor = column.rowEditor;
 

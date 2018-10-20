@@ -27,6 +27,10 @@
 
       Fancy.applyIf(config, themeConfig);
 
+      if(config.theme) {
+        this.theme = config.theme;
+      }
+
       return config;
     },
     //The same in grid

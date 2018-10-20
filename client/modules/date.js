@@ -27,8 +27,8 @@ Fancy.Date = {
       u,
       U,
       d,
-      m,
-      mode = mode || '';
+      m;
+    mode = mode || '';
 
     if(date.toString() === 'Invalid Date'){
       return '';
@@ -125,9 +125,6 @@ Fancy.Date = {
             value += lang.date.PM;
           }
 
-          break;
-        case 'T':
-          value += 'T';
           break;
         case 'n':
           value += date.getMonth();
@@ -405,8 +402,8 @@ Fancy.Date = {
       hour = 0,
       minute = 0,
       second = 0,
-      millisecond = 0,
-      mode = mode || '';
+      millisecond = 0;
+    mode = mode || '';
 
     mode = mode.toLocaleLowerCase();
 
@@ -1054,8 +1051,7 @@ Fancy.Date = {
         value = me.value;
       }
 
-      if (!me.value) {
-      }
+      if (!me.value){}
       else if (F.typeOf(me.value) === 'date') {
         me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
         if (value === undefined) {
@@ -1207,14 +1203,10 @@ Fancy.Date = {
         monthPicker = datePicker.monthPicker,
         target = e.target;
 
-      if (target.tagName.toLocaleLowerCase() === 'input') {
-      }
-      else if (F.get(target).hasCls('fancy-field-picker-button')) {
-      }
-      else if (datePicker.panel.el.within(target)) {
-      }
-      else if (monthPicker && monthPicker.panel.el.within(target)) {
-      }
+      if (target.tagName.toLocaleLowerCase() === 'input') {}
+      else if (F.get(target).hasCls('fancy-field-picker-button')) {}
+      else if (datePicker.panel.el.within(target)) {}
+      else if (monthPicker && monthPicker.panel.el.within(target)) {}
       else {
         me.hidePicker();
       }
@@ -1362,7 +1354,6 @@ Fancy.Date = {
           delete me.date;
           me.changeInputValue();
           return;
-          break;
       }
 
       me.initDate(value);
@@ -1700,8 +1691,7 @@ Fancy.Date = {
     initFormat: function () {
       var me = this;
 
-      if (me.format) {
-      }
+      if (me.format) {}
       else {
         me.format = F.i18n[me.i18n].date;
       }
@@ -2304,7 +2294,7 @@ Fancy.Date = {
       var me = this;
 
       me.date = date;
-      if(firstShow && me.showDate){}
+      if(firstShow && me.showDate) {}
       else {
         me.showDate = date;
       }

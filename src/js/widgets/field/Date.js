@@ -180,8 +180,7 @@
         value = me.value;
       }
 
-      if (!me.value) {
-      }
+      if (!me.value){}
       else if (F.typeOf(me.value) === 'date') {
         me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
         if (value === undefined) {
@@ -333,14 +332,10 @@
         monthPicker = datePicker.monthPicker,
         target = e.target;
 
-      if (target.tagName.toLocaleLowerCase() === 'input') {
-      }
-      else if (F.get(target).hasCls('fancy-field-picker-button')) {
-      }
-      else if (datePicker.panel.el.within(target)) {
-      }
-      else if (monthPicker && monthPicker.panel.el.within(target)) {
-      }
+      if (target.tagName.toLocaleLowerCase() === 'input') {}
+      else if (F.get(target).hasCls('fancy-field-picker-button')) {}
+      else if (datePicker.panel.el.within(target)) {}
+      else if (monthPicker && monthPicker.panel.el.within(target)) {}
       else {
         me.hidePicker();
       }
@@ -488,7 +483,6 @@
           delete me.date;
           me.changeInputValue();
           return;
-          break;
       }
 
       me.initDate(value);

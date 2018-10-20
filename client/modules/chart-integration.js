@@ -9,7 +9,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -257,7 +257,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -353,7 +353,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
    * @param {Array} data
    */
   setSeriesData: function(id, data){
-    var chart = this.getChart(chartConfig.id),
+    var chart = this.getChart(id),
       sery = chart.series[0];
 
     sery.setData(data.data);

@@ -18,7 +18,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -290,7 +290,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w = me.widget,
       column = o.column;
 
-    if(w.rowedit){}
+    if(w.rowedit) {}
     else if(w.celledit){
       w.celledit.hideEditor();
     }
@@ -396,7 +396,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -440,8 +440,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       else if (o.column.type === 'date') {
         return;
       }
-      else if (o.column.type === 'combo') {
-      }
+      else if (o.column.type === 'combo') {}
       else {
         var cellEl = targetEl.closest('.' + GRID_CELL_CLS);
 
@@ -779,7 +778,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           value = me.prepareValue(value);
 
           //date field when data item value is null
-          if(value === '' && s.get(o.rowIndex, key) === null){}
+          if(value === '' && s.get(o.rowIndex, key) === null) {}
           else{
             s.set(o.rowIndex, key, value);
           }
@@ -881,8 +880,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Object} editor
      * @param {String} value
      */
-    onKey: function (editor, value) {
-    },
+    onKey: function (editor, value) {},
     /*
      * @param {String} value
      */
@@ -1097,7 +1095,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -1560,7 +1558,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         column,
         cellSize,
         cell,
-        cellEl,
         editor,
         borderWidth = 1,
         offset = 2;
@@ -1568,7 +1565,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       for (; i < iL; i++) {
         column = columns[i];
         cell = firstRowCells.item(i).dom;
-        cellEl = F.get(cell);
         cellSize = me.getCellSize(cell);
         editor = column.rowEditor;
 

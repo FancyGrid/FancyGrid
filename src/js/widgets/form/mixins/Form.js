@@ -588,7 +588,6 @@
             case 'html':
             case 'button':
               return;
-              break;
           }
 
           if (item.name === name) {
@@ -606,7 +605,6 @@
             case 'html':
             case 'button':
               return;
-              break;
           }
 
           if (item.name === undefined) {
@@ -947,7 +945,6 @@
             case 'button':
               _value -= width;
               return;
-              break;
             case 'textarea':
               //_value -= parseInt(item.css('padding-right'));
               break;

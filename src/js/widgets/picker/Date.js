@@ -121,8 +121,7 @@
     initFormat: function () {
       var me = this;
 
-      if (me.format) {
-      }
+      if (me.format) {}
       else {
         me.format = F.i18n[me.i18n].date;
       }
@@ -725,7 +724,7 @@
       var me = this;
 
       me.date = date;
-      if(firstShow && me.showDate){}
+      if(firstShow && me.showDate) {}
       else {
         me.showDate = date;
       }

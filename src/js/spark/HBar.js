@@ -94,6 +94,7 @@ Fancy.define('Fancy.spark.HBar', {
    */
   onMouseLeave: function(e){
     var me = this;
+
     if(!me.tip || !me.tipTpl){
       return;
     }

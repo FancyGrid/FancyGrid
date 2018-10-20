@@ -6,7 +6,7 @@ Fancy.define('Fancy.Plugin', {
   /*
    * @constructor {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
     this.init();
   },

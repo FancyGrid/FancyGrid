@@ -28,7 +28,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -282,7 +282,7 @@
         column = columns[index];
 
         if(index === 0 && column.hidden){
-          if(o.side === 'center' && w.leftColumns){}
+          if(o.side === 'center' && w.leftColumns) {}
           else {
             return false;
           }

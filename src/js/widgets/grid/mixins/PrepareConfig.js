@@ -300,7 +300,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'expand':
           case 'rowdrag':
             return;
-            break;
         }
 
         if(column[p] === undefined){
@@ -519,9 +518,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   prepareConfigColumnsWidth: function(config){
     var columns = config.columns,
       width = config.width,
-      gridBorders = config.gridBorders,
-      gridWithoutPanelBorders = config.gridWithoutPanelBorders,
-      panelBodyBorders = config.panelBodyBorders,
       columnsWithoutWidth = [],
       flexColumns = [],
       maxWidth = 100,
@@ -749,7 +745,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'yAxis.categories':
           case 'zAxis.categories':
             return;
-            break;
         }
 
         smartIndex = smartIndex.replace(/(\w+)/g, function(f, found, index, str){
@@ -817,7 +812,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                       switch (_column.type) {
                         case 'action':
                           continue;
-                          break;
                       }
 
                       _items.push({
@@ -895,7 +889,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigWidgetColumn: function(config){
-    var columns = config.columns,
+    var me = this,
+      columns = config.columns,
       i = 0,
       iL = columns.length;
 
@@ -943,8 +938,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                   max: column.max,
                   events: [{
                     change: function(field, value){
-                      grid.set(o.rowIndex, index, value);
-                      grid.updater.updateRow();
+                      me.set(o.rowIndex, index, value);
+                      me.updater.updateRow();
                     }
                   }]
                 });
@@ -956,8 +951,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 Fancy.apply(itemComfig, {
                   events: [{
                     change: function(field, value){
-                      grid.set(o.rowIndex, index, value);
-                      grid.updater.updateRow();
+                      me.set(o.rowIndex, index, value);
+                      me.updater.updateRow();
                     }
                   }]
                 });
@@ -973,8 +968,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                   data: o.column.data,
                   events: [{
                     change: function(field, value){
-                      grid.set(o.rowIndex, index, value);
-                      grid.updater.updateRow();
+                      me.set(o.rowIndex, index, value);
+                      me.updater.updateRow();
                     }
                   }]
                 });
@@ -1488,7 +1483,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config['tbar'] = me.generatePagingBar(paging, lang);
       config['bbar'] = me.generatePagingBar(paging, lang);
     }
-    else if(barType === 'none'){}
+    else if(barType === 'none') {}
     else {
       config[barType] = me.generatePagingBar(paging, lang);
     }
@@ -1504,24 +1499,25 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var me = this,
       bar = [],
       disabledCls = 'fancy-bar-button-disabled',
+      marginTop = me.theme === 'material'? 8 : 3,
       style = {
         "float": 'left',
         'margin-right': '5px',
-        'margin-top': '3px'
+        'margin-top': marginTop + 'px'
       };
 
     bar.push({
       imageCls: 'fancy-paging-first',
       disabledCls: disabledCls,
       role: 'first',
-      handler: function(button){
+      handler: function(){
         me.paging.firstPage();
       },
       style: {
         'float': 'left',
         'margin-left': '5px',
         'margin-right': '5px',
-        'margin-top': '3px'
+        'margin-top': marginTop + 'px'
       }
     });
 
@@ -1550,7 +1546,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         "float": 'left',
         'margin-left': '-1px',
         'margin-right': '8px',
-        'margin-top': '4px'
+        'margin-top': (marginTop + 1) + 'px'
       },
       role: 'pagenumber',
       min: 1,
@@ -1641,7 +1637,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       var sizeStyle = Fancy.Object.copy(style);
 
-      sizeStyle['margin-top'] = '4px';
+      sizeStyle['margin-top'] = (marginTop + 1) + 'px';
 
       bar.push({
         editable: false,
@@ -1887,7 +1883,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             break;
           case undefined:
             throw new Error('[FancyGrid Error] - type of chart is undefined');
-            break;
           default:
             throw new Error('[FancyGrid Error] - type of chart ' + type + ' does not exist');
         }

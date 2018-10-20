@@ -216,9 +216,6 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         me.scale(cumulative, innerRadius)
       )
     }
-    else{
-      d.push(cx, cy)
-    }
     
     d = d.join(" ");
     

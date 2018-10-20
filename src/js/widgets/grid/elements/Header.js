@@ -21,8 +21,6 @@
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
-  var GRID_COLUMN_SORT_ASC = F.GRID_COLUMN_SORT_ASC;
-  var GRID_COLUMN_SORT_DESC = F.GRID_COLUMN_SORT_DESC;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -47,7 +45,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -663,8 +661,7 @@
     onMouseDown: function (e) {
       var targetEl = F.get(e.target);
 
-      if (targetEl.prop("tagName") === 'INPUT') {
-      }
+      if (targetEl.prop("tagName") === 'INPUT') {}
       else {
         e.preventDefault();
       }

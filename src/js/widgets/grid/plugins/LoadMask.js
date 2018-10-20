@@ -14,7 +14,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -149,9 +149,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  hide: function(){
+  hide: function() {
     var me = this,
-      w = me.widget,
       el = me.el;
 
     el.stop();

@@ -216,9 +216,6 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         me.scale(cumulative, innerRadius)
       )
     }
-    else{
-      d.push(cx, cy)
-    }
     
     d = d.join(" ");
     
@@ -813,6 +810,7 @@ Fancy.define('Fancy.spark.HBar', {
    */
   onMouseLeave: function(e){
     var me = this;
+
     if(!me.tip || !me.tipTpl){
       return;
     }

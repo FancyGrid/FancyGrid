@@ -47,7 +47,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -166,8 +166,7 @@
         body = w.body,
         rightScrollEl = F.get(document.createElement('div')),
         bottomScrollEl = F.get(document.createElement('div')),
-        topScrollEl = F.get(document.createElement('div')),
-        right = 1;
+        topScrollEl = F.get(document.createElement('div'));
 
       if (w.nativeScroller) {
         w.el.addCls(NATIVE_SCROLLER_CLS);

@@ -33,7 +33,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function () {
       this.Super('const', arguments);
     },
     /*
@@ -68,7 +68,11 @@
         });
       });
 
-      w.on('columnresize', me.onColumnResize, me);
+      w.on('columnresize', function(){
+        setTimeout(function () {
+          me.onColumnResize();
+        }, F.ANIMATE_DURATION);
+      }, me);
 
       if (me.sumDisplayed) {
         w.on('changepage', me.onChangePage, me);
@@ -82,6 +86,9 @@
     render: function () {
       var me = this,
         w = me.widget,
+        centerEl = w.centerEl,
+        leftEl = w.leftEl,
+        rightEl = w.rightEl,
         body = w.body,
         leftBody = w.leftBody,
         rightBody = w.rightBody,
@@ -91,36 +98,48 @@
         el,
         method = me.position === 'top' ? 'before' : 'after';
 
-      el = me.generateRow('center');
-      el.css('width', w.startWidths.center);
-      el.firstChild().css('width', width);
-      el.css('height', w.cellHeight);
-      el.firstChild().css('height', w.cellHeight);
+      if(centerEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length) {}
+      else if(centerEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length) {}
+      else {
+        el = me.generateRow('center');
+        el.css('width', w.startWidths.center);
+        el.firstChild().css('width', width);
+        el.css('height', w.cellHeight);
+        el.firstChild().css('height', w.cellHeight);
 
-      me.el = el;
+        me.el = el;
 
-      body.el[method](el.dom);
+        body.el[method](el.dom);
+      }
 
       if (leftWidth) {
-        el = me.generateRow('left');
-        el.css('width', leftWidth - 2);
-        el.firstChild().css('width', leftWidth);
-        el.css('height', w.cellHeight);
+        if(leftEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length) {}
+        else if(leftEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length) {}
+        else {
+          el = me.generateRow('left');
+          el.css('width', leftWidth - 2);
+          el.firstChild().css('width', leftWidth);
+          el.css('height', w.cellHeight);
 
-        me.leftEl = el;
+          me.leftEl = el;
 
-        leftBody.el[method](el.dom);
+          leftBody.el[method](el.dom);
+        }
       }
 
       if (rightWidth) {
-        el = me.generateRow('right');
-        el.css('width', rightWidth - 1);
-        el.firstChild().css('width', rightWidth);
-        el.css('height', w.cellHeight);
+        if(rightEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length) {}
+        else if(rightEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length) {}
+        else {
+          el = me.generateRow('right');
+          el.css('width', rightWidth - 1);
+          el.firstChild().css('width', rightWidth);
+          el.css('height', w.cellHeight);
 
-        me.rightEl = el;
+          me.rightEl = el;
 
-        rightBody.el[method](el.dom);
+          rightBody.el[method](el.dom);
+        }
       }
     },
     /*
@@ -224,7 +243,8 @@
     updateSide: function (side) {
       var me = this,
         w = me.widget,
-        body = w.body,
+        //body = w.body,
+        body = w.getBody(side),
         s = w.store,
         cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
         dataProperty = 'data';
@@ -450,7 +470,13 @@
     insertColumn: function (index, side) {
       var me = this,
         w = me.widget,
-        columns = w.getColumns(side),
+        columns = w.getColumns(side);
+
+      if((side === 'left' || side === 'right') && columns.length === 1){
+        me.render();
+      }
+
+      var columns = w.getColumns(side),
         column = columns[index],
         el = me.getEl(side),
         cells = el.select('.' + GRID_CELL_CLS),

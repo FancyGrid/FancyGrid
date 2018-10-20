@@ -15,13 +15,12 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       wait = false;
 
     if(me.isTree){
-      var child = item.get('child'),
-        expanded = item.get('expanded');
+      var child = item.get('child');
 
       if(child){
         var filteredChild = [];
 
-        Fancy.each(child, function (_child, i) {
+        Fancy.each(child, function (_child) {
           var item = _child.data? _child: new me.model(_child),
             filterChild = me.filterCheckItem(item);
 
@@ -56,25 +55,25 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         indexValue = item.data[splitted[0]][splitted[1]];
       }
 
-	    if(indexFilters.type === 'date'){
+      if(indexFilters.type === 'date'){
         if(indexValue === null){
           indexValue = Math.NEGATIVE_INFINITY;
         }
         else {
           indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
         }
-	    }
-
-	    if(!caseSensitive && Fancy.isString(indexValue)){
-	      indexValue = indexValue.toLocaleLowerCase();
       }
-	  
+
+      if(!caseSensitive && Fancy.isString(indexValue)){
+        indexValue = indexValue.toLocaleLowerCase();
+      }
+
       for(var q in indexFilters){
-		    switch(q){
-		      case 'type':
-		      case 'format':
-			      continue;
-		    }
+        switch(q){
+          case 'type':
+          case 'format':
+            continue;
+        }
 
         var value = indexFilters[q];
 

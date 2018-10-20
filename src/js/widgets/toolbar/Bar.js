@@ -163,11 +163,9 @@
               style: style
             }));
             continue;
-            break;
           case 'side':
             isSide = true;
             continue;
-            break;
           default:
             if (isSide) {
               barItems[sidePassed] = me.renderItem(item);
@@ -872,7 +870,6 @@
           case 'date':
             item.on('tab', me.onTabLastInput, me);
             return;
-            break;
         }
       }
     },

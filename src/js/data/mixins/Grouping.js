@@ -163,8 +163,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     var me = this,
       w = me.widget,
       grouping = w.grouping,
-      dataProperty = dataProperty || 'data',
       by = grouping.by;
+    dataProperty = dataProperty || 'data';
 
     if(!by){
       throw new Error('[FancyGrid Error] - not set by param in grouping');
