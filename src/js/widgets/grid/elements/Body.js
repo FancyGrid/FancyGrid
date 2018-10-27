@@ -269,6 +269,7 @@
       w.fire('cellclick', me.getEventParams(e));
       w.fire('rowclick', me.getEventParams(e));
       w.fire('columnclick', me.getColumnEventParams(e));
+
       if (w.activated === false) {
         w.activated = true;
         w.fire('activate');
@@ -443,6 +444,7 @@
       w.fire('beforecellmousedown', params);
       w.fire('cellmousedown', params);
       w.fire('columnmousedown', columnParams);
+
       if (w.activated === false) {
         w.activated = true;
         w.fire('activate');
@@ -695,7 +697,7 @@
       el.addCls(GRID_COLUMN_CLS);
       el.attr('grid', w.id);
 
-      if (column.index === '$selected') {
+      if (column.index === '$selected' || column.select) {
         el.addCls(GRID_COLUMN_SELECT_CLS);
       }
       else {
@@ -875,6 +877,10 @@
           case 'rowdrag':
             columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
             break;
+        }
+
+        if(column.select){
+          columnEl.addCls(GRID_COLUMN_SELECT_CLS);
         }
       });
     },

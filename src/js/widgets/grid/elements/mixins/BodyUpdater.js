@@ -43,7 +43,8 @@
     update: function (type) {
       var me = this,
         w = me.widget,
-        s = w.store;
+        s = w.store,
+        changes;
 
       switch (type){
         case 'cell':
@@ -60,7 +61,7 @@
       switch (type){
         case 'row':
         case 'rows':
-          var changes = s.changed;
+          changes = s.changed;
 
           for(var id in changes){
             var item = changes[id],
@@ -78,7 +79,7 @@
           break;
         case 'cell':
         case 'cells':
-          var changes = s.changed;
+          changes = s.changed;
 
           for(var id in changes){
             var item = changes[id],
@@ -131,7 +132,7 @@
         el.addCls(GRID_COLUMN_CLS);
         el.attr('grid', w.id);
 
-        if (column.index === '$selected') {
+        if (column.index === '$selected' || column.select) {
           el.addCls(GRID_COLUMN_SELECT_CLS);
         }
         else {
@@ -384,6 +385,10 @@
           default:
             throw new Error('[FancyGrid error] - not existed column type ' + column.type);
         }
+
+        if(column.select){
+          me.renderSelect(i, rowIndex, true);
+        }
       }
 
       me.removeNotUsedCells();
@@ -407,7 +412,12 @@
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j,
         jL,
-        currencySign = lang.currencySign;
+        currencySign = lang.currencySign,
+        isComplexInner = false;
+
+      if(column.select){
+        isComplexInner = true;
+      }
 
       if (column.index !== undefined) {
         key = column.index;
@@ -496,7 +506,13 @@
 
         cell.css(o.style);
 
-        if (!o.column.widget) {
+        if(isComplexInner){
+          var complexInner = [];
+          complexInner.push('<div class="fancy-grid-cell-inner-select"></div>');
+          complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+          inner.update(complexInner.join(' '));
+        }
+        else if (!o.column.widget) {
           inner.update(value);
         }
 
@@ -625,7 +641,6 @@
      * @param {Number} rowIndex
      */
     renderTree: function (i, rowIndex) {
-      //TODO:
       var me = this,
         w = me.widget,
         s = w.store,
@@ -689,9 +704,16 @@
           marginLeft -= 8;
         }
 
-        cellsDomInner.item(j).update([
-          '<div class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></div>' + nodeImg + '<div class="fancy-grid-tree-expander-text">' + value + '</div>'
-        ].join(''));
+        var cellInner = [];
+
+        cellInner.push('<div class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></div>');
+        if(column.select){
+          cellInner.push('<div class="fancy-grid-cell-inner-select" style="margin-left: 6px;"></div>');
+        }
+        cellInner.push(nodeImg);
+        cellInner.push('<div class="fancy-grid-tree-expander-text">' + value + '</div>');
+
+        cellInnerEl.update(cellInner.join(''));
       }
     },
     /*
@@ -983,7 +1005,7 @@
               },
               events: [{
                 beforechange: function (checkbox) {
-                  if (column.index === '$selected') {
+                  if (column.index === '$selected' || column.select) {
                     return;
                   }
 
@@ -993,7 +1015,7 @@
                 }
               }, {
                 change: function (checkbox, value) {
-                  if (column.index === '$selected') {
+                  if (column.index === '$selected' || column.select) {
                     return;
                   }
 
@@ -1027,8 +1049,9 @@
     /*
      * @param {Number} i
      * @param {Number} rowIndex
+     * @param {Boolean} [complex]
      */
-    renderSelect: function (i, rowIndex) {
+    renderSelect: function (i, rowIndex, complex) {
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1051,7 +1074,8 @@
       }
 
       for (; j < jL; j++) {
-        var value = s.get(j, key),
+        var item,
+          value = s.get(j, key),
           id = s.get(j, 'id'),
           cellInnerEl = cellsDomInner.item(j),
           checkBox = cellInnerEl.select('.fancy-field-checkbox'),
@@ -1060,17 +1084,57 @@
           editable = true;
 
         if (w.selection.memory) {
-          if (w.selection.memory.all && !w.selection.memory.except[id]) {
+          if (w.selection.memory.all && !w.selection.memory.excepted[id]) {
             value = true;
             w.selection.domSelectRow(j);
           }
-          else if (w.selection.memory.selected[id]) {
+          else if (w.selection.memory.has(id)) {
             value = true;
             w.selection.domSelectRow(j);
           }
           else {
             value = false;
             w.selection.domDeSelectRow(j);
+          }
+
+          if(s.isTree){
+            item = s.getItem(j);
+            var $selected = item.get('$selected');
+
+            if($selected){
+              var recurseSelect = function (childs) {
+                F.each(childs, function (child) {
+                  if(!child.fields){
+                    return;
+                  }
+
+                  if(child.get('$selected') === false){
+                    w.selection.memory.remove(child.id);
+                    return;
+                  }
+
+                  item.set('$selected', undefined);
+                  child.set('$selected', true);
+                  w.selection.memory.add(child.id);
+
+                  if(child.data.child && child.data.child[0] && child.data.child[0].fields){
+                    recurseSelect(child.data.child);
+                  }
+                });
+              };
+
+              recurseSelect(item.data.child);
+            }
+            else if($selected === false){
+              F.each(item.data.child, function (child) {
+                if(!child.fields){
+                  return;
+                }
+
+                child.set('$selected', false);
+                w.selection.memory.remove(child.id);
+              });
+            }
           }
         }
         else{
@@ -1084,10 +1148,21 @@
         }
 
         if (isCheckBoxInside === false) {
-          cellsDomInner.item(j).update('');
+          var renderTo = cellsDomInner.item(j);
 
-          new F.CheckBox({
-            renderTo: cellsDomInner.item(j).dom,
+          if(complex){
+            renderTo = renderTo.select('.fancy-grid-cell-inner-select').item(0).dom;
+            if(!Fancy.isBoolean(value)) {
+              value = false;
+            }
+          }
+          else {
+            cellsDomInner.item(j).update('');
+            renderTo = renderTo.dom;
+          }
+
+          var checkBoxConfig = {
+            renderTo: renderTo,
             renderId: true,
             value: value,
             label: false,
@@ -1097,8 +1172,17 @@
             style: {
               padding: '0px',
               display: 'inline-block'
-            }
-          });
+            },
+            events: [{
+              beforechange: function (field) {
+                if(w.selection.stopOneTick) {
+                  field.canceledChange = true;
+                }
+              }
+            }]
+          };
+
+          new F.CheckBox(checkBoxConfig);
         }
         else {
           checkBoxId = checkBox.dom.id;

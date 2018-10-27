@@ -806,12 +806,14 @@
      *
      */
     onChangeStore: function () {
-      this.update();
+      if(this.$onChangeUpdate !== false){
+        this.update();
+      }
     },
     /*
      * @param {Object} store
      */
-    onBeforeLoadStore: function (store) {
+    onBeforeLoadStore: function () {
       this.fire('beforeload');
     },
     /*
@@ -836,7 +838,7 @@
     /*
      * @param {Object} store
      */
-    onLoadStore: function (store) {
+    onLoadStore: function () {
       var me = this;
 
       setTimeout(function () {
@@ -1414,7 +1416,7 @@
      */
     selectRow: function (rowIndex, value, multi) {
       this.selection.selectRow(rowIndex, value, multi);
-      this.activated = true;
+      //this.activated = true;
     },
     /*
      * @param {Number} rowIndex
@@ -1423,7 +1425,7 @@
      */
     deSelectRow: function (rowIndex) {
       this.selection.selectRow(rowIndex, false, true);
-      this.activated = true;
+      //this.activated = true;
     },
     /*
      * @param {Number|String} id

@@ -838,6 +838,12 @@
 .fancy-field-disabled .fancy-field-checkbox-input:hover {
   background-position: inherit;
 }
+.fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%235181B8%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%235181B8%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
 /*
  radio.less
 */
@@ -2038,6 +2044,20 @@
   -o-transition: background 0.2s ease-out;
   transition: background 0.2s ease-out;
 }
+.fancy-grid-cell-inner-select {
+  display: inline-block;
+}
+.fancy-grid-cell-inner-text {
+  display: inline-block;
+  position: relative;
+  top: -3px;
+}
+.fancy-grid-cell-inner-select .fancy-field-checkbox {
+  height: 15px !important;
+}
+.fancy-grid-header-cell-select .fancy-field-checkbox {
+  height: 18px !important;
+}
 /*
  group-header.less
 */
@@ -2260,8 +2280,6 @@
   width: 15px;
   height: 15px;
   background-repeat: no-repeat;
-  background-image: url(images/default/tree-expand.png);
-  background-position-y: -51px;
   cursor: pointer;
   display: inline-block;
 }
@@ -2283,6 +2301,17 @@
   display: inline-block;
   height: 15px;
   width: 25px;
+}
+.fancy-grid-tree-expander {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%231e8fc6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  background-position-y: -4px;
+  background-position-x: -4px;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+.fancy-grid-tree-expander-expanded {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 /*
  datepicker.less
@@ -2735,6 +2764,23 @@
   border-left-width: 0;
   color: #51677a;
 }
+.fancy-theme-blue .fancy-grid-tree-expander {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%2351677a%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  background-position-y: -4px;
+  background-position-x: -4px;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+.fancy-theme-blue .fancy-grid-tree-expander-expanded {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+.fancy-theme-blue .fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%235181B8%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-blue .fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%235181B8%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
 .fancy-theme-blue.fancy-panel-grid-inside {
   border-bottom-width: 0;
 }
@@ -2994,6 +3040,23 @@
   border-right-width: 0;
   border-left-width: 0;
 }
+.fancy-theme-gray .fancy-grid-tree-expander {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%23515151%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  background-position-y: -4px;
+  background-position-x: -4px;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+.fancy-theme-gray .fancy-grid-tree-expander-expanded {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+.fancy-theme-gray .fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%238a8a8a%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-gray .fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%238a8a8a%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
 .fancy-theme-gray.fancy-drag-hint-top {
   background-image: url(images/sand/col-drag-top.png);
 }
@@ -3133,28 +3196,31 @@
   background: #222;
 }
 .fancy-theme-dark .fancy-button {
-  background: rgba(85, 85, 85, 0.35);
-  border: 1px solid #5a5a5a;
+  border-color: transparent;
 }
 .fancy-theme-dark .fancy-button .fancy-button-text {
   color: #ccc;
 }
 .fancy-theme-dark .fancy-button:hover {
   background: #5a5a5a;
+  border: 1px solid #5a5a5a;
 }
 .fancy-theme-dark .fancy-button:active {
   box-shadow: none;
   background: #555;
 }
 .fancy-theme-dark .fancy-button-disabled:hover {
-  background: rgba(85, 85, 85, 0.35);
+  background: transparent;
+  border-color: transparent;
 }
 .fancy-theme-dark .fancy-bar-button-disabled:hover {
-  background: rgba(85, 85, 85, 0.35);
+  background: transparent;
+  border-color: transparent;
 }
 .fancy-theme-dark .fancy-button-disabled:active {
-  background: rgba(85, 85, 85, 0.35);
   box-shadow: none;
+  background: transparent;
+  border-color: transparent;
 }
 .fancy-theme-dark .fancy-field-text-input {
   border: 1px solid #151515;
@@ -3207,7 +3273,7 @@
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20fill%3D%22%23cccccc%22%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3Cpath%20stroke%3D%22%23525252%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L6.5%2010%2011%204.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
 }
 .fancy-theme-dark .fancy-checkbox-on .fancy-field-checkbox-input:hover {
-  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20fill%3D%22%23555555%22%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3Cpath%20stroke%3D%22%23151515%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L6.5%2010%2011%204.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20fill%3D%22%23aaaaaa%22%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3Cpath%20stroke%3D%22%23151515%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L6.5%2010%2011%204.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
 }
 .fancy-theme-dark .fancy-grid-group-row-inner {
   background-image: url(images/dark/options-slide.png);
@@ -3313,6 +3379,7 @@
 }
 .fancy-theme-dark .fancy-button.fancy-button-pressed {
   background: #222;
+  border: 1px solid #5a5a5a;
 }
 .fancy-theme-dark .fancy-field-search .fancy-field-text {
   background: #222;
@@ -3476,6 +3543,12 @@
 .fancy-theme-dark .fancy-menu-item-side-text {
   color: #bbb;
 }
+.fancy-theme-dark .fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20fill%3D%22%23cccccc%22%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3Cpath%20stroke%3D%22%23525252%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-dark .fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20fill%3D%22%23aaaaaa%22%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3Cpath%20stroke%3D%22%23151515%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
 .fancy-theme-dark.fancy-combo-result-list li.fancy-combo-item-focused {
   color: white;
 }
@@ -3600,9 +3673,6 @@
   transform: rotate(-90deg);
 }
 .fancy-theme-dark .fancy-grid-tree-expander-expanded {
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%23C1C5CC%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
-  background-position-y: -4px;
-  background-position-x: -4px;
   -webkit-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -4099,6 +4169,12 @@
   color: #696558;
   border-bottom: 1px solid #C8C1A5;
 }
+.fancy-theme-sand .fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C8C1A5%22%2F%3E%3Cpath%20stroke%3D%22%23696458%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-sand .fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23E8DFC0%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C8C1A5%22%2F%3E%3Cpath%20stroke%3D%22%23696458%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
 .fancy-theme-sand.fancy-combo .fancy-combo-dropdown-button {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%226%22%20viewBox%3D%22944%201152%208%204%22%3E%3Cpath%20fill%3D%22%23696458%22%20d%3D%22M945.2%201152.2C944.9%201152%20944.5%201152%20944.3%201152.3%20944.1%201152.6%20944.1%201153%20944.4%201153.2L947.6%201155.8C947.8%201156%20948.2%201156%20948.4%201155.8L951.6%201153.2C951.9%201153%20951.9%201152.6%20951.7%201152.3%20951.5%201152%20951.1%201152%20950.8%201152.2L948%201154.5%20945.2%201152.2Z%22%2F%3E%3C%2Fsvg%3E');
   background-position: 9px 13px;
@@ -4176,9 +4252,6 @@
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%23C1C5CC%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
 }
 .fancy-theme-sand .fancy-grid-tree-expander-expanded {
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%23696558%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
-  background-position-y: -4px;
-  background-position-x: -4px;
   -webkit-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -4447,6 +4520,23 @@
   border-right-width: 0;
   border-left-width: 0;
   color: #333;
+}
+.fancy-theme-bootstrap .fancy-grid-tree-expander {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  background-position-y: -4px;
+  background-position-x: -4px;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+.fancy-theme-bootstrap .fancy-grid-tree-expander-expanded {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+.fancy-theme-bootstrap .fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%23525252%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-bootstrap .fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%23525252%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
 }
 .fancy-theme-bootstrap.fancy-panel {
   border-color: #ccc;
@@ -4994,9 +5084,6 @@
   transform: rotate(-90deg);
 }
 .fancy-theme-material .fancy-grid-tree-expander-expanded {
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%23C1C5CC%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
-  background-position-y: -4px;
-  background-position-x: -4px;
   -webkit-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -5021,4 +5108,10 @@
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Ccircle%20id%3D%22a%22%20cx%3D%227%22%20cy%3D%227%22%20r%3D%227%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Ccircle%20cx%3D%227%22%20cy%3D%227%22%20r%3D%226.5%22%20stroke%3D%22%238a8a8a%22%2F%3E%3Ccircle%20cx%3D%227%22%20cy%3D%227%22%20r%3D%223%22%20fill%3D%22%238a8a8a%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
   background-position: 0 0;
   background-repeat: no-repeat;
+}
+.fancy-theme-material .fancy-checkbox-middle .fancy-field-checkbox-input {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23FFF%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%238a8a8a%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-material .fancy-checkbox-middle .fancy-field-checkbox-input:hover {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20width%3D%2215%22%20height%3D%2215%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3Cpath%20stroke%3D%22%238a8a8a%22%20zoom%3D%221.5%22%20stroke-width%3D%221.7%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M4%207.5L11%207.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
 }

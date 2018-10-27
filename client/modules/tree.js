@@ -354,6 +354,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         filteredChild = item.get('filteredChild'),
         id = item.get('id');
 
+      w.$onChangeUpdate = false;
+
       me.expandMap[id] = false;
 
       if(filteredChild){
@@ -425,6 +427,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         delete w.store.treeCollapsing;
       }
 
+      delete w.$onChangeUpdate;
+
       //if(!child){
         w.update();
       //}
@@ -437,6 +441,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         filteredChild = item.get('filteredChild'),
         id = item.get('id'),
         parentId = item.get('parentId');
+
+      w.$onChangeUpdate = false;
 
       if(filteredChild){
         //child = filteredChild;
@@ -547,6 +553,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           item.data.child[i] = childItem;
         });
       }
+
+      delete w.$onChangeUpdate;
 
       //if(!child){
         w.update();

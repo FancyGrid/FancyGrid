@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.51',
+  version: '1.7.52',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -8589,6 +8589,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
   minWidth: 200,
   minHeight: 200,
   barScrollEnabled: true,
+  scrollable: false,
   /*
    * @constructor
    * @param {Object} config
@@ -9521,7 +9522,6 @@ if(!Fancy.nojQuery && Fancy.$){
       switch (me.type) {
         case 'set':
         case 'line':
-          return;
       }
 
       if (width === undefined && height === undefined) {
@@ -10626,6 +10626,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     ],
     extend: Fancy.Widget,
     type: 'field.checkbox',
+    middle: false,
     disabled: false,
     /*
      * @constructor
@@ -10663,6 +10664,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
 
       me.acceptedValue = me.value;
       me.set(me.value, false);
+
+      me.checkMiddle();
 
       me.ons();
     },
@@ -10717,7 +10720,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       }
 
       if (me.canceledChange === true) {
-        me.canceledChange = true;
+        me.canceledChange = false;
         return;
       }
 
@@ -10725,6 +10728,11 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       var oldValue = me.value;
       me.value = el.hasCls(me.checkedCls);
       me.fire('change', me.value, oldValue);
+
+      if(me.middle === true){
+        me.middle = false;
+        me.checkMiddle();
+      }
     },
     /*
      * @params {Object} e
@@ -10801,6 +10809,28 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
      */
     destroy: function () {
       this.Super('destroy', arguments);
+    },
+    /*
+     *
+     */
+    checkMiddle: function () {
+      var me = this;
+
+      if(me.middle){
+        me.el.addCls('fancy-checkbox-middle');
+      }
+      else{
+        me.el.removeCls('fancy-checkbox-middle');
+      }
+    },
+    /*
+     * @param {Boolean} value
+     */
+    setMiddle: function (value) {
+      var me = this;
+
+      me.middle = value;
+      me.checkMiddle();
     }
   });
 

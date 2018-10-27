@@ -756,6 +756,7 @@
         s = w.store,
         containFilters = false;
 
+      w.filtering = true;
       s.filters = me.filters;
 
       for(var p in s.filters){
@@ -778,7 +779,11 @@
       w.setSidesHeight();
       if(!containFilters){
         delete s.filteredData;
+        delete s.filteredDataMap;
+        delete s.filterOrder;
       }
+
+      delete w.filtering;
     },
     /*
      * @param {Fancy.Grid} grid
@@ -789,6 +794,10 @@
         width = o.width,
         fieldEl = cell.select('.' + FIELD_CLS),
         field;
+
+      if(fieldEl.length === 2){
+        fieldEl = fieldEl.item(1);
+      }
 
       if (fieldEl.length === 0) {}
       else if (fieldEl.length === 2) {

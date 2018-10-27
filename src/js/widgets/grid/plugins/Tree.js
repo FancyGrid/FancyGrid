@@ -127,6 +127,8 @@
         filteredChild = item.get('filteredChild'),
         id = item.get('id');
 
+      w.$onChangeUpdate = false;
+
       me.expandMap[id] = false;
 
       if(filteredChild){
@@ -198,6 +200,8 @@
         delete w.store.treeCollapsing;
       }
 
+      delete w.$onChangeUpdate;
+
       //if(!child){
         w.update();
       //}
@@ -210,6 +214,8 @@
         filteredChild = item.get('filteredChild'),
         id = item.get('id'),
         parentId = item.get('parentId');
+
+      w.$onChangeUpdate = false;
 
       if(filteredChild){
         //child = filteredChild;
@@ -320,6 +326,8 @@
           item.data.child[i] = childItem;
         });
       }
+
+      delete w.$onChangeUpdate;
 
       //if(!child){
         w.update();

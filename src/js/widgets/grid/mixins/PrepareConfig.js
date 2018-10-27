@@ -220,6 +220,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigData: function(config, originalConfig){
+    var me = this;
     if(!config.data){
       config.data = [];
     }
@@ -405,6 +406,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.autoHeight){
         autoHeight = true;
+      }
+
+      if(column.select){
+        this.checkboxRowSelection = true;
+        this.multiSelect = true;
+        $selected++;
       }
 
       switch(column.type){

@@ -25,14 +25,14 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    */
   init: function(){},
   /*
-   *
+   * @param {Object} [o]
    */
   exportToExcel: function(o){
     var me = this,
       w = me.widget,
       o = o || {},
       columnsData = me.getColumnsData(),
-      data = me.getData(),
+      data = me.getData(o),
       dataToExport = o.header === false? data : [columnsData].concat(data),
       Workbook = function(){
         if(!(this instanceof Workbook)) return new Workbook();
@@ -98,13 +98,15 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     return data;
   },
   /*
+   * @param {Object} [o]
    * @return {Array}
    */
-  getData: function(){
+  getData: function(o){
     var me = this,
+      o = o || {},
       w = me.widget,
       data = [],
-      displayedData = w.getDisplayedData();
+      displayedData = o.all? w.getData() : w.getDisplayedData();
 
     Fancy.each(displayedData, function(rowData){
       var _rowData = [];
@@ -209,7 +211,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   getDataAsCsv: function (o) {
     var me = this,
       w = me.widget,
-      data = me.getData(),
+      data = me.getData(o),
       str = '',
       o = o || {},
       separator = o.separator || me.csvSeparator,

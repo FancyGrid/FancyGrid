@@ -160,7 +160,7 @@
 
         passedWidth += column.width;
 
-        if (column.index === '$selected') {
+        if (column.index === '$selected' || column.select) {
           cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
         }
 
@@ -258,7 +258,7 @@
         }
       }
 
-      if (column.index === '$selected') {
+      if (column.index === '$selected' || column.select) {
         cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
       }
 
@@ -998,7 +998,7 @@
           var el = column.headerCheckBox.el,
             elId = el.attr('id');
 
-          var el = F.get(elId);
+          el = F.get(elId);
 
           if(!el.dom){
             column.headerCheckBox = true;
@@ -1009,8 +1009,6 @@
           var cell = cells.item(i),
             headerCellContainer = cell.firstChild(),
             textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
-            text = textEl.dom.innerHTML,
-            //label = !text ? false : text,
             label = column.title ? column.title : false,
             labelWidth = 0;
 
@@ -1258,6 +1256,10 @@
           checkBoxEl = cell.select('.' + FIELD_CHECKBOX_CLS);
 
         if(checkBoxEl.length){
+          if(column.type === 'select' || column.select){
+            return;
+          }
+
           var checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
           cell.removeCls(GRID_HEADER_CELL_CHECKBOX_CLS);
           cell.removeCls(GRID_HEADER_CELL_SELECT_CLS);

@@ -2,8 +2,6 @@
   width: 15px;
   height: 15px;
   background-repeat: no-repeat;
-  background-image: url(images/default/tree-expand.png);
-  background-position-y: -51px;
   cursor: pointer;
   display: inline-block;
 }
@@ -29,4 +27,17 @@
   display: inline-block;
   height: 15px;
   width: 25px;
+}
+
+.fancy-grid-tree-expander {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20stroke%3D%22%231e8fc6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.875%22%20d%3D%22M6.5%2010l5.5%204.5%205.5-4.5%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  background-position-y: -4px;
+  background-position-x: -4px;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.fancy-grid-tree-expander-expanded {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
 }

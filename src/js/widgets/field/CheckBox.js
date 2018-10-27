@@ -21,6 +21,7 @@
     ],
     extend: Fancy.Widget,
     type: 'field.checkbox',
+    middle: false,
     disabled: false,
     /*
      * @constructor
@@ -58,6 +59,8 @@
 
       me.acceptedValue = me.value;
       me.set(me.value, false);
+
+      me.checkMiddle();
 
       me.ons();
     },
@@ -112,7 +115,7 @@
       }
 
       if (me.canceledChange === true) {
-        me.canceledChange = true;
+        me.canceledChange = false;
         return;
       }
 
@@ -120,6 +123,11 @@
       var oldValue = me.value;
       me.value = el.hasCls(me.checkedCls);
       me.fire('change', me.value, oldValue);
+
+      if(me.middle === true){
+        me.middle = false;
+        me.checkMiddle();
+      }
     },
     /*
      * @params {Object} e
@@ -196,6 +204,28 @@
      */
     destroy: function () {
       this.Super('destroy', arguments);
+    },
+    /*
+     *
+     */
+    checkMiddle: function () {
+      var me = this;
+
+      if(me.middle){
+        me.el.addCls('fancy-checkbox-middle');
+      }
+      else{
+        me.el.removeCls('fancy-checkbox-middle');
+      }
+    },
+    /*
+     * @param {Boolean} value
+     */
+    setMiddle: function (value) {
+      var me = this;
+
+      me.middle = value;
+      me.checkMiddle();
     }
   });
 

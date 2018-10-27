@@ -18,6 +18,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
   minWidth: 200,
   minHeight: 200,
   barScrollEnabled: true,
+  scrollable: false,
   /*
    * @constructor
    * @param {Object} config

@@ -28,7 +28,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSize: function (config, originalConfig) {
+  prepareConfigSize: function (config) {
     var el,
       me = this,
       renderTo = config.renderTo;

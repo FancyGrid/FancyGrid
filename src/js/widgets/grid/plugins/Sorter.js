@@ -127,6 +127,8 @@
         type,
         header = w.getHeader(side);
 
+      w.sorting = true;
+
       if (!column || !cell) {
         for (; i < iL; i++) {
           if (columns[i].index === index) {
@@ -199,6 +201,8 @@
          format: format,
          mode: mode
       });
+
+      delete w.sorting;
     },
     /*
      * @param {String} dir

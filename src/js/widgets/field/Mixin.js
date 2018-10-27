@@ -731,7 +731,6 @@
       switch (me.type) {
         case 'set':
         case 'line':
-          return;
       }
 
       if (width === undefined && height === undefined) {

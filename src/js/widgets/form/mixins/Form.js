@@ -48,6 +48,9 @@
       me.applyDefaults();
       me.preRender();
       me.render();
+      if(me.scrollable) {
+        me.checkScroll();
+      }
       me.ons();
       me.fire('init');
     },
@@ -747,8 +750,10 @@
 
       F.each(this.items, function (item) {
         switch(item.type){
+          case 'field.string':
           case 'string':
           case 'number':
+          case 'field.number':
             break;
           default:
             return;
@@ -768,15 +773,24 @@
      * @param {String} name
      * @return {Object}
      */
-    getItem: function (name) {
-      var item = false;
+    getItem: function (name, returnOrder) {
+      var item = false,
+        order;
 
-      F.each(this.items, function (_item) {
+      F.each(this.items, function (_item, i) {
         if (_item.name === name) {
           item = _item;
+          order = i;
           return true;
         }
       });
+
+      if(returnOrder){
+        return {
+          item: item,
+          order: order
+        };
+      }
 
       return item;
     },
@@ -1361,6 +1375,47 @@
           tabIndex++;
         }
       });
+    },
+    /*
+     * @param {String|Number} name
+     */
+    remove: function (name) {
+      var me = this,
+        itemInfo;
+        //itemInfo = me.getItem(name, true);
+
+      if(F.isString(name)){
+        itemInfo = me.getItem(name, true);
+      }
+      else{
+        itemInfo = {
+          item: me.items[name],
+          order: name
+        };
+      }
+
+      itemInfo.item.destroy();
+      me.items.splice(itemInfo.order, 1);
+    },
+    /*
+     *
+     */
+    checkScroll: function () {
+      var me = this,
+        bodyEl = me.el.select('.' + FORM_BODY_CLS).item(0),
+        availableHeight = parseInt(bodyEl.css('height')),
+        fieldsHeight = 0;
+
+      F.each(me.items, function (item) {
+        fieldsHeight += parseInt(item.css('height'));
+      });
+
+      if(availableHeight < fieldsHeight){
+        bodyEl.css({
+          'overflow-y': 'scroll',
+          'overflow-x': 'hidden'
+        });
+      }
     }
   });
 
