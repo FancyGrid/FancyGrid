@@ -449,6 +449,9 @@
           me.selectRow(info.rowIndex);
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
           w.scroller.scrollToCell(nextCell.dom, true);
+          if(me.selModel === 'rows'){
+            me.updateHeaderCheckBox();
+          }
           break;
       }
     },
@@ -479,6 +482,9 @@
           me.selectRow(info.rowIndex);
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
           w.scroller.scrollToCell(nextCell.dom, true);
+          if(me.selModel === 'rows'){
+            me.updateHeaderCheckBox();
+          }
           break;
       }
     },

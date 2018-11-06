@@ -216,20 +216,26 @@
         );
       }
       else {
+        var itemConfig = {
+          labelWidth: labelWidth,
+          label: label,
+          labelDisplay: labelDisplay,
+          inputLabelDisplay: inputLabelDisplay,
+          inputLabel: inputLabel,
+          emptyText: me.emptyText,
+          value: me.value,
+          height: me.height,
+          itemsHTML: itemsHTML,
+          errorTextStyle: '',
+          buttonText: me.buttonText
+        };
+
+        if(me.type === 'set'){
+          delete itemConfig.height;
+        }
+
         el.update(
-          me.tpl.getHTML({
-            labelWidth: labelWidth,
-            label: label,
-            labelDisplay: labelDisplay,
-            inputLabelDisplay: inputLabelDisplay,
-            inputLabel: inputLabel,
-            emptyText: me.emptyText,
-            value: me.value,
-            height: me.height,
-            itemsHTML: itemsHTML,
-            errorTextStyle: '',
-            buttonText: me.buttonText
-          })
+          me.tpl.getHTML(itemConfig)
         );
       }
 
@@ -688,7 +694,7 @@
         me.input.css('width', o.width);
       }
 
-      if (o.height) {
+      if (o.height && me.type !== 'set') {
         me.input.css('height', o.height);
       }
     },
@@ -771,7 +777,9 @@
         me.css('height', height * 1.5);
       }
       else {
-        me.css('height', height);
+        if(me.type !== 'set'){
+          me.css('height', height);
+        }
 
         if (me.label) {
           me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);

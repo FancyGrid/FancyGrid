@@ -921,6 +921,36 @@
       }, Fancy.ANIMATE_DURATION + 20);
     },
     /*
+     * @return {Number}
+     */
+    getScrollHeight: function () {
+      var me = this,
+        w = me.widget,
+        bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
+        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0);
+
+      if(bodyViewHeight > cellsViewHeight){
+        return bodyViewHeight;
+      }
+
+      return cellsViewHeight - bodyViewHeight;
+    },
+    /*
+     * @return {Number}
+     */
+    getScrollWidth: function () {
+      var me = this,
+        w = me.widget,
+        centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
+        centerFullWidth = w.getCenterFullWidth() - (me.corner ? me.cornerSize : 0);
+
+      if(centerViewWidth > centerFullWidth){
+        return centerViewWidth;
+      }
+
+      return centerFullWidth - centerViewWidth;
+    },
+    /*
      * @param {Number} [viewHeight]
      */
     checkScroll: function (viewHeight) {
@@ -957,6 +987,10 @@
      * @param {Fancy.Element} cell
      */
     scrollToCell: function (cell, nativeScroll, firstRowIsVisible) {
+      if(cell === undefined){
+        return;
+      }
+
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,

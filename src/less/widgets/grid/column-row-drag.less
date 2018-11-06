@@ -10,15 +10,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.fancy-grid-column-row-drag .fancy-grid-cell {
+.fancy-grid-column-row-drag:not(.fancy-grid-column-ellipsis) .fancy-grid-cell {
   border-right-color: transparent;
 }
 
 .fancy-grid-column-row-drag .fancy-grid-cell-inner {
   margin-left: 6px;
-  height: 14px;
 }
 
 .fancy-grid .fancy-grid-body .fancy-drop-cell-first-mask {
   border-top: 1px solid #a4cf6d;
+}
+
+.fancy-grid-cell-inner-rowdrag {
+  display: inline-block;
+  position: relative;
+  top: -5px;
 }

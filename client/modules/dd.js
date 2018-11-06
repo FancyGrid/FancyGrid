@@ -462,6 +462,7 @@
   var GRID_BODY_CLS = F.GRID_BODY_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+  var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
 
   F.define('Fancy.grid.plugin.RowDragDrop', {
     extend: F.Plugin,
@@ -494,7 +495,7 @@
       me.initDropCls();
       me.initEnterLeave();
 
-      me.disableSelectionMove();
+      //me.disableSelectionMove();
     },
     /*
      *
@@ -547,7 +548,13 @@
     },
     onCellMouseDown: function (grid, o) {
       var me = this,
-        docEl = F.get(document);
+        docEl = F.get(document),
+        targetEl = F.get(o.e.target),
+        tagName = targetEl.dom.tagName.toLocaleLowerCase();
+
+      if(tagName !== 'svg' && tagName !== 'path'){
+        return;
+      }
 
       me.cellMouseDown = F.get(o.cell);
       docEl.once('mouseup', me.onDocMouseUp, me);
@@ -559,7 +566,7 @@
 
       me.cellMouseDown = false;
       me.mouseDownDragEl = false;
-      w.enableSelection();
+      delete me.tipValue;
 
       if(me.tipShown) {
         docEl.un('mousemove', me.onDocMouseMove);
@@ -569,6 +576,13 @@
           me.fire('drop');
         }
         me.tipShown = false;
+      }
+
+      if(w.selection){
+        setTimeout(function () {
+          w.selection.clearOverCells();
+        }, 1);
+        w.enableSelection();
       }
     },
     /*
@@ -681,6 +695,13 @@
         me.insertItem = 0;
       }
 
+      var memory = w.selection.memory;
+      if(memory && memory.all && memory.exceptedLength === 0){
+        me.dropOK = false;
+        delete me.activeRowIndex;
+        return;
+      }
+
       me.activeRowIndex = o.rowIndex;
       me.showCellsDropMask();
     },
@@ -733,8 +754,12 @@
         selection = w.getSelection(),
         text = F.String.format(lang.dragText, [selection.length, selection.length > 1 ? 's' : '']);
 
+      if(me.tipValue && selection.length === 1){
+        text = me.tipValue;
+      }
+
       me.tip.update(text);
-      if(selection.length&& me.dropOK != false) {
+      if(selection.length && me.dropOK != false) {
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
       else{
@@ -777,11 +802,13 @@
         selection = w.getSelection(),
         rowIndex;
 
+      w.draggingRows = true;
+
       if(!w.selection.memory){
         w.clearSelection();
       }
 
-      w.remove(selection);
+      w.remove(selection, null, false);
       //TODO: If raw is selected that it can not detect row
       if(me.insertItem === 0){
         rowIndex = 0;
@@ -790,40 +817,51 @@
         rowIndex = w.getRowById(me.insertItem.id) + 1;
       }
 
-      w.insert(rowIndex, selection);
-      F.each(selection, function (item) {
-        var rowIndex = w.getRowById(item.id);
-        w.flashRow(rowIndex);
-      });
+      w.insert(rowIndex, selection, false);
+      w.store.changeDataView();
+      w.update();
+      if(!w.selection.memory){
+        F.each(selection, function (item) {
+          var rowIndex = w.getRowById(item.id);
+          w.flashRow(rowIndex);
+        });
+      }
+      w.fire('dragrows', selection);
+      delete w.draggingRows;
+      w.enableSelection();
     },
     onBeforeCellMouseDown: function (el, o) {
       var me = this,
         docEl = Fancy.get(document),
         w = me.widget,
-        selected = w.getSelection();
+        targetEl = F.get(o.e.target);
 
-      if(o.column.type === 'select'){
+      if(o.column.type !== 'rowdrag' && !o.column.rowdrag){
         return;
       }
 
-      if(o.column.type === 'rowdrag'){
-        if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
-          w.selectRow(o.rowIndex);
+      if(o.column.rowdrag){
+        me.tipValue = o.value;
+      }
+
+      if(o.column.type === 'rowdrag' || o.column.rowdrag){
+        if(targetEl.dom.tagName.toLocaleLowerCase() === 'svg' || targetEl.parent().dom.tagName.toLocaleLowerCase() === 'svg'){
+          if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
+            if(w.selection.row){
+              w.selectRow(o.rowIndex);
+            }
+            else if(w.selection.rows){
+              w.selectRow(o.rowIndex, true, true);
+            }
+          }
+
+          me.mouseDownDragEl = true;
+          docEl.once('mousemove', function (e) {
+            me.showTip(e);
+            docEl.on('mousemove', me.onDocMouseMove, me);
+          });
+          w.stopSelection();
         }
-
-        me.mouseDownDragEl = true;
-        docEl.once('mousemove', function (e) {
-          me.showTip(e);
-          docEl.on('mousemove', me.onDocMouseMove, me);
-        });
-      }
-
-      if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
-        return;
-      }
-
-      if (selected.length > 1) {
-        w.stopSelection();
       }
     },
     /*

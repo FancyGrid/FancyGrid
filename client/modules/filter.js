@@ -730,6 +730,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
                 emptyText: filter.emptyText,
                 value: '',
                 editable: false,
+                subSearch: false,
                 events: [{
                   change: me.onEnterSelect,
                   scope: me

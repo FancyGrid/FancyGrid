@@ -6,8 +6,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   //idSeed: 0,
   /*
    * @param {Object} o
+   * @param {Boolean} [fire]
    */
-  remove: function(o) {
+  remove: function(o, fire) {
     var me = this,
       id = o.id,
       index,
@@ -47,7 +48,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy) {
-      me.proxyCRUD('DESTROY', id);
+      if(fire !== false){
+        me.proxyCRUD('DESTROY', id);
+      }
       return;
     }
 
@@ -104,11 +107,13 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     delete me.map[id];
 
-    if (!me.treeCollapsing) {
+    if (!me.treeCollapsing && fire !== false) {
       me.fire('remove', id, itemData, index);
     }
 
-    me.changeDataView();
+    if(fire !== false) {
+      me.changeDataView();
+    }
   },
   /*
    * @param {Number} index
@@ -155,9 +160,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    * @param {Number} index
    * @param {Object} o
+   * @param {Boolean} [fire]
    * @return {Fancy.Model}
    */
-  insert: function(index, o){
+  insert: function(index, o, fire){
     var me = this;
 
     //Bug fix for empty data on start with grouping
@@ -184,24 +190,28 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
-      me.once('create', me.onCreate, me);
-      me.proxyCRUD('CREATE', o);
+      if(fire !== false) {
+        me.once('create', me.onCreate, me);
+        me.proxyCRUD('CREATE', o);
+      }
     }
     else{
-      return me.insertItem(o, index);
+      return me.insertItem(o, index, fire);
     }
   },
   /*
    * @param {Object} o
+   * @param {Number} index
+   * @param {Boolean} fire
    * @return {Fancy.Model}
    */
-  insertItem: function(o){
+  insertItem: function(o, index, fire){
     var me = this,
       model = me.model,
       item = new model(o),
       index = me.addIndex;
 
-    if(!me.treeExpanding) {
+    if(!me.treeExpanding && fire !== false) {
       me.fire('beforeinsert');
     }
 
@@ -214,9 +224,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       me.order[index]--;
     }
 
-    me.changeDataView();
+    if(fire !== false) {
+      me.changeDataView();
+    }
+
     me.map[o.id] = item;
-    if(!me.treeExpanding) {
+    if(!me.treeExpanding &&  fire !== false) {
       me.fire('insert', item);
     }
     return item;

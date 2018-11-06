@@ -396,7 +396,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         isTreeData = true;
       }
 
-      if(column.type === 'rowdrag' && !config.rowDragDrop){
+      if((column.type === 'rowdrag' || column.rowdrag) && !config.rowDragDrop){
         config.rowDragDrop = true;
       }
 
@@ -1072,10 +1072,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
         if(config.selModel.mouseMoveSelection !== undefined){
           mouseMoveSelection = config.selModel.mouseMoveSelection;
-        }
-
-        if(config.selModel.memoryPerfomance !== undefined){
-          memoryPerformance = config.selModel.memoryPerfomance;
         }
 
         memory = config.selModel.memory === true;
@@ -4759,6 +4755,18 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         y = -y;
       }
 
+      var scrollHeight = scroller.getScrollHeight();
+
+      if(x > scrollHeight){
+        x = scrollHeight;
+      }
+
+      var scrollWidth = scroller.getScrollWidth();
+
+      if(Math.abs(y) > scrollWidth){
+        y = -scrollWidth;
+      }
+
       scroller.scroll(x, y, animate);
 
       scroller.scrollBottomKnob();
@@ -6426,6 +6434,36 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }, Fancy.ANIMATE_DURATION + 20);
     },
     /*
+     * @return {Number}
+     */
+    getScrollHeight: function () {
+      var me = this,
+        w = me.widget,
+        bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
+        cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0);
+
+      if(bodyViewHeight > cellsViewHeight){
+        return bodyViewHeight;
+      }
+
+      return cellsViewHeight - bodyViewHeight;
+    },
+    /*
+     * @return {Number}
+     */
+    getScrollWidth: function () {
+      var me = this,
+        w = me.widget,
+        centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
+        centerFullWidth = w.getCenterFullWidth() - (me.corner ? me.cornerSize : 0);
+
+      if(centerViewWidth > centerFullWidth){
+        return centerViewWidth;
+      }
+
+      return centerFullWidth - centerViewWidth;
+    },
+    /*
      * @param {Number} [viewHeight]
      */
     checkScroll: function (viewHeight) {
@@ -6462,6 +6500,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {Fancy.Element} cell
      */
     scrollToCell: function (cell, nativeScroll, firstRowIsVisible) {
+      if(cell === undefined){
+        return;
+      }
+
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -8210,6 +8252,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
   var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
+  var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
 
   F.ns('Fancy.grid.body.mixin');
 
@@ -8326,6 +8369,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
               break;
           }
+        }
+
+        if(column.rowdrag){
+          el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
         }
 
         if (column.cls) {
@@ -8571,6 +8618,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(column.select){
           me.renderSelect(i, rowIndex, true);
         }
+        else if(w.selection && w.selection.memory){
+          me.renderSelect(i, rowIndex);
+        }
+
+        if(column.rowdrag){
+          me.renderRowDrag(i, rowIndex, true);
+        }
       }
 
       me.removeNotUsedCells();
@@ -8598,6 +8652,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         isComplexInner = false;
 
       if(column.select){
+        isComplexInner = true;
+      }
+
+      if(column.rowdrag){
         isComplexInner = true;
       }
 
@@ -8690,9 +8748,21 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         if(isComplexInner){
           var complexInner = [];
-          complexInner.push('<div class="fancy-grid-cell-inner-select"></div>');
-          complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
-          inner.update(complexInner.join(' '));
+          if(column.rowdrag){
+            complexInner.push('<div class="fancy-grid-cell-inner-rowdrag"></div>');
+          }
+          if(column.select){
+            complexInner.push('<div class="fancy-grid-cell-inner-select"></div>');
+          }
+
+          var innerText = inner.select('.fancy-grid-cell-inner-text');
+          if(innerText.length){
+            innerText.update(value);
+          }
+          else {
+            complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            inner.update(complexInner.join(' '));
+          }
         }
         else if (!o.column.widget) {
           inner.update(value);
@@ -8766,8 +8836,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     },
     /*
      * @param {Number} i
+     * @param {Number} rowIndex
+     * @param {Boolean} [complex]
      */
-    renderRowDrag: function (i) {
+    renderRowDrag: function (i, rowIndex, complex) {
       var me = this,
         w = me.widget,
         s = w.store,
@@ -8778,12 +8850,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j = 0,
-        jL = s.getLength(),
-        plusValue = 0;
-
-      if (w.paging) {
-        plusValue += s.showPage * s.pageSize;
-      }
+        jL = s.getLength();
 
       for (; j < jL; j++) {
         var data = s.get(j),
@@ -8796,14 +8863,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             id: id,
             item: s.getItem(j)
           },
-          value = '<svg style="opacity: 0;" viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
+          value = '<svg class="'+GRID_ROW_DRAG_EL_CLS+'" style="opacity: 0;" viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
 
         o.value = value;
-
-        if (column.render) {
-          o = column.render(o);
-          value = o.value;
-        }
 
         var cell = cellsDom.item(j);
         if (w.cellStylingCls) {
@@ -8815,7 +8877,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
 
         cell.css(o.style);
-        cellsDomInner.item(j).update(value);
+        if(complex){
+          var renderTo = cellsDomInner.item(j).select('.fancy-grid-cell-inner-rowdrag').item(0);
+          renderTo.update(value);
+        }
+        else {
+          cellsDomInner.item(j).update(value);
+        }
       }
     },
     /*
@@ -9239,7 +9307,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
@@ -9257,7 +9324,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       for (; j < jL; j++) {
         var item,
-          value = s.get(j, key),
+          value = false,
           id = s.get(j, 'id'),
           cellInnerEl = cellsDomInner.item(j),
           checkBox = cellInnerEl.select('.fancy-field-checkbox'),
@@ -9325,6 +9392,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
+        if(column.type !== 'select' && !column.select){
+          continue;
+        }
+
         if(w.selection.disabled){
           editable = false;
         }
@@ -9338,7 +9409,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               value = false;
             }
           }
-          else {
+          else{
             cellsDomInner.item(j).update('');
             renderTo = renderTo.dom;
           }
@@ -11085,6 +11156,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         if(column.select){
           columnEl.addCls(GRID_COLUMN_SELECT_CLS);
+        }
+
+        if(column.rowdrag){
+          columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
         }
       });
     },

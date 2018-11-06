@@ -139,6 +139,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'startedit',
       'changepage', 'changepagesize',
       'dropitems',
+      'dragrows',
       'collapse', 'expand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
@@ -172,6 +173,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.setSides();
     me.setSidesHeight();
     me.setColumnsPosition();
+    //hbar chart column does not work without it.
+    //TODO: Needs to study how to fix it and do not run.
+    //It is not possible to replicate but unless production sample.
     me.update();
     me.initTextSelection();
     me.initTouch();

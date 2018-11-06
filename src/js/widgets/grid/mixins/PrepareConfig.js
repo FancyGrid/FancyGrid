@@ -396,7 +396,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         isTreeData = true;
       }
 
-      if(column.type === 'rowdrag' && !config.rowDragDrop){
+      if((column.type === 'rowdrag' || column.rowdrag) && !config.rowDragDrop){
         config.rowDragDrop = true;
       }
 
@@ -1072,10 +1072,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
         if(config.selModel.mouseMoveSelection !== undefined){
           mouseMoveSelection = config.selModel.mouseMoveSelection;
-        }
-
-        if(config.selModel.memoryPerfomance !== undefined){
-          memoryPerformance = config.selModel.memoryPerfomance;
         }
 
         memory = config.selModel.memory === true;

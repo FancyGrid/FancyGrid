@@ -4,9 +4,10 @@
 Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @param {*} o
-   * @param {Boolean} at
+   * @param {Boolean} [at]
+   * @param {Boolean} [fire]
    */
-  remove: function(o, at){
+  remove: function(o, at, fire){
     var me = this,
       store = me.store,
       method = 'remove';
@@ -27,14 +28,16 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         iL = o.length;
 
       for(;i<iL;i++){
-        store[method](o[i]);
+        store[method](o[i], fire);
       }
     }
     else{
       store[method](o);
     }
 
-    me.setSidesHeight();
+    if(fire !== false){
+      me.setSidesHeight();
+    }
   },
   /*
    * @param {*} o
@@ -108,14 +111,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @param {Number} index
    * @param {Object} o
+   * @param {Boolean} fire
    */
-  insert: function(index, o){
+  insert: function(index, o, fire){
     var me = this,
       s = me.store;
 
     if(!me.store){
       setTimeout(function(){
-        me.insert(index, o)
+        me.insert(index, o, fire)
       }, 100);
       return;
     }
@@ -124,20 +128,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var i = o.length - 1;
 
       for(;i !== -1;i--){
-        me.insert(o[i], index);
+        me.insert(o[i], index, fire);
       }
 
-      me.setSidesHeight();
+      if(fire !== false){
+        me.setSidesHeight();
+      }
       return;
     }
     else if(Fancy.isArray(index)){
       var i = index.length - 1;
 
       for(;i !== -1;i--){
-        me.insert(index[i], 0);
+        me.insert(index[i], 0, fire);
       }
 
-      me.setSidesHeight();
+      if(fire !== false){
+        me.setSidesHeight();
+      }
       return;
     }
     else if(Fancy.isObject(index) && o === undefined){
@@ -154,8 +162,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       index += s.showPage * s.pageSize;
     }
 
-    s.insert(index, o);
-    me.setSidesHeight();
+    s.insert(index, o, fire);
+    if(fire !== false){
+      me.setSidesHeight();
+    }
   },
   /*
    * @param {Number} rowIndex

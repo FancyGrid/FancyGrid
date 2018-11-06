@@ -882,6 +882,10 @@
         if(column.select){
           columnEl.addCls(GRID_COLUMN_SELECT_CLS);
         }
+
+        if(column.rowdrag){
+          columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
+        }
       });
     },
     onContextMenu: function (e) {

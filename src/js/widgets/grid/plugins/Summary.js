@@ -69,9 +69,7 @@
       });
 
       w.on('columnresize', function(){
-        setTimeout(function () {
-          me.onColumnResize();
-        }, F.ANIMATE_DURATION);
+        me.onColumnResize();
       }, me);
 
       if (me.sumDisplayed) {

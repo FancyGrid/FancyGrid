@@ -2632,6 +2632,18 @@
         y = -y;
       }
 
+      var scrollHeight = scroller.getScrollHeight();
+
+      if(x > scrollHeight){
+        x = scrollHeight;
+      }
+
+      var scrollWidth = scroller.getScrollWidth();
+
+      if(Math.abs(y) > scrollWidth){
+        y = -scrollWidth;
+      }
+
       scroller.scroll(x, y, animate);
 
       scroller.scrollBottomKnob();

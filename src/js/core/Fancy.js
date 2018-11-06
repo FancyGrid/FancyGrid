@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.52',
+  version: '1.7.53',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -556,6 +556,7 @@ Fancy.apply(Fancy, {
   GRID_COLUMN_COLOR_CLS: 'fancy-grid-column-color',
   GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
   GRID_COLUMN_ROW_DRAG_CLS: 'fancy-grid-column-row-drag',
+  GRID_ROW_DRAG_EL_CLS: 'fancy-grid-row-drag-el',
   GRID_ANIMATION_CLS: 'fancy-grid-animation',
   //grid spark column
   GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
@@ -582,7 +583,6 @@ Fancy.apply(Fancy, {
   GRID_ROW_EXPAND_CLS: 'fancy-grid-expand-row',
   GRID_ROW_EXPAND_OVER_CLS: 'fancy-grid-expand-row-over',
   GRID_ROW_EXPAND_SELECTED_CLS: 'fancy-grid-expand-row-selected',
-  GRID_ROW_DRAG_EL_CLS: 'fancy-grid-row-drag-el',
   //grid body
   GRID_BODY_CLS: 'fancy-grid-body',
   /*
