@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.53',
+  version: '1.7.54',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -35155,7 +35155,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       var me = this,
         w = me.widget,
         s = w.store,
-        rowCells = w.getDomRow(rowIndex),
+        rowCells,
         id = s.get(rowIndex, 'id'),
         selected = false;
 
@@ -35163,9 +35163,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
-      if (me.memory && !w.sorting && !w.filtering && !me.selectingAll && !w.draggingRows) {
-        me.memory.add(id);
+      if (me.memory) {
+        if(!w.sorting && !w.filtering && !me.deselectingAll && !w.draggingRows){
+          me.memory.add(id);
+        }
+        /*
+        else if(!w.draggingRows && !w.sorting && !w.filtering){
+          return;
+        }*/
       }
+
+      rowCells = w.getDomRow(rowIndex);
 
       F.each(rowCells, function (cell) {
         cell = F.get(cell);
@@ -35192,13 +35200,21 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       var me = this,
         w = me.widget,
         s = w.store,
-        rowCells = w.getDomRow(rowIndex),
+        rowCells,
         id = s.get(rowIndex, 'id'),
         selected = true;
 
-      if (me.memory && !w.sorting && !w.filtering && !me.deselectingAll && !w.draggingRows) {
-        me.memory.remove(id);
+      if (me.memory) {
+        if(!w.filtering && !me.deselectingAll && !w.draggingRows && !w.sorting){
+          me.memory.remove(id);
+        }
+        /*
+        else if(!me.deselectingAll && !w.draggingRows && !w.sorting){
+          return;
+        }*/
       }
+
+      rowCells = w.getDomRow(rowIndex);
 
       F.each(rowCells, function (cell) {
         cell = F.get(cell);
@@ -40618,7 +40634,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
       var inner = [
         '<div style="position: relative;" class="' + GRID_ROW_SUMMARY_CLS + '">',
-        cells,
+          cells,
         '</div>'
       ].join("");
 
@@ -40854,6 +40870,8 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       if (w.rightColumns.length) {
         me.updateSizes('right');
       }
+
+      me.update();
     },
     /*
      * @param {String} side
@@ -40863,24 +40881,28 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         w = me.widget,
         el = me.getEl(side),
         cells = el.select('.' + GRID_CELL_CLS),
-        totalWidth = 0;
+        totalWidth = 0,
+        columns = w.getColumns(side);
 
-      F.each(w.getColumns(side), function (column, i) {
+      F.each(columns, function (column, i) {
         totalWidth += column.width;
-        cells.item(i).animate({width: column.width}, ANIMATE_DURATION);
+
+        var cell = cells.item(i);
+
+        cell.animate({width: column.width}, ANIMATE_DURATION);
       });
 
       el.firstChild().animate({width: totalWidth}, ANIMATE_DURATION);
 
       switch (side) {
         case 'center':
-          me.el.animate({width: parseInt(w.centerEl.css('width'))}, ANIMATE_DURATION);
+          me.el.animate({width: totalWidth}, ANIMATE_DURATION);
           break;
         case 'left':
-          me.leftEl.animate({width: parseInt(w.leftEl.css('width')) - 2}, ANIMATE_DURATION);
+          me.leftEl.animate({width: totalWidth - 2}, ANIMATE_DURATION);
           break;
         case 'right':
-          me.rightEl.animate({width: parseInt(w.rightEl.css('width')) - 1}, ANIMATE_DURATION);
+          me.rightEl.animate({width: totalWidth - 1}, ANIMATE_DURATION);
           break;
       }
     },
@@ -45413,14 +45435,22 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(column.select){
           me.renderSelect(i, rowIndex, true);
         }
+        /*
         else if(w.selection && w.selection.memory){
           me.renderSelect(i, rowIndex);
         }
+        */
 
         if(column.rowdrag){
           me.renderRowDrag(i, rowIndex, true);
         }
       }
+
+      /*
+      if(w.selection && w.selection.memory && me.side === 'center'){
+        //me.updateMemoryRowsSelection();
+      }
+      */
 
       me.removeNotUsedCells();
     },

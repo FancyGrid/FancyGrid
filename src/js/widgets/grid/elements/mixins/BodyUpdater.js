@@ -394,14 +394,22 @@
         if(column.select){
           me.renderSelect(i, rowIndex, true);
         }
+        /*
         else if(w.selection && w.selection.memory){
           me.renderSelect(i, rowIndex);
         }
+        */
 
         if(column.rowdrag){
           me.renderRowDrag(i, rowIndex, true);
         }
       }
+
+      /*
+      if(w.selection && w.selection.memory && me.side === 'center'){
+        //me.updateMemoryRowsSelection();
+      }
+      */
 
       me.removeNotUsedCells();
     },

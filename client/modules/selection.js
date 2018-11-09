@@ -566,7 +566,7 @@
       var me = this,
         w = me.widget,
         s = w.store,
-        rowCells = w.getDomRow(rowIndex),
+        rowCells,
         id = s.get(rowIndex, 'id'),
         selected = false;
 
@@ -574,9 +574,17 @@
         return;
       }
 
-      if (me.memory && !w.sorting && !w.filtering && !me.selectingAll && !w.draggingRows) {
-        me.memory.add(id);
+      if (me.memory) {
+        if(!w.sorting && !w.filtering && !me.deselectingAll && !w.draggingRows){
+          me.memory.add(id);
+        }
+        /*
+        else if(!w.draggingRows && !w.sorting && !w.filtering){
+          return;
+        }*/
       }
+
+      rowCells = w.getDomRow(rowIndex);
 
       F.each(rowCells, function (cell) {
         cell = F.get(cell);
@@ -603,13 +611,21 @@
       var me = this,
         w = me.widget,
         s = w.store,
-        rowCells = w.getDomRow(rowIndex),
+        rowCells,
         id = s.get(rowIndex, 'id'),
         selected = true;
 
-      if (me.memory && !w.sorting && !w.filtering && !me.deselectingAll && !w.draggingRows) {
-        me.memory.remove(id);
+      if (me.memory) {
+        if(!w.filtering && !me.deselectingAll && !w.draggingRows && !w.sorting){
+          me.memory.remove(id);
+        }
+        /*
+        else if(!me.deselectingAll && !w.draggingRows && !w.sorting){
+          return;
+        }*/
       }
+
+      rowCells = w.getDomRow(rowIndex);
 
       F.each(rowCells, function (cell) {
         cell = F.get(cell);

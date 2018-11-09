@@ -162,7 +162,7 @@
 
       var inner = [
         '<div style="position: relative;" class="' + GRID_ROW_SUMMARY_CLS + '">',
-        cells,
+          cells,
         '</div>'
       ].join("");
 
@@ -398,6 +398,8 @@
       if (w.rightColumns.length) {
         me.updateSizes('right');
       }
+
+      me.update();
     },
     /*
      * @param {String} side
@@ -407,24 +409,28 @@
         w = me.widget,
         el = me.getEl(side),
         cells = el.select('.' + GRID_CELL_CLS),
-        totalWidth = 0;
+        totalWidth = 0,
+        columns = w.getColumns(side);
 
-      F.each(w.getColumns(side), function (column, i) {
+      F.each(columns, function (column, i) {
         totalWidth += column.width;
-        cells.item(i).animate({width: column.width}, ANIMATE_DURATION);
+
+        var cell = cells.item(i);
+
+        cell.animate({width: column.width}, ANIMATE_DURATION);
       });
 
       el.firstChild().animate({width: totalWidth}, ANIMATE_DURATION);
 
       switch (side) {
         case 'center':
-          me.el.animate({width: parseInt(w.centerEl.css('width'))}, ANIMATE_DURATION);
+          me.el.animate({width: totalWidth}, ANIMATE_DURATION);
           break;
         case 'left':
-          me.leftEl.animate({width: parseInt(w.leftEl.css('width')) - 2}, ANIMATE_DURATION);
+          me.leftEl.animate({width: totalWidth - 2}, ANIMATE_DURATION);
           break;
         case 'right':
-          me.rightEl.animate({width: parseInt(w.rightEl.css('width')) - 1}, ANIMATE_DURATION);
+          me.rightEl.animate({width: totalWidth - 1}, ANIMATE_DURATION);
           break;
       }
     },
