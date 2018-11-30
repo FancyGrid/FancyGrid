@@ -137,13 +137,14 @@
         return;
       }
 
-      if (!F.fullBuilt && F.MODULELOAD !== false && F.MODULELOAD !== false && ( me.monthPicker || !F.modules['grid'] )) {
+      if (!F.fullBuilt && F.MODULELOAD !== false && me.monthPicker && !F.modules['grid']) {
         return;
       }
 
       me.monthPicker = new F.MonthPicker({
         date: me.date,
         renderTo: me.panel.el.dom,
+        i18n: me.i18n,
         style: {
           position: 'absolute',
           top: '-' + me.panel.el.height() + 'px',
@@ -293,10 +294,19 @@
         return o;
       };
 
+      var charIndex = 0;
+
+      switch(me.i18n){
+        case 'zh-CN':
+        case 'zh-TW':
+          charIndex = 2;
+          break;
+      }
+
       for (; i < iL; i++) {
         columns.push({
           index: dayIndexes[i],
-          title: days[i][0].toLocaleUpperCase(),
+          title: days[i][charIndex].toLocaleUpperCase(),
           render: render
         });
       }
@@ -446,6 +456,7 @@
 
       tbar.push({
         cls: PICKER_BUTTON_DATE_CLS,
+        i18n: me.i18n,
         wrapper: {
           cls: PICKER_BUTTON_DATE_WRAPPER_CLS
         },
@@ -473,6 +484,7 @@
 
       bbar.push({
         text: me.format.today,
+        i18n: me.i18n,
         cls: PICKER_BUTTON_TODAY_CLS,
         wrapper: {
           cls: PICKER_BUTTON_TODAY_WRAPPER_CLS
@@ -546,9 +558,17 @@
       var me = this,
         value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
-        });
+        }),
+        width = value.length * 9 + 35;
 
-      var width = value.length * 9 + 35;
+      switch (me.i18n){
+        case 'zh-CN':
+        case 'zh-TW':
+        case 'ja':
+        case 'ko':
+          width = value.length * 10 + 35;
+          break;
+      }
 
       me.tbar[1].setText(value, width);
     },

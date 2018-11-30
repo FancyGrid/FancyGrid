@@ -30,6 +30,10 @@ Fancy.Date = {
       m;
     mode = mode || '';
 
+    if(date === null || date === undefined){
+      return '';
+    }
+
     if(date.toString() === 'Invalid Date'){
       return '';
     }
@@ -213,7 +217,7 @@ Fancy.Date = {
               i += 3;
             }
             else if(format.substr(0, 2) === 'yy'){
-              String(date.getFullYear()).substr(2, value.length);
+              String(date.getFullYear()).substr(2, 4);
               i += 1;
             }
             else{
@@ -221,7 +225,7 @@ Fancy.Date = {
             }
           }
           else {
-            value += String(date.getFullYear()).substr(2, value.length);
+            value += String(date.getFullYear()).substr(2, 4);
           }
           break;
         case 'D':

@@ -103,7 +103,7 @@
         return;
       }
 
-      me.lang = F.Object.copy(F.i18n[me.i18n]);
+      me.lang = F.Object.copy(F.i18n[me.i18n || 'en']);
     },
     /*
      *
@@ -234,10 +234,12 @@
         cls: PICKER_MONTH_ACTION_BUTTONS_CLS,
         items: [{
           text: lang.date.ok,
+          i18n: me.i18n,
           handler: me.onClickOk,
           scope: me
         }, {
           text: lang.date.cancel,
+          i18n: me.i18n,
           handler: me.onClickCancel,
           scope: me
         }]
@@ -351,12 +353,6 @@
       else {
         this.onNextClick();
       }
-    },
-    /*
-     *
-     */
-    onDateClick: function () {
-      this.initMonthPicker();
     },
     setDate: function (date) {
       var me = this;

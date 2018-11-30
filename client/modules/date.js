@@ -30,6 +30,10 @@ Fancy.Date = {
       m;
     mode = mode || '';
 
+    if(date === null || date === undefined){
+      return '';
+    }
+
     if(date.toString() === 'Invalid Date'){
       return '';
     }
@@ -213,7 +217,7 @@ Fancy.Date = {
               i += 3;
             }
             else if(format.substr(0, 2) === 'yy'){
-              String(date.getFullYear()).substr(2, value.length);
+              String(date.getFullYear()).substr(2, 4);
               i += 1;
             }
             else{
@@ -221,7 +225,7 @@ Fancy.Date = {
             }
           }
           else {
-            value += String(date.getFullYear()).substr(2, value.length);
+            value += String(date.getFullYear()).substr(2, 4);
           }
           break;
         case 'D':
@@ -1262,6 +1266,7 @@ Fancy.Date = {
         theme: me.theme,
         minValue: me.min,
         maxValue: me.max,
+        i18n: me.i18n,
         events: [{
           changedate: me.onPickerChangeDate,
           scope: me
@@ -1707,13 +1712,14 @@ Fancy.Date = {
         return;
       }
 
-      if (!F.fullBuilt && F.MODULELOAD !== false && F.MODULELOAD !== false && ( me.monthPicker || !F.modules['grid'] )) {
+      if (!F.fullBuilt && F.MODULELOAD !== false && me.monthPicker && !F.modules['grid']) {
         return;
       }
 
       me.monthPicker = new F.MonthPicker({
         date: me.date,
         renderTo: me.panel.el.dom,
+        i18n: me.i18n,
         style: {
           position: 'absolute',
           top: '-' + me.panel.el.height() + 'px',
@@ -1863,10 +1869,19 @@ Fancy.Date = {
         return o;
       };
 
+      var charIndex = 0;
+
+      switch(me.i18n){
+        case 'zh-CN':
+        case 'zh-TW':
+          charIndex = 2;
+          break;
+      }
+
       for (; i < iL; i++) {
         columns.push({
           index: dayIndexes[i],
-          title: days[i][0].toLocaleUpperCase(),
+          title: days[i][charIndex].toLocaleUpperCase(),
           render: render
         });
       }
@@ -2016,6 +2031,7 @@ Fancy.Date = {
 
       tbar.push({
         cls: PICKER_BUTTON_DATE_CLS,
+        i18n: me.i18n,
         wrapper: {
           cls: PICKER_BUTTON_DATE_WRAPPER_CLS
         },
@@ -2043,6 +2059,7 @@ Fancy.Date = {
 
       bbar.push({
         text: me.format.today,
+        i18n: me.i18n,
         cls: PICKER_BUTTON_TODAY_CLS,
         wrapper: {
           cls: PICKER_BUTTON_TODAY_WRAPPER_CLS
@@ -2116,9 +2133,17 @@ Fancy.Date = {
       var me = this,
         value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
-        });
+        }),
+        width = value.length * 9 + 35;
 
-      var width = value.length * 9 + 35;
+      switch (me.i18n){
+        case 'zh-CN':
+        case 'zh-TW':
+        case 'ja':
+        case 'ko':
+          width = value.length * 10 + 35;
+          break;
+      }
 
       me.tbar[1].setText(value, width);
     },
@@ -2408,7 +2433,7 @@ Fancy.Date = {
         return;
       }
 
-      me.lang = F.Object.copy(F.i18n[me.i18n]);
+      me.lang = F.Object.copy(F.i18n[me.i18n || 'en']);
     },
     /*
      *
@@ -2539,10 +2564,12 @@ Fancy.Date = {
         cls: PICKER_MONTH_ACTION_BUTTONS_CLS,
         items: [{
           text: lang.date.ok,
+          i18n: me.i18n,
           handler: me.onClickOk,
           scope: me
         }, {
           text: lang.date.cancel,
+          i18n: me.i18n,
           handler: me.onClickCancel,
           scope: me
         }]
@@ -2656,12 +2683,6 @@ Fancy.Date = {
       else {
         this.onNextClick();
       }
-    },
-    /*
-     *
-     */
-    onDateClick: function () {
-      this.initMonthPicker();
     },
     setDate: function (date) {
       var me = this;

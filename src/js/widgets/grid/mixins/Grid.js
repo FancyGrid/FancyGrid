@@ -282,6 +282,10 @@
         el.addCls('fancy-theme-' + me.theme);
       }
 
+      if(me.treeFolder){
+        el.addCls('fancy-grid-tree-folder');
+      }
+
       var panelBordersWidth = 0,
         panelBorderHeight = 0;
 
@@ -2745,7 +2749,67 @@
             rowData.push(i + 1);
             break;
           default:
-            rowData.push(me.get(i, column.index));
+            if(column.render){
+              var data = me.get(i),
+                value = me.get(i, column.index);
+
+              rowData.push(column.render({
+                value: value,
+                data: data
+              }).value);
+            }
+            else {
+              rowData.push(me.get(i, column.index));
+            }
+        }
+      };
+
+      for (; i < viewTotal; i++) {
+        var rowData = [];
+
+        F.each(leftColumns, fn);
+        F.each(columns, fn);
+        F.each(rightColumns, fn);
+
+        data.push(rowData);
+      }
+
+      return data;
+    },
+    /*
+     * @return {Array}
+     */
+    getAllDisplayedData: function () {
+      var me = this,
+        viewTotal = me.getViewTotal(),
+        data = [],
+        i = 0,
+        leftColumns = me.leftColumns,
+        columns = me.columns,
+        rightColumns = me.rightColumns;
+
+      var fn = function (column) {
+        if (column.index === undefined || column.index === '$selected' || column.hidden) {
+          return;
+        }
+
+        switch(column.type){
+          case 'order':
+            rowData.push(i + 1);
+            break;
+          default:
+            if(column.render){
+              var data = me.get(i),
+                value = me.get(i, column.index);
+
+              rowData.push(column.render({
+                value: value,
+                data: data
+              }).value);
+            }
+            else {
+              rowData.push(me.get(i, column.index));
+            }
         }
       };
 

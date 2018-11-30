@@ -760,13 +760,11 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
      */
     onClick: function (e) {
       var me = this,
-        w = me.widget,
         rowEl = F.get(e.currentTarget),
         isCollapsed,
         group = rowEl.attr('group');
 
-      w.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').toggleCls(GRID_ROW_GROUP_COLLAPSED_CLS);
-
+      rowEl.toggleCls(GRID_ROW_GROUP_COLLAPSED_CLS);
       isCollapsed = rowEl.hasCls(GRID_ROW_GROUP_COLLAPSED_CLS);
 
       if (isCollapsed) {

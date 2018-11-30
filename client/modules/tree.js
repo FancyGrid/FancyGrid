@@ -432,6 +432,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       //if(!child){
         w.update();
       //}
+
+      w.fire('treecollapse');
     },
     expandRow: function (item) {
       var me = this,
@@ -575,6 +577,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           s.reSort();
         }
       }
+
+      w.fire('treeexpand');
     },
     onBeforeSort: function (grid, options) {
       var me = this;

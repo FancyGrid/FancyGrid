@@ -18,6 +18,7 @@
   var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
   var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
   var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
+  var GRID_COLUMN_TREE_CLS = F.GRID_COLUMN_TREE_CLS;
 
   var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
   var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
@@ -715,6 +716,13 @@
         el.addCls(column.cls);
       }
 
+      if(column.type === 'tree'){
+        el.addCls(GRID_COLUMN_TREE_CLS);
+        if(column.folder){
+          el.addCls('fancy-grid-tree-column-folder');
+        }
+      }
+
       if (column.type === 'text') {
         el.addCls(GRID_COLUMN_TEXT_CLS);
       }
@@ -735,6 +743,7 @@
           case 'number':
           case 'date':
           case 'combo':
+          case 'tree':
             el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
             break;
         }
@@ -876,6 +885,12 @@
             break;
           case 'rowdrag':
             columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
+            break;
+          case 'tree':
+            columnEl.addCls(GRID_COLUMN_TREE_CLS);
+            if(column.folder){
+              columnEl.addCls('fancy-grid-tree-column-folder');
+            }
             break;
         }
 

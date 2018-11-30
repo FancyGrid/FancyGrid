@@ -111,6 +111,15 @@
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
+      switch (me.i18n){
+        case 'zh-CN':
+        case 'zh-TW':
+        case 'ja':
+        case 'ko':
+          charWidth = 10;
+          break;
+      }
+
       me.fire('beforerender');
 
       if( me.wrapper ){
@@ -384,15 +393,24 @@
         el = me.el,
         charWidth = 7;
 
+      if (me.theme && Fancy.themes[me.theme]) {
+        charWidth = Fancy.themes[me.theme].config.charWidth;
+      }
+
+      switch (me.i18n){
+        case 'zh-CN':
+        case 'zh-TW':
+        case 'ja':
+        case 'ko':
+          charWidth = 10;
+          break;
+      }
+
       if(!width){
         width = 0;
       }
 
       if(!width) {
-        if (me.theme && Fancy.themes[me.theme]) {
-          charWidth = Fancy.themes[me.theme].config.charWidth;
-        }
-
         width += text.length * charWidth + charWidth * 2;
 
         if (me.imageColor) {
@@ -415,8 +433,6 @@
         if (me.menu) {
           width += me.rightImageWidth;
         }
-
-        //me.css('width', ((parseInt(el.css('font-size')) + 2 ) * text.length) + parseInt(me.css('padding-right')) * 2 + 2  );
       }
 
       me.css('width', width);

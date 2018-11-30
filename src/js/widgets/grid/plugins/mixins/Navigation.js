@@ -520,6 +520,10 @@
         newScroll = viewHeight - bodyViewHeight;
       }
 
+      if(newScroll < 0){
+        newScroll = 0;
+      }
+
       w.scroll(newScroll);
     }
   });

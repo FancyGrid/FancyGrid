@@ -205,6 +205,8 @@
       //if(!child){
         w.update();
       //}
+
+      w.fire('treecollapse');
     },
     expandRow: function (item) {
       var me = this,
@@ -348,6 +350,8 @@
           s.reSort();
         }
       }
+
+      w.fire('treeexpand');
     },
     onBeforeSort: function (grid, options) {
       var me = this;

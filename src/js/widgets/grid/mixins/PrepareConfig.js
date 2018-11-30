@@ -464,6 +464,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'text':
         case 'date':
         case 'combo':
+        //case 'tree': //Bug: For tree text-overflow does not work.
           if(column.ellipsis !== false){
             column.ellipsis = true;
           }
@@ -606,6 +607,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(column.rightLocked){
         hasRightLocked = true;
+      }
+
+      if(column.hidden){
+        return;
       }
 
       if(column.width === undefined){

@@ -298,6 +298,7 @@
             style: style,
             format: column.format,
             lang: w.lang,
+            i18n: w.i18n,
             vtype: vtype,
             theme: theme,
             checkValidOnTyping: true,

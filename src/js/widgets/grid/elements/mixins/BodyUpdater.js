@@ -14,6 +14,7 @@
   var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
   var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
   var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  var GRID_COLUMN_TREE_CLS = F.GRID_COLUMN_TREE_CLS;
   var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
   var GRID_CELL_DIRTY_CLS = F.GRID_CELL_DIRTY_CLS;
   var GRID_CELL_DIRTY_EL_CLS = F.GRID_CELL_DIRTY_EL_CLS;
@@ -147,6 +148,13 @@
           }
         }
 
+        if(column.type === 'tree'){
+          el.addCls(GRID_COLUMN_TREE_CLS);
+          if(column.folder){
+            el.addCls('fancy-grid-tree-column-folder');
+          }
+        }
+
         if(column.rowdrag){
           el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
         }
@@ -175,6 +183,7 @@
             case 'number':
             case 'date':
             case 'combo':
+            case 'tree':
               el.addCls(GRID_COLUMN_ELLIPSIS_CLS);
               break;
           }
@@ -394,22 +403,11 @@
         if(column.select){
           me.renderSelect(i, rowIndex, true);
         }
-        /*
-        else if(w.selection && w.selection.memory){
-          me.renderSelect(i, rowIndex);
-        }
-        */
 
         if(column.rowdrag){
           me.renderRowDrag(i, rowIndex, true);
         }
       }
-
-      /*
-      if(w.selection && w.selection.memory && me.side === 'center'){
-        //me.updateMemoryRowsSelection();
-      }
-      */
 
       me.removeNotUsedCells();
     },
@@ -535,8 +533,14 @@
           if(column.rowdrag){
             complexInner.push('<div class="fancy-grid-cell-inner-rowdrag"></div>');
           }
+
           if(column.select){
             complexInner.push('<div class="fancy-grid-cell-inner-select"></div>');
+          }
+          else{
+            if(column.rowdrag){
+              complexInner.push('<div class="fancy-grid-cell-inner-rowdrag-fix"></div>');
+            }
           }
 
           var innerText = inner.select('.fancy-grid-cell-inner-text');
@@ -731,6 +735,24 @@
 
           if(o.value !== undefined){
             value = o.value;
+          }
+        }
+
+
+        if(column.folder){
+          var leaf = dataItem.get('leaf'),
+            expanded = dataItem.get('expanded');
+
+          if(leaf){
+            nodeImg = '<div class="fancy-grid-tree-folder-file"></div>';
+          }
+          else{
+            if(expanded){
+              nodeImg = '<div class="fancy-grid-tree-folder-opened"></div>';
+            }
+            else{
+              nodeImg = '<div class="fancy-grid-tree-folder-closed"></div>';
+            }
           }
         }
 
@@ -990,6 +1012,7 @@
         var data = s.get(j),
           value = s.get(j, key),
           cellInnerEl = cellsDomInner.item(j),
+          cell = cellsDom.item(j),
           checkBox = cellInnerEl.select('.fancy-field-checkbox'),
           checkBoxId,
           isCheckBoxInside = checkBox.length !== 0,
@@ -1005,8 +1028,6 @@
             value: value
           };
 
-
-
         if (s.changed[o.id] && s.changed[o.id][column.index]) {
           dirty = true;
         }
@@ -1017,7 +1038,6 @@
         }
 
         if (isCheckBoxInside === false) {
-
           if (!o.stopped) {
             var editable = true;
 
@@ -1073,6 +1093,16 @@
             checkBox.set(value, false);
           }
         }
+
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
+
+        cell.css(o.style);
 
         if (dirty && w.dirtyEnabled) {
           var cell = cellsDom.item(j);

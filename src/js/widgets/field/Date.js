@@ -391,6 +391,7 @@
         theme: me.theme,
         minValue: me.min,
         maxValue: me.max,
+        i18n: me.i18n,
         events: [{
           changedate: me.onPickerChangeDate,
           scope: me

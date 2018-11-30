@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.54',
+  version: '1.7.55',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -501,6 +501,7 @@ Fancy.apply(Fancy, {
    * Grid cls-s
    */
   GRID_CLS: 'fancy-grid',
+  GRID_ANIMATION_CLS: 'fancy-grid-animation',
   GRID_UNSELECTABLE_CLS: 'fancy-grid-unselectable',
   GRID_EMPTY_CLS: 'fancy-grid-empty-text',
   GRID_LEFT_EMPTY_CLS: 'fancy-grid-left-empty',
@@ -557,7 +558,9 @@ Fancy.apply(Fancy, {
   GRID_COLUMN_RESIZER_CLS: 'fancy-grid-column-resizer',
   GRID_COLUMN_ROW_DRAG_CLS: 'fancy-grid-column-row-drag',
   GRID_ROW_DRAG_EL_CLS: 'fancy-grid-row-drag-el',
-  GRID_ANIMATION_CLS: 'fancy-grid-animation',
+  //tree cls
+  GRID_COLUMN_TREE_CLS: 'fancy-grid-column-tree',
+  GRID_COLUMN_TREE_EXPANDER_CLS: 'fancy-grid-tree-expander',
   //grid spark column
   GRID_COLUMN_SPARKLINE_CLS: 'fancy-grid-column-sparkline',
   GRID_COLUMN_SPARKLINE_BULLET_CLS: 'fancy-grid-column-sparkline-bullet',
@@ -852,7 +855,7 @@ var FancyForm = function(){
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       _v = Fancy.version.replace(/\./g, ''),
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
 
     fn = fn || function () {};
 
@@ -909,7 +912,7 @@ var FancyForm = function(){
     var  body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       endUrl = '.js',
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
 
     _script.src = MODULESDIR + 'i18n/' + i18n + endUrl;
     _script.charset = 'utf-8';
@@ -955,7 +958,7 @@ var FancyForm = function(){
         name = 'fancy',
         endUrl = Fancy.DEBUG ? '.css' : '.min.css',
         _v = Fancy.version.replace(/\./g, ''),
-        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/');
+        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
 
       MODULESDIR = MODULESDIR.replace('modules/', '');
       MODULESDIR = MODULESDIR.replace('modules', '');

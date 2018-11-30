@@ -141,6 +141,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'dropitems',
       'dragrows',
       'collapse', 'expand',
+      'treecollapse', 'treeexpand',
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
       'contextmenu',
