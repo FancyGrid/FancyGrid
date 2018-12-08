@@ -9,6 +9,7 @@
   //CONSTANTS
   var MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
   var MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
+  var MENU_ITEM_IMG_DUPLICATE_CLS = F.MENU_ITEM_IMG_DUPLICATE_CLS;
   var MENU_ITEM_IMG_EDIT_CLS =  F.MENU_ITEM_IMG_EDIT_CLS;
 
   F.define('Fancy.grid.plugin.ContextMenu', {
@@ -71,9 +72,17 @@
         _items =  me.items || F.Array.copy(me.defaultItems);
 
       F.each(_items, function (item, i) {
-        switch (item){
+        var type = item,
+          _item = {};
+
+        if(item.type){
+          type = item.type;
+          F.apply(_item, item);
+        }
+
+        switch (type){
           case 'copy':
-            items.push({
+            F.applyIf(_item, {
               text: 'Copy',
               sideText: 'CTRL+C',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
@@ -81,19 +90,23 @@
                 w.copy();
               }
             });
+
+            items.push(_item);
             break;
           case 'copyWidthHeader':
           case 'copy+':
-            items.push({
+            F.applyIf(_item, {
               text: 'Copy with Headers',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
               handler: function(){
                 w.copy(true);
               }
             });
+
+            items.push(_item);
             break;
           case 'delete':
-            items.push({
+            F.applyIf(_item, {
               text: 'Delete',
               imageCls: MENU_ITEM_IMG_DELETE_CLS,
               handler: function(){
@@ -107,10 +120,12 @@
                 }
               }
             });
+
+            items.push(_item);
             break;
           case 'edit':
             me.editItemIndex = i;
-            items.push({
+            F.applyIf(_item, {
               text: 'Edit',
               imageCls: MENU_ITEM_IMG_EDIT_CLS,
               disabled: true,
@@ -127,9 +142,11 @@
                 }
               }
             });
+
+            items.push(_item);
             break;
           case 'export':
-            items.push({
+            F.applyIf(_item, {
               text: 'Export',
               items: [{
                 text: 'CSV Export',
@@ -147,6 +164,46 @@
                 }
               }]
             });
+
+            items.push(_item);
+            break;
+          case 'duplicate':
+            F.applyIf(_item, {
+              text: 'Duplicate',
+              imageCls: MENU_ITEM_IMG_DUPLICATE_CLS,
+              handler: function(){
+                switch(w.selection.selModel){
+                  case 'rows':
+                  case 'row':
+                    var selection = w.getSelection(),
+                      data = [],
+                      rowIndex;
+
+                    if(!selection.length){
+                      return;
+                    }
+
+                    rowIndex = w.getRowById(selection[selection.length - 1].id) + 1;
+
+                    F.each(selection, function (item) {
+                      var _item = F.Object.copy(item);
+                      _item.id = F.id(null, 'TEMP-');
+                      data.push(_item);
+                    });
+
+                    w.insert(rowIndex, data);
+
+                    F.each(data, function (item) {
+                      var rowIndex = w.getRowById(item.id);
+
+                      w.flashRow(rowIndex);
+                    });
+                    break;
+                }
+              }
+            });
+
+            items.push(_item);
             break;
           default:
             items.push(item);

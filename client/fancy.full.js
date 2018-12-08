@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.55',
+  version: '1.7.56',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -617,6 +617,7 @@ Fancy.apply(Fancy, {
    */
   MENU_ITEM_IMG_COPY_CLS: 'fancy-menu-item-img-copy',
   MENU_ITEM_IMG_DELETE_CLS: 'fancy-menu-item-img-delete',
+  MENU_ITEM_IMG_DUPLICATE_CLS: 'fancy-menu-item-img-duplicate',
   MENU_ITEM_IMG_EDIT_CLS: 'fancy-menu-item-img-edit',
   /*
    * Tab cls-s
@@ -1293,7 +1294,7 @@ Fancy.Array = {
       sum += values[i];
     }
 
-    return sum/values.length;
+    return Math.round(sum/values.length);
   },
   /*
    * @param {Array} arr
@@ -11247,6 +11248,10 @@ Fancy.define('Fancy.toolbar.Tab', {
 
       me.renderItems();
 
+      if(!me.items.length){
+        me.el.css('border', '0px');
+      }
+
       me.fire('afterrender');
       me.fire('render');
 
@@ -11613,6 +11618,34 @@ Fancy.define('Fancy.toolbar.Tab', {
       }
 
       me.showAt(newLeft, newTop, false);
+    },
+    /*
+     *
+     */
+    setChecked: function (index, clear) {
+      var me = this;
+
+      if(clear){
+        me.clearChecked();
+      }
+
+      var item = me.el.select('.fancy-menu-item').item(index),
+        checkBox = F.getWidget(item.select('.fancy-field-checkbox').attr('id'));
+
+      checkBox.set(true);
+    },
+    /*
+     *
+     */
+    clearChecked: function () {
+      var me = this;
+
+      me.el.select('.fancy-checkbox-on').each(function (el) {
+        var id = el.attr('id'),
+          checkBox = F.getWidget(id);
+
+        checkBox.set(false);
+      });
     }
   });
 
@@ -40942,6 +40975,10 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
       w.once('render', function () {
         me.calcOffSets();
+
+        if(me.options){
+          me.initOptions();
+        }
       });
 
       w.once('init', function () {
@@ -41041,10 +41078,10 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         el = F.get(document.createElement('div')),
         cells = '';
 
-      F.each(w.getColumns(side), function (column) {
+      F.each(w.getColumns(side), function (column, i) {
         cells += [
-          '<div style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_CELL_CLS + '">',
-          '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
+          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_CELL_CLS + '">',
+            '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
           '</div>'
         ].join("");
       });
@@ -41130,7 +41167,6 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
     updateSide: function (side) {
       var me = this,
         w = me.widget,
-        //body = w.body,
         body = w.getBody(side),
         s = w.store,
         cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
@@ -41155,7 +41191,12 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
         switch (F.typeOf(column.summary)) {
           case 'string':
-            value = F.Array[column.summary](columnValues);
+            if(column.summary === 'none'){
+              value = '&nbsp;';
+            }
+            else {
+              value = F.Array[column.summary](columnValues);
+            }
             break;
           case 'object':
             value = F.Array[column.summary.type](columnValues);
@@ -41425,6 +41466,224 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       if (w.rightColumns.length) {
         me.updateSizes('right');
       }
+    },
+    /*
+     *
+     */
+    initOptions: function () {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document.body);
+
+      w.addCls('fancy-grid-summary-options');
+      w.el.on('click', me.onOptionClick, me, '.fancy-grid-summary-container .fancy-grid-cell');
+
+      docEl.on('click', function (e) {
+        var el = F.get(e.target);
+
+        if(me.justShownSummaryMenu){
+          delete me.justShownSummaryMenu;
+          return;
+        }
+
+        if(!el.closest('.fancy-menu').dom && me.activeSummaryMenu){
+          me.activeSummaryMenu.hide();
+          delete me.activeSummaryMenu;
+        }
+      });
+    },
+    /*
+     * @param {Object} e
+     */
+    onOptionClick: function (e) {
+      var me = this,
+        w = me.widget,
+        cellEl = F.get(e.currentTarget),
+        column = me.getColumnBySummaryCell(cellEl),
+        menu;
+
+      me.justShownSummaryMenu = true;
+
+      if(me.activeSummaryMenu){
+        me.activeSummaryMenu.hide();
+        delete me.activeSummaryMenu;
+      }
+
+      if(column.summaryMenu){
+        menu = column.summaryMenu;
+      }
+      else {
+        var items = me.generateColumnSummaryItems(column);
+
+        menu = new Fancy.Menu({
+          width: parseInt(cellEl.css('width')) + 1,
+          theme: w.theme,
+          items: items
+        });
+      }
+
+      var offset = cellEl.offset(),
+        top = offset.top + parseInt(cellEl.css('height')),
+        left = offset.left,
+        animationDistance = 20;
+
+      if(me.position === 'bottom'){
+        top = top - menu.items.length * 30 - parseInt(cellEl.css('height'));
+        animationDistance *= -1;
+      }
+
+      menu.el.css({
+        position: 'absolute',
+        width: parseInt(cellEl.css('width')) + 1,
+        top: top + animationDistance,
+        left: left - 1
+      });
+
+      menu.show();
+
+      menu.el.animate({
+        duration: 200,
+        top: top - 1
+      });
+
+      column.summaryMenu = menu;
+
+      me.activeSummaryMenu = menu;
+    },
+    /*
+     *
+     */
+    generateColumnSummaryItems: function (column) {
+      var me = this,
+        items = [],
+        numberSummaries = ['None', 'Sum', 'Average', 'Count', 'Min', 'Max'],
+        stringSummaries = ['None'];
+
+      switch(column.type){
+        case 'number':
+          switch(F.typeOf(column.summary)){
+            case 'string':
+              F.each(numberSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: item.toLocaleLowerCase() === column.summary,
+                  handler: function () {
+                    column.summary = item.toLocaleLowerCase();
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+              break;
+            case 'function':
+            case 'object':
+              F.each(numberSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: false,
+                  handler: function () {
+                    column.summary = item.toLocaleLowerCase();
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+
+              items.push({
+                text: 'Custom',
+                checked: true,
+                handler: function () {
+                  column.summary = column._summary;
+                  me.update();
+                  me.activeSummaryMenu.hide();
+                  me.activeSummaryMenu.setChecked(items.length - 1, true);
+                  delete me.activeSummaryMenu;
+                }
+              });
+              break;
+          }
+          break;
+        case 'string':
+          switch(F.typeOf(column.summary)){
+            case 'string':
+              F.each(stringSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: item.toLocaleLowerCase() === column.summary,
+                  handler: function () {
+                    column.summary = item.toLocaleLowerCase();
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+              break;
+            case 'function':
+            case 'object':
+              F.each(stringSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: false,
+                  handler: function () {
+                    if(!column._summary){
+                      column._summary = column.summary;
+                    }
+                    column.summary = 'none';
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+
+              items.push({
+                text: 'Custom',
+                checked: true,
+                handler: function () {
+                  column.summary = column._summary;
+                  me.update();
+                  me.activeSummaryMenu.setChecked(items.length - 1, true);
+                  me.activeSummaryMenu.hide();
+                  delete me.activeSummaryMenu;
+                }
+              });
+              break;
+          }
+          break;
+        default:
+
+      }
+
+      return items;
+    },
+    /*
+     * @param {Object} cell
+     * @return Object
+     */
+    getColumnBySummaryCell: function (cell) {
+      var me = this,
+        w = me.widget,
+        index = cell.attr('index'),
+        column;
+
+      if(cell.closest('.fancy-grid-center').dom){
+        column = w.columns[index];
+      }
+      else if(cell.closest('.fancy-grid-left').dom){
+        column = w.leftColumns[index];
+      }
+      else if(cell.closest('.fancy-grid-right')){
+        column = w.rightColumns[index];
+      }
+
+      return column;
     }
   });
 
@@ -42051,6 +42310,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
   //CONSTANTS
   var MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
   var MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
+  var MENU_ITEM_IMG_DUPLICATE_CLS = F.MENU_ITEM_IMG_DUPLICATE_CLS;
   var MENU_ITEM_IMG_EDIT_CLS =  F.MENU_ITEM_IMG_EDIT_CLS;
 
   F.define('Fancy.grid.plugin.ContextMenu', {
@@ -42113,9 +42373,17 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         _items =  me.items || F.Array.copy(me.defaultItems);
 
       F.each(_items, function (item, i) {
-        switch (item){
+        var type = item,
+          _item = {};
+
+        if(item.type){
+          type = item.type;
+          F.apply(_item, item);
+        }
+
+        switch (type){
           case 'copy':
-            items.push({
+            F.applyIf(_item, {
               text: 'Copy',
               sideText: 'CTRL+C',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
@@ -42123,19 +42391,23 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                 w.copy();
               }
             });
+
+            items.push(_item);
             break;
           case 'copyWidthHeader':
           case 'copy+':
-            items.push({
+            F.applyIf(_item, {
               text: 'Copy with Headers',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
               handler: function(){
                 w.copy(true);
               }
             });
+
+            items.push(_item);
             break;
           case 'delete':
-            items.push({
+            F.applyIf(_item, {
               text: 'Delete',
               imageCls: MENU_ITEM_IMG_DELETE_CLS,
               handler: function(){
@@ -42149,10 +42421,12 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                 }
               }
             });
+
+            items.push(_item);
             break;
           case 'edit':
             me.editItemIndex = i;
-            items.push({
+            F.applyIf(_item, {
               text: 'Edit',
               imageCls: MENU_ITEM_IMG_EDIT_CLS,
               disabled: true,
@@ -42169,9 +42443,11 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                 }
               }
             });
+
+            items.push(_item);
             break;
           case 'export':
-            items.push({
+            F.applyIf(_item, {
               text: 'Export',
               items: [{
                 text: 'CSV Export',
@@ -42189,6 +42465,46 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
                 }
               }]
             });
+
+            items.push(_item);
+            break;
+          case 'duplicate':
+            F.applyIf(_item, {
+              text: 'Duplicate',
+              imageCls: MENU_ITEM_IMG_DUPLICATE_CLS,
+              handler: function(){
+                switch(w.selection.selModel){
+                  case 'rows':
+                  case 'row':
+                    var selection = w.getSelection(),
+                      data = [],
+                      rowIndex;
+
+                    if(!selection.length){
+                      return;
+                    }
+
+                    rowIndex = w.getRowById(selection[selection.length - 1].id) + 1;
+
+                    F.each(selection, function (item) {
+                      var _item = F.Object.copy(item);
+                      _item.id = F.id(null, 'TEMP-');
+                      data.push(_item);
+                    });
+
+                    w.insert(rowIndex, data);
+
+                    F.each(data, function (item) {
+                      var rowIndex = w.getRowById(item.id);
+
+                      w.flashRow(rowIndex);
+                    });
+                    break;
+                }
+              }
+            });
+
+            items.push(_item);
             break;
           default:
             items.push(item);
@@ -48659,6 +48975,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           indexOrder = i;
           break;
         }
+      }
+
+      if(column.menu === 'columns'){
+        menu = itemColumns.items;
+        return menu;
       }
 
       if(Fancy.isArray(column.menu)){

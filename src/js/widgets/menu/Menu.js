@@ -102,6 +102,10 @@
 
       me.renderItems();
 
+      if(!me.items.length){
+        me.el.css('border', '0px');
+      }
+
       me.fire('afterrender');
       me.fire('render');
 
@@ -468,6 +472,34 @@
       }
 
       me.showAt(newLeft, newTop, false);
+    },
+    /*
+     *
+     */
+    setChecked: function (index, clear) {
+      var me = this;
+
+      if(clear){
+        me.clearChecked();
+      }
+
+      var item = me.el.select('.fancy-menu-item').item(index),
+        checkBox = F.getWidget(item.select('.fancy-field-checkbox').attr('id'));
+
+      checkBox.set(true);
+    },
+    /*
+     *
+     */
+    clearChecked: function () {
+      var me = this;
+
+      me.el.select('.fancy-checkbox-on').each(function (el) {
+        var id = el.attr('id'),
+          checkBox = F.getWidget(id);
+
+        checkBox.set(false);
+      });
     }
   });
 

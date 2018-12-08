@@ -164,6 +164,11 @@
         }
       }
 
+      if(column.menu === 'columns'){
+        menu = itemColumns.items;
+        return menu;
+      }
+
       if(Fancy.isArray(column.menu)){
         F.each(column.menu, function (item) {
           switch (item){

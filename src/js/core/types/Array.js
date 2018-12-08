@@ -98,7 +98,7 @@ Fancy.Array = {
       sum += values[i];
     }
 
-    return sum/values.length;
+    return Math.round(sum/values.length);
   },
   /*
    * @param {Array} arr

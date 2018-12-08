@@ -53,6 +53,10 @@
 
       w.once('render', function () {
         me.calcOffSets();
+
+        if(me.options){
+          me.initOptions();
+        }
       });
 
       w.once('init', function () {
@@ -152,10 +156,10 @@
         el = F.get(document.createElement('div')),
         cells = '';
 
-      F.each(w.getColumns(side), function (column) {
+      F.each(w.getColumns(side), function (column, i) {
         cells += [
-          '<div style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_CELL_CLS + '">',
-          '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
+          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_CELL_CLS + '">',
+            '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
           '</div>'
         ].join("");
       });
@@ -241,7 +245,6 @@
     updateSide: function (side) {
       var me = this,
         w = me.widget,
-        //body = w.body,
         body = w.getBody(side),
         s = w.store,
         cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
@@ -266,7 +269,12 @@
 
         switch (F.typeOf(column.summary)) {
           case 'string':
-            value = F.Array[column.summary](columnValues);
+            if(column.summary === 'none'){
+              value = '&nbsp;';
+            }
+            else {
+              value = F.Array[column.summary](columnValues);
+            }
             break;
           case 'object':
             value = F.Array[column.summary.type](columnValues);
@@ -536,6 +544,224 @@
       if (w.rightColumns.length) {
         me.updateSizes('right');
       }
+    },
+    /*
+     *
+     */
+    initOptions: function () {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document.body);
+
+      w.addCls('fancy-grid-summary-options');
+      w.el.on('click', me.onOptionClick, me, '.fancy-grid-summary-container .fancy-grid-cell');
+
+      docEl.on('click', function (e) {
+        var el = F.get(e.target);
+
+        if(me.justShownSummaryMenu){
+          delete me.justShownSummaryMenu;
+          return;
+        }
+
+        if(!el.closest('.fancy-menu').dom && me.activeSummaryMenu){
+          me.activeSummaryMenu.hide();
+          delete me.activeSummaryMenu;
+        }
+      });
+    },
+    /*
+     * @param {Object} e
+     */
+    onOptionClick: function (e) {
+      var me = this,
+        w = me.widget,
+        cellEl = F.get(e.currentTarget),
+        column = me.getColumnBySummaryCell(cellEl),
+        menu;
+
+      me.justShownSummaryMenu = true;
+
+      if(me.activeSummaryMenu){
+        me.activeSummaryMenu.hide();
+        delete me.activeSummaryMenu;
+      }
+
+      if(column.summaryMenu){
+        menu = column.summaryMenu;
+      }
+      else {
+        var items = me.generateColumnSummaryItems(column);
+
+        menu = new Fancy.Menu({
+          width: parseInt(cellEl.css('width')) + 1,
+          theme: w.theme,
+          items: items
+        });
+      }
+
+      var offset = cellEl.offset(),
+        top = offset.top + parseInt(cellEl.css('height')),
+        left = offset.left,
+        animationDistance = 20;
+
+      if(me.position === 'bottom'){
+        top = top - menu.items.length * 30 - parseInt(cellEl.css('height'));
+        animationDistance *= -1;
+      }
+
+      menu.el.css({
+        position: 'absolute',
+        width: parseInt(cellEl.css('width')) + 1,
+        top: top + animationDistance,
+        left: left - 1
+      });
+
+      menu.show();
+
+      menu.el.animate({
+        duration: 200,
+        top: top - 1
+      });
+
+      column.summaryMenu = menu;
+
+      me.activeSummaryMenu = menu;
+    },
+    /*
+     *
+     */
+    generateColumnSummaryItems: function (column) {
+      var me = this,
+        items = [],
+        numberSummaries = ['None', 'Sum', 'Average', 'Count', 'Min', 'Max'],
+        stringSummaries = ['None'];
+
+      switch(column.type){
+        case 'number':
+          switch(F.typeOf(column.summary)){
+            case 'string':
+              F.each(numberSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: item.toLocaleLowerCase() === column.summary,
+                  handler: function () {
+                    column.summary = item.toLocaleLowerCase();
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+              break;
+            case 'function':
+            case 'object':
+              F.each(numberSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: false,
+                  handler: function () {
+                    column.summary = item.toLocaleLowerCase();
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+
+              items.push({
+                text: 'Custom',
+                checked: true,
+                handler: function () {
+                  column.summary = column._summary;
+                  me.update();
+                  me.activeSummaryMenu.hide();
+                  me.activeSummaryMenu.setChecked(items.length - 1, true);
+                  delete me.activeSummaryMenu;
+                }
+              });
+              break;
+          }
+          break;
+        case 'string':
+          switch(F.typeOf(column.summary)){
+            case 'string':
+              F.each(stringSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: item.toLocaleLowerCase() === column.summary,
+                  handler: function () {
+                    column.summary = item.toLocaleLowerCase();
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+              break;
+            case 'function':
+            case 'object':
+              F.each(stringSummaries, function (item, i) {
+                items.push({
+                  text: item,
+                  checked: false,
+                  handler: function () {
+                    if(!column._summary){
+                      column._summary = column.summary;
+                    }
+                    column.summary = 'none';
+                    me.update();
+                    me.activeSummaryMenu.setChecked(i, true);
+                    me.activeSummaryMenu.hide();
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              });
+
+              items.push({
+                text: 'Custom',
+                checked: true,
+                handler: function () {
+                  column.summary = column._summary;
+                  me.update();
+                  me.activeSummaryMenu.setChecked(items.length - 1, true);
+                  me.activeSummaryMenu.hide();
+                  delete me.activeSummaryMenu;
+                }
+              });
+              break;
+          }
+          break;
+        default:
+
+      }
+
+      return items;
+    },
+    /*
+     * @param {Object} cell
+     * @return Object
+     */
+    getColumnBySummaryCell: function (cell) {
+      var me = this,
+        w = me.widget,
+        index = cell.attr('index'),
+        column;
+
+      if(cell.closest('.fancy-grid-center').dom){
+        column = w.columns[index];
+      }
+      else if(cell.closest('.fancy-grid-left').dom){
+        column = w.leftColumns[index];
+      }
+      else if(cell.closest('.fancy-grid-right')){
+        column = w.rightColumns[index];
+      }
+
+      return column;
     }
   });
 
