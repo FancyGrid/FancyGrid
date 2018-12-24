@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.56',
+  version: '1.7.57',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1057,7 +1057,8 @@ Fancy.defineTheme('default', {
     knobOffSet: 2,
     fieldHeight: 37,
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -1069,7 +1070,8 @@ Fancy.defineTheme('blue', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -1081,7 +1083,8 @@ Fancy.defineTheme('gray', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -1092,7 +1095,8 @@ Fancy.defineTheme('dark', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -1103,7 +1107,8 @@ Fancy.defineTheme('sand', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -1113,7 +1118,8 @@ Fancy.defineTheme('bootstrap', {
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -1124,7 +1130,8 @@ Fancy.defineTheme('bootstrap-no-borders', {
     gridWithoutPanelBorders: [0, 0, 0, 0],
     panelBodyBorders: [0,0,0,0],
     columnLines: false,
-    charWidth: 8
+    charWidth: 8,
+    menuItemHeight: 30
   }
 });
 
@@ -1142,7 +1149,8 @@ Fancy.defineTheme('material', {
     gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 35
   }
 });
 /**
@@ -6191,7 +6199,7 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @return {Object}
      */
     prepareConfigLang: function (config, originalConfig) {
-      var i18n = originalConfig.i18n || config.i18n,
+      var i18n = config.i18n || originalConfig.i18n,
         lang = Fancy.Object.copy(Fancy.i18n[i18n]);
 
       if (config.lang) {

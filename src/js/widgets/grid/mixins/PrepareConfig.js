@@ -384,7 +384,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       $order = 0,
       $rowdrag = 0;
 
-
     for(;i<iL;i++){
       var column = columns[i];
 
@@ -1070,6 +1069,27 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
+
+        var containsTreeColumn = false,
+          containsSelectColumn = false;
+
+        Fancy.each(config.columns, function (column) {
+          if(column.type === 'tree'){
+            containsTreeColumn = true;
+          }
+
+          if(column.select){
+            containsSelectColumn = true;
+          }
+
+          if(column.type === 'select'){
+            containsSelectColumn = true;
+          }
+        });
+
+        if(containsTreeColumn && containsSelectColumn){
+          checkOnly = true;
+        }
 
         if(!config.selModel.type){
           throw new Error('FancyGrid Error 5: Type for selection is not set');

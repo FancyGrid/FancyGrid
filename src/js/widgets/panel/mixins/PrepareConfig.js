@@ -98,7 +98,7 @@
      * @return {Object}
      */
     prepareConfigLang: function (config, originalConfig) {
-      var i18n = originalConfig.i18n || config.i18n,
+      var i18n = config.i18n || originalConfig.i18n,
         lang = Fancy.Object.copy(Fancy.i18n[i18n]);
 
       if (config.lang) {

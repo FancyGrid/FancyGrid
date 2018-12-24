@@ -384,7 +384,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       $order = 0,
       $rowdrag = 0;
 
-
     for(;i<iL;i++){
       var column = columns[i];
 
@@ -1070,6 +1069,27 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
+
+        var containsTreeColumn = false,
+          containsSelectColumn = false;
+
+        Fancy.each(config.columns, function (column) {
+          if(column.type === 'tree'){
+            containsTreeColumn = true;
+          }
+
+          if(column.select){
+            containsSelectColumn = true;
+          }
+
+          if(column.type === 'select'){
+            containsSelectColumn = true;
+          }
+        });
+
+        if(containsTreeColumn && containsSelectColumn){
+          checkOnly = true;
+        }
 
         if(!config.selModel.type){
           throw new Error('FancyGrid Error 5: Type for selection is not set');
@@ -2895,7 +2915,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       store.on('serversuccess', me.onServerSuccess, me);
 
       if (me.responsive) {
-        F.$(window).bind('resize', function () {
+        var onWindowResize = function () {
           me.onWindowResize();
 
           if(me.intWindowResize){
@@ -2911,7 +2931,18 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
               me.onWindowResize();
             }, 300);
           }, 30);
-        });
+        };
+
+        if ('ResizeObserver' in window) {
+          setTimeout(function(){
+            var myObserver = new ResizeObserver(onWindowResize);
+
+            myObserver.observe(me.el.parent().dom);
+          }, 100);
+        }
+        else {
+          F.$(window).bind('resize', onWindowResize);
+        }
       }
 
       me.on('activate', me.onActivate, me);
@@ -7743,6 +7774,14 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             break;
           case 'right':
             w.rightBody.updateRows(undefined, index);
+            break;
+        }
+      }
+      else{
+        switch(column.type) {
+          case 'progressbar':
+          case 'hbar':
+            w.update();
             break;
         }
       }

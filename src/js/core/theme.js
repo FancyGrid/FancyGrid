@@ -61,7 +61,8 @@ Fancy.defineTheme('default', {
     knobOffSet: 2,
     fieldHeight: 37,
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -73,7 +74,8 @@ Fancy.defineTheme('blue', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -85,7 +87,8 @@ Fancy.defineTheme('gray', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -96,7 +99,8 @@ Fancy.defineTheme('dark', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -107,7 +111,8 @@ Fancy.defineTheme('sand', {
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -117,7 +122,8 @@ Fancy.defineTheme('bootstrap', {
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 30
   }
 });
 
@@ -128,7 +134,8 @@ Fancy.defineTheme('bootstrap-no-borders', {
     gridWithoutPanelBorders: [0, 0, 0, 0],
     panelBodyBorders: [0,0,0,0],
     columnLines: false,
-    charWidth: 8
+    charWidth: 8,
+    menuItemHeight: 30
   }
 });
 
@@ -146,6 +153,7 @@ Fancy.defineTheme('material', {
     gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
-    charWidth: 7
+    charWidth: 7,
+    menuItemHeight: 35
   }
 });

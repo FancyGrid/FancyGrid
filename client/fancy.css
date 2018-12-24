@@ -5059,6 +5059,28 @@
 .fancy-theme-bootstrap-no-borders.fancy-grid-state-resize-column .fancy-grid-header-cell:hover {
   background-color: whitesmoke;
 }
+.fancy-theme-material .fancy-menu-item-expand {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M24.707%2038.101L4.908%2057.899c-4.686%204.686-4.686%2012.284%200%2016.971L185.607%20256%204.908%20437.13c-4.686%204.686-4.686%2012.284%200%2016.971L24.707%20473.9c4.686%204.686%2012.284%204.686%2016.971%200l209.414-209.414c4.686-4.686%204.686-12.284%200-16.971L41.678%2038.101c-4.687-4.687-12.285-4.687-16.971%200z%22%2F%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-material .fancy-menu-item-active .fancy-menu-item-expand {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M24.707%2038.101L4.908%2057.899c-4.686%204.686-4.686%2012.284%200%2016.971L185.607%20256%204.908%20437.13c-4.686%204.686-4.686%2012.284%200%2016.971L24.707%20473.9c4.686%204.686%2012.284%204.686%2016.971%200l209.414-209.414c4.686-4.686%204.686-12.284%200-16.971L41.678%2038.101c-4.687-4.687-12.285-4.687-16.971%200z%22%2F%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-material .fancy-grid-header-cell-trigger-up {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2230%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M136.5%20185.1l116%20117.8c4.7%204.7%204.7%2012.3%200%2017l-7.1%207.1c-4.7%204.7-12.3%204.7-17%200L128%20224.7%2027.6%20326.9c-4.7%204.7-12.3%204.7-17%200l-7.1-7.1c-4.7-4.7-4.7-12.3%200-17l116-117.8c4.7-4.6%2012.3-4.6%2017%20.1z%22%2F%3E%3C%2Fsvg%3E');
+  background-position: 0 0;
+}
+.fancy-theme-material .fancy-menu-item-active .fancy-grid-header-cell-trigger-up {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2230%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M136.5%20185.1l116%20117.8c4.7%204.7%204.7%2012.3%200%2017l-7.1%207.1c-4.7%204.7-12.3%204.7-17%200L128%20224.7%2027.6%20326.9c-4.7%204.7-12.3%204.7-17%200l-7.1-7.1c-4.7-4.7-4.7-12.3%200-17l116-117.8c4.7-4.6%2012.3-4.6%2017%20.1z%22%2F%3E%3C%2Fsvg%3E');
+  background-position: 0 0;
+}
+.fancy-theme-material .fancy-grid-header-cell-trigger-down {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2230%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M119.5%20326.9L3.5%20209.1c-4.7-4.7-4.7-12.3%200-17l7.1-7.1c4.7-4.7%2012.3-4.7%2017%200L128%20287.3l100.4-102.2c4.7-4.7%2012.3-4.7%2017%200l7.1%207.1c4.7%204.7%204.7%2012.3%200%2017L136.5%20327c-4.7%204.6-12.3%204.6-17-.1z%22%2F%3E%3C%2Fsvg%3E');
+  background-position: 0 0;
+}
+.fancy-theme-material .fancy-menu-item-active .fancy-grid-header-cell-trigger-down {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2230%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M119.5%20326.9L3.5%20209.1c-4.7-4.7-4.7-12.3%200-17l7.1-7.1c4.7-4.7%2012.3-4.7%2017%200L128%20287.3l100.4-102.2c4.7-4.7%2012.3-4.7%2017%200l7.1%207.1c4.7%204.7%204.7%2012.3%200%2017L136.5%20327c-4.7%204.6-12.3%204.6-17-.1z%22%2F%3E%3C%2Fsvg%3E');
+  background-position: 0 0;
+}
 .fancy-theme-material .fancy-panel-header {
   background-color: #eceeef;
   font-weight: 500;
@@ -5104,9 +5126,6 @@
 .fancy-theme-material .fancy-panel-tbar {
   background-color: #f5f5f5;
 }
-.fancy-theme-material.fancy-panel-grid-inside {
-  border-bottom-width: 0px;
-}
 .fancy-theme-material .fancy-grid-group-row {
   font-family: Roboto, sans-serif;
   font-size: 13px;
@@ -5128,7 +5147,7 @@
 .fancy-theme-material .fancy-field-label {
   color: rgba(0, 0, 0, 0.54);
 }
-.fancy-theme-material .fancy-grid-header-grouped .fancy-grid-header-cell-group-level-1 .fancy-grid-header-cell-container {
+.fancy-theme-material .fancy-grid-header-cell-group-level-1 .fancy-grid-header-cell-container {
   padding-top: 13px;
 }
 .fancy-theme-material .fancy-grid-header-grouped .fancy-grid-header-cell-group-level-2 .fancy-grid-header-cell-container {
@@ -5151,7 +5170,7 @@
   padding-top: 17px;
 }
 .fancy-theme-material .fancy-panel-resize-corner {
-  right: 0px;
+  right: 0;
   border-bottom: 15px solid #6c6e6f;
 }
 .fancy-theme-material .fancy-button-text {
@@ -5184,6 +5203,9 @@
 }
 .fancy-theme-material .fancy-button-disabled:hover {
   background-color: transparent;
+}
+.fancy-theme-material.fancy-panel-grid-inside {
+  border-bottom-width: 0;
 }
 .fancy-grid-state-resize-column .fancy-theme-material .fancy-grid-header-cell {
   background-color: initial;
@@ -5311,4 +5333,13 @@
 }
 .fancy-theme-material .fancy-grid-tree-folder-file {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2218%22%20viewBox%3D%220%200%20384%20512%22%3E%3Cpath%20fill%3D%22%23C1C5CC%22%20d%3D%22M369.9%2097.9L286%2014C277%205%20264.8-.1%20252.1-.1H48C21.5%200%200%2021.5%200%2048v416c0%2026.5%2021.5%2048%2048%2048h288c26.5%200%2048-21.5%2048-48V131.9c0-12.7-5.1-25-14.1-34zM332.1%20128H256V51.9l76.1%2076.1zM48%20464V48h160v104c0%2013.3%2010.7%2024%2024%2024h104v288H48z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-material .fancy-menu-item {
+  padding-top: 3px;
+}
+.fancy-theme-material .fancy-menu-item.fancy-menu-item-sep {
+  padding-top: 0;
+}
+.fancy-theme-material .fancy-menu-item-right-image.fancy-menu-item-expand {
+  margin-top: 3px;
 }

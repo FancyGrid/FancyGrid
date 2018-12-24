@@ -28,6 +28,11 @@
      */
     constructor: function (config, scope) {
       Fancy.applyConfig(this, config);
+
+      if(this.theme){
+        this.itemHeight = Fancy.themes[this.theme].config.menuItemHeight;
+      }
+
       this.Super('const', arguments);
     },
     /*

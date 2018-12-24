@@ -712,6 +712,14 @@
             break;
         }
       }
+      else{
+        switch(column.type) {
+          case 'progressbar':
+          case 'hbar':
+            w.update();
+            break;
+        }
+      }
     },
     /*
      * @param {Object} o

@@ -767,7 +767,7 @@
       store.on('serversuccess', me.onServerSuccess, me);
 
       if (me.responsive) {
-        F.$(window).bind('resize', function () {
+        var onWindowResize = function () {
           me.onWindowResize();
 
           if(me.intWindowResize){
@@ -783,7 +783,18 @@
               me.onWindowResize();
             }, 300);
           }, 30);
-        });
+        };
+
+        if ('ResizeObserver' in window) {
+          setTimeout(function(){
+            var myObserver = new ResizeObserver(onWindowResize);
+
+            myObserver.observe(me.el.parent().dom);
+          }, 100);
+        }
+        else {
+          F.$(window).bind('resize', onWindowResize);
+        }
       }
 
       me.on('activate', me.onActivate, me);
