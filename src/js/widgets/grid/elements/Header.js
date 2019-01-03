@@ -1033,7 +1033,8 @@
             renderId: true,
             labelWidth: labelWidth,
             value: false,
-            label: label,
+            //label: label,
+            label: false,
             labelAlign: 'right',
             style: {
               padding: '0px',

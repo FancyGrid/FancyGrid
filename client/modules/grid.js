@@ -2939,6 +2939,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
             myObserver.observe(me.el.parent().dom);
           }, 100);
+          F.$(window).bind('resize', onWindowResize);
         }
         else {
           F.$(window).bind('resize', onWindowResize);
@@ -12398,7 +12399,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             renderId: true,
             labelWidth: labelWidth,
             value: false,
-            label: label,
+            //label: label,
+            label: false,
             labelAlign: 'right',
             style: {
               padding: '0px',

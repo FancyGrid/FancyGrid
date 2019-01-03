@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.57',
+  version: '1.7.58',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -14194,6 +14194,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
+    if(me.header){
+      me.leftHeader.reSetCheckBoxes();
+    }
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
 
@@ -14412,6 +14415,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.getHeader(fromSide).reSetCheckBoxes();
     me.getHeader(toSide).reSetCheckBoxes();
+
+    me.update();
   },
   updateColumnsVisibilty: function () {
     var me = this;

@@ -2263,6 +2263,10 @@
       F.each(selectModel.rows, function (rowIndex) {
         w.selectRow(rowIndex, true, w.selModel === 'rows');
       }, 100);
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
+      }, 100);
     },
     /*
      *
@@ -2285,6 +2289,10 @@
           w.selectRow(rowIndex, true, w.selModel === 'rows');
         });
       }, 100);
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
+      }, 100);
     },
     /*
      *
@@ -2306,6 +2314,10 @@
         F.each(selectModel.rows, function (rowIndex) {
           w.selectRow(rowIndex, true, w.selModel === 'rows');
         });
+      }, 100);
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
       }, 100);
     },
     /*

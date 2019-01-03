@@ -791,6 +791,7 @@
 
             myObserver.observe(me.el.parent().dom);
           }, 100);
+          F.$(window).bind('resize', onWindowResize);
         }
         else {
           F.$(window).bind('resize', onWindowResize);

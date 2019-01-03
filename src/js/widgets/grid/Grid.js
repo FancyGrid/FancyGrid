@@ -455,6 +455,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
+    if(me.header){
+      me.leftHeader.reSetCheckBoxes();
+    }
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
 
@@ -673,6 +676,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.getHeader(fromSide).reSetCheckBoxes();
     me.getHeader(toSide).reSetCheckBoxes();
+
+    me.update();
   },
   updateColumnsVisibilty: function () {
     var me = this;

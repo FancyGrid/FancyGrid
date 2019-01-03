@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.57',
+  version: '1.7.58',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -25039,6 +25039,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
             myObserver.observe(me.el.parent().dom);
           }, 100);
+          F.$(window).bind('resize', onWindowResize);
         }
         else {
           F.$(window).bind('resize', onWindowResize);
@@ -28128,6 +28129,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
+    if(me.header){
+      me.leftHeader.reSetCheckBoxes();
+    }
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
 
@@ -28346,6 +28350,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.getHeader(fromSide).reSetCheckBoxes();
     me.getHeader(toSide).reSetCheckBoxes();
+
+    me.update();
   },
   updateColumnsVisibilty: function () {
     var me = this;
@@ -37032,6 +37038,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       F.each(selectModel.rows, function (rowIndex) {
         w.selectRow(rowIndex, true, w.selModel === 'rows');
       }, 100);
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
+      }, 100);
     },
     /*
      *
@@ -37054,6 +37064,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           w.selectRow(rowIndex, true, w.selModel === 'rows');
         });
       }, 100);
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
+      }, 100);
     },
     /*
      *
@@ -37075,6 +37089,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         F.each(selectModel.rows, function (rowIndex) {
           w.selectRow(rowIndex, true, w.selModel === 'rows');
         });
+      }, 100);
+
+      setTimeout(function(){
+        me.renderHeaderCheckBox();
       }, 100);
     },
     /*
@@ -50328,7 +50346,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             renderId: true,
             labelWidth: labelWidth,
             value: false,
-            label: label,
+            //label: label,
+            label: false,
             labelAlign: 'right',
             style: {
               padding: '0px',
