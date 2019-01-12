@@ -532,11 +532,12 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) ),
         isWithin = false,
@@ -630,7 +631,8 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -639,7 +641,7 @@ Fancy.Element.prototype = {
         return;
       }
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) );
 
@@ -752,11 +754,12 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         isWithin = false,
         maxDepth = 10,

@@ -94,10 +94,10 @@
         '<div class="' + PANEL_SUB_HEADER_TEXT_CLS + '">{subTitle}</div>',
       '</div>',
       '<div class="' + PANEL_BODY_CLS + '">',
-        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{tbarHeight}px;"></div>',
+        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{subTBarHeight}px;"></div>',
         '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
-        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{bbarHeight}px;"></div>',
         '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
         '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
@@ -176,6 +176,9 @@
       el.update(me.tpl.getHTML({
         titleImg: imgCls,
         barHeight: me.barHeight,
+        subTBarHeight: me.subTBarHeight || me.barHeight,
+        tbarHeight: me.tbarHeight || me.barHeight,
+        bbarHeight: me.bbarHeight || me.barHeight,
         titleHeight: titleHeight,
         subTitleHeight: subTitleHeight,
         title: titleText,
@@ -311,7 +314,7 @@
         me._bbar = new F.Bar({
           el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
-          height: me.barHeight,
+          height: me.bbarHeight || me.barHeight,
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -340,7 +343,7 @@
         me._tbar = new F.Bar({
           el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
-          height: me.barHeight,
+          height: me.tbarHeight || me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -355,7 +358,7 @@
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
-          height: me.barHeight,
+          height: me.subTBarHeight || me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,

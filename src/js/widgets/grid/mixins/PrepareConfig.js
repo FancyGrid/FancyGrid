@@ -1728,12 +1728,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         log = config.stateful;
       }
 
-      config._plugins.push({
-        type: 'grid.state',
-        stateful: true,
-        startState: config.state,
-        log: log
-      });
+      var startState = config.state || {};
 
       var name = config.stateId || this.getStateName(),
         state = localStorage.getItem(name);
@@ -1748,11 +1743,35 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
           Fancy.each(stateColumns, function (stateColumn, i) {
             Fancy.each(stateColumn, function (v, p) {
-              config.columns[i][p] = v;
-            })
+              if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
+                var index = stateColumn.index;
+                Fancy.each(config.columns, function (column) {
+                  if(column.index === index){
+                    stateColumn[p] = column[p];
+                    return true;
+                  }
+                });
+              }
+            });
           });
+
+          config.columns = stateColumns;
+        }
+
+        for(var p in state){
+          if(p === 'columns'){
+            continue;
+          }
+          startState[p] = state[p];
         }
       }
+
+      config._plugins.push({
+        type: 'grid.state',
+        stateful: true,
+        startState: startState,
+        log: log
+      });
     }
     else if(config.state){
       config._plugins.push({
@@ -2042,12 +2061,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         height += config.titleHeight;
       }
 
-      if(config.tbar || config.tabs){
+      if(config.tbar){
+        height += config.tbarHeight || config.barHeight;
+      }
+
+      if(config.tabs){
         height += config.barHeight;
       }
 
       if(config.bbar){
-        height += config.barHeight;
+        height += me.bbarHeight || config.barHeight;
       }
 
       if(config.buttons){
@@ -2055,7 +2078,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.subTBar){
-        height += config.barHeight;
+        height += config.subTBarHeight || config.barHeight;
       }
 
       if(config.footer){

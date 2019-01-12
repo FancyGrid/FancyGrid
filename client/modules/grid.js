@@ -1728,12 +1728,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         log = config.stateful;
       }
 
-      config._plugins.push({
-        type: 'grid.state',
-        stateful: true,
-        startState: config.state,
-        log: log
-      });
+      var startState = config.state || {};
 
       var name = config.stateId || this.getStateName(),
         state = localStorage.getItem(name);
@@ -1748,11 +1743,35 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
           Fancy.each(stateColumns, function (stateColumn, i) {
             Fancy.each(stateColumn, function (v, p) {
-              config.columns[i][p] = v;
-            })
+              if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
+                var index = stateColumn.index;
+                Fancy.each(config.columns, function (column) {
+                  if(column.index === index){
+                    stateColumn[p] = column[p];
+                    return true;
+                  }
+                });
+              }
+            });
           });
+
+          config.columns = stateColumns;
+        }
+
+        for(var p in state){
+          if(p === 'columns'){
+            continue;
+          }
+          startState[p] = state[p];
         }
       }
+
+      config._plugins.push({
+        type: 'grid.state',
+        stateful: true,
+        startState: startState,
+        log: log
+      });
     }
     else if(config.state){
       config._plugins.push({
@@ -2042,12 +2061,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         height += config.titleHeight;
       }
 
-      if(config.tbar || config.tabs){
+      if(config.tbar){
+        height += config.tbarHeight || config.barHeight;
+      }
+
+      if(config.tabs){
         height += config.barHeight;
       }
 
       if(config.bbar){
-        height += config.barHeight;
+        height += me.bbarHeight || config.barHeight;
       }
 
       if(config.buttons){
@@ -2055,7 +2078,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.subTBar){
-        height += config.barHeight;
+        height += config.subTBarHeight || config.barHeight;
       }
 
       if(config.footer){
@@ -2782,6 +2805,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           titleHeight: me.titleHeight,
           subTitleHeight: me.subTitleHeight,
           barHeight: me.barHeight,
+          subTBarHeight: me.subTBarHeight || me.barHeight,
+          tbarHeight: me.tbarHeight || me.barHeight,
+          bbarHeight: me.bbarHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -2802,17 +2828,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (me.bbar) {
         panelConfig.bbar = me.bbar;
-        me.height -= me.barHeight;
+        me.height -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
         panelConfig.tbar = me.tbar;
-        me.height -= me.barHeight;
+        me.height -= me.tbarHeight || me.barHeight;
       }
 
       if (me.subTBar) {
         panelConfig.subTBar = me.subTBar;
-        me.height -= me.barHeight;
+        me.height -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -3939,15 +3965,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (me.bbar) {
-        value -= me.barHeight;
+        value -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
-        value -= me.barHeight;
+        value -= me.tbarHeight || me.barHeight;
       }
 
       if (me.subTBar) {
-        value -= me.barHeight;
+        value -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -4589,7 +4615,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (me.tbar) {
-        height += me.barHeight;
+        height += me.tbarHeight || me.barHeight;
       }
 
       if (me.summary) {
@@ -4597,7 +4623,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (me.bbar) {
-        height += me.barHeight;
+        height += me.bbarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -4605,7 +4631,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (me.subTBar) {
-        height += me.barHeight;
+        height += me.subTBarHeight || me.barHeight;
       }
 
       if (me.footer) {
@@ -5951,7 +5977,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     onBodyTouchMove: function (e) {
       var me = this,
-        e = e.originalEvent,
+        e = e.originalEvent || e,
         touchXY = e.changedTouches[0],
         changed = true;
 
@@ -8569,9 +8595,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       for (; j < jL; j++) {
-        var columnDom = columsDom.item(j);
-        i = 0;
-        var delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+        var columnDom = columsDom.item(j),
+          delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+
         i = iL - delta;
         for (; i < iL; i++) {
           var cellHTML = cellTpl.getHTML({});
@@ -8648,7 +8674,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         i = columnIndex;
         iL = columnIndex + 1;
 
-        if(iL >= columns.length){
+        //if(iL >= columns.length){
+        if(iL > columns.length){
           return;
         }
       }
@@ -9582,7 +9609,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             }]
           };
 
-          new F.CheckBox(checkBoxConfig);
+          var checkBox = new F.CheckBox(checkBoxConfig);
+
+          if(s.isTree && w.selection.memory){
+            if(w.selection.memory.tree.selected[id] && !w.selection.memory.tree.allSelected[id] && item){
+              var child = item.get('child');
+              if(child && child.length){
+                checkBox.setMiddle(true);
+              }
+            }
+          }
         }
         else {
           checkBoxId = checkBox.dom.id;
@@ -10727,6 +10763,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       if (s.getLength() === 0) {
+        return false;
+      }
+
+      if(columnEl.attr('index') === undefined){
+        //Touch bug
         return false;
       }
 

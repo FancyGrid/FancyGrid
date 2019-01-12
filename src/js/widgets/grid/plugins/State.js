@@ -168,8 +168,27 @@
         var _column = {};
 
         F.each(column, function (v, p) {
-          if(F.isString(v) || F.isNumber(v) || F.isBoolean(v)){
-            _column[p] = v;
+          var valueType = F.typeOf(v);
+          switch (valueType){
+            case 'string':
+            case 'number':
+            case 'boolean':
+              _column[p] = v;
+              break;
+            case 'object':
+              switch (p){
+                case 'filterField':
+                  break;
+                default:
+                  _column[p] = 'OBJECT';
+              }
+              break;
+            case 'array':
+              _column[p] = 'ARRAY';
+              break;
+            case 'function':
+              _column[p] = 'FUNCTION';
+              break;
           }
         });
 

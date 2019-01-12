@@ -236,9 +236,9 @@
       }
 
       for (; j < jL; j++) {
-        var columnDom = columsDom.item(j);
-        i = 0;
-        var delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+        var columnDom = columsDom.item(j),
+          delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+
         i = iL - delta;
         for (; i < iL; i++) {
           var cellHTML = cellTpl.getHTML({});
@@ -315,7 +315,8 @@
         i = columnIndex;
         iL = columnIndex + 1;
 
-        if(iL >= columns.length){
+        //if(iL >= columns.length){
+        if(iL > columns.length){
           return;
         }
       }
@@ -1249,7 +1250,16 @@
             }]
           };
 
-          new F.CheckBox(checkBoxConfig);
+          var checkBox = new F.CheckBox(checkBoxConfig);
+
+          if(s.isTree && w.selection.memory){
+            if(w.selection.memory.tree.selected[id] && !w.selection.memory.tree.allSelected[id] && item){
+              var child = item.get('child');
+              if(child && child.length){
+                checkBox.setMiddle(true);
+              }
+            }
+          }
         }
         else {
           checkBoxId = checkBox.dom.id;

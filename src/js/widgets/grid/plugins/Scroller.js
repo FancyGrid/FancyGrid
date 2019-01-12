@@ -337,7 +337,7 @@
      */
     onBodyTouchMove: function (e) {
       var me = this,
-        e = e.originalEvent,
+        e = e.originalEvent || e,
         touchXY = e.changedTouches[0],
         changed = true;
 

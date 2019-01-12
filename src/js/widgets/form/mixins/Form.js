@@ -88,6 +88,9 @@
           height: me.height,
           titleHeight: me.titleHeight,
           barHeight: me.barHeight,
+          subTBarHeight: me.subTBarHeight || me.barHeight,
+          tbarHeight: me.tbarHeight || me.barHeight,
+          bbarHeight: me.bbarHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -146,12 +149,12 @@
 
       if (me.bbar) {
         panelConfig.bbar = me.bbar;
-        me.height -= me.barHeight;
+        me.height -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
         panelConfig.tbar = me.tbar;
-        me.height -= me.barHeight;
+        me.height -= me.tbarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -866,11 +869,11 @@
         }
 
         if (me.bbar) {
-          height -= me.barHeight;
+          height -= me.bbarHeight || me.barHeight;
         }
 
         if (me.tbar || me.tabs) {
-          height -= me.barHeight;
+          height -= me.tbarHeight || me.barHeight;
         }
 
         if (me.title) {

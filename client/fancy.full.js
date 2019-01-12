@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.58',
+  version: '1.7.59',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -7574,11 +7574,12 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) ),
         isWithin = false,
@@ -7672,7 +7673,8 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -7681,7 +7683,7 @@ Fancy.Element.prototype = {
         return;
       }
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) );
 
@@ -7794,11 +7796,12 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         isWithin = false,
         maxDepth = 10,
@@ -12007,7 +12010,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     }
 
     if(Fancy.isTouch){
-      var _e = e.originalEvent.changedTouches[0];
+      e = e.originalEvent || e;
+      var _e = e.changedTouches[0];
 
       docEl.once('touchend', me.onMouseUpResize, me);
       docEl.on('touchmove', me.onMouseMoveResize, me);
@@ -12063,6 +12067,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       clientY = e.clientY;
 
     if(Fancy.isTouch){
+      e = e.originalEvent || e;
       var _e = e.originalEvent.changedTouches[0];
 
       clientX = _e.clientX;
@@ -12227,10 +12232,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         '<div class="' + PANEL_SUB_HEADER_TEXT_CLS + '">{subTitle}</div>',
       '</div>',
       '<div class="' + PANEL_BODY_CLS + '">',
-        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{tbarHeight}px;"></div>',
+        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{subTBarHeight}px;"></div>',
         '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
-        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{bbarHeight}px;"></div>',
         '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
         '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
@@ -12309,6 +12314,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       el.update(me.tpl.getHTML({
         titleImg: imgCls,
         barHeight: me.barHeight,
+        subTBarHeight: me.subTBarHeight || me.barHeight,
+        tbarHeight: me.tbarHeight || me.barHeight,
+        bbarHeight: me.bbarHeight || me.barHeight,
         titleHeight: titleHeight,
         subTitleHeight: subTitleHeight,
         title: titleText,
@@ -12444,7 +12452,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._bbar = new F.Bar({
           el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
-          height: me.barHeight,
+          height: me.bbarHeight || me.barHeight,
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -12473,7 +12481,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._tbar = new F.Bar({
           el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
-          height: me.barHeight,
+          height: me.tbarHeight || me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -12488,7 +12496,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
-          height: me.barHeight,
+          height: me.subTBarHeight || me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -12937,15 +12945,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.bbar) {
-        height -= me.barHeight;
+        height -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
-        height -= me.barHeight;
+        height -= me.tbarHeight || me.barHeight;
       }
 
       if (me.subTBar) {
-        height -= me.barHeight;
+        height -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -14346,6 +14354,9 @@ Fancy.define('Fancy.bar.Text', {
           height: me.height,
           titleHeight: me.titleHeight,
           barHeight: me.barHeight,
+          subTBarHeight: me.subTBarHeight || me.barHeight,
+          tbarHeight: me.tbarHeight || me.barHeight,
+          bbarHeight: me.bbarHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -14404,12 +14415,12 @@ Fancy.define('Fancy.bar.Text', {
 
       if (me.bbar) {
         panelConfig.bbar = me.bbar;
-        me.height -= me.barHeight;
+        me.height -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
         panelConfig.tbar = me.tbar;
-        me.height -= me.barHeight;
+        me.height -= me.tbarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -15124,11 +15135,11 @@ Fancy.define('Fancy.bar.Text', {
         }
 
         if (me.bbar) {
-          height -= me.barHeight;
+          height -= me.bbarHeight || me.barHeight;
         }
 
         if (me.tbar || me.tabs) {
-          height -= me.barHeight;
+          height -= me.tbarHeight || me.barHeight;
         }
 
         if (me.title) {
@@ -15815,11 +15826,11 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     if(me.tbar || me.tabs){
-      height += me.barHeight;
+      height += me.tbarHeight || me.barHeight;
     }
 
     if(me.bbar){
-      height += me.barHeight;
+      height += me.bbarHeight || me.barHeight;
     }
 
     if(me.buttons){
@@ -15827,7 +15838,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     if(me.subTBar){
-      height += me.barHeight;
+      height += me.subTBarHeight || me.barHeight;
     }
 
     if(me.footer){
@@ -23502,12 +23513,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         log = config.stateful;
       }
 
-      config._plugins.push({
-        type: 'grid.state',
-        stateful: true,
-        startState: config.state,
-        log: log
-      });
+      var startState = config.state || {};
 
       var name = config.stateId || this.getStateName(),
         state = localStorage.getItem(name);
@@ -23522,11 +23528,35 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
           Fancy.each(stateColumns, function (stateColumn, i) {
             Fancy.each(stateColumn, function (v, p) {
-              config.columns[i][p] = v;
-            })
+              if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
+                var index = stateColumn.index;
+                Fancy.each(config.columns, function (column) {
+                  if(column.index === index){
+                    stateColumn[p] = column[p];
+                    return true;
+                  }
+                });
+              }
+            });
           });
+
+          config.columns = stateColumns;
+        }
+
+        for(var p in state){
+          if(p === 'columns'){
+            continue;
+          }
+          startState[p] = state[p];
         }
       }
+
+      config._plugins.push({
+        type: 'grid.state',
+        stateful: true,
+        startState: startState,
+        log: log
+      });
     }
     else if(config.state){
       config._plugins.push({
@@ -23816,12 +23846,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         height += config.titleHeight;
       }
 
-      if(config.tbar || config.tabs){
+      if(config.tbar){
+        height += config.tbarHeight || config.barHeight;
+      }
+
+      if(config.tabs){
         height += config.barHeight;
       }
 
       if(config.bbar){
-        height += config.barHeight;
+        height += me.bbarHeight || config.barHeight;
       }
 
       if(config.buttons){
@@ -23829,7 +23863,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.subTBar){
-        height += config.barHeight;
+        height += config.subTBarHeight || config.barHeight;
       }
 
       if(config.footer){
@@ -24882,6 +24916,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           titleHeight: me.titleHeight,
           subTitleHeight: me.subTitleHeight,
           barHeight: me.barHeight,
+          subTBarHeight: me.subTBarHeight || me.barHeight,
+          tbarHeight: me.tbarHeight || me.barHeight,
+          bbarHeight: me.bbarHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -24902,17 +24939,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       if (me.bbar) {
         panelConfig.bbar = me.bbar;
-        me.height -= me.barHeight;
+        me.height -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
         panelConfig.tbar = me.tbar;
-        me.height -= me.barHeight;
+        me.height -= me.tbarHeight || me.barHeight;
       }
 
       if (me.subTBar) {
         panelConfig.subTBar = me.subTBar;
-        me.height -= me.barHeight;
+        me.height -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -26039,15 +26076,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.bbar) {
-        value -= me.barHeight;
+        value -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
-        value -= me.barHeight;
+        value -= me.tbarHeight || me.barHeight;
       }
 
       if (me.subTBar) {
-        value -= me.barHeight;
+        value -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -26689,7 +26726,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.tbar) {
-        height += me.barHeight;
+        height += me.tbarHeight || me.barHeight;
       }
 
       if (me.summary) {
@@ -26697,7 +26734,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.bbar) {
-        height += me.barHeight;
+        height += me.bbarHeight || me.barHeight;
       }
 
       if (me.buttons) {
@@ -26705,7 +26742,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.subTBar) {
-        height += me.barHeight;
+        height += me.subTBarHeight || me.barHeight;
       }
 
       if (me.footer) {
@@ -28797,7 +28834,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     onBodyTouchMove: function (e) {
       var me = this,
-        e = e.originalEvent,
+        e = e.originalEvent || e,
         touchXY = e.changedTouches[0],
         changed = true;
 
@@ -34989,6 +35026,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             child = parentItem.get('child');
           }
 
+          if(me.memory.tree.allSelected[id]){
+            delete me.memory.tree.allSelected[id];
+            delete me.memory.tree.selectedLength[id];
+          }
+
+          if(me.memory.selected[id]){
+            delete me.memory.selected[id];
+            me.memory.selectedLength--;
+          }
+
           delete me.memory.tree.selected[id];
           if(me.memory.tree.allSelected[parentId]){
             delete me.memory.tree.allSelected[parentId];
@@ -35001,7 +35048,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               delete me.memory.tree.selected[parentId];
             }
           }
-          me.memory.tree.selectedLength[parentId]--;
+
+          if(me.memory.tree.selectedLength[parentId]){
+            me.memory.tree.selectedLength[parentId]--;
+          }
 
           if(me.memory.tree.selectedLength[parentId] === 0){
             delete me.memory.tree.selected[parentId];
@@ -35449,7 +35499,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.fire('select', me.getSelection());
 
       if(treeMemory) {
-        me.updateTreeSelection();
+        //setTimeout(function () {
+          me.updateTreeSelection();
+        //}, 200);
       }
     },
     /*
@@ -35941,11 +35993,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       if ((isCTRL || me.allowDeselect) && w.multiSelect) {}
       else if (params.column.index === '$selected' || params.column.select) {
         var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
-        if (checkbox.get() === true) {
-          me.selectCheckBox(rowIndex);
-        }
-        else {
-          me.deSelectCheckBox(rowIndex);
+        if(checkbox.middle !== true) {
+          if (checkbox.get() === true) {
+            me.selectCheckBox(rowIndex);
+          }
+          else {
+            me.deSelectCheckBox(rowIndex);
+          }
         }
       }
     },
@@ -37688,24 +37742,51 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       middleCheckBoxes.each(function (el) {
         var cell = el.closest('.' + GRID_CELL_CLS),
           rowIndex = cell.attr('index'),
-          id = w.get(rowIndex, 'id');
+          id = w.get(rowIndex, 'id'),
+          checkBox = F.getWidget(el.attr('id'));
 
         if(!me.memory.tree.selected[id]){
-          var checkBox = F.getWidget(el.attr('id'));
-
           checkBox.setMiddle(false);
           if(!me.memory.tree.allSelected[id]){
             checkBox.set(false, false);
           }
+          else{
+            checkBox.setMiddle(false);
+          }
         }
 
         if(me.memory.tree.allSelected[id]){
-          var checkBox = F.getWidget(el.attr('id'));
-
-          checkBox.setMiddle(false);
-          checkBox.set(true, false);
+          setTimeout(function () {
+            checkBox.set(true, false);
+            checkBox.setMiddle(false);
+            me.memory.add(id);
+            me.domSelectRow(rowIndex);
+          }, 200);
+        }
+        else {
+          me.domDeSelectRow(rowIndex);
         }
       });
+
+      /*
+      TODO
+      var checkedCheckBoxes = w.el.select('.' + GRID_COLUMN_CLS + '.fancy-grid-column-select .fancy-checkbox-on');
+
+      checkedCheckBoxes.each(function (el) {
+        var cell = el.closest('.' + GRID_CELL_CLS),
+          rowIndex = cell.attr('index'),
+          id = w.get(rowIndex, 'id'),
+          checkBox = F.getWidget(el.attr('id'));
+
+        if(!me.memory.tree.selected[id]){
+          if(!me.memory.tree.allSelected[id]){
+            setTimeout(function () {
+              //checkBox.set(false, false);
+            }, 200);
+          }
+        }
+      });
+      */
     }
   });
 
@@ -41981,7 +42062,9 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         child = item.get('child'),
         filteredChild = item.get('filteredChild'),
         id = item.get('id'),
-        parentId = item.get('parentId');
+        parentId = item.get('parentId'),
+        parentChild;
+
 
       w.$onChangeUpdate = false;
 
@@ -41991,8 +42074,8 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
       if(me.singleExpand){
         if(parentId){
-          var parent = w.getById(parentId),
-            parentChild = parent.get('child');
+          var parent = w.getById(parentId);
+          parentChild = parent.get('child');
 
           //Bad for performance
           Fancy.each(parentChild, function (item) {
@@ -42008,7 +42091,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
           });
         }
         else{
-          var parentChild = w.findItem('parentId', '');
+          parentChild = w.findItem('parentId', '');
 
           Fancy.each(parentChild, function (child) {
             var expanded = child.get('expanded');
@@ -45271,8 +45354,27 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
         var _column = {};
 
         F.each(column, function (v, p) {
-          if(F.isString(v) || F.isNumber(v) || F.isBoolean(v)){
-            _column[p] = v;
+          var valueType = F.typeOf(v);
+          switch (valueType){
+            case 'string':
+            case 'number':
+            case 'boolean':
+              _column[p] = v;
+              break;
+            case 'object':
+              switch (p){
+                case 'filterField':
+                  break;
+                default:
+                  _column[p] = 'OBJECT';
+              }
+              break;
+            case 'array':
+              _column[p] = 'ARRAY';
+              break;
+            case 'function':
+              _column[p] = 'FUNCTION';
+              break;
           }
         });
 
@@ -46090,9 +46192,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       for (; j < jL; j++) {
-        var columnDom = columsDom.item(j);
-        i = 0;
-        var delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+        var columnDom = columsDom.item(j),
+          delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+
         i = iL - delta;
         for (; i < iL; i++) {
           var cellHTML = cellTpl.getHTML({});
@@ -46169,7 +46271,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         i = columnIndex;
         iL = columnIndex + 1;
 
-        if(iL >= columns.length){
+        //if(iL >= columns.length){
+        if(iL > columns.length){
           return;
         }
       }
@@ -47103,7 +47206,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             }]
           };
 
-          new F.CheckBox(checkBoxConfig);
+          var checkBox = new F.CheckBox(checkBoxConfig);
+
+          if(s.isTree && w.selection.memory){
+            if(w.selection.memory.tree.selected[id] && !w.selection.memory.tree.allSelected[id] && item){
+              var child = item.get('child');
+              if(child && child.length){
+                checkBox.setMiddle(true);
+              }
+            }
+          }
         }
         else {
           checkBoxId = checkBox.dom.id;
@@ -48249,6 +48361,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       if (s.getLength() === 0) {
+        return false;
+      }
+
+      if(columnEl.attr('index') === undefined){
+        //Touch bug
         return false;
       }
 

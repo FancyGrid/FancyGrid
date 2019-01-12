@@ -308,6 +308,11 @@
         return false;
       }
 
+      if(columnEl.attr('index') === undefined){
+        //Touch bug
+        return false;
+      }
+
       var columnIndex = parseInt(columnEl.attr('index')),
         rowIndex = parseInt(cellEl.attr('index')),
         column = columns[columnIndex],

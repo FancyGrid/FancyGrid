@@ -442,7 +442,9 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         child = item.get('child'),
         filteredChild = item.get('filteredChild'),
         id = item.get('id'),
-        parentId = item.get('parentId');
+        parentId = item.get('parentId'),
+        parentChild;
+
 
       w.$onChangeUpdate = false;
 
@@ -452,8 +454,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
       if(me.singleExpand){
         if(parentId){
-          var parent = w.getById(parentId),
-            parentChild = parent.get('child');
+          var parent = w.getById(parentId);
+          parentChild = parent.get('child');
 
           //Bad for performance
           Fancy.each(parentChild, function (item) {
@@ -469,7 +471,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           });
         }
         else{
-          var parentChild = w.findItem('parentId', '');
+          parentChild = w.findItem('parentId', '');
 
           Fancy.each(parentChild, function (child) {
             var expanded = child.get('expanded');

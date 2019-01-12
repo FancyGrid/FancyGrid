@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.58',
+  version: '1.7.59',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -4389,11 +4389,12 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) ),
         isWithin = false,
@@ -4487,7 +4488,8 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -4496,7 +4498,7 @@ Fancy.Element.prototype = {
         return;
       }
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) );
 
@@ -4609,11 +4611,12 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr';
+        tempAttr = 'fancy-tempt-attr',
+        e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      var touchXY = e.originalEvent.targetTouches[0],
+      var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
         isWithin = false,
         maxDepth = 10,
@@ -6388,7 +6391,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     }
 
     if(Fancy.isTouch){
-      var _e = e.originalEvent.changedTouches[0];
+      e = e.originalEvent || e;
+      var _e = e.changedTouches[0];
 
       docEl.once('touchend', me.onMouseUpResize, me);
       docEl.on('touchmove', me.onMouseMoveResize, me);
@@ -6444,6 +6448,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       clientY = e.clientY;
 
     if(Fancy.isTouch){
+      e = e.originalEvent || e;
       var _e = e.originalEvent.changedTouches[0];
 
       clientX = _e.clientX;
@@ -6608,10 +6613,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         '<div class="' + PANEL_SUB_HEADER_TEXT_CLS + '">{subTitle}</div>',
       '</div>',
       '<div class="' + PANEL_BODY_CLS + '">',
-        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
-        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{tbarHeight}px;"></div>',
+        '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{subTBarHeight}px;"></div>',
         '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
-        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{bbarHeight}px;"></div>',
         '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
         '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
@@ -6690,6 +6695,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       el.update(me.tpl.getHTML({
         titleImg: imgCls,
         barHeight: me.barHeight,
+        subTBarHeight: me.subTBarHeight || me.barHeight,
+        tbarHeight: me.tbarHeight || me.barHeight,
+        bbarHeight: me.bbarHeight || me.barHeight,
         titleHeight: titleHeight,
         subTitleHeight: subTitleHeight,
         title: titleText,
@@ -6825,7 +6833,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._bbar = new F.Bar({
           el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
-          height: me.barHeight,
+          height: me.bbarHeight || me.barHeight,
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -6854,7 +6862,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._tbar = new F.Bar({
           el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
-          height: me.barHeight,
+          height: me.tbarHeight || me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -6869,7 +6877,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
-          height: me.barHeight,
+          height: me.subTBarHeight || me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
@@ -7318,15 +7326,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.bbar) {
-        height -= me.barHeight;
+        height -= me.bbarHeight || me.barHeight;
       }
 
       if (me.tbar) {
-        height -= me.barHeight;
+        height -= me.tbarHeight || me.barHeight;
       }
 
       if (me.subTBar) {
-        height -= me.barHeight;
+        height -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {

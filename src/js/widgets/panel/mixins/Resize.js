@@ -82,7 +82,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     }
 
     if(Fancy.isTouch){
-      var _e = e.originalEvent.changedTouches[0];
+      e = e.originalEvent || e;
+      var _e = e.changedTouches[0];
 
       docEl.once('touchend', me.onMouseUpResize, me);
       docEl.on('touchmove', me.onMouseMoveResize, me);
@@ -138,6 +139,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       clientY = e.clientY;
 
     if(Fancy.isTouch){
+      e = e.originalEvent || e;
       var _e = e.originalEvent.changedTouches[0];
 
       clientX = _e.clientX;

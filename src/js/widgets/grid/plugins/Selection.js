@@ -214,6 +214,16 @@
             child = parentItem.get('child');
           }
 
+          if(me.memory.tree.allSelected[id]){
+            delete me.memory.tree.allSelected[id];
+            delete me.memory.tree.selectedLength[id];
+          }
+
+          if(me.memory.selected[id]){
+            delete me.memory.selected[id];
+            me.memory.selectedLength--;
+          }
+
           delete me.memory.tree.selected[id];
           if(me.memory.tree.allSelected[parentId]){
             delete me.memory.tree.allSelected[parentId];
@@ -226,7 +236,10 @@
               delete me.memory.tree.selected[parentId];
             }
           }
-          me.memory.tree.selectedLength[parentId]--;
+
+          if(me.memory.tree.selectedLength[parentId]){
+            me.memory.tree.selectedLength[parentId]--;
+          }
 
           if(me.memory.tree.selectedLength[parentId] === 0){
             delete me.memory.tree.selected[parentId];
@@ -674,7 +687,9 @@
       w.fire('select', me.getSelection());
 
       if(treeMemory) {
-        me.updateTreeSelection();
+        //setTimeout(function () {
+          me.updateTreeSelection();
+        //}, 200);
       }
     },
     /*
@@ -1166,11 +1181,13 @@
       if ((isCTRL || me.allowDeselect) && w.multiSelect) {}
       else if (params.column.index === '$selected' || params.column.select) {
         var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
-        if (checkbox.get() === true) {
-          me.selectCheckBox(rowIndex);
-        }
-        else {
-          me.deSelectCheckBox(rowIndex);
+        if(checkbox.middle !== true) {
+          if (checkbox.get() === true) {
+            me.selectCheckBox(rowIndex);
+          }
+          else {
+            me.deSelectCheckBox(rowIndex);
+          }
         }
       }
     },
@@ -2913,24 +2930,51 @@
       middleCheckBoxes.each(function (el) {
         var cell = el.closest('.' + GRID_CELL_CLS),
           rowIndex = cell.attr('index'),
-          id = w.get(rowIndex, 'id');
+          id = w.get(rowIndex, 'id'),
+          checkBox = F.getWidget(el.attr('id'));
 
         if(!me.memory.tree.selected[id]){
-          var checkBox = F.getWidget(el.attr('id'));
-
           checkBox.setMiddle(false);
           if(!me.memory.tree.allSelected[id]){
             checkBox.set(false, false);
           }
+          else{
+            checkBox.setMiddle(false);
+          }
         }
 
         if(me.memory.tree.allSelected[id]){
-          var checkBox = F.getWidget(el.attr('id'));
-
-          checkBox.setMiddle(false);
-          checkBox.set(true, false);
+          setTimeout(function () {
+            checkBox.set(true, false);
+            checkBox.setMiddle(false);
+            me.memory.add(id);
+            me.domSelectRow(rowIndex);
+          }, 200);
+        }
+        else {
+          me.domDeSelectRow(rowIndex);
         }
       });
+
+      /*
+      TODO
+      var checkedCheckBoxes = w.el.select('.' + GRID_COLUMN_CLS + '.fancy-grid-column-select .fancy-checkbox-on');
+
+      checkedCheckBoxes.each(function (el) {
+        var cell = el.closest('.' + GRID_CELL_CLS),
+          rowIndex = cell.attr('index'),
+          id = w.get(rowIndex, 'id'),
+          checkBox = F.getWidget(el.attr('id'));
+
+        if(!me.memory.tree.selected[id]){
+          if(!me.memory.tree.allSelected[id]){
+            setTimeout(function () {
+              //checkBox.set(false, false);
+            }, 200);
+          }
+        }
+      });
+      */
     }
   });
 

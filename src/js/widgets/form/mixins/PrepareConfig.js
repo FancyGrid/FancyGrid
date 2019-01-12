@@ -135,11 +135,11 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     if(me.tbar || me.tabs){
-      height += me.barHeight;
+      height += me.tbarHeight || me.barHeight;
     }
 
     if(me.bbar){
-      height += me.barHeight;
+      height += me.bbarHeight || me.barHeight;
     }
 
     if(me.buttons){
@@ -147,7 +147,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     if(me.subTBar){
-      height += me.barHeight;
+      height += me.subTBarHeight || me.barHeight;
     }
 
     if(me.footer){
