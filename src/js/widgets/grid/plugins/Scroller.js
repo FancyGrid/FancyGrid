@@ -527,7 +527,6 @@
         }
 
         me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
-
         me.scroll(topScroll);
       }
 
@@ -579,7 +578,7 @@
       }, 1);
 
       if (!me.checkBottomScroll()) {
-        if (me.scrollTop) {
+        if (me.scrollTop && !w.infinite) {
           w.scroll(false, 0);
         }
       }
@@ -629,6 +628,18 @@
       }
 
       return !this.scrollRightEl.hasCls(HIDDEN_CLS);
+    },
+    /*
+     *
+     */
+    isBottomScrollable: function () {
+      var w = this.widget;
+
+      if (w.nativeScroller) {
+        return w.body.el.css('overflow-x') === 'scroll';
+      }
+
+      return !this.scrollBottomEl.hasCls(HIDDEN_CLS);
     },
     /*
      * @param {Number} [viewHeight]
@@ -839,6 +850,10 @@
         newKnobScroll += me.cornerSize;
       }
 
+      if(w.infinite){
+        return;
+      }
+
       me.rightKnob.css('margin-top', newKnobScroll + 'px');
     },
     /*
@@ -894,12 +909,15 @@
      * @param {Number} [viewHeight]
      */
     update: function (viewHeight) {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.setScrollBars(viewHeight);
       me.checkScroll(viewHeight);
 
-      me.scrollRightKnob();
+      if(!w.infinite) {
+        me.scrollRightKnob();
+      }
       me.scrollBottomKnob();
     },
     /*
@@ -1013,7 +1031,12 @@
       }
 
       if (rowIndex === 0 && columnIndex === 0) {
-        me.scroll(0, 0);
+        if(me.scrollLeft !== 0 && (w.selModel === 'row' || w.selModel === 'rows')){
+          me.scroll(0);
+        }
+        else {
+          me.scroll(0, 0);
+        }
         me.scrollBottomKnob();
         me.scrollRightKnob();
         return;

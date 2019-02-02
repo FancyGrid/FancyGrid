@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.59',
+  version: '1.7.60',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -470,6 +470,7 @@ Fancy.apply(Fancy, {
   FIELD_CHECKBOX_DISABLED_CLS: 'fancy-field-checkbox-disabled',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
   FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
+  FIELD_CHECKBOX_MIDDLE_CLS: 'fancy-checkbox-middle',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
   FIELD_BUTTON_CLS: 'fancy-field-button',
   FIELD_TAB_CLS: 'fancy-field-tab',
@@ -513,6 +514,7 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
   GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
+  GRID_COPY_TEXTAREA: 'fancy-grid-copy-textarea',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
   GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',

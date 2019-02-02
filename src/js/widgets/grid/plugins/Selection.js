@@ -9,7 +9,6 @@
   /*
    * CONSTANTS
    */
-  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_CELL_OVER_CLS = F.GRID_CELL_OVER_CLS;
   var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
@@ -23,6 +22,11 @@
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
   var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
+  var FIELD_CHECKBOX_ON_CLS = F.FIELD_CHECKBOX_ON_CLS;
+  var FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
+  var GRID_COPY_TEXTAREA = F.GRID_COPY_TEXTAREA;
+  var FIELD_CHECKBOX_MIDDLE_CLS = F.FIELD_CHECKBOX_MIDDLE_CLS;
 
   F.define('Fancy.grid.plugin.Selection', {
     extend: F.Plugin,
@@ -158,6 +162,7 @@
 
             me.memory.tree.allSelected[id] = true;
             me.memory.tree.selectedLength[id] = child.length;
+            me.memory.clearChild(child);
           }
           else{
             if(child){
@@ -252,6 +257,22 @@
             }
           }
         },
+        clearChild: function (child) {
+          F.Array.each(child, function (item) {
+            var id = item.id;
+
+            if(me.memory.tree.selectedLength[id]){
+              me.memory.selected[id] = true;
+              delete me.memory.tree.allSelected[id];
+              delete me.memory.tree.selected[id];
+              delete me.memory.tree.selectedLength[id];
+              var _child = item.get('child');
+              if(_child){
+                me.memory.clearChild(_child);
+              }
+            }
+          });
+        },
         setAll: function () {
           var filteredDataMap = w.store.filteredDataMap;
 
@@ -284,6 +305,12 @@
           });
         },
         add: function (id) {
+          var item = w.getById(id);
+
+          if(item) {
+            item.set('$selected', true);
+          }
+
           if(me.row){
             me.memory.clearAll();
           }
@@ -299,6 +326,12 @@
           }
         },
         remove: function (id) {
+          var item = w.getById(id);
+
+          if (item) {
+            item.set('$selected', false);
+          }
+
           if(me.memory.selected[id] === true){
             delete me.memory.selected[id];
             me.memory.selectedLength--;
@@ -555,7 +588,7 @@
         delete me.stopOneTick;
       }
 
-      if(me.checkOnly && !F.get(params.e.target).hasClass('fancy-field-checkbox-input')){
+      if(me.checkOnly && !F.get(params.e.target).hasClass(FIELD_CHECKBOX_INPUT_CLS)){
         return;
       }
 
@@ -584,7 +617,7 @@
         }
       }
 
-      if(!me.selectLeafsOnly && !params.data.leaf && targetEl.hasClass('fancy-field-checkbox-input')){
+      if(!me.selectLeafsOnly && !params.data.leaf && targetEl.hasClass(FIELD_CHECKBOX_INPUT_CLS)){
         var checkBox = F.getWidget(targetEl.parent().parent().attr('id')),
           value = !checkBox.get();
 
@@ -1320,7 +1353,7 @@
         w = me.widget;
 
       if (me.checkboxRow) {
-        var selected = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .fancy-checkbox-on'),
+        var selected = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + FIELD_CHECKBOX_ON_CLS),
           rows = {};
 
         selected.each(function (item) {
@@ -2407,7 +2440,7 @@
         F.each(w.leftColumns, function (column, i) {
           if (column.type === 'select') {
             var cell = w.leftHeader.getCell(i),
-              checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+              checkBox = F.getWidget(cell.select('.' + FIELD_CHECKBOX_CLS).attr('id'));
 
             if(checkBox){
               if(me.memory && me.memory.all){}
@@ -2421,7 +2454,7 @@
         F.each(w.columns, function (column, i) {
           if (column.type === 'select') {
             var cell = w.header.getCell(i),
-              checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+              checkBox = F.getWidget(cell.select('.' + FIELD_CHECKBOX_CLS).attr('id'));
 
             if(checkBox){
               if(me.memory && me.memory.all){}
@@ -2435,7 +2468,7 @@
         F.each(w.rightColumns, function (column, i) {
           if (column.type === 'select') {
             var cell = w.rightHeader.getCell(i),
-              checkBox = F.getWidget(cell.select('.fancy-field-checkbox').attr('id'));
+              checkBox = F.getWidget(cell.select('.' + FIELD_CHECKBOX_CLS).attr('id'));
 
             if(checkBox){
               if(me.memory && me.memory.all){}
@@ -2519,7 +2552,7 @@
         w = me.widget,
         el = F.get(document.createElement('textarea'));
 
-      el.addCls('fancy-grid-copy-textarea');
+      el.addCls(GRID_COPY_TEXTAREA);
 
       me.copyEl = F.get(w.el.dom.appendChild(el.dom));
     },
@@ -2893,10 +2926,10 @@
         return;
       }
 
-      var selectedCheckBoxes = w.el.select('.fancy-grid-column-select .fancy-checkbox-on');
+      var selectedCheckBoxes = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + FIELD_CHECKBOX_ON_CLS);
 
       selectedCheckBoxes.each(function (el) {
-        var rowIndex = el.closest('.fancy-grid-cell').attr('index'),
+        var rowIndex = el.closest('.' + GRID_CELL_CLS).attr('index'),
           item = w.get(rowIndex),
           id = item.id;
 
@@ -2904,6 +2937,7 @@
           var checkBox = F.getWidget(el.attr('id'));
 
           checkBox.set(false, false);
+          me.domDeSelectRow(rowIndex);
         }
       });
     },
@@ -2916,16 +2950,32 @@
 
       for(var id in me.memory.tree.selected){
         var rowIndex = w.getRowById(id),
-          checkboxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]' + ' .fancy-field-checkbox');
+          checkboxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]' + ' .' + FIELD_CHECKBOX_CLS);
 
-        checkboxEls.each(function (el) {
-          var checkBox = F.getWidget(el.attr('id'));
+        if(me.memory.tree.allSelected[id]){
+          checkboxEls.each(function (el) {
+            var _id = el.attr('id'),
+              checkBox = F.getWidget(_id);
 
-          checkBox.setMiddle(true);
-        });
+            setTimeout(function () {
+              checkBox.set(true, false);
+              checkBox.setMiddle(false);
+              me.memory.add(id);
+              me.domSelectRow(rowIndex);
+            }, 200);
+          });
+        }
+        else {
+          checkboxEls.each(function (el) {
+            var id = el.attr('id'),
+              checkBox = F.getWidget(id);
+
+            checkBox.setMiddle(true);
+          });
+        }
       }
 
-      var middleCheckBoxes = w.el.select('.' + GRID_COLUMN_CLS + '.fancy-grid-column-select .fancy-checkbox-middle');
+      var middleCheckBoxes = w.el.select('.' + GRID_COLUMN_CLS + '.' + GRID_COLUMN_SELECT_CLS + ' .' + FIELD_CHECKBOX_MIDDLE_CLS);
 
       middleCheckBoxes.each(function (el) {
         var cell = el.closest('.' + GRID_CELL_CLS),
@@ -2952,29 +3002,20 @@
           }, 200);
         }
         else {
-          me.domDeSelectRow(rowIndex);
+          //me.domDeSelectRow(rowIndex);
+        }
+
+        if(checkBox.hasCls(FIELD_CHECKBOX_ON_CLS)){
+          checkBox.removeCls(FIELD_CHECKBOX_MIDDLE_CLS);
+          me.domSelectRow(rowIndex);
+          me.memory.add(id);
+          me.memory.removeDirtyParent(id);
+        }
+
+        if(cell.hasCls(GRID_CELL_SELECTED_CLS) && !checkBox.hasCls(FIELD_CHECKBOX_ON_CLS)){
+          checkBox.set(true, false);
         }
       });
-
-      /*
-      TODO
-      var checkedCheckBoxes = w.el.select('.' + GRID_COLUMN_CLS + '.fancy-grid-column-select .fancy-checkbox-on');
-
-      checkedCheckBoxes.each(function (el) {
-        var cell = el.closest('.' + GRID_CELL_CLS),
-          rowIndex = cell.attr('index'),
-          id = w.get(rowIndex, 'id'),
-          checkBox = F.getWidget(el.attr('id'));
-
-        if(!me.memory.tree.selected[id]){
-          if(!me.memory.tree.allSelected[id]){
-            setTimeout(function () {
-              //checkBox.set(false, false);
-            }, 200);
-          }
-        }
-      });
-      */
     }
   });
 

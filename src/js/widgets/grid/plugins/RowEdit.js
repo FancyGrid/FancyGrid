@@ -725,10 +725,15 @@
      *
      */
     onScroll: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (me.rendered === false) {
         return;
+      }
+
+      if(w.infinite){
+        me.hide();
       }
 
       if (me.activeRowIndex !== undefined) {

@@ -98,7 +98,7 @@
         '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{subTBarHeight}px;"></div>',
         '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
         '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{bbarHeight}px;"></div>',
-        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{buttonsHeight}px;"></div>',
         '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
     ],
@@ -179,6 +179,7 @@
         subTBarHeight: me.subTBarHeight || me.barHeight,
         tbarHeight: me.tbarHeight || me.barHeight,
         bbarHeight: me.bbarHeight || me.barHeight,
+        buttonsHeight: me.buttonsHeight || me.barHeight,
         titleHeight: titleHeight,
         subTitleHeight: subTitleHeight,
         title: titleText,
@@ -329,7 +330,7 @@
         me._buttons = new F.Bar({
           el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
-          height: me.barHeight,
+          height: me.buttonsHeight || me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
           scope: scope,

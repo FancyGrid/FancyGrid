@@ -251,7 +251,27 @@
         },
         filter = column.filter,
         theme = w.theme,
-        tip = filter.tip;
+        tip = filter.tip,
+        value = '',
+        columnFilter = me.filters[column.index];
+
+      if(columnFilter){
+        for(var p in columnFilter){
+          var _value = columnFilter[p];
+          switch(p) {
+            case '':
+              value = _value;
+              break;
+            default:
+              if(column.type === 'combo'){
+                value = _value;
+              }
+              else {
+                value = p + _value;
+              }
+          }
+        }
+      }
 
       if(Fancy.isObject(filter.header)){
         var fieldConfig = filter.header;
@@ -263,6 +283,7 @@
           theme: theme,
           widget: w,
           tip: tip,
+          value: value,
           padding: false
          });
 
@@ -316,6 +337,7 @@
               width: column.width - 8,
               emptyText: filter.emptyText,
               dateImage: false,
+              value: value,
               theme: theme
             });
             break;
@@ -340,6 +362,7 @@
               events: events,
               emptyText: filter.emptyText,
               tip: tip,
+              value: value,
               widget: w
             });
             break;
@@ -367,6 +390,7 @@
               emptyText: filter.emptyText,
               events: events,
               widget: w,
+              value: value,
               tip: tip
             });
             break;
@@ -401,7 +425,7 @@
               width: column.width - 8,
               displayKey: displayKey,
               valueKey: valueKey,
-              value: '',
+              value: value,
               height: 28,
               emptyText: filter.emptyText,
               theme: theme,
@@ -436,7 +460,7 @@
                 valueKey: 'value',
                 width: column.width - 8,
                 emptyText: filter.emptyText,
-                value: '',
+                value: value,
                 editable: false,
                 subSearch: false,
                 events: [{
@@ -466,7 +490,7 @@
               valueKey: 'value',
               width: column.width - 8,
               emptyText: filter.emptyText,
-              value: '',
+              value: value,
               editable: false,
               subSearch: false,
               events: [{
@@ -504,6 +528,7 @@
               label: false,
               style: style,
               padding: false,
+              value: value,
               emptyText: filter.emptyText,
               events: events
             });

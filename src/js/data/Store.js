@@ -5,6 +5,7 @@ Fancy.define('Fancy.Store', {
   extend: Fancy.Event,
   mixins: [
     'Fancy.store.mixin.Paging',
+    'Fancy.store.mixin.Infinite',
     'Fancy.store.mixin.Proxy',
     'Fancy.store.mixin.Rest',
     'Fancy.store.mixin.Reader',
@@ -81,6 +82,10 @@ Fancy.define('Fancy.Store', {
 
     if(me.paging){
       me.initPaging();
+    }
+
+    if(me.infinite){
+      me.initInfinite();
     }
 
     if( me.initTrackDirty ) {
@@ -278,13 +283,18 @@ Fancy.define('Fancy.Store', {
   set: function(rowIndex, key, value, id){
     var me = this,
       item,
-      oldValue;
+      oldValue,
+      infiniteScrolledToRow = 0;
 
-    if(rowIndex === -1){
+    if(me.infiniteScrolledToRow){
+      infiniteScrolledToRow = me.infiniteScrolledToRow;
+    }
+
+    if(rowIndex + infiniteScrolledToRow === -1){
       item = me.getById(id);
     }
     else{
-      item = me.dataView[rowIndex];
+      item = me.dataView[rowIndex + infiniteScrolledToRow];
       id = item.data.id || item.id;
     }
 
@@ -298,23 +308,24 @@ Fancy.define('Fancy.Store', {
 
         var _data;
 
-        if(rowIndex === -1){
+        if(rowIndex + infiniteScrolledToRow === -1){
           oldValue = item.get(p);
           item.set(p, data[p]);
 
           _data = item.data;
         }
         else {
-          oldValue = me.get(rowIndex, p);
-          me.dataView[rowIndex].data[p] = data[p];
+          oldValue = me.get(rowIndex + infiniteScrolledToRow, p);
+          me.dataView[rowIndex + infiniteScrolledToRow].data[p] = data[p];
 
-          _data = me.dataView[rowIndex].data;
+          _data = me.dataView[rowIndex + infiniteScrolledToRow].data;
         }
 
         me.fire('set', {
           id: id,
           data: _data,
           rowIndex: rowIndex,
+          infiniteRowIndex: rowIndex + infiniteScrolledToRow,
           key: p,
           value: data[p],
           oldValue: oldValue,
@@ -329,11 +340,11 @@ Fancy.define('Fancy.Store', {
       return;
     }
     else{
-      if(rowIndex === -1){
+      if(rowIndex + infiniteScrolledToRow === -1){
         oldValue = item.get(key);
       }
       else {
-        oldValue = me.get(rowIndex, key);
+        oldValue = me.get(rowIndex + infiniteScrolledToRow, key);
       }
 
       if(oldValue == value){
@@ -341,11 +352,11 @@ Fancy.define('Fancy.Store', {
       }
     }
 
-    if(rowIndex === -1){
+    if(rowIndex + infiniteScrolledToRow === -1){
       item.set(key, value);
     }
     else {
-      var _item = me.dataView[rowIndex];
+      var _item = me.dataView[rowIndex + infiniteScrolledToRow];
       if(_item.data.parentId){
         //TODO: it is bad about perfomance, it needs to redo.
         var parentItem = me.getById(_item.data.parentId);
@@ -370,13 +381,14 @@ Fancy.define('Fancy.Store', {
       _data = item.data;
     }
     else{
-      _data = me.dataView[rowIndex].data;
+      _data = me.dataView[rowIndex + infiniteScrolledToRow].data;
     }
 
     me.fire('set', {
       id: id,
       data: _data,
       rowIndex: rowIndex,
+      infiniteRowIndex: rowIndex + infiniteScrolledToRow,
       key: key,
       value: value,
       oldValue: oldValue,
@@ -390,6 +402,10 @@ Fancy.define('Fancy.Store', {
   setItemData: function(rowIndex, data){
     var me = this,
       pastData = me.get(rowIndex);
+
+    if(me.infinite){
+      rowIndex -= me.infiniteScrolledToRow;
+    }
 
     if(me.writeAllFields && me.proxyType === 'server'){
       me.set(rowIndex, data);
@@ -408,7 +424,16 @@ Fancy.define('Fancy.Store', {
    * @return {Number}
    */
   getLength: function(){
-    return this.dataView.length;
+    var me = this,
+      length = me.dataView.length;
+
+    if(me.infinite){
+      if(length > me.infiniteDisplayedRows){
+        length = me.infiniteDisplayedRows;
+      }
+    }
+
+    return length;
   },
   /*
    * @return {Number}

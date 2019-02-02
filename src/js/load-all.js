@@ -26,6 +26,7 @@
       pathToSrc + 'util/Event.js',
 
       pathToSrc + 'data/mixins/Paging.js', // paging module
+      pathToSrc + 'data/mixins/Infinite.js', // TODO module
       pathToSrc + 'data/mixins/Proxy.js', // server data module
       pathToSrc + 'data/mixins/Rest.js', // server data module
       pathToSrc + 'data/mixins/Reader.js', // server data module
@@ -123,6 +124,8 @@
       pathToSrc + 'widgets/grid/plugins/Edit.js', // edit module
       pathToSrc + 'widgets/grid/plugins/CellEdit.js', // edit module
       pathToSrc + 'widgets/grid/plugins/RowEdit.js', // edit module
+
+      pathToSrc + 'widgets/grid/plugins/Infinite.js', // TODO module
 
       pathToSrc + 'widgets/grid/plugins/mixins/Navigation.js', // selection module
       pathToSrc + 'widgets/grid/plugins/Selection.js', // selection module

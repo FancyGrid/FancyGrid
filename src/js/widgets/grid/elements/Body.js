@@ -218,6 +218,8 @@
     scroll: function (y, x, animate) {
       var me = this,
         w = me.widget,
+        scroller = w.scroller,
+        s = w.store,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
         i = 0,
         iL = columnsDom.length,
@@ -225,9 +227,29 @@
 
       if (y !== false && y !== null && y !== undefined) {
         o.scrollTop = y;
-        for (; i < iL; i++) {
-          var columnEl = columnsDom.item(i);
-          columnEl.css('top', -y + 'px');
+        if(w.infinite){
+          if(scroller.scrollTop !== y){
+            var newRowToView = Math.round(y/w.cellHeight);
+            if(s.infiniteScrolledToRow !== newRowToView){
+              s.infiniteScrolledToRow = newRowToView;
+              if(me.infiniteTimeOut){
+                clearInterval(me.infiniteTimeOut);
+              }
+              me.infiniteTimeOut = setTimeout(function () {
+                w.leftBody.update();
+                w.body.update();
+                w.rightBody.update();
+                clearInterval(me.infiniteTimeOut);
+                delete me.infiniteTimeOut;
+              }, 1);
+            }
+          }
+        }
+        else {
+          for (; i < iL; i++) {
+            var columnEl = columnsDom.item(i);
+            columnEl.css('top', -y + 'px');
+          }
         }
       }
 
@@ -313,13 +335,15 @@
         return false;
       }
 
+      var infiniteScrolledToRow = s.infiniteScrolledToRow || 0;
+
       var columnIndex = parseInt(columnEl.attr('index')),
         rowIndex = parseInt(cellEl.attr('index')),
         column = columns[columnIndex],
         key = column.index,
-        value = s.get(rowIndex, key),
-        id = s.getId(rowIndex),
-        data = s.get(rowIndex),
+        value = s.get(rowIndex + infiniteScrolledToRow, key),
+        id = s.getId(rowIndex + infiniteScrolledToRow),
+        data = s.get(rowIndex + infiniteScrolledToRow),
         item = s.getById(id);
 
       if (column.smartIndexFn) {
@@ -333,6 +357,7 @@
         cell: cell,
         column: column,
         rowIndex: rowIndex,
+        infiniteRowIndex: rowIndex + infiniteScrolledToRow,
         columnIndex: columnIndex,
         value: value,
         data: data,

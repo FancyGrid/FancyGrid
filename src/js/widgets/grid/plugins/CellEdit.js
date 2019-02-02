@@ -97,6 +97,7 @@
     edit: function (o) {
       var me = this,
         w = me.widget,
+        s = w.store,
         column = o.column;
 
       if (column.index === '$selected') {
@@ -109,7 +110,9 @@
       column.editor = me.generateEditor(column);
 
       //me.hideEditor();
-      w.scroller.scrollToCell(o.cell);
+      if(!s.infiniteScrolledToRow) {
+        w.scroller.scrollToCell(o.cell);
+      }
       me.showEditor(o);
     },
     /*

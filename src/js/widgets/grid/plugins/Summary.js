@@ -119,7 +119,13 @@
         else if(leftEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length) {}
         else {
           el = me.generateRow('left');
-          el.css('width', leftWidth - 2);
+          if(me.position === 'bottom'){
+            el.css('width', leftWidth);
+          }
+          else{
+            el.css('width', leftWidth - 2);
+          }
+
           el.firstChild().css('width', leftWidth);
           el.css('height', w.cellHeight);
 
@@ -134,7 +140,12 @@
         else if(rightEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length) {}
         else {
           el = me.generateRow('right');
-          el.css('width', rightWidth - 1);
+          if(me.position === 'bottom'){
+            el.css('width', rightWidth);
+          }
+          else {
+            el.css('width', rightWidth - 1);
+          }
           el.firstChild().css('width', rightWidth);
           el.css('height', w.cellHeight);
 
@@ -154,7 +165,8 @@
         cellHeight = w.cellHeight,
         columnsWidth = w.getColumnsWidth(side),
         el = F.get(document.createElement('div')),
-        cells = '';
+        cells = '',
+        extraWidth = 0;
 
       F.each(w.getColumns(side), function (column, i) {
         cells += [
@@ -256,6 +268,7 @@
 
       F.each(w.getColumns(side), function (column, i) {
         if (!column.summary) {
+          cellInners.item(i).update('');
           return;
         }
 
@@ -435,10 +448,20 @@
           me.el.animate({width: totalWidth}, ANIMATE_DURATION);
           break;
         case 'left':
-          me.leftEl.animate({width: totalWidth - 2}, ANIMATE_DURATION);
+          if(me.position === 'bottom'){
+            me.leftEl.animate({width: totalWidth}, ANIMATE_DURATION);
+          }
+          else{
+            me.leftEl.animate({width: totalWidth - 2}, ANIMATE_DURATION);
+          }
           break;
         case 'right':
-          me.rightEl.animate({width: totalWidth - 1}, ANIMATE_DURATION);
+          if(me.position === 'bottom'){
+            me.rightEl.animate({width: totalWidth}, ANIMATE_DURATION);
+          }
+          else {
+            me.rightEl.animate({width: totalWidth - 1}, ANIMATE_DURATION);
+          }
           break;
       }
     },

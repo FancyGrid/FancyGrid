@@ -208,6 +208,13 @@
         jL,
         columns;
 
+      if(s.infinite){
+        iL = s.infiniteDisplayedRows;
+        if(iL > s.dataView.length){
+          iL = s.dataView.length;
+        }
+      }
+
       switch (me.side) {
         case 'left':
           columns = w.leftColumns;
@@ -237,9 +244,11 @@
 
       for (; j < jL; j++) {
         var columnDom = columsDom.item(j),
-          delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+          delta = 0;
 
+        delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
         i = iL - delta;
+
         for (; i < iL; i++) {
           var cellHTML = cellTpl.getHTML({});
 
@@ -458,9 +467,29 @@
         jL = s.getLength();
       }
 
+      var infiniteScrolledToRow = 0;
+      if(w.infinite){
+        infiniteScrolledToRow = s.infiniteScrolledToRow;
+      }
+
       for (; j < jL; j++) {
+        if(w.infinite){
+          var rowData = s.dataView[j + infiniteScrolledToRow],
+            cell = cellsDom.item(j);
+          if(rowData === undefined){
+            w.el.select('.' + GRID_CELL_CLS + '[index="'+j+'"]').css('visibility', 'hidden');
+            break;
+          }
+          else {
+            if(cell.css('visibility') === 'hidden'){
+              w.el.select('.' + GRID_CELL_CLS + '[index="'+j+'"]').css('visibility', '');
+              break;
+            }
+          }
+        }
+
         var data = s.get(j),
-          id = s.getId(j),
+          id = s.getId(j + infiniteScrolledToRow),
           inner = cellsDomInner.item(j),
           cell = cellsDom.item(j),
           o = {
@@ -469,7 +498,7 @@
             style: {},
             column: column,
             id: id,
-            item: s.getItem(j),
+            item: s.getItem(j + infiniteScrolledToRow),
             inner: inner,
             cell: cell
           },
@@ -484,7 +513,7 @@
           value = column.smartIndexFn(data);
         }
         else {
-          value = s.get(j, key);
+          value = s.get(j + infiniteScrolledToRow, key);
         }
 
         o.value = value;
@@ -731,7 +760,7 @@
           });
 
           if(o.nodeImgCls){
-            nodeImg = '<div class="fancy-grid-tree-expander-node '+(o.nodeImgCls)+'"></div>';
+            nodeImg = '<span class="fancy-grid-tree-expander-node '+(o.nodeImgCls)+'"></span>';
           }
 
           if(o.value !== undefined){
@@ -745,14 +774,14 @@
             expanded = dataItem.get('expanded');
 
           if(leaf){
-            nodeImg = '<div class="fancy-grid-tree-folder-file"></div>';
+            nodeImg = '<span class="fancy-grid-tree-folder-file"></span>';
           }
           else{
             if(expanded){
-              nodeImg = '<div class="fancy-grid-tree-folder-opened"></div>';
+              nodeImg = '<span class="fancy-grid-tree-folder-opened"></span>';
             }
             else{
-              nodeImg = '<div class="fancy-grid-tree-folder-closed"></div>';
+              nodeImg = '<span class="fancy-grid-tree-folder-closed"></span>';
             }
           }
         }
@@ -763,12 +792,12 @@
 
         var cellInner = [];
 
-        cellInner.push('<div class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></div>');
+        cellInner.push('<span class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></span>');
         if(column.select){
-          cellInner.push('<div class="fancy-grid-cell-inner-select" style="margin-left: 6px;"></div>');
+          cellInner.push('<span class="fancy-grid-cell-inner-select" style="margin-left: 6px;"></span>');
         }
         cellInner.push(nodeImg);
-        cellInner.push('<div class="fancy-grid-tree-expander-text">' + value + '</div>');
+        cellInner.push('<span class="fancy-grid-tree-expander-text">' + value + '</span>');
 
         cellInnerEl.update(cellInner.join(''));
       }
@@ -1190,6 +1219,7 @@
               recurseSelect(item.data.child);
             }
             else if($selected === false){
+              /*
               F.each(item.data.child, function (child) {
                 if(!child.fields){
                   return;
@@ -1198,6 +1228,7 @@
                 child.set('$selected', false);
                 w.selection.memory.remove(child.id);
               });
+              */
             }
           }
         }
@@ -2062,7 +2093,6 @@
       if (rowIndex !== undefined) {
         me.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + GRID_CELL_DIRTY_EL_CLS).destroy();
         me.el.select('.' + GRID_CELL_DIRTY_CLS + '[index="' + rowIndex + '"]').removeCls(GRID_CELL_DIRTY_CLS);
-
         return;
       }
 

@@ -867,6 +867,13 @@
         w = me.widget,
         offset = cell.offset();
 
+      if(column.menu && column.menu.rendered){
+        if(column.menu.el.css('display') === 'block'){
+          me.hideMenu();
+          return;
+        }
+      }
+
       me.hideMenu();
       cell.addCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
 

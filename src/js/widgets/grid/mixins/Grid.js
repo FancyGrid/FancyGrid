@@ -36,7 +36,7 @@
     tpl: [
       '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
       '<div class="' + GRID_CENTER_CLS + '"></div>',
-      '<div class="' + GRID_RIGHT_CLS + ' '+GRID_RIGHT_EMPTY_CLS+'"></div>',
+      '<div class="' + GRID_RIGHT_CLS + ' ' + GRID_RIGHT_EMPTY_CLS + '"></div>',
       '<div class="fancy-grid-editors"></div>'
     ],
     /*
@@ -61,7 +61,7 @@
       remoteFilter = me.data.remoteFilter;
       pageType = me.data.remotePage;
 
-      if(pageType) {
+      if (pageType) {
         pageType = 'server';
       }
 
@@ -86,8 +86,12 @@
         multiSort: me.multiSort
       };
 
-      if(me.multiSortLimit){
+      if (me.multiSortLimit) {
         storeConfig.multiSortLimit = me.multiSortLimit;
+      }
+
+      if (me.infinite) {
+        storeConfig.infinite = true;
       }
 
       if (state) {
@@ -181,7 +185,7 @@
         items = data.items || data;
 
       if (data.fields) {
-        if(me.isTreeData){
+        if (me.isTreeData) {
           data.fields.push('$deep');
           data.fields.push('leaf');
           data.fields.push('parentId');
@@ -204,7 +208,7 @@
         fields.push(p);
       }
 
-      if(me.isTreeData){
+      if (me.isTreeData) {
         fields.push('$deep');
         fields.push('leaf');
         fields.push('parentId');
@@ -223,11 +227,11 @@
         el = F.get(document.createElement('div')),
         panelBodyBorders = me.panelBodyBorders;
 
-      if(me.renderOuter){
+      if (me.renderOuter) {
         el = renderTo;
       }
 
-      if(!renderTo.dom){
+      if (!renderTo.dom) {
         throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
       }
 
@@ -237,11 +241,11 @@
         me.cls
       );
 
-      if( Fancy.loadingStyle ){
-        if(me.panel){
+      if (Fancy.loadingStyle) {
+        if (me.panel) {
           me.panel.el.css('opacity', 0);
-          me.intervalStyleLoad = setInterval(function(){
-            if(!Fancy.loadingStyle){
+          me.intervalStyleLoad = setInterval(function () {
+            if (!Fancy.loadingStyle) {
               clearInterval(me.intervalStyleLoad);
               me.panel.el.animate({
                 'opacity': 1,
@@ -252,8 +256,8 @@
         }
         else {
           el.css('opacity', 0);
-          me.intervalStyleLoad = setInterval(function(){
-            if(!Fancy.loadingStyle){
+          me.intervalStyleLoad = setInterval(function () {
+            if (!Fancy.loadingStyle) {
               clearInterval(me.intervalStyleLoad);
               me.el.animate({
                 'opacity': 1,
@@ -282,7 +286,7 @@
         el.addCls('fancy-theme-' + me.theme);
       }
 
-      if(me.treeFolder){
+      if (me.treeFolder) {
         el.addCls('fancy-grid-tree-folder');
       }
 
@@ -301,7 +305,7 @@
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      if(me.renderOuter){
+      if (me.renderOuter) {
         me.el = el;
       }
       else {
@@ -310,8 +314,8 @@
 
       me.setHardBordersWidth();
 
-      setTimeout(function(){
-        if(Fancy.nojQuery){
+      setTimeout(function () {
+        if (Fancy.nojQuery) {
           me.el.addCls(Fancy.GRID_ANIMATION_CLS);
         }
       }, 100);
@@ -347,13 +351,13 @@
         return;
       }
 
-      if(me.expander){
+      if (me.expander) {
         me.expander.reSet();
       }
 
       var type = 'default';
 
-      if(o && o.type){
+      if (o && o.type) {
         type = o.type;
       }
 
@@ -366,29 +370,29 @@
 
       me.setBodysHeight();
 
-      if(me.paging){
+      if (me.paging) {
         me.paging.update();
       }
 
-      if(o && o.flash){
+      if (o && o.flash) {
         var changes = me.store.changed;
 
-        for(var id in changes){
+        for (var id in changes) {
           var item = changes[id],
             rowIndex = me.getRowById(id);
 
-          if(rowIndex === undefined){
+          if (rowIndex === undefined) {
             continue;
           }
 
-          for(var key in item){
-            switch (key){
+          for (var key in item) {
+            switch (key) {
               case 'length':
                 break;
               default:
                 var _o = me.getColumnOrderByKey(key);
 
-                switch (o.flash){
+                switch (o.flash) {
                   case true:
                     me.flashCell(rowIndex, _o.order, _o.side);
                     break;
@@ -405,7 +409,7 @@
 
         me.clearDirty();
       }
-      else{
+      else {
         me.scroller.update();
       }
     },
@@ -458,7 +462,8 @@
         centerWidth = me.width - gridWithoutPanelBorders[1] - gridWithoutPanelBorders[3];
       }
 
-      if (leftWidth === 0 && rightWidth === 0) {}
+      if (leftWidth === 0 && rightWidth === 0) {
+      }
       else if (rightWidth === 0) {
         centerWidth -= leftWidth;
       }
@@ -575,9 +580,10 @@
 
       if (me.summary) {
         height += me.summary.topOffSet;
+        //height += me.summary.bottomOffSet;
       }
 
-      if(me.rowheight && me.rowheight.totalHeight){
+      if (me.rowheight && me.rowheight.totalHeight) {
         viewHeight = me.rowheight.totalHeight;
       }
 
@@ -637,6 +643,7 @@
           subTBarHeight: me.subTBarHeight || me.barHeight,
           tbarHeight: me.tbarHeight || me.barHeight,
           bbarHeight: me.bbarHeight || me.barHeight,
+          buttonsHeight: me.buttonsHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -672,7 +679,7 @@
 
       if (me.buttons) {
         panelConfig.buttons = me.buttons;
-        me.height -= me.barHeight;
+        me.height -= me.buttonsHeight || me.barHeight;
       }
 
       if (me.footer) {
@@ -770,35 +777,7 @@
       store.on('serversuccess', me.onServerSuccess, me);
 
       if (me.responsive) {
-        var onWindowResize = function () {
-          me.onWindowResize();
-
-          if(me.intWindowResize){
-            clearInterval(me.intWindowResize);
-          }
-
-          me.intWindowResize = setTimeout(function(){
-            me.onWindowResize();
-            delete me.intWindowResize;
-
-            //Bug fix for Mac
-            setTimeout(function () {
-              me.onWindowResize();
-            }, 300);
-          }, 30);
-        };
-
-        if ('ResizeObserver' in window) {
-          setTimeout(function(){
-            var myObserver = new ResizeObserver(onWindowResize);
-
-            myObserver.observe(me.el.parent().dom);
-          }, 100);
-          F.$(window).bind('resize', onWindowResize);
-        }
-        else {
-          F.$(window).bind('resize', onWindowResize);
-        }
+        me.once('render', me.initResponsiveness, me);
       }
 
       me.on('activate', me.onActivate, me);
@@ -825,7 +804,7 @@
      *
      */
     onChangeStore: function () {
-      if(this.$onChangeUpdate !== false){
+      if (this.$onChangeUpdate !== false) {
         this.update();
       }
     },
@@ -1039,10 +1018,10 @@
      * @param {Array} columns
      * @param {String} side
      */
-    setColumns: function(columns, side){
+    setColumns: function (columns, side) {
       var me = this;
 
-      switch(side){
+      switch (side) {
         case 'left':
           me.leftColumns = columns;
           break;
@@ -1104,18 +1083,18 @@
      * @param {String} [side]
      * @return {Fancy.Element}
      */
-    getHeaderCell: function(index, side){
+    getHeaderCell: function (index, side) {
       var me = this,
         cell,
         header;
 
-      if(F.isString(index)){
+      if (F.isString(index)) {
         var o = me.getColumnOrderByKey(index);
 
         header = me.getHeader(o.side);
         cell = header.getCell(o.order);
       }
-      else{
+      else {
         side = side || 'center';
         header = me.getHeader(side);
         cell = header.getCell(index);
@@ -1276,7 +1255,7 @@
 
       s.destroy();
     },
-    clearData: function(){
+    clearData: function () {
       var me = this;
 
       me.setData([]);
@@ -1321,10 +1300,10 @@
         me.el.hide();
       }
 
-      if(me.celledit){
+      if (me.celledit) {
         var editor = me.celledit.activeEditor;
 
-        if(editor){
+        if (editor) {
           editor.hide();
         }
       }
@@ -1527,23 +1506,23 @@
         order;
 
       F.each(columns, function (column, i) {
-        if(column.index === key){
+        if (column.index === key) {
           side = 'center';
           order = i;
         }
       });
 
-      if(!side){
+      if (!side) {
         F.each(leftColumns, function (column, i) {
-          if(column.index === key){
+          if (column.index === key) {
             side = 'left';
             order = i;
           }
         });
 
-        if(!side){
+        if (!side) {
           F.each(rightColumns, function (column, i) {
-            if(column.index === key){
+            if (column.index === key) {
               side = 'right';
               order = i;
             }
@@ -1584,41 +1563,41 @@
         renderTo = me.panel.renderTo;
       }
 
-      if(me.responsive) {
+      if (me.responsive) {
         el = F.get(renderTo);
       }
-      else if(me.panel){
+      else if (me.panel) {
         el = me.panel.el;
       }
-      else{
+      else {
         el = F.get(renderTo);
       }
 
-      if(el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)){
+      if (el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)) {
         el = el.parent();
       }
 
       var newWidth = el.width();
 
-      if(el.dom === undefined){
+      if (el.dom === undefined) {
         return;
       }
 
-      if(newWidth === 0){
+      if (newWidth === 0) {
         newWidth = el.parent().width();
       }
 
-      if(me.responsive) {
+      if (me.responsive) {
         me.setWidth(newWidth);
       }
-      else if(me.fitWidth){
+      else if (me.fitWidth) {
         //me.setWidthFit();
       }
 
-      if(me.responsiveHeight){
+      if (me.responsiveHeight) {
         var height = parseInt(el.height());
 
-        if(height === 0){
+        if (height === 0) {
           height = parseInt(el.parent().height());
         }
 
@@ -1636,11 +1615,11 @@
 
       var fn = function (columns, header, side) {
         Fancy.each(columns, function (column, i) {
-          if(column.hidden){
+          if (column.hidden) {
             return;
           }
 
-          if(column.flex){
+          if (column.flex) {
             var cell = header.getCell(i);
 
             me.fire('columnresize', {
@@ -1806,7 +1785,7 @@
       }
 
       if (me.buttons) {
-        value -= me.barHeight;
+        value -= me.buttonsHeight || me.barHeight;
       }
 
       var bodyHeight = value;
@@ -1872,7 +1851,7 @@
       var me = this,
         doc = F.get(document);
 
-      if(activeGrid && activeGrid.id !== me.id){
+      if (activeGrid && activeGrid.id !== me.id) {
         activeGrid.fire('deactivate');
       }
 
@@ -1957,7 +1936,7 @@
      * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
-      if(index === undefined){
+      if (index === undefined) {
         index = side;
         side = 'center';
       }
@@ -1976,10 +1955,10 @@
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      if(F.isNumber(index)){
+      if (F.isNumber(index)) {
         column = columns[index];
 
-        if(column.hidden){
+        if (column.hidden) {
           return;
         }
 
@@ -1991,7 +1970,7 @@
           column = columns[i];
 
           if (column.index === index) {
-            if(column.hidden){
+            if (column.hidden) {
               return;
             }
 
@@ -2027,7 +2006,7 @@
           break;
       }
 
-      if(me.grouping){
+      if (me.grouping) {
         me.grouping.updateGroupRows();
       }
 
@@ -2044,7 +2023,7 @@
      * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
-      if(index === undefined){
+      if (index === undefined) {
         index = side;
         side = 'center';
       }
@@ -2063,9 +2042,9 @@
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      if(F.isNumber(index)){
+      if (F.isNumber(index)) {
         column = columns[index];
-        if(!column.hidden){
+        if (!column.hidden) {
           return;
         }
 
@@ -2077,7 +2056,7 @@
           column = columns[i];
 
           if (column.index === index) {
-            if(!column.hidden){
+            if (!column.hidden) {
               return;
             }
             orderIndex = i;
@@ -2112,7 +2091,7 @@
           break;
       }
 
-      if(me.grouping){
+      if (me.grouping) {
         me.grouping.updateGroupRows();
       }
 
@@ -2141,43 +2120,43 @@
         rightHeader = me.rightHeader,
         column;
 
-      if(side === undefined){
+      if (side === undefined) {
         side = 'center';
       }
 
-      if(F.isString(indexOrder)){
+      if (F.isString(indexOrder)) {
         var columns = me.getColumns(side);
 
-        F.each(columns, function(column, i){
-          if(column.index === indexOrder){
+        F.each(columns, function (column, i) {
+          if (column.index === indexOrder) {
             indexOrder = i;
             return true;
           }
         });
 
-        if(F.isString(indexOrder) && side === 'center'){
+        if (F.isString(indexOrder) && side === 'center') {
           columns = me.getColumns('left');
 
-          F.each(columns, function(column, i){
-            if(column.index === indexOrder){
+          F.each(columns, function (column, i) {
+            if (column.index === indexOrder) {
               indexOrder = i;
               side = 'left';
               return true;
             }
           });
 
-          if(F.isString(indexOrder)){
+          if (F.isString(indexOrder)) {
             columns = me.getColumns('right');
 
-            F.each(columns, function(column, i){
-              if(column.index === indexOrder){
+            F.each(columns, function (column, i) {
+              if (column.index === indexOrder) {
                 indexOrder = i;
                 side = 'right';
                 return true;
               }
             });
 
-            if(F.isString(indexOrder)){
+            if (F.isString(indexOrder)) {
               throw new Error('FancyGrid Error 7: Column was not found for method removeColumn');
             }
           }
@@ -2260,14 +2239,14 @@
           column.locked = true;
           var extraLeft = 0;
           var extraHeaderWidth = 0;
-          if(me.leftColumns.length === 0){
-            if(!F.nojQuery){
+          if (me.leftColumns.length === 0) {
+            if (!F.nojQuery) {
               extraLeft = 1;
             }
             me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
           }
 
-          if(!F.nojQuery){
+          if (!F.nojQuery) {
             extraHeaderWidth = 0;
           }
 
@@ -2289,8 +2268,8 @@
           var extraLeft = 0,
             extraWidth = 0;
 
-          if(me.rightColumns.length === 0){
-            if(!F.nojQuery){
+          if (me.rightColumns.length === 0) {
+            if (!F.nojQuery) {
               extraLeft = 1;
               extraWidth = 2;
             }
@@ -2315,12 +2294,12 @@
       if (me.grouping) {
         switch (side) {
           case 'left':
-            if(me.leftColumns.length === 1){
+            if (me.leftColumns.length === 1) {
               me.grouping.softRenderGroupedRows('left');
             }
             break;
           case 'right':
-            if(me.rightColumns.length === 1){
+            if (me.rightColumns.length === 1) {
               me.grouping.softRenderGroupedRows('right');
             }
             break;
@@ -2346,7 +2325,7 @@
       me.leftHeader.destroyMenus();
       me.rightHeader.destroyMenus();
 
-      if(me.sorter){
+      if (me.sorter) {
         me.sorter.updateSortedHeader();
       }
     },
@@ -2359,15 +2338,15 @@
       var me = this;
       side = side || 'center';
 
-      if(!column.type){
+      if (!column.type) {
         column.type = 'string';
       }
 
-      if(!column.width){
+      if (!column.width) {
         column.width = me.defaultColumnWidth;
       }
 
-      if(orderIndex === undefined){
+      if (orderIndex === undefined) {
         var columns = me.getColumns(side);
 
         orderIndex = columns.length;
@@ -2415,27 +2394,27 @@
         headerRows = 1,
         columns = me.columns.concat(me.leftColumns || []).concat(me.rightColumns || []);
 
-      Fancy.each(columns, function(column){
-        if(column.grouping){
-          if(headerRows < 2){
+      Fancy.each(columns, function (column) {
+        if (column.grouping) {
+          if (headerRows < 2) {
             headerRows = 2;
           }
 
-          if(column.filter && column.filter.header){
-            if(headerRows < 3){
+          if (column.filter && column.filter.header) {
+            if (headerRows < 3) {
               headerRows = 3;
             }
           }
         }
 
-        if(column.filter && column.filter.header){
-          if(headerRows < 2){
+        if (column.filter && column.filter.header) {
+          if (headerRows < 2) {
             headerRows = 2;
           }
         }
       });
 
-      if(me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE){
+      if (me.getCenterFullWidth() > me.getCenterViewWidth() && !me.nativeScroller && !Fancy.isIE) {
         height += me.bottomScrollHeight;
       }
 
@@ -2456,7 +2435,7 @@
       }
 
       if (me.buttons) {
-        height += me.barHeight;
+        height += me.buttonsHeight || me.barHeight;
       }
 
       if (me.subTBar) {
@@ -2471,7 +2450,7 @@
         height += me.cellHeaderHeight * headerRows;
       }
 
-      if(me.grouping){
+      if (me.grouping) {
         height += me.grouping.groups.length * me.groupRowHeight;
       }
 
@@ -2520,7 +2499,7 @@
       me.filter.filters[index] = filter;
       me.filter.updateStoreFilters();
 
-      if(updateHeaderFilter !== false) {
+      if (updateHeaderFilter !== false) {
         me.filter.addValuesInColumnFields(index, value, sign);
       }
     },
@@ -2538,13 +2517,13 @@
         s.filters = {};
       }
       else if (sign === undefined || sign === null) {
-        if(s.filters && s.filters[index]){
+        if (s.filters && s.filters[index]) {
           me.filter.filters[index] = {};
           s.filters[index] = {};
         }
       }
       else {
-        if (me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign]) {
+        if (me.filter && me.filter.filters && me.filter.filters[index] && me.filter.filters[index][sign] !== undefined) {
           delete me.filter.filters[index][sign];
           delete s.filters[index][sign];
         }
@@ -2647,20 +2626,32 @@
       var me = this,
         scroller = me.scroller;
 
-      if(y !== undefined && y > 0){
+      if (y !== undefined && y > 0) {
         y = -y;
       }
 
       var scrollHeight = scroller.getScrollHeight();
 
-      if(x > scrollHeight){
+      if (x > scrollHeight) {
         x = scrollHeight;
+        if(me.nativeScroller && scroller.isRightScrollable()){
+          x += 17;
+        }
       }
 
       var scrollWidth = scroller.getScrollWidth();
 
-      if(Math.abs(y) > scrollWidth){
+      if (Math.abs(y) > scrollWidth) {
         y = -scrollWidth;
+      }
+
+      if(scroller.isBottomScrollable() === false){
+        y = 0;
+      }
+      else{
+       if(me.nativeScroller && scroller.isRightScrollable()){
+         y -= 17;
+       }
       }
 
       scroller.scroll(x, y, animate);
@@ -2700,7 +2691,7 @@
       for (; i < iL; i++) {
         var column = columns[i];
 
-        if(column.hidden){
+        if (column.hidden) {
           continue
         }
 
@@ -2722,14 +2713,14 @@
       for (; i < iL; i++) {
         var column = columns[i];
 
-        if(column.hidden){
+        if (column.hidden) {
           continue;
         }
 
         if (column.flex) {
           column.width = Math.floor(column.flex * flexPerCent);
 
-          if(column.minWidth && column.width < column.minWidth){
+          if (column.minWidth && column.width < column.minWidth) {
             column.width = column.minWidth;
           }
 
@@ -2759,12 +2750,12 @@
           return;
         }
 
-        switch(column.type){
+        switch (column.type) {
           case 'order':
             rowData.push(i + 1);
             break;
           default:
-            if(column.render){
+            if (column.render) {
               var data = me.get(i),
                 value = me.get(i, column.index);
 
@@ -2808,12 +2799,12 @@
           return;
         }
 
-        switch(column.type){
+        switch (column.type) {
           case 'order':
             rowData.push(i + 1);
             break;
           default:
-            if(column.render){
+            if (column.render) {
               var data = me.get(i),
                 value = me.get(i, column.index);
 
@@ -2849,7 +2840,7 @@
 
       s.setData(data);
 
-      if(s.isTree){
+      if (s.isTree) {
         s.initTreeData();
       }
 
@@ -2868,7 +2859,7 @@
     /*
      * @params {Object} [o]
      */
-    getDataAsCsv: function(o){
+    getDataAsCsv: function (o) {
       var me = this;
 
       if (me.exporter) {
@@ -2878,7 +2869,7 @@
     /*
      * @params {Object} o
      */
-    getDataAsCSV: function(o){
+    getDataAsCSV: function (o) {
       return this.getDataAsCsv(o);
     },
     /*
@@ -2910,7 +2901,7 @@
       var me = this,
         s = me.store;
 
-      if(s.proxy){
+      if (s.proxy) {
         s.proxy.params = s.proxy.params || {};
 
         F.apply(s.proxy.params, o);
@@ -2923,10 +2914,10 @@
       var me = this,
         s = me.store;
 
-      if(F.isString(url)){
+      if (F.isString(url)) {
         if (s.proxy && s.proxy.api) {
-          if(s.proxy.type === 'rest'){
-            for(var p in s.proxy.api){
+          if (s.proxy.type === 'rest') {
+            for (var p in s.proxy.api) {
               s.proxy.api[p] = url;
             }
           }
@@ -2949,13 +2940,13 @@
       var me = this,
         side;
 
-      if(me.centerEl.within(cell)){
+      if (me.centerEl.within(cell)) {
         side = 'center';
       }
-      else if(me.leftEl.within(cell)){
+      else if (me.leftEl.within(cell)) {
         side = 'left';
       }
-      else if(me.rightEl.within(cell)){
+      else if (me.rightEl.within(cell)) {
         side = 'right';
       }
 
@@ -2971,22 +2962,22 @@
       var me = this,
         s = me.store;
 
-      if(o === undefined){
+      if (o === undefined) {
         item.$deep = 1;
-        if(item.child === undefined){
+        if (item.child === undefined) {
           item.child = [];
         }
 
         me.add(item);
       }
-      else{
-        if(F.isNumber(item)){
+      else {
+        if (F.isNumber(item)) {
           item = me.getById(item);
         }
 
         var fixParent = false;
 
-        if(item.get('leaf') === true){
+        if (item.get('leaf') === true) {
           item.set('leaf', false);
           item.set('expanded', true);
           item.set('child', []);
@@ -3001,9 +2992,9 @@
         o.$deep = $deep + 1;
         o.parentId = item.id;
 
-        if(fixParent){
+        if (fixParent) {
           var parentId = item.get('parentId');
-          if(parentId) {
+          if (parentId) {
             var parentItem = me.getById(parentId);
 
             F.each(parentItem.data.child, function (child) {
@@ -3021,7 +3012,7 @@
         child.push(new s.model(o));
         item.set('child', child);
 
-        if(item.get('expanded') === true){
+        if (item.get('expanded') === true) {
           me.insert(rowIndex, o);
         }
       }
@@ -3029,18 +3020,18 @@
     /*
      * {Number|String|Object} id
      */
-    expand: function(id){
+    expand: function (id) {
       var item,
         me = this;
 
-      switch(F.typeOf(id)){
+      switch (F.typeOf(id)) {
         case 'number':
         case 'string':
           item = me.getById(id);
           break;
       }
 
-      if(item.get('expanded') === true){
+      if (item.get('expanded') === true) {
         return;
       }
 
@@ -3049,18 +3040,18 @@
     /*
      * {Number|String|Object} id
      */
-    collapse: function(id){
+    collapse: function (id) {
       var item,
         me = this;
 
-      switch(F.typeOf(id)){
+      switch (F.typeOf(id)) {
         case 'number':
         case 'string':
           item = me.getById(id);
           break;
       }
 
-      if(item.get('expanded') === false){
+      if (item.get('expanded') === false) {
         return;
       }
 
@@ -3090,7 +3081,7 @@
 
       items = me.findItem('expanded', false);
 
-      if(items.length){
+      if (items.length) {
         me.expandAll();
       }
     },
@@ -3100,7 +3091,7 @@
     copy: function (copyHeader) {
       var me = this;
 
-      if(me.selection){
+      if (me.selection) {
         me.selection.copy(copyHeader);
       }
     },
@@ -3115,23 +3106,23 @@
         header,
         cell;
 
-      if(!o.side){
+      if (!o.side) {
         return;
       }
 
       header = me.getHeader(o.side);
       cell = header.getCell(o.order);
 
-      if(!direction){
+      if (!direction) {
         cell.dom.click();
       }
-      else{
+      else {
         direction = direction || 'ASC';
         cell = header.getCell(o.order);
 
         direction = direction.toLocaleLowerCase();
 
-        switch(direction){
+        switch (direction) {
           case 'asc':
             cell.removeCls(GRID_COLUMN_SORT_DESC_CLS);
             cell.addCls(GRID_COLUMN_SORT_ASC_CLS);
@@ -3189,26 +3180,26 @@
      */
     flashCell: function (rowIndex, columnIndex, side, o) {
       var me = this,
-        side = side? side: 'center',
+        side = side ? side : 'center',
         body = me.getBody(side),
         duration = 700,
-        cell = Fancy.isObject(rowIndex)? rowIndex : body.getCell(rowIndex, columnIndex);
+        cell = Fancy.isObject(rowIndex) ? rowIndex : body.getCell(rowIndex, columnIndex);
 
-      if(o){
-        if(o.duration){
+      if (o) {
+        if (o.duration) {
           duration = o.duration;
         }
 
-        switch(o.type){
+        switch (o.type) {
           case 'plusminus':
-            if(o.delta > 0){
+            if (o.delta > 0) {
               cell.addCls('fancy-grid-cell-flash-plus');
               setTimeout(function () {
                 cell.removeCls('fancy-grid-cell-flash-plus');
                 cell.removeCls('fancy-grid-cell-animation');
               }, duration);
             }
-            else{
+            else {
               cell.addCls('fancy-grid-cell-flash-minus');
               setTimeout(function () {
                 cell.removeCls('fancy-grid-cell-flash-minus');
@@ -3234,7 +3225,7 @@
     /*
     * @param {Number} rowIndex
      */
-    scrollToRow: function(rowIndex){
+    scrollToRow: function (rowIndex) {
       var me = this,
         cell = me.body.getCell(rowIndex, 0);
 
@@ -3251,11 +3242,11 @@
         o = {},
         state = JSON.parse(localStorage.getItem(me.getStateName()));
 
-      if(!state){
+      if (!state) {
         return;
       }
 
-      if(!state.sorters){
+      if (!state.sorters) {
         return {};
       }
 
@@ -3275,7 +3266,7 @@
         id = me.id,
         url = location.host + '-' + location.pathname;
 
-      if(me.stateId){
+      if (me.stateId) {
         return me.stateId;
       }
 
@@ -3293,23 +3284,23 @@
         hasLocked = false,
         columns = [].concat(me.leftColumns).concat(me.columns).concat(me.rightColumns);
 
-      Fancy.each(columns, function(column){
-        if(!column.hidden){
+      Fancy.each(columns, function (column) {
+        if (!column.hidden) {
           width += column.width;
         }
-        if(column.locked){
+        if (column.locked) {
           hasLocked = true;
         }
       });
 
-      if(me.panel){
+      if (me.panel) {
         width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];
       }
-      else{
+      else {
         width += gridWithoutPanelBorders[1] + gridWithoutPanelBorders[3] + gridBorders[1] + gridBorders[3];
       }
 
-      if(hasLocked){
+      if (hasLocked) {
         width--;
       }
 
@@ -3320,7 +3311,7 @@
      * @param {String} value
      * @param {String} [side]
      */
-    setColumnTitle: function(index, value, side){
+    setColumnTitle: function (index, value, side) {
       var me = this,
         side = side || 'center',
         header = me.getHeader(side),
@@ -3328,7 +3319,7 @@
         column,
         columns = header.getColumns();
 
-      if(Fancy.isString(index)){
+      if (Fancy.isString(index)) {
         index = me.getColumnOrderByKey(index).order;
       }
 
@@ -3364,7 +3355,7 @@
         barCls,
         barEl;
 
-      switch(bar){
+      switch (bar) {
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
           break;
@@ -3383,7 +3374,7 @@
 
       barEl = me.panel.el.select('.' + barCls);
 
-      if(barEl.css('display') !== 'none'){
+      if (barEl.css('display') !== 'none') {
         barEl.hide();
 
         var panelHeight = parseInt(me.panel.el.css('height'));
@@ -3398,7 +3389,7 @@
         barCls,
         barEl;
 
-      switch(bar){
+      switch (bar) {
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
           break;
@@ -3417,11 +3408,44 @@
 
       barEl = me.panel.el.select('.' + barCls);
 
-      if(barEl.css('display') == 'none'){
+      if (barEl.css('display') == 'none') {
         barEl.show();
 
         var panelHeight = parseInt(me.panel.el.css('height'));
         me.panel.el.css('height', panelHeight + me.barHeight);
+      }
+    },
+    initResponsiveness: function () {
+      var me = this;
+
+      var onWindowResize = function () {
+        me.onWindowResize();
+
+        if (me.intWindowResize) {
+          clearInterval(me.intWindowResize);
+        }
+
+        me.intWindowResize = setTimeout(function () {
+          me.onWindowResize();
+          delete me.intWindowResize;
+
+          //Bug fix for Mac
+          setTimeout(function () {
+            me.onWindowResize();
+          }, 300);
+        }, 30);
+      };
+
+      if ('ResizeObserver' in window) {
+        setTimeout(function () {
+          var myObserver = new ResizeObserver(onWindowResize);
+
+          myObserver.observe(me.el.parent().dom);
+        }, 100);
+        F.$(window).bind('resize', onWindowResize);
+      }
+      else {
+        F.$(window).bind('resize', onWindowResize);
       }
     }
   });

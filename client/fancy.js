@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.59',
+  version: '1.7.60',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -480,6 +480,7 @@ Fancy.apply(Fancy, {
   FIELD_CHECKBOX_DISABLED_CLS: 'fancy-field-checkbox-disabled',
   FIELD_CHECKBOX_INPUT_CLS: 'fancy-field-checkbox-input',
   FIELD_CHECKBOX_ON_CLS: 'fancy-checkbox-on',
+  FIELD_CHECKBOX_MIDDLE_CLS: 'fancy-checkbox-middle',
   FIELD_INPUT_LABEL_CLS:'fancy-field-input-label',
   FIELD_BUTTON_CLS: 'fancy-field-button',
   FIELD_TAB_CLS: 'fancy-field-tab',
@@ -523,6 +524,7 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
   GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
+  GRID_COPY_TEXTAREA: 'fancy-grid-copy-textarea',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
   GRID_HEADER_CELL_CLS: 'fancy-grid-header-cell',
@@ -1268,6 +1270,9 @@ Fancy.Array = {
     }
     else {
       for (; i < iL; i++) {
+        if(Fancy.isNumber(values[i]) === false){
+          continue;
+        }
         value += values[i];
       }
     }
@@ -1298,6 +1303,9 @@ Fancy.Array = {
       iL = values.length;
 
     for(;i<iL;i++){
+      if (Fancy.isNumber(values[i]) === false) {
+        continue;
+      }
       sum += values[i];
     }
 
@@ -1379,10 +1387,67 @@ Fancy.Number = {
   },
   /**
    * @param {Number} value
+   * @param {Number|String} [sep]
+   * @param {Number} [presition]
    * @return {String}
    */
-  format: function (value, sep) {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep || ',');
+  format: function (value, sep, precision) {
+    var dot,
+      result;
+
+    if(sep === undefined){
+      sep = ',';
+    }
+
+    if(Fancy.isNumber(sep)){
+      precision = sep;
+      sep = ',';
+    }
+
+    if(sep === ''){
+      dot = '.';
+    }
+    else if(sep === ','){
+      dot = '.';
+    }
+    else{
+      dot = ',';
+    }
+
+    var splitted = value.toString().split('.');
+    splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+
+    if(splitted[1] === undefined){
+      splitted[1] = '';
+    }
+
+    if(precision !== undefined){
+      if(precision === 0){
+        result = splitted[0];
+      }
+      else{
+        var delta = precision - splitted[1].length;
+        if(delta > 0){
+          var i = 0;
+          for(;i<delta;i++){
+            splitted[1] += '0';
+          }
+        }
+        else if(delta < 0){
+          splitted[1] = splitted[1].substring(0, precision);
+        }
+
+        result = splitted[0] + dot + splitted[1];
+      }
+    }
+    else{
+      result = splitted[0];
+      if(splitted[1].length){
+        result += dot + splitted[1];
+      }
+    }
+
+    return result;
   }
 };
 /*
@@ -2948,6 +3013,7 @@ Fancy.define('Fancy.Store', {
   extend: Fancy.Event,
   mixins: [
     'Fancy.store.mixin.Paging',
+    'Fancy.store.mixin.Infinite',
     'Fancy.store.mixin.Proxy',
     'Fancy.store.mixin.Rest',
     'Fancy.store.mixin.Reader',
@@ -3024,6 +3090,10 @@ Fancy.define('Fancy.Store', {
 
     if(me.paging){
       me.initPaging();
+    }
+
+    if(me.infinite){
+      me.initInfinite();
     }
 
     if( me.initTrackDirty ) {
@@ -3221,13 +3291,18 @@ Fancy.define('Fancy.Store', {
   set: function(rowIndex, key, value, id){
     var me = this,
       item,
-      oldValue;
+      oldValue,
+      infiniteScrolledToRow = 0;
 
-    if(rowIndex === -1){
+    if(me.infiniteScrolledToRow){
+      infiniteScrolledToRow = me.infiniteScrolledToRow;
+    }
+
+    if(rowIndex + infiniteScrolledToRow === -1){
       item = me.getById(id);
     }
     else{
-      item = me.dataView[rowIndex];
+      item = me.dataView[rowIndex + infiniteScrolledToRow];
       id = item.data.id || item.id;
     }
 
@@ -3241,23 +3316,24 @@ Fancy.define('Fancy.Store', {
 
         var _data;
 
-        if(rowIndex === -1){
+        if(rowIndex + infiniteScrolledToRow === -1){
           oldValue = item.get(p);
           item.set(p, data[p]);
 
           _data = item.data;
         }
         else {
-          oldValue = me.get(rowIndex, p);
-          me.dataView[rowIndex].data[p] = data[p];
+          oldValue = me.get(rowIndex + infiniteScrolledToRow, p);
+          me.dataView[rowIndex + infiniteScrolledToRow].data[p] = data[p];
 
-          _data = me.dataView[rowIndex].data;
+          _data = me.dataView[rowIndex + infiniteScrolledToRow].data;
         }
 
         me.fire('set', {
           id: id,
           data: _data,
           rowIndex: rowIndex,
+          infiniteRowIndex: rowIndex + infiniteScrolledToRow,
           key: p,
           value: data[p],
           oldValue: oldValue,
@@ -3272,11 +3348,11 @@ Fancy.define('Fancy.Store', {
       return;
     }
     else{
-      if(rowIndex === -1){
+      if(rowIndex + infiniteScrolledToRow === -1){
         oldValue = item.get(key);
       }
       else {
-        oldValue = me.get(rowIndex, key);
+        oldValue = me.get(rowIndex + infiniteScrolledToRow, key);
       }
 
       if(oldValue == value){
@@ -3284,11 +3360,11 @@ Fancy.define('Fancy.Store', {
       }
     }
 
-    if(rowIndex === -1){
+    if(rowIndex + infiniteScrolledToRow === -1){
       item.set(key, value);
     }
     else {
-      var _item = me.dataView[rowIndex];
+      var _item = me.dataView[rowIndex + infiniteScrolledToRow];
       if(_item.data.parentId){
         //TODO: it is bad about perfomance, it needs to redo.
         var parentItem = me.getById(_item.data.parentId);
@@ -3313,13 +3389,14 @@ Fancy.define('Fancy.Store', {
       _data = item.data;
     }
     else{
-      _data = me.dataView[rowIndex].data;
+      _data = me.dataView[rowIndex + infiniteScrolledToRow].data;
     }
 
     me.fire('set', {
       id: id,
       data: _data,
       rowIndex: rowIndex,
+      infiniteRowIndex: rowIndex + infiniteScrolledToRow,
       key: key,
       value: value,
       oldValue: oldValue,
@@ -3333,6 +3410,10 @@ Fancy.define('Fancy.Store', {
   setItemData: function(rowIndex, data){
     var me = this,
       pastData = me.get(rowIndex);
+
+    if(me.infinite){
+      rowIndex -= me.infiniteScrolledToRow;
+    }
 
     if(me.writeAllFields && me.proxyType === 'server'){
       me.set(rowIndex, data);
@@ -3351,7 +3432,16 @@ Fancy.define('Fancy.Store', {
    * @return {Number}
    */
   getLength: function(){
-    return this.dataView.length;
+    var me = this,
+      length = me.dataView.length;
+
+    if(me.infinite){
+      if(length > me.infiniteDisplayedRows){
+        length = me.infiniteDisplayedRows;
+      }
+    }
+
+    return length;
   },
   /*
    * @return {Number}

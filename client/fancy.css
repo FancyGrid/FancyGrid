@@ -412,7 +412,7 @@
 .fancy-field-search-list {
   background: white;
   display: none;
-  z-index: 2;
+  z-index: 4;
 }
 .fancy-field-search-list .fancy-field {
   padding-top: 5px !important;
@@ -2289,6 +2289,17 @@
   border-top-width: 1px;
   position: relative;
 }
+.fancy-grid-summary-row-bottom .fancy-grid-cell[index="0"] {
+  border-top-color: #d3dbe1;
+}
+.fancy-grid-left .fancy-grid-summary-row-bottom {
+  border-right: 2px solid #d3dbe1;
+}
+.fancy-grid-right .fancy-grid-summary-row-bottom {
+  border-left: 2px solid #d3dbe1;
+  position: relative;
+  left: -2px;
+}
 .fancy-grid-summary-options .fancy-grid-summary-container .fancy-grid-cell:hover .fancy-grid-cell-inner {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M31.3%20192h257.3c17.8%200%2026.7%2021.5%2014.1%2034.1L174.1%20354.8c-7.8%207.8-20.5%207.8-28.3%200L17.2%20226.1C4.6%20213.5%2013.5%20192%2031.3%20192z%22%2F%3E%3C%2Fsvg%3E');
   background-position-x: 100%;
@@ -2315,7 +2326,7 @@
   background-position-y: -1px;
 }
 .fancy-grid-tree-expander-text {
-  display: inline-block;
+  /*display: inline-block;*/
   margin-left: 5px;
   position: relative;
   top: -3px;
@@ -2356,11 +2367,14 @@
 }
 .fancy-grid-tree-folder-file {
   width: 14px;
-  height: 18px;
+  /*height: 18px;*/
+  height: 19px;
   display: inline-block;
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2218%22%20viewBox%3D%220%200%20384%20512%22%3E%3Cpath%20fill%3D%22%235fa2dd%22%20d%3D%22M369.9%2097.9L286%2014C277%205%20264.8-.1%20252.1-.1H48C21.5%200%200%2021.5%200%2048v416c0%2026.5%2021.5%2048%2048%2048h288c26.5%200%2048-21.5%2048-48V131.9c0-12.7-5.1-25-14.1-34zM332.1%20128H256V51.9l76.1%2076.1zM48%20464V48h160v104c0%2013.3%2010.7%2024%2024%2024h104v288H48z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
   position: relative;
-  top: -3px;
+  /*top: -3px;*/
+  top: 0 !important;
   margin-left: 5px;
 }
 .fancy-grid-tree-column-folder .fancy-grid-tree-expander {
@@ -3685,6 +3699,15 @@
 }
 .fancy-theme-dark .fancy-grid-tree-folder-file {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2218%22%20viewBox%3D%220%200%20384%20512%22%3E%3Cpath%20fill%3D%22%23C1C5CC%22%20d%3D%22M369.9%2097.9L286%2014C277%205%20264.8-.1%20252.1-.1H48C21.5%200%200%2021.5%200%2048v416c0%2026.5%2021.5%2048%2048%2048h288c26.5%200%2048-21.5%2048-48V131.9c0-12.7-5.1-25-14.1-34zM332.1%20128H256V51.9l76.1%2076.1zM48%20464V48h160v104c0%2013.3%2010.7%2024%2024%2024h104v288H48z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+}
+.fancy-theme-dark .fancy-grid-summary-row-bottom .fancy-grid-cell[index="0"] {
+  border-top-color: #404040;
+}
+.fancy-theme-dark .fancy-grid-left .fancy-grid-summary-row-bottom {
+  border-right-color: #5a5a5a;
+}
+.fancy-theme-dark .fancy-grid-right .fancy-grid-summary-row-bottom {
+  border-left-color: #5a5a5a;
 }
 .fancy-theme-dark.fancy-combo-result-list .fancy-field-checkbox-input {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20rx%3D%222%22%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%2214%22%20height%3D%2214%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23cccccc%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20rx%3D%222%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');

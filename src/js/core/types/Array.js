@@ -65,6 +65,9 @@ Fancy.Array = {
     }
     else {
       for (; i < iL; i++) {
+        if(Fancy.isNumber(values[i]) === false){
+          continue;
+        }
         value += values[i];
       }
     }
@@ -95,6 +98,9 @@ Fancy.Array = {
       iL = values.length;
 
     for(;i<iL;i++){
+      if (Fancy.isNumber(values[i]) === false) {
+        continue;
+      }
       sum += values[i];
     }
 

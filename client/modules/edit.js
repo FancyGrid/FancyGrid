@@ -475,6 +475,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     edit: function (o) {
       var me = this,
         w = me.widget,
+        s = w.store,
         column = o.column;
 
       if (column.index === '$selected') {
@@ -487,7 +488,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       column.editor = me.generateEditor(column);
 
       //me.hideEditor();
-      w.scroller.scrollToCell(o.cell);
+      if(!s.infiniteScrolledToRow) {
+        w.scroller.scrollToCell(o.cell);
+      }
       me.showEditor(o);
     },
     /*
@@ -1796,10 +1799,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      *
      */
     onScroll: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       if (me.rendered === false) {
         return;
+      }
+
+      if(w.infinite){
+        me.hide();
       }
 
       if (me.activeRowIndex !== undefined) {

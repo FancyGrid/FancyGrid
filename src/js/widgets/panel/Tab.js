@@ -179,7 +179,7 @@
       }
 
       if (me.buttons) {
-        height -= me.barHeight;
+        height -= me.buttonsHeight || me.barHeight;
       }
 
       if (me.footer) {

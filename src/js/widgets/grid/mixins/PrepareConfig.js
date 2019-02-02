@@ -31,6 +31,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigLang(config, originalConfig);
     config = me.prepareConfigSpark(config, originalConfig);
     config = me.prepareConfigPaging(config, originalConfig);
+    config = me.prepareConfigInfinite(config, originalConfig);
     config = me.prepareConfigTBar(config);
     config = me.prepareConfigExpander(config);
     config = me.prepareConfigColumnMinMaxWidth(config);
@@ -463,7 +464,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'text':
         case 'date':
         case 'combo':
-        //case 'tree': //Bug: For tree text-overflow does not work.
+        case 'tree': //Bug: For tree text-overflow does not work.
           if(column.ellipsis !== false){
             column.ellipsis = true;
           }
@@ -1519,6 +1520,26 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     return config;
   },
   /*
+   * @param {Object} config
+   * @param {Object} originalConfig
+   * @return {Object}
+   */
+  prepareConfigInfinite: function(config, originalConfig){
+    var infinite = config.infinite;
+
+    if(!infinite){
+      return config;
+    }
+    // Force disabling native scroller
+    config.nativeScroller = false;
+
+    config._plugins.push({
+      type: 'grid.infinite'
+    });
+
+    return config;
+  },
+  /*
    * @param {Object|Boolean} paging
    * @param {Object} lang
    * @return {Array}
@@ -2074,7 +2095,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.buttons){
-        height += config.barHeight;
+        height += config.buttonsHeight || config.barHeight;
       }
 
       if(config.subTBar){

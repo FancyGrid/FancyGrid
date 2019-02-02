@@ -91,6 +91,7 @@
           subTBarHeight: me.subTBarHeight || me.barHeight,
           tbarHeight: me.tbarHeight || me.barHeight,
           bbarHeight: me.bbarHeight || me.barHeight,
+          buttonsHeight: me.buttonsHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -159,7 +160,7 @@
 
       if (me.buttons) {
         panelConfig.buttons = me.buttons;
-        me.height -= me.barHeight;
+        me.height -= me.buttonsHeight || me.barHeight;
         panelConfig.buttons = me.buttons;
       }
 
@@ -865,7 +866,7 @@
         me.panel.css('height', height);
 
         if (me.buttons) {
-          height -= me.barHeight;
+          height -= me.buttonsHeight || me.barHeight;
         }
 
         if (me.bbar) {

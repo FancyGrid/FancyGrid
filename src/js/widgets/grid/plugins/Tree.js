@@ -3,6 +3,13 @@
  * @extends Fancy.Plugin
  */
 (function () {
+  //SHORTCUTS
+  var F = Fancy;
+
+  /*
+   * CONSTANTS
+   */
+  var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
 
   var getChildNumber = function (items, num) {
     num = num || 0;
@@ -102,7 +109,7 @@
         item = o.item,
         target = Fancy.get(o.e.target);
 
-      if(!target.hasClass('fancy-grid-tree-expander')){
+      if(!target.hasClass(GRID_COLUMN_TREE_EXPANDER_CLS)){
         return;
       }
 
