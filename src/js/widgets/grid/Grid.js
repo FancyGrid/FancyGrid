@@ -48,7 +48,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   barScrollEnabled: true,
   startResizing: false,
   /*
-   * @constructor
+   * @constructoloadr
    * @param {*} renderTo
    * @param {Object} [config]
    */
@@ -232,6 +232,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     if(me.clicksToEdit){
+      requiredModules.edit = true;
+    }
+
+    if(me.defaults && me.defaults.editable){
       requiredModules.edit = true;
     }
 

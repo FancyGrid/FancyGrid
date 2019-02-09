@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Tree
  */
+Fancy.modules['tree'] = true;
 Fancy.Mixin('Fancy.store.mixin.Tree', {
   /*
    *

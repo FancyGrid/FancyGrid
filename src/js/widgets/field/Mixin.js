@@ -324,6 +324,11 @@
           me.input.attr('tabIndex', -1);
         }
       }
+      else{
+        if(me.input && me.tabIndex){
+          me.input.attr('tabIndex', me.tabIndex);
+        }
+      }
     },
     /*
      * @param {Object} e
@@ -1046,7 +1051,7 @@
       }
 
       if(me.input){
-        me.input.attr('tabIndex', 0);
+        me.input.attr('tabIndex', me.tabIndex || 0);
       }
     },
     /*

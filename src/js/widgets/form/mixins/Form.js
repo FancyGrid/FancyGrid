@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.form.mixin.Form
  */
+Fancy.modules['form'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -126,12 +127,6 @@
         }
       });
 
-      F.each(me.tbar, function (item) {
-        if(F.isObject(item)){
-          item.scope = item.scope || me;
-        }
-      });
-
       F.each(me.subTBar, function (item) {
         if(F.isObject(item)){
           item.scope = item.scope || me;
@@ -156,6 +151,11 @@
       if (me.tbar) {
         panelConfig.tbar = me.tbar;
         me.height -= me.tbarHeight || me.barHeight;
+      }
+
+      if (me.subTBar) {
+        panelConfig.subTBar = me.subTBar;
+        me.height -= me.subTBarHeight || me.barHeight;
       }
 
       if (me.buttons) {

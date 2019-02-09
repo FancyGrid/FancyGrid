@@ -1,3 +1,5 @@
+Fancy.modules['menu'] = true;
+
 (function() {
   //SHORTCUTS
   var F = Fancy;

@@ -16,6 +16,7 @@
 
 (function (view) {
 	"use strict";
+  Fancy.modules['excel'] = true;
 
 	view.URL = view.URL || view.webkitURL;
 
@@ -29,8 +30,7 @@
 	// Internally we use a BlobBuilder implementation to base Blob off of
 	// in order to support older browsers that only have BlobBuilder
 	var BlobBuilder = view.BlobBuilder || view.WebKitBlobBuilder || view.MozBlobBuilder || (function(view) {
-		var
-			  get_class = function(object) {
+		var get_class = function(object) {
 				return Object.prototype.toString.call(object).match(/^\[object\s(.*)\]$/)[1];
 			}
 			, FakeBlobBuilder = function BlobBuilder() {

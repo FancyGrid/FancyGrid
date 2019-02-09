@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.Selection
  * @extends Fancy.Plugin
  */
+Fancy.modules['selection'] = true;
 (function(){
   //SHORTCUTS
   var F = Fancy;

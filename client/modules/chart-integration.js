@@ -1,6 +1,7 @@
 /*
  * @class Fancy.grid.plugin.ChartIntegration
  */
+Fancy.modules['chart-integration'] = true;
 Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   extend: Fancy.Plugin,
   ptype: 'grid.chartintegration',

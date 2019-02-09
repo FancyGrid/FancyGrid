@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Grouping
  */
+Fancy.modules['grouping'] = true;
 Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {String} group
@@ -268,6 +269,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
  */
+Fancy.modules['grouping'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;

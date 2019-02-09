@@ -1,5 +1,7 @@
 if( Fancy.nojQuery ){
 
+  Fancy.modules['dom'] = true;
+
   Fancy.$ = (function(){
     var undefined, key, $, classList, emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filter, slice = emptyArray.slice,
       document = window.document,

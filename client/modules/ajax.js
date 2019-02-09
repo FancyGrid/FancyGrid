@@ -1,4 +1,5 @@
 if( Fancy.nojQuery ) {
+  Fancy.modules['ajax'] = true;
 
   (function ($) {
     var jsonpID = 0,

@@ -27,6 +27,7 @@ Fancy.define('Fancy.toolbar.Tab', {
 });/*
  * @mixin Fancy.form.mixin.Form
  */
+Fancy.modules['form'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -117,6 +118,7 @@ Fancy.define('Fancy.toolbar.Tab', {
           subTBarHeight: me.subTBarHeight || me.barHeight,
           tbarHeight: me.tbarHeight || me.barHeight,
           bbarHeight: me.bbarHeight || me.barHeight,
+          buttonsHeight: me.buttonsHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -140,12 +142,6 @@ Fancy.define('Fancy.toolbar.Tab', {
       });
 
       F.each(me.bbar, function (item) {
-        if(F.isObject(item)){
-          item.scope = item.scope || me;
-        }
-      });
-
-      F.each(me.tbar, function (item) {
         if(F.isObject(item)){
           item.scope = item.scope || me;
         }
@@ -183,9 +179,14 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.height -= me.tbarHeight || me.barHeight;
       }
 
+      if (me.subTBar) {
+        panelConfig.subTBar = me.subTBar;
+        me.height -= me.subTBarHeight || me.barHeight;
+      }
+
       if (me.buttons) {
         panelConfig.buttons = me.buttons;
-        me.height -= me.barHeight;
+        me.height -= me.buttonsHeight || me.barHeight;
         panelConfig.buttons = me.buttons;
       }
 
@@ -891,7 +892,7 @@ Fancy.define('Fancy.toolbar.Tab', {
         me.panel.css('height', height);
 
         if (me.buttons) {
-          height -= me.barHeight;
+          height -= me.buttonsHeight || me.barHeight;
         }
 
         if (me.bbar) {
@@ -1467,6 +1468,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
+    config = me.prepareConfigBars(config, originalConfig);
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigItems(config);
     config = me.prepareConfigFooter(config);
@@ -1518,6 +1520,38 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
         });
       }
     }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigBars: function(config) {
+    var fn = function(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++) {
+        switch (bar[i].type) {
+          case 'date':
+            if (!bar[i].format) {
+              var date = config.lang.date;
+              bar[i].format = {
+                read: date.read,
+                write: date.write,
+                edit: date.edit
+              };
+            }
+            break;
+        }
+      }
+    };
+
+    fn(config.tbar || []);
+    fn(config.subTBar || []);
+    fn(config.bbar || []);
+    fn(config.buttons || []);
 
     return config;
   },
@@ -1593,7 +1627,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     if(me.buttons){
-      height += me.barHeight;
+      height += me.buttonsHeight || me.barHeight;
     }
 
     if(me.subTBar){

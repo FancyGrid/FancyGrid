@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.GroupHeader
  * @extends Fancy.Plugin
  */
+Fancy.modules['grouped-header'] = true;
 Fancy.define('Fancy.grid.plugin.GroupHeader', {
   extend: Fancy.Plugin,
   ptype: 'grid.groupheader',

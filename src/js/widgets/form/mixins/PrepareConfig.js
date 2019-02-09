@@ -17,6 +17,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
+    config = me.prepareConfigBars(config, originalConfig);
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigItems(config);
     config = me.prepareConfigFooter(config);
@@ -68,6 +69,38 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
         });
       }
     }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigBars: function(config) {
+    var fn = function(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++) {
+        switch (bar[i].type) {
+          case 'date':
+            if (!bar[i].format) {
+              var date = config.lang.date;
+              bar[i].format = {
+                read: date.read,
+                write: date.write,
+                edit: date.edit
+              };
+            }
+            break;
+        }
+      }
+    };
+
+    fn(config.tbar || []);
+    fn(config.subTBar || []);
+    fn(config.bbar || []);
+    fn(config.buttons || []);
 
     return config;
   },

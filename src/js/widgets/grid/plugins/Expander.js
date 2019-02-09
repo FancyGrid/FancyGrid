@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.Expander
  * @extends Fancy.Plugin
  */
+Fancy.modules['expander'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;

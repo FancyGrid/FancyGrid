@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Grouping
  */
+Fancy.modules['grouping'] = true;
 Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {String} group

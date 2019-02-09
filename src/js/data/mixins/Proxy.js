@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Proxy
  */
+Fancy.modules['server-data'] = true;
 Fancy.Mixin('Fancy.store.mixin.Proxy', {
   pageParam: 'page',
   startParam: 'start',

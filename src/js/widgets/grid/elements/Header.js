@@ -32,7 +32,7 @@
       'Fancy.grid.header.mixin.Menu'
     ],
     cellTpl: [
-      '<div class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+      '<div role="columnheader" class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
         '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
           '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
           '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
@@ -202,6 +202,7 @@
         width: me.getColumnsWidth()
       });
 
+      el.attr('role', 'presentation');
       el.addCls(me.cls);
 
       if (w.groupheader) {

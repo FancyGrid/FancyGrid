@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Sort
  */
+Fancy.modules['sort'] = true;
 Fancy.Mixin('Fancy.store.mixin.Sort', {
   multiSortLimit: 3,
   /*

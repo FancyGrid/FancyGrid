@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.60',
+  version: '1.7.61',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -835,6 +835,15 @@ Fancy.currencies = {
 })();
 
 Fancy.modules = {};
+Fancy.getModulesList = function () {
+  var list = [];
+
+  Fancy.each(Fancy.modules, function (value, p) {
+    list.push(p);
+  });
+
+  return list;
+};
 
 /*
 var FancyGrid = function(config){
@@ -3485,6 +3494,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
 /*
  * @mixin Fancy.store.mixin.Paging
  */
+Fancy.modules['paging'] = true;
 Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
@@ -3718,6 +3728,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
 /*
  * @mixin Fancy.store.mixin.Proxy
  */
+Fancy.modules['server-data'] = true;
 Fancy.Mixin('Fancy.store.mixin.Proxy', {
   pageParam: 'page',
   startParam: 'start',
@@ -4536,6 +4547,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
 /*
  * @mixin Fancy.store.mixin.Sort
  */
+Fancy.modules['sort'] = true;
 Fancy.Mixin('Fancy.store.mixin.Sort', {
   multiSortLimit: 3,
   /*
@@ -5249,6 +5261,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 /*
  * @mixin Fancy.store.mixin.Grouping
  */
+Fancy.modules['grouping'] = true;
 Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {String} group
@@ -5516,6 +5529,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
 /*
  * @mixin Fancy.store.mixin.Filter
  */
+Fancy.modules['filter'] = true;
 Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @param {Object} item
@@ -5689,6 +5703,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           case '|':
             passed = value[String(indexValue).toLocaleLowerCase()] === true;
             break;
+          case 'fn':
+            passed = value(indexValue, item) === true;
+            break;
           default:
             throw new Error('FancyGrid Error 5: Unknown filter ' + q);
         }
@@ -5809,6 +5826,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 /*
  * @mixin Fancy.store.mixin.Tree
  */
+Fancy.modules['tree'] = true;
 Fancy.Mixin('Fancy.store.mixin.Tree', {
   /*
    *
@@ -8222,6 +8240,8 @@ Fancy.Ajax = function(o){
 };
 if( Fancy.nojQuery ){
 
+  Fancy.modules['dom'] = true;
+
   Fancy.$ = (function(){
     var undefined, key, $, classList, emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filter, slice = emptyArray.slice,
       document = window.document,
@@ -9709,6 +9729,7 @@ if( Fancy.nojQuery ) {
 
 }
 if( Fancy.nojQuery ) {
+  Fancy.modules['ajax'] = true;
 
   (function ($) {
     var jsonpID = 0,
@@ -11245,6 +11266,8 @@ Fancy.define('Fancy.toolbar.Tab', {
     this.Super('render', arguments);
   }
 });
+Fancy.modules['menu'] = true;
+
 (function() {
   //SHORTCUTS
   var F = Fancy;
@@ -12326,7 +12349,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         '<div class="' + PANEL_SUB_TBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{subTBarHeight}px;"></div>',
         '<div class="' + PANEL_BODY_INNER_CLS + '"></div>',
         '<div class="' + PANEL_BBAR_CLS + ' '+HIDDEN_CLS+'" style="height:{bbarHeight}px;"></div>',
-        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
+        '<div class="' + PANEL_BUTTONS_CLS + ' '+HIDDEN_CLS+'" style="height:{buttonsHeight}px;"></div>',
         '<div class="' + PANEL_FOOTER_CLS + ' '+HIDDEN_CLS+'" style="height:{barHeight}px;"></div>',
       '</div>'
     ],
@@ -12407,6 +12430,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         subTBarHeight: me.subTBarHeight || me.barHeight,
         tbarHeight: me.tbarHeight || me.barHeight,
         bbarHeight: me.bbarHeight || me.barHeight,
+        buttonsHeight: me.buttonsHeight || me.barHeight,
         titleHeight: titleHeight,
         subTitleHeight: subTitleHeight,
         title: titleText,
@@ -12557,7 +12581,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._buttons = new F.Bar({
           el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
-          height: me.barHeight,
+          height: me.buttonsHeight || me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
           scope: scope,
@@ -13047,7 +13071,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if (me.buttons) {
-        height -= me.barHeight;
+        height -= me.buttonsHeight || me.barHeight;
       }
 
       if (me.footer) {
@@ -14357,6 +14381,7 @@ Fancy.define('Fancy.bar.Text', {
 /*
  * @mixin Fancy.form.mixin.Form
  */
+Fancy.modules['form'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -14447,6 +14472,7 @@ Fancy.define('Fancy.bar.Text', {
           subTBarHeight: me.subTBarHeight || me.barHeight,
           tbarHeight: me.tbarHeight || me.barHeight,
           bbarHeight: me.bbarHeight || me.barHeight,
+          buttonsHeight: me.buttonsHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -14470,12 +14496,6 @@ Fancy.define('Fancy.bar.Text', {
       });
 
       F.each(me.bbar, function (item) {
-        if(F.isObject(item)){
-          item.scope = item.scope || me;
-        }
-      });
-
-      F.each(me.tbar, function (item) {
         if(F.isObject(item)){
           item.scope = item.scope || me;
         }
@@ -14513,9 +14533,14 @@ Fancy.define('Fancy.bar.Text', {
         me.height -= me.tbarHeight || me.barHeight;
       }
 
+      if (me.subTBar) {
+        panelConfig.subTBar = me.subTBar;
+        me.height -= me.subTBarHeight || me.barHeight;
+      }
+
       if (me.buttons) {
         panelConfig.buttons = me.buttons;
-        me.height -= me.barHeight;
+        me.height -= me.buttonsHeight || me.barHeight;
         panelConfig.buttons = me.buttons;
       }
 
@@ -15221,7 +15246,7 @@ Fancy.define('Fancy.bar.Text', {
         me.panel.css('height', height);
 
         if (me.buttons) {
-          height -= me.barHeight;
+          height -= me.buttonsHeight || me.barHeight;
         }
 
         if (me.bbar) {
@@ -15798,6 +15823,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     config = me.prepareConfigTheme(config, originalConfig);
     config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigLang(config, originalConfig);
+    config = me.prepareConfigBars(config, originalConfig);
     config = me.prepareConfigDefaults(config);
     config = me.prepareConfigItems(config);
     config = me.prepareConfigFooter(config);
@@ -15849,6 +15875,38 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
         });
       }
     }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigBars: function(config) {
+    var fn = function(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++) {
+        switch (bar[i].type) {
+          case 'date':
+            if (!bar[i].format) {
+              var date = config.lang.date;
+              bar[i].format = {
+                read: date.read,
+                write: date.write,
+                edit: date.edit
+              };
+            }
+            break;
+        }
+      }
+    };
+
+    fn(config.tbar || []);
+    fn(config.subTBar || []);
+    fn(config.bbar || []);
+    fn(config.buttons || []);
 
     return config;
   },
@@ -15924,7 +15982,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
     }
 
     if(me.buttons){
-      height += me.barHeight;
+      height += me.buttonsHeight || me.barHeight;
     }
 
     if(me.subTBar){
@@ -16501,6 +16559,11 @@ if(!Fancy.nojQuery && Fancy.$){
 
         if(me.input){
           me.input.attr('tabIndex', -1);
+        }
+      }
+      else{
+        if(me.input && me.tabIndex){
+          me.input.attr('tabIndex', me.tabIndex);
         }
       }
     },
@@ -17225,7 +17288,7 @@ if(!Fancy.nojQuery && Fancy.$){
       }
 
       if(me.input){
-        me.input.attr('tabIndex', 0);
+        me.input.attr('tabIndex', me.tabIndex || 0);
       }
     },
     /*
@@ -21876,6 +21939,7 @@ Fancy.addValid('email', {
 /*
  * @mixin Fancy.grid.mixin.PrepareConfig
  */
+Fancy.modules['grid'] = true;
 Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
   TODO: it goes many  time for columns, to get something and it takes a bit time.
@@ -21907,6 +21971,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSpark(config, originalConfig);
     config = me.prepareConfigPaging(config, originalConfig);
     config = me.prepareConfigInfinite(config, originalConfig);
+    config = me.prepareConfigBars(config);
     config = me.prepareConfigTBar(config);
     config = me.prepareConfigExpander(config);
     config = me.prepareConfigColumnMinMaxWidth(config);
@@ -23705,6 +23770,34 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
+  prepareConfigBars: function(config) {
+    var fn = function(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++) {
+        switch (bar[i].type) {
+          case 'date':
+            if (!bar[i].format) {
+              var date = config.lang.date;
+              bar[i].format = {
+                read: date.read,
+                write: date.write,
+                edit: date.edit
+              };
+            }
+            break;
+        }
+      }
+    };
+
+    fn(config.tbar || []);
+    fn(config.subTBar || []);
+    fn(config.bbar || []);
+    fn(config.buttons || []);
+
+    return config;
+  },
   /*
    * @param {Object} config
    * @return {Object}
@@ -23718,9 +23811,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL = tbar.length;
 
       for(;i<iL;i++){
-        if(tbar[i].type === 'search'){
-          config.searching = config.searching || {};
-          config.filter = config.filter || true;
+        switch (tbar[i].type){
+          case 'search':
+            config.searching = config.searching || {};
+            config.filter = config.filter || true;
+            break;
         }
 
         switch(tbar[i].action){
@@ -23970,7 +24065,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(config.buttons){
-        height += config.barHeight;
+        height += config.buttonsHeight || config.barHeight;
       }
 
       if(config.subTBar){
@@ -24426,6 +24521,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
   F.Mixin('Fancy.grid.mixin.Grid', {
     tabScrollStep: 50,
+    waitingForFilters: false,
     tpl: [
       '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
       '<div class="' + GRID_CENTER_CLS + '"></div>',
@@ -24661,6 +24757,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
       }
 
+      el.attr('role', 'grid');
       el.attr('id', me.id);
 
       if (me.panel === undefined && me.shadow) {
@@ -25036,6 +25133,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           subTBarHeight: me.subTBarHeight || me.barHeight,
           tbarHeight: me.tbarHeight || me.barHeight,
           bbarHeight: me.bbarHeight || me.barHeight,
+          buttonsHeight: me.buttonsHeight || me.barHeight,
           theme: me.theme,
           shadow: me.shadow,
           style: me.style || {},
@@ -25071,7 +25169,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       if (me.buttons) {
         panelConfig.buttons = me.buttons;
-        me.height -= me.barHeight;
+        me.height -= me.buttonsHeight || me.barHeight;
       }
 
       if (me.footer) {
@@ -26177,7 +26275,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.buttons) {
-        value -= me.barHeight;
+        value -= me.buttonsHeight || me.barHeight;
       }
 
       var bodyHeight = value;
@@ -26827,7 +26925,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.buttons) {
-        height += me.barHeight;
+        height += me.buttonsHeight || me.barHeight;
       }
 
       if (me.subTBar) {
@@ -26863,7 +26961,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     addFilter: function (index, value, sign, updateHeaderFilter) {
       var me = this,
-        filter = me.filter.filters[index];
+        filter = me.filter.filters[index],
+        update = me.waitingForFilters === false;
+
+      if(F.isFunction(value)){
+        sign = 'fn';
+      }
+
       sign = sign || '';
 
       if (filter === undefined) {
@@ -26878,31 +26982,27 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         value = Number(value);
       }
 
-      /*
-      if (value === '') {
-        delete filter[sign];
-      }
-      else {
-        filter[sign] = value;
-      }
-      */
       filter[sign] = value;
 
       me.filter.filters[index] = filter;
-      me.filter.updateStoreFilters();
+
+      if(update){
+        me.filter.updateStoreFilters();
+      }
 
       if (updateHeaderFilter !== false) {
         me.filter.addValuesInColumnFields(index, value, sign);
       }
     },
     /*
-     * @param {String} [index]
+     * @param {String|Boolean} [index]
      * @param {String} [sign]
      * @param {Boolean} [updateHeaderField]
      */
     clearFilter: function (index, sign, updateHeaderField) {
       var me = this,
-        s = me.store;
+        s = me.store,
+        update = me.waitingForFilters === false;
 
       if (index === undefined || index === null) {
         me.filter.filters = {};
@@ -26921,16 +27021,35 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
       }
 
-      s.changeDataView();
-      me.update();
+      if(update){
+        s.changeDataView();
+        me.update();
+      }
 
       if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
 
-      me.fire('filter', s.filters);
+      if(update) {
+        me.fire('filter', s.filters);
 
-      me.setSidesHeight();
+        me.setSidesHeight();
+      }
+    },
+    /*
+     *
+     */
+    updateFilters: function(){
+      var me = this;
+
+      delete me.waitingForFilters;
+      me.filter.updateStoreFilters();
+    },
+    /*
+     *
+     */
+    updateFilter: function(){
+      this.updateFilters();
     },
     /*
      * @param {String} text
@@ -27893,7 +28012,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   barScrollEnabled: true,
   startResizing: false,
   /*
-   * @constructor
+   * @constructoloadr
    * @param {*} renderTo
    * @param {Object} [config]
    */
@@ -28077,6 +28196,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     if(me.clicksToEdit){
+      requiredModules.edit = true;
+    }
+
+    if(me.defaults && me.defaults.editable){
       requiredModules.edit = true;
     }
 
@@ -31528,6 +31651,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
  * @class Fancy.grid.plugin.ColumnDrag
  * @extend Fancy.Plugin
  */
+Fancy.modules['column-drag'] = true;
 (function () {
 
   //SHORTCUTS
@@ -32212,6 +32336,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 /*
  * @class Fancy.grid.plugin.ChartIntegration
  */
+Fancy.modules['chart-integration'] = true;
 Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   extend: Fancy.Plugin,
   ptype: 'grid.chartintegration',
@@ -32827,6 +32952,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
 /*
  * @class Fancy.grid.plugin.Edit
  */
+Fancy.modules['edit'] = true;
 Fancy.define('Fancy.grid.plugin.Edit', {
   extend: Fancy.Plugin,
   ptype: 'grid.edit',
@@ -34979,6 +35105,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
  * @class Fancy.grid.plugin.Selection
  * @extends Fancy.Plugin
  */
+Fancy.modules['selection'] = true;
 (function(){
   //SHORTCUTS
   var F = Fancy;
@@ -38532,6 +38659,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
  * @class Fancy.grid.plugin.Expander
  * @extends Fancy.Plugin
  */
+Fancy.modules['expander'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -39406,6 +39534,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
  * @class Fancy.grid.plugin.GroupHeader
  * @extends Fancy.Plugin
  */
+Fancy.modules['grouped-header'] = true;
 Fancy.define('Fancy.grid.plugin.GroupHeader', {
   extend: Fancy.Plugin,
   ptype: 'grid.groupheader',
@@ -39434,6 +39563,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
  */
+Fancy.modules['grouping'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -40602,6 +40732,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
  * @class Fancy.grid.plugin.ColumnDrag
  * @extend Fancy.Plugin
  */
+Fancy.modules['column-drag'] = true;
 (function () {
 
   //SHORTCUTS
@@ -41287,6 +41418,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
  * @class Fancy.grid.plugin.Summary
  * @extend Fancy.Plugin
  */
+Fancy.modules['summary'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -42493,6 +42625,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
 
       w.on('init', me.onInit, me);
       w.on('update', me.onUpdate, me);
+      w.on('columnresize', me.onColumnResize, me);
     },
     onInit: function () {
       var me = this,
@@ -42556,6 +42689,19 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
       });
 
       return height;
+    },
+    /*
+     *
+     */
+    onColumnResize: function (grid, o) {
+      var me = this;
+      if(o.column.type === 'text' && o.column.autoHeight){
+
+        setTimeout(function () {
+          me.widget.update();
+          me.onUpdate();
+        }, 400);
+      }
     }
   });
 
@@ -42976,6 +43122,7 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
  * @class Fancy.grid.plugin.Filter
  * @extends Fancy.Plugin
  */
+Fancy.modules['filter'] = true;
 (function() {
   //SHORTCUTS
   var F = Fancy;
@@ -43203,6 +43350,10 @@ Fancy.define('Fancy.grid.plugin.GroupHeader', {
         w = me.widget;
 
       if(value === undefined || value === null || value.length === 0){
+        return;
+      }
+
+      if(F.isFunction(value)){
         return;
       }
 
@@ -44265,6 +44416,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
  * @class Fancy.grid.plugin.GridToGrid
  * @extends Fancy.Plugin
  */
+Fancy.modules['dd'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -45168,6 +45320,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
  * @class Fancy.grid.plugin.Exporter
  * @extends Fancy.Plugin
  */
+Fancy.modules['exporter'] = true;
 Fancy.define('Fancy.grid.plugin.Exporter', {
   extend: Fancy.Plugin,
   ptype: 'grid.exporter',
@@ -45268,6 +45421,10 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @return {Array}
    */
   getData: function(o){
+    if(o && o.data){
+      return o.data;
+    }
+
     var me = this,
       o = o || {},
       w = me.widget,
@@ -45449,6 +45606,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
  * @class Fancy.grid.plugin.State
  * @extends Fancy.Plugin
  */
+Fancy.modules['state'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;
@@ -46350,6 +46508,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         el.addCls(GRID_COLUMN_CLS);
         el.attr('grid', w.id);
+        el.attr('role', 'presentation');
 
         if (column.index === '$selected' || column.select) {
           el.addCls(GRID_COLUMN_SELECT_CLS);
@@ -46470,6 +46629,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           var cellHTML = cellTpl.getHTML({});
 
           var el = F.get(document.createElement('div'));
+          el.attr('role', 'gridcell');
           el.css({
             height: w.cellHeight + 'px'
           });
@@ -46495,6 +46655,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           });
 
           var el = F.get(document.createElement('div'));
+          el.attr('role', 'gridcell');
           el.css({
             height: w.cellHeight + 'px'
           });
@@ -48454,6 +48615,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         el = F.get(document.createElement('div'));
 
       el.addCls(GRID_BODY_CLS);
+      el.attr('role', 'presentation');
       renderTo = w.el.select('.fancy-grid-' + me.side).dom;
       me.el = F.get(renderTo.appendChild(el.dom));
     },
@@ -49072,6 +49234,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         _column.attr('index', i + 1);
       }
 
+      el.attr('role', 'presentation');
       el.addCls(GRID_COLUMN_CLS);
       el.attr('grid', w.id);
 
@@ -49785,7 +49948,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       'Fancy.grid.header.mixin.Menu'
     ],
     cellTpl: [
-      '<div class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+      '<div role="columnheader" class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
         '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
           '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
           '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
@@ -49955,6 +50118,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         width: me.getColumnsWidth()
       });
 
+      el.attr('role', 'presentation');
       el.addCls(me.cls);
 
       if (w.groupheader) {
@@ -52552,6 +52716,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
 /*
  * @class Fancy.spark.GrossLoss
  */
+Fancy.modules['spark'] = true;
 Fancy.define('Fancy.spark.GrossLoss', {
   maxValue: 100,
   tipTpl: '<span style="color: {color};">●</span> {value} {suffix}',
@@ -53438,6 +53603,7 @@ Fancy.define('Fancy.spark.HBar', {
 })();
 (function () {
 	'use strict';
+  Fancy.modules['touch'] = true;
 
 	/**
 	 * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.

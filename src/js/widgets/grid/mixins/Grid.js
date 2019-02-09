@@ -33,6 +33,7 @@
 
   F.Mixin('Fancy.grid.mixin.Grid', {
     tabScrollStep: 50,
+    waitingForFilters: false,
     tpl: [
       '<div class="' + GRID_LEFT_CLS + ' ' + GRID_LEFT_EMPTY_CLS + '"></div>',
       '<div class="' + GRID_CENTER_CLS + '"></div>',
@@ -268,6 +269,7 @@
         }
       }
 
+      el.attr('role', 'grid');
       el.attr('id', me.id);
 
       if (me.panel === undefined && me.shadow) {
@@ -2471,7 +2473,13 @@
      */
     addFilter: function (index, value, sign, updateHeaderFilter) {
       var me = this,
-        filter = me.filter.filters[index];
+        filter = me.filter.filters[index],
+        update = me.waitingForFilters === false;
+
+      if(F.isFunction(value)){
+        sign = 'fn';
+      }
+
       sign = sign || '';
 
       if (filter === undefined) {
@@ -2486,31 +2494,27 @@
         value = Number(value);
       }
 
-      /*
-      if (value === '') {
-        delete filter[sign];
-      }
-      else {
-        filter[sign] = value;
-      }
-      */
       filter[sign] = value;
 
       me.filter.filters[index] = filter;
-      me.filter.updateStoreFilters();
+
+      if(update){
+        me.filter.updateStoreFilters();
+      }
 
       if (updateHeaderFilter !== false) {
         me.filter.addValuesInColumnFields(index, value, sign);
       }
     },
     /*
-     * @param {String} [index]
+     * @param {String|Boolean} [index]
      * @param {String} [sign]
      * @param {Boolean} [updateHeaderField]
      */
     clearFilter: function (index, sign, updateHeaderField) {
       var me = this,
-        s = me.store;
+        s = me.store,
+        update = me.waitingForFilters === false;
 
       if (index === undefined || index === null) {
         me.filter.filters = {};
@@ -2529,16 +2533,35 @@
         }
       }
 
-      s.changeDataView();
-      me.update();
+      if(update){
+        s.changeDataView();
+        me.update();
+      }
 
       if (me.filter && updateHeaderField !== false) {
         me.filter.clearColumnsFields(index, sign);
       }
 
-      me.fire('filter', s.filters);
+      if(update) {
+        me.fire('filter', s.filters);
 
-      me.setSidesHeight();
+        me.setSidesHeight();
+      }
+    },
+    /*
+     *
+     */
+    updateFilters: function(){
+      var me = this;
+
+      delete me.waitingForFilters;
+      me.filter.updateStoreFilters();
+    },
+    /*
+     *
+     */
+    updateFilter: function(){
+      this.updateFilters();
     },
     /*
      * @param {String} text

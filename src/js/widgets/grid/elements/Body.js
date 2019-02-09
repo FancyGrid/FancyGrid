@@ -107,6 +107,7 @@
         el = F.get(document.createElement('div'));
 
       el.addCls(GRID_BODY_CLS);
+      el.attr('role', 'presentation');
       renderTo = w.el.select('.fancy-grid-' + me.side).dom;
       me.el = F.get(renderTo.appendChild(el.dom));
     },
@@ -725,6 +726,7 @@
         _column.attr('index', i + 1);
       }
 
+      el.attr('role', 'presentation');
       el.addCls(GRID_COLUMN_CLS);
       el.attr('grid', w.id);
 

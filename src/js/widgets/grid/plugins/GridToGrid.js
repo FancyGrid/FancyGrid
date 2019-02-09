@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.GridToGrid
  * @extends Fancy.Plugin
  */
+Fancy.modules['dd'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;

@@ -36,6 +36,7 @@
 
       w.on('init', me.onInit, me);
       w.on('update', me.onUpdate, me);
+      w.on('columnresize', me.onColumnResize, me);
     },
     onInit: function () {
       var me = this,
@@ -99,6 +100,19 @@
       });
 
       return height;
+    },
+    /*
+     *
+     */
+    onColumnResize: function (grid, o) {
+      var me = this;
+      if(o.column.type === 'text' && o.column.autoHeight){
+
+        setTimeout(function () {
+          me.widget.update();
+          me.onUpdate();
+        }, 400);
+      }
     }
   });
 

@@ -764,7 +764,7 @@
 .fancy-panel-buttons .fancy-field-picker-button,
 .fancy-panel-sub-tbar .fancy-field-picker-button,
 .fancy-panel-footer .fancy-field-picker-button {
-  height: 22px;
+  height: 23px;
 }
 .fancy-bar-container {
   width: 10000px;
@@ -2410,6 +2410,9 @@
   top: -1px;
   right: 3px;
   cursor: pointer;
+}
+.fancy-bar-container .fancy-field-picker-button {
+  top: 3px;
 }
 .fancy-date-picker-cell-out-range {
   color: #d0d0d0;

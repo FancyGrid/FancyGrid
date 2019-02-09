@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Paging
  */
+Fancy.modules['paging'] = true;
 Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *

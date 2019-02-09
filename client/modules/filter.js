@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Filter
  */
+Fancy.modules['filter'] = true;
 Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @param {Object} item
@@ -174,6 +175,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           case '|':
             passed = value[String(indexValue).toLocaleLowerCase()] === true;
             break;
+          case 'fn':
+            passed = value(indexValue, item) === true;
+            break;
           default:
             throw new Error('FancyGrid Error 5: Unknown filter ' + q);
         }
@@ -294,6 +298,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
  * @class Fancy.grid.plugin.Filter
  * @extends Fancy.Plugin
  */
+Fancy.modules['filter'] = true;
 (function() {
   //SHORTCUTS
   var F = Fancy;
@@ -521,6 +526,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         w = me.widget;
 
       if(value === undefined || value === null || value.length === 0){
+        return;
+      }
+
+      if(F.isFunction(value)){
         return;
       }
 

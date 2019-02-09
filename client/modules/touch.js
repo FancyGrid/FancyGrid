@@ -1,5 +1,6 @@
 (function () {
 	'use strict';
+  Fancy.modules['touch'] = true;
 
 	/**
 	 * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.

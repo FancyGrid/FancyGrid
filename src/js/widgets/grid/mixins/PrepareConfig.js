@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.grid.mixin.PrepareConfig
  */
+Fancy.modules['grid'] = true;
 Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
   TODO: it goes many  time for columns, to get something and it takes a bit time.
@@ -32,6 +33,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigSpark(config, originalConfig);
     config = me.prepareConfigPaging(config, originalConfig);
     config = me.prepareConfigInfinite(config, originalConfig);
+    config = me.prepareConfigBars(config);
     config = me.prepareConfigTBar(config);
     config = me.prepareConfigExpander(config);
     config = me.prepareConfigColumnMinMaxWidth(config);
@@ -1830,6 +1832,34 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
+  prepareConfigBars: function(config) {
+    var fn = function(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++) {
+        switch (bar[i].type) {
+          case 'date':
+            if (!bar[i].format) {
+              var date = config.lang.date;
+              bar[i].format = {
+                read: date.read,
+                write: date.write,
+                edit: date.edit
+              };
+            }
+            break;
+        }
+      }
+    };
+
+    fn(config.tbar || []);
+    fn(config.subTBar || []);
+    fn(config.bbar || []);
+    fn(config.buttons || []);
+
+    return config;
+  },
   /*
    * @param {Object} config
    * @return {Object}
@@ -1843,9 +1873,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL = tbar.length;
 
       for(;i<iL;i++){
-        if(tbar[i].type === 'search'){
-          config.searching = config.searching || {};
-          config.filter = config.filter || true;
+        switch (tbar[i].type){
+          case 'search':
+            config.searching = config.searching || {};
+            config.filter = config.filter || true;
+            break;
         }
 
         switch(tbar[i].action){

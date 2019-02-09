@@ -1,6 +1,7 @@
 /*
  * @class Fancy.grid.plugin.Edit
  */
+Fancy.modules['edit'] = true;
 Fancy.define('Fancy.grid.plugin.Edit', {
   extend: Fancy.Plugin,
   ptype: 'grid.edit',

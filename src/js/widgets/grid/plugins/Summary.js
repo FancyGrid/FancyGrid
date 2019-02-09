@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.Summary
  * @extend Fancy.Plugin
  */
+Fancy.modules['summary'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;

@@ -1,6 +1,7 @@
 /*
  * @class Fancy.spark.GrossLoss
  */
+Fancy.modules['spark'] = true;
 Fancy.define('Fancy.spark.GrossLoss', {
   maxValue: 100,
   tipTpl: '<span style="color: {color};">●</span> {value} {suffix}',

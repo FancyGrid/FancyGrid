@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.Exporter
  * @extends Fancy.Plugin
  */
+Fancy.modules['exporter'] = true;
 Fancy.define('Fancy.grid.plugin.Exporter', {
   extend: Fancy.Plugin,
   ptype: 'grid.exporter',
@@ -102,6 +103,10 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @return {Array}
    */
   getData: function(o){
+    if(o && o.data){
+      return o.data;
+    }
+
     var me = this,
       o = o || {},
       w = me.widget,

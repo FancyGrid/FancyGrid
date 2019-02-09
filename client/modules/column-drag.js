@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.ColumnDrag
  * @extend Fancy.Plugin
  */
+Fancy.modules['column-drag'] = true;
 (function () {
 
   //SHORTCUTS
@@ -686,6 +687,7 @@
  * @class Fancy.grid.plugin.ColumnDrag
  * @extend Fancy.Plugin
  */
+Fancy.modules['column-drag'] = true;
 (function () {
 
   //SHORTCUTS

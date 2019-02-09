@@ -1,6 +1,7 @@
 /*
  * @mixin Fancy.store.mixin.Filter
  */
+Fancy.modules['filter'] = true;
 Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @param {Object} item
@@ -173,6 +174,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           case '|':
             passed = value[String(indexValue).toLocaleLowerCase()] === true;
+            break;
+          case 'fn':
+            passed = value(indexValue, item) === true;
             break;
           default:
             throw new Error('FancyGrid Error 5: Unknown filter ' + q);

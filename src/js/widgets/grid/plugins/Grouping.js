@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
  */
+Fancy.modules['grouping'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;

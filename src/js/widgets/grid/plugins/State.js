@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.State
  * @extends Fancy.Plugin
  */
+Fancy.modules['state'] = true;
 (function () {
   //SHORTCUTS
   var F = Fancy;

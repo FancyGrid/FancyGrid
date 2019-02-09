@@ -2,6 +2,7 @@
  * @class Fancy.grid.plugin.Filter
  * @extends Fancy.Plugin
  */
+Fancy.modules['filter'] = true;
 (function() {
   //SHORTCUTS
   var F = Fancy;
@@ -229,6 +230,10 @@
         w = me.widget;
 
       if(value === undefined || value === null || value.length === 0){
+        return;
+      }
+
+      if(F.isFunction(value)){
         return;
       }
 

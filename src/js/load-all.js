@@ -32,7 +32,7 @@
       pathToSrc + 'data/mixins/Reader.js', // server data module
       pathToSrc + 'data/mixins/Writer.js', // server data module
       pathToSrc + 'data/mixins/Sort.js', // sort module
-      pathToSrc + 'data/mixins/Edit.js', // edit module
+      pathToSrc + 'data/mixins/Edit.js',
       pathToSrc + 'data/mixins/Grouping.js', // grouping module
       pathToSrc + 'data/mixins/Filter.js', // filter module
       //pathToSrc + 'data/mixins/Search.js', // search module
@@ -45,8 +45,8 @@
       pathToSrc + 'dom/core.js', // dom module
       pathToSrc + 'dom/event.js', // dom module
 
-      pathToSrc + 'dom/fx.js', // ajax module
-      pathToSrc + 'dom/fx_methods.js', // ajax module
+      pathToSrc + 'dom/fx.js', // dom module
+      pathToSrc + 'dom/fx_methods.js', // dom module
 
       pathToSrc + 'dom/ajax.js', // ajax module
 
@@ -143,14 +143,14 @@
       pathToSrc + 'widgets/grid/plugins/ContextMenu.js', // menu module
 
       pathToSrc + 'widgets/grid/plugins/Filter.js', // filter module
-      pathToSrc + 'widgets/grid/plugins/Search.js', // search module
+      pathToSrc + 'widgets/grid/plugins/Search.js', // filter module
 
       pathToSrc + 'widgets/grid/plugins/GridToGrid.js', // dd module - should be depricated in future
       pathToSrc + 'widgets/grid/plugins/RowDragDrop.js', // dd module
-      pathToSrc + 'widgets/grid/plugins/Exporter.js', // export module
+      pathToSrc + 'widgets/grid/plugins/Exporter.js', // exporter module
 
       pathToSrc + 'widgets/grid/plugins/State.js', // state module
-      pathToSrc + 'widgets/grid/plugins/Tree.js', // TODO: tree module
+      pathToSrc + 'widgets/grid/plugins/Tree.js', // tree module
 		
       pathToSrc + 'widgets/grid/plugins/RowHeight.js',
 
@@ -165,21 +165,21 @@
       pathToSrc + 'widgets/picker/Month.js', // date module
 
       //spark
-      pathToSrc + 'spark/ProgressDonut.js',
-      pathToSrc + 'spark/GrossLoss.js',
-      pathToSrc + 'spark/ProgressBar.js',
-      pathToSrc + 'spark/HBar.js',
+      pathToSrc + 'spark/ProgressDonut.js', // spark module
+      pathToSrc + 'spark/GrossLoss.js', // spark module
+      pathToSrc + 'spark/ProgressBar.js', // spark module
+      pathToSrc + 'spark/HBar.js', // spark module
 
       //tooltip
-      pathToSrc + 'widgets/tooltip/ToolTip.js', // tooltip module
+      pathToSrc + 'widgets/tooltip/ToolTip.js',
 
       pathToSrc + 'touch/fastclick.js', // touch module
 
       pathToSrc + 'widgets/Component.js', // Component
 
-      pathToSrc + "thirdparty/sheetjs/xlsx.full.min.js", // module exporter
-      pathToSrc + "thirdparty/sheetjs/Blob.js", // module exporter
-      pathToSrc + "thirdparty/sheetjs/FileSaver.js" // module exporter
+      pathToSrc + "thirdparty/sheetjs/xlsx.full.min.js", // module excel
+      pathToSrc + "thirdparty/sheetjs/Blob.js", // module excel
+      pathToSrc + "thirdparty/sheetjs/FileSaver.js" // module excel
     ];
 
   var i = 0,

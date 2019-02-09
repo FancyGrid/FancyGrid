@@ -133,6 +133,7 @@
 
         el.addCls(GRID_COLUMN_CLS);
         el.attr('grid', w.id);
+        el.attr('role', 'presentation');
 
         if (column.index === '$selected' || column.select) {
           el.addCls(GRID_COLUMN_SELECT_CLS);
@@ -253,6 +254,7 @@
           var cellHTML = cellTpl.getHTML({});
 
           var el = F.get(document.createElement('div'));
+          el.attr('role', 'gridcell');
           el.css({
             height: w.cellHeight + 'px'
           });
@@ -278,6 +280,7 @@
           });
 
           var el = F.get(document.createElement('div'));
+          el.attr('role', 'gridcell');
           el.css({
             height: w.cellHeight + 'px'
           });
