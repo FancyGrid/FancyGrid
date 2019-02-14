@@ -697,19 +697,20 @@ Fancy.modules['filter'] = true;
             break;
           case 'combo':
             var displayKey = 'text',
-              valueKey = 'text',
+              valueKey = 'id',
               data;
 
             if (column.displayKey !== undefined) {
               displayKey = column.displayKey;
-              valueKey = displayKey;
             }
 
             if (F.isObject(column.data) || F.isObject(column.data[0])) {
               data = column.data;
+              valueKey = column.valueKey !== undefined ? column.valueKey : valueKey;
             }
             else {
               data = me.configComboData(column.data);
+              valueKey = displayKey;
             }
 
             var selectAllText;
