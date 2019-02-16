@@ -237,6 +237,8 @@
         left: left
       });
 
+      me.menu.css('z-index', 1000 + F.zIndex++);
+
       me.menu.show();
 
       listEl.animate({

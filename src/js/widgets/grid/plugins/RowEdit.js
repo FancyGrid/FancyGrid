@@ -290,6 +290,7 @@
               break;
             case 'image':
             case 'string':
+            case 'text':
             case 'color':
               editor = new F.StringField(itemConfig);
               break;

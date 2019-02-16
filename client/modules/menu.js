@@ -804,6 +804,8 @@ Fancy.modules['menu'] = true;
         left: left
       });
 
+      me.menu.css('z-index', 1000 + F.zIndex++);
+
       me.menu.show();
 
       listEl.animate({
@@ -1138,6 +1140,10 @@ Fancy.modules['menu'] = true;
       for (; i < iL; i++) {
         var value = true,
           column = columns[i];
+
+        if(column.columnMenu === false){
+          continue;
+        }
 
         if (column.hidden) {
           value = false;

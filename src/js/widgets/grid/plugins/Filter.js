@@ -141,8 +141,12 @@ Fancy.modules['filter'] = true;
                     var splitItem = splitted[j];
 
                     if (!new RegExp(sign).test(splitItem)) {
-                      value += splitItem;
+                      value += splitItem + ',';
                     }
+                  }
+
+                  if(value[value.length - 1] === ','){
+                    value = value.substring(0, value.length - 1);
                   }
 
                   field.set(value);
@@ -200,7 +204,8 @@ Fancy.modules['filter'] = true;
               else {
                 var j = 0,
                   jL = splitted.length,
-                  newValue = '';
+                  newValue = '',
+                  founded = false;
 
                 for (; j < jL; j++) {
                   var splittedItem = splitted[j];
@@ -212,11 +217,17 @@ Fancy.modules['filter'] = true;
                     newValue += splittedItem;
                   }
                   else {
+                    founded = true;
                     if (newValue.length !== 0) {
                       newValue += ',';
                     }
                     newValue += (sign || '') + value;
                   }
+                }
+
+                if(founded === false){
+                  newValue += ',';
+                  newValue += (sign || '') + value;
                 }
 
                 field.set(newValue);
@@ -265,17 +276,21 @@ Fancy.modules['filter'] = true;
           var _value = columnFilter[p];
           switch(p) {
             case '':
-              value = _value;
+              value += _value;
               break;
             default:
               if(column.type === 'combo'){
-                value = _value;
+                value = _value + ',';
               }
               else {
-                value = p + _value;
+                value += p + _value + ',';
               }
           }
         }
+      }
+
+      if(value[value.length - 1] === ','){
+        value = value.substring(0, value.length - 1);
       }
 
       if(Fancy.isObject(filter.header)){

@@ -295,6 +295,10 @@
         var value = true,
           column = columns[i];
 
+        if(column.columnMenu === false){
+          continue;
+        }
+
         if (column.hidden) {
           value = false;
         }

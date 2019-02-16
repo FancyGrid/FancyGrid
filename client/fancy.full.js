@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.61',
+  version: '1.7.62',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -34318,6 +34318,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               break;
             case 'image':
             case 'string':
+            case 'text':
             case 'color':
               editor = new F.StringField(itemConfig);
               break;
@@ -43079,6 +43080,8 @@ Fancy.modules['summary'] = true;
         left: left
       });
 
+      me.menu.css('z-index', 1000 + F.zIndex++);
+
       me.menu.show();
 
       listEl.animate({
@@ -43261,8 +43264,12 @@ Fancy.modules['filter'] = true;
                     var splitItem = splitted[j];
 
                     if (!new RegExp(sign).test(splitItem)) {
-                      value += splitItem;
+                      value += splitItem + ',';
                     }
+                  }
+
+                  if(value[value.length - 1] === ','){
+                    value = value.substring(0, value.length - 1);
                   }
 
                   field.set(value);
@@ -43320,7 +43327,8 @@ Fancy.modules['filter'] = true;
               else {
                 var j = 0,
                   jL = splitted.length,
-                  newValue = '';
+                  newValue = '',
+                  founded = false;
 
                 for (; j < jL; j++) {
                   var splittedItem = splitted[j];
@@ -43332,11 +43340,17 @@ Fancy.modules['filter'] = true;
                     newValue += splittedItem;
                   }
                   else {
+                    founded = true;
                     if (newValue.length !== 0) {
                       newValue += ',';
                     }
                     newValue += (sign || '') + value;
                   }
+                }
+
+                if(founded === false){
+                  newValue += ',';
+                  newValue += (sign || '') + value;
                 }
 
                 field.set(newValue);
@@ -43385,17 +43399,21 @@ Fancy.modules['filter'] = true;
           var _value = columnFilter[p];
           switch(p) {
             case '':
-              value = _value;
+              value += _value;
               break;
             default:
               if(column.type === 'combo'){
-                value = _value;
+                value = _value + ',';
               }
               else {
-                value = p + _value;
+                value += p + _value + ',';
               }
           }
         }
+      }
+
+      if(value[value.length - 1] === ','){
+        value = value.substring(0, value.length - 1);
       }
 
       if(Fancy.isObject(filter.header)){
@@ -49779,6 +49797,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       for (; i < iL; i++) {
         var value = true,
           column = columns[i];
+
+        if(column.columnMenu === false){
+          continue;
+        }
 
         if (column.hidden) {
           value = false;
