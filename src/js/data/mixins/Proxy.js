@@ -122,9 +122,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     proxy.methods = methods;
   },
   /*
-   *
+   * @param {Function} [fn]
    */
-  loadData: function(){
+  loadData: function(fn){
     var me = this,
       proxy = me.proxy,
       params = {},
@@ -167,6 +167,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           me.fire('load');
 
           me.fire('serversuccess', o, request);
+          if(fn){
+            fn();
+          }
           return;
         }
 
@@ -181,6 +184,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('load');
 
         me.fire('serversuccess', o, request);
+        if(fn){
+          fn();
+        }
       },
       error: function (request, errorTitle, errorMessage) {
         me.fire('servererror', errorTitle, errorMessage, request);

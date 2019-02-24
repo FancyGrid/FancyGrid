@@ -572,6 +572,10 @@
       var me = this,
         w = me.widget;
 
+      if(w.rowheight && viewHeight === undefined){
+        return;
+      }
+
       //me.checkRightScroll();
       setTimeout(function () {
         me.checkRightScroll(viewHeight);

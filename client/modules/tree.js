@@ -87,7 +87,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _core;
   },
-  treeSort: function (data, action, key, type) {
+  treeSort: function (data, action, key, type, customSort) {
     var me = this,
       _data = [],
       dataSorted = [],
@@ -136,14 +136,28 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     if(type === 'number') {
       switch (action) {
         case 'asc':
-          dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
-            return a - b;
-          });
+          if(customSort){
+            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+              return customSort('asc', a, b);
+            });
+          }
+          else {
+            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+              return a - b;
+            });
+          }
           break;
         case 'desc':
-          dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
-            return b - a;
-          });
+          if(customSort){
+            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+              return customSort('desc', a, b);
+            });
+          }
+          else {
+            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+              return b - a;
+            });
+          }
           break;
       }
     }

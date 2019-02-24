@@ -875,7 +875,8 @@
       var me = this,
         s = me.store,
         plusScroll = 0,
-        scrollBottomHeight = 0;
+        scrollBottomHeight = 0,
+        cellsHeight = 0;
 
       if (me.grouping) {
         plusScroll += me.grouping.plusScroll;
@@ -891,7 +892,14 @@
         scrollBottomHeight = me.scroller.cornerSize;
       }
 
-      return (me.cellHeight) * s.dataView.length + scrollBottomHeight + plusScroll;
+      if(me.rowheight){
+        cellsHeight = me.rowheight.totalHeight;
+      }
+      else{
+        cellsHeight = me.cellHeight * s.dataView.length;
+      }
+
+      return cellsHeight + scrollBottomHeight + plusScroll;
     },
     /*
      * @param {Object} e
@@ -1538,12 +1546,12 @@
       }
     },
     /*
-     *
+     * @param {Function} [fn]
      */
-    load: function () {
+    load: function (fn) {
       var me = this;
 
-      me.store.loadData();
+      me.store.loadData(fn);
     },
     /*
      *
@@ -2759,7 +2767,7 @@
     /*
      * @return {Array}
      */
-    getDisplayedData: function () {
+    getDisplayedData: function (all) {
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
@@ -2767,6 +2775,10 @@
         leftColumns = me.leftColumns,
         columns = me.columns,
         rightColumns = me.rightColumns;
+
+      if(all){
+        viewTotal = me.getTotal();
+      }
 
       var fn = function (column) {
         if (column.index === undefined || column.index === '$selected' || column.hidden) {

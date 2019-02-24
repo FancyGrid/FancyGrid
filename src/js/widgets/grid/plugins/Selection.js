@@ -2512,10 +2512,13 @@ Fancy.modules['selection'] = true;
         cell = w.el.select('.' + GRID_CELL_ACTIVE_CLS);
 
       if(!cell.dom){
-        cell = w.el.select('.' + GRID_CELL_SELECTED_CLS).item(0);
+        cell = w.el.select('.' + GRID_CELL_SELECTED_CLS);
 
         if(!cell.dom){
           cell = w.body.getCell(0, 0);
+        }
+        else{
+          cell = cell.item(0);
         }
       }
 

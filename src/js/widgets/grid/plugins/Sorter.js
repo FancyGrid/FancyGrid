@@ -199,7 +199,8 @@
       s.sort(dir, type, index, {
          smartIndexFn: column.smartIndexFn,
          format: format,
-         mode: mode
+         mode: mode,
+         sorter: column.sorter
       });
 
       delete w.sorting;

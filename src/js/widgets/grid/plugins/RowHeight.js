@@ -77,6 +77,7 @@
       }
 
       setTimeout(function () {
+        w.setSidesHeight(me.totalHeight);
         w.scroller.update(me.totalHeight);
       }, 50);
     },

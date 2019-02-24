@@ -132,13 +132,14 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       columnOriginalValues = [],
       sortedColumnValues,
       i,
-      iL;
+      iL,
+      customSort = options.sorter;
 
     if(me.isTree){
       columnOriginalValues = me.getColumnOriginalValues('id');
 
       var treeData = me.treeGetDataAsTree(),
-        sortedData = me.treeSort(treeData, action, key, 'number');
+        sortedData = me.treeSort(treeData, action, key, 'number', customSort);
 
       sortedColumnValues = me.treeReadSortedId(sortedData);
     }
@@ -155,18 +156,32 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           for(;i<iL;i++){
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
 
-            sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
-              return a - b;
-            }));
+            if(customSort){
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+                return customSort('asc', a, b);
+              }));
+            }
+            else {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+                return a - b;
+              }));
+            }
           }
           break;
         case 'desc':
           for(;i<iL;i++) {
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
 
-            sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
-              return b - a;
-            }));
+            if(customSort){
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+                customSort('desc', a, b);
+              }));
+            }
+            else {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+                return b - a;
+              }));
+            }
           }
           break;
       }
@@ -189,16 +204,30 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
       switch (action) {
         case 'asc':
-          sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
-            return a - b;
-          });
+          if(customSort){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+              return customSort('asc', a, b);
+            });
+          }
+          else {
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+              return a - b;
+            });
+          }
 
           sortedColumnValues = sortedColumnValues.concat(notNumber);
           break;
         case 'desc':
-          sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
-            return b - a;
-          });
+          if(customSort){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+              return customSort('desc', a, b);
+            });
+          }
+          else {
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+              return b - a;
+            });
+          }
 
           sortedColumnValues = notNumber.concat(sortedColumnValues);
           break;
@@ -211,18 +240,19 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String|Number} key
    */
-  sortString: function(action, key){
+  sortString: function(action, key, options){
     var me = this,
       columnOriginalValues = [],
       sortedColumnValues,
       i,
-      iL;
+      iL,
+      customSort = options.sorter;
 
     if(me.isTree){
       columnOriginalValues = me.getColumnOriginalValues('id');
 
       var treeData = me.treeGetDataAsTree(),
-        sortedData = me.treeSort(treeData, action, key, 'string');
+        sortedData = me.treeSort(treeData, action, key, 'string', customSort);
 
       sortedColumnValues = me.treeReadSortedId(sortedData);
     }
@@ -236,13 +266,28 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         case 'asc':
           for(;i<iL;i++){
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
-            sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort());
+
+            if(customSort){
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+                return customSort('asc', a, b);
+              }));
+            }
+            else {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort());
+            }
           }
           break;
         case 'desc':
           for(;i<iL;i++) {
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
-            sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort().reverse());
+            if(customSort){
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+                return customSort('desc', a, b);
+              }));
+            }
+            else {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort().reverse());
+            }
           }
           break;
       }
@@ -252,11 +297,25 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
       switch (action) {
         case 'asc':
-          sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort();
+          if(customSort){
+            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+              return customSort('asc', a, b);
+            });
+          }
+          else {
+            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort();
+          }
           break;
         case 'desc':
-          sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort();
-          sortedColumnValues = sortedColumnValues.reverse();
+          if(customSort){
+            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+              return customSort('desc', a, b);
+            });
+          }
+          else {
+            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort();
+            sortedColumnValues = sortedColumnValues.reverse();
+          }
           break;
       }
     }

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.62',
+  version: '1.7.63',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -14677,6 +14677,7 @@ if(!Fancy.nojQuery && Fancy.$){
       }
 
       setTimeout(function () {
+        w.setSidesHeight(me.totalHeight);
         w.scroller.update(me.totalHeight);
       }, 50);
     },
