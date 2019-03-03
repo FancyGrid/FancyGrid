@@ -293,7 +293,7 @@ Fancy.modules['summary'] = true;
           case 'object':
             value = F.Array[column.summary.type](columnValues);
             if (column.summary.fn) {
-              value = column.summary.fn(value);
+              value = column.summary.fn(value, column.summary.type);
             }
             break;
           case 'function':
@@ -602,7 +602,8 @@ Fancy.modules['summary'] = true;
         w = me.widget,
         cellEl = F.get(e.currentTarget),
         column = me.getColumnBySummaryCell(cellEl),
-        menu;
+        menu,
+        minMenuWidth = 100;
 
       me.justShownSummaryMenu = true;
 
@@ -618,6 +619,7 @@ Fancy.modules['summary'] = true;
         var items = me.generateColumnSummaryItems(column);
 
         menu = new Fancy.Menu({
+          minWidth: minMenuWidth,
           width: parseInt(cellEl.css('width')) + 1,
           theme: w.theme,
           items: items
@@ -627,16 +629,26 @@ Fancy.modules['summary'] = true;
       var offset = cellEl.offset(),
         top = offset.top + parseInt(cellEl.css('height')),
         left = offset.left,
-        animationDistance = 20;
+        animationDistance = 20,
+        positionFix = -1;
 
       if(me.position === 'bottom'){
-        top = top - menu.items.length * 30 - parseInt(cellEl.css('height'));
+        //var menuHeight = menu.items.length * 30;
+        var menuHeight = parseInt(menu.el.css('height'));
+        top = top - menuHeight - parseInt(cellEl.css('height'));
         animationDistance *= -1;
+        positionFix = 1;
+      }
+      
+      var menuWidth = parseInt(cellEl.css('width')) + 1;
+      if(menuWidth < minMenuWidth){
+        menuWidth = minMenuWidth;
       }
 
       menu.el.css({
         position: 'absolute',
-        width: parseInt(cellEl.css('width')) + 1,
+        width: menuWidth,
+        minWidth: 70,
         top: top + animationDistance,
         left: left - 1
       });
@@ -645,7 +657,7 @@ Fancy.modules['summary'] = true;
 
       menu.el.animate({
         duration: 200,
-        top: top - 1
+        top: top + positionFix
       });
 
       column.summaryMenu = menu;
@@ -659,11 +671,12 @@ Fancy.modules['summary'] = true;
       var me = this,
         items = [],
         numberSummaries = ['None', 'Sum', 'Average', 'Count', 'Min', 'Max'],
-        stringSummaries = ['None'];
+        stringSummaries = ['None'],
+        summaryVarType = F.typeOf(column.summary);
 
       switch(column.type){
         case 'number':
-          switch(F.typeOf(column.summary)){
+          switch(summaryVarType){
             case 'string':
               F.each(numberSummaries, function (item, i) {
                 items.push({
@@ -686,7 +699,17 @@ Fancy.modules['summary'] = true;
                   text: item,
                   checked: false,
                   handler: function () {
-                    column.summary = item.toLocaleLowerCase();
+                    switch(summaryVarType){
+                      case 'function':
+                        column.summary = {
+                          type: item.toLocaleLowerCase(),
+                          fn: column.summary
+                        };
+                        break;
+                      case 'object':
+                        column.summary.type = item.toLocaleLowerCase();
+                        break;
+                    }
                     me.update();
                     me.activeSummaryMenu.setChecked(i, true);
                     me.activeSummaryMenu.hide();
@@ -695,29 +718,31 @@ Fancy.modules['summary'] = true;
                 });
               });
 
-              items.push({
-                text: 'Custom',
-                checked: true,
-                handler: function () {
-                  column.summary = column._summary;
-                  me.update();
-                  me.activeSummaryMenu.hide();
-                  me.activeSummaryMenu.setChecked(items.length - 1, true);
-                  delete me.activeSummaryMenu;
-                }
-              });
+              if(summaryVarType !== 'object'){
+                items.push({
+                  text: 'Custom',
+                  checked: true,
+                  handler: function () {
+                    column.summary = column._summary;
+                    me.update();
+                    me.activeSummaryMenu.hide();
+                    me.activeSummaryMenu.setChecked(items.length - 1, true);
+                    delete me.activeSummaryMenu;
+                  }
+                });
+              }
               break;
           }
           break;
         case 'string':
-          switch(F.typeOf(column.summary)){
+          switch(summaryVarType){
             case 'string':
               F.each(stringSummaries, function (item, i) {
                 items.push({
                   text: item,
                   checked: item.toLocaleLowerCase() === column.summary,
                   handler: function () {
-                    column.summary = item.toLocaleLowerCase();
+                    column.summary.type = item.toLocaleLowerCase();
                     me.update();
                     me.activeSummaryMenu.setChecked(i, true);
                     me.activeSummaryMenu.hide();

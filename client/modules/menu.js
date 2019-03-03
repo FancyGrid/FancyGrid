@@ -28,7 +28,7 @@ Fancy.modules['menu'] = true;
      * @param {Object} config
      * @param {Object} scope
      */
-    constructor: function (config, scope) {
+    constructor: function (config) {
       Fancy.applyConfig(this, config);
 
       if(this.theme){
@@ -45,6 +45,10 @@ Fancy.modules['menu'] = true;
 
       me.addEvents('hide');
       me.Super('init', arguments);
+
+      if(me.width < me.minWidth){
+        me.width = me.minWidth;
+      }
 
       me.applyDefaults();
       me.render();
@@ -68,6 +72,7 @@ Fancy.modules['menu'] = true;
     cls: '',
     extraCls: '',
     width: 142,
+    minWidth: 50,
     itemHeight: 30,
     maxHeight: 200,
     rendered: false,
@@ -89,6 +94,10 @@ Fancy.modules['menu'] = true;
         me.cls,
         me.extraCls
       );
+
+      if(me.width < me.minWidth){
+        me.width = me.minWidth;
+      }
 
       el.css({
         width: me.width,

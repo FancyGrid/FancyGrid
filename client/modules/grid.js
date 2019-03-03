@@ -2936,6 +2936,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.height -= panelBodyBorders[0] + panelBodyBorders[2];
 
       me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
+
+      if(me.resizable){
+        me.panel.on('resize', function(){
+          me.setBodysHeight();
+        });
+      }
     },
     /*
      * @return {Number}
@@ -5697,15 +5703,34 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if ('ResizeObserver' in window) {
         setTimeout(function () {
-          var myObserver = new ResizeObserver(onWindowResize);
+          var myObserver = new ResizeObserver(onWindowResize),
+            dom = me.el.parent().dom;
 
-          myObserver.observe(me.el.parent().dom);
+          if(!dom){
+            return;
+          }
+
+          myObserver.observe(dom);
         }, 100);
         F.$(window).bind('resize', onWindowResize);
       }
       else {
         F.$(window).bind('resize', onWindowResize);
       }
+    },
+    getNumOfVisibleCells: function () {
+      var me = this;
+
+      if(!me.numOfVisibleCells){
+        try{
+          me.numOfVisibleCells = Math.ceil(me.getBodyHeight() / me.cellHeaderHeight);
+        }
+        catch(e) {
+          me.numOfVisibleCells = 0;
+        }
+      }
+
+      return me.numOfVisibleCells;
     }
   });
 
@@ -6214,6 +6239,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         w = me.widget;
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
+        if(w.nativeScroller && Fancy.nojQuery){
+          w.addCls(Fancy.GRID_ANIMATION_CLS);
+        }
         return;
       }
 
@@ -6890,6 +6918,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
       else if(w.rightColumns.length && w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
         w.body.el.dom.scrollTop = w.rightBody.el.dom.scrollTop;
+      }
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
       }
 
       w.fire('nativescroll');
@@ -8971,12 +9008,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       var infiniteScrolledToRow = 0;
       if(w.infinite){
         infiniteScrolledToRow = s.infiniteScrolledToRow;
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if(jL > numOfVisibleCells){
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
         if(w.infinite){
           var rowData = s.dataView[j + infiniteScrolledToRow],
             cell = cellsDom.item(j);
+
           if(rowData === undefined){
             w.el.select('.' + GRID_CELL_CLS + '[index="'+j+'"]').css('visibility', 'hidden');
             break;
@@ -9120,6 +9163,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         plusValue += s.showPage * s.pageSize;
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+
+        plusValue = s.infiniteScrolledToRow;
+      }
+
       for (; j < jL; j++) {
         var data = s.get(j),
           id = s.getId(j),
@@ -9170,6 +9223,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j = 0,
         jL = s.getLength();
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
 
       for (; j < jL; j++) {
         var data = s.get(j),
@@ -9229,6 +9290,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -9326,6 +9395,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -9430,6 +9507,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -9537,6 +9622,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -9665,6 +9758,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -9827,6 +9928,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         jL = s.getLength();
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var value = s.get(j, key),
           data = s.get(j),
@@ -9914,6 +10023,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           break;
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var value = s.get(j, key),
           data = s.get(j),
@@ -9987,6 +10104,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -10071,6 +10196,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var data = s.get(j),
           o = {
@@ -10144,6 +10277,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       var sparkConfig = column.sparkConfig || {};
       if (sparkConfig.percents === false) {
         maxValue = Math.max.apply(Math, s.getColumnData(key));
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -10310,6 +10451,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         jL = s.getLength();
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var data = s.get(j),
           o = {
@@ -10452,6 +10601,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -10864,14 +11021,23 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             if(s.infiniteScrolledToRow !== newRowToView){
               s.infiniteScrolledToRow = newRowToView;
               if(me.infiniteTimeOut){
-                clearInterval(me.infiniteTimeOut);
+                var timeDelta = new Date() - me.infiniteTimeOutDate;
+
+                if(timeDelta < 100){
+                  clearInterval(me.infiniteTimeOut);
+                }
               }
+              else{
+                me.infiniteTimeOutDate = new Date();
+              }
+
               me.infiniteTimeOut = setTimeout(function () {
                 w.leftBody.update();
                 w.body.update();
                 w.rightBody.update();
                 clearInterval(me.infiniteTimeOut);
                 delete me.infiniteTimeOut;
+                delete me.infiniteTimeOutDate;
               }, 1);
             }
           }

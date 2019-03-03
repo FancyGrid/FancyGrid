@@ -712,6 +712,12 @@
       me.height -= panelBodyBorders[0] + panelBodyBorders[2];
 
       me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
+
+      if(me.resizable){
+        me.panel.on('resize', function(){
+          me.setBodysHeight();
+        });
+      }
     },
     /*
      * @return {Number}
@@ -3473,15 +3479,34 @@
 
       if ('ResizeObserver' in window) {
         setTimeout(function () {
-          var myObserver = new ResizeObserver(onWindowResize);
+          var myObserver = new ResizeObserver(onWindowResize),
+            dom = me.el.parent().dom;
 
-          myObserver.observe(me.el.parent().dom);
+          if(!dom){
+            return;
+          }
+
+          myObserver.observe(dom);
         }, 100);
         F.$(window).bind('resize', onWindowResize);
       }
       else {
         F.$(window).bind('resize', onWindowResize);
       }
+    },
+    getNumOfVisibleCells: function () {
+      var me = this;
+
+      if(!me.numOfVisibleCells){
+        try{
+          me.numOfVisibleCells = Math.ceil(me.getBodyHeight() / me.cellHeaderHeight);
+        }
+        catch(e) {
+          me.numOfVisibleCells = 0;
+        }
+      }
+
+      return me.numOfVisibleCells;
     }
   });
 

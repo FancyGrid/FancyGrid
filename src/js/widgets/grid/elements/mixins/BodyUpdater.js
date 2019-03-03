@@ -473,12 +473,18 @@
       var infiniteScrolledToRow = 0;
       if(w.infinite){
         infiniteScrolledToRow = s.infiniteScrolledToRow;
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if(jL > numOfVisibleCells){
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
         if(w.infinite){
           var rowData = s.dataView[j + infiniteScrolledToRow],
             cell = cellsDom.item(j);
+
           if(rowData === undefined){
             w.el.select('.' + GRID_CELL_CLS + '[index="'+j+'"]').css('visibility', 'hidden');
             break;
@@ -622,6 +628,16 @@
         plusValue += s.showPage * s.pageSize;
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+
+        plusValue = s.infiniteScrolledToRow;
+      }
+
       for (; j < jL; j++) {
         var data = s.get(j),
           id = s.getId(j),
@@ -672,6 +688,14 @@
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j = 0,
         jL = s.getLength();
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
 
       for (; j < jL; j++) {
         var data = s.get(j),
@@ -731,6 +755,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -828,6 +860,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -932,6 +972,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -1039,6 +1087,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -1167,6 +1223,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -1329,6 +1393,14 @@
         jL = s.getLength();
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var value = s.get(j, key),
           data = s.get(j),
@@ -1416,6 +1488,14 @@
           break;
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var value = s.get(j, key),
           data = s.get(j),
@@ -1489,6 +1569,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -1573,6 +1661,14 @@
         sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var data = s.get(j),
           o = {
@@ -1646,6 +1742,14 @@
       var sparkConfig = column.sparkConfig || {};
       if (sparkConfig.percents === false) {
         maxValue = Math.max.apply(Math, s.getColumnData(key));
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {
@@ -1812,6 +1916,14 @@
         jL = s.getLength();
       }
 
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
+      }
+
       for (; j < jL; j++) {
         var data = s.get(j),
           o = {
@@ -1954,6 +2066,14 @@
       else {
         j = 0;
         jL = s.getLength();
+      }
+
+      if(w.infinite) {
+        var numOfVisibleCells = w.getNumOfVisibleCells();
+
+        if (jL > numOfVisibleCells) {
+          jL = numOfVisibleCells
+        }
       }
 
       for (; j < jL; j++) {

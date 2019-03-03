@@ -234,14 +234,23 @@
             if(s.infiniteScrolledToRow !== newRowToView){
               s.infiniteScrolledToRow = newRowToView;
               if(me.infiniteTimeOut){
-                clearInterval(me.infiniteTimeOut);
+                var timeDelta = new Date() - me.infiniteTimeOutDate;
+
+                if(timeDelta < 100){
+                  clearInterval(me.infiniteTimeOut);
+                }
               }
+              else{
+                me.infiniteTimeOutDate = new Date();
+              }
+
               me.infiniteTimeOut = setTimeout(function () {
                 w.leftBody.update();
                 w.body.update();
                 w.rightBody.update();
                 clearInterval(me.infiniteTimeOut);
                 delete me.infiniteTimeOut;
+                delete me.infiniteTimeOutDate;
               }, 1);
             }
           }

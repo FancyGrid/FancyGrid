@@ -118,5 +118,11 @@ Fancy.Array = {
     arr = arr.concat(insert).concat(arr2);
 
     return arr;
+  },
+  /*
+   *
+   */
+  none: function () {
+    return '';
   }
 };

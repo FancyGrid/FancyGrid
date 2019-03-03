@@ -462,6 +462,9 @@
         w = me.widget;
 
       if (me.rightKnobDown === false && me.bottomKnobDown === false) {
+        if(w.nativeScroller && Fancy.nojQuery){
+          w.addCls(Fancy.GRID_ANIMATION_CLS);
+        }
         return;
       }
 
@@ -1138,6 +1141,15 @@
       }
       else if(w.rightColumns.length && w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
         w.body.el.dom.scrollTop = w.rightBody.el.dom.scrollTop;
+      }
+
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
       }
 
       w.fire('nativescroll');

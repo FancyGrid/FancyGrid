@@ -212,6 +212,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.summary){
       requiredModules.summary = true;
+      if(me.summary.options){
+        requiredModules.menu = true;
+      }
     }
 
     if(me.exporter){
@@ -283,6 +286,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     if(me.contextmenu){
       requiredModules['menu'] = true;
+    }
+
+    if(me.infinite){
+      requiredModules.infinite = true;
     }
 
     var containsMenu = function (item) {
