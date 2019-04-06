@@ -223,6 +223,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
+      headers = proxy.headers || {},
       sendJSON = me.writerType === 'json';
 
     Fancy.apply(params, me.params);
@@ -256,6 +257,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.update,
       params: params,
       sendJSON: sendJSON,
+      headers: headers,
       success: function(o, status, request){
         me.loading = false;
 
@@ -275,6 +277,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
+      headers = proxy.headers || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     Fancy.apply(params, me.params);
@@ -299,6 +302,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.destroy,
       params: params,
       sendJSON: sendJSON,
+      headers: headers,
       success: function(o, status, request){
         me.loading = false;
 
@@ -318,6 +322,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
+      headers = proxy.headers || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     Fancy.apply(params, me.params);
@@ -345,6 +350,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.create,
       params: params,
       sendJSON: sendJSON,
+      headers: headers,
       success: function(o, status, request){
         me.loading = false;
 

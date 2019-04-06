@@ -35,6 +35,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigInfinite(config, originalConfig);
     config = me.prepareConfigBars(config);
     config = me.prepareConfigTBar(config);
+    config = me.prepareConfigSubTBar(config);
     config = me.prepareConfigExpander(config);
     config = me.prepareConfigColumnMinMaxWidth(config);
     config = me.prepareConfigGrouping(config);
@@ -1945,6 +1946,30 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 }
               }];
             }
+            break;
+        }
+      }
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigSubTBar: function(config){
+    var me = this,
+      bar = config.subTBar;
+
+    if(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++){
+        switch (bar[i].type){
+          case 'search':
+            config.searching = config.searching || {};
+            config.filter = config.filter || true;
             break;
         }
       }

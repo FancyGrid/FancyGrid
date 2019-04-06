@@ -222,5 +222,32 @@ Fancy.define('Fancy.grid.plugin.Search', {
     me.filters = filters;
     s.filters = filters;
     delete me.searches;
+  },
+  /*
+   *
+   */
+  clearBarField: function () {
+    var me = this,
+      w = me.widget,
+      i = 0,
+      iL = w.tbar.length,
+      field;
+
+    for(;i<iL;i++){
+      field = w.tbar[i];
+      if(field.type === 'search'){
+        field.clear();
+      }
+    }
+
+    i = 0;
+    iL = w.subTBar.length;
+
+    for(;i<iL;i++){
+      field = w.subTBar[i];
+      if(field.type === 'search'){
+        field.clear();
+      }
+    }
   }
 });

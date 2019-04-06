@@ -2547,6 +2547,16 @@
         }
       }
 
+      if(me.searching && index === undefined && sign === undefined){
+        //me.searching.clear();
+        me.searching.clearBarField();
+        me.search('');
+
+        if(me.expander){
+          me.expander.reSet();
+        }
+      }
+
       if(update){
         s.changeDataView();
         me.update();

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.64',
+  version: '1.7.65',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3981,6 +3981,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
+      headers = proxy.headers || {},
       sendJSON = me.writerType === 'json';
 
     Fancy.apply(params, me.params);
@@ -4014,6 +4015,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.update,
       params: params,
       sendJSON: sendJSON,
+      headers: headers,
       success: function(o, status, request){
         me.loading = false;
 
@@ -4033,6 +4035,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
+      headers = proxy.headers || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     Fancy.apply(params, me.params);
@@ -4057,6 +4060,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.destroy,
       params: params,
       sendJSON: sendJSON,
+      headers: headers,
       success: function(o, status, request){
         me.loading = false;
 
@@ -4076,6 +4080,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
+      headers = proxy.headers || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
     Fancy.apply(params, me.params);
@@ -4103,6 +4108,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       method: proxy.methods.create,
       params: params,
       sendJSON: sendJSON,
+      headers: headers,
       success: function(o, status, request){
         me.loading = false;
 
@@ -5913,7 +5919,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       delete me.params[me.filterParam];
     }
     else {
-      me.params[me.filterParam] = encodeURIComponent(value);
+      //me.params[me.filterParam] = encodeURIComponent(value);
+      me.params[me.filterParam] = value;
     }
 
     me.loadData();
@@ -22092,6 +22099,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigInfinite(config, originalConfig);
     config = me.prepareConfigBars(config);
     config = me.prepareConfigTBar(config);
+    config = me.prepareConfigSubTBar(config);
     config = me.prepareConfigExpander(config);
     config = me.prepareConfigColumnMinMaxWidth(config);
     config = me.prepareConfigGrouping(config);
@@ -24002,6 +24010,30 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 }
               }];
             }
+            break;
+        }
+      }
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigSubTBar: function(config){
+    var me = this,
+      bar = config.subTBar;
+
+    if(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++){
+        switch (bar[i].type){
+          case 'search':
+            config.searching = config.searching || {};
+            config.filter = config.filter || true;
             break;
         }
       }
@@ -27154,6 +27186,16 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
       }
 
+      if(me.searching && index === undefined && sign === undefined){
+        //me.searching.clear();
+        me.searching.clearBarField();
+        me.search('');
+
+        if(me.expander){
+          me.expander.reSet();
+        }
+      }
+
       if(update){
         s.changeDataView();
         me.update();
@@ -30132,8 +30174,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     /*
      *
      */
-    onColumnDrag: function () {
-      var me = this;
+    onColumnDrag: function (grid, o) {
+      var me = this,
+        w = me.widget;
 
       if(F.nojQuery){
         setTimeout(function () {
@@ -41710,6 +41753,10 @@ Fancy.modules['summary'] = true;
         me.onColumnResize();
       }, me);
 
+      w.on('columnhide', me.onColumnHide, me);
+
+      w.on('columnshow', me.onColumnShow, me);
+
       if (me.sumDisplayed) {
         w.on('changepage', me.onChangePage, me);
       }
@@ -42056,6 +42103,38 @@ Fancy.modules['summary'] = true;
 
       me.update();
     },
+    onColumnHide: function (grid, options) {
+      var me = this,
+        w = me.widget;
+
+      me.updateSizes('center');
+
+      if (w.leftColumns.length) {
+        me.updateSizes('left');
+      }
+
+      if (w.rightColumns.length) {
+        me.updateSizes('right');
+      }
+
+      me.update();
+    },
+    onColumnShow: function (grid, options) {
+      var me = this,
+        w = me.widget;
+
+      me.updateSizes('center');
+
+      if (w.leftColumns.length) {
+        me.updateSizes('left');
+      }
+
+      if (w.rightColumns.length) {
+        me.updateSizes('right');
+      }
+
+      me.update();
+    },
     /*
      * @param {String} side
      */
@@ -42071,6 +42150,13 @@ Fancy.modules['summary'] = true;
         totalWidth += column.width;
 
         var cell = cells.item(i);
+
+        if(column.hidden){
+          //cell.css('display', 'none');
+        }
+        else{
+          //cell.css('display', '');
+        }
 
         cell.animate({width: column.width}, ANIMATE_DURATION);
       });
@@ -44670,6 +44756,33 @@ Fancy.define('Fancy.grid.plugin.Search', {
     me.filters = filters;
     s.filters = filters;
     delete me.searches;
+  },
+  /*
+   *
+   */
+  clearBarField: function () {
+    var me = this,
+      w = me.widget,
+      i = 0,
+      iL = w.tbar.length,
+      field;
+
+    for(;i<iL;i++){
+      field = w.tbar[i];
+      if(field.type === 'search'){
+        field.clear();
+      }
+    }
+
+    i = 0;
+    iL = w.subTBar.length;
+
+    for(;i<iL;i++){
+      field = w.subTBar[i];
+      if(field.type === 'search'){
+        field.clear();
+      }
+    }
   }
 });
 /*
@@ -51420,7 +51533,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         left = 0;
 
       if(me.side === 'center'){
-        left = -w.scroller.scrollLeft;
+        if(w.nativeScroller){
+          left = -w.body.el.dom.scrollLeft;
+        }
+        else {
+          left = -w.scroller.scrollLeft;
+        }
       }
 
       F.each(columns, function (column, i){

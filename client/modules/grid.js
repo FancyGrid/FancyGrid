@@ -35,6 +35,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigInfinite(config, originalConfig);
     config = me.prepareConfigBars(config);
     config = me.prepareConfigTBar(config);
+    config = me.prepareConfigSubTBar(config);
     config = me.prepareConfigExpander(config);
     config = me.prepareConfigColumnMinMaxWidth(config);
     config = me.prepareConfigGrouping(config);
@@ -1945,6 +1946,30 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 }
               }];
             }
+            break;
+        }
+      }
+    }
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigSubTBar: function(config){
+    var me = this,
+      bar = config.subTBar;
+
+    if(bar){
+      var i = 0,
+        iL = bar.length;
+
+      for(;i<iL;i++){
+        switch (bar[i].type){
+          case 'search':
+            config.searching = config.searching || {};
+            config.filter = config.filter || true;
             break;
         }
       }
@@ -4771,6 +4796,16 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
+      if(me.searching && index === undefined && sign === undefined){
+        //me.searching.clear();
+        me.searching.clearBarField();
+        me.search('');
+
+        if(me.expander){
+          me.expander.reSet();
+        }
+      }
+
       if(update){
         s.changeDataView();
         me.update();
@@ -6992,8 +7027,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     /*
      *
      */
-    onColumnDrag: function () {
-      var me = this;
+    onColumnDrag: function (grid, o) {
+      var me = this,
+        w = me.widget;
 
       if(F.nojQuery){
         setTimeout(function () {
@@ -12882,7 +12918,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         left = 0;
 
       if(me.side === 'center'){
-        left = -w.scroller.scrollLeft;
+        if(w.nativeScroller){
+          left = -w.body.el.dom.scrollLeft;
+        }
+        else {
+          left = -w.scroller.scrollLeft;
+        }
       }
 
       F.each(columns, function (column, i){

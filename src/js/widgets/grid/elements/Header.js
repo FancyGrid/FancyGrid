@@ -1110,7 +1110,12 @@
         left = 0;
 
       if(me.side === 'center'){
-        left = -w.scroller.scrollLeft;
+        if(w.nativeScroller){
+          left = -w.body.el.dom.scrollLeft;
+        }
+        else {
+          left = -w.scroller.scrollLeft;
+        }
       }
 
       F.each(columns, function (column, i){

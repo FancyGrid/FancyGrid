@@ -289,7 +289,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       delete me.params[me.filterParam];
     }
     else {
-      me.params[me.filterParam] = encodeURIComponent(value);
+      //me.params[me.filterParam] = encodeURIComponent(value);
+      me.params[me.filterParam] = value;
     }
 
     me.loadData();

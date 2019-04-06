@@ -1215,8 +1215,9 @@
     /*
      *
      */
-    onColumnDrag: function () {
-      var me = this;
+    onColumnDrag: function (grid, o) {
+      var me = this,
+        w = me.widget;
 
       if(F.nojQuery){
         setTimeout(function () {

@@ -77,6 +77,10 @@ Fancy.modules['summary'] = true;
         me.onColumnResize();
       }, me);
 
+      w.on('columnhide', me.onColumnHide, me);
+
+      w.on('columnshow', me.onColumnShow, me);
+
       if (me.sumDisplayed) {
         w.on('changepage', me.onChangePage, me);
       }
@@ -423,6 +427,38 @@ Fancy.modules['summary'] = true;
 
       me.update();
     },
+    onColumnHide: function (grid, options) {
+      var me = this,
+        w = me.widget;
+
+      me.updateSizes('center');
+
+      if (w.leftColumns.length) {
+        me.updateSizes('left');
+      }
+
+      if (w.rightColumns.length) {
+        me.updateSizes('right');
+      }
+
+      me.update();
+    },
+    onColumnShow: function (grid, options) {
+      var me = this,
+        w = me.widget;
+
+      me.updateSizes('center');
+
+      if (w.leftColumns.length) {
+        me.updateSizes('left');
+      }
+
+      if (w.rightColumns.length) {
+        me.updateSizes('right');
+      }
+
+      me.update();
+    },
     /*
      * @param {String} side
      */
@@ -438,6 +474,13 @@ Fancy.modules['summary'] = true;
         totalWidth += column.width;
 
         var cell = cells.item(i);
+
+        if(column.hidden){
+          //cell.css('display', 'none');
+        }
+        else{
+          //cell.css('display', '');
+        }
 
         cell.animate({width: column.width}, ANIMATE_DURATION);
       });
