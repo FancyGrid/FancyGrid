@@ -55,6 +55,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigWidgetColumn(config);
     config = me.prepareConfigChart(config, originalConfig);
     config = me.prepareConfigCellTip(config);
+    config = me.prepareConfigHeaderCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
     config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigContextMenu(config, originalConfig);
@@ -337,6 +338,22 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       if(column.cellTip){
         config._plugins.push({
           type: 'grid.celltip'
+        });
+        return true;
+      }
+    });
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigHeaderCellTip: function(config){
+    Fancy.each(config.columns, function(column){
+      if(column.headerCellTip){
+        config._plugins.push({
+          type: 'grid.headercelltip'
         });
         return true;
       }

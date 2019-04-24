@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.65',
+  version: '1.7.66',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -22119,6 +22119,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     config = me.prepareConfigWidgetColumn(config);
     config = me.prepareConfigChart(config, originalConfig);
     config = me.prepareConfigCellTip(config);
+    config = me.prepareConfigHeaderCellTip(config);
     config = me.prepareConfigColumnsWidth(config);
     config = me.prepareConfigSize(config, originalConfig);
     config = me.prepareConfigContextMenu(config, originalConfig);
@@ -22401,6 +22402,22 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       if(column.cellTip){
         config._plugins.push({
           type: 'grid.celltip'
+        });
+        return true;
+      }
+    });
+
+    return config;
+  },
+  /*
+   * @param {Object} config
+   * @return {Object}
+   */
+  prepareConfigHeaderCellTip: function(config){
+    Fancy.each(config.columns, function(column){
+      if(column.headerCellTip){
+        config._plugins.push({
+          type: 'grid.headercelltip'
         });
         return true;
       }
@@ -28279,7 +28296,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     //me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
     me.addEvents(
-      'headercellclick', 'headercellmousemove', 'headercellmousedown',
+      'headercellclick', 'headercellmousemove', 'headercellmousedown', 'headercellenter', 'headercellleave',
       'docmouseup', 'docclick', 'docmove',
       'beforeinit', 'init',
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown', 'columntitlechange',
@@ -43170,6 +43187,140 @@ Fancy.modules['summary'] = true;
 
 })();
 /*
+ * @class Fancy.grid.plugin.HeaderCellTip
+ * @extends Fancy.Plugin
+ */
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
+  var HIDE_TIMEOUT = 500;
+
+  var TOOLTIP_CLS = F.TOOLTIP_CLS;
+  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
+
+  F.define('Fancy.grid.plugin.HeaderCellTip', {
+    extend: F.Plugin,
+    ptype: 'grid.headercelltip',
+    inWidgetName: 'headercelltip',
+    cellTip: '{title}',
+    stopped: true,
+    /*
+     * @param {Object} config
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        docEl = F.get(document);
+
+      w.on('headercellenter', me.onCellEnter, me);
+      w.on('headercellleave', me.onCellLeave, me);
+      docEl.on('touchend', me.onTouchEnd, me);
+      docEl.on('mousemove', me.onDocMove, me);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellEnter: function (grid, o) {
+      var me = this,
+        column = o.column,
+        cellTip = me.cellTip,
+        e = o.e;
+
+      if (column.headerCellTip) {
+        var data = {
+          title: column.title,
+          columnIndex: o.columnIndex,
+          side: o.side
+        };
+        if (F.isString(column.headerCellTip)) {
+          cellTip = column.headerCellTip;
+        }
+        else if (F.isFunction(column.headerCellTip)) {
+          o.data = data;
+          cellTip = column.headerCellTip(o);
+          if (cellTip === false) {
+            return;
+          }
+        }
+
+        var tpl = new F.Template(cellTip);
+
+        me.stopped = false;
+        F.apply(data, o.data);
+
+        F.tip.update(tpl.getHTML(data));
+        F.tip.show(e.pageX + 15, e.pageY - 25);
+      }
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onCellLeave: function () {
+      this.stopped = true;
+      F.tip.hide(HIDE_TIMEOUT);
+    },
+    /*
+     * @param {Fancy.Grid} grid
+     * @param {Object} o
+     */
+    onTouchEnd: function () {
+      this.stopped = true;
+      F.tip.hide(HIDE_TIMEOUT);
+    },
+    /*
+     * @param {Object} e
+     */
+    onDocMove: function (e) {
+      if (this.stopped === true) {
+        return;
+      }
+
+      var me = this,
+        w = me.widget;
+
+      if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
+        me.stopped = true;
+        F.tip.hide(HIDE_TIMEOUT);
+        return;
+      }
+
+      var targetEl = F.get(e.target);
+
+      if(targetEl.prop('tagName').toLocaleLowerCase() === 'body'){
+        me.stopped = true;
+        F.tip.hide(HIDE_TIMEOUT);
+        return;
+      }
+
+      if(!targetEl.hasClass(TOOLTIP_CLS) && !targetEl.hasClass(TOOLTIP_INNER_CLS)){
+        if(w.el.within(targetEl) === false){
+          me.stopped = true;
+          F.tip.hide(HIDE_TIMEOUT);
+          return;
+        }
+      }
+
+      F.tip.show(e.pageX + 15, e.pageY - 25);
+    }
+  });
+
+})();
+/*
  * @class Fancy.grid.plugin.ContextMenu
  * @extends Fancy.Plugin
  */
@@ -50511,6 +50662,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
       el.on('mousedown', me.onMouseDown, me);
       el.on('dblclick', me.onCellTextDBLClick, me, '.' + GRID_HEADER_CELL_TEXT_CLS);
+      el.on('mouseenter', me.onCellMouseEnter, me, headerCellSelector);
+      el.on('mouseleave', me.onCellMouseLeave, me, headerCellSelector);
     },
     /*
      *
@@ -51148,6 +51301,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       el.un('mousemove', me.onCellMouseMove, me, cellSelector);
       el.un('mousedown', me.onCellMouseDown, me, cellSelector);
       el.un('mousedown', me.onMouseDown, me);
+      el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
+      el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
     },
     /*
      * @param {Number} index
@@ -51773,6 +51928,90 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           delete me.activeEditColumnField;
         }
       });
+    },
+    onCellMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
+
+      if (F.nojQuery && prevCellOver) {
+        if (me.fixZeptoBug) {
+          if (params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side) {
+            w.fire('headercellleave', prevCellOver);
+          }
+          else{
+            return;
+          }
+        }
+      }
+
+      w.fire('headercellenter', params);
+
+      me.prevCellOver = params;
+    },
+
+    /*
+    * @param {Object} e
+    */
+    onCellMouseLeave: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
+
+      if(!e.toElement || !me.el.within(e.toElement)){
+        w.fire('headercellleave', prevCellOver);
+        delete me.prevCellOver;
+      }
+
+      if (F.nojQuery) {
+        if (prevCellOver === undefined) {
+          return;
+        }
+
+        me.fixZeptoBug = params;
+        return;
+      }
+
+      w.fire('headercellleave', prevCellOver);
+      delete me.prevCellOver;
+    },
+    /*
+     * @param {Object} e
+     * @return {false|Object}
+     */
+    getEventParams: function (e) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        cell = e.currentTarget,
+        cellEl = F.get(e.currentTarget);
+
+      if (cellEl.parent().dom === undefined) {
+        return false;
+      }
+
+      if (s.getLength() === 0) {
+        return false;
+      }
+
+      if(cellEl.attr('index') === undefined){
+        //Touch bug
+        return false;
+      }
+
+      var columnIndex = parseInt(cellEl.attr('index')),
+        column = columns[columnIndex];
+
+      return {
+        e: e,
+        side: me.side,
+        cell: cell,
+        column: column,
+        columnIndex: columnIndex
+      };
     }
   });
 

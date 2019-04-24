@@ -117,7 +117,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     //me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
     me.addEvents(
-      'headercellclick', 'headercellmousemove', 'headercellmousedown',
+      'headercellclick', 'headercellmousemove', 'headercellmousedown', 'headercellenter', 'headercellleave',
       'docmouseup', 'docclick', 'docmove',
       'beforeinit', 'init',
       'columnresize', 'columnclick', 'columndblclick', 'columnenter', 'columnleave', 'columnmousedown', 'columntitlechange',

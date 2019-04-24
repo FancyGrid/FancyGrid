@@ -139,6 +139,7 @@
       pathToSrc + 'widgets/grid/plugins/Summary.js', // summary module
 
       pathToSrc + 'widgets/grid/plugins/CellTip.js',
+      pathToSrc + 'widgets/grid/plugins/HeaderCellTip.js',
 
       pathToSrc + 'widgets/grid/plugins/ContextMenu.js', // menu module
 

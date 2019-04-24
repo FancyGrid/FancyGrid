@@ -88,6 +88,8 @@
       el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
       el.on('mousedown', me.onMouseDown, me);
       el.on('dblclick', me.onCellTextDBLClick, me, '.' + GRID_HEADER_CELL_TEXT_CLS);
+      el.on('mouseenter', me.onCellMouseEnter, me, headerCellSelector);
+      el.on('mouseleave', me.onCellMouseLeave, me, headerCellSelector);
     },
     /*
      *
@@ -725,6 +727,8 @@
       el.un('mousemove', me.onCellMouseMove, me, cellSelector);
       el.un('mousedown', me.onCellMouseDown, me, cellSelector);
       el.un('mousedown', me.onMouseDown, me);
+      el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
+      el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
     },
     /*
      * @param {Number} index
@@ -1350,6 +1354,90 @@
           delete me.activeEditColumnField;
         }
       });
+    },
+    onCellMouseEnter: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
+
+      if (F.nojQuery && prevCellOver) {
+        if (me.fixZeptoBug) {
+          if (params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side) {
+            w.fire('headercellleave', prevCellOver);
+          }
+          else{
+            return;
+          }
+        }
+      }
+
+      w.fire('headercellenter', params);
+
+      me.prevCellOver = params;
+    },
+
+    /*
+    * @param {Object} e
+    */
+    onCellMouseLeave: function (e) {
+      var me = this,
+        w = me.widget,
+        params = me.getEventParams(e),
+        prevCellOver = me.prevCellOver;
+
+      if(!e.toElement || !me.el.within(e.toElement)){
+        w.fire('headercellleave', prevCellOver);
+        delete me.prevCellOver;
+      }
+
+      if (F.nojQuery) {
+        if (prevCellOver === undefined) {
+          return;
+        }
+
+        me.fixZeptoBug = params;
+        return;
+      }
+
+      w.fire('headercellleave', prevCellOver);
+      delete me.prevCellOver;
+    },
+    /*
+     * @param {Object} e
+     * @return {false|Object}
+     */
+    getEventParams: function (e) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = me.getColumns(),
+        cell = e.currentTarget,
+        cellEl = F.get(e.currentTarget);
+
+      if (cellEl.parent().dom === undefined) {
+        return false;
+      }
+
+      if (s.getLength() === 0) {
+        return false;
+      }
+
+      if(cellEl.attr('index') === undefined){
+        //Touch bug
+        return false;
+      }
+
+      var columnIndex = parseInt(cellEl.attr('index')),
+        column = columns[columnIndex];
+
+      return {
+        e: e,
+        side: me.side,
+        cell: cell,
+        column: column,
+        columnIndex: columnIndex
+      };
     }
   });
 
