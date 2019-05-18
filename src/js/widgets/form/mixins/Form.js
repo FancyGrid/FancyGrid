@@ -758,6 +758,8 @@ Fancy.modules['form'] = true;
           case 'string':
           case 'number':
           case 'field.number':
+          case 'textarea':
+          case 'field.textarea':
             break;
           default:
             return;

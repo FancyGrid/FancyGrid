@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.66',
+  version: '1.7.67',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3792,7 +3792,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    *
    */
   initProxy: function(){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
     me.proxy = me.data.proxy || {};
     var proxy = me.proxy;
@@ -3820,7 +3821,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(me.autoLoad) {
-      me.loadData();
+      if(w.stateful && me.remoteFilter){
+        /*
+          When there is server filtering with state and on start it loads data
+          that it requires to wait until store will get all filter params that avoid
+          many not needed requests to server.
+         */
+        w.WAIT_FOR_APPLYING_ALL_FILTERS = true;
+      }
+      else{
+        me.loadData();
+      }
     }
   },
   /*
@@ -3890,6 +3901,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
+
+    //debugger
 
     me.fire('beforeload');
     //IDEA: sortType === 'server'
@@ -15264,6 +15277,8 @@ Fancy.modules['form'] = true;
           case 'string':
           case 'number':
           case 'field.number':
+          case 'textarea':
+          case 'field.textarea':
             break;
           default:
             return;
@@ -23841,11 +23856,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       if(state){
         state = JSON.parse(state);
 
+        for(var p in state) {
+          if (Fancy.isString(state[p])) {
+            state[p] = JSON.parse(state[p]);
+          }
+        }
+
         var stateColumns = state.columns;
 
         if(stateColumns){
-          stateColumns = JSON.parse(stateColumns);
-
           Fancy.each(stateColumns, function (stateColumn, i) {
             Fancy.each(stateColumn, function (v, p) {
               if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
@@ -27169,7 +27188,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.filter.filters[index] = filter;
 
       if(update){
-        me.filter.updateStoreFilters();
+        if(me.WAIT_FOR_APPLYING_ALL_FILTERS){
+          me.filter.updateStoreFilters(false);
+        }
+        else {
+          me.filter.updateStoreFilters();
+        }
       }
 
       if (updateHeaderFilter !== false) {
@@ -44396,9 +44420,9 @@ Fancy.modules['filter'] = true;
       return filters;
     },
     /*
-     *
+     * @param [update] Boolean
      */
-    updateStoreFilters: function () {
+    updateStoreFilters: function (update) {
       var me = this,
         w = me.widget,
         s = w.store,
@@ -44420,11 +44444,14 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      s.changeDataView();
-      w.update();
+      if(update !== false){
+        s.changeDataView();
+        w.update();
 
-      w.fire('filter', me.filters);
-      w.setSidesHeight();
+        w.fire('filter', me.filters);
+        w.setSidesHeight();
+      }
+
       if(!containFilters){
         delete s.filteredData;
         delete s.filteredDataMap;
@@ -44432,6 +44459,17 @@ Fancy.modules['filter'] = true;
       }
 
       delete w.filtering;
+    },
+    forceUpdateStoreFilters: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      s.changeDataView();
+      w.update();
+
+      w.fire('filter', me.filters);
+      w.setSidesHeight();
     },
     /*
      * @param {Fancy.Grid} grid
@@ -44915,7 +44953,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     var me = this,
       w = me.widget,
       i = 0,
-      iL = w.tbar.length,
+      iL = (w.tbar || []).length,
       field;
 
     for(;i<iL;i++){
@@ -44926,7 +44964,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
 
     i = 0;
-    iL = w.subTBar.length;
+    iL = (w.subTBar || []).length;
 
     for(;i<iL;i++){
       field = w.subTBar[i];
@@ -46387,6 +46425,13 @@ Fancy.modules['state'] = true;
           for(var q in filter){
             w.addFilter(p, filter[q], q);
           }
+        }
+
+        if(w.WAIT_FOR_APPLYING_ALL_FILTERS){
+          w.filter.forceUpdateStoreFilters();
+          w.once('load', function () {
+            delete w.WAIT_FOR_APPLYING_ALL_FILTERS;
+          });
         }
       }
 

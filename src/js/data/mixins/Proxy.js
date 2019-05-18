@@ -34,7 +34,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    *
    */
   initProxy: function(){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
     me.proxy = me.data.proxy || {};
     var proxy = me.proxy;
@@ -62,7 +63,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(me.autoLoad) {
-      me.loadData();
+      if(w.stateful && me.remoteFilter){
+        /*
+          When there is server filtering with state and on start it loads data
+          that it requires to wait until store will get all filter params that avoid
+          many not needed requests to server.
+         */
+        w.WAIT_FOR_APPLYING_ALL_FILTERS = true;
+      }
+      else{
+        me.loadData();
+      }
     }
   },
   /*

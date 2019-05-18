@@ -1777,11 +1777,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       if(state){
         state = JSON.parse(state);
 
+        for(var p in state) {
+          if (Fancy.isString(state[p])) {
+            state[p] = JSON.parse(state[p]);
+          }
+        }
+
         var stateColumns = state.columns;
 
         if(stateColumns){
-          stateColumns = JSON.parse(stateColumns);
-
           Fancy.each(stateColumns, function (stateColumn, i) {
             Fancy.each(stateColumn, function (v, p) {
               if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){

@@ -230,7 +230,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     var me = this,
       w = me.widget,
       i = 0,
-      iL = w.tbar.length,
+      iL = (w.tbar || []).length,
       field;
 
     for(;i<iL;i++){
@@ -241,7 +241,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
 
     i = 0;
-    iL = w.subTBar.length;
+    iL = (w.subTBar || []).length;
 
     for(;i<iL;i++){
       field = w.subTBar[i];

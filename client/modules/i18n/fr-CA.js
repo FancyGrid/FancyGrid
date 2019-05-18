@@ -39,8 +39,8 @@
   cancel: 'Annuler',
   sortAsc: 'Tri ascendant',
   sortDesc: 'Tri descendant',
-  lock: 'Verrouillé la colonne',
-  rightLock: 'Verrouillé la colonne',
-  unlock: 'Déverrouillé la colonne',
+  lock: 'Verrouillé',
+  rightLock: 'Verrouillé à droite',
+  unlock: 'Déverrouillé',
   columns: 'Colonnes'
 };

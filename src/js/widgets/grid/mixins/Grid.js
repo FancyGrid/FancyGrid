@@ -2513,7 +2513,12 @@
       me.filter.filters[index] = filter;
 
       if(update){
-        me.filter.updateStoreFilters();
+        if(me.WAIT_FOR_APPLYING_ALL_FILTERS){
+          me.filter.updateStoreFilters(false);
+        }
+        else {
+          me.filter.updateStoreFilters();
+        }
       }
 
       if (updateHeaderFilter !== false) {

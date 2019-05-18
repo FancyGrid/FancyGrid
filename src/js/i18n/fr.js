@@ -40,7 +40,7 @@ Fancy.i18n.fr = {
   sortAsc: 'Tri croissant',
   sortDesc: 'Tri décroissant',
   columns: 'Colonnes',
-  lock: 'Verrouillé la colonne',
-  rightLock: 'Verrouillé la colonne',
-  unlock: 'Déverrouillé la colonne',
+  lock: 'Verrouillé',
+  rightLock: 'Verrouillé à droite',
+  unlock: 'Déverrouillé',
 };

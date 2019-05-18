@@ -1091,9 +1091,9 @@ Fancy.modules['filter'] = true;
       return filters;
     },
     /*
-     *
+     * @param [update] Boolean
      */
-    updateStoreFilters: function () {
+    updateStoreFilters: function (update) {
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1115,11 +1115,14 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      s.changeDataView();
-      w.update();
+      if(update !== false){
+        s.changeDataView();
+        w.update();
 
-      w.fire('filter', me.filters);
-      w.setSidesHeight();
+        w.fire('filter', me.filters);
+        w.setSidesHeight();
+      }
+
       if(!containFilters){
         delete s.filteredData;
         delete s.filteredDataMap;
@@ -1127,6 +1130,17 @@ Fancy.modules['filter'] = true;
       }
 
       delete w.filtering;
+    },
+    forceUpdateStoreFilters: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      s.changeDataView();
+      w.update();
+
+      w.fire('filter', me.filters);
+      w.setSidesHeight();
     },
     /*
      * @param {Fancy.Grid} grid
@@ -1609,7 +1623,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     var me = this,
       w = me.widget,
       i = 0,
-      iL = w.tbar.length,
+      iL = (w.tbar || []).length,
       field;
 
     for(;i<iL;i++){
@@ -1620,7 +1634,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
 
     i = 0;
-    iL = w.subTBar.length;
+    iL = (w.subTBar || []).length;
 
     for(;i<iL;i++){
       field = w.subTBar[i];
