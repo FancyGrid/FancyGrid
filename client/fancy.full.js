@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.67',
+  version: '1.7.68',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3610,7 +3610,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       var oldPages = me.pages;
       me.pages = Math.ceil(me.getTotal() / me.pageSize);
       if(!isNaN(oldPages) && oldPages > me.pages){
-        me.showPage--;
+        //me.showPage--;
+        me.showPage = Math.floor((me.getTotal()/me.pageSize));
         if(me.showPage < 0){
           me.showPage = 0;
         }
@@ -3901,8 +3902,6 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
-
-    //debugger
 
     me.fire('beforeload');
     //IDEA: sortType === 'server'
@@ -50800,6 +50799,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
+        if(column.headerCls){
+          cls += ' ' + column.headerCls;
+        }
+
         if(F.isNumber(height)){
           height += 'px';
         }
@@ -50899,6 +50902,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       if(me.side === 'center'){
         left += w.scroller.scrollLeft || 0;
+      }
+
+      if(column.headerCls){
+        cls += ' ' + column.headerCls;
       }
 
       var cellHTML = me.cellTpl.getHTML({
@@ -51847,10 +51854,24 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     reSetColumnsCls: function () {
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        columnsCls = [];
+
+      F.each(columns, function (column) {
+        if(column.headerCls){
+          columnsCls.push(column.headerCls);
+        }
+      });
 
       cells.each(function(cell, i){
         var column = columns[i];
+        F.each(columnsCls, function (cls) {
+          cell.removeCls(cls);
+        });
+
+        if(column.headerCls){
+          cell.addCls(column.headerCls);
+        }
 
         if(column.menu){
           cell.removeCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);
@@ -53310,7 +53331,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     
     if(me.value < 0){
       me.backColor = me.colorBGMinus;
-      me.color = me.colorPlus;
+      me.color = me.colorMinus;
     }
     else{
       me.backColor = me.colorBGPlus;

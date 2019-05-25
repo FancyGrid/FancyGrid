@@ -12015,6 +12015,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
+        if(column.headerCls){
+          cls += ' ' + column.headerCls;
+        }
+
         if(F.isNumber(height)){
           height += 'px';
         }
@@ -12114,6 +12118,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       if(me.side === 'center'){
         left += w.scroller.scrollLeft || 0;
+      }
+
+      if(column.headerCls){
+        cls += ' ' + column.headerCls;
       }
 
       var cellHTML = me.cellTpl.getHTML({
@@ -13062,10 +13070,24 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     reSetColumnsCls: function () {
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        columnsCls = [];
+
+      F.each(columns, function (column) {
+        if(column.headerCls){
+          columnsCls.push(column.headerCls);
+        }
+      });
 
       cells.each(function(cell, i){
         var column = columns[i];
+        F.each(columnsCls, function (cls) {
+          cell.removeCls(cls);
+        });
+
+        if(column.headerCls){
+          cell.addCls(column.headerCls);
+        }
 
         if(column.menu){
           cell.removeCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);

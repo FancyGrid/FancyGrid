@@ -144,8 +144,6 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
 
-    //debugger
-
     me.fire('beforeload');
     //IDEA: sortType === 'server'
     //IDEA: remoteSort
