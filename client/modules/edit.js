@@ -296,7 +296,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.celledit.hideEditor();
     }
 
-    me.fire('beforedit');
+    w.fire('beforeedit', o);
 
     if(me.stopped === true){
       me.stopped = false;
@@ -907,6 +907,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if (s.proxyType === 'server') {
         return;
+      }
+
+      if(o.column.autoHeight){
+        //It could slow
+        setTimeout(function () {
+          w.update();
+        },1);
       }
 
       key = me.getActiveColumnKey();

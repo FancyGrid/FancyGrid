@@ -135,7 +135,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'select', 'selectrow', 'deselectrow',
       'clearselect',
       'activate', 'deactivate',
-      'beforeedit',
+      'beforeedit',//Not coded
       'startedit',
       'changepage', 'changepagesize',
       'dropitems',

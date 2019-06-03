@@ -296,7 +296,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.celledit.hideEditor();
     }
 
-    me.fire('beforedit');
+    w.fire('beforeedit', o);
 
     if(me.stopped === true){
       me.stopped = false;

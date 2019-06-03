@@ -530,6 +530,13 @@
         return;
       }
 
+      if(o.column.autoHeight){
+        //It could slow
+        setTimeout(function () {
+          w.update();
+        },1);
+      }
+
       key = me.getActiveColumnKey();
 
       value = me.prepareValue(value);

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.68',
+  version: '1.7.69',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -28337,7 +28337,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'select', 'selectrow', 'deselectrow',
       'clearselect',
       'activate', 'deactivate',
-      'beforeedit',
+      'beforeedit',//Not coded
       'startedit',
       'changepage', 'changepagesize',
       'dropitems',
@@ -33510,7 +33510,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.celledit.hideEditor();
     }
 
-    me.fire('beforedit');
+    w.fire('beforeedit', o);
 
     if(me.stopped === true){
       me.stopped = false;
@@ -34122,6 +34122,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if (s.proxyType === 'server') {
         return;
+      }
+
+      if(o.column.autoHeight){
+        //It could slow
+        setTimeout(function () {
+          w.update();
+        },1);
       }
 
       key = me.getActiveColumnKey();
@@ -51247,7 +51254,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               e: e,
               side: me.side,
               cell: cell,
-              index: index
+              index: index,
+              column: column
             });
           }
 
@@ -51258,7 +51266,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           e: e,
           side: me.side,
           cell: cell,
-          index: index
+          index: index,
+          column: column
         });
       }
     },

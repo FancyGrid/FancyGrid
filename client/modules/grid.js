@@ -12463,7 +12463,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               e: e,
               side: me.side,
               cell: cell,
-              index: index
+              index: index,
+              column: column
             });
           }
 
@@ -12474,7 +12475,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           e: e,
           side: me.side,
           cell: cell,
-          index: index
+          index: index,
+          column: column
         });
       }
     },
