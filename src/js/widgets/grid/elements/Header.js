@@ -21,6 +21,8 @@
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
+  var GRID_HEADER_CELL_SORTABLE_CLS = F.GRID_HEADER_CELL_SORTABLE_CLS;
+  var GRID_HEADER_CELL_NOT_SORTABLE_CLS = F.GRID_HEADER_CELL_NOT_SORTABLE_CLS;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -185,6 +187,13 @@
           cls += ' ' + column.headerCls;
         }
 
+        if(column.sortable){
+          cls += ' ' + GRID_HEADER_CELL_SORTABLE_CLS;
+        }
+        else{
+          cls += ' ' + GRID_HEADER_CELL_NOT_SORTABLE_CLS;
+        }
+
         if(F.isNumber(height)){
           height += 'px';
         }
@@ -288,6 +297,13 @@
 
       if(column.headerCls){
         cls += ' ' + column.headerCls;
+      }
+
+      if(column.sortable){
+        cls += ' ' + GRID_HEADER_CELL_SORTABLE_CLS;
+      }
+      else{
+        cls += ' ' + GRID_HEADER_CELL_NOT_SORTABLE_CLS;
       }
 
       var cellHTML = me.cellTpl.getHTML({
@@ -1245,6 +1261,13 @@
         if(column.headerCls){
           columnsCls.push(column.headerCls);
         }
+
+        if(column.sortable){
+          columnsCls.push(GRID_HEADER_CELL_SORTABLE_CLS);
+        }
+        else{
+          columnsCls.push(GRID_HEADER_CELL_NOT_SORTABLE_CLS);
+        }
       });
 
       cells.each(function(cell, i){
@@ -1255,6 +1278,13 @@
 
         if(column.headerCls){
           cell.addCls(column.headerCls);
+        }
+
+        if(column.sortable){
+          cell.addCls(GRID_HEADER_CELL_SORTABLE_CLS);
+        }
+        else{
+          cell.addCls(GRID_HEADER_CELL_NOT_SORTABLE_CLS);
         }
 
         if(column.menu){

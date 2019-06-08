@@ -524,7 +524,12 @@ Fancy.define('Fancy.Store', {
       options = options || {},
       dataProperty = options.dataProperty || 'data',
       data = me[dataProperty],
-      iL = data.length;
+      iL = data.length,
+      nestedKey;
+
+    if(/\./.test(key)){
+      nestedKey = true;
+    }
 
     if(options.smartIndexFn){
       for(;i<iL;i++){
@@ -546,8 +551,15 @@ Fancy.define('Fancy.Store', {
           }
         }
         else{
-          for (; i < iL; i++) {
-            values.push(data[i].data[key]);
+          if(nestedKey){
+            for (; i < iL; i++) {
+              values.push(this.getNestedValue(data[i].data, key));
+            }
+          }
+          else {
+            for (; i < iL; i++) {
+              values.push(data[i].data[key]);
+            }
           }
         }
       }
@@ -555,24 +567,51 @@ Fancy.define('Fancy.Store', {
         if(options.groupMap){
           me.groupMap = {};
 
-          for (; i < iL; i++) {
-            var item = data[i],
-              value = item.data[key];
+          if(nestedKey) {
+            for (; i < iL; i++) {
+              var item = data[i],
+                value = this.getNestedValue(item.data, key);
 
-            values.push(value);
-            me.groupMap[item.id] = value;
+              values.push(value);
+              me.groupMap[item.id] = value;
+            }
+          }
+          else {
+            for (; i < iL; i++) {
+              var item = data[i],
+                value = item.data[key];
+
+              values.push(value);
+              me.groupMap[item.id] = value;
+            }
           }
         }
         else {
-          for (; i < iL; i++) {
-            var itemData = data[i].data || data[i];
-            values.push(itemData[key]);
+          if(!nestedKey){
+            for (; i < iL; i++) {
+              var itemData = data[i].data || data[i];
+              values.push(itemData[key]);
+            }
+          }
+          else {
+            for (; i < iL; i++) {
+              values.push(this.getNestedValue(data[i].data || data[i], key));
+            }
           }
         }
       }
     }
 
     return values;
+  },
+  getNestedValue: function (data, key) {
+    var splitted = key.split('.');
+
+    if(splitted.length > 1){
+      return this.getNestedValue(data[splitted.shift(0, 1)], splitted.join('.'));
+    }
+
+    return data[key];
   },
   /*
    * @param {Object} [o]

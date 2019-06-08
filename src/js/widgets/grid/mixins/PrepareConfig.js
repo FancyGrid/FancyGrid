@@ -231,11 +231,21 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(Fancy.isArray(config.data) && config.data.length === 0 && config.columns){
-      var fields = [];
+      var fields = [],
+        nestedKey = {};
 
       Fancy.each(config.columns, function(column){
         if(column.index){
-          fields.push(column.index || column.key);
+          if(/\./.test(column.index)){
+            var splitted =column.index.split('.');
+            if(!nestedKey[splitted[0]]){
+              fields.push(splitted[0]);
+              nestedKey[splitted[0]] = true;
+            }
+          }
+          else {
+            fields.push(column.index || column.key);
+          }
         }
 
         if(column.columns){

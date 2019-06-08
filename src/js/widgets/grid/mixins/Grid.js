@@ -43,7 +43,7 @@
     /*
      *
      */
-    initStore: function () {
+    initStore: function (){
       var me = this,
         fields = me.getFieldsFromData(me.data),
         modelName = 'Fancy.model.' + F.id(),

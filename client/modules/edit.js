@@ -296,13 +296,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.celledit.hideEditor();
     }
 
-    w.fire('beforeedit', o);
-
-    if(me.stopped === true){
-      me.stopped = false;
-      return;
-    }
-
     if(w.rowedit){
       w.rowedit.edit(o);
     }
@@ -716,6 +709,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         cell = o.cell,
         cellXY = me.getCellPosition(cell),
         cellSize = me.getCellSize(cell);
+
+      w.fire('beforeedit', o);
+
+      if(w.edit.stopped === true){
+        w.edit.stopped = false;
+        return;
+      }
 
       if (type === 'combo') {
         me.comboClick = true;
@@ -1170,7 +1170,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Object} o
      */
     showEditor: function (o) {
-      var me = this;
+      var me = this,
+        w = me.widget;
+
+      w.fire('beforeedit', o);
+
+      if(w.edit.stopped === true){
+        w.edit.stopped = false;
+        return;
+      }
 
       me.changed = {};
 

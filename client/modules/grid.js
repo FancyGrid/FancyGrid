@@ -231,11 +231,21 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(Fancy.isArray(config.data) && config.data.length === 0 && config.columns){
-      var fields = [];
+      var fields = [],
+        nestedKey = {};
 
       Fancy.each(config.columns, function(column){
         if(column.index){
-          fields.push(column.index || column.key);
+          if(/\./.test(column.index)){
+            var splitted =column.index.split('.');
+            if(!nestedKey[splitted[0]]){
+              fields.push(splitted[0]);
+              nestedKey[splitted[0]] = true;
+            }
+          }
+          else {
+            fields.push(column.index || column.key);
+          }
         }
 
         if(column.columns){
@@ -2313,7 +2323,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     /*
      *
      */
-    initStore: function () {
+    initStore: function (){
       var me = this,
         fields = me.getFieldsFromData(me.data),
         modelName = 'Fancy.model.' + F.id(),
@@ -11855,6 +11865,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
+  var GRID_HEADER_CELL_SORTABLE_CLS = F.GRID_HEADER_CELL_SORTABLE_CLS;
+  var GRID_HEADER_CELL_NOT_SORTABLE_CLS = F.GRID_HEADER_CELL_NOT_SORTABLE_CLS;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -12019,6 +12031,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           cls += ' ' + column.headerCls;
         }
 
+        if(column.sortable){
+          cls += ' ' + GRID_HEADER_CELL_SORTABLE_CLS;
+        }
+        else{
+          cls += ' ' + GRID_HEADER_CELL_NOT_SORTABLE_CLS;
+        }
+
         if(F.isNumber(height)){
           height += 'px';
         }
@@ -12122,6 +12141,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       if(column.headerCls){
         cls += ' ' + column.headerCls;
+      }
+
+      if(column.sortable){
+        cls += ' ' + GRID_HEADER_CELL_SORTABLE_CLS;
+      }
+      else{
+        cls += ' ' + GRID_HEADER_CELL_NOT_SORTABLE_CLS;
       }
 
       var cellHTML = me.cellTpl.getHTML({
@@ -13079,6 +13105,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(column.headerCls){
           columnsCls.push(column.headerCls);
         }
+
+        if(column.sortable){
+          columnsCls.push(GRID_HEADER_CELL_SORTABLE_CLS);
+        }
+        else{
+          columnsCls.push(GRID_HEADER_CELL_NOT_SORTABLE_CLS);
+        }
       });
 
       cells.each(function(cell, i){
@@ -13089,6 +13122,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         if(column.headerCls){
           cell.addCls(column.headerCls);
+        }
+
+        if(column.sortable){
+          cell.addCls(GRID_HEADER_CELL_SORTABLE_CLS);
+        }
+        else{
+          cell.addCls(GRID_HEADER_CELL_NOT_SORTABLE_CLS);
         }
 
         if(column.menu){

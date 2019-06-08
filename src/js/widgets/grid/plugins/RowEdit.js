@@ -88,7 +88,15 @@
      * @param {Object} o
      */
     showEditor: function (o) {
-      var me = this;
+      var me = this,
+        w = me.widget;
+
+      w.fire('beforeedit', o);
+
+      if(w.edit.stopped === true){
+        w.edit.stopped = false;
+        return;
+      }
 
       me.changed = {};
 

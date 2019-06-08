@@ -296,13 +296,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w.celledit.hideEditor();
     }
 
-    w.fire('beforeedit', o);
-
-    if(me.stopped === true){
-      me.stopped = false;
-      return;
-    }
-
     if(w.rowedit){
       w.rowedit.edit(o);
     }

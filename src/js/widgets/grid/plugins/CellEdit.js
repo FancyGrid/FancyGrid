@@ -338,6 +338,13 @@
         cellXY = me.getCellPosition(cell),
         cellSize = me.getCellSize(cell);
 
+      w.fire('beforeedit', o);
+
+      if(w.edit.stopped === true){
+        w.edit.stopped = false;
+        return;
+      }
+
       if (type === 'combo') {
         me.comboClick = true;
       }
