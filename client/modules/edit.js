@@ -971,6 +971,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         column = o.column,
         format = column.format;
 
+      if(format && format.beforeSaveFn){
+        return format.beforeSaveFn(value);
+      }
+
       switch (type) {
         case 'number':
         case 'currency':

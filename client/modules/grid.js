@@ -10773,9 +10773,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           };
       }
 
+      /*
       if (format.inputFn) {
         return format.inputFn;
       }
+      */
     },
     /*
      * @param {String} value
@@ -10791,11 +10793,17 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           value = format(value);
           break;
         case 'object':
+          /*
           if (format.inputFn) {
             value = format.inputFn(value);
           }
           else {
             value = this.getFormat(format)(value);
+          }
+          */
+          var fn = this.getFormat(format);
+          if(fn){
+            value = fn(value);
           }
 
           break;

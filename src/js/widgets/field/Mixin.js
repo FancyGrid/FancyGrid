@@ -409,6 +409,7 @@
           }
           break;
         case key.LEFT:
+          e.stopPropagation();
           break;
         case key.RIGHT:
           e.stopPropagation();
