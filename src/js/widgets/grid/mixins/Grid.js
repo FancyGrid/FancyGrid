@@ -1638,12 +1638,14 @@
           if (column.flex) {
             var cell = header.getCell(i);
 
+            /*
             me.fire('columnresize', {
               cell: cell.dom,
               width: column.width,
               column: column,
               side: side
             });
+            */
           }
         });
       };

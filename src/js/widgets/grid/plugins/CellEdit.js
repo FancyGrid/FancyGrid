@@ -537,7 +537,8 @@
         return;
       }
 
-      if(o.column.autoHeight){
+      //if(o.column.autoHeight){
+      if(w.rowheight){
         //It could slow
         setTimeout(function () {
           w.update();

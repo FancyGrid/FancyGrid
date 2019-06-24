@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.72',
+  version: '1.7.73',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -9086,8 +9086,39 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {*} value
      */
     formatValue: function (value) {
+      var me = this;
       value = this.format.inputFn(value);
+      var position = this.input.dom.selectionStart;
+      var oldValue = this.input.dom.value;
+
       this.input.dom.value = value;
+
+      if(oldValue.length < value.length){
+        position++;
+      }
+      me.setCaretPosition(position);
+    },
+    /*
+     *
+     */
+    setCaretPosition: function(position) {
+      var input = this.input.dom;
+
+      if(input.createTextRange) {
+        var range = input.createTextRange();
+
+        range.move('character', position);
+        range.select();
+      }
+      else {
+        if(input.selectionStart) {
+          input.focus();
+          input.setSelectionRange(position, position);
+        }
+        else {
+          input.focus();
+        }
+      }
     },
     /*
      * @param {Object} e
@@ -9369,7 +9400,9 @@ if(!Fancy.nojQuery && Fancy.$){
           switch (me.type) {
             case 'number':
             case 'field.number':
-              me.spinUp();
+              if(this.spin){
+                me.spinUp();
+              }
               break;
           }
 
@@ -9384,7 +9417,9 @@ if(!Fancy.nojQuery && Fancy.$){
           switch (me.type) {
             case 'number':
             case 'field.number':
-              me.spinDown();
+              if(this.spin) {
+                me.spinDown();
+              }
               break;
           }
 

@@ -3918,12 +3918,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           if (column.flex) {
             var cell = header.getCell(i);
 
+            /*
             me.fire('columnresize', {
               cell: cell.dom,
               width: column.width,
               column: column,
               side: side
             });
+            */
           }
         });
       };
@@ -11347,6 +11349,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       //right click
       if((e.button === 2 && e.buttons === 2) || e.which === 3){
         return;
+      }
+
+      if(w.selection){
+        w.selection.copyEl.focus();
       }
 
       w.fire('beforecellmousedown', params);
