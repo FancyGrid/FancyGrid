@@ -640,6 +640,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(column.hidden){
+        if(column.width === undefined){
+          column.width = 100;
+        }
         return;
       }
 
@@ -4234,9 +4237,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
+      var me = this;
       if (index === undefined) {
         index = side;
         side = 'center';
+      }
+
+      if(F.isArray(index)){
+        F.each(index, function (value, i) {
+          me.hideColumn(side, value);
+        });
+        return;
       }
 
       var me = this,
@@ -4321,9 +4332,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
+      var me = this;
       if (index === undefined) {
         index = side;
         side = 'center';
+      }
+
+      if(F.isArray(index)){
+        F.each(index, function (value, i) {
+          me.showColumn(side, value);
+        });
+        return;
       }
 
       var me = this,
@@ -4358,7 +4377,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
               return;
             }
             orderIndex = i;
-            column.hidden = false;
+            delete column.hidden;
             break;
           }
         }

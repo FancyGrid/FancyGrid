@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.73',
+  version: '1.7.74',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -22795,6 +22795,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(column.hidden){
+        if(column.width === undefined){
+          column.width = 100;
+        }
         return;
       }
 
@@ -26715,9 +26718,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
+      var me = this;
       if (index === undefined) {
         index = side;
         side = 'center';
+      }
+
+      if(F.isArray(index)){
+        F.each(index, function (value, i) {
+          me.hideColumn(side, value);
+        });
+        return;
       }
 
       var me = this,
@@ -26802,9 +26813,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
+      var me = this;
       if (index === undefined) {
         index = side;
         side = 'center';
+      }
+
+      if(F.isArray(index)){
+        F.each(index, function (value, i) {
+          me.showColumn(side, value);
+        });
+        return;
       }
 
       var me = this,
@@ -26839,7 +26858,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
               return;
             }
             orderIndex = i;
-            column.hidden = false;
+            delete column.hidden;
             break;
           }
         }
@@ -34281,6 +34300,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         format = column.format;
 
       if(format && format.beforeSaveFn){
+        var editor = me.activeEditor;
+        value = editor.input.dom.value;
+
         return format.beforeSaveFn(value);
       }
 
@@ -38632,6 +38654,9 @@ Fancy.modules['selection'] = true;
                   columns = w.getColumns(info.side);
 
                 info.column = columns[info.columnIndex];
+                if(info.column.editable === false){
+                  return;
+                }
                 info.cell = activeCell.dom;
                 var item = w.get(info.rowIndex);
                 info.item = item;

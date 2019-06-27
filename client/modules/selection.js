@@ -3118,6 +3118,9 @@ Fancy.modules['selection'] = true;
                   columns = w.getColumns(info.side);
 
                 info.column = columns[info.columnIndex];
+                if(info.column.editable === false){
+                  return;
+                }
                 info.cell = activeCell.dom;
                 var item = w.get(info.rowIndex);
                 info.item = item;

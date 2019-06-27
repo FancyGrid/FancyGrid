@@ -1954,9 +1954,17 @@
      * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
+      var me = this;
       if (index === undefined) {
         index = side;
         side = 'center';
+      }
+
+      if(F.isArray(index)){
+        F.each(index, function (value, i) {
+          me.hideColumn(side, value);
+        });
+        return;
       }
 
       var me = this,
@@ -2041,9 +2049,17 @@
      * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
+      var me = this;
       if (index === undefined) {
         index = side;
         side = 'center';
+      }
+
+      if(F.isArray(index)){
+        F.each(index, function (value, i) {
+          me.showColumn(side, value);
+        });
+        return;
       }
 
       var me = this,
@@ -2078,7 +2094,7 @@
               return;
             }
             orderIndex = i;
-            column.hidden = false;
+            delete column.hidden;
             break;
           }
         }

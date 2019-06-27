@@ -640,6 +640,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(column.hidden){
+        if(column.width === undefined){
+          column.width = 100;
+        }
         return;
       }
 

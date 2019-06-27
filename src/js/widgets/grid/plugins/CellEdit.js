@@ -601,6 +601,9 @@
         format = column.format;
 
       if(format && format.beforeSaveFn){
+        var editor = me.activeEditor;
+        value = editor.input.dom.value;
+
         return format.beforeSaveFn(value);
       }
 
