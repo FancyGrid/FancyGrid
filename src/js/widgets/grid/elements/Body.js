@@ -482,10 +482,6 @@
         return;
       }
 
-      if(w.selection){
-        w.selection.copyEl.focus();
-      }
-
       w.fire('beforecellmousedown', params);
       w.fire('cellmousedown', params);
       w.fire('columnmousedown', columnParams);

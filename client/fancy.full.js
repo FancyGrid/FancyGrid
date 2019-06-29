@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.74',
+  version: '1.7.75',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -25928,6 +25928,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if (me.textSelection === false) {
         me.addCls(GRID_UNSELECTABLE_CLS);
 
+        /*
         var fn = function (e) {
           var targetEl = F.get(e.target);
           if (targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')) {
@@ -25940,6 +25941,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         body.el.on('mousedown', fn);
         leftBody.el.on('mousedown', fn);
         rightBody.el.on('mousedown', fn);
+        */
       }
     },
     /*
@@ -27596,6 +27598,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             if (column.render) {
               var data = me.get(i),
                 value = me.get(i, column.index);
+
+              if(data && data.data){
+                data = data.data;
+              }
+              else{
+
+              }
 
               rowData.push(column.render({
                 value: value,
@@ -49850,10 +49859,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       //right click
       if((e.button === 2 && e.buttons === 2) || e.which === 3){
         return;
-      }
-
-      if(w.selection){
-        w.selection.copyEl.focus();
       }
 
       w.fire('beforecellmousedown', params);

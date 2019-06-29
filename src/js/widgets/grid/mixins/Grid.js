@@ -1164,6 +1164,7 @@
       if (me.textSelection === false) {
         me.addCls(GRID_UNSELECTABLE_CLS);
 
+        /*
         var fn = function (e) {
           var targetEl = F.get(e.target);
           if (targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')) {
@@ -1176,6 +1177,7 @@
         body.el.on('mousedown', fn);
         leftBody.el.on('mousedown', fn);
         rightBody.el.on('mousedown', fn);
+        */
       }
     },
     /*
@@ -2832,6 +2834,13 @@
             if (column.render) {
               var data = me.get(i),
                 value = me.get(i, column.index);
+
+              if(data && data.data){
+                data = data.data;
+              }
+              else{
+
+              }
 
               rowData.push(column.render({
                 value: value,
