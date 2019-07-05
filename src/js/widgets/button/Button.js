@@ -393,6 +393,8 @@
         el = me.el,
         charWidth = 7;
 
+      me.text = text;
+
       if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }

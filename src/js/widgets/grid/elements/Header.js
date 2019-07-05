@@ -796,6 +796,7 @@
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
+        groupCell.stop();
         groupCell.animate({
           width: groupCellWidth - cellWidth
         }, ANIMATE_DURATION);
@@ -828,6 +829,7 @@
         }
 
         if(cellLeft !== left){
+          _cell.stop();
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -857,6 +859,7 @@
           left += column.width;
         });
 
+        groupCell.stop();
         groupCell.animate({
           left: left
         }, ANIMATE_DURATION);
@@ -885,6 +888,7 @@
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
+        groupCell.stop();
         groupCell.animate({
           width: groupCellWidth + cellWidth
         }, ANIMATE_DURATION);
@@ -914,11 +918,12 @@
           }
         }
 
-        if(cellLeft !== left){
+        //if(cellLeft !== left){
+          _cell.stop();
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
-        }
+        //}
 
         left += column.width;
       }
@@ -944,6 +949,7 @@
           left += column.width;
         });
 
+        groupCell.stop();
         groupCell.animate({
           left: left
         }, ANIMATE_DURATION);

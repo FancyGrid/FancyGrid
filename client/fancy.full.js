@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.75',
+  version: '1.7.76',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -7779,6 +7779,14 @@ Fancy.Element.prototype = {
     return this;
   },
   /*
+   *
+   */
+  stop: function () {
+    if(this.$dom.stop){
+      this.$dom.stop();
+    }
+  },
+  /*
    * @param {String} style
    * @param {Number} speed
    * @param {String} easing
@@ -11122,6 +11130,8 @@ Fancy.define('Fancy.Plugin', {
       var me = this,
         el = me.el,
         charWidth = 7;
+
+      me.text = text;
 
       if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
@@ -26721,15 +26731,37 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     hideColumn: function (side, index) {
       var me = this;
-      if (index === undefined) {
+      if (index === undefined && !F.isArray(index) && !F.isArray(side)) {
         index = side;
-        side = 'center';
+        side = this.getSideByColumnIndex(index);
+
+        if(!side){
+          throw new Error('[FancyGrid Error] - column does not exist');
+        }
+      }
+
+      if(index === undefined){
+        index = side;
+        side = undefined;
       }
 
       if(F.isArray(index)){
+        me._tempSumColumnsWidth = 0;
+        me._tempColumnsNumber = index.length;
+
         F.each(index, function (value, i) {
-          me.hideColumn(side, value);
+          if(side){
+            me._tempColumnsNumber--;
+            me.hideColumn(side, value);
+          }
+          else{
+            me._tempColumnsNumber--;
+            me.hideColumn(value);
+          }
         });
+
+        delete me._tempColumnsNumber;
+        delete me._tempSumColumnsWidth;
         return;
       }
 
@@ -26773,6 +26805,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
       }
 
+      if(me._tempSumColumnsWidth !== undefined){
+        me._tempSumColumnsWidth += column.width;
+      }
+
       header.hideCell(orderIndex);
       body.hideColumn(orderIndex);
 
@@ -26780,22 +26816,29 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.rowedit.hideField(orderIndex, side);
       }
 
-      switch (side) {
-        case 'left':
-          leftEl.animate({width: parseInt(leftEl.css('width')) - column.width}, ANIMATE_DURATION);
-          leftHeader.el.animate({width: parseInt(leftHeader.css('width')) - column.width}, ANIMATE_DURATION);
-          centerEl.animate({left: parseInt(centerEl.css('left')) - column.width}, ANIMATE_DURATION);
-          centerEl.animate({width: parseInt(centerEl.css('width')) + column.width}, ANIMATE_DURATION);
-          me.body.el.animate({width: parseInt(me.body.css('width')) + column.width}, ANIMATE_DURATION);
-          me.header.el.animate({width: parseInt(me.header.css('width')) + column.width}, ANIMATE_DURATION);
-          break;
-        case 'right':
-          rightEl.animate({width: parseInt(rightEl.css('width')) - column.width}, ANIMATE_DURATION);
-          rightHeader.el.animate({width: parseInt(rightHeader.css('width')) - column.width}, ANIMATE_DURATION);
-          centerEl.animate({width: parseInt(centerEl.css('width')) + column.width}, ANIMATE_DURATION);
-          me.body.el.animate({width: parseInt(me.body.css('width')) + column.width}, ANIMATE_DURATION);
-          me.header.el.animate({width: parseInt(me.header.css('width')) + column.width}, ANIMATE_DURATION);
-          break;
+      var columnWidth = column.width;
+      if(me._tempSumColumnsWidth){
+        columnWidth = me._tempSumColumnsWidth;
+      }
+
+      if(!me._tempColumnsNumber) {
+        switch (side) {
+          case 'left':
+            leftEl.animate({width: parseInt(leftEl.css('width')) - columnWidth}, ANIMATE_DURATION);
+            leftHeader.el.animate({width: parseInt(leftHeader.css('width')) - columnWidth}, ANIMATE_DURATION);
+            centerEl.animate({left: parseInt(centerEl.css('left')) - columnWidth}, ANIMATE_DURATION);
+            centerEl.animate({width: parseInt(centerEl.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.body.el.animate({width: parseInt(me.body.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.header.el.animate({width: parseInt(me.header.css('width')) + columnWidth}, ANIMATE_DURATION);
+            break;
+          case 'right':
+            rightEl.animate({width: parseInt(rightEl.css('width')) - columnWidth}, ANIMATE_DURATION);
+            rightHeader.el.animate({width: parseInt(rightHeader.css('width')) - columnWidth}, ANIMATE_DURATION);
+            centerEl.animate({width: parseInt(centerEl.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.body.el.animate({width: parseInt(me.body.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.header.el.animate({width: parseInt(me.header.css('width')) + columnWidth}, ANIMATE_DURATION);
+            break;
+        }
       }
 
       if (me.grouping) {
@@ -26816,15 +26859,48 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     showColumn: function (side, index) {
       var me = this;
-      if (index === undefined) {
+
+      if (index === undefined && !F.isArray(index) && !F.isArray(side)) {
         index = side;
-        side = 'center';
+        side = this.getSideByColumnIndex(index);
+
+        if(!side){
+          throw new Error('[FancyGrid Error] - column does not exist');
+        }
+      }
+
+      if(index === undefined){
+        index = side;
+        side = undefined;
       }
 
       if(F.isArray(index)){
+        me._tempSumColumnsWidth = 0;
+        me._tempColumnsNumber = index.length;
+
+        switch(side){
+          case 'left':
+            me._tempUsedSide = 'left';
+            break;
+          case 'right':
+            me._tempUsedSide = 'right';
+            break;
+        }
+
         F.each(index, function (value, i) {
-          me.showColumn(side, value);
+          if(side){
+            me._tempColumnsNumber--;
+            me.showColumn(side, value);
+          }
+          else{
+            me._tempColumnsNumber--;
+            me.showColumn(value);
+          }
         });
+
+        delete me._tempColumnsNumber;
+        delete me._tempSumColumnsWidth;
+        delete me._tempUsedSide;
         return;
       }
 
@@ -26866,6 +26942,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
       }
 
+      if(me._tempSumColumnsWidth !== undefined){
+        me._tempSumColumnsWidth += column.width;
+      }
+
       header.showCell(orderIndex);
       body.showColumn(orderIndex);
 
@@ -26873,22 +26953,29 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.rowedit.showField(orderIndex, side);
       }
 
-      switch (side) {
-        case 'left':
-          leftEl.animate({width: parseInt(leftEl.css('width')) + column.width});
-          leftHeader.el.animate({width: parseInt(leftHeader.css('width')) + column.width});
-          centerEl.animate({left: parseInt(centerEl.css('left')) + column.width});
-          centerEl.animate({width: parseInt(centerEl.css('width')) - column.width});
-          me.body.el.animate({width: parseInt(me.body.css('width')) - column.width});
-          me.header.el.animate({width: parseInt(me.header.css('width')) - column.width});
-          break;
-        case 'right':
-          rightEl.animate({width: parseInt(rightEl.css('width')) + column.width});
-          rightHeader.el.animate({width: parseInt(rightHeader.css('width')) + column.width});
-          centerEl.animate({width: parseInt(centerEl.css('width')) - column.width});
-          me.body.el.animate({width: parseInt(me.body.css('width')) - column.width});
-          me.header.el.animate({width: parseInt(me.header.css('width')) - column.width});
-          break;
+      var columnWidth = column.width;
+      if(me._tempSumColumnsWidth){
+        columnWidth = me._tempSumColumnsWidth;
+      }
+
+      if(!me._tempColumnsNumber) {
+        switch (side) {
+          case 'left':
+            leftEl.animate({width: parseInt(leftEl.css('width')) + columnWidth});
+            leftHeader.el.animate({width: parseInt(leftHeader.css('width')) + columnWidth});
+            centerEl.animate({left: parseInt(centerEl.css('left')) + columnWidth});
+            centerEl.animate({width: parseInt(centerEl.css('width')) - columnWidth});
+            me.body.el.animate({width: parseInt(me.body.css('width')) - columnWidth});
+            me.header.el.animate({width: parseInt(me.header.css('width')) - columnWidth});
+            break;
+          case 'right':
+            rightEl.animate({width: parseInt(rightEl.css('width')) + columnWidth});
+            rightHeader.el.animate({width: parseInt(rightHeader.css('width')) + columnWidth});
+            centerEl.animate({width: parseInt(centerEl.css('width')) - columnWidth});
+            me.body.el.animate({width: parseInt(me.body.css('width')) - columnWidth});
+            me.header.el.animate({width: parseInt(me.header.css('width')) - columnWidth});
+            break;
+        }
       }
 
       if (me.grouping) {
@@ -28300,6 +28387,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         F.$(window).bind('resize', onWindowResize);
       }
     },
+    /*
+     *
+     */
     getNumOfVisibleCells: function () {
       var me = this;
 
@@ -28313,6 +28403,33 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       return me.numOfVisibleCells;
+    },
+    /*
+     *
+     */
+    getSideByColumnIndex: function (index) {
+      var me = this,
+        side;
+
+      F.each(me.columns, function (column) {
+        if(column.index === index){
+          side = 'center';
+        }
+      });
+
+      F.each(me.leftColumns, function (column) {
+        if(column.index === index){
+          side = 'left';
+        }
+      });
+
+      F.each(me.rightColumns, function (column) {
+        if(column.index === index){
+          side = 'right';
+        }
+      });
+
+      return side;
     }
   });
 
@@ -38101,6 +38218,7 @@ Fancy.modules['selection'] = true;
         el = F.get(document.createElement('textarea'));
 
       el.addCls(GRID_COPY_TEXTAREA);
+      el.attr('aria-hidden', 'true');
 
       me.copyEl = F.get(w.el.dom.appendChild(el.dom));
     },
@@ -50004,6 +50122,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
 
         if(columnLeft !== left){
+          columnEl.stop();
           columnEl.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -50042,11 +50161,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           continue;
         }
 
-        if(columnLeft !== left) {
+        //if(columnLeft !== left) {
+          columnEl.stop();
           columnEl.animate({
             left: left
           }, ANIMATE_DURATION);
-        }
+        //}
 
         left += column.width;
       }
@@ -51596,6 +51716,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
+        groupCell.stop();
         groupCell.animate({
           width: groupCellWidth - cellWidth
         }, ANIMATE_DURATION);
@@ -51628,6 +51749,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
 
         if(cellLeft !== left){
+          _cell.stop();
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -51657,6 +51779,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           left += column.width;
         });
 
+        groupCell.stop();
         groupCell.animate({
           left: left
         }, ANIMATE_DURATION);
@@ -51685,6 +51808,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
+        groupCell.stop();
         groupCell.animate({
           width: groupCellWidth + cellWidth
         }, ANIMATE_DURATION);
@@ -51714,11 +51838,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
-        if(cellLeft !== left){
+        //if(cellLeft !== left){
+          _cell.stop();
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
-        }
+        //}
 
         left += column.width;
       }
@@ -51744,6 +51869,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           left += column.width;
         });
 
+        groupCell.stop();
         groupCell.animate({
           left: left
         }, ANIMATE_DURATION);
