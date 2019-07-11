@@ -459,6 +459,14 @@ Fancy.Element.prototype = {
     return this;
   },
   /*
+   *
+   */
+  stop: function () {
+    if(this.$dom.stop){
+      this.$dom.stop();
+    }
+  },
+  /*
    * @param {String} style
    * @param {Number} speed
    * @param {String} easing

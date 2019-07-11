@@ -122,7 +122,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     
     if(me.value < 0){
       me.backColor = me.colorBGMinus;
-      me.color = me.colorPlus;
+      me.color = me.colorMinus;
     }
     else{
       me.backColor = me.colorBGPlus;

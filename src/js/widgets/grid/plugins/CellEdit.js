@@ -338,6 +338,13 @@
         cellXY = me.getCellPosition(cell),
         cellSize = me.getCellSize(cell);
 
+      w.fire('beforeedit', o);
+
+      if(w.edit.stopped === true){
+        w.edit.stopped = false;
+        return;
+      }
+
       if (type === 'combo') {
         me.comboClick = true;
       }
@@ -530,6 +537,14 @@
         return;
       }
 
+      //if(o.column.autoHeight){
+      if(w.rowheight){
+        //It could slow
+        setTimeout(function () {
+          w.update();
+        },1);
+      }
+
       key = me.getActiveColumnKey();
 
       value = me.prepareValue(value);
@@ -584,6 +599,13 @@
         o = me.activeCellEditParams,
         column = o.column,
         format = column.format;
+
+      if(format && format.beforeSaveFn){
+        var editor = me.activeEditor;
+        value = editor.input.dom.value;
+
+        return format.beforeSaveFn(value);
+      }
 
       switch (type) {
         case 'number':

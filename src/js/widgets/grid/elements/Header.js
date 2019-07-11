@@ -21,6 +21,8 @@
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
+  var GRID_HEADER_CELL_SORTABLE_CLS = F.GRID_HEADER_CELL_SORTABLE_CLS;
+  var GRID_HEADER_CELL_NOT_SORTABLE_CLS = F.GRID_HEADER_CELL_NOT_SORTABLE_CLS;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -181,6 +183,17 @@
           }
         }
 
+        if(column.headerCls){
+          cls += ' ' + column.headerCls;
+        }
+
+        if(column.sortable){
+          cls += ' ' + GRID_HEADER_CELL_SORTABLE_CLS;
+        }
+        else{
+          cls += ' ' + GRID_HEADER_CELL_NOT_SORTABLE_CLS;
+        }
+
         if(F.isNumber(height)){
           height += 'px';
         }
@@ -280,6 +293,17 @@
 
       if(me.side === 'center'){
         left += w.scroller.scrollLeft || 0;
+      }
+
+      if(column.headerCls){
+        cls += ' ' + column.headerCls;
+      }
+
+      if(column.sortable){
+        cls += ' ' + GRID_HEADER_CELL_SORTABLE_CLS;
+      }
+      else{
+        cls += ' ' + GRID_HEADER_CELL_NOT_SORTABLE_CLS;
       }
 
       var cellHTML = me.cellTpl.getHTML({
@@ -621,7 +645,8 @@
               e: e,
               side: me.side,
               cell: cell,
-              index: index
+              index: index,
+              column: column
             });
           }
 
@@ -632,7 +657,8 @@
           e: e,
           side: me.side,
           cell: cell,
-          index: index
+          index: index,
+          column: column
         });
       }
     },
@@ -770,6 +796,7 @@
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
+        groupCell.stop();
         groupCell.animate({
           width: groupCellWidth - cellWidth
         }, ANIMATE_DURATION);
@@ -802,6 +829,7 @@
         }
 
         if(cellLeft !== left){
+          _cell.stop();
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -831,6 +859,7 @@
           left += column.width;
         });
 
+        groupCell.stop();
         groupCell.animate({
           left: left
         }, ANIMATE_DURATION);
@@ -859,6 +888,7 @@
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
+        groupCell.stop();
         groupCell.animate({
           width: groupCellWidth + cellWidth
         }, ANIMATE_DURATION);
@@ -888,11 +918,12 @@
           }
         }
 
-        if(cellLeft !== left){
+        //if(cellLeft !== left){
+          _cell.stop();
           _cell.animate({
             left: left
           }, ANIMATE_DURATION);
-        }
+        //}
 
         left += column.width;
       }
@@ -918,6 +949,7 @@
           left += column.width;
         });
 
+        groupCell.stop();
         groupCell.animate({
           left: left
         }, ANIMATE_DURATION);
@@ -1228,10 +1260,38 @@
     reSetColumnsCls: function () {
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        columnsCls = [];
+
+      F.each(columns, function (column) {
+        if(column.headerCls){
+          columnsCls.push(column.headerCls);
+        }
+
+        if(column.sortable){
+          columnsCls.push(GRID_HEADER_CELL_SORTABLE_CLS);
+        }
+        else{
+          columnsCls.push(GRID_HEADER_CELL_NOT_SORTABLE_CLS);
+        }
+      });
 
       cells.each(function(cell, i){
         var column = columns[i];
+        F.each(columnsCls, function (cls) {
+          cell.removeCls(cls);
+        });
+
+        if(column.headerCls){
+          cell.addCls(column.headerCls);
+        }
+
+        if(column.sortable){
+          cell.addCls(GRID_HEADER_CELL_SORTABLE_CLS);
+        }
+        else{
+          cell.addCls(GRID_HEADER_CELL_NOT_SORTABLE_CLS);
+        }
 
         if(column.menu){
           cell.removeCls(GRID_HEADER_CELL_TRIGGER_DISABLED_CLS);

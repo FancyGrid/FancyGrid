@@ -636,6 +636,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       column = columns[index];
       key = column.index;
 
+      if(column.headerClickSort === false){
+        return;
+      }
+
       me.sort(action, key, side, column, cellEl);
     },
     /*

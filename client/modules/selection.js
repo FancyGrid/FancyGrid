@@ -2557,6 +2557,7 @@ Fancy.modules['selection'] = true;
         el = F.get(document.createElement('textarea'));
 
       el.addCls(GRID_COPY_TEXTAREA);
+      el.attr('aria-hidden', 'true');
 
       me.copyEl = F.get(w.el.dom.appendChild(el.dom));
     },
@@ -3107,6 +3108,36 @@ Fancy.modules['selection'] = true;
           //me.keyNavigating = true;
           e.preventDefault();
           me.scrollPageDOWN();
+          break;
+        case key.ENTER:
+          if(w.celledit && !me.activeEditor){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
+              var activeCell = w.selection.getActiveCell();
+
+              if(activeCell){
+                var info = w.selection.getActiveCellInfo(),
+                  columns = w.getColumns(info.side);
+
+                info.column = columns[info.columnIndex];
+                if(info.column.editable === false){
+                  return;
+                }
+                info.cell = activeCell.dom;
+                var item = w.get(info.rowIndex);
+                info.item = item;
+                info.data = item.data;
+
+                if (info.column.smartIndexFn) {
+                  info.value = info.column.smartIndexFn(info.data);
+                }
+                else{
+                  info.value = w.store.get(info.rowIndex, info.column.index);
+                }
+
+                w.celledit.edit(info);
+              }
+            }
+          }
           break;
       }
     },

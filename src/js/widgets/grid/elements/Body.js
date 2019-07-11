@@ -625,6 +625,7 @@
         }
 
         if(columnLeft !== left){
+          columnEl.stop();
           columnEl.animate({
             left: left
           }, ANIMATE_DURATION);
@@ -663,11 +664,12 @@
           continue;
         }
 
-        if(columnLeft !== left) {
+        //if(columnLeft !== left) {
+          columnEl.stop();
           columnEl.animate({
             left: left
           }, ANIMATE_DURATION);
-        }
+        //}
 
         left += column.width;
       }

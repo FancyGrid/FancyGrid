@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.66',
+  version: '1.7.76',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -545,6 +545,8 @@ Fancy.apply(Fancy, {
   GRID_HEADER_CELL_FILTER_FULL_CLS: 'fancy-grid-header-filter-cell-full',
   GRID_HEADER_CELL_FILTER_SMALL_CLS: 'fancy-grid-header-filter-cell-small',
   GRID_HEADER_CELL_CHECKBOX_CLS: 'fancy-grid-header-cell-checkbox',
+  GRID_HEADER_CELL_SORTABLE_CLS: 'fancy-grid-header-cell-sortable',
+  GRID_HEADER_CELL_NOT_SORTABLE_CLS: 'fancy-grid-header-cell-not-sortable',
   //grid cell
   GRID_CELL_CLS: 'fancy-grid-cell',
   GRID_CELL_INNER_CLS: 'fancy-grid-cell-inner',
@@ -3547,7 +3549,12 @@ Fancy.define('Fancy.Store', {
       options = options || {},
       dataProperty = options.dataProperty || 'data',
       data = me[dataProperty],
-      iL = data.length;
+      iL = data.length,
+      nestedKey;
+
+    if(/\./.test(key)){
+      nestedKey = true;
+    }
 
     if(options.smartIndexFn){
       for(;i<iL;i++){
@@ -3569,8 +3576,15 @@ Fancy.define('Fancy.Store', {
           }
         }
         else{
-          for (; i < iL; i++) {
-            values.push(data[i].data[key]);
+          if(nestedKey){
+            for (; i < iL; i++) {
+              values.push(this.getNestedValue(data[i].data, key));
+            }
+          }
+          else {
+            for (; i < iL; i++) {
+              values.push(data[i].data[key]);
+            }
           }
         }
       }
@@ -3578,24 +3592,51 @@ Fancy.define('Fancy.Store', {
         if(options.groupMap){
           me.groupMap = {};
 
-          for (; i < iL; i++) {
-            var item = data[i],
-              value = item.data[key];
+          if(nestedKey) {
+            for (; i < iL; i++) {
+              var item = data[i],
+                value = this.getNestedValue(item.data, key);
 
-            values.push(value);
-            me.groupMap[item.id] = value;
+              values.push(value);
+              me.groupMap[item.id] = value;
+            }
+          }
+          else {
+            for (; i < iL; i++) {
+              var item = data[i],
+                value = item.data[key];
+
+              values.push(value);
+              me.groupMap[item.id] = value;
+            }
           }
         }
         else {
-          for (; i < iL; i++) {
-            var itemData = data[i].data || data[i];
-            values.push(itemData[key]);
+          if(!nestedKey){
+            for (; i < iL; i++) {
+              var itemData = data[i].data || data[i];
+              values.push(itemData[key]);
+            }
+          }
+          else {
+            for (; i < iL; i++) {
+              values.push(this.getNestedValue(data[i].data || data[i], key));
+            }
           }
         }
       }
     }
 
     return values;
+  },
+  getNestedValue: function (data, key) {
+    var splitted = key.split('.');
+
+    if(splitted.length > 1){
+      return this.getNestedValue(data[splitted.shift(0, 1)], splitted.join('.'));
+    }
+
+    return data[key];
   },
   /*
    * @param {Object} [o]
@@ -4419,6 +4460,14 @@ Fancy.Element.prototype = {
    */
   item: function(){
     return this;
+  },
+  /*
+   *
+   */
+  stop: function () {
+    if(this.$dom.stop){
+      this.$dom.stop();
+    }
   },
   /*
    * @param {String} style
@@ -5893,6 +5942,8 @@ Fancy.define('Fancy.Plugin', {
       var me = this,
         el = me.el,
         charWidth = 7;
+
+      me.text = text;
 
       if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
@@ -9045,8 +9096,39 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {*} value
      */
     formatValue: function (value) {
+      var me = this;
       value = this.format.inputFn(value);
+      var position = this.input.dom.selectionStart;
+      var oldValue = this.input.dom.value;
+
       this.input.dom.value = value;
+
+      if(oldValue.length < value.length){
+        position++;
+      }
+      me.setCaretPosition(position);
+    },
+    /*
+     *
+     */
+    setCaretPosition: function(position) {
+      var input = this.input.dom;
+
+      if(input.createTextRange) {
+        var range = input.createTextRange();
+
+        range.move('character', position);
+        range.select();
+      }
+      else {
+        if(input.selectionStart) {
+          input.focus();
+          input.setSelectionRange(position, position);
+        }
+        else {
+          input.focus();
+        }
+      }
     },
     /*
      * @param {Object} e
@@ -9328,7 +9410,9 @@ if(!Fancy.nojQuery && Fancy.$){
           switch (me.type) {
             case 'number':
             case 'field.number':
-              me.spinUp();
+              if(this.spin){
+                me.spinUp();
+              }
               break;
           }
 
@@ -9343,7 +9427,9 @@ if(!Fancy.nojQuery && Fancy.$){
           switch (me.type) {
             case 'number':
             case 'field.number':
-              me.spinDown();
+              if(this.spin) {
+                me.spinDown();
+              }
               break;
           }
 
@@ -9355,6 +9441,7 @@ if(!Fancy.nojQuery && Fancy.$){
           }
           break;
         case key.LEFT:
+          e.stopPropagation();
           break;
         case key.RIGHT:
           e.stopPropagation();
@@ -13993,7 +14080,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'select', 'selectrow', 'deselectrow',
       'clearselect',
       'activate', 'deactivate',
-      'beforeedit',
+      'beforeedit',//Not coded
       'startedit',
       'changepage', 'changepagesize',
       'dropitems',

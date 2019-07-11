@@ -259,6 +259,13 @@ Fancy.modules['state'] = true;
             w.addFilter(p, filter[q], q);
           }
         }
+
+        if(w.WAIT_FOR_APPLYING_ALL_FILTERS){
+          w.filter.forceUpdateStoreFilters();
+          w.once('load', function () {
+            delete w.WAIT_FOR_APPLYING_ALL_FILTERS;
+          });
+        }
       }
 
       if(state.page) {

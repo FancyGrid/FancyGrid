@@ -2166,9 +2166,11 @@
           };
       }
 
+      /*
       if (format.inputFn) {
         return format.inputFn;
       }
+      */
     },
     /*
      * @param {String} value
@@ -2184,11 +2186,17 @@
           value = format(value);
           break;
         case 'object':
+          /*
           if (format.inputFn) {
             value = format.inputFn(value);
           }
           else {
             value = this.getFormat(format)(value);
+          }
+          */
+          var fn = this.getFormat(format);
+          if(fn){
+            value = fn(value);
           }
 
           break;

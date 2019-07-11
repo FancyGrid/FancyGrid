@@ -43,7 +43,7 @@
     /*
      *
      */
-    initStore: function () {
+    initStore: function (){
       var me = this,
         fields = me.getFieldsFromData(me.data),
         modelName = 'Fancy.model.' + F.id(),
@@ -1164,6 +1164,7 @@
       if (me.textSelection === false) {
         me.addCls(GRID_UNSELECTABLE_CLS);
 
+        /*
         var fn = function (e) {
           var targetEl = F.get(e.target);
           if (targetEl.hasCls('fancy-field-text-input') || targetEl.hasCls('fancy-textarea-text-input')) {
@@ -1176,6 +1177,7 @@
         body.el.on('mousedown', fn);
         leftBody.el.on('mousedown', fn);
         rightBody.el.on('mousedown', fn);
+        */
       }
     },
     /*
@@ -1638,12 +1640,14 @@
           if (column.flex) {
             var cell = header.getCell(i);
 
+            /*
             me.fire('columnresize', {
               cell: cell.dom,
               width: column.width,
               column: column,
               side: side
             });
+            */
           }
         });
       };
@@ -1952,9 +1956,39 @@
      * @param {String|Number} [index]
      */
     hideColumn: function (side, index) {
-      if (index === undefined) {
+      var me = this;
+      if (index === undefined && !F.isArray(index) && !F.isArray(side)) {
         index = side;
-        side = 'center';
+        side = this.getSideByColumnIndex(index);
+
+        if(!side){
+          throw new Error('[FancyGrid Error] - column does not exist');
+        }
+      }
+
+      if(index === undefined){
+        index = side;
+        side = undefined;
+      }
+
+      if(F.isArray(index)){
+        me._tempSumColumnsWidth = 0;
+        me._tempColumnsNumber = index.length;
+
+        F.each(index, function (value, i) {
+          if(side){
+            me._tempColumnsNumber--;
+            me.hideColumn(side, value);
+          }
+          else{
+            me._tempColumnsNumber--;
+            me.hideColumn(value);
+          }
+        });
+
+        delete me._tempColumnsNumber;
+        delete me._tempSumColumnsWidth;
+        return;
       }
 
       var me = this,
@@ -1997,6 +2031,10 @@
         }
       }
 
+      if(me._tempSumColumnsWidth !== undefined){
+        me._tempSumColumnsWidth += column.width;
+      }
+
       header.hideCell(orderIndex);
       body.hideColumn(orderIndex);
 
@@ -2004,22 +2042,29 @@
         me.rowedit.hideField(orderIndex, side);
       }
 
-      switch (side) {
-        case 'left':
-          leftEl.animate({width: parseInt(leftEl.css('width')) - column.width}, ANIMATE_DURATION);
-          leftHeader.el.animate({width: parseInt(leftHeader.css('width')) - column.width}, ANIMATE_DURATION);
-          centerEl.animate({left: parseInt(centerEl.css('left')) - column.width}, ANIMATE_DURATION);
-          centerEl.animate({width: parseInt(centerEl.css('width')) + column.width}, ANIMATE_DURATION);
-          me.body.el.animate({width: parseInt(me.body.css('width')) + column.width}, ANIMATE_DURATION);
-          me.header.el.animate({width: parseInt(me.header.css('width')) + column.width}, ANIMATE_DURATION);
-          break;
-        case 'right':
-          rightEl.animate({width: parseInt(rightEl.css('width')) - column.width}, ANIMATE_DURATION);
-          rightHeader.el.animate({width: parseInt(rightHeader.css('width')) - column.width}, ANIMATE_DURATION);
-          centerEl.animate({width: parseInt(centerEl.css('width')) + column.width}, ANIMATE_DURATION);
-          me.body.el.animate({width: parseInt(me.body.css('width')) + column.width}, ANIMATE_DURATION);
-          me.header.el.animate({width: parseInt(me.header.css('width')) + column.width}, ANIMATE_DURATION);
-          break;
+      var columnWidth = column.width;
+      if(me._tempSumColumnsWidth){
+        columnWidth = me._tempSumColumnsWidth;
+      }
+
+      if(!me._tempColumnsNumber) {
+        switch (side) {
+          case 'left':
+            leftEl.animate({width: parseInt(leftEl.css('width')) - columnWidth}, ANIMATE_DURATION);
+            leftHeader.el.animate({width: parseInt(leftHeader.css('width')) - columnWidth}, ANIMATE_DURATION);
+            centerEl.animate({left: parseInt(centerEl.css('left')) - columnWidth}, ANIMATE_DURATION);
+            centerEl.animate({width: parseInt(centerEl.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.body.el.animate({width: parseInt(me.body.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.header.el.animate({width: parseInt(me.header.css('width')) + columnWidth}, ANIMATE_DURATION);
+            break;
+          case 'right':
+            rightEl.animate({width: parseInt(rightEl.css('width')) - columnWidth}, ANIMATE_DURATION);
+            rightHeader.el.animate({width: parseInt(rightHeader.css('width')) - columnWidth}, ANIMATE_DURATION);
+            centerEl.animate({width: parseInt(centerEl.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.body.el.animate({width: parseInt(me.body.css('width')) + columnWidth}, ANIMATE_DURATION);
+            me.header.el.animate({width: parseInt(me.header.css('width')) + columnWidth}, ANIMATE_DURATION);
+            break;
+        }
       }
 
       if (me.grouping) {
@@ -2039,9 +2084,50 @@
      * @param {String|Number} [index]
      */
     showColumn: function (side, index) {
-      if (index === undefined) {
+      var me = this;
+
+      if (index === undefined && !F.isArray(index) && !F.isArray(side)) {
         index = side;
-        side = 'center';
+        side = this.getSideByColumnIndex(index);
+
+        if(!side){
+          throw new Error('[FancyGrid Error] - column does not exist');
+        }
+      }
+
+      if(index === undefined){
+        index = side;
+        side = undefined;
+      }
+
+      if(F.isArray(index)){
+        me._tempSumColumnsWidth = 0;
+        me._tempColumnsNumber = index.length;
+
+        switch(side){
+          case 'left':
+            me._tempUsedSide = 'left';
+            break;
+          case 'right':
+            me._tempUsedSide = 'right';
+            break;
+        }
+
+        F.each(index, function (value, i) {
+          if(side){
+            me._tempColumnsNumber--;
+            me.showColumn(side, value);
+          }
+          else{
+            me._tempColumnsNumber--;
+            me.showColumn(value);
+          }
+        });
+
+        delete me._tempColumnsNumber;
+        delete me._tempSumColumnsWidth;
+        delete me._tempUsedSide;
+        return;
       }
 
       var me = this,
@@ -2076,10 +2162,14 @@
               return;
             }
             orderIndex = i;
-            column.hidden = false;
+            delete column.hidden;
             break;
           }
         }
+      }
+
+      if(me._tempSumColumnsWidth !== undefined){
+        me._tempSumColumnsWidth += column.width;
       }
 
       header.showCell(orderIndex);
@@ -2089,22 +2179,29 @@
         me.rowedit.showField(orderIndex, side);
       }
 
-      switch (side) {
-        case 'left':
-          leftEl.animate({width: parseInt(leftEl.css('width')) + column.width});
-          leftHeader.el.animate({width: parseInt(leftHeader.css('width')) + column.width});
-          centerEl.animate({left: parseInt(centerEl.css('left')) + column.width});
-          centerEl.animate({width: parseInt(centerEl.css('width')) - column.width});
-          me.body.el.animate({width: parseInt(me.body.css('width')) - column.width});
-          me.header.el.animate({width: parseInt(me.header.css('width')) - column.width});
-          break;
-        case 'right':
-          rightEl.animate({width: parseInt(rightEl.css('width')) + column.width});
-          rightHeader.el.animate({width: parseInt(rightHeader.css('width')) + column.width});
-          centerEl.animate({width: parseInt(centerEl.css('width')) - column.width});
-          me.body.el.animate({width: parseInt(me.body.css('width')) - column.width});
-          me.header.el.animate({width: parseInt(me.header.css('width')) - column.width});
-          break;
+      var columnWidth = column.width;
+      if(me._tempSumColumnsWidth){
+        columnWidth = me._tempSumColumnsWidth;
+      }
+
+      if(!me._tempColumnsNumber) {
+        switch (side) {
+          case 'left':
+            leftEl.animate({width: parseInt(leftEl.css('width')) + columnWidth});
+            leftHeader.el.animate({width: parseInt(leftHeader.css('width')) + columnWidth});
+            centerEl.animate({left: parseInt(centerEl.css('left')) + columnWidth});
+            centerEl.animate({width: parseInt(centerEl.css('width')) - columnWidth});
+            me.body.el.animate({width: parseInt(me.body.css('width')) - columnWidth});
+            me.header.el.animate({width: parseInt(me.header.css('width')) - columnWidth});
+            break;
+          case 'right':
+            rightEl.animate({width: parseInt(rightEl.css('width')) + columnWidth});
+            rightHeader.el.animate({width: parseInt(rightHeader.css('width')) + columnWidth});
+            centerEl.animate({width: parseInt(centerEl.css('width')) - columnWidth});
+            me.body.el.animate({width: parseInt(me.body.css('width')) - columnWidth});
+            me.header.el.animate({width: parseInt(me.header.css('width')) - columnWidth});
+            break;
+        }
       }
 
       if (me.grouping) {
@@ -2513,7 +2610,12 @@
       me.filter.filters[index] = filter;
 
       if(update){
-        me.filter.updateStoreFilters();
+        if(me.WAIT_FOR_APPLYING_ALL_FILTERS){
+          me.filter.updateStoreFilters(false);
+        }
+        else {
+          me.filter.updateStoreFilters();
+        }
       }
 
       if (updateHeaderFilter !== false) {
@@ -2809,6 +2911,13 @@
             if (column.render) {
               var data = me.get(i),
                 value = me.get(i, column.index);
+
+              if(data && data.data){
+                data = data.data;
+              }
+              else{
+
+              }
 
               rowData.push(column.render({
                 value: value,
@@ -3504,6 +3613,9 @@
         F.$(window).bind('resize', onWindowResize);
       }
     },
+    /*
+     *
+     */
     getNumOfVisibleCells: function () {
       var me = this;
 
@@ -3517,6 +3629,33 @@
       }
 
       return me.numOfVisibleCells;
+    },
+    /*
+     *
+     */
+    getSideByColumnIndex: function (index) {
+      var me = this,
+        side;
+
+      F.each(me.columns, function (column) {
+        if(column.index === index){
+          side = 'center';
+        }
+      });
+
+      F.each(me.leftColumns, function (column) {
+        if(column.index === index){
+          side = 'left';
+        }
+      });
+
+      F.each(me.rightColumns, function (column) {
+        if(column.index === index){
+          side = 'right';
+        }
+      });
+
+      return side;
     }
   });
 

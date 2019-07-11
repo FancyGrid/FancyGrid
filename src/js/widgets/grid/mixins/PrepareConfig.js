@@ -231,11 +231,21 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     if(Fancy.isArray(config.data) && config.data.length === 0 && config.columns){
-      var fields = [];
+      var fields = [],
+        nestedKey = {};
 
       Fancy.each(config.columns, function(column){
         if(column.index){
-          fields.push(column.index || column.key);
+          if(/\./.test(column.index)){
+            var splitted =column.index.split('.');
+            if(!nestedKey[splitted[0]]){
+              fields.push(splitted[0]);
+              nestedKey[splitted[0]] = true;
+            }
+          }
+          else {
+            fields.push(column.index || column.key);
+          }
         }
 
         if(column.columns){
@@ -630,6 +640,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(column.hidden){
+        if(column.width === undefined){
+          column.width = 100;
+        }
         return;
       }
 
@@ -1777,11 +1790,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       if(state){
         state = JSON.parse(state);
 
+        for(var p in state) {
+          if (Fancy.isString(state[p])) {
+            state[p] = JSON.parse(state[p]);
+          }
+        }
+
         var stateColumns = state.columns;
 
         if(stateColumns){
-          stateColumns = JSON.parse(stateColumns);
-
           Fancy.each(stateColumns, function (stateColumn, i) {
             Fancy.each(stateColumn, function (v, p) {
               if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
