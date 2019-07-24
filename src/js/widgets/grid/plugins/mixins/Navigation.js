@@ -84,7 +84,7 @@
           me.scrollPageDOWN();
           break;
         case key.ENTER:
-          if(w.celledit && !me.activeEditor){
+          if(w.celledit && !w.celledit.activeEditor) {
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
               var activeCell = w.selection.getActiveCell();
 
@@ -113,6 +113,73 @@
             }
           }
           break;
+        case key.BACKSPACE:
+        case key.DELETE:
+          //TODO
+          break;
+        case key.ESC:
+          break;
+        case key.ZERO:
+        case key.ONE:
+        case key.TWO:
+        case key.THREE:
+        case key.FOUR:
+        case key.FIVE:
+        case key.SIX:
+        case key.SEVEN:
+        case key.EIGHT:
+        case key.NINE:
+        case key.A:
+        case key.B:
+        case key.C:
+        case key.D:
+        case key.E:
+        case key.F:
+        case key.G:
+        case key.H:
+        case key.I:
+        case key.J:
+        case key.K:
+        case key.L:
+        case key.M:
+        case key.N:
+        case key.O:
+        case key.P:
+        case key.Q:
+        case key.R:
+        case key.S:
+        case key.T:
+        case key.U:
+        case key.V:
+        case key.W:
+        case key.X:
+        case key.Y:
+        case key.Z:
+          if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor) {
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells') {
+              var activeCell = w.selection.getActiveCell();
+
+              if(activeCell) {
+                var info = w.selection.getActiveCellInfo(),
+                  columns = w.getColumns(info.side);
+
+                info.column = columns[info.columnIndex];
+                if(info.column.editable === false){
+                  return;
+                }
+                info.cell = activeCell.dom;
+                var item = w.get(info.rowIndex);
+                info.item = item;
+                info.data = item.data;
+
+                info.value = '';
+
+                w.celledit.edit(info);
+              }
+            }
+          }
+          break;
+        default:
       }
     },
     moveRight: function () {

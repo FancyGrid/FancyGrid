@@ -1915,7 +1915,8 @@
           return;
         }
 
-        if (parent.hasCls(me.widgetCls)) {
+        //if (parent.hasCls(me.widgetCls)) {
+        if(parent.hasCls(GRID_BODY_CLS)){
           return;
         }
 
@@ -3575,6 +3576,9 @@
         me.panel.el.css('height', panelHeight + me.barHeight);
       }
     },
+    /*
+     *
+     */
     initResponsiveness: function () {
       var me = this;
 
@@ -3631,7 +3635,8 @@
       return me.numOfVisibleCells;
     },
     /*
-     *
+     * @params {String} index
+     * @return {'center'|'left'|'right'}
      */
     getSideByColumnIndex: function (index) {
       var me = this,
@@ -3656,6 +3661,43 @@
       });
 
       return side;
+    },
+    /*
+     * @param {Array|Number|String} index
+     * @param {Number} width
+     * @param {'center'|'left'|'right'} [side]
+     */
+    setColumnWidth: function (index, width, side) {
+      var me = this,
+        w = me.widget,
+        side = side || 'center';
+
+      if(F.isArray(index)){
+        F.each(index, function (item) {
+          me.setColumnWidth(item.index, item.width, item.side);
+        });
+      }
+      else{
+        var columns = me.getColumns(side);
+        if(F.isNumber(index)){
+          columns[index].width = width;
+        }
+        else{
+          me.getColumnByIndex(index).width = width;
+        }
+      }
+
+      if(me.intervalUpdateColumnsWidth){
+        clearInterval(me.intervalUpdateColumnsWidth);
+        delete me.intervalUpdateColumnsWidth;
+      }
+
+      me.intervalUpdateColumnsWidth = setTimeout(function () {
+        if(me.columnresizer){
+          me.columnresizer.updateColumnsWidth();
+          delete this.intervalUpdateColumnsWidth;
+        }
+      }, 100);
     }
   });
 

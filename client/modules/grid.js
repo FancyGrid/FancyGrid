@@ -4198,7 +4198,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           return;
         }
 
-        if (parent.hasCls(me.widgetCls)) {
+        //if (parent.hasCls(me.widgetCls)) {
+        if(parent.hasCls(GRID_BODY_CLS)){
           return;
         }
 
@@ -5858,6 +5859,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.panel.el.css('height', panelHeight + me.barHeight);
       }
     },
+    /*
+     *
+     */
     initResponsiveness: function () {
       var me = this;
 
@@ -5914,7 +5918,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       return me.numOfVisibleCells;
     },
     /*
-     *
+     * @params {String} index
+     * @return {'center'|'left'|'right'}
      */
     getSideByColumnIndex: function (index) {
       var me = this,
@@ -5939,6 +5944,43 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       });
 
       return side;
+    },
+    /*
+     * @param {Array|Number|String} index
+     * @param {Number} width
+     * @param {'center'|'left'|'right'} [side]
+     */
+    setColumnWidth: function (index, width, side) {
+      var me = this,
+        w = me.widget,
+        side = side || 'center';
+
+      if(F.isArray(index)){
+        F.each(index, function (item) {
+          me.setColumnWidth(item.index, item.width, item.side);
+        });
+      }
+      else{
+        var columns = me.getColumns(side);
+        if(F.isNumber(index)){
+          columns[index].width = width;
+        }
+        else{
+          me.getColumnByIndex(index).width = width;
+        }
+      }
+
+      if(me.intervalUpdateColumnsWidth){
+        clearInterval(me.intervalUpdateColumnsWidth);
+        delete me.intervalUpdateColumnsWidth;
+      }
+
+      me.intervalUpdateColumnsWidth = setTimeout(function () {
+        if(me.columnresizer){
+          me.columnresizer.updateColumnsWidth();
+          delete this.intervalUpdateColumnsWidth;
+        }
+      }, 100);
     }
   });
 
@@ -7956,6 +7998,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       me.rightEl.css({
         display: 'none'
       });
+
       me.fixSidesWidth();
       w.startResizing = false;
       me.moveLeftResizer = false;
@@ -8051,7 +8094,6 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
             centerHeaderEl.animate({width: parseInt(centerHeaderEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
             centerBodyEl.animate({width: parseInt(centerBodyEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
           }
-
           break;
         case 'center':
           column = w.columns[index];
@@ -8094,7 +8136,6 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
               domHeaderCell.animate({left: _left}, ANIMATE_DURATION);
             }
           }
-
           break;
         case 'right':
           newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
@@ -8297,14 +8338,38 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       columnEl.css('width', width);
       headerCellEl.css('width', width);
 
-      if (columns[index + 1]) {
+      var nextIndex = this.getNextVisibleIndex(index, side);
+
+      if (nextIndex) {
         left += width;
 
-        nextColumnEl = G(body.getDomColumn(index + 1));
+        nextColumnEl = G(body.getDomColumn(nextIndex));
         nextColumnEl.css('left', left);
 
-        nextHeaderCellEl = header.getCell(index + 1);
+        nextHeaderCellEl = header.getCell(nextIndex);
         nextHeaderCellEl.css('left', left);
+      }
+
+      w.fire('columnresize', {
+        cell: headerCellEl.dom,
+        width: width,
+        column: columns[index],
+        side: side
+      });
+    },
+    getNextVisibleIndex: function (index, side) {
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(side),
+        i = index + 1,
+        iL = columns.length;
+
+      for(;i<iL;i++){
+        var column = columns[i];
+
+        if(!column.hidden){
+          return i;
+        }
       }
     }
   });

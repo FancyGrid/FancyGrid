@@ -479,6 +479,7 @@
       me.rightEl.css({
         display: 'none'
       });
+
       me.fixSidesWidth();
       w.startResizing = false;
       me.moveLeftResizer = false;
@@ -574,7 +575,6 @@
             centerHeaderEl.animate({width: parseInt(centerHeaderEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
             centerBodyEl.animate({width: parseInt(centerBodyEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
           }
-
           break;
         case 'center':
           column = w.columns[index];
@@ -617,7 +617,6 @@
               domHeaderCell.animate({left: _left}, ANIMATE_DURATION);
             }
           }
-
           break;
         case 'right':
           newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
@@ -820,14 +819,38 @@
       columnEl.css('width', width);
       headerCellEl.css('width', width);
 
-      if (columns[index + 1]) {
+      var nextIndex = this.getNextVisibleIndex(index, side);
+
+      if (nextIndex) {
         left += width;
 
-        nextColumnEl = G(body.getDomColumn(index + 1));
+        nextColumnEl = G(body.getDomColumn(nextIndex));
         nextColumnEl.css('left', left);
 
-        nextHeaderCellEl = header.getCell(index + 1);
+        nextHeaderCellEl = header.getCell(nextIndex);
         nextHeaderCellEl.css('left', left);
+      }
+
+      w.fire('columnresize', {
+        cell: headerCellEl.dom,
+        width: width,
+        column: columns[index],
+        side: side
+      });
+    },
+    getNextVisibleIndex: function (index, side) {
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(side),
+        i = index + 1,
+        iL = columns.length;
+
+      for(;i<iL;i++){
+        var column = columns[i];
+
+        if(!column.hidden){
+          return i;
+        }
       }
     }
   });

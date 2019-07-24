@@ -47,6 +47,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   dirtyEnabled: true,
   barScrollEnabled: true,
   startResizing: false,
+  startEditByTyping: false,
   /*
    * @constructoloadr
    * @param {*} renderTo

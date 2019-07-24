@@ -296,7 +296,7 @@ Fancy.Element.prototype = {
    * @return {String|Number}
    */
   css: function(o1, o2){
-    if( o2 === undefined ){
+    if( o2 === undefined){
       return this.$dom.css(o1);
     }
     return this.$dom.css(o1, o2);
@@ -472,7 +472,7 @@ Fancy.Element.prototype = {
    * @param {String} easing
    * @param {Function} callback
    */
-  animate: function(style,speed,easing,callback){
+  animate: function(style, speed, easing, callback){
     var _style = {},
       doAnimating = false,
       force = style.force;
