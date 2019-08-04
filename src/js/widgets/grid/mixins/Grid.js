@@ -1235,6 +1235,46 @@
       return me.selection.getSelection(returnModel);
     },
     /*
+     * @param {Number} params
+     */
+    selectCell: function (params) {
+      var me = this;
+
+      return me.selection.selectCell(params);
+    },
+    /*
+     *
+     */
+    selectCellLeft: function () {
+      var me = this;
+
+      return me.selection.moveLeft();
+    },
+    /*
+     *
+     */
+    selectCellRight: function () {
+      var me = this;
+
+      return me.selection.moveRight();
+    },
+    /*
+     *
+     */
+    selectCellDown: function () {
+      var me = this;
+
+      return me.selection.moveDown();
+    },
+    /*
+     *
+     */
+    selectCellUp: function () {
+      var me = this;
+
+      return me.selection.moveUp();
+    },
+    /*
      *
      */
     clearSelection: function () {
@@ -2884,9 +2924,11 @@
       }
     },
     /*
+     * @param {Boolean} [all]
+     * @param {Boolean} [ignoreRender]
      * @return {Array}
      */
-    getDisplayedData: function (all) {
+    getDisplayedData: function (all, ignoreRender) {
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
@@ -2909,15 +2951,12 @@
             rowData.push(i + 1);
             break;
           default:
-            if (column.render) {
+            if (column.render && ignoreRender !== true) {
               var data = me.get(i),
                 value = me.get(i, column.index);
 
               if(data && data.data){
                 data = data.data;
-              }
-              else{
-
               }
 
               rowData.push(column.render({
@@ -3618,7 +3657,7 @@
       }
     },
     /*
-     *
+     * @returns {Number}
      */
     getNumOfVisibleCells: function () {
       var me = this;
@@ -3698,6 +3737,29 @@
           delete this.intervalUpdateColumnsWidth;
         }
       }, 100);
+    },
+    /*
+     * @returns {Boolean}
+     */
+    isLoading: function () {
+      var me = this,
+        s = me.store;
+
+      return s.loading;
+    },
+    /*
+     * @returns {Object}
+     */
+    getChanges: function () {
+      var me = this,
+        s = me.store,
+        changes = {};
+
+      changes.changed = s.changed;
+      changes.removed = s.removed;
+      changes.inserted = s.inserted;
+
+      return changes;
     }
   });
 

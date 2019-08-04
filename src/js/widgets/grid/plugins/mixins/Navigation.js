@@ -42,7 +42,7 @@
         return;
       }
 
-      if(!me.keyNavigating){
+      if(!me.keyNavigating) {
         var docEl = F.get(document);
 
         docEl.once('keyup', function () {
@@ -93,7 +93,7 @@
                   columns = w.getColumns(info.side);
 
                 info.column = columns[info.columnIndex];
-                if(info.column.editable === false){
+                if(info.column.editable !== true){
                   return;
                 }
                 info.cell = activeCell.dom;
@@ -164,7 +164,7 @@
                   columns = w.getColumns(info.side);
 
                 info.column = columns[info.columnIndex];
-                if(info.column.editable === false){
+                if(info.column.editable !== true){
                   return;
                 }
                 info.cell = activeCell.dom;

@@ -22,6 +22,7 @@ Fancy.define('Fancy.Store', {
   showPage: 0,
   pages: 0,
   dirty: false,
+  loading: false,
   /*
    * @constructor
    */
@@ -126,6 +127,7 @@ Fancy.define('Fancy.Store', {
     me.dataView = [];
     me.dataViewMap = {};
     me.dataViewIndexes = {};
+    me.map = {};
 
     if(me.collapsed) {
       for (; i < iL; i++) {

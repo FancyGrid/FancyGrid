@@ -1073,7 +1073,8 @@
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){
-        rightScroll -= cellHeight;
+        //rightScroll -= cellHeight;
+        rightScroll = passedHeight - cellHeight - 5;
         if(rightScroll < 0){
           rightScroll = 0;
         }
