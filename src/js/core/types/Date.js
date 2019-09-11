@@ -2,6 +2,7 @@
  * @class Fancy.Date
  * @singleton
  */
+Fancy.modules['date'] = true;
 Fancy.Date = {
   daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
   dayIndexes: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
@@ -113,7 +114,7 @@ Fancy.Date = {
         case 'a':
           h = date.getHours();
 
-          if (h < 13) {
+          if (h < 12) {
             value += lang.date.am;
           } else {
             value += lang.date.pm;
@@ -123,7 +124,7 @@ Fancy.Date = {
         case 'A':
           h = date.getHours();
 
-          if (h < 13) {
+          if (h < 12) {
             value += lang.date.AM;
           } else {
             value += lang.date.PM;

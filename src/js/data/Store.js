@@ -192,9 +192,19 @@ Fancy.define('Fancy.Store', {
    * @return {Fancy.Model}
    */
   getItem: function(rowIndex){
-    var me = this;
+    var me = this,
+      item = me.dataView[rowIndex];
 
-    return me.dataView[rowIndex];
+    if(!item){
+      if(me.order){
+        item = me.data[me.order[rowIndex]]
+      }
+      else {
+        item = me.data[rowIndex];
+      }
+    }
+
+    return item;
   },
   /*
    * @param {Number} rowIndex
@@ -976,5 +986,24 @@ Fancy.define('Fancy.Store', {
     me.dataView = [];
     me.dataViewIndexes = {};
     me.dataViewMap = {};
+  },
+  /*
+   *
+   */
+  addField: function (index) {
+    var me = this,
+      fields = me.fields,
+      presented = false;
+
+    Fancy.each(fields, function (field) {
+      if(field === index){
+        presented = true;
+        return true;
+      }
+    });
+
+    if(!presented){
+      me.fields.push(index);
+    }
   }
 });

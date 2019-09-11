@@ -1587,6 +1587,22 @@
 .fancy-grid-cell-flash-minus {
   background-color: rgba(220, 107, 103, 0.2) !important;
 }
+.fancy-grid-column-row-drag.fancy-grid-column-ellipsis .fancy-grid-cell {
+  text-overflow: initial;
+}
+.fancy-grid-column-row-drag.fancy-grid-column-ellipsis .fancy-grid-cell .fancy-grid-cell-inner-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: initial;
+}
+.fancy-grid-column-select.fancy-grid-column-ellipsis .fancy-grid-cell {
+  text-overflow: initial;
+}
+.fancy-grid-column-select.fancy-grid-column-ellipsis .fancy-grid-cell .fancy-grid-cell-inner-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: initial;
+}
 /*
  scroll.less
 */

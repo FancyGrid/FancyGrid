@@ -2368,6 +2368,7 @@
      */
     insertColumn: function (column, index, side, fromSide) {
       var me = this,
+        s = me.store,
         leftEl = me.leftEl,
         leftBody = me.leftBody,
         leftHeader = me.leftHeader,
@@ -2377,6 +2378,10 @@
         rightEl = me.rightEl,
         rightBody = me.rightBody,
         rightHeader = me.rightHeader;
+
+      if(column.index){
+        s.addField(column.index);
+      }
 
       side = side || 'center';
 
@@ -2926,16 +2931,24 @@
     /*
      * @param {Boolean} [all]
      * @param {Boolean} [ignoreRender]
+     * * @param {Array} [rowIds]
      * @return {Array}
      */
-    getDisplayedData: function (all, ignoreRender) {
+    getDisplayedData: function (all, ignoreRender, rowIds) {
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
         i = 0,
         leftColumns = me.leftColumns,
         columns = me.columns,
-        rightColumns = me.rightColumns;
+        rightColumns = me.rightColumns,
+        allowedIdsMap = {};
+
+      if(rowIds){
+        F.each(rowIds, function (value) {
+          allowedIdsMap[value] = true;
+        });
+      }
 
       if(all){
         viewTotal = me.getTotal();
@@ -2972,6 +2985,14 @@
 
       for (; i < viewTotal; i++) {
         var rowData = [];
+
+        if(rowIds){
+          var item = me.get(i);
+
+          if(!item || !allowedIdsMap[item.id]){
+            continue;
+          }
+        }
 
         F.each(leftColumns, fn);
         F.each(columns, fn);

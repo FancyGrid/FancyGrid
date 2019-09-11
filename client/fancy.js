@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.78',
+  version: '1.7.79',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3217,9 +3217,19 @@ Fancy.define('Fancy.Store', {
    * @return {Fancy.Model}
    */
   getItem: function(rowIndex){
-    var me = this;
+    var me = this,
+      item = me.dataView[rowIndex];
 
-    return me.dataView[rowIndex];
+    if(!item){
+      if(me.order){
+        item = me.data[me.order[rowIndex]]
+      }
+      else {
+        item = me.data[rowIndex];
+      }
+    }
+
+    return item;
   },
   /*
    * @param {Number} rowIndex
@@ -4001,6 +4011,25 @@ Fancy.define('Fancy.Store', {
     me.dataView = [];
     me.dataViewIndexes = {};
     me.dataViewMap = {};
+  },
+  /*
+   *
+   */
+  addField: function (index) {
+    var me = this,
+      fields = me.fields,
+      presented = false;
+
+    Fancy.each(fields, function (field) {
+      if(field === index){
+        presented = true;
+        return true;
+      }
+    });
+
+    if(!presented){
+      me.fields.push(index);
+    }
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -11185,7 +11214,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
-    listRowHeight: 25,
+    //listRowHeight: 25,
+    listRowHeight: 28,
     dropButtonWidth: 27,
     leftWidth: 20,
     maxListRows: 9,
@@ -11552,6 +11582,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       if (!me.list || me.data.length === 0) {
         return;
+      }
+
+      if(!me.isListInsideViewBox(el)){
+        var listHeight = this.calcListHeight();
+
+        xy[1] = p.top - listHeight;
       }
 
       list.css({
@@ -12935,6 +12971,29 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       else{
         listUl.css('height', height);
       }
+    },
+    isListInsideViewBox: function (el) {
+      var me = this,
+        p = el.$dom.offset(),
+        listHeight = me.calcListHeight(),
+        listBottomPoint = p.top + listHeight,
+        viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
+
+      if(listBottomPoint > viewBottom ){
+        return false;
+      }
+
+      return true;
+    },
+    calcListHeight: function () {
+      var me = this,
+        listHeight = me.data.length * me.listRowHeight;
+
+      if(me.data.length > me.maxListRows){
+        listHeight = me.maxListRows * me.listRowHeight;
+      }
+
+      return listHeight;
     }
   });
 

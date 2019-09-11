@@ -57,7 +57,8 @@
     fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
-    listRowHeight: 25,
+    //listRowHeight: 25,
+    listRowHeight: 28,
     dropButtonWidth: 27,
     leftWidth: 20,
     maxListRows: 9,
@@ -424,6 +425,12 @@
 
       if (!me.list || me.data.length === 0) {
         return;
+      }
+
+      if(!me.isListInsideViewBox(el)){
+        var listHeight = this.calcListHeight();
+
+        xy[1] = p.top - listHeight;
       }
 
       list.css({
@@ -1807,6 +1814,29 @@
       else{
         listUl.css('height', height);
       }
+    },
+    isListInsideViewBox: function (el) {
+      var me = this,
+        p = el.$dom.offset(),
+        listHeight = me.calcListHeight(),
+        listBottomPoint = p.top + listHeight,
+        viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
+
+      if(listBottomPoint > viewBottom ){
+        return false;
+      }
+
+      return true;
+    },
+    calcListHeight: function () {
+      var me = this,
+        listHeight = me.data.length * me.listRowHeight;
+
+      if(me.data.length > me.maxListRows){
+        listHeight = me.maxListRows * me.listRowHeight;
+      }
+
+      return listHeight;
     }
   });
 

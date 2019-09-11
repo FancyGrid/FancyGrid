@@ -4651,6 +4651,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     insertColumn: function (column, index, side, fromSide) {
       var me = this,
+        s = me.store,
         leftEl = me.leftEl,
         leftBody = me.leftBody,
         leftHeader = me.leftHeader,
@@ -4660,6 +4661,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         rightEl = me.rightEl,
         rightBody = me.rightBody,
         rightHeader = me.rightHeader;
+
+      if(column.index){
+        s.addField(column.index);
+      }
 
       side = side || 'center';
 
@@ -5209,16 +5214,24 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     /*
      * @param {Boolean} [all]
      * @param {Boolean} [ignoreRender]
+     * * @param {Array} [rowIds]
      * @return {Array}
      */
-    getDisplayedData: function (all, ignoreRender) {
+    getDisplayedData: function (all, ignoreRender, rowIds) {
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
         i = 0,
         leftColumns = me.leftColumns,
         columns = me.columns,
-        rightColumns = me.rightColumns;
+        rightColumns = me.rightColumns,
+        allowedIdsMap = {};
+
+      if(rowIds){
+        F.each(rowIds, function (value) {
+          allowedIdsMap[value] = true;
+        });
+      }
 
       if(all){
         viewTotal = me.getTotal();
@@ -5255,6 +5268,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       for (; i < viewTotal; i++) {
         var rowData = [];
+
+        if(rowIds){
+          var item = me.get(i);
+
+          if(!item || !allowedIdsMap[item.id]){
+            continue;
+          }
+        }
 
         F.each(leftColumns, fn);
         F.each(columns, fn);
@@ -9459,7 +9480,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             innerText.update(value);
           }
           else {
-            complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            //complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            complexInner.push('<span class="fancy-grid-cell-inner-text">' + value + '</span>');
             inner.update(complexInner.join(' '));
           }
         }

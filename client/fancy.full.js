@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.78',
+  version: '1.7.79',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1381,6 +1381,7 @@ Fancy.Object = {
  * @class Fancy.Date
  * @singleton
  */
+Fancy.modules['date'] = true;
 Fancy.Date = {
   daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
   dayIndexes: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
@@ -1492,7 +1493,7 @@ Fancy.Date = {
         case 'a':
           h = date.getHours();
 
-          if (h < 13) {
+          if (h < 12) {
             value += lang.date.am;
           } else {
             value += lang.date.pm;
@@ -1502,7 +1503,7 @@ Fancy.Date = {
         case 'A':
           h = date.getHours();
 
-          if (h < 13) {
+          if (h < 12) {
             value += lang.date.AM;
           } else {
             value += lang.date.PM;
@@ -6534,9 +6535,19 @@ Fancy.define('Fancy.Store', {
    * @return {Fancy.Model}
    */
   getItem: function(rowIndex){
-    var me = this;
+    var me = this,
+      item = me.dataView[rowIndex];
 
-    return me.dataView[rowIndex];
+    if(!item){
+      if(me.order){
+        item = me.data[me.order[rowIndex]]
+      }
+      else {
+        item = me.data[rowIndex];
+      }
+    }
+
+    return item;
   },
   /*
    * @param {Number} rowIndex
@@ -7318,6 +7329,25 @@ Fancy.define('Fancy.Store', {
     me.dataView = [];
     me.dataViewIndexes = {};
     me.dataViewMap = {};
+  },
+  /*
+   *
+   */
+  addField: function (index) {
+    var me = this,
+      fields = me.fields,
+      presented = false;
+
+    Fancy.each(fields, function (field) {
+      if(field === index){
+        presented = true;
+        return true;
+      }
+    });
+
+    if(!presented){
+      me.fields.push(index);
+    }
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -19318,7 +19348,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     fieldCls: FIELD_CLS + ' ' + FIELD_COMBO_CLS,
     width: 250,
     labelWidth: 60,
-    listRowHeight: 25,
+    //listRowHeight: 25,
+    listRowHeight: 28,
     dropButtonWidth: 27,
     leftWidth: 20,
     maxListRows: 9,
@@ -19685,6 +19716,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       if (!me.list || me.data.length === 0) {
         return;
+      }
+
+      if(!me.isListInsideViewBox(el)){
+        var listHeight = this.calcListHeight();
+
+        xy[1] = p.top - listHeight;
       }
 
       list.css({
@@ -21068,6 +21105,29 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       else{
         listUl.css('height', height);
       }
+    },
+    isListInsideViewBox: function (el) {
+      var me = this,
+        p = el.$dom.offset(),
+        listHeight = me.calcListHeight(),
+        listBottomPoint = p.top + listHeight,
+        viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
+
+      if(listBottomPoint > viewBottom ){
+        return false;
+      }
+
+      return true;
+    },
+    calcListHeight: function () {
+      var me = this,
+        listHeight = me.data.length * me.listRowHeight;
+
+      if(me.data.length > me.maxListRows){
+        listHeight = me.maxListRows * me.listRowHeight;
+      }
+
+      return listHeight;
     }
   });
 
@@ -27144,6 +27204,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     insertColumn: function (column, index, side, fromSide) {
       var me = this,
+        s = me.store,
         leftEl = me.leftEl,
         leftBody = me.leftBody,
         leftHeader = me.leftHeader,
@@ -27153,6 +27214,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         rightEl = me.rightEl,
         rightBody = me.rightBody,
         rightHeader = me.rightHeader;
+
+      if(column.index){
+        s.addField(column.index);
+      }
 
       side = side || 'center';
 
@@ -27702,16 +27767,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     /*
      * @param {Boolean} [all]
      * @param {Boolean} [ignoreRender]
+     * * @param {Array} [rowIds]
      * @return {Array}
      */
-    getDisplayedData: function (all, ignoreRender) {
+    getDisplayedData: function (all, ignoreRender, rowIds) {
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
         i = 0,
         leftColumns = me.leftColumns,
         columns = me.columns,
-        rightColumns = me.rightColumns;
+        rightColumns = me.rightColumns,
+        allowedIdsMap = {};
+
+      if(rowIds){
+        F.each(rowIds, function (value) {
+          allowedIdsMap[value] = true;
+        });
+      }
 
       if(all){
         viewTotal = me.getTotal();
@@ -27748,6 +27821,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       for (; i < viewTotal; i++) {
         var rowData = [];
+
+        if(rowIds){
+          var item = me.get(i);
+
+          if(!item || !allowedIdsMap[item.id]){
+            continue;
+          }
+        }
 
         F.each(leftColumns, fn);
         F.each(columns, fn);
@@ -46560,7 +46641,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       w = me.widget,
       data = [],
       //displayedData = o.all? w.getData() : w.getDisplayedData();
-      displayedData = o.all? w.getDisplayedData(true, o.ingoreRender) : w.getDisplayedData(null, o.ingoreRender);
+      displayedData = o.all? w.getDisplayedData(true, o.ingoreRender, o.rowIds) : w.getDisplayedData(null, o.ingoreRender, o.rowIds);
 
     Fancy.each(displayedData, function(rowData){
       var _rowData = [];
@@ -48100,7 +48181,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             innerText.update(value);
           }
           else {
-            complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            //complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            complexInner.push('<span class="fancy-grid-cell-inner-text">' + value + '</span>');
             inner.update(complexInner.join(' '));
           }
         }

@@ -587,7 +587,8 @@
             innerText.update(value);
           }
           else {
-            complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            //complexInner.push('<div class="fancy-grid-cell-inner-text">' + value + '</div>');
+            complexInner.push('<span class="fancy-grid-cell-inner-text">' + value + '</span>');
             inner.update(complexInner.join(' '));
           }
         }
