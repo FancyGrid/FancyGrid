@@ -39,6 +39,13 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
     me.proxy = me.data.proxy || {};
     var proxy = me.proxy;
+
+    if(proxy.words){
+      for(var p in proxy.words){
+        this[p + 'Param'] = proxy.words[p];
+      }
+    }
+
     if(proxy.autoLoad !== undefined){
       me.autoLoad = proxy.autoLoad;
     }
@@ -63,7 +70,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(me.autoLoad) {
-      if(w.stateful && me.remoteFilter){
+      if(w.stateful && me.remoteFilter && me.filters){
         /*
           When there is server filtering with state and on start it loads data
           that it requires to wait until store will get all filter params that avoid

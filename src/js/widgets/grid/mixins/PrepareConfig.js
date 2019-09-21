@@ -1632,7 +1632,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       },
       role: 'pagenumber',
       min: 1,
-      width: 30,
+      width: paging.inputWidth || 30,
       listeners: [{
         enter: function(field){
           if (parseInt(field.getValue()) === 0) {

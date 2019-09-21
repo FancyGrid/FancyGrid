@@ -245,10 +245,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
     }
     else {
-      s.set(rowIndex, key, value, id);
-
       if(rowIndex === -1){
         s.getById(id).set(key, value);
+      }
+      else{
+        s.set(rowIndex, key, value, id);
       }
     }
 

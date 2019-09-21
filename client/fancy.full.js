@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.79',
+  version: '1.7.80',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3801,6 +3801,13 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
     me.proxy = me.data.proxy || {};
     var proxy = me.proxy;
+
+    if(proxy.words){
+      for(var p in proxy.words){
+        this[p + 'Param'] = proxy.words[p];
+      }
+    }
+
     if(proxy.autoLoad !== undefined){
       me.autoLoad = proxy.autoLoad;
     }
@@ -3825,7 +3832,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(me.autoLoad) {
-      if(w.stateful && me.remoteFilter){
+      if(w.stateful && me.remoteFilter && me.filters){
         /*
           When there is server filtering with state and on start it loads data
           that it requires to wait until store will get all filter params that avoid
@@ -23859,7 +23866,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       },
       role: 'pagenumber',
       min: 1,
-      width: 30,
+      width: paging.inputWidth || 30,
       listeners: [{
         enter: function(field){
           if (parseInt(field.getValue()) === 0) {
@@ -24757,10 +24764,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
     }
     else {
-      s.set(rowIndex, key, value, id);
-
       if(rowIndex === -1){
         s.getById(id).set(key, value);
+      }
+      else{
+        s.set(rowIndex, key, value, id);
       }
     }
 
@@ -36190,7 +36198,7 @@ Fancy.modules['selection'] = true;
           }
 
           if(!me.memory.selected[id]){
-            me.memory.selected[id] = true;
+            me.memory.selected[id] = item.data;
             me.memory.selectedLength++;
           }
 
@@ -36206,7 +36214,8 @@ Fancy.modules['selection'] = true;
             item.set('$selected', false);
           }
 
-          if(me.memory.selected[id] === true){
+          //if(me.memory.selected[id] === true){
+          if(me.memory.selected[id]){
             delete me.memory.selected[id];
             me.memory.selectedLength--;
           }
@@ -37810,7 +37819,13 @@ Fancy.modules['selection'] = true;
               }
               else {
                 for (var p in selected) {
-                  model.items.push(s.getById(p));
+                  var item = s.getById(p);
+                  if(item){
+                    model.items.push(item);
+                  }
+                  else{
+                    model.items.push(me.memory.selected[p]);
+                  }
                 }
               }
             }

@@ -317,7 +317,7 @@ Fancy.modules['selection'] = true;
           }
 
           if(!me.memory.selected[id]){
-            me.memory.selected[id] = true;
+            me.memory.selected[id] = item.data;
             me.memory.selectedLength++;
           }
 
@@ -333,7 +333,8 @@ Fancy.modules['selection'] = true;
             item.set('$selected', false);
           }
 
-          if(me.memory.selected[id] === true){
+          //if(me.memory.selected[id] === true){
+          if(me.memory.selected[id]){
             delete me.memory.selected[id];
             me.memory.selectedLength--;
           }
@@ -1937,7 +1938,13 @@ Fancy.modules['selection'] = true;
               }
               else {
                 for (var p in selected) {
-                  model.items.push(s.getById(p));
+                  var item = s.getById(p);
+                  if(item){
+                    model.items.push(item);
+                  }
+                  else{
+                    model.items.push(me.memory.selected[p]);
+                  }
                 }
               }
             }
