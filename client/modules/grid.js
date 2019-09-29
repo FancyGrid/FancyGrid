@@ -3292,12 +3292,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       return width;
     },
     /*
-     * @param {String} side
+     * @param {String} [side]
      * @return {Array}
      */
     getColumns: function (side) {
       var me = this,
-        columns;
+        columns = [];
 
       switch (side) {
         case 'left':
@@ -3308,6 +3308,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           break;
         case 'right':
           columns = me.rightColumns;
+          break;
+        case undefined:
+          columns = columns.concat(me.leftColumns).concat(me.columns).concat(me.rightColumns);
           break;
       }
 
@@ -3833,6 +3836,13 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           return column;
         }
       }
+    },
+    /*
+     * @param {String} key
+     * @return {Object}
+     */
+    getColumn: function (key) {
+      return this.getColumnByIndex(key);
     },
     /*
      * @param {String} key
@@ -9441,6 +9451,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         switch (value) {
           case '':
+          case null:
           case undefined:
             value = emptyValue;
             break;

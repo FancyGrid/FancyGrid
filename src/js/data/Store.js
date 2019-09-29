@@ -554,8 +554,8 @@ Fancy.define('Fancy.Store', {
           for (; i < iL; i++) {
             var value = data[i].data[key];
 
-            if(value === null){
-              values.push(Math.NEGATIVE_INFINITY);
+            if(value === null || value === ''){
+              values.push(Number.NEGATIVE_INFINITY);
             }
             else {
               values.push(Fancy.Date.parse(value, options.format, options.mode));

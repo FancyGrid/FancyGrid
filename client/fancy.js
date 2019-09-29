@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.80',
+  version: '1.7.81',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -3579,8 +3579,8 @@ Fancy.define('Fancy.Store', {
           for (; i < iL; i++) {
             var value = data[i].data[key];
 
-            if(value === null){
-              values.push(Math.NEGATIVE_INFINITY);
+            if(value === null || value === ''){
+              values.push(Number.NEGATIVE_INFINITY);
             }
             else {
               values.push(Fancy.Date.parse(value, options.format, options.mode));

@@ -548,6 +548,7 @@
 
         switch (value) {
           case '':
+          case null:
           case undefined:
             value = emptyValue;
             break;

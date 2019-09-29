@@ -162,6 +162,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params[me.startParam] = me.showPage * me.pageSize;
     }
 
+    if(proxy.beforeRequest){
+      var proccessed = proxy.beforeRequest({
+        type: 'read',
+        params: params,
+        headers: headers
+      });
+
+      params = proccessed.params;
+      headers = proccessed.headers;
+    }
+
     me.loading = true;
 
     Fancy.Ajax({
@@ -171,6 +182,15 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       getJSON: true,
       headers: headers,
       success: function(o, status, request){
+        if(proxy.afterRequest){
+          var proccessed = proxy.afterRequest({
+            type: 'read',
+            response: o
+          });
+
+          o = proccessed.response;
+        }
+
         me.loadedTimes++;
         me.loading = false;
         me.defineModel(o[me.readerRootProperty]);
@@ -266,6 +286,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params.action = 'update';
     }
 
+    if(proxy.beforeRequest){
+      var proccessed = proxy.beforeRequest({
+        type: 'update',
+        params: params,
+        headers: headers
+      });
+
+      params = proccessed.params;
+      headers = proccessed.headers;
+    }
+
     me.loading = true;
 
     me.fire('beforeupdate', id, key, value);
@@ -277,6 +308,15 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       sendJSON: sendJSON,
       headers: headers,
       success: function(o, status, request){
+        if(proxy.afterRequest){
+          var proccessed = proxy.afterRequest({
+            type: 'update',
+            response: o
+          });
+
+          o = proccessed.response;
+        }
+
         me.loading = false;
 
         me.fire('update', id, key, value);
@@ -315,6 +355,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
     me.fire('beforedestroy');
 
+    if(proxy.beforeRequest){
+      var proccessed = proxy.beforeRequest({
+        type: 'destroy',
+        params: params,
+        headers: headers
+      });
+
+      params = proccessed.params;
+      headers = proccessed.headers;
+    }
+
     Fancy.Ajax({
       url: proxy.api.destroy,
       method: proxy.methods.destroy,
@@ -322,6 +373,15 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       sendJSON: sendJSON,
       headers: headers,
       success: function(o, status, request){
+        if(proxy.afterRequest){
+          var proccessed = proxy.afterRequest({
+            type: 'destroy',
+            response: o
+          });
+
+          o = proccessed.response;
+        }
+
         me.loading = false;
 
         me.fire('destroy', id, o);
@@ -363,6 +423,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
     me.fire('beforecreate');
 
+    if(proxy.beforeRequest){
+      var proccessed = proxy.beforeRequest({
+        type: 'create',
+        params: params,
+        headers: headers
+      });
+
+      params = proccessed.params;
+      headers = proccessed.headers;
+    }
+
     Fancy.Ajax({
       url: proxy.api.create,
       method: proxy.methods.create,
@@ -370,6 +441,15 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       sendJSON: sendJSON,
       headers: headers,
       success: function(o, status, request){
+        if(proxy.afterRequest){
+          var proccessed = proxy.afterRequest({
+            type: 'create',
+            response: o
+          });
+
+          o = proccessed.response;
+        }
+
         me.loading = false;
 
         if(Fancy.isObject(o.data) && String(id) !== String(o.data.id)){

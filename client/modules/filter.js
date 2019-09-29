@@ -58,7 +58,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
       if(indexFilters.type === 'date'){
         if(indexValue === null){
-          indexValue = Math.NEGATIVE_INFINITY;
+          indexValue = Number.NEGATIVE_INFINITY;
         }
         else {
           indexValue = Number(Fancy.Date.parse(indexValue, indexFilters.format.read, indexFilters.format.mode));
