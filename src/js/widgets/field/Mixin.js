@@ -1114,6 +1114,16 @@
       var me = this;
 
       return me.input.dom.value;
+    },
+    /*
+     *
+     */
+    clearInput: function () {
+      var me = this;
+
+      if(me.input){
+        me.input.dom.value = '';
+      }
     }
   };
 

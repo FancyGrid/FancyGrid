@@ -213,23 +213,31 @@ Fancy.modules['state'] = true;
           return;
         }
 
+        var applyFilters = function () {
+          for (var p in startState.filters) {
+            var filter = startState.filters[p];
+
+            for (var q in filter) {
+              w.addFilter(p, filter[q], q);
+            }
+          }
+        };
+
         if(startState.filters){
           setTimeout(function () {
-            for (var p in startState.filters) {
-              var filter = startState.filters[p];
-
-              for (var q in filter) {
-                w.addFilter(p, filter[q], q);
-              }
-            }
+            applyFilters();
           }, 100);
         }
 
+        var applySorters = function () {
+          F.each(startState.sorters, function (sorter) {
+            w.sort(sorter.key, sorter.dir);
+          });
+        };
+
         if(startState.sorters){
           setTimeout(function () {
-            F.each(startState.sorters, function (sorter) {
-              w.sort(sorter.key, sorter.dir);
-            });
+            applySorters();
           }, 100);
         }
 

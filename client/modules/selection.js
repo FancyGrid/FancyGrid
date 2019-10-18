@@ -2582,7 +2582,7 @@ Fancy.modules['selection'] = true;
     getActiveCellInfo: function () {
       var me = this,
         w = me.widget,
-        cell = me.getActiveCell(),
+        cell = cell || me.getActiveCell(),
         side = w.getSideByCell(cell),
         rowIndex = Number(cell.attr('index')),
         columnIndex = Number(cell.parent().attr('index'));
@@ -3231,6 +3231,7 @@ Fancy.modules['selection'] = true;
           break;
         case key.ESC:
           break;
+          /*
         case key.ZERO:
         case key.ONE:
         case key.TWO:
@@ -3267,6 +3268,8 @@ Fancy.modules['selection'] = true;
         case key.X:
         case key.Y:
         case key.Z:
+        */
+        default:
           if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor) {
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells') {
               var activeCell = w.selection.getActiveCell();
@@ -3291,7 +3294,6 @@ Fancy.modules['selection'] = true;
             }
           }
           break;
-        default:
       }
     },
     moveRight: function () {

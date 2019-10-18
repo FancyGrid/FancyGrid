@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.81',
+  version: '1.7.82',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -17661,6 +17661,16 @@ if(!Fancy.nojQuery && Fancy.$){
       var me = this;
 
       return me.input.dom.value;
+    },
+    /*
+     *
+     */
+    clearInput: function () {
+      var me = this;
+
+      if(me.input){
+        me.input.dom.value = '';
+      }
     }
   };
 
@@ -24919,6 +24929,89 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     for(;i<iL;i++){
       me.undo();
+    }
+  },
+  /*
+   * @params {Object} cell
+   */
+  editCell: function (cell) {
+    var me = this,
+      side = me.getSideByCell(cell),
+      rowIndex = Number(cell.attr('index')),
+      columnIndex = Number(cell.parent().attr('index')),
+      info = {
+        side: side,
+        rowIndex: rowIndex,
+        columnIndex: columnIndex
+      },
+      columns = me.getColumns(info.side);
+
+    info.column = columns[info.columnIndex];
+    if(info.column.editable !== true){
+      return;
+    }
+    info.cell = cell.dom;
+
+    var item = me.get(info.rowIndex);
+    info.item = item;
+    info.data = item.data;
+
+    if (info.column.smartIndexFn) {
+      info.value = info.column.smartIndexFn(info.data);
+    }
+    else{
+      info.value = me.store.get(info.rowIndex, info.column.index);
+    }
+
+    me.celledit.edit(info);
+  },
+  /*
+   * @params {Object} o
+   * @return {Object}
+   */
+  getCell: function (o) {
+    var me = this;
+    //o.id
+    //o.index
+    if(o.id !== undefined && o.index !== undefined){
+      var _o = me.getColumnOrderByKey(o.index),
+        columnIndex = _o.order,
+        side = _o.side,
+        rowIndex = me.getRowById(o.id),
+        body = me.getBody(side),
+        cell = body.getCell(rowIndex, columnIndex);
+
+      if(!cell.dom){
+        return;
+      }
+
+      return cell;
+    }
+
+    //o.rowIndex
+    //o.columnIndex
+    if(o.rowIndex !== undefined && o.columnIndex !== undefined){
+      var side = o.side || 'center',
+        body = me.getBody(side),
+        cell = body.getCell(o.rowIndex, o.columnIndex);
+
+      if(!cell.dom){
+        cell = me.getBody('center').getCell(o.rowIndex, o.columnIndex);
+      }
+
+      if(!cell.dom){
+        cell = me.getBody('left').getCell(o.rowIndex, o.columnIndex);
+      }
+
+      if(!cell.dom){
+        cell = me.getBody('right').getCell(o.rowIndex, o.columnIndex);
+      }
+
+      if(!cell.dom){
+        return;
+      }
+
+      return cell;
     }
   }
 });
@@ -34485,7 +34578,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
 
       me.activeEditor = editor;
+
       me.setEditorValue(o);
+      //Bug fix with wrong validation on start
+      if(o.value === ''){
+        setTimeout(function () {
+          editor.validate(editor.get());
+        }, 1);
+      }
+
       if(o.rowIndex === 0){
         cellSize.height++;
       }
@@ -38553,7 +38654,7 @@ Fancy.modules['selection'] = true;
     getActiveCellInfo: function () {
       var me = this,
         w = me.widget,
-        cell = me.getActiveCell(),
+        cell = cell || me.getActiveCell(),
         side = w.getSideByCell(cell),
         rowIndex = Number(cell.attr('index')),
         columnIndex = Number(cell.parent().attr('index'));
@@ -39203,6 +39304,7 @@ Fancy.modules['selection'] = true;
           break;
         case key.ESC:
           break;
+          /*
         case key.ZERO:
         case key.ONE:
         case key.TWO:
@@ -39239,6 +39341,8 @@ Fancy.modules['selection'] = true;
         case key.X:
         case key.Y:
         case key.Z:
+        */
+        default:
           if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor) {
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells') {
               var activeCell = w.selection.getActiveCell();
@@ -39263,7 +39367,6 @@ Fancy.modules['selection'] = true;
             }
           }
           break;
-        default:
       }
     },
     moveRight: function () {
@@ -47134,23 +47237,31 @@ Fancy.modules['state'] = true;
           return;
         }
 
+        var applyFilters = function () {
+          for (var p in startState.filters) {
+            var filter = startState.filters[p];
+
+            for (var q in filter) {
+              w.addFilter(p, filter[q], q);
+            }
+          }
+        };
+
         if(startState.filters){
           setTimeout(function () {
-            for (var p in startState.filters) {
-              var filter = startState.filters[p];
-
-              for (var q in filter) {
-                w.addFilter(p, filter[q], q);
-              }
-            }
+            applyFilters();
           }, 100);
         }
 
+        var applySorters = function () {
+          F.each(startState.sorters, function (sorter) {
+            w.sort(sorter.key, sorter.dir);
+          });
+        };
+
         if(startState.sorters){
           setTimeout(function () {
-            F.each(startState.sorters, function (sorter) {
-              w.sort(sorter.key, sorter.dir);
-            });
+            applySorters();
           }, 100);
         }
 

@@ -350,7 +350,15 @@
       }
 
       me.activeEditor = editor;
+
       me.setEditorValue(o);
+      //Bug fix with wrong validation on start
+      if(o.value === ''){
+        setTimeout(function () {
+          editor.validate(editor.get());
+        }, 1);
+      }
+
       if(o.rowIndex === 0){
         cellSize.height++;
       }

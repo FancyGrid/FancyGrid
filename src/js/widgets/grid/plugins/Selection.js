@@ -2582,7 +2582,7 @@ Fancy.modules['selection'] = true;
     getActiveCellInfo: function () {
       var me = this,
         w = me.widget,
-        cell = me.getActiveCell(),
+        cell = cell || me.getActiveCell(),
         side = w.getSideByCell(cell),
         rowIndex = Number(cell.attr('index')),
         columnIndex = Number(cell.parent().attr('index'));

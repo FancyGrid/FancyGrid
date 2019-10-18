@@ -321,5 +321,88 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     for(;i<iL;i++){
       me.undo();
     }
+  },
+  /*
+   * @params {Object} cell
+   */
+  editCell: function (cell) {
+    var me = this,
+      side = me.getSideByCell(cell),
+      rowIndex = Number(cell.attr('index')),
+      columnIndex = Number(cell.parent().attr('index')),
+      info = {
+        side: side,
+        rowIndex: rowIndex,
+        columnIndex: columnIndex
+      },
+      columns = me.getColumns(info.side);
+
+    info.column = columns[info.columnIndex];
+    if(info.column.editable !== true){
+      return;
+    }
+    info.cell = cell.dom;
+
+    var item = me.get(info.rowIndex);
+    info.item = item;
+    info.data = item.data;
+
+    if (info.column.smartIndexFn) {
+      info.value = info.column.smartIndexFn(info.data);
+    }
+    else{
+      info.value = me.store.get(info.rowIndex, info.column.index);
+    }
+
+    me.celledit.edit(info);
+  },
+  /*
+   * @params {Object} o
+   * @return {Object}
+   */
+  getCell: function (o) {
+    var me = this;
+    //o.id
+    //o.index
+    if(o.id !== undefined && o.index !== undefined){
+      var _o = me.getColumnOrderByKey(o.index),
+        columnIndex = _o.order,
+        side = _o.side,
+        rowIndex = me.getRowById(o.id),
+        body = me.getBody(side),
+        cell = body.getCell(rowIndex, columnIndex);
+
+      if(!cell.dom){
+        return;
+      }
+
+      return cell;
+    }
+
+    //o.rowIndex
+    //o.columnIndex
+    if(o.rowIndex !== undefined && o.columnIndex !== undefined){
+      var side = o.side || 'center',
+        body = me.getBody(side),
+        cell = body.getCell(o.rowIndex, o.columnIndex);
+
+      if(!cell.dom){
+        cell = me.getBody('center').getCell(o.rowIndex, o.columnIndex);
+      }
+
+      if(!cell.dom){
+        cell = me.getBody('left').getCell(o.rowIndex, o.columnIndex);
+      }
+
+      if(!cell.dom){
+        cell = me.getBody('right').getCell(o.rowIndex, o.columnIndex);
+      }
+
+      if(!cell.dom){
+        return;
+      }
+
+      return cell;
+    }
   }
 });
