@@ -2160,10 +2160,15 @@
             if (!value || value.length === 0) {
               return '';
             }
-            var date = F.Date.parse(value, format.read, format.mode);
+
+            if(F.isDate(value)){
+              var date = value;
+            }
+            else {
+              var date = F.Date.parse(value, format.read, format.mode);
+            }
+
             value = F.Date.format(date, format.write, undefined, format.mode);
-
-
             return value;
           };
       }

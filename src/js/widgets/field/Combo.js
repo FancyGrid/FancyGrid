@@ -246,6 +246,7 @@
      */
     ons: function () {
       var me = this,
+        el = me.el,
         drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
 
       me.input = me.el.getByTag('input');
@@ -269,6 +270,13 @@
       me.on('enter', me.onEnter, me);
       me.on('up', me.onUp, me);
       me.on('down', me.onDown, me);
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     onSubSearchKeyDown: function (e) {
       var me = this,

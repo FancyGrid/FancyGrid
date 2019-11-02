@@ -270,8 +270,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigLoadMask: function(config){
+    var showOnWaitingServer = config.loadMask === false? false: true,
+      loadText;
+
+    if(Fancy.isString(config.loadMask)){
+      loadText = config.loadMask;
+    }
+
     config._plugins.push({
-      type: 'grid.loadmask'
+      type: 'grid.loadmask',
+      showOnWaitingServer: showOnWaitingServer,
+      loadText: loadText
     });
 
     return config;
@@ -1100,9 +1109,39 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var keyNavigation = true;
       var allowDeselect = false;
       var mouseMoveSelection = true;
+      var selectBottomCellAfterEdit = false;
+      var selectRightCellOnEnd = false;
+      var selectLeftCellOnLeftEnd = false;
+      var selectUpCellOnUp = false;
+      var selectBottomCellOnDown = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
+
+        switch (config.selModel.type) {
+          case 'cell':
+          case 'cells':
+            if (config.selModel.selectBottomCellAfterEdit) {
+              selectBottomCellAfterEdit = true;
+            }
+
+            if (config.selModel.selectRightCellOnEnd) {
+              selectRightCellOnEnd = true;
+            }
+
+            if (config.selModel.selectLeftCellOnLeftEnd) {
+              selectLeftCellOnLeftEnd = true;
+            }
+
+            if (config.selModel.selectUpCellOnUp) {
+              selectUpCellOnUp = true;
+            }
+
+            if (config.selModel.selectBottomCellOnDown) {
+              selectBottomCellOnDown = true;
+            }
+            break;
+        }
 
         var containsTreeColumn = false,
           containsSelectColumn = false;
@@ -1168,6 +1207,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.keyNavigation = keyNavigation;
       config.selection.allowDeselect = allowDeselect;
       config.selection.mouseMoveSelection = mouseMoveSelection;
+      config.selection.selectBottomCellAfterEdit = selectBottomCellAfterEdit;
+      config.selection.selectRightCellOnEnd = selectRightCellOnEnd;
+      config.selection.selectLeftCellOnLeftEnd = selectLeftCellOnLeftEnd;
+      config.selection.selectUpCellOnUp = selectUpCellOnUp;
+      config.selection.selectBottomCellOnDown = selectBottomCellOnDown;
     }
 
     if(config.selection){

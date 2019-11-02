@@ -37,6 +37,8 @@
       w.on('init', me.onInit, me);
       w.on('update', me.onUpdate, me);
       w.on('columnresize', me.onColumnResize, me);
+      w.on('changepage', me.onChangePage, me);
+      w.on('sort', me.onSort, me);
     },
     onInit: function () {
       var me = this,
@@ -85,6 +87,10 @@
      *
      */
     add: function (id, height) {
+      if(this.rows[id] && this.rows[id] > height){
+        return;
+      }
+
       this.rows[id] = height;
     },
     /*
@@ -107,6 +113,9 @@
      */
     onColumnResize: function (grid, o) {
       var me = this;
+
+      me.rows = {};
+
       if(o.column.type === 'text' && o.column.autoHeight){
 
         setTimeout(function () {
@@ -114,6 +123,22 @@
           me.onUpdate();
         }, 400);
       }
+    },
+    /*
+     *
+     */
+    onChangePage:  function (grid, o) {
+      var me = this;
+
+      me.rows = {};
+    },
+    /*
+     *
+     */
+    onSort:  function (grid, o) {
+      var me = this;
+
+      me.rows = {};
     }
   });
 

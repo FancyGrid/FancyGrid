@@ -111,7 +111,8 @@ Fancy.define('Fancy.bar.Text', {
    * @param {Object} e
    */
   renderTip: function(e){
-    var me = this;
+    var me = this,
+      text = '';
 
     if(me.tooltip){
       me.tooltip.destroy();
@@ -122,10 +123,27 @@ Fancy.define('Fancy.bar.Text', {
         value: me.get()
       })
     }
+    else{
+      switch (Fancy.typeOf(me.tip)){
+        case 'function':
+          text = me.tip(this, me.get, me.label || '');
+          break;
+        case 'string':
+          text = me.tpl.getHTML({
+            value: me.get()
+          });
+          break;
+      }
+    }
 
-    me.tooltip = new Fancy.ToolTip({
-      text: me.tip
-    });
+    if (me.tooltip) {
+      me.tooltip.update(text);
+    }
+    else {
+      me.tooltip = new Fancy.ToolTip({
+        text: text
+      });
+    }
 
     me.tooltip.css('display', 'block');
     me.tooltip.show(e.pageX + 15, e.pageY - 25);

@@ -66,6 +66,7 @@
      */
     ons: function () {
       var me = this,
+        el = me.el,
         input = me.el.getByTag('textarea');
 
       me.input = input;
@@ -84,6 +85,13 @@
           e.preventDefault();
         }
       });
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      *

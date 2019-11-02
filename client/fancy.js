@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.82',
+  version: '1.7.84',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -8773,7 +8773,8 @@ Fancy.define('Fancy.bar.Text', {
    * @param {Object} e
    */
   renderTip: function(e){
-    var me = this;
+    var me = this,
+      text = '';
 
     if(me.tooltip){
       me.tooltip.destroy();
@@ -8784,10 +8785,27 @@ Fancy.define('Fancy.bar.Text', {
         value: me.get()
       })
     }
+    else{
+      switch (Fancy.typeOf(me.tip)){
+        case 'function':
+          text = me.tip(this, me.get, me.label || '');
+          break;
+        case 'string':
+          text = me.tpl.getHTML({
+            value: me.get()
+          });
+          break;
+      }
+    }
 
-    me.tooltip = new Fancy.ToolTip({
-      text: me.tip
-    });
+    if (me.tooltip) {
+      me.tooltip.update(text);
+    }
+    else {
+      me.tooltip = new Fancy.ToolTip({
+        text: text
+      });
+    }
 
     me.tooltip.css('display', 'block');
     me.tooltip.show(e.pageX + 15, e.pageY - 25);
@@ -9396,6 +9414,8 @@ if(!Fancy.nojQuery && Fancy.$){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
+
+      me.fire('beforekey', me.input.dom.value, e);
 
       if(me.disabled){
         return;
@@ -10011,11 +10031,11 @@ if(!Fancy.nojQuery && Fancy.$){
         }
       }
 
-      if (me.tip) {
-        me.renderTip(e);
-      }
-      else if (me.tooltip) {
+      if (me.tooltip) {
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      }
+      else if (me.tip) {
+        me.renderTip(e);
       }
     },
     /*
@@ -10024,15 +10044,32 @@ if(!Fancy.nojQuery && Fancy.$){
     renderTip: function (e) {
       var me = this,
         value = '',
-        tpl = new F.Template(me.tip || me.tooltip);
+        tip = me.tip || me.tooltip,
+        tpl,
+        text;
 
       if (me.getValue) {
-        value = me.getValue();
+        switch(me.type){
+          case 'button':
+          case 'field.button':
+            value = '';
+            break;
+          default:
+            value = me.getValue();
+        }
       }
 
-      var text = tpl.getHTML({
-        value: value
-      });
+      switch (Fancy.typeOf(tip)){
+        case 'function':
+          text = tip(this, value, me.label || '');
+          break;
+        case 'string':
+          tpl = new F.Template(tip);
+          text = tpl.getHTML({
+            value: value
+          });
+          break;
+      }
 
       if (me.tooltip) {
         me.tooltip.update(text);
@@ -10724,6 +10761,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
      */
     ons: function () {
       var me = this,
+        el = me.el,
         input = me.el.getByTag('textarea');
 
       me.input = input;
@@ -10742,6 +10780,13 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
           e.preventDefault();
         }
       });
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      *
@@ -10993,6 +11038,13 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
 
       el.on('click', me.onClick, me);
       el.on('mousedown', me.onMouseDown, me);
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      * @param {Object} e
@@ -11413,6 +11465,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     ons: function () {
       var me = this,
+        el = me.el,
         drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
 
       me.input = me.el.getByTag('input');
@@ -11436,6 +11489,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.on('enter', me.onEnter, me);
       me.on('up', me.onUp, me);
       me.on('down', me.onDown, me);
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     onSubSearchKeyDown: function (e) {
       var me = this,
@@ -13106,11 +13166,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      *
      */
     ons: function () {
-      var me = this;
+      var me = this,
+        el = me.el;
 
       me.button.on('pressedchange', function (button, value) {
         me.fire('pressedchange', value);
       });
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      *
@@ -13206,7 +13274,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    *
    */
   ons: function(){
-    var me = this;
+    var me = this,
+      el = me.el;
 
     me.button.on('toggle', function(){
       if(me.disabled){
@@ -13214,6 +13283,13 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
       }
       me.fire('toggle');
     });
+
+    el.on('mouseenter', me.onMouseOver, me);
+    el.on('mouseleave', me.onMouseOut, me);
+
+    if (me.tip) {
+      el.on('mousemove', me.onMouseMove, me);
+    }
   },
   /*
    *
@@ -13431,6 +13507,13 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
       });
 
       el.on('mousedown', me.onMouseDown, me);
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      *
@@ -14893,6 +14976,8 @@ if(!Fancy.nojQuery && Fancy.$){
       w.on('init', me.onInit, me);
       w.on('update', me.onUpdate, me);
       w.on('columnresize', me.onColumnResize, me);
+      w.on('changepage', me.onChangePage, me);
+      w.on('sort', me.onSort, me);
     },
     onInit: function () {
       var me = this,
@@ -14941,6 +15026,10 @@ if(!Fancy.nojQuery && Fancy.$){
      *
      */
     add: function (id, height) {
+      if(this.rows[id] && this.rows[id] > height){
+        return;
+      }
+
       this.rows[id] = height;
     },
     /*
@@ -14963,6 +15052,9 @@ if(!Fancy.nojQuery && Fancy.$){
      */
     onColumnResize: function (grid, o) {
       var me = this;
+
+      me.rows = {};
+
       if(o.column.type === 'text' && o.column.autoHeight){
 
         setTimeout(function () {
@@ -14970,6 +15062,22 @@ if(!Fancy.nojQuery && Fancy.$){
           me.onUpdate();
         }, 400);
       }
+    },
+    /*
+     *
+     */
+    onChangePage:  function (grid, o) {
+      var me = this;
+
+      me.rows = {};
+    },
+    /*
+     *
+     */
+    onSort:  function (grid, o) {
+      var me = this;
+
+      me.rows = {};
     }
   });
 

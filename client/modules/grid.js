@@ -270,8 +270,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigLoadMask: function(config){
+    var showOnWaitingServer = config.loadMask === false? false: true,
+      loadText;
+
+    if(Fancy.isString(config.loadMask)){
+      loadText = config.loadMask;
+    }
+
     config._plugins.push({
-      type: 'grid.loadmask'
+      type: 'grid.loadmask',
+      showOnWaitingServer: showOnWaitingServer,
+      loadText: loadText
     });
 
     return config;
@@ -1100,9 +1109,39 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var keyNavigation = true;
       var allowDeselect = false;
       var mouseMoveSelection = true;
+      var selectBottomCellAfterEdit = false;
+      var selectRightCellOnEnd = false;
+      var selectLeftCellOnLeftEnd = false;
+      var selectUpCellOnUp = false;
+      var selectBottomCellOnDown = false;
 
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
+
+        switch (config.selModel.type) {
+          case 'cell':
+          case 'cells':
+            if (config.selModel.selectBottomCellAfterEdit) {
+              selectBottomCellAfterEdit = true;
+            }
+
+            if (config.selModel.selectRightCellOnEnd) {
+              selectRightCellOnEnd = true;
+            }
+
+            if (config.selModel.selectLeftCellOnLeftEnd) {
+              selectLeftCellOnLeftEnd = true;
+            }
+
+            if (config.selModel.selectUpCellOnUp) {
+              selectUpCellOnUp = true;
+            }
+
+            if (config.selModel.selectBottomCellOnDown) {
+              selectBottomCellOnDown = true;
+            }
+            break;
+        }
 
         var containsTreeColumn = false,
           containsSelectColumn = false;
@@ -1168,6 +1207,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config.selection.keyNavigation = keyNavigation;
       config.selection.allowDeselect = allowDeselect;
       config.selection.mouseMoveSelection = mouseMoveSelection;
+      config.selection.selectBottomCellAfterEdit = selectBottomCellAfterEdit;
+      config.selection.selectRightCellOnEnd = selectRightCellOnEnd;
+      config.selection.selectLeftCellOnLeftEnd = selectLeftCellOnLeftEnd;
+      config.selection.selectUpCellOnUp = selectUpCellOnUp;
+      config.selection.selectBottomCellOnDown = selectBottomCellOnDown;
     }
 
     if(config.selection){
@@ -7494,12 +7538,21 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       opacity: 0
     });
 
-    el.update([
-      '<div class="'+me.innerCls+'">' +
-        '<div class="'+me.imageCls+'"></div>'+
-        '<div class="'+me.textCls+'">' + lang.loadingText +'</div>'+
-      '</div>'
-    ].join(' '));
+    if(me.loadText){
+      el.update([
+        '<div class="' + me.innerCls + '">' +
+          '<div class="' + me.textCls + '">' + me.loadText + '</div>' +
+        '</div>'
+      ].join(' '));
+    }
+    else {
+      el.update([
+        '<div class="' + me.innerCls + '">' +
+          '<div class="' + me.imageCls + '"></div>' +
+          '<div class="' + me.textCls + '">' + lang.loadingText + '</div>' +
+        '</div>'
+      ].join(' '));
+    }
 
     me.el = Fancy.get(renderTo.dom.appendChild(el.dom));
     me.innerEl = me.el.select('.' + me.innerCls);
@@ -7517,7 +7570,12 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       el.css('display', 'none');
     }
     else{
-      el.css('display', 'block');
+      if(me.showOnWaitingServer === false){
+        el.css('display', 'none');
+      }
+      else {
+        el.css('display', 'block');
+      }
       //me.show();
     }
 
@@ -7527,13 +7585,17 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onBeforeLoad: function(){
-    this.show();
+    if(this.showOnWaitingServer){
+      this.show();
+    }
   },
   /*
    *
    */
   onLoad: function(){
-    this.hide();
+    if(this.showOnWaitingServer) {
+      this.hide();
+    }
   },
   /*
    * @param {String} text
@@ -7561,7 +7623,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
     setTimeout(function(){
       if(me.loaded !== true){
-        me.textEl.update(lang.loadingText);
+        me.textEl.update(me.loadText || lang.loadingText);
 
         me.el.css('display', 'block');
       }
@@ -11063,10 +11125,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             if (!value || value.length === 0) {
               return '';
             }
-            var date = F.Date.parse(value, format.read, format.mode);
+
+            if(F.isDate(value)){
+              var date = value;
+            }
+            else {
+              var date = F.Date.parse(value, format.read, format.mode);
+            }
+
             value = F.Date.format(date, format.write, undefined, format.mode);
-
-
             return value;
           };
       }

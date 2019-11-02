@@ -856,7 +856,7 @@ Fancy.modules['filter'] = true;
         field;
 
       if(fieldEl.length === 2){
-        fieldEl = fieldEl.item(1);
+        //fieldEl = fieldEl.item(1);
       }
 
       if (fieldEl.length === 0) {}

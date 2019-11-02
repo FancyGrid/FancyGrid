@@ -73,12 +73,21 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       opacity: 0
     });
 
-    el.update([
-      '<div class="'+me.innerCls+'">' +
-        '<div class="'+me.imageCls+'"></div>'+
-        '<div class="'+me.textCls+'">' + lang.loadingText +'</div>'+
-      '</div>'
-    ].join(' '));
+    if(me.loadText){
+      el.update([
+        '<div class="' + me.innerCls + '">' +
+          '<div class="' + me.textCls + '">' + me.loadText + '</div>' +
+        '</div>'
+      ].join(' '));
+    }
+    else {
+      el.update([
+        '<div class="' + me.innerCls + '">' +
+          '<div class="' + me.imageCls + '"></div>' +
+          '<div class="' + me.textCls + '">' + lang.loadingText + '</div>' +
+        '</div>'
+      ].join(' '));
+    }
 
     me.el = Fancy.get(renderTo.dom.appendChild(el.dom));
     me.innerEl = me.el.select('.' + me.innerCls);
@@ -96,7 +105,12 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       el.css('display', 'none');
     }
     else{
-      el.css('display', 'block');
+      if(me.showOnWaitingServer === false){
+        el.css('display', 'none');
+      }
+      else {
+        el.css('display', 'block');
+      }
       //me.show();
     }
 
@@ -106,13 +120,17 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onBeforeLoad: function(){
-    this.show();
+    if(this.showOnWaitingServer){
+      this.show();
+    }
   },
   /*
    *
    */
   onLoad: function(){
-    this.hide();
+    if(this.showOnWaitingServer) {
+      this.hide();
+    }
   },
   /*
    * @param {String} text
@@ -140,7 +158,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
     setTimeout(function(){
       if(me.loaded !== true){
-        me.textEl.update(lang.loadingText);
+        me.textEl.update(me.loadText || lang.loadingText);
 
         me.el.css('display', 'block');
       }

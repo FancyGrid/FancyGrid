@@ -213,6 +213,7 @@
      */
     ons: function () {
       var me = this,
+        el = me.el,
         input = me.el.getByTag('input');
 
       me.input = input;
@@ -227,6 +228,13 @@
 
       if (me.format && me.format.inputFn) {
         me.on('key', me.onKeyInputFn);
+      }
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*

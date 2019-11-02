@@ -156,6 +156,9 @@
             events = [{
               change: me.onComboChange,
               scope: me
+            },{
+              beforekey: me.onBeforeKey,
+              scope: me
             }];
 
           if (column.editorEvents) {
@@ -233,6 +236,9 @@
             }, {
               blur: me.onBlur,
               scope: me
+            },{
+              beforekey: me.onBeforeKey,
+              scope: me
             }]
           });
           break;
@@ -256,6 +262,9 @@
             }, {
               blur: me.onBlur,
               scope: me
+            },{
+              beforekey: me.onBeforeKey,
+              scope: me
             }]
           });
           break;
@@ -272,6 +281,9 @@
               scope: me
             }, {
               blur: me.onBlur,
+              scope: me
+            },{
+              beforekey: me.onBeforeKey,
               scope: me
             }]
           });
@@ -313,6 +325,9 @@
               scope: me
             }, {
               blur: me.onBlur,
+              scope: me
+            },{
+              beforekey: me.onBeforeKey,
               scope: me
             }]
           });
@@ -509,7 +524,18 @@
      * @param {String} value
      */
     onEditorEnter: function (editor, value) {
-      this.hideEditor();
+      var me = this,
+        w = me.widget,
+        selection = w.selection || {};
+
+      me.hideEditor();
+
+      if(selection.selectBottomCellAfterEdit){
+        w.selectCellDown();
+        setTimeout(function () {
+          w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+        }, 1);
+      }
     },
     /*
      *
@@ -517,11 +543,6 @@
     onHeaderCellMouseDown: function () {
       this.hideEditor();
     },
-    /*
-     * @param {Object} editor
-     * @param {String} value
-     */
-    onKey: function (editor, value) {},
     /*
      * @param {String} value
      */
@@ -712,6 +733,9 @@
       s.set(o.rowIndex, key, newValue);
       me.hideEditor();
     },
+    /*
+     *
+     */
     checkAutoInitEditors: function () {
       var me = this,
         w = me.widget;
@@ -721,6 +745,65 @@
           column.editor = me.generateEditor(column);
         }
       });
+    },
+    /*
+     * @param {Object} editor
+     * @param {String} value
+     * @param {Object} e
+     */
+    onBeforeKey: function (field, value, e) {
+      var me = this,
+        w = me.widget,
+        selection = w.selection || {},
+        key = F.key;
+
+      switch (e.keyCode){
+        case key.UP:
+          if(selection.selectUpCellOnUp){
+            me.hideEditor();
+            w.selectCellUp();
+            setTimeout(function () {
+              w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+            }, 1);
+          }
+          break;
+        case key.DOWN:
+          if(selection.selectBottomCellOnDown) {
+            me.hideEditor();
+            w.selectCellDown();
+            setTimeout(function () {
+              w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+            }, 1);
+          }
+          break;
+        case key.LEFT:
+          if(selection.selectLeftCellOnLeftEnd) {
+            var carret = field.getInputSelection();
+
+            if(carret.start === 0 && carret.end === 0){
+              me.hideEditor();
+              w.selectCellLeft();
+              setTimeout(function () {
+                w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+              }, 1);
+            }
+          }
+          break;
+        case key.RIGHT:
+          if(selection.selectRightCellOnEnd) {
+            var carret = field.getInputSelection(),
+              length = field.input.dom.value.length;
+
+            if(carret.start === length && carret.end === length){
+              me.hideEditor();
+              w.selectCellRight();
+              setTimeout(function () {
+                w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+              }, 1);
+            }
+          }
+          break;
+      }
     }
   });
 

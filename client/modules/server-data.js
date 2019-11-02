@@ -193,10 +193,21 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
         me.loadedTimes++;
         me.loading = false;
-        me.defineModel(o[me.readerRootProperty]);
+
+        if(proxy.wrapper === false){
+          me.defineModel(o);
+        }
+        else {
+          me.defineModel(o[me.readerRootProperty]);
+        }
 
         if(me.widget.isTreeData){
-          me.data = o[me.readerRootProperty];
+          if(proxy.wrapper === false){
+            me.data = o;
+          }
+          else {
+            me.data = o[me.readerRootProperty];
+          }
           me.initTreeData();
 
           me.widget.setSidesHeight();
@@ -215,7 +226,12 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           me.processPagingData(o);
         }
         else {
-          me.setData(o[me.readerRootProperty]);
+          if(proxy.wrapper === false){
+            me.setData(o);
+          }
+          else {
+            me.setData(o[me.readerRootProperty]);
+          }
           me.widget.setSidesHeight();
         }
         me.fire('change');

@@ -92,6 +92,13 @@
 
       el.on('click', me.onClick, me);
       el.on('mousedown', me.onMouseDown, me);
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      * @param {Object} e

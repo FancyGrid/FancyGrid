@@ -96,11 +96,19 @@
      *
      */
     ons: function () {
-      var me = this;
+      var me = this,
+        el = me.el;
 
       me.button.on('pressedchange', function (button, value) {
         me.fire('pressedchange', value);
       });
+
+      el.on('mouseenter', me.onMouseOver, me);
+      el.on('mouseleave', me.onMouseOut, me);
+
+      if (me.tip) {
+        el.on('mousemove', me.onMouseMove, me);
+      }
     },
     /*
      *

@@ -178,7 +178,12 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     }
 
     me.checkPagingType(o);
-    me.setData(o[me.readerRootProperty]);
+    if(me.proxy.wrapper === false){
+      me.setData(o);
+    }
+    else {
+      me.setData(o[me.readerRootProperty]);
+    }
     //TODO: check samples with filter, paging and server and static
     me.changeDataView({
       stoppedFilter: true

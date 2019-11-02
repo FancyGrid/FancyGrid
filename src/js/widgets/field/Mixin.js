@@ -369,6 +369,8 @@
         keyCode = e.keyCode,
         key = F.key;
 
+      me.fire('beforekey', me.input.dom.value, e);
+
       if(me.disabled){
         return;
       }
@@ -983,11 +985,11 @@
         }
       }
 
-      if (me.tip) {
-        me.renderTip(e);
-      }
-      else if (me.tooltip) {
+      if (me.tooltip) {
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      }
+      else if (me.tip) {
+        me.renderTip(e);
       }
     },
     /*
@@ -996,15 +998,32 @@
     renderTip: function (e) {
       var me = this,
         value = '',
-        tpl = new F.Template(me.tip || me.tooltip);
+        tip = me.tip || me.tooltip,
+        tpl,
+        text;
 
       if (me.getValue) {
-        value = me.getValue();
+        switch(me.type){
+          case 'button':
+          case 'field.button':
+            value = '';
+            break;
+          default:
+            value = me.getValue();
+        }
       }
 
-      var text = tpl.getHTML({
-        value: value
-      });
+      switch (Fancy.typeOf(tip)){
+        case 'function':
+          text = tip(this, value, me.label || '');
+          break;
+        case 'string':
+          tpl = new F.Template(tip);
+          text = tpl.getHTML({
+            value: value
+          });
+          break;
+      }
 
       if (me.tooltip) {
         me.tooltip.update(text);

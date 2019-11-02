@@ -71,7 +71,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    *
    */
   ons: function(){
-    var me = this;
+    var me = this,
+      el = me.el;
 
     me.button.on('toggle', function(){
       if(me.disabled){
@@ -79,6 +80,13 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
       }
       me.fire('toggle');
     });
+
+    el.on('mouseenter', me.onMouseOver, me);
+    el.on('mouseleave', me.onMouseOut, me);
+
+    if (me.tip) {
+      el.on('mousemove', me.onMouseMove, me);
+    }
   },
   /*
    *
