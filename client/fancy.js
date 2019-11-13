@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.84',
+  version: '1.7.85',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -7865,7 +7865,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           item.style['right'] = passedRight;
         }
 
-        item.renderTo = containerEl.dom;
+        if (F.isObject(item)) {
+          item.renderTo = containerEl.dom;
+        }
 
         switch (item) {
           case '|':

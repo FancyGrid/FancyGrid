@@ -3069,10 +3069,13 @@
       var me = this,
         s = me.store;
 
-      s.setData(data);
+      //s.setData(data);
 
       if (s.isTree) {
-        s.initTreeData();
+        s.initTreeData(data);
+      }
+      else{
+        s.setData(data);
       }
 
       me.setSidesHeight();
@@ -3266,7 +3269,15 @@
         return;
       }
 
-      me.tree.expandRow(item);
+      if(me.tree){
+        me.tree.expandRow(item);
+      }
+
+      if(me.expander){
+        var rowIndex = me.getRowById(id);
+
+        me.expander.expand(rowIndex);
+      }
     },
     /*
      * {Number|String|Object} id
@@ -3286,7 +3297,15 @@
         return;
       }
 
-      me.tree.collapseRow(item);
+      if(me.tree) {
+        me.tree.collapseRow(item);
+      }
+
+      if(me.expander){
+        var rowIndex = me.getRowById(id);
+
+        me.expander.collapse(rowIndex);
+      }
     },
     /*
      *

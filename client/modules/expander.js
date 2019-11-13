@@ -433,7 +433,9 @@ Fancy.modules['expander'] = true;
      * @return {Number}
      */
     getBeforeHeight: function (rowIndex) {
-      var height = 0;
+      var me = this,
+        w = me.widget,
+        height = 0;
 
       for (var p in this._expandedIds) {
         var item = this._expandedIds[p];

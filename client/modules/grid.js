@@ -5396,10 +5396,13 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this,
         s = me.store;
 
-      s.setData(data);
+      //s.setData(data);
 
       if (s.isTree) {
-        s.initTreeData();
+        s.initTreeData(data);
+      }
+      else{
+        s.setData(data);
       }
 
       me.setSidesHeight();
@@ -5593,7 +5596,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         return;
       }
 
-      me.tree.expandRow(item);
+      if(me.tree){
+        me.tree.expandRow(item);
+      }
+
+      if(me.expander){
+        var rowIndex = me.getRowById(id);
+
+        me.expander.expand(rowIndex);
+      }
     },
     /*
      * {Number|String|Object} id
@@ -5613,7 +5624,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         return;
       }
 
-      me.tree.collapseRow(item);
+      if(me.tree) {
+        me.tree.collapseRow(item);
+      }
+
+      if(me.expander){
+        var rowIndex = me.getRowById(id);
+
+        me.expander.collapse(rowIndex);
+      }
     },
     /*
      *

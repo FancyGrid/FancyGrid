@@ -6,21 +6,21 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
   /*
    *
    */
-  initTreeData: function(){
-    var me = this;
+  initTreeData: function(data){
+    var me = this,
+      data = data || me.data;
 
     me.isTree = true;
 
-    if(!me.data || me.data.length === 0){
+    if(!data || data.length === 0){
       //TODO:
     }
     else{
-      var data;
-      if(Fancy.isObject(me.data)){
-        data = me.treeReadData(me.data.items);
+      if(Fancy.isObject(data)){
+        data = me.treeReadData(data.items);
       }
       else {
-        data = me.treeReadData(me.data);
+        data = me.treeReadData(data);
       }
 
       me.setData(data);
@@ -28,6 +28,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
   },
   treeReadData: function (data, deep, parentId) {
     var me = this,
+      w = me.widget,
       _data = [];
 
     deep = deep || 1;
@@ -69,6 +70,16 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
         }
         */
+        if(dataItem.id){
+          if(w.tree){
+            w.tree.expandMap[dataItem.id] = true;
+          }
+          else{
+            w._tempExpandMap = w._tempExpandMap || {};
+            w._tempExpandMap[dataItem.id] = true;
+          }
+        }
+
         _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
       }
     });
@@ -304,9 +315,13 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
      *
      */
     init: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.expandMap = {};
+      if(w._tempExpandMap){
+        me.expandMap = w._tempExpandMap;
+      }
 
       me.Super('init', arguments);
       me.ons();
@@ -467,7 +482,6 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         parentId = item.get('parentId'),
         parentChild;
 
-
       w.$onChangeUpdate = false;
 
       if(filteredChild){
@@ -545,9 +559,13 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
             expanded = me.expandMap[itemData.id];
             itemData.expanded = expanded;
           }
+          else{
+            if(itemData.child !== undefined){
+              itemData.expanded = false;
+            }
+          }
 
           rowIndex++;
-
           w.insert(rowIndex, itemData);
 
           if(expanded === true){

@@ -139,7 +139,9 @@
           item.style['right'] = passedRight;
         }
 
-        item.renderTo = containerEl.dom;
+        if (F.isObject(item)) {
+          item.renderTo = containerEl.dom;
+        }
 
         switch (item) {
           case '|':

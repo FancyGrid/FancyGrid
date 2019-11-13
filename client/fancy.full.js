@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.84',
+  version: '1.7.85',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -6057,21 +6057,21 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
   /*
    *
    */
-  initTreeData: function(){
-    var me = this;
+  initTreeData: function(data){
+    var me = this,
+      data = data || me.data;
 
     me.isTree = true;
 
-    if(!me.data || me.data.length === 0){
+    if(!data || data.length === 0){
       //TODO:
     }
     else{
-      var data;
-      if(Fancy.isObject(me.data)){
-        data = me.treeReadData(me.data.items);
+      if(Fancy.isObject(data)){
+        data = me.treeReadData(data.items);
       }
       else {
-        data = me.treeReadData(me.data);
+        data = me.treeReadData(data);
       }
 
       me.setData(data);
@@ -6079,6 +6079,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
   },
   treeReadData: function (data, deep, parentId) {
     var me = this,
+      w = me.widget,
       _data = [];
 
     deep = deep || 1;
@@ -6120,6 +6121,16 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
         }
         */
+        if(dataItem.id){
+          if(w.tree){
+            w.tree.expandMap[dataItem.id] = true;
+          }
+          else{
+            w._tempExpandMap = w._tempExpandMap || {};
+            w._tempExpandMap[dataItem.id] = true;
+          }
+        }
+
         _data = _data.concat(me.treeReadData(dataItem.child || [], deep + 1, dataItem.id));
       }
     });
@@ -13766,7 +13777,9 @@ Fancy.define('Fancy.toolbar.Tab', {
           item.style['right'] = passedRight;
         }
 
-        item.renderTo = containerEl.dom;
+        if (F.isObject(item)) {
+          item.renderTo = containerEl.dom;
+        }
 
         switch (item) {
           case '|':
@@ -28242,10 +28255,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var me = this,
         s = me.store;
 
-      s.setData(data);
+      //s.setData(data);
 
       if (s.isTree) {
-        s.initTreeData();
+        s.initTreeData(data);
+      }
+      else{
+        s.setData(data);
       }
 
       me.setSidesHeight();
@@ -28439,7 +28455,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         return;
       }
 
-      me.tree.expandRow(item);
+      if(me.tree){
+        me.tree.expandRow(item);
+      }
+
+      if(me.expander){
+        var rowIndex = me.getRowById(id);
+
+        me.expander.expand(rowIndex);
+      }
     },
     /*
      * {Number|String|Object} id
@@ -28459,7 +28483,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         return;
       }
 
-      me.tree.collapseRow(item);
+      if(me.tree) {
+        me.tree.collapseRow(item);
+      }
+
+      if(me.expander){
+        var rowIndex = me.getRowById(id);
+
+        me.expander.collapse(rowIndex);
+      }
     },
     /*
      *
@@ -40505,7 +40537,9 @@ Fancy.modules['expander'] = true;
      * @return {Number}
      */
     getBeforeHeight: function (rowIndex) {
-      var height = 0;
+      var me = this,
+        w = me.widget,
+        height = 0;
 
       for (var p in this._expandedIds) {
         var item = this._expandedIds[p];
@@ -43753,9 +43787,13 @@ Fancy.modules['summary'] = true;
      *
      */
     init: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.expandMap = {};
+      if(w._tempExpandMap){
+        me.expandMap = w._tempExpandMap;
+      }
 
       me.Super('init', arguments);
       me.ons();
@@ -43916,7 +43954,6 @@ Fancy.modules['summary'] = true;
         parentId = item.get('parentId'),
         parentChild;
 
-
       w.$onChangeUpdate = false;
 
       if(filteredChild){
@@ -43994,9 +44031,13 @@ Fancy.modules['summary'] = true;
             expanded = me.expandMap[itemData.id];
             itemData.expanded = expanded;
           }
+          else{
+            if(itemData.child !== undefined){
+              itemData.expanded = false;
+            }
+          }
 
           rowIndex++;
-
           w.insert(rowIndex, itemData);
 
           if(expanded === true){

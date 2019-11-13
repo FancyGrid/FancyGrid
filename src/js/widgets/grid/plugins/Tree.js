@@ -62,9 +62,13 @@
      *
      */
     init: function () {
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.expandMap = {};
+      if(w._tempExpandMap){
+        me.expandMap = w._tempExpandMap;
+      }
 
       me.Super('init', arguments);
       me.ons();
@@ -225,7 +229,6 @@
         parentId = item.get('parentId'),
         parentChild;
 
-
       w.$onChangeUpdate = false;
 
       if(filteredChild){
@@ -303,9 +306,13 @@
             expanded = me.expandMap[itemData.id];
             itemData.expanded = expanded;
           }
+          else{
+            if(itemData.child !== undefined){
+              itemData.expanded = false;
+            }
+          }
 
           rowIndex++;
-
           w.insert(rowIndex, itemData);
 
           if(expanded === true){
