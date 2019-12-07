@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.85',
+  version: '1.7.86',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -2499,13 +2499,19 @@ Fancy.key = {
   SHIFT: 16,
   CTRL: 17,
   ALT: 18,
+  PAUSE: 19,
+  CAPS_LOCK: 20,
   ESC: 27,
+  SPACE: 32,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
   END: 35,
   HOME: 36,
   LEFT: 37,
   UP: 38,
   RIGHT: 39,
   DOWN: 40,
+  PRINT_SCREEN: 44,
   INSERT: 45,
   DELETE: 46,
   ZERO: 48,
@@ -2518,19 +2524,6 @@ Fancy.key = {
   SEVEN: 55,
   EIGHT: 56,
   NINE: 57,
-  NUM_ZERO: 96,
-  NUM_ONE: 97,
-  NUM_TWO: 98,
-  NUM_THREE: 99,
-  NUM_FOUR: 100,
-  NUM_FIVE: 101,
-  NUM_SIX: 102,
-  NUM_SEVEN: 103,
-  NUM_EIGHT: 104,
-  NUM_NINE: 105,
-  NUM_PLUS: 107,
-  NUM_MINUS: 109,
-  NUM_DOT: 110,
   A: 65,
   B: 66,
   C: 67,
@@ -2557,9 +2550,37 @@ Fancy.key = {
   X: 88,
   Y: 89,
   Z: 90,
-  DOT: 190,
-  PAGE_UP: 33,
-  PAGE_DOWN: 34
+  META: 91,
+  CONTEXT_MENU: 93,
+  NUM_ZERO: 96,
+  NUM_ONE: 97,
+  NUM_TWO: 98,
+  NUM_THREE: 99,
+  NUM_FOUR: 100,
+  NUM_FIVE: 101,
+  NUM_SIX: 102,
+  NUM_SEVEN: 103,
+  NUM_EIGHT: 104,
+  NUM_NINE: 105,
+  NUM_MULTIPLY: 106,
+  NUM_PLUS: 107,
+  NUM_MINUS: 109,
+  NUM_DOT: 110,
+  NUM_DIVISION: 111,
+  F1: 112,
+  F2: 113,
+  F3: 114,
+  F4: 115,
+  F5: 116,
+  F6: 117,
+  F7: 118,
+  F8: 119,
+  F9: 120,
+  F10: 121,
+  F11: 122,
+  F12: 123,
+  WHEEL_SCALE: 120,
+  DOT: 190
 };
 
 Fancy.Key = {
@@ -16689,6 +16710,7 @@ if(!Fancy.nojQuery && Fancy.$){
         case key.ESC:
         case key.LEFT:
         case key.RIGHT:
+        case key.TAB:
           return;
       }
 
@@ -21308,7 +21330,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     isListInsideViewBox: function (el) {
       var me = this,
         p = el.$dom.offset(),
-        listHeight = me.calcListHeight(),
+        listHeight = me.calcListHeight() + el.$dom.height(),
         listBottomPoint = p.top + listHeight,
         viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
 
@@ -26970,6 +26992,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       me.scroller.setScrollBars();
+      me.fire('changewidth', width);
     },
     /*
      * @return {Number}
@@ -27009,6 +27032,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     setHeight: function (value, changePanelHeight) {
       var me = this,
+        originalHeight = value,
         gridBorders = me.gridBorders,
         panelBodyBorders = me.panelBodyBorders;
 
@@ -27075,6 +27099,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.height = value;
 
       me.scroller.update();
+      me.fire('changeheight', originalHeight);
     },
     /*
      * @param {String} key
@@ -28438,9 +28463,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
     },
     /*
-     * {Number|String|Object} id
+     * @param {Number|String|Object} id
+     * @param {Boolean} toggle
      */
-    expand: function (id) {
+    expand: function (id, toggle) {
       var item,
         me = this;
 
@@ -28451,7 +28477,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           break;
       }
 
+      if(!item){
+        return;
+      }
+
       if (item.get('expanded') === true) {
+        //for tree only
+        if(toggle){
+          this.collapse(id);
+        }
         return;
       }
 
@@ -28460,15 +28494,26 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(me.expander){
-        var rowIndex = me.getRowById(id);
+        if(toggle && this.expander._expandedIds[id]){
+          this.collapse(id);
+          return;
+        }
 
+        var rowIndex = me.getRowById(id);
         me.expander.expand(rowIndex);
       }
     },
     /*
-     * {Number|String|Object} id
+     * @param {Number|String|Object} id
      */
-    collapse: function (id) {
+    toggleExpand: function (id) {
+      this.expand(id, true);
+    },
+    /*
+     * @param {Number|String|Object} id
+     * @param {Boolean} toggle
+     */
+    collapse: function (id, toggle) {
       var item,
         me = this;
 
@@ -28480,6 +28525,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (item.get('expanded') === false) {
+        //for tree only
+        if(toggle){
+          this.expand(id);
+        }
         return;
       }
 
@@ -28488,10 +28537,20 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(me.expander){
-        var rowIndex = me.getRowById(id);
+        if(toggle && !this.expander._expandedIds[id]){
+          this.expand(id);
+          return;
+        }
 
+        var rowIndex = me.getRowById(id);
         me.expander.collapse(rowIndex);
       }
+    },
+    /*
+     * @param {Number} id
+     */
+    toggleCollapse: function (id) {
+      this.collapse(id, true);
     },
     /*
      *
@@ -29148,7 +29207,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
       'contextmenu',
-      'statechange'
+      'statechange',
+      'changewidth',
+      'changeheight'
     );
 
     Fancy.loadStyle();
@@ -39592,6 +39653,21 @@ Fancy.modules['selection'] = true;
           //TODO
           break;
         case key.ESC:
+        case key.ALT:
+        case key.SHIFT:
+        case key.CAPS_LOCK:
+        case key.F1:
+        case key.F2:
+        case key.F3:
+        case key.F4:
+        case key.F5:
+        case key.F6:
+        case key.F7:
+        case key.F8:
+        case key.F9:
+        case key.F10:
+        case key.F11:
+        case key.F12:
           break;
           /*
         case key.ZERO:
@@ -40267,6 +40343,10 @@ Fancy.modules['expander'] = true;
       var me = this,
         w = me.widget,
         item = me._expandedIds[id];
+
+      if(!me._expandedIds[id]){
+        return false;
+      }
 
       if(me._expandedIds[id].timeOutCheckHeight1){
         clearTimeout(me._expandedIds[id].timeOutCheckHeight1);
@@ -47425,6 +47505,10 @@ Fancy.modules['state'] = true;
             }
           }
         });
+
+        //Changing width/height over API
+        w.on('changewidth', me.onChangeWidth, me);
+        w.on('changeheight', me.onChangeHeight, me);
       }
     },
     onSort: function () {
@@ -47670,6 +47754,40 @@ Fancy.modules['state'] = true;
 
       state.width = o.width;
       state.height = o.height;
+
+      localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
+    },
+    /*
+     *
+     */
+    onChangeWidth: function(grid, value) {
+      var me = this,
+        w = me.widget,
+        name = w.getStateName(),
+        state = localStorage.getItem(name) || '{}';
+
+      state = JSON.parse(state);
+
+      state.width = value;
+
+      localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
+    },
+    /*
+     *
+     */
+    onChangeHeight: function(grid, value) {
+      var me = this,
+        w = me.widget,
+        name = w.getStateName(),
+        state = localStorage.getItem(name) || '{}';
+
+      state = JSON.parse(state);
+
+      state.height = value;
 
       localStorage.setItem(name, JSON.stringify(state));
 

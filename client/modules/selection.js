@@ -3230,6 +3230,21 @@ Fancy.modules['selection'] = true;
           //TODO
           break;
         case key.ESC:
+        case key.ALT:
+        case key.SHIFT:
+        case key.CAPS_LOCK:
+        case key.F1:
+        case key.F2:
+        case key.F3:
+        case key.F4:
+        case key.F5:
+        case key.F6:
+        case key.F7:
+        case key.F8:
+        case key.F9:
+        case key.F10:
+        case key.F11:
+        case key.F12:
           break;
           /*
         case key.ZERO:

@@ -1826,7 +1826,7 @@
     isListInsideViewBox: function (el) {
       var me = this,
         p = el.$dom.offset(),
-        listHeight = me.calcListHeight(),
+        listHeight = me.calcListHeight() + el.$dom.height(),
         listBottomPoint = p.top + listHeight,
         viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
 

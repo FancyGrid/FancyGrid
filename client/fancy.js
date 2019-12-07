@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.85',
+  version: '1.7.86',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -1621,13 +1621,19 @@ Fancy.key = {
   SHIFT: 16,
   CTRL: 17,
   ALT: 18,
+  PAUSE: 19,
+  CAPS_LOCK: 20,
   ESC: 27,
+  SPACE: 32,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
   END: 35,
   HOME: 36,
   LEFT: 37,
   UP: 38,
   RIGHT: 39,
   DOWN: 40,
+  PRINT_SCREEN: 44,
   INSERT: 45,
   DELETE: 46,
   ZERO: 48,
@@ -1640,19 +1646,6 @@ Fancy.key = {
   SEVEN: 55,
   EIGHT: 56,
   NINE: 57,
-  NUM_ZERO: 96,
-  NUM_ONE: 97,
-  NUM_TWO: 98,
-  NUM_THREE: 99,
-  NUM_FOUR: 100,
-  NUM_FIVE: 101,
-  NUM_SIX: 102,
-  NUM_SEVEN: 103,
-  NUM_EIGHT: 104,
-  NUM_NINE: 105,
-  NUM_PLUS: 107,
-  NUM_MINUS: 109,
-  NUM_DOT: 110,
   A: 65,
   B: 66,
   C: 67,
@@ -1679,9 +1672,37 @@ Fancy.key = {
   X: 88,
   Y: 89,
   Z: 90,
-  DOT: 190,
-  PAGE_UP: 33,
-  PAGE_DOWN: 34
+  META: 91,
+  CONTEXT_MENU: 93,
+  NUM_ZERO: 96,
+  NUM_ONE: 97,
+  NUM_TWO: 98,
+  NUM_THREE: 99,
+  NUM_FOUR: 100,
+  NUM_FIVE: 101,
+  NUM_SIX: 102,
+  NUM_SEVEN: 103,
+  NUM_EIGHT: 104,
+  NUM_NINE: 105,
+  NUM_MULTIPLY: 106,
+  NUM_PLUS: 107,
+  NUM_MINUS: 109,
+  NUM_DOT: 110,
+  NUM_DIVISION: 111,
+  F1: 112,
+  F2: 113,
+  F3: 114,
+  F4: 115,
+  F5: 116,
+  F6: 117,
+  F7: 118,
+  F8: 119,
+  F9: 120,
+  F10: 121,
+  F11: 122,
+  F12: 123,
+  WHEEL_SCALE: 120,
+  DOT: 190
 };
 
 Fancy.Key = {
@@ -9138,6 +9159,7 @@ if(!Fancy.nojQuery && Fancy.$){
         case key.ESC:
         case key.LEFT:
         case key.RIGHT:
+        case key.TAB:
           return;
       }
 
@@ -13047,7 +13069,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     isListInsideViewBox: function (el) {
       var me = this,
         p = el.$dom.offset(),
-        listHeight = me.calcListHeight(),
+        listHeight = me.calcListHeight() + el.$dom.height(),
         listBottomPoint = p.top + listHeight,
         viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
 
@@ -14331,7 +14353,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'lockcolumn', 'rightlockcolumn', 'unlockcolumn',
       'filter',
       'contextmenu',
-      'statechange'
+      'statechange',
+      'changewidth',
+      'changeheight'
     );
 
     Fancy.loadStyle();

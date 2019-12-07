@@ -4111,6 +4111,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       me.scroller.setScrollBars();
+      me.fire('changewidth', width);
     },
     /*
      * @return {Number}
@@ -4150,6 +4151,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     setHeight: function (value, changePanelHeight) {
       var me = this,
+        originalHeight = value,
         gridBorders = me.gridBorders,
         panelBodyBorders = me.panelBodyBorders;
 
@@ -4216,6 +4218,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.height = value;
 
       me.scroller.update();
+      me.fire('changeheight', originalHeight);
     },
     /*
      * @param {String} key
@@ -5579,9 +5582,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
     },
     /*
-     * {Number|String|Object} id
+     * @param {Number|String|Object} id
+     * @param {Boolean} toggle
      */
-    expand: function (id) {
+    expand: function (id, toggle) {
       var item,
         me = this;
 
@@ -5592,7 +5596,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           break;
       }
 
+      if(!item){
+        return;
+      }
+
       if (item.get('expanded') === true) {
+        //for tree only
+        if(toggle){
+          this.collapse(id);
+        }
         return;
       }
 
@@ -5601,15 +5613,26 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if(me.expander){
-        var rowIndex = me.getRowById(id);
+        if(toggle && this.expander._expandedIds[id]){
+          this.collapse(id);
+          return;
+        }
 
+        var rowIndex = me.getRowById(id);
         me.expander.expand(rowIndex);
       }
     },
     /*
-     * {Number|String|Object} id
+     * @param {Number|String|Object} id
      */
-    collapse: function (id) {
+    toggleExpand: function (id) {
+      this.expand(id, true);
+    },
+    /*
+     * @param {Number|String|Object} id
+     * @param {Boolean} toggle
+     */
+    collapse: function (id, toggle) {
       var item,
         me = this;
 
@@ -5621,6 +5644,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if (item.get('expanded') === false) {
+        //for tree only
+        if(toggle){
+          this.expand(id);
+        }
         return;
       }
 
@@ -5629,10 +5656,20 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if(me.expander){
-        var rowIndex = me.getRowById(id);
+        if(toggle && !this.expander._expandedIds[id]){
+          this.expand(id);
+          return;
+        }
 
+        var rowIndex = me.getRowById(id);
         me.expander.collapse(rowIndex);
       }
+    },
+    /*
+     * @param {Number} id
+     */
+    toggleCollapse: function (id) {
+      this.collapse(id, true);
     },
     /*
      *

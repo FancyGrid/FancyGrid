@@ -78,6 +78,10 @@ Fancy.modules['state'] = true;
             }
           }
         });
+
+        //Changing width/height over API
+        w.on('changewidth', me.onChangeWidth, me);
+        w.on('changeheight', me.onChangeHeight, me);
       }
     },
     onSort: function () {
@@ -323,6 +327,40 @@ Fancy.modules['state'] = true;
 
       state.width = o.width;
       state.height = o.height;
+
+      localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
+    },
+    /*
+     *
+     */
+    onChangeWidth: function(grid, value) {
+      var me = this,
+        w = me.widget,
+        name = w.getStateName(),
+        state = localStorage.getItem(name) || '{}';
+
+      state = JSON.parse(state);
+
+      state.width = value;
+
+      localStorage.setItem(name, JSON.stringify(state));
+
+      me.widget.fire('statechange', me.getState());
+    },
+    /*
+     *
+     */
+    onChangeHeight: function(grid, value) {
+      var me = this,
+        w = me.widget,
+        name = w.getStateName(),
+        state = localStorage.getItem(name) || '{}';
+
+      state = JSON.parse(state);
+
+      state.height = value;
 
       localStorage.setItem(name, JSON.stringify(state));
 

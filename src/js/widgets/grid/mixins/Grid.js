@@ -1784,6 +1784,7 @@
       }
 
       me.scroller.setScrollBars();
+      me.fire('changewidth', width);
     },
     /*
      * @return {Number}
@@ -1823,6 +1824,7 @@
      */
     setHeight: function (value, changePanelHeight) {
       var me = this,
+        originalHeight = value,
         gridBorders = me.gridBorders,
         panelBodyBorders = me.panelBodyBorders;
 
@@ -1889,6 +1891,7 @@
       me.height = value;
 
       me.scroller.update();
+      me.fire('changeheight', originalHeight);
     },
     /*
      * @param {String} key
@@ -3252,9 +3255,10 @@
       }
     },
     /*
-     * {Number|String|Object} id
+     * @param {Number|String|Object} id
+     * @param {Boolean} toggle
      */
-    expand: function (id) {
+    expand: function (id, toggle) {
       var item,
         me = this;
 
@@ -3265,7 +3269,15 @@
           break;
       }
 
+      if(!item){
+        return;
+      }
+
       if (item.get('expanded') === true) {
+        //for tree only
+        if(toggle){
+          this.collapse(id);
+        }
         return;
       }
 
@@ -3274,15 +3286,26 @@
       }
 
       if(me.expander){
-        var rowIndex = me.getRowById(id);
+        if(toggle && this.expander._expandedIds[id]){
+          this.collapse(id);
+          return;
+        }
 
+        var rowIndex = me.getRowById(id);
         me.expander.expand(rowIndex);
       }
     },
     /*
-     * {Number|String|Object} id
+     * @param {Number|String|Object} id
      */
-    collapse: function (id) {
+    toggleExpand: function (id) {
+      this.expand(id, true);
+    },
+    /*
+     * @param {Number|String|Object} id
+     * @param {Boolean} toggle
+     */
+    collapse: function (id, toggle) {
       var item,
         me = this;
 
@@ -3294,6 +3317,10 @@
       }
 
       if (item.get('expanded') === false) {
+        //for tree only
+        if(toggle){
+          this.expand(id);
+        }
         return;
       }
 
@@ -3302,10 +3329,20 @@
       }
 
       if(me.expander){
-        var rowIndex = me.getRowById(id);
+        if(toggle && !this.expander._expandedIds[id]){
+          this.expand(id);
+          return;
+        }
 
+        var rowIndex = me.getRowById(id);
         me.expander.collapse(rowIndex);
       }
+    },
+    /*
+     * @param {Number} id
+     */
+    toggleCollapse: function (id) {
+      this.collapse(id, true);
     },
     /*
      *

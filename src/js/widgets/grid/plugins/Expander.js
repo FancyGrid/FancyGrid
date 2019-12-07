@@ -164,6 +164,10 @@ Fancy.modules['expander'] = true;
         w = me.widget,
         item = me._expandedIds[id];
 
+      if(!me._expandedIds[id]){
+        return false;
+      }
+
       if(me._expandedIds[id].timeOutCheckHeight1){
         clearTimeout(me._expandedIds[id].timeOutCheckHeight1);
         delete me._expandedIds[id].timeOutCheckHeight1;

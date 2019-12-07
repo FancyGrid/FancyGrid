@@ -90,6 +90,7 @@
         case key.ESC:
         case key.LEFT:
         case key.RIGHT:
+        case key.TAB:
           return;
       }
 
