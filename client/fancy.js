@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.86',
+  version: '1.7.87',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -441,6 +441,7 @@ Fancy.apply(Fancy, {
   PANEL_TBAR_CLS: 'fancy-panel-tbar',
   PANEL_BBAR_CLS: 'fancy-panel-bbar',
   PANEL_SUB_TBAR_CLS: 'fancy-panel-sub-tbar',
+  PANEL_BAR_PAGING_CLS: 'fancy-panel-bar-paging',
   PANEL_BUTTONS_CLS: 'fancy-panel-buttons',
   PANEL_NOFRAME_CLS: 'fancy-panel-noframe',
   PANEL_FOOTER_CLS: 'fancy-panel-footer',
@@ -461,6 +462,7 @@ Fancy.apply(Fancy, {
    */
   FORM_CLS: 'fancy-form',
   FORM_BODY_CLS: 'fancy-form-body',
+  FORM_PANEL_CLS: 'fancy-form-panel',
   /*
    * Field cls-s
    */
@@ -524,6 +526,8 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
   GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
+  GRID_STATE_SORTED_CLS: 'fancy-grid-state-sorted',
+  GRID_STATE_FILTERED_CLS: 'fancy-grid-state-filtered',
   GRID_COPY_TEXTAREA: 'fancy-grid-copy-textarea',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
@@ -1098,6 +1102,23 @@ Fancy.defineTheme('gray', {
 
     charWidth: 7,
     menuItemHeight: 30
+  }
+});
+
+Fancy.defineTheme('extra-gray', {
+  config: {
+    panelBorderWidth: 0,
+    //gridBorders: [0,0,1,0],
+    gridBorders: [0,0,1,0],
+    gridWithoutPanelBorders: [1,1,1,1],
+    panelBodyBorders: [0,0,0,0],
+    charWidth: 7,
+    menuItemHeight: 27,
+    titleHeight: 32,
+    cellHeight: 28,
+    cellHeaderHeight: 28,
+    barHeight: 32,
+    datePickerHeight: 287
   }
 });
 
@@ -4319,6 +4340,7 @@ Fancy.Element.prototype = {
   select: function(selector){
     var me = this,
       founded = me.$dom.find(selector);
+      //founded = me.dom.querySelectorAll(selector);
 
     if(founded.length === 1){
       return Fancy.get(founded[0]);
@@ -12078,7 +12100,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         index = -1;
 
       F.each(me.values, function(value, i){
-        if( value === v ){
+        if( String(value).toLocaleLowerCase() === String(v).toLocaleLowerCase() ){
           index = i;
         }
       });
@@ -12160,7 +12182,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               me.valueIndex = i;
             }
 
-            value += me.data[i][me.displayKey] + ', ';
+            if(me.data[i]) {
+              value += me.data[i][me.displayKey] + ', ';
+            }
           });
 
           value = value.replace(/, $/, '');
@@ -12310,7 +12334,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (me.value === value) {
+        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
           isActive = me.selectedItemCls;
         }
 
@@ -12601,7 +12625,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         iL = me.data.length;
 
       for(;i<iL;i++){
-        if (me.data[i][me.displayKey] === value) {
+        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
           if (returnPosition) {
             return i;
           }
@@ -12954,7 +12978,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         index = -1;
 
       for(;i<iL;i++){
-        if(data[i][me.valueKey] == value) {
+        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()) {
           return i;
         }
       }
@@ -13957,7 +13981,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       index = _index;
     }
 
-    if(me.paging && s.proxyType !== 'server'){
+    //if(me.paging && s.proxyType !== 'server'){
+    if(me.paging && s.pageType !== 'server'){
       index += s.showPage * s.pageSize;
     }
 

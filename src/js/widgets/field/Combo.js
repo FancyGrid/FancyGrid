@@ -835,7 +835,7 @@
         index = -1;
 
       F.each(me.values, function(value, i){
-        if( value === v ){
+        if( String(value).toLocaleLowerCase() === String(v).toLocaleLowerCase() ){
           index = i;
         }
       });
@@ -917,7 +917,9 @@
               me.valueIndex = i;
             }
 
-            value += me.data[i][me.displayKey] + ', ';
+            if(me.data[i]) {
+              value += me.data[i][me.displayKey] + ', ';
+            }
           });
 
           value = value.replace(/, $/, '');
@@ -1067,7 +1069,7 @@
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (me.value === value) {
+        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
           isActive = me.selectedItemCls;
         }
 
@@ -1358,7 +1360,7 @@
         iL = me.data.length;
 
       for(;i<iL;i++){
-        if (me.data[i][me.displayKey] === value) {
+        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
           if (returnPosition) {
             return i;
           }
@@ -1711,7 +1713,7 @@
         index = -1;
 
       for(;i<iL;i++){
-        if(data[i][me.valueKey] == value) {
+        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()) {
           return i;
         }
       }

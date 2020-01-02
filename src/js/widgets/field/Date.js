@@ -26,6 +26,7 @@
     fieldCls: FIELD_CLS,
     value: '',
     width: 100,
+    cellHeight: 32,
     emptyText: '',
     tpl: [
       '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
@@ -392,11 +393,12 @@
         return;
       }
 
-      me.picker = new F.DatePicker({
+      var config = {
         window: true,
         date: me.date,
         format: me.format,
         theme: me.theme,
+        //height: height,
         minValue: me.min,
         maxValue: me.max,
         i18n: me.i18n,
@@ -404,7 +406,15 @@
           changedate: me.onPickerChangeDate,
           scope: me
         }]
-      });
+      };
+
+      var themeConfig = F.themes[me.theme].config;
+
+      if(themeConfig.datePickerHeight){
+        config.height = themeConfig.datePickerHeight;
+      }
+
+      me.picker = new F.DatePicker(config);
     },
     /*
      * @return {String}

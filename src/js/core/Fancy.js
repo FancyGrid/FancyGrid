@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.86',
+  version: '1.7.87',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -431,6 +431,7 @@ Fancy.apply(Fancy, {
   PANEL_TBAR_CLS: 'fancy-panel-tbar',
   PANEL_BBAR_CLS: 'fancy-panel-bbar',
   PANEL_SUB_TBAR_CLS: 'fancy-panel-sub-tbar',
+  PANEL_BAR_PAGING_CLS: 'fancy-panel-bar-paging',
   PANEL_BUTTONS_CLS: 'fancy-panel-buttons',
   PANEL_NOFRAME_CLS: 'fancy-panel-noframe',
   PANEL_FOOTER_CLS: 'fancy-panel-footer',
@@ -451,6 +452,7 @@ Fancy.apply(Fancy, {
    */
   FORM_CLS: 'fancy-form',
   FORM_BODY_CLS: 'fancy-form-body',
+  FORM_PANEL_CLS: 'fancy-form-panel',
   /*
    * Field cls-s
    */
@@ -514,6 +516,8 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
   GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
+  GRID_STATE_SORTED_CLS: 'fancy-grid-state-sorted',
+  GRID_STATE_FILTERED_CLS: 'fancy-grid-state-filtered',
   GRID_COPY_TEXTAREA: 'fancy-grid-copy-textarea',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',

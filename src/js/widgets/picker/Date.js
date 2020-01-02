@@ -78,6 +78,7 @@
     gridBorders: [1, 0, 1, 1],
     panelBodyBorders: [0, 0, 0, 0],
     barScrollEnabled: false,
+    cellHeight: 32,
     /*
      * @constructor
      * @param {Object} config
@@ -141,7 +142,8 @@
         return;
       }
 
-      me.monthPicker = new F.MonthPicker({
+      var config = {
+        theme: me.theme,
         date: me.date,
         renderTo: me.panel.el.dom,
         i18n: me.i18n,
@@ -157,7 +159,15 @@
           okclick: me.onMonthOkClick,
           scope: me
         }]
-      });
+      };
+
+      var themeConfig = F.themes[me.theme].config;
+
+      if(themeConfig.datePickerHeight){
+        config.height = themeConfig.datePickerHeight;
+      }
+
+      me.monthPicker = new F.MonthPicker(config);
     },
     /*
      *

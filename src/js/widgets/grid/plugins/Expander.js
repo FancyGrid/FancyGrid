@@ -145,7 +145,7 @@ Fancy.modules['expander'] = true;
 
       me.collapseRow(Number(rowIndex), id);
       me.clearMargin(Number(rowIndex) + 1, id);
-      delete me._expandedIds[id];
+      me._expandedIds[id].hidden = true;
 
       me.reSetTop();
       me.reSetPlusScroll();

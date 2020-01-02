@@ -363,6 +363,18 @@
       }
       else{
         rowIndex = w.getRowById(me.insertItem.id) + 1;
+        if(selection.length){
+          var delta = 0;
+          F.each(selection, function (item) {
+            var itemRowIndex = w.getRowById(item.id);
+
+            if(itemRowIndex < rowIndex){
+              delta++;
+            }
+          });
+
+          rowIndex -= delta;
+        }
       }
 
       w.insert(rowIndex, selection, false);

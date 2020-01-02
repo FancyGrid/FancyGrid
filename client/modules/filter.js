@@ -38,7 +38,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
     }
 
-
     for(var p in filters){
       var column = w.getColumnByIndex(p),
         indexFilters = filters[p],
@@ -294,6 +293,24 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
 
     me.loadData();
+  },
+  /*
+   * @return {Boolean}
+   */
+  hasFilters: function () {
+    var me = this;
+
+    if(!me.filters){
+      return false;
+    }
+
+    var containsFilter = false;
+
+    for(var p in me.filters){
+      containsFilter = true;
+    }
+
+    return containsFilter;
   }
 });/*
  * @class Fancy.grid.plugin.Filter
@@ -306,6 +323,7 @@ Fancy.modules['filter'] = true;
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_FILTER_CLS = F.GRID_HEADER_CELL_FILTER_CLS;
@@ -577,7 +595,15 @@ Fancy.modules['filter'] = true;
               break;
             default:
               if(column.type === 'combo'){
-                value = _value + ',';
+                value = value || [];
+                if(Fancy.isObject(_value)){
+                  for(var q in _value){
+                    value.push(q);
+                  }
+                }
+                else{
+                  value.push(_value);
+                }
               }
               else {
                 value += p + _value + ',';
@@ -1149,7 +1175,7 @@ Fancy.modules['filter'] = true;
     onColumnResize: function (grid, o) {
       var cell = F.get(o.cell),
         width = o.width,
-        fieldEl = cell.select('.' + FIELD_CLS),
+        fieldEl = cell.select(':not(.' + FIELD_CHECKBOX_CLS + ').' + FIELD_CLS),
         field;
 
       if(fieldEl.length === 2){

@@ -28,6 +28,8 @@
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
   var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
+  var GRID_ROW_EXPAND_CLS = F.GRID_ROW_EXPAND_CLS;
+
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.Body', {
@@ -955,7 +957,8 @@
     updateColumnsVisibility: function () {
       var me = this,
         columns = me.getColumns(),
-        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
+        //For jQuery :not does not work on me.el
+        columnEls = me.el.parent().select(':not(.' + GRID_ROW_EXPAND_CLS + ') .' + GRID_COLUMN_CLS);
 
       columnEls.each(function(columnEl, i) {
         var column = columns[i];

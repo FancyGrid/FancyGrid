@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.86',
+  version: '1.7.87',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -441,6 +441,7 @@ Fancy.apply(Fancy, {
   PANEL_TBAR_CLS: 'fancy-panel-tbar',
   PANEL_BBAR_CLS: 'fancy-panel-bbar',
   PANEL_SUB_TBAR_CLS: 'fancy-panel-sub-tbar',
+  PANEL_BAR_PAGING_CLS: 'fancy-panel-bar-paging',
   PANEL_BUTTONS_CLS: 'fancy-panel-buttons',
   PANEL_NOFRAME_CLS: 'fancy-panel-noframe',
   PANEL_FOOTER_CLS: 'fancy-panel-footer',
@@ -461,6 +462,7 @@ Fancy.apply(Fancy, {
    */
   FORM_CLS: 'fancy-form',
   FORM_BODY_CLS: 'fancy-form-body',
+  FORM_PANEL_CLS: 'fancy-form-panel',
   /*
    * Field cls-s
    */
@@ -524,6 +526,8 @@ Fancy.apply(Fancy, {
   GRID_RESIZER_RIGHT_CLS: 'fancy-grid-resizer-right',
   GRID_STATE_DRAG_COLUMN_CLS: 'fancy-grid-state-drag-column',
   GRID_STATE_RESIZE_COLUMN_CLS: 'fancy-grid-state-resize-column',
+  GRID_STATE_SORTED_CLS: 'fancy-grid-state-sorted',
+  GRID_STATE_FILTERED_CLS: 'fancy-grid-state-filtered',
   GRID_COPY_TEXTAREA: 'fancy-grid-copy-textarea',
   //grid header
   GRID_HEADER_CLS: 'fancy-grid-header',
@@ -1099,6 +1103,23 @@ Fancy.defineTheme('gray', {
 
     charWidth: 7,
     menuItemHeight: 30
+  }
+});
+
+Fancy.defineTheme('extra-gray', {
+  config: {
+    panelBorderWidth: 0,
+    //gridBorders: [0,0,1,0],
+    gridBorders: [0,0,1,0],
+    gridWithoutPanelBorders: [1,1,1,1],
+    panelBodyBorders: [0,0,0,0],
+    charWidth: 7,
+    menuItemHeight: 27,
+    titleHeight: 32,
+    cellHeight: 28,
+    cellHeaderHeight: 28,
+    barHeight: 32,
+    datePickerHeight: 287
   }
 });
 
@@ -4787,12 +4808,14 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else{
       me.sorters = [];
 
-      me.sorters.push({
-        key: key,
-        dir: action.toLocaleUpperCase().toLocaleUpperCase(),
-        type: sortType,
-        _type: type
-      });
+      if(action.toLocaleUpperCase() !== 'DROP'){
+        me.sorters.push({
+          key: key,
+          dir: action.toLocaleUpperCase(),
+          type: sortType,
+          _type: type
+        });
+      }
     }
 
     if(me.remoteSort){
@@ -5151,15 +5174,16 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.sorters.push({
-      key: key,
-      dir: dir.toLocaleUpperCase(),
-      type: type
-    });
+    if(dir.toLocaleUpperCase() !== 'DROP'){
+      me.sorters.push({
+        key: key,
+        dir: dir.toLocaleUpperCase(),
+        type: type
+      });
 
-    if(me.sorters.length > me.multiSortLimit){
-      //me.sorters.pop();
-      me.sorters.shift();
+      if(me.sorters.length > me.multiSortLimit){
+        me.sorters.shift();
+      }
     }
   },
   /*
@@ -5812,7 +5836,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
     }
 
-
     for(var p in filters){
       var column = w.getColumnByIndex(p),
         indexFilters = filters[p],
@@ -6068,6 +6091,24 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
 
     me.loadData();
+  },
+  /*
+   * @return {Boolean}
+   */
+  hasFilters: function () {
+    var me = this;
+
+    if(!me.filters){
+      return false;
+    }
+
+    var containsFilter = false;
+
+    for(var p in me.filters){
+      containsFilter = true;
+    }
+
+    return containsFilter;
   }
 });
 /*
@@ -7756,6 +7797,7 @@ Fancy.Element.prototype = {
   select: function(selector){
     var me = this,
       founded = me.$dom.find(selector);
+      //founded = me.dom.querySelectorAll(selector);
 
     if(founded.length === 1){
       return Fancy.get(founded[0]);
@@ -14773,7 +14815,7 @@ Fancy.modules['form'] = true;
   var FORM_CLS = F.FORM_CLS;
   var FORM_BODY_CLS = F.FORM_BODY_CLS;
   var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
-  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  var FORM_PANEL_CLS = F.FORM_PANEL_CLS;
   var PANEL_SHADOW_CLS =  F.PANEL_SHADOW_CLS;
   var FIELD_BLANK_ERR_CLS = F.FIELD_BLANK_ERR_CLS;
   var FIELD_TAB_CLS = F.FIELD_TAB_CLS;
@@ -14936,12 +14978,12 @@ Fancy.modules['form'] = true;
       me.tbar = me.panel.tbar;
       me.buttons = me.panel.buttons;
 
-      if (!me.wrapped) {
-        me.panel.addCls(PANEL_GRID_INSIDE_CLS);
-      }
-
       if (me.extraCls && me.panel) {
         me.panel.addCls(me.extraCls);
+      }
+
+      if(me.panel){
+        me.panel.addCls(FORM_PANEL_CLS);
       }
 
       if (me.title) {
@@ -18185,6 +18227,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     fieldCls: FIELD_CLS,
     value: '',
     width: 100,
+    cellHeight: 32,
     emptyText: '',
     tpl: [
       '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
@@ -18551,11 +18594,12 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         return;
       }
 
-      me.picker = new F.DatePicker({
+      var config = {
         window: true,
         date: me.date,
         format: me.format,
         theme: me.theme,
+        //height: height,
         minValue: me.min,
         maxValue: me.max,
         i18n: me.i18n,
@@ -18563,7 +18607,15 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
           changedate: me.onPickerChangeDate,
           scope: me
         }]
-      });
+      };
+
+      var themeConfig = F.themes[me.theme].config;
+
+      if(themeConfig.datePickerHeight){
+        config.height = themeConfig.datePickerHeight;
+      }
+
+      me.picker = new F.DatePicker(config);
     },
     /*
      * @return {String}
@@ -20339,7 +20391,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         index = -1;
 
       F.each(me.values, function(value, i){
-        if( value === v ){
+        if( String(value).toLocaleLowerCase() === String(v).toLocaleLowerCase() ){
           index = i;
         }
       });
@@ -20421,7 +20473,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               me.valueIndex = i;
             }
 
-            value += me.data[i][me.displayKey] + ', ';
+            if(me.data[i]) {
+              value += me.data[i][me.displayKey] + ', ';
+            }
           });
 
           value = value.replace(/, $/, '');
@@ -20571,7 +20625,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (me.value === value) {
+        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
           isActive = me.selectedItemCls;
         }
 
@@ -20862,7 +20916,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         iL = me.data.length;
 
       for(;i<iL;i++){
-        if (me.data[i][me.displayKey] === value) {
+        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
           if (returnPosition) {
             return i;
           }
@@ -21215,7 +21269,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         index = -1;
 
       for(;i<iL;i++){
-        if(data[i][me.valueKey] == value) {
+        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()) {
           return i;
         }
       }
@@ -24958,7 +25012,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       index = _index;
     }
 
-    if(me.paging && s.proxyType !== 'server'){
+    //if(me.paging && s.proxyType !== 'server'){
+    if(me.paging && s.pageType !== 'server'){
       index += s.showPage * s.pageSize;
     }
 
@@ -25217,6 +25272,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   var TOUCH_CLS = F.TOUCH_CLS;
   var HIDDEN_CLS = F.HIDDEN_CLS;
   var GRID_CLS = F.GRID_CLS;
+  var GRID_STATE_SORTED_CLS = F.GRID_STATE_SORTED_CLS;
+  var GRID_STATE_FILTERED_CLS = F.GRID_STATE_FILTERED_CLS;
   var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
   var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
   var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
@@ -25234,6 +25291,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
   var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
   var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -25905,7 +25963,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.buttons = me.panel.buttons;
 
       if (!me.wrapped) {
-        me.panel.addCls('fancy-panel-grid-inside');
+        me.panel.addCls(PANEL_GRID_INSIDE_CLS);
       }
 
       if (me.title) {
@@ -25998,6 +26056,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       me.on('activate', me.onActivate, me);
       me.on('deactivate', me.onDeActivate, me);
+      me.on('filter', me.onFilter, me);
+      me.on('sort', me.onSort, me);
     },
     /*
      * @param {Object} grid
@@ -29055,6 +29115,35 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       changes.inserted = s.inserted;
 
       return changes;
+    },
+    /*
+     *
+     */
+    onFilter: function() {
+      var me = this,
+        s = me.store,
+        isFiltered = s.hasFilters();
+
+      if(isFiltered){
+        me.addCls(GRID_STATE_FILTERED_CLS);
+      }
+      else{
+        me.removeCls(GRID_STATE_FILTERED_CLS);
+      }
+    },
+    /*
+     *
+     */
+    onSort: function() {
+      var me = this,
+        s = me.store;
+
+      if(s.sorters && s.sorters.length){
+        me.addCls(GRID_STATE_SORTED_CLS);
+      }
+      else{
+        me.removeCls(GRID_STATE_SORTED_CLS);
+      }
     }
   });
 
@@ -31505,250 +31594,293 @@ Fancy.define('Fancy.grid.plugin.Updater', {
  * @class Fancy.grid.plugin.Paging
  * @extends Fancy.Plugin
  */
-Fancy.define('Fancy.grid.plugin.Paging', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.paging',
-  inWidgetName: 'paging',
-  barType: 'bbar',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function() {
-    this.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    this.Super('init', arguments);
-    this.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){
-    var me = this,
-      w = me.widget,
-      store = w.store;
+(function  () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    store.on('change', me.onChangeStore, me);
-    store.on('remove', me.onChangeStore, me);
-    store.on('filter', me.onChangeStore, me);
-    w.on('render', me.onRenderGrid, me);
-    w.on('docmove', me.onDocMouseMove, me);
-  },
-  /*
-   * @param {Number} value
-   */
-  setPageSize: function(value){
-    this.widget.store.setPageSize(value);
-  },
-  /*
-   *
-   */
-  nextPage: function(){
-    this.widget.store.nextPage();
-  },
-  /*
-   *
-   */
-  lastPage: function(){
-    this.widget.store.lastPage();
-  },
-  /*
-   *
-   */
-  prevPage: function(){
-    this.widget.store.prevPage();
-  },
-  /*
-   *
-   */
-  firstPage: function(){
-    this.widget.store.firstPage();
-  },
-  /*
-   * @param {Fancy.Store} store
-   */
-  onChangeStore: function(store){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      panel = w.panel,
-      pageField;
+  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  var PANEL_BAR_PAGING_CLS = F.PANEL_BAR_PAGING_CLS;
 
-    switch(me.barType){
-      case 'both':
-        pageField = panel['_bbar'].roles.pagenumber;
-        pageField.setValue(s.showPage + 1);
+  Fancy.define('Fancy.grid.plugin.Paging', {
+    extend: Fancy.Plugin,
+    ptype: 'grid.paging',
+    inWidgetName: 'paging',
+    barType: 'bbar',
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      var me = this;
 
-        pageField = panel['_tbar'].roles.pagenumber;
-        pageField.setValue(s.showPage + 1);
+      me.Super('init', arguments);
+      me.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {
+      var me = this,
+        w = me.widget,
+        store = w.store;
 
-        me.updateBar('tbar');
-        me.updateBar('bbar');
-        break;
-      case 'none':
-      case false:
-        break;
-      default:
-        pageField = panel['_'+me.barType].roles.pagenumber;
-        pageField.setValue(s.showPage + 1);
+      store.on('change', me.onChangeStore, me);
+      store.on('remove', me.onChangeStore, me);
+      store.on('filter', me.onChangeStore, me);
+      w.on('render', me.onRenderGrid, me);
+      w.on('docmove', me.onDocMouseMove, me);
+      w.on('render', function () {
+        me.setCls();
+      });
+    },
+    /*
+     * @param {Number} value
+     */
+    setPageSize: function (value) {
+      this.widget.store.setPageSize(value);
+    },
+    /*
+     *
+     */
+    nextPage: function () {
+      this.widget.store.nextPage();
+    },
+    /*
+     *
+     */
+    lastPage: function () {
+      this.widget.store.lastPage();
+    },
+    /*
+     *
+     */
+    prevPage: function () {
+      this.widget.store.prevPage();
+    },
+    /*
+     *
+     */
+    firstPage: function () {
+      this.widget.store.firstPage();
+    },
+    /*
+     * @param {Fancy.Store} store
+     */
+    onChangeStore: function (store) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        panel = w.panel,
+        pageField;
 
-        me.updateBar();
-    }
+      switch (me.barType) {
+        case 'both':
+          pageField = panel['_bbar'].roles.pagenumber;
+          pageField.setValue(s.showPage + 1);
 
-    w.setSidesHeight();
-    if(me.$prevPage === undefined){
-      w.fire('changepage', store.showPage);
-    }
-    else if(me.$prevPage !== store.showPage){
-      w.fire('changepage', store.showPage);
-    }
+          pageField = panel['_tbar'].roles.pagenumber;
+          pageField.setValue(s.showPage + 1);
 
-    me.$prevPage = store.showPage
-  },
-  /*
-   * @param {Number} value
-   */
-  setPage: function(value){
-    var me = this,
-      w = me.widget,
-      s = w.store;
+          me.updateBar('tbar');
+          me.updateBar('bbar');
+          break;
+        case 'none':
+        case false:
+          break;
+        default:
+          pageField = panel['_' + me.barType].roles.pagenumber;
+          pageField.setValue(s.showPage + 1);
 
-    if(value < 0){
-      value = 0;
-    }
-    else if(value > s.pages ){
-      value = s.pages;
-    }
-
-    s.setPage(value);
-
-    return value;
-  },
-  refresh: function(){
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    w.showLoadMask();
-    setTimeout(function() {
-      s.refresh();
-
-      if(s.pageType !== 'server'){
-        w.hideLoadMask();
+          me.updateBar();
       }
-    }, 200);
-  },
-  /*
-   * @param {String} barType
-   */
-  updateBar: function(barType){
-    var me = this,
-      w = me.widget,
-      s = w.store,
-      showPage = s.showPage,
-      pageSize = s.pageSize,
-      pages = s.pages,
-      panel = w.panel,
-      barType = barType || me.barType,
-      bar = panel['_' + barType],
-      barRoles = bar.roles,
-      pageField = barRoles.pagenumber,
-      ofText = barRoles.ofText,
-      info = barRoles.info,
-      first = barRoles.first,
-      prev = barRoles.prev,
-      next = barRoles.next,
-      last = barRoles.last,
-      infoStart = showPage * pageSize + 1,
-      infoEnd = infoStart + pageSize - 1,
-      infoTotal = s.getTotal() || 0,
-      lang = w.lang;
 
-    if(infoEnd > infoTotal){
-      infoEnd = infoTotal;
-    }
+      w.setSidesHeight();
+      if (me.$prevPage === undefined) {
+        w.fire('changepage', store.showPage);
+      }
+      else if (me.$prevPage !== store.showPage) {
+        w.fire('changepage', store.showPage);
+      }
 
-    if(infoEnd === 0){
-      infoStart = 0;
-    }
+      me.$prevPage = store.showPage
+    },
+    /*
+     * @param {Number} value
+     */
+    setPage: function (value) {
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-    if(infoStart > infoEnd){
-      infoEnd = infoStart;
-    }
+      if (value < 0) {
+        value = 0;
+      }
+      else if (value > s.pages) {
+        value = s.pages;
+      }
 
-    pageField.setValue(s.showPage + 1);
+      s.setPage(value);
 
-    ofText.el.update( Fancy.String.format(lang.paging.of, [pages || 1]) );
-    info.el.update( Fancy.String.format(lang.paging.info, [infoStart, infoEnd, infoTotal]) );
+      return value;
+    },
+    /*
+     *
+     */
+    refresh: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-    if(showPage === 0){
-      first.disable();
-      prev.disable();
-    }
-    else{
-      first.enable();
-      prev.enable();
-    }
+      w.showLoadMask();
+      setTimeout(function () {
+        s.refresh();
 
-    if(pages - 1 === showPage || pages === 0){
-      last.disable();
-      next.disable();
-    }
-    else{
-      last.enable();
-      next.enable();
-    }
+        if (s.pageType !== 'server') {
+          w.hideLoadMask();
+        }
+      }, 200);
+    },
+    /*
+     * @param {String} barType
+     */
+    updateBar: function (barType) {
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        showPage = s.showPage,
+        pageSize = s.pageSize,
+        pages = s.pages,
+        panel = w.panel,
+        barType = barType || me.barType,
+        bar = panel['_' + barType],
+        barRoles = bar.roles,
+        pageField = barRoles.pagenumber,
+        ofText = barRoles.ofText,
+        info = barRoles.info,
+        first = barRoles.first,
+        prev = barRoles.prev,
+        next = barRoles.next,
+        last = barRoles.last,
+        infoStart = showPage * pageSize + 1,
+        infoEnd = infoStart + pageSize - 1,
+        infoTotal = s.getTotal() || 0,
+        lang = w.lang;
 
-    if(parseInt(w.el.css('width')) < 350){
-      info.hide();
-      bar.checkScroll();
-    }
-  },
-  /*
-   *
-   */
-  onRenderGrid: function(){
-    var me = this;
+      if (infoEnd > infoTotal) {
+        infoEnd = infoTotal;
+      }
 
-    switch(me.barType){
-      case 'both':
-        me.updateBar('tbar');
-        me.updateBar('bbar');
-        break;
-      case 'none':
-      case false:
-        break;
-      default:
-        me.updateBar();
-    }
-  },
-  onDocMouseMove: function(){
-    var me = this,
-      w = me.widget;
+      if (infoEnd === 0) {
+        infoStart = 0;
+      }
 
-    if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
-      if(!me.wasHidden){
-        Fancy.combo.Manager.hideLists();
-        me.wasHidden = true;
+      if (infoStart > infoEnd) {
+        infoEnd = infoStart;
+      }
+
+      pageField.setValue(s.showPage + 1);
+
+      ofText.el.update(Fancy.String.format(lang.paging.of, [pages || 1]));
+      info.el.update(Fancy.String.format(lang.paging.info, [infoStart, infoEnd, infoTotal]));
+
+      if (showPage === 0) {
+        first.disable();
+        prev.disable();
+      }
+      else {
+        first.enable();
+        prev.enable();
+      }
+
+      if (pages - 1 === showPage || pages === 0) {
+        last.disable();
+        next.disable();
+      }
+      else {
+        last.enable();
+        next.enable();
+      }
+
+      if (parseInt(w.el.css('width')) < 350) {
+        info.hide();
+        bar.checkScroll();
+      }
+    },
+    /*
+     *
+     */
+    onRenderGrid: function () {
+      var me = this;
+
+      switch (me.barType) {
+        case 'both':
+          me.updateBar('tbar');
+          me.updateBar('bbar');
+          break;
+        case 'none':
+        case false:
+          break;
+        default:
+          me.updateBar();
+      }
+    },
+    /*
+     *
+     */
+    onDocMouseMove: function () {
+      var me = this,
+        w = me.widget;
+
+      if (w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')) {
+        if (!me.wasHidden) {
+          Fancy.combo.Manager.hideLists();
+          me.wasHidden = true;
+        }
+      }
+      else {
+        me.wasHidden = false;
+      }
+    },
+    /*
+     *
+     */
+    update: function () {
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      s.calcPages();
+      me.onChangeStore(s);
+    },
+    /*
+     *
+     */
+    setCls: function () {
+      var me = this,
+        w = me.widget;
+
+      switch (me.barType) {
+        case 'bbar':
+          w.panel.el.select('.' + PANEL_BBAR_CLS).addCls(PANEL_BAR_PAGING_CLS);
+          break;
+        case 'tbar':
+          w.panel.el.select('.' + PANEL_TBAR_CLS).addCls(PANEL_BAR_PAGING_CLS);
+          break;
+        case 'both':
+          w.panel.el.select('.' + PANEL_BBAR_CLS).addCls(PANEL_BAR_PAGING_CLS);
+          w.panel.el.select('.' + PANEL_TBAR_CLS).addCls(PANEL_BAR_PAGING_CLS);
+          break;
       }
     }
-    else{
-      me.wasHidden = false;
-    }
-  },
-  update: function () {
-    var me = this,
-      w = me.widget,
-      s = w.store;
-
-    s.calcPages();
-    me.onChangeStore(s);
-  }
-});
+  });
+})();
 /*
  * @class Fancy.grid.plugin.LoadMask
  * @extends Fancy.Plugin
@@ -31971,6 +32103,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var GRID_RESIZER_LEFT_CLS = F.GRID_RESIZER_LEFT_CLS;
   var GRID_RESIZER_RIGHT_CLS = F.GRID_RESIZER_RIGHT_CLS;
   var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
@@ -40325,7 +40458,7 @@ Fancy.modules['expander'] = true;
 
       me.collapseRow(Number(rowIndex), id);
       me.clearMargin(Number(rowIndex) + 1, id);
-      delete me._expandedIds[id];
+      me._expandedIds[id].hidden = true;
 
       me.reSetTop();
       me.reSetPlusScroll();
@@ -41064,30 +41197,40 @@ Fancy.modules['expander'] = true;
  * @extends Fancy.Plugin
  */
 Fancy.modules['grouped-header'] = true;
-Fancy.define('Fancy.grid.plugin.GroupHeader', {
-  extend: Fancy.Plugin,
-  ptype: 'grid.groupheader',
-  inWidgetName: 'groupheader',
-  /*
-   * @constructor
-   * @param {Object} config
-   */
-  constructor: function(){
-    this.Super('const', arguments);
-  },
-  /*
-   *
-   */
-  init: function(){
-    this.Super('init', arguments);
+(function () {
+  //SHORTCUTS
+  var F = Fancy;
 
-    this.ons();
-  },
-  /*
-   *
-   */
-  ons: function(){}
-});
+  //CONSTANTS
+  var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
+  var GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
+
+  Fancy.define('Fancy.grid.plugin.GroupHeader', {
+    extend: Fancy.Plugin,
+    ptype: 'grid.groupheader',
+    inWidgetName: 'groupheader',
+    /*
+     * @constructor
+     * @param {Object} config
+     */
+    constructor: function () {
+      this.Super('const', arguments);
+    },
+    /*
+     *
+     */
+    init: function () {
+      this.Super('init', arguments);
+
+      this.ons();
+    },
+    /*
+     *
+     */
+    ons: function () {}
+  });
+
+})();
 /*
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
@@ -44895,6 +45038,7 @@ Fancy.modules['filter'] = true;
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
+  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
   var GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
   var GRID_HEADER_CELL_FILTER_CLS = F.GRID_HEADER_CELL_FILTER_CLS;
@@ -45166,7 +45310,15 @@ Fancy.modules['filter'] = true;
               break;
             default:
               if(column.type === 'combo'){
-                value = _value + ',';
+                value = value || [];
+                if(Fancy.isObject(_value)){
+                  for(var q in _value){
+                    value.push(q);
+                  }
+                }
+                else{
+                  value.push(_value);
+                }
               }
               else {
                 value += p + _value + ',';
@@ -45738,7 +45890,7 @@ Fancy.modules['filter'] = true;
     onColumnResize: function (grid, o) {
       var cell = F.get(o.cell),
         width = o.width,
-        fieldEl = cell.select('.' + FIELD_CLS),
+        fieldEl = cell.select(':not(.' + FIELD_CHECKBOX_CLS + ').' + FIELD_CLS),
         field;
 
       if(fieldEl.length === 2){
@@ -47053,6 +47205,18 @@ Fancy.modules['dd'] = true;
       }
       else{
         rowIndex = w.getRowById(me.insertItem.id) + 1;
+        if(selection.length){
+          var delta = 0;
+          F.each(selection, function (item) {
+            var itemRowIndex = w.getRowById(item.id);
+
+            if(itemRowIndex < rowIndex){
+              delta++;
+            }
+          });
+
+          rowIndex -= delta;
+        }
       }
 
       w.insert(rowIndex, selection, false);
@@ -47885,7 +48049,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       });
     }
 
-    licenceEl.update('<a href="http://www.fancygrid.com" title="JavaScript Grid - FancyGrid" style="background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAPklEQVR42mNgGLGAo+/4f1IwTN+i8y/+k4JHLR61eNTiUYuHgcUjD5AbZORG0ajFoxaPWjxq8RC2eBQMWwAAuxzh7E9tdUsAAAAASUVORK5CYII=);color: #60B3E2;font-size: 25px;line-height: 30px;text-decoration: none;">&nbsp;&nbsp;&nbsp;&nbsp;</a>');
+    licenceEl.update('<a href="http://www.fancygrid.com" title="JavaScript Grid - FancyGrid" style="background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAPklEQVR42mNgGLGAo+/4f1IwTN+i8y/+k4JHLR61eNTiUYuHgcUjD5AbZORG0ajFoxaPWjxq8RC2eBQMWwAAuxzh7E9tdUsAAAAASUVORK5CYII=);color: #60B3E2;font-size: 25px;line-height: 30px;text-decoration: none;background-repeat: no-repeat;">&nbsp;&nbsp;&nbsp;&nbsp;</a>');
 
     Fancy.get(body.el.append(licenceEl.dom));
 
@@ -50547,6 +50711,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
   var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
+  var GRID_ROW_EXPAND_CLS = F.GRID_ROW_EXPAND_CLS;
+
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.Body', {
@@ -51474,7 +51640,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     updateColumnsVisibility: function () {
       var me = this,
         columns = me.getColumns(),
-        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
+        //For jQuery :not does not work on me.el
+        columnEls = me.el.parent().select(':not(.' + GRID_ROW_EXPAND_CLS + ') .' + GRID_COLUMN_CLS);
 
       columnEls.each(function(columnEl, i) {
         var column = columns[i];
@@ -51956,6 +52123,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
   var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+  var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
@@ -52139,6 +52307,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(F.isNumber(height)){
           height += 'px';
         }
+
+
 
         var cellConfig = {
           cls: cls,
@@ -52418,7 +52588,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         groups = {},
         groupsWidth = {},
         groupsLeft = {},
-        rows = me.calcRows();
+        rows = me.calcRows(),
+        isFilterHeader = w.filter && w.filter.header;
 
       if(me.side === 'center'){
         left = w.scroller.scrollLeft;
@@ -52445,8 +52616,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           top = CELL_HEADER_HEIGHT + 'px';
           height = CELL_HEADER_HEIGHT;
 
-          if(column.filter && column.filter.header){
+          if(isFilterHeader){
             height = CELL_HEADER_HEIGHT * 2;
+          }
+
+          if(column.filter && column.filter.header){
             setTimeout(function () {
               cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
             }, 30);
@@ -53524,6 +53698,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     gridBorders: [1, 0, 1, 1],
     panelBodyBorders: [0, 0, 0, 0],
     barScrollEnabled: false,
+    cellHeight: 32,
     /*
      * @constructor
      * @param {Object} config
@@ -53587,7 +53762,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         return;
       }
 
-      me.monthPicker = new F.MonthPicker({
+      var config = {
+        theme: me.theme,
         date: me.date,
         renderTo: me.panel.el.dom,
         i18n: me.i18n,
@@ -53603,7 +53779,15 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           okclick: me.onMonthOkClick,
           scope: me
         }]
-      });
+      };
+
+      var themeConfig = F.themes[me.theme].config;
+
+      if(themeConfig.datePickerHeight){
+        config.height = themeConfig.datePickerHeight;
+      }
+
+      me.monthPicker = new F.MonthPicker(config);
     },
     /*
      *

@@ -38,7 +38,7 @@ Fancy.modules['form'] = true;
   var FORM_CLS = F.FORM_CLS;
   var FORM_BODY_CLS = F.FORM_BODY_CLS;
   var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
-  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  var FORM_PANEL_CLS = F.FORM_PANEL_CLS;
   var PANEL_SHADOW_CLS =  F.PANEL_SHADOW_CLS;
   var FIELD_BLANK_ERR_CLS = F.FIELD_BLANK_ERR_CLS;
   var FIELD_TAB_CLS = F.FIELD_TAB_CLS;
@@ -201,12 +201,12 @@ Fancy.modules['form'] = true;
       me.tbar = me.panel.tbar;
       me.buttons = me.panel.buttons;
 
-      if (!me.wrapped) {
-        me.panel.addCls(PANEL_GRID_INSIDE_CLS);
-      }
-
       if (me.extraCls && me.panel) {
         me.panel.addCls(me.extraCls);
+      }
+
+      if(me.panel){
+        me.panel.addCls(FORM_PANEL_CLS);
       }
 
       if (me.title) {

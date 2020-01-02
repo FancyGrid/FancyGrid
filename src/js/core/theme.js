@@ -92,6 +92,23 @@ Fancy.defineTheme('gray', {
   }
 });
 
+Fancy.defineTheme('extra-gray', {
+  config: {
+    panelBorderWidth: 0,
+    //gridBorders: [0,0,1,0],
+    gridBorders: [0,0,1,0],
+    gridWithoutPanelBorders: [1,1,1,1],
+    panelBodyBorders: [0,0,0,0],
+    charWidth: 7,
+    menuItemHeight: 27,
+    titleHeight: 32,
+    cellHeight: 28,
+    cellHeaderHeight: 28,
+    barHeight: 32,
+    datePickerHeight: 287
+  }
+});
+
 Fancy.defineTheme('dark', {
   config: {
     panelBorderWidth: 1,

@@ -54,12 +54,14 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else{
       me.sorters = [];
 
-      me.sorters.push({
-        key: key,
-        dir: action.toLocaleUpperCase().toLocaleUpperCase(),
-        type: sortType,
-        _type: type
-      });
+      if(action.toLocaleUpperCase() !== 'DROP'){
+        me.sorters.push({
+          key: key,
+          dir: action.toLocaleUpperCase(),
+          type: sortType,
+          _type: type
+        });
+      }
     }
 
     if(me.remoteSort){
@@ -418,15 +420,16 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.sorters.push({
-      key: key,
-      dir: dir.toLocaleUpperCase(),
-      type: type
-    });
+    if(dir.toLocaleUpperCase() !== 'DROP'){
+      me.sorters.push({
+        key: key,
+        dir: dir.toLocaleUpperCase(),
+        type: type
+      });
 
-    if(me.sorters.length > me.multiSortLimit){
-      //me.sorters.pop();
-      me.sorters.shift();
+      if(me.sorters.length > me.multiSortLimit){
+        me.sorters.shift();
+      }
     }
   },
   /*

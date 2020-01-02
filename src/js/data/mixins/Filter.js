@@ -38,7 +38,6 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       }
     }
 
-
     for(var p in filters){
       var column = w.getColumnByIndex(p),
         indexFilters = filters[p],
@@ -294,5 +293,23 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
 
     me.loadData();
+  },
+  /*
+   * @return {Boolean}
+   */
+  hasFilters: function () {
+    var me = this;
+
+    if(!me.filters){
+      return false;
+    }
+
+    var containsFilter = false;
+
+    for(var p in me.filters){
+      containsFilter = true;
+    }
+
+    return containsFilter;
   }
 });

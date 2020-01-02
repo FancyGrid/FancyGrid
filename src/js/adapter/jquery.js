@@ -264,6 +264,7 @@ Fancy.Element.prototype = {
   select: function(selector){
     var me = this,
       founded = me.$dom.find(selector);
+      //founded = me.dom.querySelectorAll(selector);
 
     if(founded.length === 1){
       return Fancy.get(founded[0]);

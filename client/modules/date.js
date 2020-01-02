@@ -902,6 +902,7 @@ Fancy.Date = {
     fieldCls: FIELD_CLS,
     value: '',
     width: 100,
+    cellHeight: 32,
     emptyText: '',
     tpl: [
       '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
@@ -1268,11 +1269,12 @@ Fancy.Date = {
         return;
       }
 
-      me.picker = new F.DatePicker({
+      var config = {
         window: true,
         date: me.date,
         format: me.format,
         theme: me.theme,
+        //height: height,
         minValue: me.min,
         maxValue: me.max,
         i18n: me.i18n,
@@ -1280,7 +1282,15 @@ Fancy.Date = {
           changedate: me.onPickerChangeDate,
           scope: me
         }]
-      });
+      };
+
+      var themeConfig = F.themes[me.theme].config;
+
+      if(themeConfig.datePickerHeight){
+        config.height = themeConfig.datePickerHeight;
+      }
+
+      me.picker = new F.DatePicker(config);
     },
     /*
      * @return {String}
@@ -1662,6 +1672,7 @@ Fancy.Date = {
     gridBorders: [1, 0, 1, 1],
     panelBodyBorders: [0, 0, 0, 0],
     barScrollEnabled: false,
+    cellHeight: 32,
     /*
      * @constructor
      * @param {Object} config
@@ -1725,7 +1736,8 @@ Fancy.Date = {
         return;
       }
 
-      me.monthPicker = new F.MonthPicker({
+      var config = {
+        theme: me.theme,
         date: me.date,
         renderTo: me.panel.el.dom,
         i18n: me.i18n,
@@ -1741,7 +1753,15 @@ Fancy.Date = {
           okclick: me.onMonthOkClick,
           scope: me
         }]
-      });
+      };
+
+      var themeConfig = F.themes[me.theme].config;
+
+      if(themeConfig.datePickerHeight){
+        config.height = themeConfig.datePickerHeight;
+      }
+
+      me.monthPicker = new F.MonthPicker(config);
     },
     /*
      *

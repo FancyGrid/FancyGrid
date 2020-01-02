@@ -158,7 +158,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       index = _index;
     }
 
-    if(me.paging && s.proxyType !== 'server'){
+    //if(me.paging && s.proxyType !== 'server'){
+    if(me.paging && s.pageType !== 'server'){
       index += s.showPage * s.pageSize;
     }
 

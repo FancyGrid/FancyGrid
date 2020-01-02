@@ -14,6 +14,7 @@
   var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
   var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+  var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
@@ -197,6 +198,8 @@
         if(F.isNumber(height)){
           height += 'px';
         }
+
+
 
         var cellConfig = {
           cls: cls,
@@ -476,7 +479,8 @@
         groups = {},
         groupsWidth = {},
         groupsLeft = {},
-        rows = me.calcRows();
+        rows = me.calcRows(),
+        isFilterHeader = w.filter && w.filter.header;
 
       if(me.side === 'center'){
         left = w.scroller.scrollLeft;
@@ -503,8 +507,11 @@
           top = CELL_HEADER_HEIGHT + 'px';
           height = CELL_HEADER_HEIGHT;
 
-          if(column.filter && column.filter.header){
+          if(isFilterHeader){
             height = CELL_HEADER_HEIGHT * 2;
+          }
+
+          if(column.filter && column.filter.header){
             setTimeout(function () {
               cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
             }, 30);
