@@ -41,5 +41,7 @@ Fancy.i18n.tr = {
   lock: 'Kolonu kilitle',
   rightLock: 'Kolonu kilitle',
   unlock: 'Kolon kilidini kaldır',
-  columns: 'Kolonlar'
+  columns: 'Kolonlar',
+  autoSizeColumn: 'Autosize Kolon',
+  autoSizeColumns: 'Autosize Kolonlar'
 };

@@ -32,7 +32,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     var me = this,
       w = me.widget,
       o = o || {},
-      columnsData = me.getColumnsData(),
+      columnsData = me.getColumnsData(o),
       data = me.getData(o),
       dataToExport = o.header === false? data : [columnsData].concat(data),
       Workbook = function(){
@@ -74,20 +74,33 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       return buf;
     }
 
-    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), ws_name + ".xlsx")
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), ws_name + ".xlsx");
   },
   /*
    * @return {Array}
    */
-  getColumnsData: function(){
+  getColumnsData: function(o){
     var me = this,
       w = me.widget,
       columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns),
-      data = [];
+      data = [],
+      indexes;
 
     me.widths = [];
 
+    if(o && o.indexes){
+      indexes = {};
+
+      Fancy.each(o.indexes, function (index) {
+        indexes[index] = true;
+      });
+    }
+
     Fancy.each(columns, function(column){
+      if(indexes && indexes[column.index] !== true){
+        return;
+      }
+
       if(column.index === '$selected'){
         return;
       }

@@ -395,7 +395,7 @@
         w = me.widget,
         columns = me.getColumns(),
         cellsWidth = 0,
-        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS);
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
       cellsWidth += me.scrollLeft || 0;
 

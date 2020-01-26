@@ -42,5 +42,7 @@ Fancy.i18n.ko = {
   lock: '칼럼 잠금',
   rightLock: '칼럼 잠금',
   unlock: '칼럼 잠금해제',
-  columns: '칼럼 목록'
+  columns: '칼럼 목록',
+  autoSizeColumn: '열 자동 크기',
+  autoSizeColumns: '열 자동 크기'
 };

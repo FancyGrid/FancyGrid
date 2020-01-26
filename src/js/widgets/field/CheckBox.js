@@ -167,7 +167,7 @@
         value = false;
       }
       else {
-        throw new Error('not right value for checkbox ' + value);
+        throw new Error('[FancyGrid Error] - not right value for checkbox ' + value);
       }
 
       me.value = value;

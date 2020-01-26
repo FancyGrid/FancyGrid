@@ -91,7 +91,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       proxy = me.proxy;
 
     if(proxy.api.read === undefined){
-      throw new Error('[FancyGrid Error] - in data proxy there is not url');
+      Fancy.error('In data proxy there is not url');
     }
   },
   /*

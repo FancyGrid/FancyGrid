@@ -178,7 +178,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = value(indexValue, item) === true;
             break;
           default:
-            throw new Error('FancyGrid Error 5: Unknown filter ' + q);
+            throw new Error('[FancyGrid Error 5]: Unknown filter ' + q);
         }
 
         if(wait === true){
@@ -499,54 +499,22 @@ Fancy.modules['filter'] = true;
               fieldFrom.clear();
               fieldTo.clear();
               break;
-            default:
+            case 'combo':
               var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
-                field = F.getWidget(id),
-                fieldValue = field.get(),
-                splitted = field.get().split(',');
+                field = F.getWidget(id);
 
-              if (splitted.length === 1 && splitted[0] === '') {
-                field.set((sign || '') + value);
-              }
-              else if (splitted.length === 1) {
-                if (new RegExp(sign).test(fieldValue)) {
-                  field.set((sign || '') + value);
-                }
-                else {
-                  field.set(fieldValue + ',' + (sign || '') + value);
-                }
+              if(F.isArray(value)){
+                field.set(value);
               }
               else {
-                var j = 0,
-                  jL = splitted.length,
-                  newValue = '',
-                  founded = false;
-
-                for (; j < jL; j++) {
-                  var splittedItem = splitted[j];
-
-                  if (!new RegExp(sign).test(splittedItem)) {
-                    if (newValue.length !== 0) {
-                      newValue += ',';
-                    }
-                    newValue += splittedItem;
-                  }
-                  else {
-                    founded = true;
-                    if (newValue.length !== 0) {
-                      newValue += ',';
-                    }
-                    newValue += (sign || '') + value;
-                  }
-                }
-
-                if(founded === false){
-                  newValue += ',';
-                  newValue += (sign || '') + value;
-                }
-
-                field.set(newValue);
+                field.set(value);
               }
+              break;
+            default:
+              var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
+                field = F.getWidget(id);
+
+              field.set((sign || '') + value);
           }
         }
       }

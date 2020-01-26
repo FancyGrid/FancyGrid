@@ -40,7 +40,9 @@ Fancy.i18n.fr = {
   sortAsc: 'Tri croissant',
   sortDesc: 'Tri décroissant',
   columns: 'Colonnes',
+  autoSizeColumn: 'Autosize Colonne',
+  autoSizeColumns: 'Autosize Colonnes',
   lock: 'Verrouillé',
   rightLock: 'Verrouillé à droite',
-  unlock: 'Déverrouillé',
+  unlock: 'Déverrouillé'
 };

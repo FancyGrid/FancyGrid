@@ -40,6 +40,8 @@ Fancy.i18n['pt-BR'] = {
   sortAsc: 'Ordem Ascendente',
   sortDesc: 'Ordem Descendente',
   columns: 'Colunas',
+  autoSizeColumn: 'Autosize Colunas',
+  autoSizeColumns: 'Autosize Colunas',
   lock: 'Bloquear Coluna',
   rightLock: 'Bloquear Coluna',
   unlock: 'Desbloquear Coluna'

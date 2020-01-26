@@ -42,5 +42,7 @@ Fancy.i18n.pl = {
   lock: 'Zablokuj kolumnę',
   rightLock: 'Zablokuj kolumnę',
   unlock: 'Odblokuj kolumnę',
-  columns: 'Kolumny'
+  columns: 'Kolumny',
+  autoSizeColumn: 'Autosize Column',
+  autoSizeColumns: 'Autosize All Columns'
 };

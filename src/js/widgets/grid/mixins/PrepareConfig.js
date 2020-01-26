@@ -1165,7 +1165,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         if(!config.selModel.type){
-          throw new Error('FancyGrid Error 5: Type for selection is not set');
+          throw new Error('[FancyGrid Error 5]: Type for selection is not set');
         }
 
         if(config.selModel.mouseMoveSelection !== undefined){

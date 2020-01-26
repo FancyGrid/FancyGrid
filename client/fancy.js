@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.87',
+  version: '1.7.88',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -922,7 +922,7 @@ var FancyForm = function(){
     };
 
     _script.onerror = function () {
-      throw new Error('[FancyGrid error] - module ' + name + ' was not loaded');
+      throw new Error('[FancyGrid Error] - module ' + name + ' was not loaded');
     };
 
     body.appendChild(_script);
@@ -1009,7 +1009,17 @@ var FancyForm = function(){
 
       head.appendChild(_link);
     }
-  }
+  };
+
+  Fancy.error = function (message, code) {
+    var errorNumber = '';
+
+    if(code){
+      errorNumber = ' ' + code;
+    }
+
+    throw new Error('[FancyGrid Error' + errorNumber + ']: ' + message);
+  };
 })();
 Fancy.themes = {};
 
@@ -1066,7 +1076,6 @@ Fancy.defineTheme('default', {
     minCenterWidth: 100,
     panelBorderWidth: 2,
     groupRowHeight: 31,
-
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,2,2,2],
@@ -2439,7 +2448,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
         }
 
         if(eventName === null){
-          throw new Error('Event was not set');
+          throw new Error('[FancyGrid Error] - Event was not set');
         }
         else{
           switch(Fancy.typeOf(handler)){
@@ -2454,12 +2463,12 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
             case 'function':
               break;
             default:
-              throw new Error('Handler has wrong type or not defined');
+              throw new Error('[FancyGrid Error] - Handler has wrong type or not defined');
           }
         }
 
         if(Fancy.isArray(params) === false){
-          throw new Error('params must be array');
+          throw new Error('[FancyGrid Error] - params must be array');
         }
 
         me.addEvent(eventName);
@@ -2475,11 +2484,11 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    */
   on: function(eventName, fn, scope, params, delay){
     if( this.$events[eventName] === undefined ){
-      throw new Error('Event name is not set: ' + eventName);
+      throw new Error('[FancyGrid Error] - Event name is not set: ' + eventName);
     }
 
     if(fn === undefined){
-      throw new Error('Handler is undefined. Name of event is ' + eventName + '.');
+      throw new Error('[FancyGrid Error] - Handler is undefined. Name of event is ' + eventName + '.');
     }
 
     fn.$fancyFnSeed = seedFn;
@@ -3177,7 +3186,7 @@ Fancy.define('Fancy.Store', {
     me.model = model;
     me.fields = model.prototype.fields;
     if( me.fields === undefined){
-      throw new Error('needed to set fields in Model of Store');
+      throw new Error('[FancyGrid Error] - needed to set fields in Model of Store');
     }
   },
   /*
@@ -3575,7 +3584,7 @@ Fancy.define('Fancy.Store', {
     }
 
     if( !items ){
-      throw new Error('not set fields of data');
+      throw new Error('[FancyGrid Error] - not set fields of data');
     }
 
     var itemZero = items[0],
@@ -5213,6 +5222,8 @@ Fancy.i18n.en = {
   update: 'Update',
   cancel: 'Cancel',
   columns: 'Columns',
+  autoSizeColumn: 'Autosize Column',
+  autoSizeColumns: 'Autosize All Columns',
   sortAsc: 'Sort ASC',
   sortDesc: 'Sort DESC',
   lock: 'Lock',
@@ -5449,11 +5460,11 @@ Fancy.define('Fancy.Widget', {
       var control = controls[i];
 
       if(control.event === undefined){
-        throw new Error('[FancyGrid Error]: - not set event name for control');
+        Fancy.error('Not set event name for control');
       }
 
       if(control.handler === undefined){
-        throw new Error('[FancyGrid Error]: - not set handler for control');
+        Fancy.error('Not set event handler for control');
       }
 
       var event = control.event,
@@ -5952,7 +5963,7 @@ Fancy.define('Fancy.Plugin', {
         grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
-          throw new Error('[FancyGrid Error] - handler does not exist');
+          F.error('Handler does not exist');
         };
     },
     /*
@@ -6867,7 +6878,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       }
 
       if(!renderTo.dom){
-        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+        F.error('Could not find renderTo element: ' + me.renderTo, 1);
       }
 
       if (me.window === true) {
@@ -11159,7 +11170,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
         value = false;
       }
       else {
-        throw new Error('not right value for checkbox ' + value);
+        throw new Error('[FancyGrid Error] - not right value for checkbox ' + value);
       }
 
       me.value = value;

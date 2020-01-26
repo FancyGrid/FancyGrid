@@ -110,7 +110,7 @@ Fancy.define('Fancy.Store', {
     me.model = model;
     me.fields = model.prototype.fields;
     if( me.fields === undefined){
-      throw new Error('needed to set fields in Model of Store');
+      throw new Error('[FancyGrid Error] - needed to set fields in Model of Store');
     }
   },
   /*
@@ -508,7 +508,7 @@ Fancy.define('Fancy.Store', {
     }
 
     if( !items ){
-      throw new Error('not set fields of data');
+      throw new Error('[FancyGrid Error] - not set fields of data');
     }
 
     var itemZero = items[0],

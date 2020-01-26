@@ -1318,7 +1318,7 @@ Fancy.modules['form'] = true;
           barCls = PANEL_BUTTONS_CLS;
           break;
         default:
-          throw new Error('FancyGrid Error: bar does not exist');
+          throw new Error('[FancyGrid Error]: bar does not exist');
       }
 
       barEl = me.panel.el.select('.' + barCls);
@@ -1352,7 +1352,7 @@ Fancy.modules['form'] = true;
           barCls = PANEL_BUTTONS_CLS;
           break;
         default:
-          throw new Error('FancyGrid Error: bar does not exist');
+          throw new Error('[FancyGrid Error]: bar does not exist');
       }
 
       barEl = me.panel.el.select('.' + barCls);

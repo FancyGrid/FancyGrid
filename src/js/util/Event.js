@@ -50,7 +50,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
         }
 
         if(eventName === null){
-          throw new Error('Event was not set');
+          throw new Error('[FancyGrid Error] - Event was not set');
         }
         else{
           switch(Fancy.typeOf(handler)){
@@ -65,12 +65,12 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
             case 'function':
               break;
             default:
-              throw new Error('Handler has wrong type or not defined');
+              throw new Error('[FancyGrid Error] - Handler has wrong type or not defined');
           }
         }
 
         if(Fancy.isArray(params) === false){
-          throw new Error('params must be array');
+          throw new Error('[FancyGrid Error] - params must be array');
         }
 
         me.addEvent(eventName);
@@ -86,11 +86,11 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    */
   on: function(eventName, fn, scope, params, delay){
     if( this.$events[eventName] === undefined ){
-      throw new Error('Event name is not set: ' + eventName);
+      throw new Error('[FancyGrid Error] - Event name is not set: ' + eventName);
     }
 
     if(fn === undefined){
-      throw new Error('Handler is undefined. Name of event is ' + eventName + '.');
+      throw new Error('[FancyGrid Error] - Handler is undefined. Name of event is ' + eventName + '.');
     }
 
     fn.$fancyFnSeed = seedFn;

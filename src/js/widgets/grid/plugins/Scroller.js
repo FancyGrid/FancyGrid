@@ -579,7 +579,6 @@
         return;
       }
 
-      //me.checkRightScroll();
       setTimeout(function () {
         me.checkRightScroll(viewHeight);
       }, 1);
@@ -591,9 +590,11 @@
       }
 
       if (!w.nativeScroller) {
-        me.checkCorner();
-        me.setRightKnobSize(viewHeight);
-        me.setBottomKnobSize();
+        setTimeout(function () {
+          me.checkCorner();
+          me.setRightKnobSize(viewHeight);
+          me.setBottomKnobSize();
+        }, 1);
       }
     },
     /*
@@ -1217,8 +1218,7 @@
      *
      */
     onColumnDrag: function (grid, o) {
-      var me = this,
-        w = me.widget;
+      var me = this;
 
       if(F.nojQuery){
         setTimeout(function () {

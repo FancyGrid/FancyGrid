@@ -42,5 +42,7 @@ Fancy.i18n.ru = {
   lock: 'Закрепить',
   rightLock: 'Закрепить справа',
   unlock: 'Снять закрепление',
-  columns: 'Столбцы'
+  columns: 'Столбцы',
+  autoSizeColumn: 'Ресайз Стобца',
+  autoSizeColumns: 'Ресайз Столбцов'
 };

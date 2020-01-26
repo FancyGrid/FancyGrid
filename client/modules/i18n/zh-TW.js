@@ -28,7 +28,9 @@ Fancy.i18n['zh-TW'] = {
     am: '上午',
     pm: '晚上',
     AM: '上午',
-    PM: '晚上'
+    PM: '晚上',
+	ok: '确定',
+    cancel: '取消'
   },
   yes: '是',
   no: '否',
@@ -40,5 +42,7 @@ Fancy.i18n['zh-TW'] = {
   lock: '鎖定欄位',
   rightLock: '鎖定欄位',
   unlock: '解開欄位鎖定',
-  columns: '欄位'
+  columns: '欄位',
+  autoSizeColumn: '自动调整列',
+  autoSizeColumns: '自动调整列'
 };

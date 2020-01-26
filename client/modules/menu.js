@@ -891,6 +891,7 @@ Fancy.modules['menu'] = true;
       cell.addCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
 
       if (!column.menu.rendered) {
+        column._menu = column.menu;
         column.menu = me.generateMenu(column, columns);
         column.menu = new F.Menu({
           column: column,
@@ -1017,6 +1018,22 @@ Fancy.modules['menu'] = true;
           text: lang.columns,
           index: 'columns',
           items: me.prepareColumns(columns)
+        },
+        itemSizeColumn = {
+          text: lang.autoSizeColumn,
+          cls: cls,
+          handler: function () {
+            w.autoSizeColumn(column.index, me.side);
+            column.menu.hide();
+          }
+        },
+        itemSizeColumns = {
+          text: lang.autoSizeColumns,
+          cls: cls,
+          handler: function () {
+            w.autoSizeColumns();
+            column.menu.hide();
+          }
         };
 
       for (; i < iL; i++) {
@@ -1028,6 +1045,13 @@ Fancy.modules['menu'] = true;
 
       if(column.menu === 'columns'){
         menu = itemColumns.items;
+        return menu;
+      }
+
+      if(column.menu === 'size'){
+        menu.push(itemSizeColumn);
+        menu.push(itemSizeColumns);
+
         return menu;
       }
 
@@ -1043,6 +1067,10 @@ Fancy.modules['menu'] = true;
               break;
             case 'columns':
               menu.push(itemColumns);
+              break;
+            case 'size':
+              menu.push(itemSizeColumn);
+              menu.push(itemSizeColumns);
               break;
             case 'lock':
               switch (me.side) {

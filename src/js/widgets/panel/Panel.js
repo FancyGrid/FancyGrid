@@ -118,7 +118,7 @@
       }
 
       if(!renderTo.dom){
-        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+        F.error('Could not find renderTo element: ' + me.renderTo, 1);
       }
 
       if (me.window === true) {

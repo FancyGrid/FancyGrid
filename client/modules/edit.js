@@ -706,7 +706,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
           break;
         default:
-          throw new Error('[FancyGrid error] - type ' + type + ' editor does not exit');
+          F.error('Type ' + type + ' editor does not exit');
       }
 
       return editor;

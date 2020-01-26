@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.87',
+  version: '1.7.88',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -912,7 +912,7 @@ var FancyForm = function(){
     };
 
     _script.onerror = function () {
-      throw new Error('[FancyGrid error] - module ' + name + ' was not loaded');
+      throw new Error('[FancyGrid Error] - module ' + name + ' was not loaded');
     };
 
     body.appendChild(_script);
@@ -999,5 +999,15 @@ var FancyForm = function(){
 
       head.appendChild(_link);
     }
-  }
+  };
+
+  Fancy.error = function (message, code) {
+    var errorNumber = '';
+
+    if(code){
+      errorNumber = ' ' + code;
+    }
+
+    throw new Error('[FancyGrid Error' + errorNumber + ']: ' + message);
+  };
 })();

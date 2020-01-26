@@ -41,5 +41,7 @@ Fancy.i18n.fi = {
   lock: 'Lukitse sarake',
   rightLock: 'Lukitse sarake',
   unlock: 'Vapauta sarakkeen lukitus',
-  columns: 'Sarakkeet'
+  columns: 'Sarakkeet',
+  autoSizeColumn: 'Autosize Sarake',
+  autoSizeColumns: 'Autosize Sarakkeet'
 };

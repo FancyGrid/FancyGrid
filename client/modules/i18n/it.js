@@ -42,5 +42,7 @@ Fancy.i18n.it = {
   lock: 'Blocca colonna',
   rightLock: 'Blocca colonna',
   unlock: 'Sblocca colonna',
-  columns: 'Colonne'
+  columns: 'Colonne',
+  autoSizeColumn: 'Riposizionare Colonna',
+  autoSizeColumns: 'Riposizionare Colonne'
 };

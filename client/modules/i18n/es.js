@@ -40,7 +40,9 @@ Fancy.i18n.es = {
   sortAsc: 'Ordenar en forma ascendente',
   sortDesc: 'Ordenar en forma descendente',
   columns: 'Columnas',
-  lock: 'Lock',
-  unlock: 'Unlock',
-  rightLock: 'Right Lock'
+  autoSizeColumn: 'Automático Columna',
+  autoSizeColumns: 'Automático Columnas',
+  lock: 'Bloqueo',
+  unlock: 'Desbloquear',
+  rightLock: 'Derecho de bloqueo'
 };

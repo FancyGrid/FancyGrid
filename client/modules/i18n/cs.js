@@ -42,5 +42,7 @@ Fancy.i18n.cs = {
   lock: 'Ukotvit sloupec',
   rightLock: 'Ukotvit sloupec',
   unlock: 'Uvolnit sloupec',
-  columns: 'Sloupce'
+  columns: 'Sloupce',  
+  autoSizeColumn: 'Automaticky Sloupce',
+  autoSizeColumns: 'Automaticky All Sloupce'
 };

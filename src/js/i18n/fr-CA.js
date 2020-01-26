@@ -42,5 +42,7 @@
   lock: 'Verrouillé',
   rightLock: 'Verrouillé à droite',
   unlock: 'Déverrouillé',
-  columns: 'Colonnes'
+  columns: 'Colonnes',
+  autoSizeColumn: 'Autosize Colonne',
+  autoSizeColumns: 'Autosize Colonnes'
 };

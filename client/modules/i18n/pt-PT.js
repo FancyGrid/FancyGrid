@@ -42,5 +42,7 @@ Fancy.i18n['pt-PT'] = {
   lock: 'Fixar Coluna',
   rightLock: 'Fixar Coluna',
   unlock: 'Libertar Coluna',
-  columnsText: 'Colunas'
+  columns: 'Colunas',
+  autoSizeColumn: 'Autosize Coluna',
+  autoSizeColumns: 'Autosize Colunas'
 };

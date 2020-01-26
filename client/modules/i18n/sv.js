@@ -42,5 +42,7 @@ Fancy.i18n.sv = {
   lock: 'Lås kolumn',
   rightLock: 'Lås kolumn',
   unlock: 'Lås upp kolumn',
-  columns: 'Kolumner'
+  columns: 'Kolumner',
+  autoSizeColumn: 'Autosize Kolumn',
+  autoSizeColumns: 'Autosize All Kolumner'
 };

@@ -108,11 +108,11 @@ Fancy.define('Fancy.Widget', {
       var control = controls[i];
 
       if(control.event === undefined){
-        throw new Error('[FancyGrid Error]: - not set event name for control');
+        Fancy.error('Not set event name for control');
       }
 
       if(control.handler === undefined){
-        throw new Error('[FancyGrid Error]: - not set handler for control');
+        Fancy.error('Not set event handler for control');
       }
 
       var event = control.event,

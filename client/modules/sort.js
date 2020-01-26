@@ -45,7 +45,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         sortType = 'string';
         break;
       default:
-        throw new Error('[FancyGrid error] - does not exist sort function for type ' + type);
+        throw new Error('[FancyGrid Error] - does not exist sort function for type ' + type);
     }
 
     if(me.multiSort){

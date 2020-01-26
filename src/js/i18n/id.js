@@ -41,5 +41,7 @@ Fancy.i18n.id = {
   sortDesc: 'Urut Turun',
   lock: 'Kancing Kolom',
   unlock: 'Lepas Kunci Kolom',
-  columns: 'Kolom'
+  columns: 'Kolom',
+  autoSizeColumn: 'Otomatis Kolom',
+  autoSizeColumns: 'Otomatis Kolom'
 };

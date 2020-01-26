@@ -38,6 +38,8 @@ Fancy.i18n.nl = {
   update: 'Update',
   cancel: 'Anuleer',
   columns: 'Kolommen',
+  autoSizeColumn: 'Autosize Kolombreedte',
+  autoSizeColumns: 'Autosize Kolombreedtes',
   sortAsc: 'Eerste/laatste',
   sortDesc: 'Laatste/eerste',
   lock: 'Opslot',

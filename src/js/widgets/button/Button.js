@@ -328,7 +328,7 @@
         grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
 
       return grid[name] || function(){
-          throw new Error('[FancyGrid Error] - handler does not exist');
+          F.error('Handler does not exist');
         };
     },
     /*

@@ -42,5 +42,7 @@ Fancy.i18n.de = {
   lock: 'Spalte sperren',
   rightLock: 'Spalte sperren',
   unlock: 'Spalte freigeben (entsperren)',
-  columns: 'Spalten'
+  columns: 'Spalten',
+  autoSizeColumn: 'Autosize Spalte',
+  autoSizeColumns: 'Autosize Spalten'
 };

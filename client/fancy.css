@@ -1659,6 +1659,10 @@
   transition: width 0.2s ease-out;
   border-radius: 2px;
 }
+.fancy-touch :not(.fancy-grid-header-cell-trigger-disabled) .fancy-grid-header-cell-trigger {
+  visibility: visible;
+  opacity: 1;
+}
 .fancy-scroll-bottom {
   position: absolute;
   left: 0;
@@ -3515,6 +3519,10 @@
   min-height: 25px;
   height: 25px !important;
 }
+.fancy-theme-extra-gray .fancy-button div.fancy-button-image-color {
+  margin-top: 3px;
+  margin-left: 3px;
+}
 .fancy-theme-extra-gray .fancy-button-text {
   color: #8E8E8E;
 }
@@ -3768,6 +3776,9 @@
 }
 .fancy-theme-extra-gray .fancy-grid-cell-inner {
   margin-top: 7px;
+}
+.fancy-theme-extra-gray .fancy-grid-column-h-bar .fancy-grid-cell-inner {
+  margin-top: 2px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-cell-double .fancy-grid-header-cell-container {
   padding-top: 20px;

@@ -36,6 +36,7 @@
       cell.addCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
 
       if (!column.menu.rendered) {
+        column._menu = column.menu;
         column.menu = me.generateMenu(column, columns);
         column.menu = new F.Menu({
           column: column,
@@ -162,6 +163,22 @@
           text: lang.columns,
           index: 'columns',
           items: me.prepareColumns(columns)
+        },
+        itemSizeColumn = {
+          text: lang.autoSizeColumn,
+          cls: cls,
+          handler: function () {
+            w.autoSizeColumn(column.index, me.side);
+            column.menu.hide();
+          }
+        },
+        itemSizeColumns = {
+          text: lang.autoSizeColumns,
+          cls: cls,
+          handler: function () {
+            w.autoSizeColumns();
+            column.menu.hide();
+          }
         };
 
       for (; i < iL; i++) {
@@ -173,6 +190,13 @@
 
       if(column.menu === 'columns'){
         menu = itemColumns.items;
+        return menu;
+      }
+
+      if(column.menu === 'size'){
+        menu.push(itemSizeColumn);
+        menu.push(itemSizeColumns);
+
         return menu;
       }
 
@@ -188,6 +212,10 @@
               break;
             case 'columns':
               menu.push(itemColumns);
+              break;
+            case 'size':
+              menu.push(itemSizeColumn);
+              menu.push(itemSizeColumns);
               break;
             case 'lock':
               switch (me.side) {

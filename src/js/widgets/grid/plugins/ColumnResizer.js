@@ -777,28 +777,138 @@
       return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index).dom;
     },
     /*
-     * @param {String} side
+     * @param {String} [side]
      */
     updateColumnsWidth: function (side) {
+      if(side === 'all'){
+        this.updateColumnsWidth('left');
+        this.updateColumnsWidth('right');
+        this.updateColumnsWidth('center');
+        return;
+      }
+
+      var leftFix = 1;
+      if (F.nojQuery) {
+        leftFix = 0;
+      }
+
       var me = this,
         w = me.widget,
         side = side || 'center',
         header = w.getHeader(side),
+        body = w.getBody(side),
         columns = w.getColumns(side),
         i = 0,
-        iL = columns.length;
+        iL = columns.length,
+        columnsWidth = 0,
+        leftEl = w.leftEl,
+        rightEl = w.rightEl,
+        leftHeaderEl = w.leftHeader.el,
+        rightHeaderEl = w.rightHeader.el;
 
       for (; i < iL; i++) {
         var column = columns[i];
 
-        if(column.hidden){
+        if (column.hidden) {
           continue;
         }
+
+        columnsWidth += column.width;
 
         me.setColumnWidth(i, column.width, side);
       }
 
-      header.setCellsPosition();
+      if (w.header) {
+        header.setCellsPosition();
+        header.updateCellsSizes();
+      }
+
+      body.updateColumnsSizes();
+
+      switch (side){
+        case 'center':
+          break;
+        case 'left':
+          var oldLeftElWidth = parseInt(leftEl.css('width')),
+            oldHeaderElWidth = parseInt(leftHeaderEl.css('width')),
+            delta = oldLeftElWidth - columnsWidth;
+
+          leftEl.animate({width: oldLeftElWidth - delta - leftFix}, ANIMATE_DURATION);
+          leftHeaderEl.animate({width: oldHeaderElWidth - delta - leftFix}, ANIMATE_DURATION);
+
+          if (w.columns.length) {
+            this.updateCenterSideWidth();
+          }
+          break;
+        case 'right':
+          var oldRightElWidth = parseInt(leftEl.css('width')),
+            oldHeaderElWidth = parseInt(leftHeaderEl.css('width')),
+            delta = oldRightElWidth - columnsWidth;
+
+          rightEl.animate({width: oldRightElWidth - delta}, ANIMATE_DURATION);
+          rightHeaderEl.animate({width: oldHeaderElWidth - delta}, ANIMATE_DURATION);
+
+          if (w.columns.length) {
+            this.updateCenterSideWidth();
+          }
+          break;
+      }
+    },
+    updateCenterSideWidth: function () {
+      var me = this,
+        w = me.widget,
+        centerEl = w.centerEl,
+        centerHeaderEl = w.header.el,
+        centerBodyEl = w.body.el,
+        leftColumnsWidth = 0,
+        rightColumnsWidth = 0,
+        leftColumns = w.getColumns('left'),
+        rightColumns = w.getColumns('right'),
+        centerWidth = w.width;
+
+      if(w.panel){
+        centerWidth -= w.panelBodyBorders[1];
+        centerWidth -= w.panelBodyBorders[3];
+        centerWidth -= w.gridBorders[1];
+        centerWidth -= w.gridBorders[3];
+      }
+      else{
+        centerWidth -= w.gridWithoutPanelBorders[1];
+        centerWidth -= w.gridWithoutPanelBorders[3];
+      }
+
+      var leftFix = 1;
+      if (F.nojQuery) {
+        leftFix = 0;
+      }
+
+      F.each(leftColumns, function (column) {
+        if (column.hidden) {
+          return;
+        }
+
+        leftColumnsWidth += column.width;
+      });
+
+      F.each(rightColumns, function (column) {
+        if (column.hidden) {
+          return;
+        }
+
+        rightColumnsWidth += column.width;
+      });
+
+      centerWidth -= leftColumnsWidth;
+      centerWidth -= rightColumnsWidth;
+      centerWidth += leftFix;
+
+      centerEl.animate({
+        left: leftColumnsWidth - leftFix,
+        width: centerWidth
+      }, ANIMATE_DURATION);
+      centerEl.animate({width: centerWidth}, ANIMATE_DURATION);
+      centerHeaderEl.animate({width: centerWidth}, ANIMATE_DURATION);
+      centerBodyEl.animate({width: centerWidth}, ANIMATE_DURATION);
     },
     /*
      * @param {Number} index
@@ -809,31 +919,29 @@
       var me = this,
         w = me.widget,
         columns = w.getColumns(side),
-        header = w.getHeader(side),
+        header,
         body = w.getBody(side),
         columnEl = G(body.getDomColumn(index)),
-        headerCellEl = header.getCell(index),
-        nextHeaderCellEl,
-        nextColumnEl,
-        left = parseInt(columnEl.css('left'));
+        headerCellEl;
 
-      columnEl.css('width', width);
-      headerCellEl.css('width', width);
+      if(w.header){
+        header = w.getHeader(side);
+        headerCellEl = header.getCell(index);
+      }
 
-      var nextIndex = this.getNextVisibleIndex(index, side);
+      var columnOldWidth = parseInt(columnEl.css('width'));
+      if(columnOldWidth === width){
+        return;
+      }
 
-      if (nextIndex) {
-        left += width;
+      var headerCellElDom;
 
-        nextColumnEl = G(body.getDomColumn(nextIndex));
-        nextColumnEl.css('left', left);
-
-        nextHeaderCellEl = header.getCell(nextIndex);
-        nextHeaderCellEl.css('left', left);
+      if(w.header) {
+        headerCellElDom = headerCellEl.dom;
       }
 
       w.fire('columnresize', {
-        cell: headerCellEl.dom,
+        cell: headerCellElDom,
         width: width,
         column: columns[index],
         side: side

@@ -42,5 +42,7 @@ Fancy.i18n['no-NN'] = {
   lock: 'Lås kolonne',
   rightLock: 'Lås kolonne',
   unlock: 'Lås opp kolonne',
-  columns: 'Kolonner'
+  columns: 'Kolonner',
+  autoSizeColumn: 'Autosize Kolonne',
+  autoSizeColumns: 'Autosize All Kolonner'
 };

@@ -42,5 +42,7 @@ Fancy.i18n['zh-CN'] = {
   lock: '锁定列',
   rightLock: '锁定列',
   unlock: '解除锁定',
-  columns: '列'
+  columns: '列',
+  autoSizeColumn: '自动调整列',
+  autoSizeColumns: '自动调整列'
 };

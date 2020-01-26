@@ -53,7 +53,6 @@ Fancy.defineTheme('default', {
     minCenterWidth: 100,
     panelBorderWidth: 2,
     groupRowHeight: 31,
-
     gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,2,2,2],

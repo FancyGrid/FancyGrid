@@ -35,7 +35,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
             me.writerType = writer;
             break;
           default:
-            throw new Error('[FancyGrid Error] - writer ' + writer.type + ' does not exist');
+            Fancy.error('writer ' + writer.type + ' does not exist');
         }
 
         break;
@@ -50,7 +50,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
             me.writerType = writer.type;
             break;
           default:
-            throw new Error('[FancyGrid Error] - writer ' + writer + ' does not exist');
+            Fancy.error('writer ' + writer.type + ' does not exist');
         }
 
         if(writer.writeFields){

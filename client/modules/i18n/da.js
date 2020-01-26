@@ -42,5 +42,7 @@ Fancy.i18n.da = {
   lock: 'Lås kolonne',
   rightLock: 'Lås kolonne',
   unlock: 'Fjern lås fra kolonne',
-  columns: 'Kolonner'
+  columns: 'Kolonner',
+  autoSizeColumn: 'Autosize Kolonne',
+  autoSizeColumns: 'Autosize Kolonner'
 };

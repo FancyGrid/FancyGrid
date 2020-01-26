@@ -202,7 +202,7 @@
       }
 
       if (!items) {
-        throw new Error('FancyGrid Error 4: Data is empty and not set fields of data to build model');
+        F.error('Data is empty and not set fields of data to build model', 4);
       }
 
       var itemZero = items[0],
@@ -236,7 +236,7 @@
       }
 
       if (!renderTo.dom) {
-        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+        F.error('Could not find renderTo element: ' + me.renderTo, 1);
       }
 
       el.addCls(
@@ -717,7 +717,7 @@
       me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
 
       if(me.resizable){
-        me.panel.on('resize', function(){
+        me.panel.on('resize', function(panel, o){
           me.setBodysHeight();
         });
       }
@@ -1880,6 +1880,7 @@
 
       bodyHeight -= gridBorders[0] + gridBorders[2];
 
+
       if (me.body) {
         me.body.css('height', bodyHeight);
       }
@@ -2021,7 +2022,7 @@
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          throw new Error('[FancyGrid Error] - column does not exist');
+          F.error('Column does not exist');
         }
       }
 
@@ -2150,7 +2151,7 @@
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          throw new Error('[FancyGrid Error] - column does not exist');
+          F.error('Column does not exist');
         }
       }
 
@@ -2329,7 +2330,7 @@
             });
 
             if (F.isString(indexOrder)) {
-              throw new Error('FancyGrid Error 7: Column was not found for method removeColumn');
+              F.error('Column was not found for method removeColumn', 7);
             }
           }
         }
@@ -2465,7 +2466,12 @@
       }
 
       if (column.menu) {
-        column.menu = true;
+        if(column._menu){
+          column.menu = column._menu;
+        }
+        else{
+          column.menu = true;
+        }
       }
 
       if (me.grouping) {
@@ -3428,7 +3434,7 @@
             cell.removeCls(GRID_COLUMN_SORT_DESC_CLS);
             break;
           default:
-            throw new Error('[FancyGrid Error]: sorting type is not right - ' + direction);
+            F.error('sorting type is not right - ' + direction);
         }
 
         me.sorter.sort(direction, key, o.side, column, cell);
@@ -3661,7 +3667,7 @@
           barCls = PANEL_BUTTONS_CLS;
           break;
         default:
-          throw new Error('FancyGrid Error: bar does not exist');
+          F.error('Bar does not exist');
       }
 
       barEl = me.panel.el.select('.' + barCls);
@@ -3695,7 +3701,7 @@
           barCls = PANEL_BUTTONS_CLS;
           break;
         default:
-          throw new Error('FancyGrid Error: bar does not exist');
+          F.error('Bar does not exist');
       }
 
       barEl = me.panel.el.select('.' + barCls);
@@ -3799,9 +3805,9 @@
      * @param {'center'|'left'|'right'} [side]
      */
     setColumnWidth: function (index, width, side) {
-      var me = this,
-        w = me.widget,
-        side = side || 'center';
+      var me = this;
+
+      side = side || 'center';
 
       if(F.isArray(index)){
         F.each(index, function (item) {
@@ -3825,8 +3831,11 @@
 
       me.intervalUpdateColumnsWidth = setTimeout(function () {
         if(me.columnresizer){
-          me.columnresizer.updateColumnsWidth();
+          me.columnresizer.updateColumnsWidth('all');
           delete this.intervalUpdateColumnsWidth;
+          setTimeout(function () {
+            me.scroller.update();
+          }, Fancy.ANIMATE_DURATION);
         }
       }, 100);
     },
@@ -3852,6 +3861,82 @@
       changes.inserted = s.inserted;
 
       return changes;
+    },
+    /*
+     * @param {String} index
+     */
+    autoSizeColumn: function(index, side) {
+      var me = this,
+        info = me.getColumnOrderByKey(index);
+
+      if(!info || info.order === undefined){
+        F.error('Column index was not found');
+        return;
+      }
+
+      var side = side || info.side,
+        body = me.getBody(side),
+        columnEl = F.get(body.getDomColumn(info.order)),
+        width = columnEl.css('width'),
+        offsetWidth;
+
+      columnEl.css('width', '');
+      offsetWidth = columnEl.dom.offsetWidth;
+      columnEl.css('width', width);
+
+      if(me.header){
+        var headerCell = me.getHeaderCell(index, side);
+        width = headerCell.css('width');
+
+        headerCell.css('width', '');
+        var headerCellOffset = headerCell.dom.offsetWidth + 25;
+        headerCell.css('width', width);
+
+        if(headerCellOffset > offsetWidth){
+          offsetWidth = headerCellOffset;
+        }
+      }
+
+      me.setColumnWidth(index, offsetWidth, side);
+    },
+    /*
+     *
+     */
+    autoSizeColumns: function () {
+      var me = this,
+        leftColumns = me.getColumns('left'),
+        rightColumns = me.getColumns('right'),
+        columns = me.getColumns('center');
+
+      F.each(leftColumns, function (column) {
+        if(me.isServiceColumn(column)){
+          return;
+        }
+
+        if(column.index){
+          me.autoSizeColumn(column.index, 'left');
+        }
+      });
+
+      F.each(columns, function (column) {
+        if(me.isServiceColumn(column)){
+          return;
+        }
+
+        if(column.index){
+          me.autoSizeColumn(column.index, 'center');
+        }
+      });
+
+      F.each(rightColumns, function (column) {
+        if(me.isServiceColumn(column)){
+          return;
+        }
+
+        if(column.index){
+          me.autoSizeColumn(column.index, 'right');
+        }
+      });
     },
     /*
      *
@@ -3881,6 +3966,20 @@
       else{
         me.removeCls(GRID_STATE_SORTED_CLS);
       }
+    },
+    /*
+     *
+     */
+    isServiceColumn: function(column){
+      switch(column.type){
+        case 'order':
+        case 'select':
+        case 'expand':
+        case 'rowdrag':
+          return true;
+      }
+
+      return false;
     }
   });
 

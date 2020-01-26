@@ -40,6 +40,8 @@ Fancy.i18n.ja = {
   sortAsc: '昇順',
   sortDesc: '降順',
   columns: 'カラム',
+  autoSizeColumn: 'Autosize Column',
+  autoSizeColumns: 'Autosize Columns',
   lock: 'ロック',
   unlock: 'ロック解除',
   rightLock: '右のロック'

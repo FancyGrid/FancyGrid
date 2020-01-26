@@ -1762,6 +1762,7 @@
             style: {},
             column: column
           },
+          cell = cellsDom.item(j),
           value;
 
         if (column.smartIndexFn) {
@@ -1783,7 +1784,15 @@
           value = o.value;
         }
 
-        cellsDom.item(j).css(o.style);
+        cell.css(o.style);
+
+        if (w.cellStylingCls) {
+          me.clearCls(cell);
+        }
+
+        if (o.cls) {
+          cell.addCls(o.cls);
+        }
 
         var _renderTo = F.get(cellsDomInner.item(j).dom);
 

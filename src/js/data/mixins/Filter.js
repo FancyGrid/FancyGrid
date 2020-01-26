@@ -178,7 +178,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             passed = value(indexValue, item) === true;
             break;
           default:
-            throw new Error('FancyGrid Error 5: Unknown filter ' + q);
+            throw new Error('[FancyGrid Error 5]: Unknown filter ' + q);
         }
 
         if(wait === true){

@@ -38,6 +38,8 @@ Fancy.i18n['en-UK'] = {
   update: 'Update',
   cancel: 'Cancel',
   columns: 'Columns',
+  autoSizeColumn: 'Autosize Column',
+  autoSizeColumns: 'Autosize All Columns',
   sortAsc: 'Sort ASC',
   sortDesc: 'Sort DESC',
   lock: 'Lock',
