@@ -567,7 +567,6 @@ Fancy.modules['selection'] = true;
       }
 
       w.on('rowclick', me.onRowClick, me);
-
       w.on('cellmousedown', me.onCellMouseDownRows, me);
       w.on('cellclick', me.onCellClickRows, me);
       w.on('rowenter', me.onRowEnterSelection, me);

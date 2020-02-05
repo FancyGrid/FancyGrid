@@ -610,6 +610,16 @@
         }
       }
 
+      /*
+      if (me.type === 'number' || me.type === 'field.number') {
+        if (isNaN(parseFloat(me.value))) {
+          return me.value;
+        }
+
+        return Number(me.value);
+      }
+      */
+
       return me.input.dom.value;
     },
     /*

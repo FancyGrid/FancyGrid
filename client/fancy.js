@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.88',
+  version: '1.7.89',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -9711,6 +9711,16 @@ if(!Fancy.nojQuery && Fancy.$){
           return me.value;
         }
       }
+
+      /*
+      if (me.type === 'number' || me.type === 'field.number') {
+        if (isNaN(parseFloat(me.value))) {
+          return me.value;
+        }
+
+        return Number(me.value);
+      }
+      */
 
       return me.input.dom.value;
     },

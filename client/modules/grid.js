@@ -11631,7 +11631,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
       me.el.on('mouseenter', me.onCellMouseEnter, me, cellSelector);
       me.el.on('mouseleave', me.onCellMouseLeave, me, cellSelector);
-      me.el.on('mousedown', me.onCellMouseDown, me, cellSelector);
+      if(F.isTouch){
+        me.el.on('touchend', me.onCellMouseDown, me, cellSelector);
+      }
+      else {
+        me.el.on('mousedown', me.onCellMouseDown, me, cellSelector);
+      }
 
       me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
@@ -12130,7 +12135,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       el.un('dblclick', me.onCellDblClick, me, cellSelector);
       el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
       el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
-      el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+      if(F.isTouch){
+        el.un('touchend', me.onCellMouseDown, me, cellSelector);
+      }
+      else {
+        el.un('mousedown', me.onCellMouseDown, me, cellSelector);
+      }
 
       el.un('mouseenter', me.onColumnMouseEnter, me, columnSelector);
       el.un('mouseleave', me.onColumnMouseLeave, me, columnSelector);
