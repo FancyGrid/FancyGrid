@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.89',
+  version: '1.7.90',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -7080,7 +7080,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
           scope: scope,
-          theme: theme
+          theme: theme,
+          i18n: this.i18n
         });
 
         me.bbar = me._bbar.items;

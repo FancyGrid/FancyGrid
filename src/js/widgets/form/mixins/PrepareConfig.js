@@ -92,6 +92,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
                 edit: date.edit
               };
             }
+
+            if(config.i18n){
+              bar[i].i18n = config.i18n;
+            }
             break;
         }
       }

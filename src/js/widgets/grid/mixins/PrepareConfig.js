@@ -1927,6 +1927,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 edit: date.edit
               };
             }
+
+            if(config.i18n){
+              bar[i].i18n = config.i18n;
+            }
             break;
         }
       }
@@ -1956,6 +1960,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'search':
             config.searching = config.searching || {};
             config.filter = config.filter || true;
+            break;
+          case 'date':
+            if(config.i18n){
+              tbar[i].i18n = config.i18n;
+            }
             break;
         }
 

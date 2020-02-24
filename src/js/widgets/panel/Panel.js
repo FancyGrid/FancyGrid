@@ -320,7 +320,8 @@
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
           scope: scope,
-          theme: theme
+          theme: theme,
+          i18n: this.i18n
         });
 
         me.bbar = me._bbar.items;

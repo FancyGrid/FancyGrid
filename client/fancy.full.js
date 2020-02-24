@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.89',
+  version: '1.7.90',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -12985,7 +12985,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
           scope: scope,
-          theme: theme
+          theme: theme,
+          i18n: this.i18n
         });
 
         me.bbar = me._bbar.items;
@@ -16333,6 +16334,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
                 write: date.write,
                 edit: date.edit
               };
+            }
+
+            if(config.i18n){
+              bar[i].i18n = config.i18n;
             }
             break;
         }
@@ -24473,6 +24478,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 edit: date.edit
               };
             }
+
+            if(config.i18n){
+              bar[i].i18n = config.i18n;
+            }
             break;
         }
       }
@@ -24502,6 +24511,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           case 'search':
             config.searching = config.searching || {};
             config.filter = config.filter || true;
+            break;
+          case 'date':
+            if(config.i18n){
+              tbar[i].i18n = config.i18n;
+            }
             break;
         }
 
