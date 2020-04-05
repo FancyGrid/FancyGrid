@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.90',
+  version: '1.7.92',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -5901,6 +5901,9 @@ Fancy.define('Fancy.Plugin', {
       else {
         me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
+        if(me.toggleGroup) {
+          delete toggleGroups[me.toggleGroup].active;
+        }
       }
 
       if(fire !== false){
@@ -5942,7 +5945,12 @@ Fancy.define('Fancy.Plugin', {
 
         if(me.enableToggle){
           if(me.toggleGroup){
-            me.setPressed(true);
+            if(me.pressed){
+              me.setPressed(false);
+            }
+            else {
+              me.setPressed(true);
+            }
           }
           else {
             me.toggle();
@@ -14380,6 +14388,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
       'beforecolumndrag', 'columndrag',
       'columnhide', 'columnshow',
+      'columnremove', 'columnadd',
       'scroll', 'nativescroll',
       'remove',
       'insert',

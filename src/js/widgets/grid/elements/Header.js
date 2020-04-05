@@ -368,6 +368,10 @@
 
       //me.css('width', parseInt(me.css('width')) + column.width);
       me.css('width', width);
+
+      if(column.filter && column.filter.header){
+
+      }
     },
     /*
      *

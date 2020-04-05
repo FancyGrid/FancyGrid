@@ -4713,6 +4713,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.summary.removeColumn(indexOrder, side);
       }
 
+      me.fire('columnremove');
+
       return column;
     },
     /*
@@ -4847,6 +4849,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       if (me.sorter) {
         me.sorter.updateSortedHeader();
       }
+
+      if (me.filter) {
+        me.filter.updateFields();
+      }
     },
     /*
      * @param {Object} column
@@ -4874,6 +4880,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.insertColumn(column, orderIndex, side);
 
       me.scroller.update();
+
+      me.fire('columnadd');
     },
     /*
      * @param {Number} orderIndex
@@ -5026,6 +5034,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (updateHeaderFilter !== false) {
         me.filter.addValuesInColumnFields(index, value, sign);
+      }
+      else if(me.searching) {
+        me.searching.setValueInField(value);
       }
     },
     /*
@@ -6316,6 +6327,60 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       return false;
+    },
+    /*
+     * @params {String} [index]
+     * @params {String} [sign]
+     *
+     * @return {Array|Object|undefined}
+     */
+    getFilter: function (index, sign) {
+      var me = this;
+
+      if(index === undefined && sign === undefined) {
+        return me.filter.filters;
+      }
+
+      var filter = me.filter.filters[index];
+
+      if(sign === undefined){
+        if(filter){
+          return filter;
+        }
+        else{
+          return;
+        }
+      }
+
+      if(filter && filter[sign]){
+        return filter[sign];
+      }
+
+      return;
+    },
+    /*
+     * @params {String} [index]
+     *
+     * @return {Array|Object}
+     */
+    getSorter: function (index) {
+      var me = this;
+
+      if(index !== undefined){
+        var foundedItem;
+
+        F.each(me.store.sorters, function (item, i) {
+          if(item.key === index){
+            foundedItem = item;
+
+            return true;
+          }
+        });
+
+        return foundedItem;
+      }
+
+      return me.store.sorters;
     }
   });
 
@@ -12916,6 +12981,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       //me.css('width', parseInt(me.css('width')) + column.width);
       me.css('width', width);
+
+      if(column.filter && column.filter.header){
+
+      }
     },
     /*
      *

@@ -71,6 +71,9 @@ Fancy.modules['state'] = true;
           w.on('columnshow', me.onColumnShow, me);
         }
 
+        w.on('columnremove', me.onColumnRemove, me);
+        w.on('columnadd', me.onColumnAdd, me);
+
         w.on('init', function () {
           if(w.panel){
             if(me.log.resize){
@@ -158,6 +161,18 @@ Fancy.modules['state'] = true;
       me.copyColumns();
       me.widget.fire('statechange', me.getState());
     },
+    onColumnRemove: function () {
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
+    },
+    onColumnAdd: function () {
+      var me = this;
+
+      me.copyColumns();
+      me.widget.fire('statechange', me.getState());
+    },
     copyColumns: function () {
       var me = this,
         w = me.widget,
@@ -222,7 +237,12 @@ Fancy.modules['state'] = true;
             var filter = startState.filters[p];
 
             for (var q in filter) {
-              w.addFilter(p, filter[q], q);
+              if(q === '*' && w.searching){
+                w.addFilter(p, filter[q], q, false);
+              }
+              else{
+                w.addFilter(p, filter[q], q);
+              }
             }
           }
         };
@@ -268,7 +288,12 @@ Fancy.modules['state'] = true;
           var filter = state.filters[p];
 
           for(var q in filter){
-            w.addFilter(p, filter[q], q);
+            if(q === '*' && w.searching) {
+              w.addFilter(p, filter[q], q, false);
+            }
+            else{
+              w.addFilter(p, filter[q], q, );
+            }
           }
         }
 
@@ -386,5 +411,4 @@ Fancy.modules['state'] = true;
       return state;
     }
   });
-
 })();

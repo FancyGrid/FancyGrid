@@ -266,6 +266,9 @@
       else {
         me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
+        if(me.toggleGroup) {
+          delete toggleGroups[me.toggleGroup].active;
+        }
       }
 
       if(fire !== false){
@@ -307,7 +310,12 @@
 
         if(me.enableToggle){
           if(me.toggleGroup){
-            me.setPressed(true);
+            if(me.pressed){
+              me.setPressed(false);
+            }
+            else {
+              me.setPressed(true);
+            }
           }
           else {
             me.toggle();

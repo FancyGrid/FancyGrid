@@ -1066,6 +1066,15 @@ Fancy.modules['filter'] = true;
     onColumnDrag: function () {
       var me = this;
 
+      me.updateFields();
+    },
+    /*
+     *
+     */
+    // Requires to improve. Should avoid destroying fields.
+    updateFields: function () {
+      var me = this;
+
       me.destroyFields();
       me.render();
     }

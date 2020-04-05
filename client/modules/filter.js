@@ -1380,6 +1380,15 @@ Fancy.modules['filter'] = true;
     onColumnDrag: function () {
       var me = this;
 
+      me.updateFields();
+    },
+    /*
+     *
+     */
+    // Requires to improve. Should avoid destroying fields.
+    updateFields: function () {
+      var me = this;
+
       me.destroyFields();
       me.render();
     }
@@ -1598,7 +1607,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
       s = w.store,
       filters = s.filters || {};
 
-    for(var p in me.keys){
+    for(var p in me.keys) {
       if(filters[p] === undefined){
         continue;
       }
@@ -1609,32 +1618,64 @@ Fancy.define('Fancy.grid.plugin.Search', {
     me.filters = filters;
     s.filters = filters;
     delete me.searches;
+
+    if(w.state){
+      w.state.onFilter();
+    }
   },
   /*
    *
    */
-  clearBarField: function () {
+  clearBarField: function(){
+    var me = this,
+      field = me.getSearchField('tbar');
+
+    if(field){
+      field.clear();
+    }
+
+    field = me.getSearchField('subTBar');
+
+    if(field){
+      field.clear();
+    }
+  },
+  /*
+   * @params {String} value
+   */
+  setValueInField: function (value) {
+    var me = this,
+      field = me.getSearchField('tbar');
+
+    if(field){
+      field.set(value, false);
+    }
+
+    field = me.getSearchField('subTBar');
+
+    if(field){
+      field.set(value, false);
+    }
+  },
+  /*
+   * @params {String} barType
+   * @return {Field|undefined}
+   */
+  getSearchField: function (barType) {
     var me = this,
       w = me.widget,
+      bar = w[barType],
       i = 0,
-      iL = (w.tbar || []).length,
+      iL = (bar || []).length,
       field;
 
     for(;i<iL;i++){
-      field = w.tbar[i];
+      field = bar[i];
       if(field.type === 'search'){
-        field.clear();
+        return field;
       }
     }
 
-    i = 0;
-    iL = (w.subTBar || []).length;
-
-    for(;i<iL;i++){
-      field = w.subTBar[i];
-      if(field.type === 'search'){
-        field.clear();
-      }
-    }
+    return field;
   }
 });

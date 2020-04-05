@@ -126,6 +126,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'rowclick', 'rowdblclick', 'rowenter', 'rowleave', 'rowtrackenter', 'rowtrackleave',
       'beforecolumndrag', 'columndrag',
       'columnhide', 'columnshow',
+      'columnremove', 'columnadd',
       'scroll', 'nativescroll',
       'remove',
       'insert',

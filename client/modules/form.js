@@ -1037,6 +1037,22 @@ Fancy.modules['form'] = true;
       return parseInt(this.css('height'));
     },
     /*
+     * @return {Number}
+     */
+    getWidth: function () {
+      var me = this,
+        value;
+
+      if (me.panel) {
+        value = parseInt(me.panel.css('width'));
+      }
+      else {
+        value = parseInt(me.css('width'));
+      }
+
+      return value;
+    },
+    /*
      *
      */
     calcFieldSize: function () {
