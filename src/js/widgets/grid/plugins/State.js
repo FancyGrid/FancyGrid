@@ -292,7 +292,7 @@ Fancy.modules['state'] = true;
               w.addFilter(p, filter[q], q, false);
             }
             else{
-              w.addFilter(p, filter[q], q, );
+              w.addFilter(p, filter[q], q);
             }
           }
         }
