@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.93',
+  version: '1.7.94',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -806,26 +806,24 @@ Fancy.isTouch = (document.ontouchstart !== undefined);
 
 Fancy.i18n = {};
 
-Fancy.currencies = {
-  map: { 
-    EUR: '€',
-    USD: '$',
-    GBP: '£',
-    RUB: '₽',
-    CZK: 'Kč',
-    AUD: '$',
-    JPY: '¥',
-    PLN: 'zł',
-    TRY: '₺',
-    DKK: 'kr',
-    KRW: '₩',
-    BRL: 'R$',
-    CNY: '¥',
-    SEK: 'kr',
-    CAD: '$',
-    NOK: 'kr',
-    IDR: 'Rp'
-  }
+Fancy.currency = {
+  EUR: '€',
+  USD: '$',
+  GBP: '£',
+  RUB: '₽',
+  CZK: 'Kč',
+  AUD: '$',
+  JPY: '¥',
+  PLN: 'zł',
+  TRY: '₺',
+  DKK: 'kr',
+  KRW: '₩',
+  BRL: 'R$',
+  CNY: '¥',
+  SEK: 'kr',
+  CAD: '$',
+  NOK: 'kr',
+  IDR: 'Rp'
 };
 
 })();

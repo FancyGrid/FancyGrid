@@ -875,6 +875,12 @@ Fancy.modules['expander'] = true;
 
         checkBox.setValue(false, false);
       });
+    },
+    collapseAll: function () {
+      var me = this;
+
+      me.reSet();
+      me.clearExpandedCheckBoxes();
     }
   });
 

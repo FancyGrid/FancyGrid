@@ -14,7 +14,6 @@ Fancy.define('Fancy.Store', {
     'Fancy.store.mixin.Edit',
     'Fancy.store.mixin.Grouping',
     'Fancy.store.mixin.Filter',
-    'Fancy.store.mixin.Search',
     'Fancy.store.mixin.Dirty',
     'Fancy.store.mixin.Tree'
   ],
@@ -636,8 +635,7 @@ Fancy.define('Fancy.Store', {
       dataViewMap = {},
       i = 0,
       iL = me.data.length,
-      isFiltered = !!me.filters,
-      isSearched = !!me.searches,
+      isFiltered = me.isFiltered(),
       data = me.data;
 
     if(isFiltered) {
@@ -657,12 +655,6 @@ Fancy.define('Fancy.Store', {
 
         iL = data.length;
       }
-    }
-
-    if(isSearched) {
-      me.searchData();
-      data = me.searchedData;
-      iL = data.length;
     }
 
     me.dataViewIndexes = {};
@@ -1005,5 +997,19 @@ Fancy.define('Fancy.Store', {
     if(!presented){
       me.fields.push(index);
     }
+  },
+  /*
+   * @return {Boolean}
+   */
+  isFiltered: function () {
+    var me = this,
+      filters = me.filters || {},
+      filtered = false;
+
+    for(var p in filters){
+      filtered = true;
+    }
+
+    return filtered;
   }
 });

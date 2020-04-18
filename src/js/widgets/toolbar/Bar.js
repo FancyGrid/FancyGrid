@@ -755,15 +755,19 @@
      *
      */
     onPrevScrollClick: function () {
-      this.scrolled += this.tabScrollStep;
-      this.applyScrollChanges();
+      var me = this;
+
+      me.scrolled += me.tabScrollStep;
+      me.applyScrollChanges();
     },
     /*
      *
      */
     onNextScrollClick: function () {
-      this.scrolled -= this.tabScrollStep;
-      this.applyScrollChanges();
+      var me = this;
+
+      me.scrolled -= me.tabScrollStep;
+      me.applyScrollChanges();
     },
     /*
      *
@@ -774,15 +778,29 @@
         barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
         scrollPath = itemsWidth - barWidth;
 
+      if(me.scrolled === 0){
+        me.leftScroller.disable();
+      }
+      else if(me.scrolled < 0){
+        me.leftScroller.enable();
+      }
+
+      if(itemsWidth > barWidth && me.scrolled === 0){
+        me.rightScroller.enable();
+      }
+
+      if(barWidth + Math.abs(me.scrolled) < itemsWidth){
+        me.rightScroller.enable();
+      }
+
       if (itemsWidth < barWidth) {
         me.scrolled = 0;
 
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
 
-        me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
-        //me.containerEl.css('margin-left', '0px');
-
+        //me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
+        me.containerEl.css({'margin-left': '0px'});
         return;
       }
       else if (me.scrolled > 0) {
@@ -800,7 +818,8 @@
       me.rightScroller.el.show();
 
       //me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
-      me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
+      //me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
+      me.containerEl.css({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'});
     },
     /*
      *

@@ -199,7 +199,6 @@ Fancy.define('Fancy.grid.plugin.Search', {
       filters[p]['*'] = me.searches;
     }
 
-    me.filters = filters;
     s.filters = filters;
   },
   /*
@@ -219,7 +218,6 @@ Fancy.define('Fancy.grid.plugin.Search', {
       delete filters[p]['*'];
     }
 
-    me.filters = filters;
     s.filters = filters;
     delete me.searches;
 

@@ -443,7 +443,7 @@
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j,
         jL,
-        currencySign = lang.currencySign,
+        currencySign = column.currency || lang.currencySign,
         isComplexInner = false;
 
       if(column.select){

@@ -27,7 +27,6 @@ Fancy.modules['filter'] = true;
      * @param {Object} config
      */
     constructor: function () {
-      this.filters = {};
       this.Super('const', arguments);
     },
     /*
@@ -229,6 +228,7 @@ Fancy.modules['filter'] = true;
     renderFilter: function (type, column, dom) {
       var me = this,
         w = me.widget,
+        s = w.store,
         field,
         style = {
           position: 'absolute',
@@ -238,7 +238,7 @@ Fancy.modules['filter'] = true;
         theme = w.theme,
         tip = filter.tip,
         value = '',
-        columnFilter = me.filters[column.index];
+        columnFilter = s.filters[column.index];
 
       if(columnFilter){
         for(var p in columnFilter){
@@ -585,7 +585,7 @@ Fancy.modules['filter'] = true;
       delete me.intervalAutoEnter;
 
       if (value.length === 0) {
-        me.filters[field.filterIndex] = {};
+        s.filters[field.filterIndex] = {};
         me.clearFilter(field.filterIndex, undefined, false);
         me.updateStoreFilters();
 
@@ -600,7 +600,7 @@ Fancy.modules['filter'] = true;
         i = 0,
         iL = filters.length;
 
-      me.filters[filterIndex] = {};
+      s.filters[filterIndex] = {};
 
       for (; i < iL; i++) {
         var filter = filters[i];
@@ -612,30 +612,29 @@ Fancy.modules['filter'] = true;
         }
 
         if(filter.separator === '&'){
-          if(F.isArray(me.filters[filterIndex][filter.operator])){
-            me.filters[filterIndex][filter.operator].push(filter.value);
+          if(F.isArray(s.filters[filterIndex][filter.operator])){
+            s.filters[filterIndex][filter.operator].push(filter.value);
           }
           else{
-            me.filters[filterIndex][filter.operator] = [filter.value];
+            s.filters[filterIndex][filter.operator] = [filter.value];
           }
         }
         else {
-          me.filters[filterIndex][filter.operator] = filter.value;
+          s.filters[filterIndex][filter.operator] = filter.value;
         }
 
         if (filter.operator !== '|') {
-          //F.apply(me.filters[filterIndex], options);
+          //F.apply(s.filters[filterIndex], options);
         }
 
         if (field.column.type === 'date') {
-          F.apply(me.filters[filterIndex], options);
+          F.apply(s.filters[filterIndex], options);
         }
       }
 
       if (s.remoteFilter) {
-        s.filters = me.filters;
         s.once('serversuccess', function () {
-          w.fire('filter', me.filters);
+          w.fire('filter', s.filters);
         });
         s.serverFilter();
       }
@@ -647,7 +646,7 @@ Fancy.modules['filter'] = true;
         if (s.remoteSort) {
           s.once('load', function () {
             w.grouping.reGroup();
-            w.fire('filter', me.filters);
+            w.fire('filter', s.filters);
           });
         }
         else {
@@ -780,7 +779,6 @@ Fancy.modules['filter'] = true;
         containFilters = false;
 
       w.filtering = true;
-      s.filters = me.filters;
 
       for(var p in s.filters){
         var filter = s.filters[p];
@@ -799,7 +797,7 @@ Fancy.modules['filter'] = true;
         s.changeDataView();
         w.update();
 
-        w.fire('filter', me.filters);
+        w.fire('filter', s.filters);
         w.setSidesHeight();
       }
 
@@ -819,7 +817,7 @@ Fancy.modules['filter'] = true;
       s.changeDataView();
       w.update();
 
-      w.fire('filter', me.filters);
+      w.fire('filter', s.filters);
       w.setSidesHeight();
     },
     /*
@@ -970,14 +968,16 @@ Fancy.modules['filter'] = true;
      * @param {Boolean} update
      */
     clearFilter: function (index, operator, update) {
-      var me = this;
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
       if (operator === undefined) {
-        delete me.filters[index];
+        delete s.filters[index];
       }
       else {
-        if (me.filters[index]) {
-          delete me.filters[index][operator];
+        if (s.filters[index]) {
+          delete s.filters[index][operator];
         }
       }
 

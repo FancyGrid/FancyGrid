@@ -35,7 +35,7 @@
       'Fancy.grid.header.mixin.Menu'
     ],
     cellTpl: [
-      '<div role="columnheader" class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
+      '<div role="columnheader" col-id="{id}" class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
         '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
           '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
           '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
@@ -142,7 +142,7 @@
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
-                left: passedWidth
+                left: passedWidth,
               };
             }
 
@@ -199,8 +199,6 @@
           height += 'px';
         }
 
-
-
         var cellConfig = {
           cls: cls,
           columnName: title,
@@ -209,7 +207,8 @@
           height: height,
           left: 'initial',
           groupIndex: groupIndex,
-          display: column.hidden ? 'none' : ''
+          display: column.hidden ? 'none' : '',
+          id: column.id || ''
         };
 
         html += me.cellTpl.getHTML(cellConfig);
@@ -316,7 +315,8 @@
         index: index,
         height: String(cellHeight) + 'px',
         left: String(left) + 'px',
-        groupIndex: groupIndex
+        groupIndex: groupIndex,
+        id: column.id || ''
       });
 
       if (index === 0 && cells.length) {
@@ -746,7 +746,8 @@
           index: p,
           height: w.cellHeaderHeight + 'px',
           left: group.left + 'px',
-          groupIndex: ''
+          groupIndex: '',
+          id: group.id || ''
         });
       });
 

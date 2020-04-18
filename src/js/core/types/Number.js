@@ -27,7 +27,7 @@ Fancy.Number = {
   /**
    * @param {Number} value
    * @param {Number|String} [sep]
-   * @param {Number} [presition]
+   * @param {Number} [precision]
    * @return {String}
    */
   format: function (value, sep, precision) {

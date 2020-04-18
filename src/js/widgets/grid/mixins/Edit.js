@@ -115,7 +115,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    */
   insert: function(index, o, fire){
     var me = this,
-      s = me.store;
+      s = me.store,
+      i;
 
     if(!me.store){
       setTimeout(function(){
@@ -125,7 +126,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(Fancy.isArray(o)){
-      var i = o.length - 1;
+      i = o.length - 1;
 
       for(;i !== -1;i--){
         me.insert(o[i], index, fire);
@@ -137,7 +138,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return;
     }
     else if(Fancy.isArray(index)){
-      var i = index.length - 1;
+      i = index.length - 1;
 
       for(;i !== -1;i--){
         me.insert(index[i], 0, fire);
@@ -362,16 +363,21 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @return {Object}
    */
   getCell: function (o) {
-    var me = this;
+    var me = this,
+      side,
+      body,
+      cell;
+
     //o.id
     //o.index
     if(o.id !== undefined && o.index !== undefined){
       var _o = me.getColumnOrderByKey(o.index),
         columnIndex = _o.order,
-        side = _o.side,
-        rowIndex = me.getRowById(o.id),
-        body = me.getBody(side),
-        cell = body.getCell(rowIndex, columnIndex);
+        rowIndex = me.getRowById(o.id);
+
+      side = _o.side;
+      body = me.getBody(side);
+      cell = body.getCell(rowIndex, columnIndex);
 
       if(!cell.dom){
         return;
@@ -380,12 +386,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return cell;
     }
 
-    //o.rowIndex
-    //o.columnIndex
     if(o.rowIndex !== undefined && o.columnIndex !== undefined){
-      var side = o.side || 'center',
-        body = me.getBody(side),
-        cell = body.getCell(o.rowIndex, o.columnIndex);
+      side = o.side || 'center';
+      body = me.getBody(side);
+      cell = body.getCell(o.rowIndex, o.columnIndex);
 
       if(!cell.dom){
         cell = me.getBody('center').getCell(o.rowIndex, o.columnIndex);

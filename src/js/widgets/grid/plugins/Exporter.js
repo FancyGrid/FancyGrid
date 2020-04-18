@@ -101,7 +101,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
         return;
       }
 
-      if(column.index === '$selected'){
+      if(!me.isColumnExportable(column)){
         return;
       }
 
@@ -125,7 +125,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       w = me.widget,
       data = [],
       //displayedData = o.all? w.getData() : w.getDisplayedData();
-      displayedData = o.all? w.getDisplayedData(true, o.ingoreRender, o.rowIds) : w.getDisplayedData(null, o.ingoreRender, o.rowIds);
+      displayedData = o.all? w.getDisplayedData(true, o.ignoreRender, o.rowIds, true) : w.getDisplayedData(null, o.ingoreRender, o.rowIds, true);
 
     Fancy.each(displayedData, function(rowData){
       var _rowData = [];
@@ -234,11 +234,24 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       str = '',
       o = o || {},
       separator = o.separator || me.csvSeparator,
-      header = o.header || me.csvHeader;
+      header = o.header || me.csvHeader,
+      indexes;
+
+    if(o && o.indexes){
+      indexes = {};
+
+      Fancy.each(o.indexes, function (index) {
+        indexes[index] = true;
+      });
+    }
 
     if(header){
       var fn = function(column){
-        if(column.hidden){
+        if(indexes && indexes[column.index] !== true){
+          return;
+        }
+
+        if(!me.isColumnExportable(column)){
           return;
         }
 
@@ -296,5 +309,30 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       downloadLink.click();
       document.body.removeChild(downloadLink);
     }
+  },
+  /*
+   * @param {Object} column
+   * @return {Boolean}
+   */
+  isColumnExportable: function (column) {
+    if(/spark/.test(column.type)){
+      return false;
+    }
+
+    switch (column.type){
+      case 'select':
+      case 'action':
+      case 'expand':
+      case 'grossloss':
+      case 'hbar':
+      case 'rowdrag':
+        return false;
+    }
+
+    if(column.hidden || column.exportable === false){
+      return false;
+    }
+
+    return true;
   }
 });

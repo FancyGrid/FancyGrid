@@ -13,7 +13,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       caseSensitive = w.filter.caseSensitive,
       filters = me.filters,
       passed = true,
-      wait = false;
+      wait = false,
+      waitPassed = false;
 
     if(me.isTree){
       var child = item.get('child');
@@ -169,6 +170,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             value = String(value).toLocaleLowerCase();
 
             passed = new RegExp(value).test(String(indexValue).toLocaleLowerCase());
+            if(passed){
+              waitPassed = true;
+            }
             wait = true;
             break;
           case '|':
@@ -181,18 +185,17 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             throw new Error('[FancyGrid Error 5]: Unknown filter ' + q);
         }
 
-        if(wait === true){
-          if(passed === true){
-            return true;
-          }
-        }
-        else if(passed === false){
+        if(q !== '*' && passed === false){
           return false;
         }
       }
     }
 
-    if(wait === true && passed === false){
+    if(wait === true && waitPassed === false){
+      return false;
+    }
+
+    if(wait === true && passed === true && waitPassed === false){
       return false;
     }
 

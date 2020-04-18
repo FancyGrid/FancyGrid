@@ -75,6 +75,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.id = config.id;
       }
       me.initId();
+      me.initColumnsIdSeedByIndex();
       config = me.prepareConfig(config, me);
       Fancy.applyConfig(me, config);
 
@@ -717,6 +718,27 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
       me.rightBody.updateColumnsVisibility();
     }
+  },
+  initColumnsIdSeedByIndex: function () {
+    var me = this;
+
+    me.columnsIdsSeed = {};
+  },
+  getColumnId: function (index) {
+    var me = this;
+
+    if(me.columnsIdsSeed[index] === undefined){
+      me.columnsIdsSeed[index] = 0;
+    }
+    else{
+      me.columnsIdsSeed[index]++;
+    }
+
+    if(!me.columnsIdsSeed[index]){
+      return index;
+    }
+
+    return index + '-' + me.columnsIdsSeed[index];
   }
 });
 

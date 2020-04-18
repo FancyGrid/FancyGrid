@@ -453,6 +453,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         $selected++;
       }
 
+      if(column.id === undefined){
+        if(column.index){
+          column.id = this.getColumnId(column.index);
+        }
+        else{
+          column.id = Fancy.id(null, 'col-id-');
+        }
+      }
+
       switch(column.type){
         case 'select':
           this.checkboxRowSelection = true;
@@ -1456,6 +1465,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(isFilterable){
       config._plugins.push(filterConfig);
+      config.filterable = true;
     }
 
     return config;

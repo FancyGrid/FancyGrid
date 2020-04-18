@@ -14,6 +14,11 @@
     border-right: 1px #C8C1A5 !important;
   }
 
+  .fancy-tool-button {
+    padding-top: 10px;
+    color: #8E8E8E;
+  }
+
   .fancy-loadmask-image {
     display: none;
   }
@@ -206,8 +211,22 @@
     border-left-width: 0;
   }
 
-    .fancy-panel-sub-tbar {
+  .fancy-panel-sub-tbar {
     background-color: #f5f7f7;
+  }
+
+  .fancy-bar-right-scroller {
+    min-height: 33px !important;
+    .fancy-button-image {
+      margin-top: 7px !important;
+    }
+  }
+
+  .fancy-bar-left-scroller {
+    min-height: 33px !important;
+    .fancy-button-image {
+      margin-top: 7px !important;
+    }
   }
 
   .fancy-toolbar-tab.fancy-toolbar-tab-active {
@@ -355,11 +374,14 @@
   }
 
   .fancy-field-spin .fancy-field-spin-up {
-    background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M136.5%20185.1l116%20117.8c4.7%204.7%204.7%2012.3%200%2017l-7.1%207.1c-4.7%204.7-12.3%204.7-17%200L128%20224.7%2027.6%20326.9c-4.7%204.7-12.3%204.7-17%200l-7.1-7.1c-4.7-4.7-4.7-12.3%200-17l116-117.8c4.7-4.6%2012.3-4.6%2017%20.1z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2226%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M136.5%20185.1l116%20117.8c4.7%204.7%204.7%2012.3%200%2017l-7.1%207.1c-4.7%204.7-12.3%204.7-17%200L128%20224.7%2027.6%20326.9c-4.7%204.7-12.3%204.7-17%200l-7.1-7.1c-4.7-4.7-4.7-12.3%200-17l116-117.8c4.7-4.6%2012.3-4.6%2017%20.1z%22%2F%3E%3C%2Fsvg%3E');
+    background-position: -2px -6px;
   }
 
   .fancy-field-spin .fancy-field-spin-down {
-    background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2230%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M119.5%20326.9L3.5%20209.1c-4.7-4.7-4.7-12.3%200-17l7.1-7.1c4.7-4.7%2012.3-4.7%2017%200L128%20287.3l100.4-102.2c4.7-4.7%2012.3-4.7%2017%200l7.1%207.1c4.7%204.7%204.7%2012.3%200%2017L136.5%20327c-4.7%204.6-12.3%204.6-17-.1z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2222%22%20height%3D%2226%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M119.5%20326.9L3.5%20209.1c-4.7-4.7-4.7-12.3%200-17l7.1-7.1c4.7-4.7%2012.3-4.7%2017%200L128%20287.3l100.4-102.2c4.7-4.7%2012.3-4.7%2017%200l7.1%207.1c4.7%204.7%204.7%2012.3%200%2017L136.5%20327c-4.7%204.6-12.3%204.6-17-.1z%22%2F%3E%3C%2Fsvg%3E');
+    background-position: 0px -9px;
+    height: 12px;
   }
 
   .fancy-panel-resize-corner {
@@ -372,11 +394,13 @@
   }
 
   .fancy-grid-column-order .fancy-grid-cell {
-    background: #ececec url(images/gray/a_bg.png) 0 -1px repeat-x;
+    background: #f5f7f7;
+    border-right-color: #ddd !important;
   }
 
   .fancy-grid-column-order .fancy-grid-cell.fancy-grid-cell-selected {
-    background: #ececec url(images/gray/a_bg.png) 0 -1px repeat-x;
+    background: #f5f7f7;
+    border-right-color: #ddd !important;
   }
 
   .fancy-checkbox-expander .fancy-field-checkbox-input {
@@ -813,6 +837,10 @@
 }
 
 .fancy-theme-extra-gray.fancy-combo-result-list {
+  li {
+    padding: 4px 0 3px 8px;
+  }
+
   .fancy-field-checkbox-input {
     background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20rx%3D%222%22%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%2214%22%20height%3D%2214%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20rx%3D%222%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
     &:hover {

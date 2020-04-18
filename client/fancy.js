@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.93',
+  version: '1.7.94',
   site: 'fancygrid.com',
   COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
 };
@@ -816,26 +816,24 @@ Fancy.isTouch = (document.ontouchstart !== undefined);
 
 Fancy.i18n = {};
 
-Fancy.currencies = {
-  map: { 
-    EUR: '€',
-    USD: '$',
-    GBP: '£',
-    RUB: '₽',
-    CZK: 'Kč',
-    AUD: '$',
-    JPY: '¥',
-    PLN: 'zł',
-    TRY: '₺',
-    DKK: 'kr',
-    KRW: '₩',
-    BRL: 'R$',
-    CNY: '¥',
-    SEK: 'kr',
-    CAD: '$',
-    NOK: 'kr',
-    IDR: 'Rp'
-  }
+Fancy.currency = {
+  EUR: '€',
+  USD: '$',
+  GBP: '£',
+  RUB: '₽',
+  CZK: 'Kč',
+  AUD: '$',
+  JPY: '¥',
+  PLN: 'zł',
+  TRY: '₺',
+  DKK: 'kr',
+  KRW: '₩',
+  BRL: 'R$',
+  CNY: '¥',
+  SEK: 'kr',
+  CAD: '$',
+  NOK: 'kr',
+  IDR: 'Rp'
 };
 
 })();
@@ -1435,7 +1433,7 @@ Fancy.Number = {
   /**
    * @param {Number} value
    * @param {Number|String} [sep]
-   * @param {Number} [presition]
+   * @param {Number} [precision]
    * @return {String}
    */
   format: function (value, sep, precision) {
@@ -3090,7 +3088,6 @@ Fancy.define('Fancy.Store', {
     'Fancy.store.mixin.Edit',
     'Fancy.store.mixin.Grouping',
     'Fancy.store.mixin.Filter',
-    'Fancy.store.mixin.Search',
     'Fancy.store.mixin.Dirty',
     'Fancy.store.mixin.Tree'
   ],
@@ -3712,8 +3709,7 @@ Fancy.define('Fancy.Store', {
       dataViewMap = {},
       i = 0,
       iL = me.data.length,
-      isFiltered = !!me.filters,
-      isSearched = !!me.searches,
+      isFiltered = me.isFiltered(),
       data = me.data;
 
     if(isFiltered) {
@@ -3733,12 +3729,6 @@ Fancy.define('Fancy.Store', {
 
         iL = data.length;
       }
-    }
-
-    if(isSearched) {
-      me.searchData();
-      data = me.searchedData;
-      iL = data.length;
     }
 
     me.dataViewIndexes = {};
@@ -4081,6 +4071,20 @@ Fancy.define('Fancy.Store', {
     if(!presented){
       me.fields.push(index);
     }
+  },
+  /*
+   * @return {Boolean}
+   */
+  isFiltered: function () {
+    var me = this,
+      filters = me.filters || {},
+      filtered = false;
+
+    for(var p in filters){
+      filtered = true;
+    }
+
+    return filtered;
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -8544,15 +8548,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     onPrevScrollClick: function () {
-      this.scrolled += this.tabScrollStep;
-      this.applyScrollChanges();
+      var me = this;
+
+      me.scrolled += me.tabScrollStep;
+      me.applyScrollChanges();
     },
     /*
      *
      */
     onNextScrollClick: function () {
-      this.scrolled -= this.tabScrollStep;
-      this.applyScrollChanges();
+      var me = this;
+
+      me.scrolled -= me.tabScrollStep;
+      me.applyScrollChanges();
     },
     /*
      *
@@ -8563,15 +8571,29 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
         scrollPath = itemsWidth - barWidth;
 
+      if(me.scrolled === 0){
+        me.leftScroller.disable();
+      }
+      else if(me.scrolled < 0){
+        me.leftScroller.enable();
+      }
+
+      if(itemsWidth > barWidth && me.scrolled === 0){
+        me.rightScroller.enable();
+      }
+
+      if(barWidth + Math.abs(me.scrolled) < itemsWidth){
+        me.rightScroller.enable();
+      }
+
       if (itemsWidth < barWidth) {
         me.scrolled = 0;
 
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
 
-        me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
-        //me.containerEl.css('margin-left', '0px');
-
+        //me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
+        me.containerEl.css({'margin-left': '0px'});
         return;
       }
       else if (me.scrolled > 0) {
@@ -8589,7 +8611,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.rightScroller.el.show();
 
       //me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
-      me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
+      //me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
+      me.containerEl.css({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'});
     },
     /*
      *
@@ -13968,7 +13991,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    */
   insert: function(index, o, fire){
     var me = this,
-      s = me.store;
+      s = me.store,
+      i;
 
     if(!me.store){
       setTimeout(function(){
@@ -13978,7 +14002,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(Fancy.isArray(o)){
-      var i = o.length - 1;
+      i = o.length - 1;
 
       for(;i !== -1;i--){
         me.insert(o[i], index, fire);
@@ -13990,7 +14014,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return;
     }
     else if(Fancy.isArray(index)){
-      var i = index.length - 1;
+      i = index.length - 1;
 
       for(;i !== -1;i--){
         me.insert(index[i], 0, fire);
@@ -14215,16 +14239,21 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @return {Object}
    */
   getCell: function (o) {
-    var me = this;
+    var me = this,
+      side,
+      body,
+      cell;
+
     //o.id
     //o.index
     if(o.id !== undefined && o.index !== undefined){
       var _o = me.getColumnOrderByKey(o.index),
         columnIndex = _o.order,
-        side = _o.side,
-        rowIndex = me.getRowById(o.id),
-        body = me.getBody(side),
-        cell = body.getCell(rowIndex, columnIndex);
+        rowIndex = me.getRowById(o.id);
+
+      side = _o.side;
+      body = me.getBody(side);
+      cell = body.getCell(rowIndex, columnIndex);
 
       if(!cell.dom){
         return;
@@ -14233,12 +14262,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return cell;
     }
 
-    //o.rowIndex
-    //o.columnIndex
     if(o.rowIndex !== undefined && o.columnIndex !== undefined){
-      var side = o.side || 'center',
-        body = me.getBody(side),
-        cell = body.getCell(o.rowIndex, o.columnIndex);
+      side = o.side || 'center';
+      body = me.getBody(side);
+      cell = body.getCell(o.rowIndex, o.columnIndex);
 
       if(!cell.dom){
         cell = me.getBody('center').getCell(o.rowIndex, o.columnIndex);
@@ -14337,6 +14364,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.id = config.id;
       }
       me.initId();
+      me.initColumnsIdSeedByIndex();
       config = me.prepareConfig(config, me);
       Fancy.applyConfig(me, config);
 
@@ -14979,6 +15007,27 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
       me.rightBody.updateColumnsVisibility();
     }
+  },
+  initColumnsIdSeedByIndex: function () {
+    var me = this;
+
+    me.columnsIdsSeed = {};
+  },
+  getColumnId: function (index) {
+    var me = this;
+
+    if(me.columnsIdsSeed[index] === undefined){
+      me.columnsIdsSeed[index] = 0;
+    }
+    else{
+      me.columnsIdsSeed[index]++;
+    }
+
+    if(!me.columnsIdsSeed[index]){
+      return index;
+    }
+
+    return index + '-' + me.columnsIdsSeed[index];
   }
 });
 
