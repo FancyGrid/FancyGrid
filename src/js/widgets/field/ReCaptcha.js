@@ -41,9 +41,9 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
       me.css(me.style);
     }
 
-    var s = document.createElement("script");
+    var s = document.createElement('script');
 
-    s.type = "text/javascript";
+    s.type = 'text/javascript';
     s.src = 'https://www.google.com/recaptcha/api.js';
 
     Fancy.get(document.head).append(s);

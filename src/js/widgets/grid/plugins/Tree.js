@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.Tree
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -11,20 +11,20 @@
    */
   var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
 
-  var getChildNumber = function (items, num) {
+  var getChildNumber = function(items, num){
     num = num || 0;
     var me = this,
       w = me.widget;
 
-    Fancy.each(items, function (item) {
+    Fancy.each(items, function(item){
       num++;
       var itemData = item.data?item.data:item;
 
       if(w.store.filteredData){
         //Getting item data from grid
-        if(itemData.id) {
+        if(itemData.id){
           if(w.store.map[itemData.id]){
-            itemData = w.store.map[itemData.id].data
+            itemData = w.store.map[itemData.id].data;
           }
         }
       }
@@ -55,13 +55,13 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this,
         w = me.widget;
 
@@ -76,22 +76,22 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
-      w.once('init', function () {
+      w.once('init', function(){
         w.on('rowdblclick', me.onRowDBLClick, me);
         w.on('cellclick', me.onTreeExpanderClick, me);
         w.on('beforesort', me.onBeforeSort, me);
       });
     },
-    onRowDBLClick: function (grid, o) {
+    onRowDBLClick: function(grid, o){
       var me = this,
         w = me.widget,
         item = o.item;
 
-      if (item.get('leaf')) {
+      if (item.get('leaf')){
         return;
       }
 
@@ -101,14 +101,14 @@
 
       var expanded = item.get('expanded');
 
-      if (expanded) {
+      if (expanded){
         me.collapseRow(o.item);
       }
       else {
         me.expandRow(o.item);
       }
     },
-    onTreeExpanderClick: function (grid, o) {
+    onTreeExpanderClick: function(grid, o){
       var me = this,
         item = o.item,
         target = Fancy.get(o.e.target);
@@ -117,20 +117,20 @@
         return;
       }
 
-      if (item.get('leaf')) {
+      if (item.get('leaf')){
         return;
       }
 
       var expanded = item.get('expanded');
 
-      if (expanded) {
+      if (expanded){
         me.collapseRow(o.item);
       }
       else {
         me.expandRow(o.item);
       }
     },
-    collapseRow: function (item) {
+    collapseRow: function(item){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -205,7 +205,7 @@
       }
       else{
         w.store.treeCollapsing = true;
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           w.removeAt(rowIndex + 1);
         }
         delete w.store.treeCollapsing;
@@ -219,7 +219,7 @@
 
       w.fire('treecollapse');
     },
-    expandRow: function (item) {
+    expandRow: function(item){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -241,14 +241,14 @@
           parentChild = parent.get('child');
 
           //Bad for performance
-          Fancy.each(parentChild, function (item) {
+          Fancy.each(parentChild, function(item){
             var expanded = item.get('expanded');
 
             if(me.expandMap[item.id] !== undefined){
               expanded = me.expandMap[item.id];
             }
 
-            if(expanded === true) {
+            if(expanded === true){
               me.collapseRow(w.getById(item.id));
             }
           });
@@ -256,14 +256,14 @@
         else{
           parentChild = w.findItem('parentId', '');
 
-          Fancy.each(parentChild, function (child) {
+          Fancy.each(parentChild, function(child){
             var expanded = child.get('expanded');
 
             if(me.expandMap[child.id] !== undefined){
               expanded = me.expandMap[child.id];
             }
 
-            if(expanded === true) {
+            if(expanded === true){
               me.collapseRow(child);
             }
           });
@@ -281,7 +281,7 @@
       if(s.filteredData){
         //Bad about performance
         var itemId = item.get('id');
-        Fancy.each(s.data, function (item, i) {
+        Fancy.each(s.data, function(item, i){
           if(item.id === itemId){
             rowIndex = i;
             return true;
@@ -289,10 +289,10 @@
         });
       }
 
-      var expandChilds = function (child, rowIndex, deep, _id) {
+      var expandChilds = function(child, rowIndex, deep, _id){
         _id = _id || id;
 
-        Fancy.each(child, function (item, i) {
+        Fancy.each(child, function(item){
           var itemData = item.data;
           if(!item.data){
             childsModelsRequired = true;
@@ -333,7 +333,7 @@
 
       if(childsModelsRequired){
 
-        Fancy.each(item.data.child, function (_child, i) {
+        Fancy.each(item.data.child, function(_child, i){
           var childItem = s.getById(_child.id);
 
           //This case could occur for filtered data
@@ -369,14 +369,14 @@
 
       w.fire('treeexpand');
     },
-    onBeforeSort: function (grid, options) {
+    onBeforeSort: function(grid, options){
       var me = this;
 
       if(options.action === 'drop'){
         me.onDropSort();
       }
     },
-    onDropSort: function () {
+    onDropSort: function(){
       var me = this,
         w = me.widget,
         s = w.store;

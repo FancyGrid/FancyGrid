@@ -3,7 +3,7 @@
  * @extends Fancy.Plugin
  */
 Fancy.modules['filter'] = true;
-(function() {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -26,24 +26,24 @@ Fancy.modules['filter'] = true;
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
-      w.once('render', function () {
+      w.once('render', function(){
         me.render();
       });
 
@@ -58,62 +58,62 @@ Fancy.modules['filter'] = true;
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         w = me.widget;
 
-      if(w.header) {
+      if(w.header){
         me._renderSideFields(w.header, w.columns);
         me._renderSideFields(w.leftHeader, w.leftColumns);
         me._renderSideFields(w.rightHeader, w.rightColumns);
       }
     },
-    _renderSideFields: function (header, columns) {
+    _renderSideFields: function(header, columns){
       var me = this,
         i = 0,
         iL = columns.length,
         cell,
         column;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
         cell = header.getCell(i);
-        if (column.filter && column.filter.header) {
+        if (column.filter && column.filter.header){
           me.renderFilter(column.type, column, cell);
-          if (me.groupHeader && !column.grouping) {
+          if (me.groupHeader && !column.grouping){
             cell.addCls(GRID_HEADER_CELL_TRIPLE_CLS);
           }
 
           cell.addCls(GRID_HEADER_CELL_FILTER_CLS);
         }
-        else if (me.header) {
-          if (me.groupHeader && !column.grouping) {
+        else if (me.header){
+          if (me.groupHeader && !column.grouping){
             cell.addCls(GRID_HEADER_CELL_TRIPLE_CLS);
           }
           else {
-            if (column.grouping && me.groupHeader) {
+            if (column.grouping && me.groupHeader){
               cell.addCls(GRID_HEADER_CELL_DOUBLE_CLS);
             }
-            else if (!column.grouping) {
+            else if (!column.grouping){
               cell.addCls(GRID_HEADER_CELL_DOUBLE_CLS);
             }
           }
         }
       }
     },
-    _clearColumnsFields: function (columns, header, index, sign) {
+    _clearColumnsFields: function(columns, header, index, sign){
       var i = 0,
         iL = columns.length,
         column;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
-        if (column.filter && column.filter.header) {
-          if (index && column.index !== index) {
+        if (column.filter && column.filter.header){
+          if (index && column.index !== index){
             continue;
           }
 
-          switch (column.type) {
+          switch (column.type){
             case 'date':
               var els = header.getCell(i).select('.' + FIELD_CLS),
                 fieldFrom = F.getWidget(els.item(0).attr('id')),
@@ -126,10 +126,10 @@ Fancy.modules['filter'] = true;
               var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
                 field = F.getWidget(id);
 
-              if (sign) {
+              if (sign){
                 var splitted = field.get().split(',');
 
-                if (splitted.length < 2 && !sign) {
+                if (splitted.length < 2 && !sign){
                   field.clear();
                 }
                 else {
@@ -137,10 +137,10 @@ Fancy.modules['filter'] = true;
                     jL = splitted.length,
                     value = '';
 
-                  for (; j < jL; j++) {
+                  for (; j < jL; j++){
                     var splitItem = splitted[j];
 
-                    if (!new RegExp(sign).test(splitItem)) {
+                    if (!new RegExp(sign).test(splitItem)){
                       value += splitItem + ',';
                     }
                   }
@@ -159,7 +159,7 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    clearColumnsFields: function (index, sign) {
+    clearColumnsFields: function(index, sign){
       var me = this,
         w = me.widget;
 
@@ -167,15 +167,15 @@ Fancy.modules['filter'] = true;
       me._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
       me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
     },
-    _addValuesInColumnFields: function (columns, header, index, value, sign) {
+    _addValuesInColumnFields: function(columns, header, index, value, sign){
       var i = 0,
         iL = columns.length,
         column;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
-        if (column.index === index && column.filter && column.filter.header) {
-          switch (column.type) {
+        if (column.index === index && column.filter && column.filter.header){
+          switch (column.type){
             case 'date':
               var els = header.getCell(i).select('.' + FIELD_CLS),
                 fieldFrom = F.getWidget(els.item(0).attr('id')),
@@ -204,7 +204,7 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    addValuesInColumnFields: function (index, value, sign) {
+    addValuesInColumnFields: function(index, value, sign){
       var me = this,
         w = me.widget;
 
@@ -225,7 +225,7 @@ Fancy.modules['filter'] = true;
      * @param {Object} column
      * @param {Fancy.Element} dom
      */
-    renderFilter: function (type, column, dom) {
+    renderFilter: function(type, column, dom){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -243,7 +243,7 @@ Fancy.modules['filter'] = true;
       if(columnFilter){
         for(var p in columnFilter){
           var _value = columnFilter[p];
-          switch(p) {
+          switch(p){
             case '':
               value += _value;
               break;
@@ -304,7 +304,7 @@ Fancy.modules['filter'] = true;
         field = new F[widgetName](fieldConfig);
       }
       else {
-        switch (type) {
+        switch (type){
           case 'date':
             var events = [];
 
@@ -315,8 +315,8 @@ Fancy.modules['filter'] = true;
 
             var format;
 
-            if (F.isString(column.format)) {
-              switch (column.format) {
+            if (F.isString(column.format)){
+              switch (column.format){
                 case 'date':
                   format = column.format;
                   break;
@@ -344,7 +344,7 @@ Fancy.modules['filter'] = true;
               scope: me
             }];
 
-            if (me.autoEnterDelay !== false) {
+            if (me.autoEnterDelay !== false){
               events.push({
                 key: me.onKey,
                 scope: me
@@ -372,7 +372,7 @@ Fancy.modules['filter'] = true;
               scope: me
             }];
 
-            if (me.autoEnterDelay !== false) {
+            if (me.autoEnterDelay !== false){
               events.push({
                 key: me.onKey,
                 scope: me
@@ -396,12 +396,12 @@ Fancy.modules['filter'] = true;
               valueKey = 'text',
               data;
 
-            if (column.displayKey !== undefined) {
+            if (column.displayKey !== undefined){
               displayKey = column.displayKey;
               valueKey = displayKey;
             }
 
-            if (F.isObject(column.data) || F.isObject(column.data[0])) {
+            if (F.isObject(column.data) || F.isObject(column.data[0])){
               data = column.data;
             }
             else {
@@ -410,7 +410,7 @@ Fancy.modules['filter'] = true;
 
             var selectAllText;
 
-            if (column.filter && column.filter.selectAll) {
+            if (column.filter && column.filter.selectAll){
               selectAllText = column.filter.selectAll;
             }
 
@@ -438,7 +438,7 @@ Fancy.modules['filter'] = true;
                 change: me.onEnter,
                 scope: me
               }, {
-                empty: function () {
+                empty: function(){
                   this.set(-1);
                 }
               }],
@@ -447,7 +447,7 @@ Fancy.modules['filter'] = true;
 
             break;
           case 'select':
-            if (w.selection && /row/.test(w.selection.selModel)) {
+            if (w.selection && /row/.test(w.selection.selModel)){
               field = new F.Combo({
                 renderTo: dom.dom,
                 label: false,
@@ -513,7 +513,7 @@ Fancy.modules['filter'] = true;
               scope: me
             }];
 
-            if (me.autoEnterDelay !== false) {
+            if (me.autoEnterDelay !== false){
               events.push({
                 key: me.onKey,
                 scope: me
@@ -536,17 +536,17 @@ Fancy.modules['filter'] = true;
       field.column = column;
 
       /*
-      field.el.on('click', function (e) {
+      field.el.on('click', function(e){
         e.stopPropagation();
       });
       */
 
-      if (type !== 'date') {
+      if (type !== 'date'){
         field.el.css('padding-left', '4px');
         field.el.css('padding-top', '0px');
       }
 
-      switch (type) {
+      switch (type){
         case 'checkbox':
         case 'combo':
         case 'date':
@@ -564,7 +564,7 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {Object} options
      */
-    onEnter: function (field, value, options) {
+    onEnter: function(field, value, options){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -578,18 +578,18 @@ Fancy.modules['filter'] = true;
 
       options = options || {};
 
-      if (me.intervalAutoEnter) {
+      if (me.intervalAutoEnter){
         clearInterval(me.intervalAutoEnter);
         me.intervalAutoEnter = false;
       }
       delete me.intervalAutoEnter;
 
-      if (value.length === 0) {
+      if (value.length === 0){
         s.filters[field.filterIndex] = {};
         me.clearFilter(field.filterIndex, undefined, false);
         me.updateStoreFilters();
 
-        if (w.grouping) {
+        if (w.grouping){
           w.grouping.reGroup();
         }
 
@@ -602,7 +602,7 @@ Fancy.modules['filter'] = true;
 
       s.filters[filterIndex] = {};
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var filter = filters[i];
 
         if(filter.operator === ''){
@@ -623,17 +623,17 @@ Fancy.modules['filter'] = true;
           s.filters[filterIndex][filter.operator] = filter.value;
         }
 
-        if (filter.operator !== '|') {
+        if (filter.operator !== '|'){
           //F.apply(s.filters[filterIndex], options);
         }
 
-        if (field.column.type === 'date') {
+        if (field.column.type === 'date'){
           F.apply(s.filters[filterIndex], options);
         }
       }
 
-      if (s.remoteFilter) {
-        s.once('serversuccess', function () {
+      if (s.remoteFilter){
+        s.once('serversuccess', function(){
           w.fire('filter', s.filters);
         });
         s.serverFilter();
@@ -642,9 +642,9 @@ Fancy.modules['filter'] = true;
         me.updateStoreFilters();
       }
 
-      if (w.grouping) {
-        if (s.remoteSort) {
-          s.once('load', function () {
+      if (w.grouping){
+        if (s.remoteSort){
+          s.once('load', function(){
             w.grouping.reGroup();
             w.fire('filter', s.filters);
           });
@@ -661,13 +661,13 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {Object} options
      */
-    onEnterSelect: function (field, value, options) {
+    onEnterSelect: function(field, value){
       var me = this,
         w = me.widget,
         selected = w.getSelection(),
         ids = [];
 
-      Fancy.each(selected, function (item) {
+      Fancy.each(selected, function(item){
         ids.push(item.id);
       });
 
@@ -692,7 +692,7 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {String} type
      */
-    processFilterValue: function (value, type) {
+    processFilterValue: function(value, type){
       var signs = {
           '<': true,
           '>': true,
@@ -709,10 +709,10 @@ Fancy.modules['filter'] = true;
         j,
         jL;
 
-      if (F.isArray(value)) {
+      if (F.isArray(value)){
         _value = {};
 
-        F.Array.each(value, function (v, i) {
+        F.Array.each(value, function(v){
           _value[String(v).toLocaleLowerCase()] = true;
         });
 
@@ -734,24 +734,24 @@ Fancy.modules['filter'] = true;
       j = 0;
       jL = splitted.length;
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         i = 0;
         operator = '';
         _value = splitted[j];
 
-        for (; i < iL; i++) {
-          if (signs[_value[i]]) {
+        for (; i < iL; i++){
+          if (signs[_value[i]]){
             operator += _value[i];
           }
         }
 
         _value = _value.replace(new RegExp('^' + operator), '');
 
-        if (_value.length < 1) {
+        if (_value.length < 1){
           continue;
         }
 
-        switch (type) {
+        switch (type){
           case 'number':
             _value = Number(_value);
             break;
@@ -772,7 +772,7 @@ Fancy.modules['filter'] = true;
     /*
      * @param [update] Boolean
      */
-    updateStoreFilters: function (update) {
+    updateStoreFilters: function(update){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -809,7 +809,7 @@ Fancy.modules['filter'] = true;
 
       delete w.filtering;
     },
-    forceUpdateStoreFilters: function () {
+    forceUpdateStoreFilters: function(){
       var me = this,
         w = me.widget,
         s = w.store;
@@ -824,7 +824,7 @@ Fancy.modules['filter'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onColumnResize: function (grid, o) {
+    onColumnResize: function(grid, o){
       var cell = F.get(o.cell),
         width = o.width,
         fieldEl = cell.select(':not(.' + FIELD_CHECKBOX_CLS + ').' + FIELD_CLS),
@@ -834,8 +834,8 @@ Fancy.modules['filter'] = true;
         //fieldEl = fieldEl.item(1);
       }
 
-      if (fieldEl.length === 0) {}
-      else if (fieldEl.length === 2) {
+      if (fieldEl.length === 0){}
+      else if (fieldEl.length === 2){
         field = F.getWidget(fieldEl.item(0).dom.id);
 
         field.setWidth((width - 8) / 2);
@@ -847,7 +847,7 @@ Fancy.modules['filter'] = true;
       else {
         field = F.getWidget(fieldEl.dom.id);
 
-        if (field.wtype === 'field.combo') {
+        if (field.wtype === 'field.combo'){
           field.size({
             width: width - 8
           });
@@ -866,24 +866,24 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {Object} e
      */
-    onKey: function (field, value, e) {
+    onKey: function(field, value, e){
       var me = this;
 
-      if (e.keyCode === F.key.ENTER) {
+      if (e.keyCode === F.key.ENTER){
         return;
       }
 
       me.autoEnterTime = +new Date();
 
-      if (!me.intervalAutoEnter) {
-        me.intervalAutoEnter = setInterval(function () {
+      if (!me.intervalAutoEnter){
+        me.intervalAutoEnter = setInterval(function(){
           var now = new Date();
 
-          if (!me.intervalAutoEnter) {
+          if (!me.intervalAutoEnter){
             return;
           }
 
-          if (now - me.autoEnterTime > me.autoEnterDelay) {
+          if (now - me.autoEnterTime > me.autoEnterDelay){
             clearInterval(me.intervalAutoEnter);
             delete me.intervalAutoEnter;
             value = field.getValue();
@@ -897,7 +897,7 @@ Fancy.modules['filter'] = true;
      * @param {Object} field
      * @param {*} date
      */
-    onDateChange: function (field, date) {
+    onDateChange: function(field){
       var me = this,
         w = me.widget,
         format = field.format,
@@ -911,16 +911,16 @@ Fancy.modules['filter'] = true;
         value2,
         isRemote = s.remoteFilter;
 
-      if (isValid1) {
+      if (isValid1){
         dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate());
       }
 
-      if (isValid2) {
+      if (isValid2){
         dateTo = new Date(dateTo.getFullYear(), dateTo.getMonth(), dateTo.getDate());
       }
 
-      if (isValid1 && isValid2) {
-        if (isRemote !== true) {
+      if (isValid1 && isValid2){
+        if (isRemote !== true){
           value1 = Number(dateFrom);
           value2 = Number(dateTo);
         }
@@ -931,8 +931,8 @@ Fancy.modules['filter'] = true;
 
         value = '>=' + value1 + ',<=' + value2;
       }
-      else if (isValid1) {
-        if (isRemote !== true) {
+      else if (isValid1){
+        if (isRemote !== true){
           value = '>=' + Number(dateFrom);
         }
         else {
@@ -941,8 +941,8 @@ Fancy.modules['filter'] = true;
 
         me.clearFilter(field.filterIndex, '<=', false);
       }
-      else if (isValid2) {
-        if (isRemote !== true) {
+      else if (isValid2){
+        if (isRemote !== true){
           value = '<=' + Number(dateTo);
         }
         else {
@@ -955,7 +955,7 @@ Fancy.modules['filter'] = true;
         me.clearFilter(field.filterIndex);
       }
 
-      if (value) {
+      if (value){
         me.onEnter(field, value, {
           type: 'date',
           format: field.format
@@ -967,41 +967,41 @@ Fancy.modules['filter'] = true;
      * @param {String} operator
      * @param {Boolean} update
      */
-    clearFilter: function (index, operator, update) {
+    clearFilter: function(index, operator, update){
       var me = this,
         w = me.widget,
         s = w.store;
 
-      if (operator === undefined) {
+      if (operator === undefined){
         delete s.filters[index];
       }
       else {
-        if (s.filters[index]) {
+        if (s.filters[index]){
           delete s.filters[index][operator];
         }
       }
 
-      if (update !== false) {
+      if (update !== false){
         me.updateStoreFilters();
       }
     },
-    onFilter: function () {
+    onFilter: function(){
       this.widget.scroll(0);
     },
     /*
      * @param {Array} data
      * @return {Array}
      */
-    configComboData: function (data) {
+    configComboData: function(data){
       var i = 0,
         iL = data.length,
         _data = [];
 
-      if (F.isObject(data)) {
+      if (F.isObject(data)){
         return data;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data.push({
           value: i,
           text: data[i]
@@ -1010,25 +1010,25 @@ Fancy.modules['filter'] = true;
 
       return _data;
     },
-    destroyFields: function () {
+    destroyFields: function(){
       var me = this,
         w = me.widget;
 
-      F.each(w.columns, function (column) {
+      F.each(w.columns, function(column){
         if(column.filterField){
           column.filterField.destroy();
           delete column.filterField;
         }
       });
 
-      F.each(w.leftColumns, function (column) {
+      F.each(w.leftColumns, function(column){
         if(column.filterField){
           column.filterField.destroy();
           delete column.filterField;
         }
       });
 
-      F.each(w.rightColumns, function (column) {
+      F.each(w.rightColumns, function(column){
         if(column.filterField){
           column.filterField.destroy();
           delete column.filterField;
@@ -1045,25 +1045,25 @@ Fancy.modules['filter'] = true;
     /*
      *
      */
-    onLockColumn: function () {
+    onLockColumn: function(){
       this.render();
     },
     /*
      *
      */
-    onUnLockColumn: function () {
+    onUnLockColumn: function(){
       this.render();
     },
     /*
      *
      */
-    onRightLockColumn: function () {
+    onRightLockColumn: function(){
       this.render();
     },
     /*
      *
      */
-    onColumnDrag: function () {
+    onColumnDrag: function(){
       var me = this;
 
       me.updateFields();
@@ -1072,7 +1072,7 @@ Fancy.modules['filter'] = true;
      *
      */
     // Requires to improve. Should avoid destroying fields.
-    updateFields: function () {
+    updateFields: function(){
       var me = this;
 
       me.destroyFields();

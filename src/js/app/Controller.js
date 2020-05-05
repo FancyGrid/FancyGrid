@@ -1,6 +1,4 @@
-Fancy.controllers = {
-
-};
+Fancy.controllers = {};
 
 /*
  * @param {String} name

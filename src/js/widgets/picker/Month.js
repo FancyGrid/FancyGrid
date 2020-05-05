@@ -2,7 +2,7 @@
  * @class Fancy.MonthPicker
  * @extends Fancy.Grid
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -49,7 +49,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       var me = this;
 
       F.apply(me, config);
@@ -64,7 +64,7 @@
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -78,16 +78,16 @@
     /*
      *
      */
-    initData: function () {
+    initData: function(){
       this.data = this.generateData();
     },
     /*
      *
      */
-    initDate: function () {
+    initDate: function(){
       var me = this;
 
-      if (me.date === undefined) {
+      if (me.date === undefined){
         me.date = new Date();
       }
 
@@ -96,10 +96,10 @@
     /*
      *
      */
-    initLang: function () {
+    initLang: function(){
       var me = this;
 
-      if (me.lang) {
+      if (me.lang){
         return;
       }
 
@@ -108,25 +108,25 @@
     /*
      *
      */
-    initColumns: function () {
+    initColumns: function(){
       var me = this;
 
-      var renderMonth = function (o) {
+      var renderMonth = function(o){
         var date = me.date,
           month = date.getMonth();
 
-        if (me.lang.date.months[month].substr(0, 3) === o.value) {
+        if (me.lang.date.months[month].substr(0, 3) === o.value){
           o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
         }
 
         return o;
       };
 
-      var renderYear = function (o) {
+      var renderYear = function(o){
         var date = me.date,
           year = date.getFullYear();
 
-        if (year === Number(o.value)) {
+        if (year === Number(o.value)){
           o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
         }
 
@@ -155,7 +155,7 @@
     /*
      * @return {Object}
      */
-    generateData: function () {
+    generateData: function(){
       var me = this,
         lang = me.lang,
         date = me.showDate,
@@ -169,14 +169,14 @@
       i = 0;
       iL = 12;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         years.push(year - 5 + i);
       }
 
       i = 0;
       iL = 6;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         data[i] = {};
 
         data[i]['month1'] = months[i].substr(0, 3);
@@ -194,14 +194,14 @@
     /*
      *
      */
-    initBars: function () {
+    initBars: function(){
       this.initTBar();
       this.initBBar();
     },
     /*
      *
      */
-    initTBar: function () {
+    initTBar: function(){
       var me = this,
         tbar = [];
 
@@ -224,7 +224,7 @@
     /*
      *
      */
-    initBBar: function () {
+    initBBar: function(){
       var me = this,
         bbar = [],
         lang = me.lang;
@@ -250,7 +250,7 @@
     /*
      *
      */
-    onBackClick: function () {
+    onBackClick: function(){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -272,7 +272,7 @@
     /*
      *
      */
-    onNextClick: function () {
+    onNextClick: function(){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -294,20 +294,20 @@
     /*
      *
      */
-    onClickOk: function () {
+    onClickOk: function(){
       this.fire('okclick');
     },
     /*
      *
      */
-    onClickCancel: function () {
+    onClickCancel: function(){
       this.fire('cancelclick');
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellClick: function (grid, o) {
+    onCellClick: function(grid, o){
       var me = this,
         date = me.date,
         year = date.getFullYear(),
@@ -320,7 +320,7 @@
         cell = F.get(o.cell),
         body;
 
-      if (o.side === 'center') {
+      if (o.side === 'center'){
         body = me.body;
         year = Number(o.value);
       }
@@ -332,7 +332,7 @@
       body.el.select('.' + PICKER_MONTH_CELL_ACTIVE_CLS).removeCls(PICKER_MONTH_CELL_ACTIVE_CLS);
       cell.addCls(PICKER_MONTH_CELL_ACTIVE_CLS);
 
-      if (_date > 28) {
+      if (_date > 28){
         _date = 1;
       }
 
@@ -344,17 +344,17 @@
     /*
      * @param {Object} e
      */
-    onMouseWheel: function (e) {
+    onMouseWheel: function(e){
       var delta = F.getWheelDelta(e.originalEvent || e);
 
-      if (delta < 0) {
+      if (delta < 0){
         this.onBackClick();
       }
       else {
         this.onNextClick();
       }
     },
-    setDate: function (date) {
+    setDate: function(date){
       var me = this;
 
       me.date = date;

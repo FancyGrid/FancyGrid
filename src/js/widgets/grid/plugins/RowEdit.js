@@ -1,7 +1,7 @@
 /*
  * @class Fancy.grid.plugin.RowEdit
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   var E = F.each;
@@ -25,20 +25,20 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -52,7 +52,7 @@
       w.on('beforecolumndrag', me.onBeforeColumnDrag, me);
       w.on('columndrag', me.onColumnDrag, me);
 
-      if (w.grouping) {
+      if (w.grouping){
         w.on('collapse', me.onCollapse, me);
         w.on('expand', me.onExpand, me);
       }
@@ -60,24 +60,24 @@
     /*
      *
      */
-    onCollapse: function () {
+    onCollapse: function(){
       this.hide();
     },
     /*
      *
      */
-    onExpand: function () {
+    onExpand: function(){
       this.hide();
     },
     /*
      * @param {Object} o
      */
-    edit: function (o) {
+    edit: function(o){
       var me = this,
         w = me.widget,
         column = o.column;
 
-      if (column && column.index === '$selected') {
+      if (column && column.index === '$selected'){
         return;
       }
 
@@ -87,7 +87,7 @@
     /*
      * @param {Object} o
      */
-    showEditor: function (o) {
+    showEditor: function(o){
       var me = this,
         w = me.widget;
 
@@ -106,7 +106,7 @@
         }
       }
 
-      if (!me.rendered) {
+      if (!me.rendered){
         me.render();
         me.changePosition(o.rowIndex, false);
         me.setValues(o);
@@ -117,7 +117,7 @@
         me.changePosition(o.rowIndex, !isHidden);
 
         if(!isHidden){
-          setTimeout(function () {
+          setTimeout(function(){
             me.setValues(o);
           }, F.ANIMATE_DURATION);
         }
@@ -131,19 +131,19 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         w = me.widget;
 
-      if (w.leftColumns) {
+      if (w.leftColumns){
         me.leftEl = me.renderTo(w.leftBody.el, w.leftColumns);
       }
 
-      if (w.columns) {
+      if (w.columns){
         me.el = me.renderTo(w.body.el, w.columns);
       }
 
-      if (w.rightColumns) {
+      if (w.rightColumns){
         me.rightEl = me.renderTo(w.rightBody.el, w.rightColumns);
       }
 
@@ -159,7 +159,7 @@
      * @param {String} fromSide
      * @return {Fancy.Element}
      */
-    renderTo: function (renderTo, columns, order, side, fromSide) {
+    renderTo: function(renderTo, columns, order, side, fromSide){
       var me = this,
         w = me.widget,
         container = F.get(document.createElement('div')),
@@ -176,7 +176,7 @@
         renderAfter,
         renderBefore;
 
-      if (!side) {
+      if (!side){
         container.addCls(GRID_ROW_EDIT_CLS);
         el = F.get(renderTo.dom.appendChild(container.dom));
       }
@@ -186,9 +186,9 @@
         i = order;
         iL = order + 1;
 
-        switch (side) {
+        switch (side){
           case 'right':
-            if(fieldEls.length) {
+            if(fieldEls.length){
               renderBefore = fieldEls.item(order);
             }
             break;
@@ -198,7 +198,7 @@
             }
             break;
           case 'center':
-            switch (fromSide) {
+            switch (fromSide){
               case 'left':
                 renderBefore = fieldEls.item(0);
                 break;
@@ -215,7 +215,7 @@
         iL = 1;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
 
         var columnWidth = column.width;
@@ -244,7 +244,7 @@
           }]
         };
 
-        switch (side) {
+        switch (side){
           case 'left':
             if(renderAfter){
               itemConfig.renderAfter = renderAfter;
@@ -262,7 +262,7 @@
             }
             break;
           case 'center':
-            switch (fromSide) {
+            switch (fromSide){
               case 'left':
                 itemConfig.renderBefore = fieldEls.item(0);
                 break;
@@ -277,8 +277,8 @@
 
         var editor;
 
-        if (column.editable === false) {
-          switch (column.type) {
+        if (column.editable === false){
+          switch (column.type){
             case 'string':
             case 'number':
               editor = new F.TextField(itemConfig);
@@ -288,9 +288,9 @@
           }
         }
         else {
-          switch (column.type) {
+          switch (column.type){
             case 'date':
-              if (column.format) {
+              if (column.format){
                 itemConfig.format = column.format;
               }
 
@@ -304,19 +304,19 @@
               break;
             case 'number':
             case 'currency':
-              if (column.spin) {
+              if (column.spin){
                 itemConfig.spin = column.spin;
               }
 
-              if (column.step) {
+              if (column.step){
                 itemConfig.step = column.step;
               }
 
-              if (column.min) {
+              if (column.min){
                 itemConfig.min = column.min;
               }
 
-              if (column.max) {
+              if (column.max){
                 itemConfig.max = column.max;
               }
 
@@ -329,7 +329,7 @@
                 padding: false
               });
 
-              if (column.displayKey) {
+              if (column.displayKey){
                 itemConfig.displayKey = column.displayKey;
                 itemConfig.valueKey = column.displayKey;
               }
@@ -350,7 +350,7 @@
               break;
             case 'checkbox':
               var paddingLeft;
-              switch (column.cellAlign) {
+              switch (column.cellAlign){
                 case 'left':
                   paddingLeft = 7;
                   break;
@@ -378,7 +378,7 @@
               break;
             case 'switcher':
               var paddingLeft;
-              switch (column.cellAlign) {
+              switch (column.cellAlign){
                 case 'left':
                 case undefined:
                   paddingLeft = 7;
@@ -418,7 +418,7 @@
     /*
      *
      */
-    renderButtons: function () {
+    renderButtons: function(){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -454,19 +454,19 @@
     /*
      *
      */
-    setSizes: function () {
+    setSizes: function(){
       var me = this,
         w = me.widget;
 
-      if (w.leftColumns) {
+      if (w.leftColumns){
         me._setSizes(w.leftBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.leftColumns, 'left');
       }
 
-      if (w.columns) {
+      if (w.columns){
         me._setSizes(w.body.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.columns);
       }
 
-      if (w.rightColumns) {
+      if (w.rightColumns){
         me._setSizes(w.rightBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.rightColumns, 'right');
       }
 
@@ -475,12 +475,12 @@
     /*
      *
      */
-    setElSize: function () {
+    setElSize: function(){
       var w = this.widget,
         centerWidth = w.getCenterViewWidth(),
         centerFullWidth = w.getCenterFullWidth();
 
-      if (centerWidth < centerFullWidth) {
+      if (centerWidth < centerFullWidth){
         this.el.css('width', centerFullWidth);
       }
     },
@@ -490,7 +490,7 @@
      * @param {Array} columns
      * @param {String} side
      */
-    _setSizes: function (firstRowCells, columns, side) {
+    _setSizes: function(firstRowCells, columns, side){
       var me = this,
         i = 0,
         iL = columns.length,
@@ -501,17 +501,17 @@
         borderWidth = 1,
         offset = 2;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
         cell = firstRowCells.item(i).dom;
         cellSize = me.getCellSize(cell);
         editor = column.rowEditor;
 
-        if (!editor) {
+        if (!editor){
           continue;
         }
 
-        if ((side === 'left' || side === 'right') && i === iL - 1) {
+        if ((side === 'left' || side === 'right') && i === iL - 1){
           cellSize.width--;
         }
 
@@ -521,7 +521,7 @@
 
         cellSize.height -= 1;
 
-        if (i === iL - 1) {
+        if (i === iL - 1){
           editor.el.css('width', (cellSize.width - 2));
         }
         else {
@@ -543,14 +543,14 @@
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellSize: function (cell) {
+    getCellSize: function(cell){
       var cellEl = F.get(cell),
         width = cellEl.width(),
         height = cellEl.height(),
         coeficient = 2;
 
-      //if (F.nojQuery && w.panelBorderWidth === 2) {
-      if (F.nojQuery) {
+      //if (F.nojQuery && w.panelBorderWidth === 2){
+      if (F.nojQuery){
         coeficient = 1;
       }
 
@@ -566,8 +566,8 @@
      * @param {Object} editor
      * @param {Number} size
      */
-    setEditorSize: function (editor, size) {
-      if (editor.wtype === 'field.combo') {
+    setEditorSize: function(editor, size){
+      if (editor.wtype === 'field.combo'){
         editor.size(size);
 
         editor.el.css('width', size.width + 5);
@@ -583,7 +583,7 @@
      * @param {Number} rowIndex
      * @param {Boolean} animate
      */
-    changePosition: function (rowIndex, animate) {
+    changePosition: function(rowIndex, animate){
       var me = this,
         w = me.widget,
         scrollTop = w.scroller.getScroll(),
@@ -591,13 +591,13 @@
         newTop = w.cellHeight * rowIndex - 1 - scrollTop,
         plusTop = 0;
 
-      if (w.grouping) {
+      if (w.grouping){
         plusTop += w.grouping.getOffsetForRow(rowIndex);
         newTop += plusTop;
       }
 
-      if (me.leftEl) {
-        if (animate !== false) {
+      if (me.leftEl){
+        if (animate !== false){
           me.leftEl.animate({
             top: newTop
           }, ANIMATE_DURATION);
@@ -607,8 +607,8 @@
         }
       }
 
-      if (me.el) {
-        if (animate !== false) {
+      if (me.el){
+        if (animate !== false){
           me.el.animate({
             top: newTop
           }, ANIMATE_DURATION);
@@ -618,8 +618,8 @@
         }
       }
 
-      if (me.rightEl) {
-        if (animate !== false) {
+      if (me.rightEl){
+        if (animate !== false){
           me.rightEl.animate({
             top: newTop
           }, ANIMATE_DURATION);
@@ -632,13 +632,13 @@
       var showOnTop = w.getViewTotal() - 3 < rowIndex,
         buttonTop = newTop;
 
-      if (rowIndex < 3) {
+      if (rowIndex < 3){
         showOnTop = false;
       }
 
-      if (showOnTop) {
-        if (w.grouping) {
-          if (w.getViewTotal() - 3 < rowIndex - w.grouping.getSpecialRowsUnder(rowIndex)) {
+      if (showOnTop){
+        if (w.grouping){
+          if (w.getViewTotal() - 3 < rowIndex - w.grouping.getSpecialRowsUnder(rowIndex)){
             buttonTop = newTop - parseInt(me.buttonsEl.css('height')) + 1;
           }
           else {
@@ -658,7 +658,7 @@
         buttonTop += 1;
       }
 
-      if (animate !== false) {
+      if (animate !== false){
         me.buttonsEl.animate({
           top: buttonTop
         }, ANIMATE_DURATION);
@@ -676,7 +676,7 @@
     /*
      *
      */
-    changeButtonsLeftPos: function () {
+    changeButtonsLeftPos: function(){
       var me = this,
         w = me.widget,
         viewWidth = w.getCenterViewWidth(),
@@ -687,19 +687,19 @@
     /*
      * @param {Object} o
      */
-    setValues: function (o) {
+    setValues: function(o){
       var me = this,
         w = me.widget;
 
-      if (w.leftColumns) {
+      if (w.leftColumns){
         me._setValues(o.data, w.leftColumns);
       }
 
-      if (w.columns) {
+      if (w.columns){
         me._setValues(o.data, w.columns);
       }
 
-      if (w.rightColumns) {
+      if (w.rightColumns){
         me._setValues(o.data, w.rightColumns);
       }
 
@@ -711,12 +711,12 @@
      * @param {Array} data
      * @param {Array} columns
      */
-    _setValues: function (data, columns) {
-      E(columns, function (column) {
+    _setValues: function(data, columns){
+      E(columns, function(column){
         var editor = column.rowEditor;
 
-        if (editor) {
-          switch (column.type) {
+        if (editor){
+          switch (column.type){
             case 'action':
             case 'button':
             case 'order':
@@ -733,11 +733,11 @@
     /*
      *
      */
-    onScroll: function () {
+    onScroll: function(){
       var me = this,
         w = me.widget;
 
-      if (me.rendered === false) {
+      if (me.rendered === false){
         return;
       }
 
@@ -745,27 +745,27 @@
         me.hide();
       }
 
-      if (me.activeRowIndex !== undefined) {
+      if (me.activeRowIndex !== undefined){
         me.changePosition(me.activeRowIndex, false);
       }
     },
     /*
      *
      */
-    onColumnResize: function () {
+    onColumnResize: function(){
       var me = this;
 
-      if (me.rendered === false) {
+      if (me.rendered === false){
         return;
       }
 
       if(F.nojQuery){
-        setTimeout(function () {
+        setTimeout(function(){
           me.setSizes();
         }, 400);
       }
       else {
-        setTimeout(function () {
+        setTimeout(function(){
           me.setSizes();
         }, ANIMATE_DURATION);
       }
@@ -773,7 +773,7 @@
     /*
      *
      */
-    onClickUpdate: function () {
+    onClickUpdate: function(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -788,15 +788,15 @@
     /*
      *
      */
-    prepareChanged: function () {
+    prepareChanged: function(){
       var me = this,
         w = me.widget,
         data = me.changed;
 
-      for (var p in data) {
+      for (var p in data){
         var column = w.getColumnByIndex(p);
 
-        switch (column.type) {
+        switch (column.type){
           case 'date':
             var date = F.Date.parse(data[p], column.format.edit, column.format.mode),
               formattedValue = F.Date.format(date, column.format.read, column.format.mode);
@@ -811,26 +811,26 @@
     /*
      *
      */
-    onClickCancel: function () {
+    onClickCancel: function(){
       this.hide();
     },
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
-      if (!me.el) {
+      if (!me.el){
         return;
       }
 
-      if (me.leftEl) {
+      if (me.leftEl){
         me.leftEl.hide();
       }
 
       me.el.hide();
 
-      if (me.rightEl) {
+      if (me.rightEl){
         me.rightEl.hide();
       }
 
@@ -839,10 +839,10 @@
     /*
      *
      */
-    show: function () {
+    show: function(){
       var me = this;
 
-      if (me.leftEl) {
+      if (me.leftEl){
         if(me.leftEl.css('display') === 'none'){
           me.leftEl.css('opacity', 0);
         }
@@ -856,7 +856,7 @@
       me.el.show();
       me.el.animate({opacity: 1 }, ANIMATE_DURATION);
 
-      if (me.rightEl) {
+      if (me.rightEl){
         if(me.rightEl.css('display') === 'none'){
           me.rightEl.css('opacity', 0);
         }
@@ -875,20 +875,20 @@
      * @param {*} newValue
      * @param {*} oldValue
      */
-    onFieldChange: function (field, newValue, oldValue) {
+    onFieldChange: function(field, newValue){
       var me = this;
 
-      if (!field.isValid()) {
+      if (!field.isValid()){
         delete me.changed[field.index];
       }
       else {
         me.changed[field.index] = newValue;
       }
     },
-    onFieldEmpty: function (field) {
+    onFieldEmpty: function(field){
       var me = this;
 
-      if (field.vtype && !field.isValid()) {
+      if (field.vtype && !field.isValid()){
         delete me.changed[field.index];
       }
       else {
@@ -898,7 +898,7 @@
     /*
      *
      */
-    onFieldEnter: function () {
+    onFieldEnter: function(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -913,12 +913,12 @@
      * @param {Number} index
      * @param {String} side
      */
-    hideField: function (index, side) {
+    hideField: function(index, side){
       var w = this.widget,
         columns = w.getColumns(side),
         column = columns[index];
 
-      if (column.rowEditor) {
+      if (column.rowEditor){
         column.rowEditor.hide();
       }
     },
@@ -926,12 +926,12 @@
      * @param {Number} index
      * @param {String} side
      */
-    showField: function (index, side) {
+    showField: function(index, side){
       var w = this.widget,
         columns = w.getColumns(side),
         column = columns[index];
 
-      if (column.rowEditor) {
+      if (column.rowEditor){
         column.rowEditor.show();
       }
     },
@@ -941,7 +941,7 @@
      * @param {String} side
      * @param {String} fromSide
      */
-    moveEditor: function (column, index, side, fromSide) {
+    moveEditor: function(column, index, side, fromSide){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -957,7 +957,7 @@
         return;
       }
 
-      if (me.activeId === undefined) {
+      if (me.activeId === undefined){
         value = s.ge1t(me.activeRowIndex)[column.index];
       }
 
@@ -978,12 +978,12 @@
      * @param {String} side
      * @return {Object}
      */
-    getField: function (index, side) {
+    getField: function(index, side){
       var w = this.widget,
         body = w.getBody(side),
         field;
 
-      switch (side) {
+      switch (side){
         case 'left':
           index++;
           break;
@@ -996,82 +996,82 @@
     /*
      *
      */
-    reSetColumnsEditorsLinks: function () {
+    reSetColumnsEditorsLinks: function(){
       var me = this,
         w = me.widget,
         cells = w.body.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.columns, function (column, i) {
+      E(w.columns, function(column, i){
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
       cells = w.leftBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.leftColumns, function (column, i) {
+      E(w.leftColumns, function(column, i){
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
       cells = w.rightBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.rightColumns, function (column, i) {
+      E(w.rightColumns, function(column, i){
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
-    onBeforeColumnDrag: function () {
+    onBeforeColumnDrag: function(){
       var me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnDrag: function () {
+    onColumnDrag: function(){
       var me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onLockColumn: function () {
+    onLockColumn: function(){
       var me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onRightLockColumn: function () {
+    onRightLockColumn: function(){
       var me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onUnLockColumn:  function () {
+    onUnLockColumn:  function(){
       var me = this;
 
       me.destroyEls();
       me.hide();
     },
-    destroyEls: function () {
+    destroyEls: function(){
       var me = this,
         w = me.widget;
 
       if(me.rendered){
         me.rendered = false;
 
-        if (w.leftColumns) {
-          F.each(w.leftColumns, function (column) {
+        if (w.leftColumns){
+          F.each(w.leftColumns, function(column){
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
           me.leftEl.destroy();
         }
 
-        if (w.columns) {
-          F.each(w.columns, function (column) {
+        if (w.columns){
+          F.each(w.columns, function(column){
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
           me.el.destroy();
         }
 
-        if (w.rightColumns) {
-          F.each(w.rightColumns, function (column) {
+        if (w.rightColumns){
+          F.each(w.rightColumns, function(column){
             column.rowEditor.destroy();
             delete column.rowEditor;
           });

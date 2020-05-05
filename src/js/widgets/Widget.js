@@ -59,7 +59,7 @@ Fancy.define('Fancy.Widget', {
           controller = Fancy.getController(controller);
 
           for(var p in controller){
-            if(me[p] === undefined ) {
+            if(me[p] === undefined ){
               me[p] = controller[p];
             }
           }
@@ -78,7 +78,7 @@ Fancy.define('Fancy.Widget', {
                 continue;
               }
 
-              if(me[p] === undefined ) {
+              if(me[p] === undefined ){
                 me[p] = _controller[p];
               }
             }
@@ -124,8 +124,8 @@ Fancy.define('Fancy.Widget', {
         handler = me[handler];
       }
 
-      if(selector) {
-        (function (event, handler, scope, selector) {
+      if(selector){
+        (function(event, handler, scope, selector){
           if(me.$events[event]){
             me.on(event, function(grid, o){
               var target = o.e.target,
@@ -149,7 +149,7 @@ Fancy.define('Fancy.Widget', {
             }, scope);
           }
           else {
-            me.on('render', function () {
+            me.on('render', function(){
               me.el.on(event, handler, scope, selector);
             });
           }
@@ -226,13 +226,13 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  show: function() {
+  show: function(){
     this.el.show();
   },
   /*
    *
    */
-  hide: function() {
+  hide: function(){
     this.el.hide();
   },
   /*

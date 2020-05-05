@@ -10,7 +10,7 @@ Fancy.define('Fancy.grid.plugin.Infinite', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function() {
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -25,8 +25,7 @@ Fancy.define('Fancy.grid.plugin.Infinite', {
    */
   ons: function(){
     var me = this,
-      w = me.widget,
-      store = w.store;
+      w = me.widget;
 
     //w.on('render', me.onRenderGrid, me);
   }

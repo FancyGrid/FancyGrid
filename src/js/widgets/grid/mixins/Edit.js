@@ -14,7 +14,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.remove(o, at)
+        me.remove(o, at);
       }, 100);
       return;
     }
@@ -66,7 +66,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  removeAll: function () {
+  removeAll: function(){
     var me = this;
 
     me.store.removeAll();
@@ -89,7 +89,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.add(o)
+        me.add(o);
       }, 100);
       return;
     }
@@ -120,7 +120,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.insert(index, o, fire)
+        me.insert(index, o, fire);
       }, 100);
       return;
     }
@@ -180,7 +180,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.set(rowIndex, key, value)
+        me.set(rowIndex, key, value);
       }, 100);
       return;
     }
@@ -216,10 +216,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(!me.store){
       setTimeout(function(){
         if(rowIndex === -1){
-          me.setById(rowIndex, key, value)
+          me.setById(rowIndex, key, value);
         }
         else{
-          me.set(rowIndex, key, value)
+          me.set(rowIndex, key, value);
         }
       }, 100);
       return rowIndex;
@@ -260,7 +260,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * TODO: undo by id and key
    */
-  undo: function () {
+  undo: function(){
     var me = this,
       s = me.store,
       action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
@@ -291,7 +291,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  redo: function () {
+  redo: function(){
     var me = this,
       s = me.store,
       action = s.redoActions.splice(s.redoActions.length - 1, 1)[0];
@@ -314,7 +314,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  undoAll: function () {
+  undoAll: function(){
     var me = this,
       s = me.store,
       i = 0,
@@ -327,7 +327,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @params {Object} cell
    */
-  editCell: function (cell) {
+  editCell: function(cell){
     var me = this,
       side = me.getSideByCell(cell),
       rowIndex = Number(cell.attr('index')),
@@ -349,7 +349,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     info.item = item;
     info.data = item.data;
 
-    if (info.column.smartIndexFn) {
+    if (info.column.smartIndexFn){
       info.value = info.column.smartIndexFn(info.data);
     }
     else{
@@ -362,7 +362,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @params {Object} o
    * @return {Object}
    */
-  getCell: function (o) {
+  getCell: function(o){
     var me = this,
       side,
       body,

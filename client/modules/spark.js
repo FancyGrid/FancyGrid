@@ -41,7 +41,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     me.preRender();    
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.renderTo.appendChild(me.chart);
       me.ons();
     }
@@ -70,7 +70,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(e){
+  onMouseEnter: function(){
     var me = this,
       value = me.el.attr('value');
 
@@ -88,7 +88,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(e){
+  onMouseLeave: function(){
     var me = this;
 
     if(!me.tip || !me.tipTpl){
@@ -167,7 +167,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         'L', me.x2, me.y2,
         'A', innerRadius, innerRadius, 0, 1, 0, me.cx, me.y2
       ].join(' '),
-      path = document.createElementNS(me.svgns, "path");
+      path = document.createElementNS(me.svgns, 'path');
     
     path.setAttribute('d', d);
     path.setAttribute('fill', me.backColor);
@@ -182,16 +182,16 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this,
       radius = me.radius,
       innerRadius = me.innerRadius,
-      path = document.createElementNS(me.svgns, "path"),
+      path = document.createElementNS(me.svgns, 'path'),
       value = me.value,
       cumulative = 0;
       
     if(value > 99){
-      value = 99.99999
+      value = 99.99999;
     }
     
     if(value < -99){
-      value = 99.99999
+      value = 99.99999;
     }
     
     if(value < 0){
@@ -209,18 +209,18 @@ Fancy.define('Fancy.spark.ProgressDonut', {
       'L'
     );
     
-    if (innerRadius) {
+    if (innerRadius){
       d = d.concat(
         me.scale(cumulativePlusValue, innerRadius),
         'A', innerRadius, innerRadius, 0, portion > 0.5 ? 1 : 0, 0,
         me.scale(cumulative, innerRadius)
-      )
+      );
     }
     
-    d = d.join(" ");
+    d = d.join(' ');
     
     path.setAttribute('d', d);
-    path.setAttribute("fill", me.color);
+    path.setAttribute('fill', me.color);
     
     me.chart.appendChild(path);
   },
@@ -233,8 +233,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
 
     me.renderTo = Fancy.get(me.renderTo).dom;
 
-    if(el.select('svg').length === 0) {
-       me.chart = document.createElementNS(me.svgns, "svg:svg");
+    if(el.select('svg').length === 0){
+       me.chart = document.createElementNS(me.svgns, 'svg:svg');
     }
     else{
       me.chart = el.select('svg').dom;
@@ -268,13 +268,13 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     return [
       radius * Math.cos(radians) + me.cx,
       radius * Math.sin(radians) + me.cy
-    ]    
+    ];
   },
   /*
    * @param {Number} degrees
    * @return {Number}
    */
-  radians: function(degrees) {
+  radians: function(degrees){
     return degrees * Math.PI / 180;
   },
   /*
@@ -345,7 +345,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
     me.preRender();    
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.ons();
     }
   },
@@ -442,7 +442,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
 
     me.renderTo.innerHTML = value;
 
-    if(me.value < 0) {
+    if(me.value < 0){
       me.el = Fancy.get(me.renderTo).select('.fancy-grid-grossloss-loss').item(0);
     }
     else{
@@ -477,7 +477,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
     me.initId();
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.ons();
     }
   },
@@ -495,7 +495,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  ons: function() {
+  ons: function(){
     var me = this;
     
     if(me.tip !== false){
@@ -507,7 +507,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(e){
+  onMouseEnter: function(){
     var me = this,
       value = me.el.attr('value'),
       suffix = '%',
@@ -540,10 +540,11 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(e){
+  onMouseLeave: function(){
     if(!this.tip || !this.tipTpl){
       return;
     }
+
     Fancy.tip.hide(500);
   },
   /*
@@ -553,6 +554,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
     if(!this.tip || !this.tipTpl){
       return;
     }
+
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
@@ -572,7 +574,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
       attrValue = me.value;
     }
     else {
-      if (attrValue < 1) {
+      if (attrValue < 1){
         attrValue = me.value.toFixed(1);
       }
       else {
@@ -634,7 +636,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
         data: me.data
       });
 
-      me.el.css(_style)
+      me.el.css(_style);
     }
   },
   /*
@@ -744,7 +746,7 @@ Fancy.define('Fancy.spark.HBar', {
     me.initId();
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.ons();
     }
   },
@@ -762,7 +764,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  ons: function() {
+  ons: function(){
     var me = this;
     
     if(me.tip !== false){
@@ -809,7 +811,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(e){
+  onMouseLeave: function(){
     var me = this;
 
     if(!me.tip || !me.tipTpl){
@@ -850,7 +852,7 @@ Fancy.define('Fancy.spark.HBar', {
 
     if(column.fields){
       iL = column.fields.length;
-      Fancy.each(column.fields, function (field) {
+      Fancy.each(column.fields, function(field){
         var key = column.index + '.' + field;
 
         if(disabled[key]){
@@ -861,7 +863,7 @@ Fancy.define('Fancy.spark.HBar', {
       });
     }
     else{
-      Fancy.each(fields, function (key) {
+      Fancy.each(fields, function(key){
         if(disabled[key]){
           return;
         }
@@ -1005,7 +1007,7 @@ Fancy.define('Fancy.spark.HBar', {
 
     i = 0;
 
-    for(;i<iL;i++) {
+    for(;i<iL;i++){
       if(column.fields){
         var key = column.fields[i],
           _value = me.data[column.index][key];

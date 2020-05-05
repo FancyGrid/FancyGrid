@@ -56,25 +56,25 @@ Fancy.define('Fancy.bar.Text', {
   /*
    * @return {String}
    */
-  get: function() {
+  get: function(){
     return this.el.dom.innerHTML;
   },
   /*
    * @return {String}
    */
-  getValue: function () {
+  getValue: function(){
     return this.get();
   },
   /*
    * @param {String} value
    */
-  set: function (value) {
+  set: function(value){
     this.el.dom.innerHTML = value;
   },
   /*
    *
    */
-  ons: function () {
+  ons: function(){
     var me = this,
       el = me.el;
 
@@ -118,10 +118,10 @@ Fancy.define('Fancy.bar.Text', {
       me.tooltip.destroy();
     }
 
-    if(me.tip === true) {
+    if(me.tip === true){
       me.tip = new Fancy.Template(me.tipTpl).getHTML({
         value: me.get()
-      })
+      });
     }
     else{
       switch (Fancy.typeOf(me.tip)){
@@ -136,7 +136,7 @@ Fancy.define('Fancy.bar.Text', {
       }
     }
 
-    if (me.tooltip) {
+    if (me.tooltip){
       me.tooltip.update(text);
     }
     else {

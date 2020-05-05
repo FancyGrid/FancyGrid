@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.RowHeight
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -15,7 +15,7 @@
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
 
       this.rows = {};
@@ -23,14 +23,14 @@
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -40,30 +40,30 @@
       w.on('changepage', me.onChangePage, me);
       w.on('sort', me.onSort, me);
     },
-    onInit: function () {
+    onInit: function(){
       var me = this,
         w = me.widget;
 
-      setTimeout(function () {
+      setTimeout(function(){
         w.scroller.update(me.totalHeight);
       }, 50);
     },
     /*
      *
      */
-    onUpdate: function () {
+    onUpdate: function(){
       var me = this,
         w = me.widget,
         viewData = w.getDataView(),
         totalHeight = 0;
 
-      F.each(viewData, function (item) {
+      F.each(viewData, function(item){
         var id = item.id,
           height = me.rows[id],
           rowIndex = w.getRowById(id),
           cells = w.getDomRow(rowIndex);
 
-        F.each(cells, function (cellDom) {
+        F.each(cells, function(cellDom){
           var cell = F.get(cellDom);
 
           cell.css('height', height);
@@ -78,7 +78,7 @@
         me.totalHeight += w.grouping.getGroupRowsHeight();
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         w.setSidesHeight(me.totalHeight);
         w.scroller.update(me.totalHeight);
       }, 50);
@@ -86,7 +86,7 @@
     /*
      *
      */
-    add: function (id, height) {
+    add: function(id, height){
       if(this.rows[id] && this.rows[id] > height){
         return;
       }
@@ -96,11 +96,11 @@
     /*
      *
      */
-    getRowsHeight: function (items) {
+    getRowsHeight: function(items){
       var me = this,
         height = 0;
 
-      F.each(items, function (item) {
+      F.each(items, function(item){
         var id = item.get('id');
 
         height += me.rows[id];
@@ -111,14 +111,14 @@
     /*
      *
      */
-    onColumnResize: function (grid, o) {
+    onColumnResize: function(grid, o){
       var me = this;
 
       me.rows = {};
 
       if(o.column.type === 'text' && o.column.autoHeight){
 
-        setTimeout(function () {
+        setTimeout(function(){
           me.widget.update();
           me.onUpdate();
         }, 400);
@@ -127,7 +127,7 @@
     /*
      *
      */
-    onChangePage:  function (grid, o) {
+    onChangePage:  function(){
       var me = this;
 
       me.rows = {};
@@ -135,7 +135,7 @@
     /*
      *
      */
-    onSort:  function (grid, o) {
+    onSort:  function(){
       var me = this;
 
       me.rows = {};

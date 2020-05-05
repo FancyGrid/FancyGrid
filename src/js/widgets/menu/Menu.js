@@ -1,6 +1,6 @@
 Fancy.modules['menu'] = true;
 
-(function() {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -28,7 +28,7 @@ Fancy.modules['menu'] = true;
      * @param {Object} config
      * @param {Object} scope
      */
-    constructor: function (config) {
+    constructor: function(config){
       Fancy.applyConfig(this, config);
 
       if(this.theme){
@@ -40,7 +40,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('hide');
@@ -57,7 +57,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el;
 
@@ -85,7 +85,7 @@ Fancy.modules['menu'] = true;
       me.fire('beforerender');
 
       if( me.theme !== 'default' ){
-        el.addCls('fancy-theme-' + me.theme);
+        el.addCls(Fancy.getThemeCSSCls(me.theme));
       }
 
       el.addClass(
@@ -146,7 +146,7 @@ Fancy.modules['menu'] = true;
     /*
      * @return {Number}
      */
-    getItemsHeight: function () {
+    getItemsHeight: function(){
       var me = this,
         items = me.items,
         itemHeight = this.itemHeight,
@@ -154,7 +154,7 @@ Fancy.modules['menu'] = true;
         i = 0,
         iL = items.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var item = items[i];
 
         if(item.type === 'sep' || item.type === '-' || item === '-'){
@@ -170,7 +170,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    renderItems: function () {
+    renderItems: function(){
       var me = this,
         i = 0,
         iL = me.items.length,
@@ -204,7 +204,7 @@ Fancy.modules['menu'] = true;
           itemEl.addCls(item.cls);
         }
 
-        if(item.type !== 'sep' && item.type !== '-') {
+        if(item.type !== 'sep' && item.type !== '-'){
           var text = [
             item.image === false ? '' : '<div class="' + MENU_ITEM_IMAGE_CLS + ' ' + imageCls + '"></div>',
             '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>'
@@ -216,10 +216,10 @@ Fancy.modules['menu'] = true;
 
           text.push('<div class="' + MENU_ITEM_RIGHT_IMAGE_CLS + ' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>');
 
-          itemEl.update(text.join(""));
+          itemEl.update(text.join(''));
         }
 
-        if (item.image === false) {
+        if (item.image === false){
           itemEl.addCls(MENU_ITEM_NO_IMAGE_CLS);
         }
 
@@ -227,7 +227,7 @@ Fancy.modules['menu'] = true;
           itemEl.addCls(MENU_ITEM_DISABLED_CLS);
         }
 
-        switch (item.type) {
+        switch (item.type){
           case '':
           case '-':
           case 'sep':
@@ -272,31 +272,31 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    applyDefaults: function () {
+    applyDefaults: function(){
       var me = this,
         i = 0,
         iL = me.items.length;
 
-      if (!me.defaults) {
+      if (!me.defaults){
         return;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         Fancy.applyIf(me.items[i], me.defaults);
       }
     },
     /*
      * @param {Object} e
      */
-    onItemClick: function (e) {
+    onItemClick: function(e){
       var me = this,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
         item = me.items[index],
         args = [me, item];
 
-      if (item.handler && !item.disabled) {
-        if (item.scope) {
+      if (item.handler && !item.disabled){
+        if (item.scope){
           item.handler.apply(item.scope, args);
         }
         else {
@@ -307,7 +307,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onItemEnter: function (e) {
+    onItemEnter: function(e){
       var me = this,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
@@ -344,7 +344,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    onItemLeave: function () {},
+    onItemLeave: function(){},
     /*
      * @param {Number} x
      * @param {Number} y
@@ -373,7 +373,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.el.hide();
@@ -400,7 +400,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    activateItem: function (index) {
+    activateItem: function(index){
       var me = this,
         item = me.items[index];
 
@@ -414,10 +414,10 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    deActivateItem: function () {
+    deActivateItem: function(){
       var activeItem = this.activeItem;
 
-      if (!activeItem) {
+      if (!activeItem){
         return;
       }
 
@@ -427,7 +427,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onItemMouseDown: function(e) {
+    onItemMouseDown: function(e){
       var target = e.target;
 
       if(target.tagName.toLocaleLowerCase() === 'input'){}
@@ -438,7 +438,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    enableItem: function (index) {
+    enableItem: function(index){
       var me = this,
         item = me.items[index];
 
@@ -448,7 +448,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    disableItem: function (index) {
+    disableItem: function(index){
       var me = this,
         item = me.items[index];
 
@@ -458,7 +458,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    checkPosition: function () {
+    checkPosition: function(){
       var me = this,
         el = me.el,
         offset = el.offset(),
@@ -492,7 +492,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    setChecked: function (index, clear) {
+    setChecked: function(index, clear){
       var me = this;
 
       if(clear){
@@ -507,10 +507,10 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    clearChecked: function () {
+    clearChecked: function(){
       var me = this;
 
-      me.el.select('.fancy-checkbox-on').each(function (el) {
+      me.el.select('.fancy-checkbox-on').each(function(el){
         var id = el.attr('id'),
           checkBox = F.getWidget(id);
 
@@ -572,6 +572,6 @@ Fancy.modules['menu'] = true;
       me.activeMenu.hide();
       delete me.activeMenu;
     }
-  })
+  });
 
 })();

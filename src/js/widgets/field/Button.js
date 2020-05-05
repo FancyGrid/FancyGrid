@@ -2,7 +2,7 @@
  * @class Fancy.ButtonField
  * @extends Fancy.Widget
  */
-(function() {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   /*
@@ -25,14 +25,14 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('click');
@@ -45,11 +45,11 @@
 
       me.ons();
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
-      if (me.style) {
+      if (me.style){
         me.css(me.style);
       }
     },
@@ -78,12 +78,12 @@
         pressed: me.pressed,
         enableToggle: me.enableToggle,
         imageCls: me.imageCls,
-        handler: function () {
+        handler: function(){
           if(me.disabled){
             return;
           }
 
-          if (me.scope) {
+          if (me.scope){
             me.handler.apply(me.scope, [me]);
           }
           else {
@@ -95,25 +95,25 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el;
 
-      me.button.on('pressedchange', function (button, value) {
+      me.button.on('pressedchange', function(button, value){
         me.fire('pressedchange', value);
       });
 
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    onClick: function () {
+    onClick: function(){
       var me = this;
 
       if(me.disabled){
@@ -122,11 +122,11 @@
 
       me.fire('click');
 
-      if (me.handler) {
+      if (me.handler){
         me.handler();
       }
     },
-    setPressed: function (value) {
+    setPressed: function(value){
       this.button.setPressed(value);
     }
   });

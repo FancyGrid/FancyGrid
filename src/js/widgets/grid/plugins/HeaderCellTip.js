@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.HeaderCellTip
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   var HIDE_TIMEOUT = 500;
@@ -19,20 +19,20 @@
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget,
         docEl = F.get(document);
@@ -46,25 +46,25 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function (grid, o) {
+    onCellEnter: function(grid, o){
       var me = this,
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
 
-      if (column.headerCellTip) {
+      if (column.headerCellTip){
         var data = {
           title: column.title,
           columnIndex: o.columnIndex,
           side: o.side
         };
-        if (F.isString(column.headerCellTip)) {
+        if (F.isString(column.headerCellTip)){
           cellTip = column.headerCellTip;
         }
-        else if (F.isFunction(column.headerCellTip)) {
+        else if (F.isFunction(column.headerCellTip)){
           o.data = data;
           cellTip = column.headerCellTip(o);
-          if (cellTip === false) {
+          if (cellTip === false){
             return;
           }
         }
@@ -82,7 +82,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function () {
+    onCellLeave: function(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -90,15 +90,15 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function () {
+    onTouchEnd: function(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function (e) {
-      if (this.stopped === true) {
+    onDocMove: function(e){
+      if (this.stopped === true){
         return;
       }
 

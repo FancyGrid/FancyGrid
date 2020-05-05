@@ -8,9 +8,9 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.94',
+  version: '1.7.96',
   site: 'fancygrid.com',
-  COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
+  COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
 
 window.Fancy = Fancy;
@@ -58,7 +58,7 @@ Fancy.namespace = function(){
   
   for(;i<iL;i++){
     var value = arguments[i],
-      parts = value.split("."),
+      parts = value.split('.'),
       j = 1,
       jL = parts.length;
     
@@ -98,12 +98,12 @@ Fancy.ns = Fancy.namespace;
  * @return {String}
  */
 Fancy.typeOf = function(value){
-  if(value === null) {
+  if(value === null){
     return 'null';
   }
 
   var type = typeof value;
-  if(type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean') {
+  if(type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean'){
     return type;
   }
 
@@ -201,9 +201,9 @@ Fancy.isDom = function(value){
     //Browsers not supporting W3 DOM2 don't have HTMLElement and
     //an exception is thrown and we end up here. Testing some
     //properties that all elements have (works on IE7)
-    return (typeof value === "object") &&
-      (value.nodeType===1) && (typeof value.style === "object") &&
-      (typeof value.ownerDocument ==="object");
+    return (typeof value === 'object') &&
+      (value.nodeType===1) && (typeof value.style === 'object') &&
+      (typeof value.ownerDocument ==='object');
   }
 };
 
@@ -309,7 +309,7 @@ Fancy.mixin = function(proto, classes){
 };
 
 Fancy.Mixin = function(name, config){
-  var parts = name.split("."),
+  var parts = name.split('.'),
     i = 1,
     iL = parts.length - 1;
 
@@ -682,20 +682,21 @@ var userAgent = navigator.userAgent.toLowerCase(),
   isChromium = window.chrome,
   winNav = window.navigator,
   vendorName = winNav.vendor,
-  isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-  isIOSChrome = winNav.userAgent.match("CriOS"),
-  isChrome = function() {
-    var isOpera = winNav.userAgent.indexOf("OPR") > -1;
+  isIEedge = winNav.userAgent.indexOf('Edge') > -1,
+  isIOSChrome = winNav.userAgent.match('CriOS'),
+  isChrome = function(){
+    var isOpera = winNav.userAgent.indexOf('OPR') > -1;
 
-    if (isIOSChrome) {
+    if (isIOSChrome){
       return true;
-    } else if (
+    }
+    else if (
       isChromium !== null &&
-      typeof isChromium !== "undefined" &&
-      vendorName === "Google Inc." &&
+      typeof isChromium !== 'undefined' &&
+      vendorName === 'Google Inc.' &&
       isOpera === false &&
       isIEedge === false
-    ) {
+    ){
       return true;
     } else {
       return false;
@@ -706,19 +707,19 @@ var userAgent = navigator.userAgent.toLowerCase(),
       ua,
       re;
 
-    if (navigator.appName == 'Microsoft Internet Explorer') {
+    if (navigator.appName == 'Microsoft Internet Explorer'){
       ua = navigator.userAgent;
-      re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+      re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
 
-      if (re.exec(ua) != null) {
+      if (re.exec(ua) != null){
         rv = parseFloat(RegExp.$1);
       }
     }
-    else if (navigator.appName == 'Netscape') {
+    else if (navigator.appName == 'Netscape'){
       ua = navigator.userAgent;
-      re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+      re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
 
-      if (re.exec(ua) != null) {
+      if (re.exec(ua) != null){
         rv = parseFloat(RegExp.$1);
       }
     }
@@ -761,15 +762,17 @@ Fancy.getViewSize = function(){
 /**
  * @return {Object}
  */
-Fancy.getScroll = function() {
+Fancy.getScroll = function(){
   var dd = document.documentElement,
     db = document.body;
 
-  if (dd && (dd.scrollTop || dd.scrollLeft)) {
+  if (dd && (dd.scrollTop || dd.scrollLeft)){
     return [dd.scrollTop, dd.scrollLeft];
-  } else if (db) {
+  }
+  else if (db){
     return [db.scrollTop, db.scrollLeft];
-  } else {
+  }
+  else {
     return [0, 0];
   }
 };
@@ -790,12 +793,13 @@ Fancy.getMouseWheelEventName = function(){
  * @param {Object} e
  * @return {Number}
  */
-Fancy.getWheelDelta = function(e) {
+Fancy.getWheelDelta = function(e){
   var delta = 0;
 
-  if (e.wheelDelta) { // IE/Opera way
+  if (e.wheelDelta){ // IE/Opera way
     delta = e.wheelDelta / 120;
-  } else if (e.detail) { // Mozilla way
+  }
+  else if (e.detail){ // Mozilla way
     delta = -e.detail / 3;
   }
 
@@ -829,10 +833,10 @@ Fancy.currency = {
 })();
 
 Fancy.modules = {};
-Fancy.getModulesList = function () {
+Fancy.getModulesList = function(){
   var list = [];
 
-  Fancy.each(Fancy.modules, function (value, p) {
+  Fancy.each(Fancy.modules, function(value, p){
     list.push(p);
   });
 
@@ -858,14 +862,14 @@ var FancyForm = function(){
   });
 };
 */
-(function() {
+(function(){
   var moduleNames = {};
 
   /**
    * @param {String} name
    * @param {Function} fn
    */
-  Fancy.loadModule = function (name, fn) {
+  Fancy.loadModule = function(name, fn){
     var body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       _name = name,
@@ -873,7 +877,7 @@ var FancyForm = function(){
       _v = Fancy.version.replace(/\./g, ''),
       MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
 
-    fn = fn || function () {};
+    fn = fn || function(){};
 
     if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
       return;
@@ -905,11 +909,11 @@ var FancyForm = function(){
 
     _script.charset = 'utf-8';
 
-    _script.onload = function () {
+    _script.onload = function(){
       Fancy.Modules.fire('loaded', name);
     };
 
-    _script.onerror = function () {
+    _script.onerror = function(){
       throw new Error('[FancyGrid Error] - module ' + name + ' was not loaded');
     };
 
@@ -921,7 +925,7 @@ var FancyForm = function(){
    * @param {Function} fn
    */
   Fancy.loadLang = function(i18n, fn){
-    if(Fancy.i18n[i18n] !== undefined) {
+    if(Fancy.i18n[i18n] !== undefined){
       return true;
     }
 
@@ -943,14 +947,14 @@ var FancyForm = function(){
     body.appendChild(_script);
   };
 
-  Fancy.loadStyle = function () {
+  Fancy.loadStyle = function(){
     var links = document.querySelectorAll('link');
 
     if(Fancy.stylesLoaded){
       return;
     }
 
-    Fancy.each(links, function (link) {
+    Fancy.each(links, function(link){
       if(/fancy\./.test(link.href)){
         Fancy.stylesLoaded = true;
       }
@@ -962,7 +966,7 @@ var FancyForm = function(){
       return;
     }
 
-    Fancy.each(links, function (link) {
+    Fancy.each(links, function(link){
       if(/fancy\./.test(link.href)){
         Fancy.stylesLoaded = true;
       }
@@ -999,7 +1003,7 @@ var FancyForm = function(){
     }
   };
 
-  Fancy.error = function (message, code) {
+  Fancy.error = function(message, code){
     var errorNumber = '';
 
     if(code){

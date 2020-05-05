@@ -2,7 +2,7 @@
  * @class Fancy.grid.Header
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -14,7 +14,6 @@
   var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
   var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
-  var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
   var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
@@ -48,13 +47,13 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -71,13 +70,13 @@
     /*
      *
      */
-    initTpl: function () {
+    initTpl: function(){
       this.cellTpl = new F.Template(this.cellTpl);
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget,
         el = me.el,
@@ -97,7 +96,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -113,8 +112,8 @@
         cellFilterGroupType = 'full',
         cellHeight = w.cellHeaderHeight;
 
-      if (w.groupheader) {
-        if (isFilterHeader && !w.filter.groupHeader) {
+      if (w.groupheader){
+        if (isFilterHeader && !w.filter.groupHeader){
           cellFilterGroupType = 'small';
         }
         else {
@@ -122,23 +121,23 @@
         }
       }
 
-      if (isFilterHeader) {
+      if (isFilterHeader){
         numRows++;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i],
           title = column.title || column.header,
           height = cellHeight,
           cls = '',
           groupIndex = '';
 
-        if (numRows !== 1) {
-          if (!column.grouping) {
+        if (numRows !== 1){
+          if (!column.grouping){
             height = (numRows * cellHeight) + 'px';
           }
           else {
-            if (!groups[column.grouping]) {
+            if (!groups[column.grouping]){
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
@@ -146,14 +145,14 @@
               };
             }
 
-            if (isFilterHeader && w.filter.groupHeader) {
+            if (isFilterHeader && w.filter.groupHeader){
               height = (2 * cellHeight) + 'px';
             }
             else {
               height = cellHeight + 'px';
             }
 
-            if (!column.hidden) {
+            if (!column.hidden){
               groups[column.grouping].width += column.width;
             }
 
@@ -165,16 +164,16 @@
 
         passedWidth += column.width;
 
-        if (column.index === '$selected' || column.select) {
+        if (column.index === '$selected' || column.select){
           cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
         }
 
-        if (!column.menu) {
+        if (!column.menu){
           cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
         }
 
-        if (column.filter && column.filter.header) {
-          switch (cellFilterGroupType) {
+        if (column.filter && column.filter.header){
+          switch (cellFilterGroupType){
             case 'small':
               cls += ' ' + GRID_HEADER_CELL_FILTER_SMALL_CLS;
               break;
@@ -222,7 +221,7 @@
       el.attr('role', 'presentation');
       el.addCls(me.cls);
 
-      if (w.groupheader) {
+      if (w.groupheader){
         el.addCls('fancy-grid-header-grouped');
         html += me.getGroupingCellsHTML(groups);
       }
@@ -236,7 +235,7 @@
      * @param {Number} index
      * @param {Object} column
      */
-    insertCell: function (index, column) {
+    insertCell: function(index, column){
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -262,13 +261,13 @@
         left = -w.scroller.scrollLeft;
       }
 
-      if (w.groupheader) {
+      if (w.groupheader){
         //cellHeight = w.cellHeight * 2;
         var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
         //BUG: possible bug for dragging column
-        if (index !== w.columns.length - 1) {
-          groupUpCells.each(function (cell) {
+        if (index !== w.columns.length - 1){
+          groupUpCells.each(function(cell){
             var left = parseInt(cell.css('left') || 0) + column.width;
 
             cell.css('left', left);
@@ -276,18 +275,18 @@
         }
       }
 
-      if (column.index === '$selected' || column.select) {
+      if (column.index === '$selected' || column.select){
         cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
       }
 
-      if (!column.menu) {
+      if (!column.menu){
         cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
       }
 
       var j = 0,
         jL = index;
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         if(!columns[j].hidden){
           left += columns[j].width;
         }
@@ -319,11 +318,11 @@
         id: column.id || ''
       });
 
-      if (index === 0 && cells.length) {
+      if (index === 0 && cells.length){
         F.get(cells.item(0).before(cellHTML));
       }
-      else if (index !== 0 && cells.length) {
-        if(index === cells.length) {
+      else if (index !== 0 && cells.length){
+        if(index === cells.length){
           me.el.append(cellHTML);
         }
         else{
@@ -337,8 +336,9 @@
       //var i = index,
       var i = 0,
         iL = columns.length,
-        width = 0,
-        left = 0;
+        width = 0;
+
+      left = 0;
 
       if(me.side === 'center'){
         left -= w.scroller.scrollLeft;
@@ -346,10 +346,10 @@
 
       cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i];
 
-        if (column.hidden) {
+        if (column.hidden){
           continue;
         }
 
@@ -376,25 +376,25 @@
     /*
      *
      */
-    setAlign: function () {
+    setAlign: function(){
       var me = this,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i];
 
-        if (column.align) {
+        if (column.align){
           me.getDomCell(i).css('text-align', column.align);
         }
       }
     },
-    onAfterRender: function () {},
+    onAfterRender: function(){},
     /*
      * @param {Boolean} [animate]
      */
-    setCellsPosition: function (animate) {
+    setCellsPosition: function(animate){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -403,11 +403,11 @@
 
       cellsWidth += me.scrollLeft || 0;
 
-      F.each(columns, function (column, i) {
+      F.each(columns, function(column, i){
         var cellEl = cellsDom.item(i),
           top = '0px';
 
-        if (column.grouping) {
+        if (column.grouping){
           top = w.cellHeaderHeight + 'px';
         }
 
@@ -424,23 +424,23 @@
           });
         }
 
-        if (!column.hidden) {
+        if (!column.hidden){
           cellsWidth += column.width;
         }
       });
 
-      if (w.groupheader) {
+      if (w.groupheader){
         var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
-        groupCells.each(function (groupCell) {
+        groupCells.each(function(groupCell){
           var groupName = groupCell.attr('index');
 
           var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
             groupCellLeft = me.scrollLeft || 0,
             groupCellWidth = 0;
 
-          F.each(columns, function (column) {
-            if (column.grouping === groupName) {
+          F.each(columns, function(column){
+            if (column.grouping === groupName){
               return true;
             }
 
@@ -449,8 +449,8 @@
             }
           });
 
-          F.each(columns, function (column) {
-            if (column.grouping === groupName && !column.hidden) {
+          F.each(columns, function(column){
+            if (column.grouping === groupName && !column.hidden){
               groupCellWidth += column.width;
             }
           });
@@ -473,12 +473,12 @@
     /*
      *
      */
-    fixGroupHeaderSizing: function () {
+    fixGroupHeaderSizing: function(){
       var me = this,
         w = me.widget,
         CELL_HEADER_HEIGHT = w.cellHeaderHeight,
         columns = me.getColumns(),
-        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS),
+        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
         left = 0,
         groups = {},
         groupsWidth = {},
@@ -490,7 +490,7 @@
         left = w.scroller.scrollLeft;
       }
 
-      F.each(columns, function (column, i) {
+      F.each(columns, function(column, i){
         var cell = cellsDom.item(i),
           grouping = column.grouping,
           top = '0px',
@@ -516,7 +516,7 @@
           }
 
           if(column.filter && column.filter.header){
-            setTimeout(function () {
+            setTimeout(function(){
               cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
             }, 30);
           }
@@ -524,7 +524,7 @@
         else{
           cell.removeCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
           if(column.filter && column.filter.header){
-            setTimeout(function () {
+            setTimeout(function(){
               cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
             }, 30);
             cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
@@ -556,7 +556,7 @@
 
       var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
-      groupCells.each(function (cell) {
+      groupCells.each(function(cell){
         var groupName = cell.attr('index');
 
         if(!groups[groupName]){
@@ -567,14 +567,14 @@
     /*
      * @return {Number}
      */
-    getColumnsWidth: function () {
+    getColumnsWidth: function(){
       var me = this,
         columns = me.getColumns(),
         cellsWidth = 0,
         i = 0,
         iL = columns.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i];
 
         cellsWidth += column.width;
@@ -585,12 +585,12 @@
     /*
      * @return {Array}
      */
-    getColumns: function () {
+    getColumns: function(){
       var me = this,
         w = me.widget,
         columns;
 
-      switch (me.side) {
+      switch (me.side){
         case 'left':
           columns = w.leftColumns;
           break;
@@ -608,13 +608,13 @@
      * @param {Number} index
      * @return {Fancy.Element}
      */
-    getDomCell: function (index) {
+    getDomCell: function(index){
       return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
     },
     /*
      * @param {Event} e
      */
-    onCellClick: function (e) {
+    onCellClick: function(e){
       var me = this,
         w = me.widget,
         columndrag = w.columndrag,
@@ -628,15 +628,15 @@
         return;
       }
 
-      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS)) {
-        return
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_CLS)){
+        return;
       }
 
-      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)) {
-        return
+      if (target.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)){
+        return;
       }
 
-      if (F.get(cell).hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)) {
+      if (F.get(cell).hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
         return;
       }
 
@@ -676,7 +676,7 @@
     /*
      * @param {Event} e
      */
-    onCellMouseMove: function (e) {
+    onCellMouseMove: function(e){
       var me = this,
         w = me.widget,
         cell = e.currentTarget,
@@ -684,7 +684,7 @@
         isGroupCell = cellEl.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS),
         index = parseInt(F.get(cell).attr('index'));
 
-      if (isGroupCell) {
+      if (isGroupCell){
         return;
       }
 
@@ -698,10 +698,10 @@
     /*
      * @param {Event} e
      */
-    onMouseDown: function (e) {
+    onMouseDown: function(e){
       var targetEl = F.get(e.target);
 
-      if (targetEl.prop("tagName") === 'INPUT') {}
+      if (targetEl.prop('tagName') === 'INPUT'){}
       else {
         e.preventDefault();
       }
@@ -709,7 +709,7 @@
     /*
      * @param {Event} e
      */
-    onCellMouseDown: function (e) {
+    onCellMouseDown: function(e){
       var w = this.widget,
         cell = e.currentTarget,
         index = parseInt(F.get(cell).attr('index'));
@@ -725,7 +725,7 @@
      * @param {Number} value
      * @param {Boolean} [animate]
      */
-    scroll: function (value, animate) {
+    scroll: function(value, animate){
       this.scrollLeft = value;
       this.setCellsPosition(animate);
     },
@@ -733,12 +733,12 @@
      * @param {Array} groups
      * @return {String}
      */
-    getGroupingCellsHTML: function (groups) {
+    getGroupingCellsHTML: function(groups){
       var me = this,
         w = me.widget,
         html = '';
 
-      F.each(groups, function (group, p) {
+      F.each(groups, function(group, p){
         html += me.cellTpl.getHTML({
           cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
           columnName: group.title,
@@ -756,7 +756,7 @@
     /*
      *
      */
-    destroy: function () {
+    destroy: function(){
       var me = this,
         el = me.el,
         cellSelector = 'div.' + GRID_HEADER_CELL_CLS;
@@ -772,13 +772,13 @@
      * @param {Number} index
      * @return {Fancy.Element}
      */
-    getCell: function (index) {
+    getCell: function(index){
       return this.el.select('.' + GRID_HEADER_CELL_CLS + '[index="' + index + '"]');
     },
     /*
      * @param {Event} e
      */
-    onTriggerClick: function (e) {
+    onTriggerClick: function(e){
       var me = this,
         target = F.get(e.currentTarget),
         cell = target.parent().parent(),
@@ -793,7 +793,7 @@
     /*
      * @param {Number} orderIndex
      */
-    hideCell: function (orderIndex) {
+    hideCell: function(orderIndex){
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -803,7 +803,7 @@
         iL = cells.length,
         columns = me.getColumns();
 
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
         var groupIndex = cell.attr('group-index'),
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
@@ -825,7 +825,7 @@
         left -= scrollLeft;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var _cell = cells.item(i),
           cellLeft = parseInt(_cell.css('left')),
           column = columns[i];
@@ -834,8 +834,8 @@
           continue;
         }
 
-        if (column.grouping) {
-          if (columns[orderIndex].grouping !== column.grouping) {
+        if (column.grouping){
+          if (columns[orderIndex].grouping !== column.grouping){
             groups[column.grouping] = true;
           }
         }
@@ -850,7 +850,7 @@
         left += column.width;
       }
 
-      F.each(groups, function (value, group) {
+      F.each(groups, function(value, group){
         var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
           left = 0;
 
@@ -859,7 +859,7 @@
           left -= scrollLeft;
         }
 
-        F.each(columns, function (column, i) {
+        F.each(columns, function(column){
           if(column.hidden){
             return;
           }
@@ -880,7 +880,7 @@
     /*
      * @param {Number} orderIndex
      */
-    showCell: function (orderIndex) {
+    showCell: function(orderIndex){
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -895,7 +895,7 @@
 
       cellWidth = parseInt(cell.css('width'));
 
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
         var groupIndex = cell.attr('group-index'),
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
@@ -915,7 +915,7 @@
 
       var groups = {};
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var _cell = cells.item(i),
           cellLeft = parseInt(_cell.css('left')),
           column = columns[i];
@@ -924,8 +924,8 @@
           continue;
         }
 
-        if (column.grouping) {
-          if (columns[orderIndex].grouping !== column.grouping) {
+        if (column.grouping){
+          if (columns[orderIndex].grouping !== column.grouping){
             groups[column.grouping] = true;
           }
         }
@@ -940,7 +940,7 @@
         left += column.width;
       }
 
-      F.each(groups, function (value, group) {
+      F.each(groups, function(value, group){
         var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
           left = 0;
 
@@ -949,7 +949,7 @@
           left -= scrollLeft;
         }
 
-        F.each(columns, function (column) {
+        F.each(columns, function(column){
           if(column.hidden){
             return;
           }
@@ -970,7 +970,7 @@
     /*
      * @param {Number} orderIndex
      */
-    removeCell: function (orderIndex) {
+    removeCell: function(orderIndex){
       var me = this,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
         cell = cells.item(orderIndex),
@@ -980,18 +980,18 @@
         groupCells = {},
         isGroupCell = false;
 
-      if (cell.attr('group-index')) {
+      if (cell.attr('group-index')){
         isGroupCell = cell.attr('group-index');
         groupCells[isGroupCell] = true;
       }
 
       cell.destroy();
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var _cell = cells.item(i),
           left = parseInt(_cell.css('left')) - cellWidth;
 
-        if (_cell.attr('group-index')) {
+        if (_cell.attr('group-index')){
           groupCells[_cell.attr('group-index')] = true;
         }
 
@@ -1000,15 +1000,15 @@
         _cell.css('left', left);
       }
 
-      for (var p in groupCells) {
+      for (var p in groupCells){
         var groupCell = me.el.select('[index="' + p + '"]'),
           newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
           newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
 
-        if (isGroupCell && groupCell) {
+        if (isGroupCell && groupCell){
           groupCell.css('width', newCellWidth);
 
-          if (groupCell.attr('index') !== isGroupCell) {
+          if (groupCell.attr('index') !== isGroupCell){
             groupCell.css('left', newCellLeft);
           }
         }
@@ -1017,22 +1017,22 @@
         }
       }
 
-      if (isGroupCell) {
-        if (me.el.select('[group-index="' + isGroupCell + '"]').length === 0) {
-          var groupCell = me.el.select('[index="' + isGroupCell + '"]');
+      if (isGroupCell){
+        if (me.el.select('[group-index="' + isGroupCell + '"]').length === 0){
+          groupCell = me.el.select('[index="' + isGroupCell + '"]');
 
           groupCell.destroy();
         }
       }
 
-      if (me.side !== 'center') {
+      if (me.side !== 'center'){
         me.css('width', parseInt(me.css('width')) - cellWidth);
       }
     },
     /*
      *
      */
-    renderHeaderCheckBox: function () {
+    renderHeaderCheckBox: function(){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -1040,7 +1040,7 @@
         iL = columns.length,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i];
 
         if(F.isObject(column.headerCheckBox)){
@@ -1054,14 +1054,14 @@
           }
         }
 
-        if (column.headerCheckBox === true && column.type !== 'select') {
+        if (column.headerCheckBox === true && column.type !== 'select'){
           var cell = cells.item(i),
             headerCellContainer = cell.firstChild(),
             textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
             label = column.title ? column.title : false,
             labelWidth = 0;
 
-          switch(column.type) {
+          switch(column.type){
             case 'checkbox':
             case 'switcher':
               cell.addCls(GRID_HEADER_CELL_CHECKBOX_CLS);
@@ -1073,7 +1073,7 @@
 
           textEl.update('');
 
-          if (label.length) {
+          if (label.length){
             labelWidth = label.width * 15;
           }
 
@@ -1090,11 +1090,11 @@
               display: 'inline-block'
             },
             events: [{
-              change: function (checkbox, value) {
+              change: function(checkbox, value){
                 var i = 0,
                   iL = w.getViewTotal();
 
-                for (; i < iL; i++) {
+                for (; i < iL; i++){
                   w.set(i, column.index, value);
                 }
               }
@@ -1106,22 +1106,22 @@
     /*
      *
      */
-    reSetIndexes: function () {
+    reSetIndexes: function(){
       var cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
-      cells.each(function (cell, i) {
+      cells.each(function(cell, i){
         cell.attr('index', i);
-      })
+      });
     },
     /*
      *
      */
-    reSetGroupIndexes: function () {
+    reSetGroupIndexes: function(){
       var me = this,
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
-      cells.each(function (cell, i) {
+      cells.each(function(cell, i){
         var column = columns[i],
           grouping = column.grouping;
 
@@ -1140,7 +1140,7 @@
       var me = this,
         columns = me.getColumns();
 
-      F.each(columns, function (column, i) {
+      F.each(columns, function(column, i){
         if(column.headerCheckBox){
           return;
         }
@@ -1166,7 +1166,7 @@
         }
       }
 
-      F.each(columns, function (column, i){
+      F.each(columns, function(column, i){
         if(column.hidden){
           return;
         }
@@ -1243,7 +1243,7 @@
     /*
      *
      */
-    reSetColumnsAlign: function () {
+    reSetColumnsAlign: function(){
       var me = this,
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
@@ -1257,8 +1257,8 @@
     /*
      * Bug Fix: Empty method that is rewritten in HeaderMenu mixin
      */
-    destroyMenus: function () {},
-    onDocMove: function () {
+    destroyMenus: function(){},
+    onDocMove: function(){
       var me = this,
         w = me.widget;
 
@@ -1269,13 +1269,13 @@
     /*
      *
      */
-    reSetColumnsCls: function () {
+    reSetColumnsCls: function(){
       var me = this,
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
         columnsCls = [];
 
-      F.each(columns, function (column) {
+      F.each(columns, function(column){
         if(column.headerCls){
           columnsCls.push(column.headerCls);
         }
@@ -1290,7 +1290,7 @@
 
       cells.each(function(cell, i){
         var column = columns[i];
-        F.each(columnsCls, function (cls) {
+        F.each(columnsCls, function(cls){
           cell.removeCls(cls);
         });
 
@@ -1313,12 +1313,12 @@
         }
       });
     },
-    updateCellsVisibility: function () {
+    updateCellsVisibility: function(){
       var me = this,
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
-      cells.each(function(cell, i) {
+      cells.each(function(cell, i){
         var column = columns[i];
 
         if(column.hidden){
@@ -1334,7 +1334,7 @@
         columns = me.getColumns(),
         cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
 
-      F.each(columns, function (column, i) {
+      F.each(columns, function(column, i){
         var cell = cells.item(i),
           checkBoxEl = cell.select('.' + FIELD_CHECKBOX_CLS);
 
@@ -1363,7 +1363,7 @@
 
       me.renderHeaderCheckBox();
     },
-    onCellTextDBLClick: function (e) {
+    onCellTextDBLClick: function(e){
       var me = this,
         w = me.widget,
         targetEl = Fancy.get(e.target),
@@ -1393,17 +1393,17 @@
         value: column.title || '',
         inputHeight: w.cellHeaderHeight + 1,
         events: [{
-          enter: function (field) {
+          enter: function(field){
             field.destroy();
           }
         }, {
-          esc: function (field) {
+          esc: function(field){
             w.setColumnTitle(column.index, oldValue, me.side);
             field.destroy();
             delete me.activeEditColumnField;
           }
         }, {
-          input: function (field, value) {
+          input: function(field, value){
             w.setColumnTitle(column.index, value, me.side);
             delete me.activeEditColumnField;
           }
@@ -1427,15 +1427,15 @@
         }
       });
     },
-    onCellMouseEnter: function (e) {
+    onCellMouseEnter: function(e){
       var me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
 
-      if (F.nojQuery && prevCellOver) {
-        if (me.fixZeptoBug) {
-          if (params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side) {
+      if (F.nojQuery && prevCellOver){
+        if (me.fixZeptoBug){
+          if (params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
             w.fire('headercellleave', prevCellOver);
           }
           else{
@@ -1452,7 +1452,7 @@
     /*
     * @param {Object} e
     */
-    onCellMouseLeave: function (e) {
+    onCellMouseLeave: function(e){
       var me = this,
         w = me.widget,
         params = me.getEventParams(e),
@@ -1463,8 +1463,8 @@
         delete me.prevCellOver;
       }
 
-      if (F.nojQuery) {
-        if (prevCellOver === undefined) {
+      if (F.nojQuery){
+        if (prevCellOver === undefined){
           return;
         }
 
@@ -1479,7 +1479,7 @@
      * @param {Object} e
      * @return {false|Object}
      */
-    getEventParams: function (e) {
+    getEventParams: function(e){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1487,11 +1487,11 @@
         cell = e.currentTarget,
         cellEl = F.get(e.currentTarget);
 
-      if (cellEl.parent().dom === undefined) {
+      if (cellEl.parent().dom === undefined){
         return false;
       }
 
-      if (s.getLength() === 0) {
+      if (s.getLength() === 0){
         return false;
       }
 

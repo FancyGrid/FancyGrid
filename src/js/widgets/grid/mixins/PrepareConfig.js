@@ -87,13 +87,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  generateColumnsFromData: function (config, originalConfig) {
+  generateColumnsFromData: function(config, originalConfig){
     if(!config.columns && config.data && config.data.length && Fancy.isArray(config.data[0])){
       var firstDataRow = config.data[0] || config.data[0],
         columns = [],
         fields = [];
 
-      Fancy.each(firstDataRow, function (value, i) {
+      Fancy.each(firstDataRow, function(value, i){
         columns.push({
           index: 'autoIndex' + i
         });
@@ -117,7 +117,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigScroll: function (config, originalConfig) {
+  prepareConfigScroll: function(config, originalConfig){
     if(Fancy.isIE && originalConfig.nativeScroller !== false){
       config.nativeScroller = true;
     }
@@ -129,7 +129,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSpark: function(config, originalConfig){
+  prepareConfigSpark: function(config){
     var me = this;
 
     Fancy.each(config.columns, function(column){
@@ -224,8 +224,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigData: function(config, originalConfig){
-    var me = this;
+  prepareConfigData: function(config){
     if(!config.data){
       config.data = [];
     }
@@ -249,11 +248,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         if(column.columns){
-          Fancy.each(column.columns, function (column) {
+          Fancy.each(column.columns, function(column){
             if(column.index){
               fields.push(column.index || column.key);
             }
-          })
+          });
         }
       });
 
@@ -551,7 +550,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(isTreeData){
       var treeConfig = {
         type: 'grid.tree'
-      }
+      };
 
       if(config.singleExpand){
         treeConfig.singleExpand = config.singleExpand;
@@ -586,9 +585,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       bootstrapTab = false,
       _el = Fancy.get(config.renderTo || document.body);
 
-    if((config.width < 1 || config.width === undefined) && _el.prop('tagName').toLocaleLowerCase() !== 'body') {
+    if((config.width < 1 || config.width === undefined) && _el.prop('tagName').toLocaleLowerCase() !== 'body'){
       bootstrapTab = _el.closest('.tab-pane');
-      if (bootstrapTab) {
+      if (bootstrapTab){
         bootstrapTab.css({
           display: 'block',
           visibility: 'hidden'
@@ -784,7 +783,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           '<div class="fancy-grid-column-action-item '+cls+'" style="' + style + '">',
           itemText,
           '</div>'
-        ].join(" ");
+        ].join(' ');
 
         if(item.render){
           o = item.render(o);
@@ -792,7 +791,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       return o;
-    }
+    };
   },
   /*
    * @param {Object} config
@@ -863,8 +862,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 }
                 break;
               case 'dialog':
-                (function(item) {
-                  if (item.handler === undefined) {
+                (function(item){
+                  if (item.handler === undefined){
                     var _items = [],
                       k = 0,
                       kL = columns.length,
@@ -872,7 +871,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
                     for(;k<kL;k++){
                       var _column = columns[k];
-                      switch (_column.type) {
+                      switch (_column.type){
                         case 'action':
                           continue;
                       }
@@ -957,7 +956,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       i = 0,
       iL = columns.length;
 
-    for(;i<iL;i++) {
+    for(;i<iL;i++){
       var column = columns[i];
 
       if(column.widget){
@@ -1127,26 +1126,26 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       if(Fancy.isObject(config.selModel)){
         checkOnly = !!config.selModel.checkOnly;
 
-        switch (config.selModel.type) {
+        switch (config.selModel.type){
           case 'cell':
           case 'cells':
-            if (config.selModel.selectBottomCellAfterEdit) {
+            if (config.selModel.selectBottomCellAfterEdit){
               selectBottomCellAfterEdit = true;
             }
 
-            if (config.selModel.selectRightCellOnEnd) {
+            if (config.selModel.selectRightCellOnEnd){
               selectRightCellOnEnd = true;
             }
 
-            if (config.selModel.selectLeftCellOnLeftEnd) {
+            if (config.selModel.selectLeftCellOnLeftEnd){
               selectLeftCellOnLeftEnd = true;
             }
 
-            if (config.selModel.selectUpCellOnUp) {
+            if (config.selModel.selectUpCellOnUp){
               selectUpCellOnUp = true;
             }
 
-            if (config.selModel.selectBottomCellOnDown) {
+            if (config.selModel.selectBottomCellOnDown){
               selectBottomCellOnDown = true;
             }
             break;
@@ -1155,7 +1154,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         var containsTreeColumn = false,
           containsSelectColumn = false;
 
-        Fancy.each(config.columns, function (column) {
+        Fancy.each(config.columns, function(column){
           if(column.type === 'tree'){
             containsTreeColumn = true;
           }
@@ -1375,7 +1374,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var menuConfig = config.contextmenu;
 
       if(Fancy.isArray(config.contextmenu)){
-        Fancy.each(config.contextmenu, function (value) {
+        Fancy.each(config.contextmenu, function(value){
           if(value === 'export'){
             config.exporter = true;
           }
@@ -1426,7 +1425,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigFilter: function(config, originalConfig){
+  prepareConfigFilter: function(config){
     var columns = config.columns,
       isFilterable = false,
       isHeaderFilter = false,
@@ -1599,7 +1598,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config['tbar'] = me.generatePagingBar(paging, lang);
       config['bbar'] = me.generatePagingBar(paging, lang);
     }
-    else if(barType === 'none') {}
+    else if(barType === 'none'){}
     else {
       config[barType] = me.generatePagingBar(paging, lang);
     }
@@ -1611,7 +1610,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigInfinite: function(config, originalConfig){
+  prepareConfigInfinite: function(config){
     var infinite = config.infinite;
 
     if(!infinite){
@@ -1637,7 +1636,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       disabledCls = 'fancy-bar-button-disabled',
       marginTop = me.theme === 'material'? 8 : 3,
       style = {
-        "float": 'left',
+        'float': 'left',
         'margin-right': '5px',
         'margin-top': marginTop + 'px'
       };
@@ -1679,7 +1678,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       label: false,
       padding: false,
       style: {
-        "float": 'left',
+        'float': 'left',
         'margin-left': '-1px',
         'margin-right': '8px',
         'margin-top': (marginTop + 1) + 'px'
@@ -1689,14 +1688,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       width: paging.inputWidth || 30,
       listeners: [{
         enter: function(field){
-          if (parseInt(field.getValue()) === 0) {
+          if (parseInt(field.getValue()) === 0){
             field.set(1);
           }
 
           var page = parseInt(field.getValue()) - 1,
             setPage = me.paging.setPage(page);
 
-          if (page !== setPage) {
+          if (page !== setPage){
             field.set(setPage);
           }
         }
@@ -1787,16 +1786,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         value: value,
         subSearch: false,
         events: [{
-          change: function (field, value) {
+          change: function(field, value){
             me.scroll(0, 0);
             me.paging.setPageSize(pageSizeData[value]);
           }
         },{
-          render: function (combo) {
-            me.store.on('changepages', function () {
+          render: function(combo){
+            me.store.on('changepages', function(){
               if(me.store.pageSize !== Number(combo.input.dom.value)){
                 var index;
-                Fancy.each(combo.data, function (item) {
+                Fancy.each(combo.data, function(item){
                   if(item.value === me.store.pageSize){
                     index = item.index;
                     return true;
@@ -1829,6 +1828,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigState: function(config){
+    var me = this;
+
     if(config.stateful){
       var log = {};
 
@@ -1841,11 +1842,23 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var name = config.stateId || this.getStateName(),
         state = localStorage.getItem(name);
 
+      if(!state){
+        me.memoryInitialColumns(name, config.columns);
+      }
+
+      //if(state && me.wasColumnsCodeChanged(config.columns, JSON.parse(state).columns)){
+      if(state && me.wasColumnsCodeChanged(name, config.columns)){
+        localStorage.clear(name);
+        localStorage.clear(name + 'memory-columns');
+        state = null;
+        me.memoryInitialColumns(name, config.columns);
+      }
+
       if(state){
         state = JSON.parse(state);
 
-        for(var p in state) {
-          if (Fancy.isString(state[p])) {
+        for(var p in state){
+          if (Fancy.isString(state[p])){
             state[p] = JSON.parse(state[p]);
           }
         }
@@ -1853,11 +1866,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         var stateColumns = state.columns;
 
         if(stateColumns){
-          Fancy.each(stateColumns, function (stateColumn, i) {
-            Fancy.each(stateColumn, function (v, p) {
+          Fancy.each(stateColumns, function(stateColumn){
+            Fancy.each(stateColumn, function(v, p){
               if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
                 var index = stateColumn.index;
-                Fancy.each(config.columns, function (column) {
+                Fancy.each(config.columns, function(column){
                   if(column.index === index){
                     stateColumn[p] = column[p];
                     return true;
@@ -1921,15 +1934,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
-  prepareConfigBars: function(config) {
+  prepareConfigBars: function(config){
     var fn = function(bar){
       var i = 0,
         iL = bar.length;
 
-      for(;i<iL;i++) {
-        switch (bar[i].type) {
+      for(;i<iL;i++){
+        switch (bar[i].type){
           case 'date':
-            if (!bar[i].format) {
+            if (!bar[i].format){
               var date = config.lang.date;
               bar[i].format = {
                 read: date.read,
@@ -2055,8 +2068,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigSubTBar: function(config){
-    var me = this,
-      bar = config.subTBar;
+    var bar = config.subTBar;
 
     if(bar){
       var i = 0,
@@ -2118,10 +2130,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSize: function(config, originalConfig){
+  prepareConfigSize: function(config){
     var me = this,
       renderTo = config.renderTo,
       length,
+      height,
       el,
       isPanel = !!( config.title ||  config.subTitle || config.tbar || config.bbar || config.buttons || config.panel),
       panelBodyBorders = config.panelBodyBorders,
@@ -2150,7 +2163,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             });
           }
           else {
-            config.width = el.parent().width()
+            config.width = el.parent().width();
           }
         }
 
@@ -2200,8 +2213,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
     else if(config.height === 'fit'){
-      var length = 0,
-        headerRows = 1;
+      var headerRows = 1;
+      length = 0,
 
       Fancy.each(config.columns, function(column){
         if(column.grouping){
@@ -2230,7 +2243,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         length = config.data.items.length;
       }
 
-      var height = length * config.cellHeight;
+      height = length * config.cellHeight;
 
       if(config.title){
         height += config.titleHeight;
@@ -2282,7 +2295,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     if(isPanel && !config.title){
       config.panelBodyBorders = [0,0,0,0];
-      setTimeout(function () {
+      setTimeout(function(){
         if(me.panel){
           me.panel.css('border-bottom-width', 0);
         }
@@ -2290,5 +2303,56 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     return config;
+  },
+  /*
+   * @param {Array} name
+   * @param {Array} columns
+   * @return {Boolean}
+   */
+  wasColumnsCodeChanged: function(name, columns){
+    name = name + '-memory-columns';
+    var memoryColumns = JSON.parse(localStorage.getItem(name));
+
+    if(columns.length !== memoryColumns.length){
+      return true;
+    }
+
+    var wasChanges = false;
+    
+    Fancy.each(memoryColumns, function (column, i){
+      for(var p in column){
+        if(column[p] !== memoryColumns[i][p]){
+          wasChanges = true;
+          return true;
+        }
+      }
+    });
+
+    return wasChanges;
+  },
+  /*
+   * @param {String} name
+   * @param {Array} columns
+   */
+  memoryInitialColumns: function(name, columns){
+    name = name + '-memory-columns';
+    var memoryColumns = [];
+
+    Fancy.each(columns, function(column){
+      var memoryColumn = {};
+
+      for(var p in column){
+        switch (Fancy.typeOf(column[p])){
+          case 'string':
+          case 'number':
+            memoryColumn[p] = column[p];
+            break;
+        }
+      }
+
+      memoryColumns.push(memoryColumn);
+    });
+
+    localStorage.setItem(name, JSON.stringify(memoryColumns));
   }
 });

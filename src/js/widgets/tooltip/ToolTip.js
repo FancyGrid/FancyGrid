@@ -2,7 +2,7 @@
  * @class Fancy.ToolTip
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -16,13 +16,13 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.initTpl();
       this.render();
       this.ons();
@@ -36,7 +36,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div'));
@@ -58,15 +58,15 @@
      * @param {Number} x
      * @param {Number} y
      */
-    show: function (x, y) {
+    show: function(x, y){
       var me = this;
 
-      if (me.timeout) {
+      if (me.timeout){
         clearInterval(me.timeout);
         delete me.timeout;
       }
 
-      if (me.css('display') === 'none') {
+      if (me.css('display') === 'none'){
         me.css({
           display: 'block'
         });
@@ -80,16 +80,16 @@
     /*
      * @param {Number} [delay]
      */
-    hide: function (delay) {
+    hide: function(delay){
       var me = this;
 
-      if (me.timeout) {
+      if (me.timeout){
         clearInterval(me.timeout);
         delete me.timeout;
       }
 
-      if (delay) {
-        me.timeout = setTimeout(function () {
+      if (delay){
+        me.timeout = setTimeout(function(){
           me.el.hide();
         }, delay);
       }
@@ -100,21 +100,21 @@
     /*
      *
      */
-    destroy: function () {
+    destroy: function(){
       this.el.destroy();
     },
     /*
      * @param {String} html
      */
-    update: function (html) {
+    update: function(html){
       this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
     },
-    ons: function () {
+    ons: function(){
       var me = this;
 
       me.el.on('mouseenter', me.onMouseEnter, me);
     },
-    onMouseEnter: function (e) {
+    onMouseEnter: function(){
       var me = this;
 
       //me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
@@ -123,18 +123,18 @@
   });
 
   F.tip = {
-    update: function (text) {
+    update: function(text){
       F.tip = new F.ToolTip({
         text: text
       });
     },
-    show: function (x, y) {
+    show: function(x, y){
       F.tip = new F.ToolTip({
         text: ' '
       });
       F.tip.show(x, y);
     },
-    hide: function () {
+    hide: function(){
       F.tip = new F.ToolTip({
         text: ' '
       });

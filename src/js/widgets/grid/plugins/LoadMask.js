@@ -64,7 +64,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     el.addCls(me.cls);
 
     if( w.theme !== 'default' ){
-      el.addCls('fancy-theme-' + w.theme);
+      el.addCls(Fancy.getThemeCSSCls(w.theme));
     }
 
     el.css({
@@ -128,7 +128,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onLoad: function(){
-    if(this.showOnWaitingServer) {
+    if(this.showOnWaitingServer){
       this.hide();
     }
   },
@@ -167,7 +167,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  hide: function() {
+  hide: function(){
     var me = this,
       el = me.el;
 
@@ -177,7 +177,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       opacity: 0,
       force: true
     }, {
-      complete: function () {
+      complete: function(){
         me.loaded = true;
         el.css('display', 'none');
       }

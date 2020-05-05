@@ -20,7 +20,6 @@ Fancy.define('Fancy.Store', {
   pageSize: 10,
   showPage: 0,
   pages: 0,
-  dirty: false,
   loading: false,
   /*
    * @constructor
@@ -38,8 +37,8 @@ Fancy.define('Fancy.Store', {
 
     me.setModel();
 
-    if(me.data) {
-      if (me.data.proxy) {
+    if(me.data){
+      if (me.data.proxy){
         me.initProxy();
       }
       else if(!me.widget.isTreeData){
@@ -88,8 +87,8 @@ Fancy.define('Fancy.Store', {
       me.initInfinite();
     }
 
-    if( me.initTrackDirty ) {
-      me.initTrackDirty()
+    if( me.initTrackDirty ){
+      me.initTrackDirty();
     }
   },
   /*
@@ -128,8 +127,8 @@ Fancy.define('Fancy.Store', {
     me.dataViewIndexes = {};
     me.map = {};
 
-    if(me.collapsed) {
-      for (; i < iL; i++) {
+    if(me.collapsed){
+      for (; i < iL; i++){
         item = new model(data[i]);
 
         me.data[i] = item;
@@ -139,7 +138,7 @@ Fancy.define('Fancy.Store', {
     else {
       if(me.expanded){
         //??? It looks like never reaches
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           item = new model(data[i]);
 
           me.data[i] = item;
@@ -148,7 +147,7 @@ Fancy.define('Fancy.Store', {
       }
       else {
         if(me.paging ){
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             item = new model(data[i]);
 
             me.data[i] = item;
@@ -161,7 +160,7 @@ Fancy.define('Fancy.Store', {
           }
         }
         else {
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             item = new model(data[i]);
 
             me.data[i] = item;
@@ -175,9 +174,9 @@ Fancy.define('Fancy.Store', {
     }
 
     if(me.isTree){
-      Fancy.each(me.data, function (item, i) {
+      Fancy.each(me.data, function(item){
         if(item.get('expanded')){
-          Fancy.each(item.data.child, function (_child,_i) {
+          Fancy.each(item.data.child, function(_child,_i){
             var childItem = me.getById(_child.id);
 
             item.data.child[_i] = childItem;
@@ -196,7 +195,7 @@ Fancy.define('Fancy.Store', {
 
     if(!item){
       if(me.order){
-        item = me.data[me.order[rowIndex]]
+        item = me.data[me.order[rowIndex]];
       }
       else {
         item = me.data[rowIndex];
@@ -222,7 +221,7 @@ Fancy.define('Fancy.Store', {
 
     if(!item){
       if(me.order){
-        item = me.data[me.order[rowIndex]]
+        item = me.data[me.order[rowIndex]];
       }
       else {
         item = me.data[rowIndex];
@@ -344,7 +343,7 @@ Fancy.define('Fancy.Store', {
         });
       }
 
-      if(me.proxyType === 'server' && me.autoSave) {
+      if(me.proxyType === 'server' && me.autoSave){
         me.proxyCRUD('UPDATE', id, data);
       }
 
@@ -372,7 +371,7 @@ Fancy.define('Fancy.Store', {
         //TODO: it is bad about perfomance, it needs to redo.
         var parentItem = me.getById(_item.data.parentId);
 
-        Fancy.each(parentItem.data.child, function (child, i) {
+        Fancy.each(parentItem.data.child, function(child){
           if(child.id === _item.id){
             child[key] = value;
           }
@@ -422,8 +421,8 @@ Fancy.define('Fancy.Store', {
       me.set(rowIndex, data);
     }
     else {
-      for (var p in data) {
-        if (pastData[p] == data[p]) {
+      for (var p in data){
+        if (pastData[p] == data[p]){
           continue;
         }
 
@@ -550,7 +549,7 @@ Fancy.define('Fancy.Store', {
     else{
       if(options.format){
         if(options.type === 'date'){
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             var value = data[i].data[key];
 
             if(value === null || value === ''){
@@ -563,12 +562,12 @@ Fancy.define('Fancy.Store', {
         }
         else{
           if(nestedKey){
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               values.push(this.getNestedValue(data[i].data, key));
             }
           }
           else {
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               values.push(data[i].data[key]);
             }
           }
@@ -578,8 +577,8 @@ Fancy.define('Fancy.Store', {
         if(options.groupMap){
           me.groupMap = {};
 
-          if(nestedKey) {
-            for (; i < iL; i++) {
+          if(nestedKey){
+            for (; i < iL; i++){
               var item = data[i],
                 value = this.getNestedValue(item.data, key);
 
@@ -588,7 +587,7 @@ Fancy.define('Fancy.Store', {
             }
           }
           else {
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               var item = data[i],
                 value = item.data[key];
 
@@ -599,13 +598,13 @@ Fancy.define('Fancy.Store', {
         }
         else {
           if(!nestedKey){
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               var itemData = data[i].data || data[i];
               values.push(itemData[key]);
             }
           }
           else {
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               values.push(this.getNestedValue(data[i].data || data[i], key));
             }
           }
@@ -615,7 +614,7 @@ Fancy.define('Fancy.Store', {
 
     return values;
   },
-  getNestedValue: function (data, key) {
+  getNestedValue: function(data, key){
     var splitted = key.split('.');
 
     if(splitted.length > 1){
@@ -638,15 +637,15 @@ Fancy.define('Fancy.Store', {
       isFiltered = me.isFiltered(),
       data = me.data;
 
-    if(isFiltered) {
-      if (!o.stoppedFilter && !o.doNotFired) {
+    if(isFiltered){
+      if (!o.stoppedFilter && !o.doNotFired){
         me.filterData();
       }
-      else if (me.paging && me.pageType === 'server') {
+      else if (me.paging && me.pageType === 'server'){
         return;
       }
 
-      if (!me.remoteFilter) {
+      if (!me.remoteFilter){
         data = me.filteredData;
 
         if(data === undefined){
@@ -712,7 +711,7 @@ Fancy.define('Fancy.Store', {
         for(;i<iL;i++){
           if(isFiltered === true){
             me.dataViewIndexes[dataView.length] = me.filterOrder[i];
-            item = data[ i ]
+            item = data[i];
           }
           else {
             me.dataViewIndexes[dataView.length] = me.order[i];
@@ -766,12 +765,12 @@ Fancy.define('Fancy.Store', {
       _data = [];
 
     if(fn){
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data.push(fn(me.data[i].data));
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data.push(me.data[i].data[key]);
       }
     }
@@ -854,7 +853,7 @@ Fancy.define('Fancy.Store', {
 
     if(complex){
       iL = me.data.length;
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         if(me.order){
           item = me.data[me.order[i]];
         }
@@ -862,16 +861,16 @@ Fancy.define('Fancy.Store', {
           item = me.data[i];
         }
 
-        if (item.data[key] === value) {
+        if (item.data[key] === value){
           founded.push(i);
         }
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         item = dataView[i];
 
-        if (item.data[key] === value) {
+        if (item.data[key] === value){
           founded.push(i);
         }
       }
@@ -965,10 +964,10 @@ Fancy.define('Fancy.Store', {
       me.smartIndexes = smartIndexes;
     }
   },
-  destroy: function () {
+  destroy: function(){
     var me = this;
 
-    Fancy.each(me.data, function (item) {
+    Fancy.each(me.data, function(item){
       delete item.data;
       delete item.id;
     });
@@ -982,12 +981,12 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  addField: function (index) {
+  addField: function(index){
     var me = this,
       fields = me.fields,
       presented = false;
 
-    Fancy.each(fields, function (field) {
+    Fancy.each(fields, function(field){
       if(field === index){
         presented = true;
         return true;
@@ -1001,15 +1000,14 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Boolean}
    */
-  isFiltered: function () {
+  isFiltered: function(){
     var me = this,
-      filters = me.filters || {},
-      filtered = false;
+      filters = me.filters || {};
 
     for(var p in filters){
-      filtered = true;
+      return true;
     }
 
-    return filtered;
+    return false;
   }
 });

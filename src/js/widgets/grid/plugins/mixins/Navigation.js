@@ -2,7 +2,7 @@
  * @class Fancy.grid.selection.mixin.Navigation
  * TODO: write realization for key navigation
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -16,14 +16,14 @@
     /*
      *
      */
-    initNavigation: function () {
+    initNavigation: function(){
       this.addEvents('up', 'down', 'left', 'right');
       this.onsNav();
     },
     /*
      *
      */
-    onsNav: function () {
+    onsNav: function(){
       var me = this,
         doc = Fancy.get(document);
 
@@ -32,7 +32,7 @@
     /*
      * @param {Object} e
      */
-    onKeyDown: function (e) {
+    onKeyDown: function(e){
       var me = this,
         w = me.widget,
         keyCode = e.keyCode,
@@ -42,15 +42,15 @@
         return;
       }
 
-      if(!me.keyNavigating) {
+      if(!me.keyNavigating){
         var docEl = F.get(document);
 
-        docEl.once('keyup', function () {
+        docEl.once('keyup', function(){
           delete me.keyNavigating;
         });
       }
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.TAB:
           break;
         case key.UP:
@@ -84,7 +84,7 @@
           me.scrollPageDOWN();
           break;
         case key.ENTER:
-          if(w.celledit && !w.celledit.activeEditor) {
+          if(w.celledit && !w.celledit.activeEditor){
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
               var activeCell = w.selection.getActiveCell();
 
@@ -101,7 +101,7 @@
                 info.item = item;
                 info.data = item.data;
 
-                if (info.column.smartIndexFn) {
+                if (info.column.smartIndexFn){
                   info.value = info.column.smartIndexFn(info.data);
                 }
                 else{
@@ -173,11 +173,11 @@
         case key.Z:
         */
         default:
-          if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor) {
-            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells') {
+          if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
               var activeCell = w.selection.getActiveCell();
 
-              if(activeCell) {
+              if(activeCell){
                 var info = w.selection.getActiveCellInfo(),
                   columns = w.getColumns(info.side);
 
@@ -199,7 +199,7 @@
           break;
       }
     },
-    moveRight: function () {
+    moveRight: function(){
       var me = this,
         w = me.widget,
         info = me.getActiveCellInfo(),
@@ -240,7 +240,7 @@
         case 'left':
           var _column = w.leftColumns[info.columnIndex];
 
-          if(_column.hidden) {
+          if(_column.hidden){
             var i = info.columnIndex,
               iL = w.leftColumns.length,
               foundVisibleColumn = false;
@@ -285,7 +285,7 @@
           //TODO
           var _column = w.columns[info.columnIndex];
 
-          if(_column.hidden) {
+          if(_column.hidden){
             var i = info.columnIndex,
               iL = w.columns.length,
               foundVisibleColumn = false;
@@ -311,7 +311,7 @@
         case 'right':
           var _column = w.rightColumns[info.columnIndex];
 
-          if(_column.hidden) {
+          if(_column.hidden){
             var i = info.columnIndex,
               iL = w.rightColumns.length,
               foundVisibleColumn = false;
@@ -351,7 +351,7 @@
           break;
       }
     },
-    moveLeft: function () {
+    moveLeft: function(){
       var me = this,
         w = me.widget,
         info = me.getActiveCellInfo(),
@@ -361,12 +361,12 @@
 
       info.columnIndex--;
 
-      if (info.columnIndex < 0) {
-        switch (info.side) {
+      if (info.columnIndex < 0){
+        switch (info.side){
           case 'left':
             return;
           case 'center':
-            if (w.leftColumns && w.leftColumns.length) {
+            if (w.leftColumns && w.leftColumns.length){
               info.columnIndex = w.leftColumns.length - 1;
               body = w.getBody('left');
               info.side = 'left';
@@ -395,7 +395,7 @@
             }
             break;
           case 'right':
-            if (w.columns && w.columns.length) {
+            if (w.columns && w.columns.length){
               info.columnIndex = w.columns.length - 1;
               body = w.getBody('center');
               info.side = 'center';
@@ -405,7 +405,7 @@
         }
       }
       else {
-        switch (info.side) {
+        switch (info.side){
           case 'left':
             var _column = w.leftColumns[info.columnIndex];
 
@@ -533,7 +533,7 @@
           break;
       }
     },
-    moveUp: function () {
+    moveUp: function(){
       var me = this,
         w = me.widget,
         info = me.getActiveCellInfo(),
@@ -569,7 +569,7 @@
           break;
       }
     },
-    moveDown: function () {
+    moveDown: function(){
       var me = this,
         w = me.widget,
         info = me.getActiveCellInfo(),
@@ -605,7 +605,7 @@
     /*
      *
      */
-    scrollPageUP: function () {
+    scrollPageUP: function(){
       var me = this,
         w = me.widget,
         bodyHeight = parseInt(w.body.el.height()),
@@ -621,7 +621,7 @@
     /*
      *
      */
-    scrollPageDOWN: function () {
+    scrollPageDOWN: function(){
       var me = this,
         w = me.widget,
         gridBorders = w.gridBorders,

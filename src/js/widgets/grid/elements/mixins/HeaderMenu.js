@@ -1,7 +1,7 @@
 /*
  * @mixin Fancy.grid.header.mixin.Menu
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -20,7 +20,7 @@
      * @param {Object} column
      * @param {Array} columns
      */
-    showMenu: function (cell, index, column, columns) {
+    showMenu: function(cell, index, column, columns){
       var me = this,
         w = me.widget,
         offset = cell.offset();
@@ -35,7 +35,7 @@
       me.hideMenu();
       cell.addCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
 
-      if (!column.menu.rendered) {
+      if (!column.menu.rendered){
         column._menu = column.menu;
         column.menu = me.generateMenu(column, columns);
         column.menu = new F.Menu({
@@ -62,23 +62,23 @@
     /*
      *
      */
-    hideMenu: function () {
+    hideMenu: function(){
       var me = this,
         w = me.widget,
         header = w.header,
         rightHeader = w.rightHeader,
         leftHeader = w.leftHeader;
 
-      switch (me.side) {
+      switch (me.side){
         case 'left':
-          if (header.activeMenu) {
+          if (header.activeMenu){
             header.activeMenu.hide();
             header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete header.activeMenu;
             delete header.activeCell;
           }
 
-          if (rightHeader.activeMenu) {
+          if (rightHeader.activeMenu){
             rightHeader.activeMenu.hide();
             rightHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete rightHeader.activeMenu;
@@ -86,14 +86,14 @@
           }
           break;
         case 'center':
-          if (leftHeader.activeMenu) {
+          if (leftHeader.activeMenu){
             leftHeader.activeMenu.hide();
             leftHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete leftHeader.activeMenu;
             delete leftHeader.activeCell;
           }
 
-          if (rightHeader.activeMenu) {
+          if (rightHeader.activeMenu){
             rightHeader.activeMenu.hide();
             rightHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete rightHeader.activeMenu;
@@ -101,14 +101,14 @@
           }
           break;
         case 'right':
-          if (leftHeader.activeMenu) {
+          if (leftHeader.activeMenu){
             leftHeader.activeMenu.hide();
             leftHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete leftHeader.activeMenu;
             delete leftHeader.activeCell;
           }
 
-          if (header.activeMenu) {
+          if (header.activeMenu){
             header.activeMenu.hide();
             header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete header.activeMenu;
@@ -117,7 +117,7 @@
           break;
       }
 
-      if (me.activeMenu) {
+      if (me.activeMenu){
         me.activeMenu.hide();
         me.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
       }
@@ -129,7 +129,7 @@
      * @param {Object} column
      * @param {Array} columns
      */
-    generateMenu: function (column, columns) {
+    generateMenu: function(column, columns){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -145,7 +145,7 @@
           text: lang.sortAsc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
-          handler: function () {
+          handler: function(){
             w.sorter.sort('asc', column.index, me.side);
             column.menu.hide();
           }
@@ -154,7 +154,7 @@
           text: lang.sortDesc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
-          handler: function () {
+          handler: function(){
             w.sorter.sort('desc', column.index, me.side);
             column.menu.hide();
           }
@@ -167,7 +167,7 @@
         itemSizeColumn = {
           text: lang.autoSizeColumn,
           cls: cls,
-          handler: function () {
+          handler: function(){
             w.autoSizeColumn(column.index, me.side);
             column.menu.hide();
           }
@@ -175,14 +175,14 @@
         itemSizeColumns = {
           text: lang.autoSizeColumns,
           cls: cls,
-          handler: function () {
+          handler: function(){
             w.autoSizeColumns();
             column.menu.hide();
           }
         };
 
-      for (; i < iL; i++) {
-        if (column.index === columns[i].index) {
+      for (; i < iL; i++){
+        if (column.index === columns[i].index){
           indexOrder = i;
           break;
         }
@@ -201,7 +201,7 @@
       }
 
       if(Fancy.isArray(column.menu)){
-        F.each(column.menu, function (item) {
+        F.each(column.menu, function(item){
           switch (item){
             case '|':
               menu.push('-');
@@ -218,12 +218,12 @@
               menu.push(itemSizeColumns);
               break;
             case 'lock':
-              switch (me.side) {
+              switch (me.side){
                 case 'left':
                 case 'right':
                   menu.push({
                     text: lang.unlock,
-                    handler: function () {
+                    handler: function(){
                       column.menu.hide();
                       w.unLockColumn(indexOrder, me.side);
                     }
@@ -232,7 +232,7 @@
                 case 'center':
                   menu.push({
                     text: lang.lock,
-                    handler: function () {
+                    handler: function(){
                       column.menu.hide();
                       w.lockColumn(indexOrder, me.side);
                     }
@@ -240,7 +240,7 @@
 
                   menu.push({
                     text: lang.rightLock,
-                    handler: function () {
+                    handler: function(){
                       column.menu.hide();
                       w.rightLockColumn(indexOrder, me.side);
                     }
@@ -254,40 +254,40 @@
         });
       }
       else {
-        if (menuSortable) {
+        if (menuSortable){
           menu.push(itemSortAsc);
           menu.push(itemSortDesc);
           menu.push('-');
         }
 
-        if (menuColumns) {
+        if (menuColumns){
           menu.push(itemColumns);
         }
 
-        if (menuLockable) {
-          switch (me.side) {
+        if (menuLockable){
+          switch (me.side){
             case 'left':
             case 'right':
-              if (column.menuColumns !== false) {
+              if (column.menuColumns !== false){
                 menu.push('-');
               }
 
               menu.push({
                 text: lang.unlock,
-                handler: function () {
+                handler: function(){
                   column.menu.hide();
                   w.unLockColumn(indexOrder, me.side);
                 }
               });
               break;
             case 'center':
-              if (column.menuColumns !== false) {
+              if (column.menuColumns !== false){
                 menu.push('-');
               }
 
               menu.push({
                 text: lang.lock,
-                handler: function () {
+                handler: function(){
                   column.menu.hide();
                   w.lockColumn(indexOrder, me.side);
                 }
@@ -295,7 +295,7 @@
 
               menu.push({
                 text: lang.rightLock,
-                handler: function () {
+                handler: function(){
                   column.menu.hide();
                   w.rightLockColumn(indexOrder, me.side);
                 }
@@ -310,7 +310,7 @@
     /*
      * @param {Array} columns
      */
-    prepareColumns: function (columns) {
+    prepareColumns: function(columns){
       var me = this,
         w = me.widget,
         _columns = [],
@@ -319,7 +319,7 @@
         group = [],
         groupName;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var value = true,
           column = columns[i];
 
@@ -327,7 +327,7 @@
           continue;
         }
 
-        if (column.hidden) {
+        if (column.hidden){
           value = false;
         }
 
@@ -335,12 +335,12 @@
           text: column.title,
           checked: value,
           index: column.index,
-          handler: function (menu, item) {
-            if (item.checked === true && !item.checkbox.get()) {
+          handler: function(menu, item){
+            if (item.checked === true && !item.checkbox.get()){
               item.checkbox.set(true);
             }
 
-            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1) {
+            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
               item.checkbox.set(true);
               return;
             }
@@ -348,7 +348,7 @@
             item.checked = !item.checked;
             item.checkbox.set(item.checked);
 
-            if (item.checked) {
+            if (item.checked){
               w.showColumn(me.side, item.index);
             }
             else {
@@ -361,13 +361,13 @@
           }
         };
 
-        if (column.grouping) {
+        if (column.grouping){
           group = group || [];
           group.push(columnConfig);
           groupName = column.grouping;
           continue;
         }
-        else if (group.length) {
+        else if (group.length){
           _columns.push({
             text: groupName,
             items: group
@@ -379,7 +379,7 @@
         _columns.push(columnConfig);
       }
 
-      if (group.length) {
+      if (group.length){
         _columns.push({
           text: groupName,
           items: group
@@ -391,7 +391,7 @@
     /*
      *
      */
-    onMenuHide: function () {
+    onMenuHide: function(){
       this.el.select('.' + GRID_HEADER_COLUMN_TRIGGERED_CLS).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
     },
     /*
@@ -399,7 +399,7 @@
      * @param {Array} columns
      * @param {Boolean} hard
      */
-    updateColumnsMenu: function (column, columns, hard) {
+    updateColumnsMenu: function(column, columns, hard){
       var me = this,
         menu = column.menu,
         columnsMenu,
@@ -407,10 +407,10 @@
         iL = menu.items.length,
         item;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         item = menu.items[i];
 
-        if (item.index === 'columns') {
+        if (item.index === 'columns'){
           columnsMenu = item;
           break;
         }
@@ -425,24 +425,24 @@
       iL = columnsMenu.items.length;
       var rendered = false;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         item = columnsMenu.items[i];
         var _column = columns[i];
 
-        if (item.checkbox) {
+        if (item.checkbox){
           item.checkbox.set(!_column.hidden, false);
           rendered = true;
         }
       }
 
-      if (!rendered && !hard) {
+      if (!rendered && !hard){
         columnsMenu.items = me.prepareColumns(columns);
       }
     },
     /*
      *
      */
-    destroyMenus: function () {
+    destroyMenus: function(){
       var me = this,
         w = me.widget,
         columns = w.getColumns(me.side),
@@ -450,10 +450,10 @@
         iL = columns.length,
         column;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
 
-        if (F.isObject(column.menu)) {
+        if (F.isObject(column.menu)){
           column.menu.destroy();
         }
       }

@@ -125,7 +125,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
     me.inserted[o.id] = o;
     me.inserted.length++;
 
-    if(me.undoStoppped !== true) {
+    if(me.undoStoppped !== true){
       if(!me.redoing){
         me.redoActions = [];
       }
@@ -136,7 +136,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       });
     }
   },
-  clearDirty: function () {
+  clearDirty: function(){
     var me = this;
 
     me.changed = {
@@ -153,5 +153,26 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
 
     me.undoActions = [];
     me.redoActions = [];
+  },
+  /*
+   * @return {Boolean}
+   */
+  isDirty: function(){
+    var me = this,
+      dirty = false;
+
+    if(me.changed.length){
+      dirty = true;
+    }
+
+    if(me.removed.length){
+      dirty = true;
+    }
+
+    if(me.inserted.length){
+      dirty = true;
+    }
+
+    return dirty;
   }
 });

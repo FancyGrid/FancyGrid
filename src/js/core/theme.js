@@ -9,6 +9,8 @@ Fancy.defineTheme = function(name, o){
 
   if(o.extend){
     Fancy.apply(themeConfig, Fancy.getTheme(o.extend).config);
+    themeConfig.extendedThemes = themeConfig.extendedThemes || [];
+    themeConfig.extendedThemes.push(o.extend);
   }
   else if(name !== 'default'){
     Fancy.apply(themeConfig, Fancy.getTheme('default').config);
@@ -18,6 +20,23 @@ Fancy.defineTheme = function(name, o){
   o.config = themeConfig;
 
   Fancy.themes[name] = o;
+};
+
+/**
+ * @param {String} name
+ * @return {String}
+ */
+Fancy.getThemeCSSCls = function(name){
+  var cls = 'fancy-theme-' + name,
+    theme = Fancy.getTheme(name);
+
+  if(theme && theme.config.extendedThemes){
+    Fancy.each(theme.config.extendedThemes, function(name){
+      cls += ' ' + 'fancy-theme-' + name;
+    });
+  }
+
+  return cls;
 };
 
 /**
@@ -105,6 +124,13 @@ Fancy.defineTheme('extra-gray', {
     cellHeaderHeight: 28,
     barHeight: 32,
     datePickerHeight: 287
+  }
+});
+
+Fancy.defineTheme('extra-dark', {
+  extend: 'extra-gray',
+  config: {
+
   }
 });
 

@@ -108,7 +108,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
     else{
       me.params[me.sortParam] = key;
-      if(action === 'drop') {
+      if(action === 'drop'){
         delete me.params[me.directionParam];
       }
       else{
@@ -116,7 +116,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.once('serversuccess', function () {
+    me.once('serversuccess', function(){
       me.fire('sort', {
         key: key,
         action: action
@@ -153,34 +153,34 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       i = 0;
       iL = _columnOriginalValues.length;
 
-      switch (action) {
+      switch (action){
         case 'asc':
           for(;i<iL;i++){
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
 
             if(customSort){
-              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function(a, b){
                 return customSort('asc', a, b);
               }));
             }
             else {
-              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function(a, b){
                 return a - b;
               }));
             }
           }
           break;
         case 'desc':
-          for(;i<iL;i++) {
+          for(;i<iL;i++){
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
 
             if(customSort){
-              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function(a, b){
                 customSort('desc', a, b);
               }));
             }
             else {
-              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function(a, b){
                 return b - a;
               }));
             }
@@ -204,15 +204,15 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         }
       }
 
-      switch (action) {
+      switch (action){
         case 'asc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
               return customSort('asc', a, b);
             });
           }
           else {
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
               return a - b;
             });
           }
@@ -221,12 +221,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           break;
         case 'desc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
               return customSort('desc', a, b);
             });
           }
           else {
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function (a, b) {
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
               return b - a;
             });
           }
@@ -264,13 +264,13 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       i = 0;
       iL = _columnOriginalValues.length;
 
-      switch (action) {
+      switch (action){
         case 'asc':
           for(;i<iL;i++){
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
 
             if(customSort){
-              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function(a, b){
                 return customSort('asc', a, b);
               }));
             }
@@ -280,10 +280,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           }
           break;
         case 'desc':
-          for(;i<iL;i++) {
+          for(;i<iL;i++){
             columnOriginalValues = columnOriginalValues.concat(_columnOriginalValues[i].values);
             if(customSort){
-              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function (a, b) {
+              sortedColumnValues = sortedColumnValues.concat(_columnOriginalValues[i].values.sort(function(a, b){
                 return customSort('desc', a, b);
               }));
             }
@@ -297,10 +297,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else {
       columnOriginalValues = me.getColumnOriginalValues(key);
 
-      switch (action) {
+      switch (action){
         case 'asc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function(a, b){
               return customSort('asc', a, b);
             });
           }
@@ -310,7 +310,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           break;
         case 'desc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function (a, b) {
+            sortedColumnValues = Fancy.Array.copy(columnOriginalValues).sort(function(a, b){
               return customSort('desc', a, b);
             });
           }
@@ -376,7 +376,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     var i = 0,
       iL = me.order.length;
 
-    if(action === '-') {
+    if(action === '-'){
       for(;i<iL;i++){
         if(me.order[i] > value){
           me.order[i]--;
@@ -481,12 +481,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       if(sorter.type === 'number'){
         switch(sorter.dir){
           case 'ASC':
-            sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function (a, b) {
+            sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function(a, b){
               return a - b;
             });
             break;
           case 'DESC':
-            sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function (a, b) {
+            sortedSubValues = Fancy.Array.copy(keyValues[j]).sort(function(a, b){
               return b - a;
             });
             break;
@@ -522,10 +522,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
     me.order = order;
   },
-  reSort: function () {
+  reSort: function(){
     var me = this;
     
-    Fancy.each(me.sorters, function (sorter) {
+    Fancy.each(me.sorters, function(sorter){
       me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {});
     });
   }

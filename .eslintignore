@@ -1,0 +1,6 @@
+/thirdparty/**
+/fancygrid/**
+/node_modules/**
+/src/js/umd/end.js
+/src/js/umd/start.js
+/src/js/core/dom/*.js

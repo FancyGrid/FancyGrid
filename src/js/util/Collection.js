@@ -58,7 +58,7 @@ Fancy.Collection.prototype = {
 
     me.updateIndexMap();
   },
-  updateIndexMap: function () {
+  updateIndexMap: function(){
     var me = this,
       i = 0,
       iL = me.keys.length;

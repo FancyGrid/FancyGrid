@@ -3,7 +3,7 @@
  * @extend Fancy.Plugin
  */
 Fancy.modules['column-drag'] = true;
-(function () {
+(function(){
 
   //SHORTCUTS
   var F = Fancy;
@@ -37,13 +37,13 @@ Fancy.modules['column-drag'] = true;
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this,
         w = me.widget;
 
@@ -57,13 +57,13 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
       w.el.on('mousedown', me.onMouseDownCell, me, 'div.' + GRID_HEADER_CELL_CLS);
     },
-    onMouseDownCell: function (e) {
+    onMouseDownCell: function(e){
       var me = this,
         w = me.widget,
         cell = Fancy.get(e.currentTarget),
@@ -121,13 +121,14 @@ Fancy.modules['column-drag'] = true;
       w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
       w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
     },
-    onMouseLeave: function () {
+    onMouseLeave: function(){
       this.hideHint();
     },
-    onMouseUp: function () {
+    onMouseUp: function(){
       var me = this,
         w = me.widget,
-        dragged = false;
+        dragged = false,
+        inIndex;
 
       DOC.un('mousemove', me.onMouseMove, me);
 
@@ -142,7 +143,7 @@ Fancy.modules['column-drag'] = true;
           me.dragColumn(me.inSide);
         }
         else if(me.activeSide === 'center'){
-          var inIndex = me.inIndex;
+          inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
@@ -150,7 +151,7 @@ Fancy.modules['column-drag'] = true;
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
-          var inIndex = me.inIndex;
+          inIndex = me.inIndex;
           if(me.okPosition === 'right'){
             inIndex++;
           }
@@ -180,15 +181,15 @@ Fancy.modules['column-drag'] = true;
       delete me.okPosition;
 
       F.tip.hide();
-      setTimeout(function () {
+      setTimeout(function(){
         me.status = 'none';
       }, 1);
       me.removeDragState();
 
       if(me.status === 'dragging'){
-        setTimeout(function () {
+        setTimeout(function(){
           me.status = 'none';
-          if(dragged) {
+          if(dragged){
             w.fire('columndrag', columnDragParams);
             //w.scroller.update();
             if(w.sorter){
@@ -199,13 +200,13 @@ Fancy.modules['column-drag'] = true;
       }
 
       me.hideHint();
-      setTimeout(function () {
+      setTimeout(function(){
         w.updateColumnsVisibilty();
       }, 100);
 
       w.scroller.update();
     },
-    onMouseMove: function (e) {
+    onMouseMove: function(e){
       var me = this,
         w = me.widget,
         header = w.header,
@@ -238,7 +239,7 @@ Fancy.modules['column-drag'] = true;
 
       if(columns.length === 1 && me.activeSide === 'center'){
         F.tip.hide();
-        setTimeout(function () {
+        setTimeout(function(){
           me.status = 'none';
         }, 1);
         me.removeDragState();
@@ -258,13 +259,13 @@ Fancy.modules['column-drag'] = true;
         }
       }
     },
-    addDragState: function () {
+    addDragState: function(){
       var me = this,
         w = me.widget;
 
       w.el.addClass(GRID_STATE_DRAG_COLUMN_CLS);
     },
-    removeDragState: function () {
+    removeDragState: function(){
       var me = this,
         w = me.widget;
 
@@ -315,7 +316,7 @@ Fancy.modules['column-drag'] = true;
       }
 
       if(me.activeCellTopGroup){
-        if(me.inUpGroupCell) {}
+        if(me.inUpGroupCell){}
         else{
           var startIndex = me.activeCellTopGroup.start,
             endIndex = me.activeCellTopGroup.end;
@@ -335,7 +336,7 @@ Fancy.modules['column-drag'] = true;
             }
             else{
               if(me.inIndex < startIndex){
-                if (e.offsetX > cellWidth / 2) {
+                if (e.offsetX > cellWidth / 2){
                   if(me.inIndex + 1 === startIndex){
                     me.hideHint();
                   }
@@ -350,7 +351,7 @@ Fancy.modules['column-drag'] = true;
                 }
               }
               else if(me.inIndex > endIndex){
-                if (e.offsetX < cellWidth / 2) {
+                if (e.offsetX < cellWidth / 2){
                   if(me.inIndex === endIndex + 1){
                     me.hideHint();
                   }
@@ -386,7 +387,7 @@ Fancy.modules['column-drag'] = true;
           }
         }
         else{
-          if (e.offsetX > cellWidth / 2) {
+          if (e.offsetX > cellWidth / 2){
             if(me.activeIndex > endIndex && me.activeIndex - 1 === endIndex){
               me.hideHint();
             }
@@ -447,7 +448,7 @@ Fancy.modules['column-drag'] = true;
               me.ok = true;
               me.showHint('right');
             }
-            else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell) {
+            else if(me.activeIndex - 1 === me.inIndex || me.inUpGroupCell){
               me.ok = false;
               me.hideHint();
             }
@@ -540,7 +541,7 @@ Fancy.modules['column-drag'] = true;
     initHint: function(){
       var me = this,
         w = me.widget,
-        themeCls = 'fancy-theme-' + w.theme,
+        themeCls = Fancy.getThemeCSSCls(w.theme),
         renderTo = F.get(document.body).dom,
         topEl = F.get(document.createElement('div')),
         bottomEl = F.get(document.createElement('div'));
@@ -554,7 +555,7 @@ Fancy.modules['column-drag'] = true;
     /*
      * @param {String} side
      */
-    dragColumn: function (side) {
+    dragColumn: function(side){
       var me = this,
         w = me.widget,
         header = w.getHeader(side),
@@ -569,8 +570,9 @@ Fancy.modules['column-drag'] = true;
       if(me.activeCellTopGroup){
         var startIndex = me.activeCellTopGroup.start,
           endIndex = me.activeCellTopGroup.end,
-          _columns = columns.splice(startIndex, endIndex - startIndex + 1),
-          inIndex = me.inIndex;
+          _columns = columns.splice(startIndex, endIndex - startIndex + 1);
+
+        inIndex = me.inIndex;
 
         if(position === 'right'){
           inIndex++;
@@ -650,7 +652,7 @@ Fancy.modules['column-drag'] = true;
         header.reSetGroupIndexes();
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         header.reSetColumnsAlign();
         header.reSetColumnsCls();
         body.reSetColumnsAlign();
@@ -664,7 +666,7 @@ Fancy.modules['column-drag'] = true;
      * @param {String} [side]
      * @return {Object}
      */
-    getGroupStartEnd: function (cell, side) {
+    getGroupStartEnd: function(cell, side){
       var me = this,
         w = me.widget,
         header = w.getHeader(side || me.inSide),

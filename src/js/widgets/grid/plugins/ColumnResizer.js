@@ -2,14 +2,13 @@
  * @class Fancy.grid.plugin.ColumnResizer
  * @extend Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   var G = F.get;
 
   //CONSTANTS
   var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var GRID_RESIZER_LEFT_CLS = F.GRID_RESIZER_LEFT_CLS;
   var GRID_RESIZER_RIGHT_CLS = F.GRID_RESIZER_RIGHT_CLS;
   var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
@@ -29,13 +28,13 @@
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this,
         w = me.widget;
 
@@ -45,7 +44,7 @@
         return;
       }
 
-      w.on('render', function () {
+      w.on('render', function(){
         me.render();
         me.ons();
       });
@@ -53,7 +52,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -67,7 +66,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellMouseMove: function (grid, o) {
+    onCellMouseMove: function(grid, o){
       var me = this,
         w = me.widget,
         e = o.e,
@@ -85,15 +84,15 @@
         _width = cellWidth,
         inOffsetX = 7;
 
-      if (isInTrigger) {
+      if (isInTrigger){
         _width = triggerWidth;
       }
 
-      if (isInTriggerImage) {
+      if (isInTriggerImage){
         _width = triggerImageWidth;
       }
 
-      if (w.startResizing) {
+      if (w.startResizing){
         return;
       }
 
@@ -102,45 +101,45 @@
         return;
       }
 
-      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
+      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2){
         inOffsetX += 2;
       }
 
-      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX) {
-        if (me.isColumnResizable(o)) {
-          if (!hasFieldInSide) {
+      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX){
+        if (me.isColumnResizable(o)){
+          if (!hasFieldInSide){
             me.addCellResizeCls(o.cell);
           }
         }
       }
-      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.side === 'center' && o.index === 0 && w.leftColumns.length) {
+      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.side === 'center' && o.index === 0 && w.leftColumns.length){
         o.side = 'left';
         o.index = w.leftColumns.length - 1;
-        if (me.isColumnResizable(o)) {
-          if (!hasFieldInSide) {
+        if (me.isColumnResizable(o)){
+          if (!hasFieldInSide){
             me.addCellResizeCls(o.cell);
           }
         }
       }
-      else if (!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0) {
+      else if (!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0){
         var isLeft = offsetX < inOffsetX;
 
-        if (me.isColumnResizable(o, isLeft)) {
-          if (!hasFieldInSide) {
+        if (me.isColumnResizable(o, isLeft)){
+          if (!hasFieldInSide){
             me.addCellResizeCls(o.cell);
           }
         }
       }
-      else if ((_width - offsetX) < inOffsetX) {
-        if (isInTriggerImage) {
-          if (triggerImageWidth - offsetX > 2) {
+      else if ((_width - offsetX) < inOffsetX){
+        if (isInTriggerImage){
+          if (triggerImageWidth - offsetX > 2){
             me.removeCellResizeCls(o.cell);
           }
           else {
             me.addCellResizeCls(o.cell);
           }
         }
-        else if (me.isColumnResizable(o)) {
+        else if (me.isColumnResizable(o)){
           me.addCellResizeCls(o.cell);
         }
       }
@@ -151,7 +150,7 @@
     /*
      * @param {Fancy.Element} cell
      */
-    addCellResizeCls: function (cell) {
+    addCellResizeCls: function(cell){
       var me = this,
         w = me.widget,
         columndrag = w.columndrag;
@@ -166,7 +165,7 @@
     /*
      * @param {Fancy.Element} cell
      */
-    removeCellResizeCls: function (cell) {
+    removeCellResizeCls: function(cell){
       G(cell).removeClass(GRID_COLUMN_RESIZER_CLS);
       G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0).removeClass(GRID_COLUMN_RESIZER_CLS);
     },
@@ -174,10 +173,11 @@
      * @param {Object} e
      * @param {Object} o
      */
-    onHeaderCellMouseDown: function (e, o) {
+    onHeaderCellMouseDown: function(e, o){
+      e = o.e;
+
       var me = this,
         w = me.widget,
-        e = o.e,
         target = G(e.target),
         cellEl = G(o.cell),
         offsetX = e.offsetX,
@@ -192,24 +192,24 @@
         _width = cellWidth,
         inOffsetX = 7;
 
-      if (isInTrigger) {
+      if (isInTrigger){
         _width = triggerWidth;
       }
 
-      if (isInTriggerImage) {
+      if (isInTriggerImage){
         _width = triggerImageWidth;
         return;
       }
 
-      if (field.length > 0 && field.item(0).within(target.dom)) {
+      if (field.length > 0 && field.item(0).within(target.dom)){
         return;
       }
 
-      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2) {
+      if (o.side === 'left' && o.index === w.leftColumns.length - 1 && (_width - offsetX) < inOffsetX + 2){
         inOffsetX += 2;
       }
 
-      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX) {
+      if (!isInTrigger && !isInTriggerImage && o.side === 'right' && o.index === 0 && offsetX < inOffsetX){
         w.startResizing = true;
         F.apply(me, {
           cell: o.cell,
@@ -219,7 +219,7 @@
           moveLeftResizer: true
         });
       }
-      else if (offsetX < 7 && o.side === 'center' && o.index === 0 && w.leftColumns.length) {
+      else if (offsetX < 7 && o.side === 'center' && o.index === 0 && w.leftColumns.length){
         w.startResizing = true;
         o.side = 'left';
         o.index = w.leftColumns.length - 1;
@@ -230,7 +230,7 @@
           columnIndex: o.index
         });
       }
-      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.index !== 0) {
+      else if (!isInTrigger && !isInTriggerImage && offsetX < inOffsetX && o.index !== 0){
         w.startResizing = true;
         F.apply(me, {
           cell: me.getPrevCell(o),
@@ -239,7 +239,7 @@
           columnIndex: o.index - 1
         });
       }
-      else if ((_width - offsetX) < inOffsetX) {
+      else if ((_width - offsetX) < inOffsetX){
         w.startResizing = true;
         F.apply(me, {
           cell: o.cell,
@@ -249,7 +249,7 @@
         });
       }
 
-      if (w.startResizing) {
+      if (w.startResizing){
         me.isColumnResizable();
       }
     },
@@ -258,17 +258,17 @@
      * @param {Boolean} isLeft
      * @return {Boolean}
      */
-    isColumnResizable: function (o, isLeft) {
+    isColumnResizable: function(o, isLeft){
       var me = this,
         w = me.widget,
         columns,
         column,
         index;
 
-      if (o) {
+      if (o){
         columns = w.getColumns(o.side);
         index = o.index;
-        if (isLeft) {
+        if (isLeft){
           index--;
 
           column = columns[index];
@@ -276,14 +276,14 @@
             index--;
           }
         }
-        if (isNaN(index)) {
+        if (isNaN(index)){
           return;
         }
 
         column = columns[index];
 
         if(index === 0 && column.hidden){
-          if(o.side === 'center' && w.leftColumns) {}
+          if(o.side === 'center' && w.leftColumns){}
           else {
             return false;
           }
@@ -297,7 +297,7 @@
       }
       else {
         columns = w.getColumns(me.activeSide);
-        if (columns[me.columnIndex].resizable !== true) {
+        if (columns[me.columnIndex].resizable !== true){
           w.startResizing = false;
           delete me.cell;
           delete me.activeSide;
@@ -309,21 +309,21 @@
     /*
      * @return {Number}
      */
-    getMinColumnWidth: function () {
+    getMinColumnWidth: function(){
       var me = this,
         w = me.widget,
         minCellWidth = w.minCellWidth,
         columns,
         column;
 
-      if (me.columnIndex === undefined) {
+      if (me.columnIndex === undefined){
         return minCellWidth;
       }
 
       columns = w.getColumns(me.activeSide);
       column = columns[me.columnIndex];
 
-      if (column.minWidth) {
+      if (column.minWidth){
         return column.minWidth;
       }
 
@@ -332,20 +332,20 @@
     /*
      * @return {Number|false}
      */
-    getMaxColumnWidth: function () {
+    getMaxColumnWidth: function(){
       var me = this,
         w = me.widget,
         columns,
         column;
 
-      if (me.columnIndex === undefined) {
+      if (me.columnIndex === undefined){
         return false;
       }
 
       columns = w.getColumns(me.activeSide);
       column = columns[me.columnIndex];
 
-      if (column.maxWidth) {
+      if (column.maxWidth){
         return column.maxWidth;
       }
 
@@ -354,22 +354,22 @@
     /*
      *
      */
-    onDocClick: function () {
+    onDocClick: function(){
       this.widget.startResizing = false;
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} e
      */
-    onDocMove: function (grid, e) {
-      if (this.widget.startResizing) {
+    onDocMove: function(grid, e){
+      if (this.widget.startResizing){
         this.moveResizeEls(e);
       }
     },
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         w = me.widget,
         leftEl = G(document.createElement('div')),
@@ -384,7 +384,7 @@
     /*
      * @param {Object} e
      */
-    moveResizeEls: function (e) {
+    moveResizeEls: function(e){
       var me = this,
         w = me.widget,
         cellEl = G(me.cell),
@@ -399,7 +399,7 @@
       w.el.addCls(GRID_STATE_RESIZE_COLUMN_CLS);
       F.get(document.body).addCls(GRID_STATE_RESIZE_COLUMN_CLS);
 
-      switch (me.activeSide) {
+      switch (me.activeSide){
         case 'left':
           break;
         case 'center':
@@ -415,21 +415,21 @@
         deltaClientX = clientX - me.clientX,
         cellWidth = cellEl.width() + deltaClientX;
 
-      if (cellWidth < minWidth) {
+      if (cellWidth < minWidth){
         cellWidth = minWidth;
       }
 
-      if (maxWidth && cellWidth > maxWidth) {
+      if (maxWidth && cellWidth > maxWidth){
         cellWidth = maxWidth;
       }
 
       me.deltaWidth = cellEl.width() - cellWidth;
 
-      if (me.moveLeftResizer) {
+      if (me.moveLeftResizer){
         deltaClientX = clientX - me.clientX;
         cellWidth = cellEl.width() - deltaClientX;
 
-        if (cellWidth < minWidth) {
+        if (cellWidth < minWidth){
           cellWidth = minWidth;
         }
 
@@ -462,11 +462,11 @@
     /*
      *
      */
-    onDocMouseUp: function () {
+    onDocMouseUp: function(){
       var me = this,
         w = me.widget;
 
-      if (w.startResizing === false) {
+      if (w.startResizing === false){
         return;
       }
 
@@ -491,7 +491,7 @@
     /*
      *
      */
-    fixSidesWidth: function () {
+    fixSidesWidth: function(){
       var me = this,
         w = me.widget,
         cellWidth = me.cellWidth,
@@ -512,20 +512,20 @@
         newCenterWidth,
         minCenterWidth = me.minCenterWidth;
 
-      if (cellWidth === undefined) {
+      if (cellWidth === undefined){
         return;
       }
 
       var leftFix = 1;
-      if (F.nojQuery) {
+      if (F.nojQuery){
         leftFix = 0;
       }
 
-      switch (me.activeSide) {
+      switch (me.activeSide){
         case 'left':
           newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
 
-          if (newCenterWidth < minCenterWidth) {
+          if (newCenterWidth < minCenterWidth){
             return;
           }
 
@@ -544,21 +544,21 @@
             _i = 0,
             _iL = i;
 
-          for (; _i < _iL; _i++) {
+          for (; _i < _iL; _i++){
             var domHeaderCell = domHeaderCells.item(_i),
               groupIndex = domHeaderCell.attr('group-index');
 
-            if (groupIndex) {
+            if (groupIndex){
               ignoreGroupIndexes[groupIndex] = true;
             }
           }
 
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             var domColumnEl = domColumns.item(i),
               domHeaderCell = domHeaderCells.item(i);
 
             domColumnEl.animate({left: parseInt(domColumnEl.css('left')) - delta - leftFix}, ANIMATE_DURATION);
-            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {}
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
             else {
               domHeaderCell.animate({left: parseInt(domHeaderCell.css('left')) - delta - leftFix}, ANIMATE_DURATION);
             }
@@ -567,7 +567,7 @@
           leftEl.animate({width: parseInt(leftEl.css('width')) - delta - leftFix}, ANIMATE_DURATION);
           leftHeaderEl.animate({width: parseInt(leftHeaderEl.css('width')) - delta - leftFix + 'px'}, ANIMATE_DURATION);
 
-          if (w.columns.length) {
+          if (w.columns.length){
             //Bug fix for dom fx without jQuery
             centerEl.animate({
               left: parseInt(centerEl.css('left')) - delta - leftFix,
@@ -592,28 +592,28 @@
             _i = 0,
             _iL = i;
 
-          for (; _i < _iL; _i++) {
+          for (; _i < _iL; _i++){
             var domHeaderCell = domHeaderCells.item(_i),
               groupIndex = domHeaderCell.attr('group-index');
 
-            if (groupIndex) {
+            if (groupIndex){
               ignoreGroupIndexes[groupIndex] = true;
             }
           }
 
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             var domColumnEl = domColumns.item(i),
               domHeaderCell = domHeaderCells.item(i),
               left = parseInt(domColumnEl.css('left')) - delta - leftFix,
               _left = parseInt(domHeaderCell.css('left')) - delta - leftFix;
 
-            if (domHeaderCell.attr('group-index')) {
+            if (domHeaderCell.attr('group-index')){
               groupMove[domHeaderCell.attr('group-index')] = {};
             }
 
             domColumnEl.animate({left: left}, ANIMATE_DURATION);
 
-            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {}
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
             else {
               domHeaderCell.animate({left: _left}, ANIMATE_DURATION);
             }
@@ -622,7 +622,7 @@
         case 'right':
           newCenterWidth = parseInt(centerEl.css('width')) + delta + leftFix;
 
-          if (newCenterWidth < minCenterWidth) {
+          if (newCenterWidth < minCenterWidth){
             return;
           }
 
@@ -641,22 +641,22 @@
             _i = 0,
             _iL = i;
 
-          for (; _i < _iL; _i++) {
+          for (; _i < _iL; _i++){
             var domHeaderCell = domHeaderCells.item(_i),
               groupIndex = domHeaderCell.attr('group-index');
 
-            if (groupIndex) {
+            if (groupIndex){
               ignoreGroupIndexes[groupIndex] = true;
             }
           }
 
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             var domColumnEl = domColumns.item(i),
               domHeaderCell = domHeaderCells.item(i);
 
             domColumnEl.animate({left: parseInt(domColumnEl.css('left')) - delta - leftFix}, ANIMATE_DURATION);
 
-            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]) {}
+            if (domHeaderCell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS) && ignoreGroupIndexes[domHeaderCell.attr('index')]){}
             else {
               domHeaderCell.animate({left: parseInt(domHeaderCell.css('left')) - delta - leftFix}, ANIMATE_DURATION);
             }
@@ -665,7 +665,7 @@
           rightEl.animate({width:  parseInt(rightEl.css('width')) - delta - leftFix}, ANIMATE_DURATION);
           rightHeaderEl.animate({width: parseInt(rightHeaderEl.css('width')) - delta - leftFix + 'px'}, ANIMATE_DURATION);
 
-          if (w.columns.length) {
+          if (w.columns.length){
             centerEl.animate({width: newCenterWidth}, ANIMATE_DURATION);
             centerHeaderEl.animate({width: parseInt(centerHeaderEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
             centerBodyEl.animate({width: parseInt(centerBodyEl.css('width')) + delta + leftFix}, ANIMATE_DURATION);
@@ -680,12 +680,12 @@
 
       cellEl.animate({width: cellWidth + 'px'}, ANIMATE_DURATION);
 
-      if (groupName) {
+      if (groupName){
         groupCell = w.el.select("[index='" + groupName + "']");
         groupCell.animate({width: parseInt(groupCell.css('width')) - delta - leftFix}, ANIMATE_DURATION);
       }
       else {
-          for (var p in groupMove) {
+          for (var p in groupMove){
             groupCell = w.el.select("[index='" + p + "']");
             //groupCell.animate({left: parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix}, ANIMATE_DURATION);
             groupCell.css('left', parseInt(groupCell.css('left')) - (groupMove[p].delta || 0) - leftFix);
@@ -699,8 +699,8 @@
         side: me.activeSide
       });
 
-      if (/sparkline/.test(column.type)) {
-        switch (me.activeSide) {
+      if (/sparkline/.test(column.type)){
+        switch (me.activeSide){
           case 'left':
             w.leftBody.updateRows(undefined, index);
             break;
@@ -713,7 +713,7 @@
         }
       }
       else{
-        switch(column.type) {
+        switch(column.type){
           case 'progressbar':
           case 'hbar':
             w.update();
@@ -725,12 +725,12 @@
      * @param {Object} o
      * @return {Fancy.Element}
      */
-    getPrevCell: function (o) {
+    getPrevCell: function(o){
       var me = this,
         w = me.widget,
         header;
 
-      switch (o.side) {
+      switch (o.side){
         case 'left':
           header = w.leftHeader;
           break;
@@ -757,12 +757,12 @@
      * @param {Object} o
      * @return {HTMLElement}
      */
-    getCell: function (o) {
+    getCell: function(o){
       var me = this,
         w = me.widget,
         header;
 
-      switch (o.side) {
+      switch (o.side){
         case 'left':
           header = w.leftHeader;
           break;
@@ -779,7 +779,7 @@
     /*
      * @param {String} [side]
      */
-    updateColumnsWidth: function (side) {
+    updateColumnsWidth: function(side){
       if(side === 'all'){
         this.updateColumnsWidth('left');
         this.updateColumnsWidth('right');
@@ -788,7 +788,7 @@
       }
 
       var leftFix = 1;
-      if (F.nojQuery) {
+      if (F.nojQuery){
         leftFix = 0;
       }
 
@@ -806,10 +806,10 @@
         leftHeaderEl = w.leftHeader.el,
         rightHeaderEl = w.rightHeader.el;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i];
 
-        if (column.hidden) {
+        if (column.hidden){
           continue;
         }
 
@@ -818,7 +818,7 @@
         me.setColumnWidth(i, column.width, side);
       }
 
-      if (w.header) {
+      if (w.header){
         header.setCellsPosition();
         header.updateCellsSizes();
       }
@@ -836,7 +836,7 @@
           leftEl.animate({width: oldLeftElWidth - delta - leftFix}, ANIMATE_DURATION);
           leftHeaderEl.animate({width: oldHeaderElWidth - delta - leftFix}, ANIMATE_DURATION);
 
-          if (w.columns.length) {
+          if (w.columns.length){
             this.updateCenterSideWidth();
           }
           break;
@@ -848,13 +848,13 @@
           rightEl.animate({width: oldRightElWidth - delta}, ANIMATE_DURATION);
           rightHeaderEl.animate({width: oldHeaderElWidth - delta}, ANIMATE_DURATION);
 
-          if (w.columns.length) {
+          if (w.columns.length){
             this.updateCenterSideWidth();
           }
           break;
       }
     },
-    updateCenterSideWidth: function () {
+    updateCenterSideWidth: function(){
       var me = this,
         w = me.widget,
         centerEl = w.centerEl,
@@ -878,20 +878,20 @@
       }
 
       var leftFix = 1;
-      if (F.nojQuery) {
+      if (F.nojQuery){
         leftFix = 0;
       }
 
-      F.each(leftColumns, function (column) {
-        if (column.hidden) {
+      F.each(leftColumns, function(column){
+        if (column.hidden){
           return;
         }
 
         leftColumnsWidth += column.width;
       });
 
-      F.each(rightColumns, function (column) {
-        if (column.hidden) {
+      F.each(rightColumns, function(column){
+        if (column.hidden){
           return;
         }
 
@@ -915,7 +915,7 @@
      * @param {Number} width
      * @param {String} side
      */
-    setColumnWidth: function (index, width, side) {
+    setColumnWidth: function(index, width, side){
       var me = this,
         w = me.widget,
         columns = w.getColumns(side),
@@ -936,7 +936,7 @@
 
       var headerCellElDom;
 
-      if(w.header) {
+      if(w.header){
         headerCellElDom = headerCellEl.dom;
       }
 
@@ -947,7 +947,7 @@
         side: side
       });
     },
-    getNextVisibleIndex: function (index, side) {
+    getNextVisibleIndex: function(index, side){
       var me = this,
         w = me.widget,
         columns = w.getColumns(side),

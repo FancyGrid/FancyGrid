@@ -48,7 +48,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
 
         kL = fields.length;
 
-        for (; k < kL; k++) {
+        for (; k < kL; k++){
           keys[fields[k]] = true;
         }
       }
@@ -141,10 +141,10 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
       var _chart = chart[i],
         type = _chart.type;
 
-      switch(type) {
+      switch(type){
         case 'highchart':
         case 'highcharts':
-          if (_chart.sortBind !== false) {
+          if (_chart.sortBind !== false){
             var categories = w.highchart.sort(_chart, o);
             chart[i].categories = categories.original;
           }
@@ -297,7 +297,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
     }
 
     if(Fancy.isString(fields)){
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var indexData = data[i][fields],
           sery = series[i],
           seryData = [],
@@ -305,7 +305,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
           jL = indexData.length;
 
         if(chartConfig.names){
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var seryConfig = {
               name: chartConfig.names[j],
               value: indexData[j]
@@ -315,12 +315,12 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
           }
         }
         else {
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             seryData.push(indexData[j]);
           }
         }
 
-        if(sery) {
+        if(sery){
           sery.setData(seryData);
 
           if(chartConfig.name){
@@ -335,13 +335,13 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var fieldName = fields[i],
           sery = series[i],
           seryData = [];
 
         j = 0;
-        for (; j < jL; j++) {
+        for (; j < jL; j++){
           seryData.push(data[j][fieldName]);
         }
 
@@ -388,12 +388,12 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
       iL = order? order.length:categories.length;
 
     if(!order){
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         newCategories.push(categories[i]);
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         newCategories.push(categories[order[i]]);
       }
     }
@@ -507,7 +507,7 @@ Fancy.define('Fancy.grid.plugin.HighChart', {
       var index = columns[i].index;
 
       if(/xAxis\../.test(index)){
-        indexes.push(index)
+        indexes.push(index);
       }
     }
 

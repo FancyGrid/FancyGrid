@@ -33,7 +33,7 @@ ClassManager.prototype = {
    * @param {String} key
    */
   add: function(key, value){
-    var parts = key.split("."),
+    var parts = key.split('.'),
       i = 1,
       iL = parts.length - 1;
     
@@ -80,7 +80,7 @@ ClassManager.prototype = {
    * @return {Object}
    */
   getMixin: function(name){
-    var parts = name.split("."),
+    var parts = name.split('.'),
       j = 1,
       jL = parts.length;
 

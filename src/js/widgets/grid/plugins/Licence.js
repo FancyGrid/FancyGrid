@@ -27,7 +27,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     var me = this,
       w = me.widget;
 
-    w.once('render', function() {
+    w.once('render', function(){
       me.render();
     });
   },
@@ -89,7 +89,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       return;
     }
 
-    console.log("%cFancy%cGrid%c %cTrial%c Version!",
+    console.log('%cFancy%cGrid%c %cTrial%c Version!',
       'color:#A2CFE8;font-size: 14px;font-weight: bold;',
       'color:#088EC7;font-size: 14px;font-weight: bold;',
       'font-weight:bold;color: #515151;font-size: 12px;',
@@ -97,7 +97,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       'font-weight:bold;color: #515151;font-size: 12px;'
     );
 
-    console.log("%cPurchase license for legal usage!\nSales email: sales@fancygrid.com", 'font-weight:bold;color: #515151;font-size: 12px;');
+    console.log('%cPurchase license for legal usage!\nSales email: sales@fancygrid.com', 'font-weight:bold;color: #515151;font-size: 12px;');
   },
   /*
    *
@@ -172,7 +172,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
        * Add integers, wrapping at 2^32. This uses 16-bit operations internally
        * to work around bugs in some JS interpreters.
        */
-      var safe_add = function(x, y) {
+      var safe_add = function(x, y){
         var lsw = (x & 0xFFFF) + (y & 0xFFFF),
           msw = (x >> 16) + (y >> 16) + (lsw >> 16);
 
@@ -182,37 +182,37 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       /*
        * Bitwise rotate a 32-bit number to the left.
        */
-      var bit_rol = function(num, cnt) {
+      var bit_rol = function(num, cnt){
         return (num << cnt) | (num >>> (32 - cnt));
       };
 
       /*
        * These functions implement the four basic operations the algorithm uses.
        */
-      var md5_cmn = function(q, a, b, x, s, t) {
+      var md5_cmn = function(q, a, b, x, s, t){
         return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b);
       };
 
-      var md5_ff = function(a, b, c, d, x, s, t) {
+      var md5_ff = function(a, b, c, d, x, s, t){
         return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
       };
 
-      var md5_gg = function(a, b, c, d, x, s, t) {
+      var md5_gg = function(a, b, c, d, x, s, t){
         return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
       };
 
-      var md5_hh = function(a, b, c, d, x, s, t) {
+      var md5_hh = function(a, b, c, d, x, s, t){
         return md5_cmn(b ^ c ^ d, a, b, x, s, t);
       };
 
-      var md5_ii = function(a, b, c, d, x, s, t) {
+      var md5_ii = function(a, b, c, d, x, s, t){
         return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
       };
 
       /*
        * Calculate the MD5 of an array of little-endian words, and a bit length.
        */
-      var binl_md5 = function(x, len) {
+      var binl_md5 = function(x, len){
         /* append padding */
         x[len >> 5] |= 0x80 << (len % 32);
         x[(((len + 64) >>> 9) << 4) + 14] = len;
@@ -227,7 +227,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           c = -1732584194,
           d = 271733878;
 
-        for (i = 0; i < x.length; i += 16) {
+        for (i = 0; i < x.length; i += 16){
           olda = a;
           oldb = b;
           oldc = c;
@@ -313,31 +313,31 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       /*
        * Convert an array of little-endian words to a string
        */
-      var binl2rstr = function(input) {
+      var binl2rstr = function(input){
         var i,
           output = '';
 
-        for (i = 0; i < input.length * 32; i += 8) {
+        for (i = 0; i < input.length * 32; i += 8){
           output += String.fromCharCode((input[i >> 5] >>> (i % 32)) & 0xFF);
         }
 
-        return output
+        return output;
       };
 
       /*
        * Convert a raw string to an array of little-endian words
        * Characters >255 have their high-byte silently ignored.
        */
-      var rstr2binl = function (input) {
+      var rstr2binl = function(input){
         var i,
           output = [];
 
         output[(input.length >> 2) - 1] = undefined;
-        for (i = 0; i < output.length; i += 1) {
+        for (i = 0; i < output.length; i += 1){
           output[i] = 0;
         }
 
-        for (i = 0; i < input.length * 8; i += 8) {
+        for (i = 0; i < input.length * 8; i += 8){
           output[i >> 5] |= (input.charCodeAt(i / 8) & 0xFF) << (i % 32);
         }
 
@@ -354,7 +354,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       /*
        * Calculate the HMAC-MD5, of a key and some data (raw strings)
        */
-      var rstr_hmac_md5 = function (key, data) {
+      var rstr_hmac_md5 = function(key, data){
         var i,
           bkey = rstr2binl(key),
           ipad = [],
@@ -362,11 +362,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           hash;
 
         ipad[15] = opad[15] = undefined;
-        if (bkey.length > 16) {
+        if (bkey.length > 16){
           bkey = binl_md5(bkey, key.length * 8);
         }
 
-        for (i = 0; i < 16; i += 1) {
+        for (i = 0; i < 16; i += 1){
           ipad[i] = bkey[i] ^ 0x36363636;
           opad[i] = bkey[i] ^ 0x5C5C5C5C;
         }
@@ -383,11 +383,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           x,
           i;
 
-        for (i = 0; i < input.length; i += 1) {
+        for (i = 0; i < input.length; i += 1){
           x = input.charCodeAt(i);
           output += hex_tab.charAt((x >>> 4) & 0x0F) + hex_tab.charAt(x & 0x0F);
         }
-        return output
+        return output;
       };
 
       /*
@@ -400,30 +400,30 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       /*
        * Take string arguments and return either raw or hex encoded strings
        */
-      var raw_md5 = function(s) {
+      var raw_md5 = function(s){
         return rstr_md5(str2rstr_utf8(s));
       };
 
-      var hex_md5 = function(s) {
+      var hex_md5 = function(s){
         return rstr2hex(raw_md5(s));
       };
 
-      var raw_hmac_md5 = function(k, d) {
+      var raw_hmac_md5 = function(k, d){
         return rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d));
       };
 
-      var hex_hmac_md5 = function(k, d) {
+      var hex_hmac_md5 = function(k, d){
         return rstr2hex(raw_hmac_md5(k, d));
       };
 
-      var md5 = function(string, key, raw) {
-        if (!key) {
-          if (!raw) {
+      var md5 = function(string, key, raw){
+        if (!key){
+          if (!raw){
             return hex_md5(string);
           }
           return raw_md5(string);
         }
-        if (!raw) {
+        if (!raw){
           return hex_hmac_md5(key, string);
         }
         return raw_hmac_md5(key, string);

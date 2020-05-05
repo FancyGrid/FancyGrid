@@ -21,6 +21,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
   scrollable: false,
   /*
    * @constructor
+   * @param {String|HtmlElement} renderTo
    * @param {Object} config
    */
   constructor: function(renderTo, config){
@@ -50,7 +51,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     var preInit = function(){
       var i18n = config.i18n || me.i18n;
 
-      if( Fancy.loadLang(i18n, fn) === true ) {
+      if( Fancy.loadLang(i18n, fn) === true ){
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -97,7 +98,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       requiredModules.ajax = true;
     }
 
-    var containsMenu = function (item) {
+    var containsMenu = function(item){
       if(item.menu){
         requiredModules['menu'] = true;
         return true;
@@ -109,7 +110,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     Fancy.each(config.buttons, containsMenu);
     Fancy.each(config.subTBar, containsMenu);
 
-    var readItems = function (items) {
+    var readItems = function(items){
       var i = 0,
         iL = items.length,
         item;
@@ -140,7 +141,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     };
 
     for(var p in requiredModules){
-      if(Fancy.modules[p] === undefined) {
+      if(Fancy.modules[p] === undefined){
         me.neededModules[p] = true;
         me.neededModules.length++;
       }
@@ -177,8 +178,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       });
     }
     else {
-      for (var p in me.neededModules) {
-        if (p === 'length') {
+      for (var p in me.neededModules){
+        if (p === 'length'){
           continue;
         }
 

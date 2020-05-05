@@ -69,7 +69,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       me.checkProxy();
     }
 
-    if(me.autoLoad) {
+    if(me.autoLoad){
       if(w.stateful && me.remoteFilter && me.filters){
         /*
           When there is server filtering with state and on start it loads data
@@ -222,7 +222,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           return;
         }
 
-        if(me.paging) {
+        if(me.paging){
           me.processPagingData(o);
         }
         else {
@@ -242,7 +242,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           fn();
         }
       },
-      error: function (request, errorTitle, errorMessage) {
+      error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -338,7 +338,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('update', id, key, value);
         me.fire('serversuccess', o, request);
       },
-      error: function (request, errorTitle, errorMessage) {
+      error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -403,7 +403,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('destroy', id, o);
         me.fire('serversuccess', o, request);
       },
-      error: function (request, errorTitle, errorMessage) {
+      error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -476,7 +476,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
             iL = id.length;
 
           for(;i<iL;i++){
-            if(String(id[i].id) !== String(o.data[i].id)) {
+            if(String(id[i].id) !== String(o.data[i].id)){
               me.changeItemId(String(id[i].id), String(o.data[i].id));
             }
           }
@@ -485,7 +485,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('create', o.data);
         me.fire('serversuccess', o, request);
       },
-      error: function (request, errorTitle, errorMessage) {
+      error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -552,7 +552,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           itemData = me.getById(p).data;
         }
         else {
-          for (var q in action) {
+          for (var q in action){
             if(q === 'length'){
               continue;
             }
@@ -584,7 +584,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           data = me.getById(p).data;
         }
         else {
-          for (var q in action) {
+          for (var q in action){
             if(q === 'length'){
               continue;
             }
@@ -622,7 +622,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           itemData = me.getById(p).data;
         }
         else {
-          for (var q in action) {
+          for (var q in action){
             if(q === 'length'){
               continue;
             }
@@ -657,7 +657,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           data = action;
         }
         else {
-          for (var q in action) {
+          for (var q in action){
             if(q === 'length'){
               continue;
             }
@@ -695,7 +695,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           itemData = me.getById(p).data;
         }
         else {
-          for (var q in action.data) {
+          for (var q in action.data){
 
             itemData[q] = action.data[q];
           }
@@ -725,7 +725,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           data = action;
         }
         else {
-          for (var q in action) {
+          for (var q in action){
             if(q === 'length'){
               continue;
             }

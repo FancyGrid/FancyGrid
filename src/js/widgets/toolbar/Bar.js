@@ -2,7 +2,7 @@
  * @class Fancy.Bar
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -45,22 +45,22 @@
      * constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.init();
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.roles = {};
       me.render();
 
-      if (me.barScrollEnabled) {
+      if (me.barScrollEnabled){
         me.initScroll();
-        setTimeout(function () {
+        setTimeout(function(){
           me.checkScroll();
         }, 150);
       }
@@ -68,7 +68,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this;
 
       me.renderEl();
@@ -78,10 +78,10 @@
     /*
      *
      */
-    renderEl: function () {
+    renderEl: function(){
       var me = this;
 
-      if (!me.el) {
+      if (!me.el){
         var el = F.get(document.createElement('div'));
 
         el.addCls(
@@ -93,7 +93,7 @@
 
         me.el = F.get(me.renderTo.appendChild(el.dom));
 
-        if (me.style) {
+        if (me.style){
           me.el.css(me.style);
         }
       }
@@ -106,7 +106,7 @@
     /*
      *
      */
-    renderItems: function () {
+    renderItems: function(){
       var me = this,
         containerEl = me.containerEl,
         items = me.items || [],
@@ -117,33 +117,33 @@
         sidePassed = iL - 1,
         passedRight = 0;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var item = items[i];
 
-        if (isSide) {
+        if (isSide){
           item = items[sidePassed];
           sidePassed--;
         }
 
-        if (item.toggleGroup) {
+        if (item.toggleGroup){
           item.enableToggle = true;
         }
 
-        if (F.isObject(item)) {
+        if (F.isObject(item)){
           item.type = item.type || 'button';
         }
 
-        if (isSide) {
+        if (isSide){
           me.floating = 'right';
           item.style = item.style || {};
           item.style['right'] = passedRight;
         }
 
-        if (F.isObject(item)) {
+        if (F.isObject(item)){
           item.renderTo = containerEl.dom;
         }
 
-        switch (item) {
+        switch (item){
           case '|':
             var style = {
               'float': me.floating,
@@ -152,7 +152,7 @@
               'padding-left': '0px'
             };
 
-            if (me.floating === 'right') {
+            if (me.floating === 'right'){
               F.applyIf(style, {
                 right: '1px',
                 position: 'absolute'
@@ -169,7 +169,7 @@
             isSide = true;
             continue;
           default:
-            if (isSide) {
+            if (isSide){
               barItems[sidePassed] = me.renderItem(item);
             }
             else {
@@ -207,7 +207,7 @@
      * @param {Object} item
      * @return {Object}
      */
-    renderItem: function (item) {
+    renderItem: function(item){
       var me = this,
         field,
         containerEl = me.containerEl,
@@ -222,20 +222,20 @@
         'float': me.floating
       });
 
-      if (me.floating === 'right') {
+      if (me.floating === 'right'){
         F.applyIf(item.style, {
           right: me.sideRight,
           position: 'absolute'
         });
       }
 
-      if (!item.scope && me.scope) {
+      if (!item.scope && me.scope){
         item.scope = me.scope;
       }
 
-      switch (item.type) {
+      switch (item.type){
         case 'wrapper':
-          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS) {
+          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS){
             containerEl.destroy();
             containerEl = me.el;
           }
@@ -246,10 +246,10 @@
             _item,
             width = 0;
 
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             _item = item.items[i];
 
-            if (F.isObject(_item)) {
+            if (F.isObject(_item)){
               _item.type = _item.type || 'button';
             }
 
@@ -257,14 +257,14 @@
             field = me.renderItem(_item);
             var fieldEl = field.el;
 
-            if (i === iL - 1) {
+            if (i === iL - 1){
               fieldEl.css('margin-right', '0px');
             }
             else {
               width += parseInt(fieldEl.css('margin-right'));
             }
 
-            if (F.nojQuery) {
+            if (F.nojQuery){
               width += parseInt(fieldEl.width());
             }
             else {
@@ -405,7 +405,7 @@
           item.events = item.events || [];
 
           item.events = item.events.concat([{
-            enter: function (field, value) {
+            enter: function(field, value){
               var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
               //this.search(['name', 'surname', 'position'], value);
@@ -417,7 +417,7 @@
               }
             }
           }, {
-            key: function (field, value) {
+            key: function(field, value){
               var me = this,
                 grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
@@ -425,19 +425,19 @@
                 return;
               }
 
-              if (!me.autoEnterTime) {
+              if (!me.autoEnterTime){
                 me.autoEnterTime = new Date();
               }
 
-              if (me.intervalAutoEnter) {
+              if (me.intervalAutoEnter){
                 clearInterval(me.intervalAutoEnter);
               }
               delete me.intervalAutoEnter;
 
-              me.intervalAutoEnter = setInterval(function () {
+              me.intervalAutoEnter = setInterval(function(){
                 var now = new Date();
 
-                if (now - me.autoEnterTime > 500) {
+                if (now - me.autoEnterTime > 500){
                   clearInterval(me.intervalAutoEnter);
                   delete me.intervalAutoEnter;
                   value = field.getValue();
@@ -451,19 +451,19 @@
               }, 200);
             }
           }, {
-            render: function (field) {
+            render: function(field){
               var me = this,
                 isIn = false;
 
-              field.el.on('mouseenter', function () {
+              field.el.on('mouseenter', function(){
                 isIn = true;
               }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
 
-              field.el.on('mousedown', function (e) {
+              field.el.on('mousedown', function(e){
                 e.preventDefault();
               }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
 
-              field.el.on('click', function (e) {
+              field.el.on('click', function(e){
                 var toShow = false,
                   grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id')),
                   columns = grid.columns || [],
@@ -476,7 +476,7 @@
                   height = 1;
 
                 if(grid.searching.items){
-                  F.each(grid.searching.items, function (item) {
+                  F.each(grid.searching.items, function(item){
                     items.push({
                       inputLabel: ' &nbsp;&nbsp;' + item.text,
                       value: true,
@@ -484,22 +484,22 @@
                     });
 
                     height += grid.fieldHeight;
-                  })
+                  });
                 }
                 else {
-                  for (; i < iL; i++) {
+                  for (; i < iL; i++){
                     var column = _columns[i],
                       title = column.title;
 
-                    if (title === undefined) {
+                    if (title === undefined){
                       title = '';
                     }
 
-                    if (column.searchable === false) {
+                    if (column.searchable === false){
                       continue;
                     }
 
-                    switch (column.type) {
+                    switch (column.type){
                       case 'color':
                       case 'combo':
                       case 'date':
@@ -522,7 +522,7 @@
                   }
                 }
 
-                if (!me.list) {
+                if (!me.list){
                   me.list = new FancyForm({
                     width: 150,
                     height: height,
@@ -537,23 +537,23 @@
                     items: items,
                     cls: FIELD_SEARCH_LIST_CLS,
                     events: [{
-                      set: function () {
+                      set: function(){
                         grid.searching.setKeys(me.list.get());
                       }
                     }, {
-                      init: function () {
-                        setTimeout(function () {
+                      init: function(){
+                        setTimeout(function(){
                           var listEl = me.list.el;
 
-                          listEl.on('mouseenter', function () {
+                          listEl.on('mouseenter', function(){
                             isIn = true;
                           });
 
-                          listEl.on('mouseleave', function () {
+                          listEl.on('mouseleave', function(){
                             isIn = false;
-                            setTimeout(function () {
-                              if (isIn === false) {
-                                if (me.list) {
+                            setTimeout(function(){
+                              if (isIn === false){
+                                if (me.list){
                                   listEl.css('display', 'none');
                                 }
                               }
@@ -582,7 +582,7 @@
                     }]
                   });
                 }
-                else if (me.list.el.css('display') !== 'none') {
+                else if (me.list.el.css('display') !== 'none'){
                   me.list.el.css('display', 'none');
                   return;
                 }
@@ -594,14 +594,14 @@
                   offset = el.offset(),
                   fieldHeight = parseInt(field.el.css('height'));
 
-                if (me.list && me.list.el) {
+                if (me.list && me.list.el){
                   me.list.css({
                     position: 'absolute',
                     top: offset.top + fieldHeight + 20,
                     left: offset.left
                   });
 
-                  if (toShow) {
+                  if (toShow){
                     me.list.css('display', 'block');
                   }
 
@@ -612,16 +612,16 @@
                 }
               }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
 
-              field.el.on('mouseleave', function () {
+              field.el.on('mouseleave', function(){
                 isIn = false;
-                setTimeout(function () {
-                  if (isIn === false) {
-                    if (me.list) {
+                setTimeout(function(){
+                  if (isIn === false){
+                    if (me.list){
                       me.list.el.css('display', 'none');
                     }
                   }
                 }, 750);
-              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS)
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
             }
           }]);
 
@@ -634,7 +634,7 @@
 
           var cls = FIELD_SEARCH_CLS;
 
-          if (item.paramsMenu) {
+          if (item.paramsMenu){
             item.tpl = [
               '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
               '{label}',
@@ -647,7 +647,7 @@
             ];
 
             cls += ' ' + FIELD_SEARCH_PARAMED_CLS;
-            if (!item.paramsText) {
+            if (!item.paramsText){
               cls += ' ' + FIELD_SEARCH_PARAMED_EMPTY_CLS;
             }
           }
@@ -664,12 +664,12 @@
         default:
       }
 
-      if (me.floating === 'right') {
+      if (me.floating === 'right'){
         me.sideRight += field.width;
         me.sideRight += 7;
       }
 
-      if (item.role) {
+      if (item.role){
         me.roles[item.role] = field;
       }
 
@@ -678,7 +678,7 @@
     /*
      *
      */
-    initScroll: function () {
+    initScroll: function(){
       var me = this;
 
       me.leftScroller = new F.Button({
@@ -728,16 +728,16 @@
     /*
      * @return {Number}
      */
-    getBarWidth: function () {
+    getBarWidth: function(){
       return parseInt(this.el.css('width'));
     },
     /*
      * @return {Number}
      */
-    getItemsWidth: function () {
+    getItemsWidth: function(){
       var width = 0;
 
-      F.each(this.items, function (item) {
+      F.each(this.items, function(item){
         if(item.el.css('display') === 'none' ){
           return;
         }
@@ -754,7 +754,7 @@
     /*
      *
      */
-    onPrevScrollClick: function () {
+    onPrevScrollClick: function(){
       var me = this;
 
       me.scrolled += me.tabScrollStep;
@@ -763,7 +763,7 @@
     /*
      *
      */
-    onNextScrollClick: function () {
+    onNextScrollClick: function(){
       var me = this;
 
       me.scrolled -= me.tabScrollStep;
@@ -772,7 +772,7 @@
     /*
      *
      */
-    applyScrollChanges: function () {
+    applyScrollChanges: function(){
       var me = this,
         itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
@@ -793,7 +793,7 @@
         me.rightScroller.enable();
       }
 
-      if (itemsWidth < barWidth) {
+      if (itemsWidth < barWidth){
         me.scrolled = 0;
 
         me.leftScroller.el.hide();
@@ -803,12 +803,12 @@
         me.containerEl.css({'margin-left': '0px'});
         return;
       }
-      else if (me.scrolled > 0) {
+      else if (me.scrolled > 0){
         me.scrolled = 0;
         me.leftScroller.disable();
         me.rightScroller.enable();
       }
-      else if (me.scrolled < -scrollPath) {
+      else if (me.scrolled < -scrollPath){
         me.scrolled = -scrollPath;
         me.leftScroller.enable();
         me.rightScroller.disable();
@@ -824,10 +824,10 @@
     /*
      *
      */
-    onDocMouseUp: function () {
+    onDocMouseUp: function(){
       var me = this;
 
-      if (me.scrollInterval) {
+      if (me.scrollInterval){
         clearTimeout(me.scrollInterval);
         delete me.scrollInterval;
       }
@@ -835,19 +835,19 @@
     /*
      *
      */
-    checkScroll: function () {
+    checkScroll: function(){
       var me = this,
         itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth();
 
-      if (me.disableScroll) {
+      if (me.disableScroll){
         return;
       }
 
-      if (itemsWidth > barWidth) {
+      if (itemsWidth > barWidth){
         me.enableScroll();
       }
-      else if(me.barScrollEnabled) {
+      else if(me.barScrollEnabled){
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
       }
@@ -855,7 +855,7 @@
     /*
      *
      */
-    enableScroll: function () {
+    enableScroll: function(){
       var me = this;
 
       if(!me.barScrollEnabled){
@@ -865,7 +865,7 @@
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      if (me.scrolled === 0) {
+      if (me.scrolled === 0){
         me.leftScroller.disable();
         me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
       }
@@ -873,19 +873,19 @@
     /*
      *
      */
-    initTabEdit: function () {
+    initTabEdit: function(){
       var me = this;
 
-      if (!me.tabEdit) {
+      if (!me.tabEdit){
         return;
       }
 
       var i = me.items.length - 1;
 
-      for (; i > -1; i--) {
+      for (; i > -1; i--){
         var item = me.items[i];
 
-        switch (item.type) {
+        switch (item.type){
           case 'number':
           case 'string':
           case 'date':
@@ -898,20 +898,20 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onTabLastInput: function (field, e) {
+    onTabLastInput: function(field, e){
       var me = this,
         grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id'));
 
       //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
       e.preventDefault();
 
-      if (grid.leftColumns.length) {
-        setTimeout(function () {
+      if (grid.leftColumns.length){
+        setTimeout(function(){
           grid.leftBody.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
         }, 100);
       }
       else {
-        setTimeout(function () {
+        setTimeout(function(){
           grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
         }, 100);
       }

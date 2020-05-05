@@ -1,0 +1,35 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6, // enable es2015,
+    "sourceType": "module" // ecma modules vs "script" modules
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "globals": {
+    "document": true,
+    "navigator": true,
+    "window": true,
+    "Fancy": true,
+    "FancyGrid": true,
+    "FancyForm": true,
+    "FancyTab": true,
+    "console": true
+  },
+  "rules": {
+    "no-alert": "error",
+    "no-console": "off",
+    "no-empty": "off",
+    "quotes": ["error", "single"],
+    "no-extra-semi": "error",
+    "semi": ["error", "always"],
+    "new-parens": "error",
+    "no-debugger": "error",
+    "no-spaced-func": "error",
+    "space-before-blocks": ["error", "never"],
+    "no-redeclare": "off",
+    "space-before-function-paren": ["error", "never"]
+  }
+}

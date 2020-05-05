@@ -3,7 +3,7 @@
  * @extends Fancy.Plugin
  */
 Fancy.modules['expander'] = true;
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   var G = F.get;
@@ -26,13 +26,13 @@ Fancy.modules['expander'] = true;
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -49,7 +49,7 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget,
         s = w.store;
@@ -70,7 +70,7 @@ Fancy.modules['expander'] = true;
       w.on('expand', me.onGroupExpand, me);
       w.on('remove', me.onRemove, me);
 
-      w.on('render', function () {
+      w.on('render', function(){
         w.el.on('mouseenter', me.onExpandRowMouseEnter, me, 'div.' + GRID_ROW_EXPAND_CLS);
         w.el.on('mouseleave', me.onExpandRowMouseLeave, me, 'div.' + GRID_ROW_EXPAND_CLS);
       });
@@ -84,14 +84,14 @@ Fancy.modules['expander'] = true;
       w.on('rightlockcolumn', me.onRightLockColumn, me);
       w.on('unlockcolumn', me.onUnLockColumn, me);
 
-      if (me.expanded) {
-        if (s.proxyType) {
-          w.once('load', function () {
+      if (me.expanded){
+        if (s.proxyType){
+          w.once('load', function(){
             me.expandAll();
           });
         }
         else {
-          w.on('init', function () {
+          w.on('init', function(){
             me.expandAll();
           });
         }
@@ -100,12 +100,12 @@ Fancy.modules['expander'] = true;
     /*
      * @param {Number} rowIndex
      */
-    expand: function (rowIndex) {
+    expand: function(rowIndex){
       var me = this,
         w = me.widget,
         id = w.get(rowIndex).id;
 
-      if (me._expandedIds[id] === undefined) {
+      if (me._expandedIds[id] === undefined){
         me._expandedIds[id] = {};
         me.expandRow(Number(rowIndex), id);
         me.addMargin(Number(rowIndex) + 1, id);
@@ -123,10 +123,10 @@ Fancy.modules['expander'] = true;
         i = 0,
         iL = checkBoxEls.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var checkBox = F.getWidget(checkBoxEls.item(i).attr('id'));
 
-        if (checkBox.get() === false) {
+        if (checkBox.get() === false){
           checkBox.set(true, false);
         }
       }
@@ -137,7 +137,7 @@ Fancy.modules['expander'] = true;
     /*
      * @param {Number} rowIndex
      */
-    collapse: function (rowIndex) {
+    collapse: function(rowIndex){
       var me = this,
         w = me.widget,
         scroller = w.scroller,
@@ -159,7 +159,7 @@ Fancy.modules['expander'] = true;
      * @param {Number} rowIndex
      * @param {String} id
      */
-    collapseRow: function (rowIndex, id) {
+    collapseRow: function(rowIndex, id){
       var me = this,
         w = me.widget,
         item = me._expandedIds[id];
@@ -191,11 +191,11 @@ Fancy.modules['expander'] = true;
       item.el.hide();
       item.hidden = true;
 
-      if (w.leftColumns) {
+      if (w.leftColumns){
         item.leftEl.hide();
       }
 
-      if (w.rightColumns) {
+      if (w.rightColumns){
         item.rightEl.hide();
       }
 
@@ -203,10 +203,10 @@ Fancy.modules['expander'] = true;
         i = 0,
         iL = checkBoxEls.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var checkBox = F.getWidget(checkBoxEls.item(i).attr('id'));
 
-        if (checkBox.get() === true) {
+        if (checkBox.get() === true){
           checkBox.set(false, false);
           checkBox.collapsedTime = new Date();
         }
@@ -215,21 +215,21 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    _hideAllSideExpandedRow: function () {
+    _hideAllSideExpandedRow: function(){
       var me = this,
         w = me.widget;
 
-      for (var p in me._expandedIds) {
+      for (var p in me._expandedIds){
         var item = me._expandedIds[p];
 
         item.el.hide();
         item.hidden = true;
 
-        if (w.leftColumns) {
+        if (w.leftColumns){
           item.leftEl.hide();
         }
 
-        if (w.rightColumns) {
+        if (w.rightColumns){
           item.rightEl.hide();
         }
       }
@@ -237,12 +237,12 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    expandAll: function () {
+    expandAll: function(){
       var w = this.widget,
         viewTotal = w.getViewTotal(),
         i = 0;
 
-      for (; i < viewTotal; i++) {
+      for (; i < viewTotal; i++){
         this.expand(i);
       }
     },
@@ -250,7 +250,7 @@ Fancy.modules['expander'] = true;
      * @param {Number} rowIndex
      * @param {String} id
      */
-    expandRow: function (rowIndex, id) {
+    expandRow: function(rowIndex, id){
       var me = this,
         w = me.widget,
         el = G(document.createElement('div')),
@@ -261,7 +261,7 @@ Fancy.modules['expander'] = true;
         width = w.getCenterFullWidth(),
         height;
 
-      if (me.tpl) {
+      if (me.tpl){
         html = me.tpl.getHTML(data);
         el.update(html);
       }
@@ -275,7 +275,7 @@ Fancy.modules['expander'] = true;
 
       w.body.el.dom.appendChild(el.dom);
 
-      if (me.render) {
+      if (me.render){
         /*renderTo, data, width*/
         me.render(el.dom, data, w.getCenterFullWidth());
 
@@ -304,7 +304,7 @@ Fancy.modules['expander'] = true;
       me._expandedIds[id].height = height;
       me._expandedIds[id].width = width;
 
-      if (w.leftColumns) {
+      if (w.leftColumns){
         var leftEl = G(document.createElement('div'));
 
         leftEl.css('left', '0px');
@@ -318,7 +318,7 @@ Fancy.modules['expander'] = true;
         me._expandedIds[id].leftEl = leftEl;
       }
 
-      if (w.rightColumns) {
+      if (w.rightColumns){
         var rightEl = G(document.createElement('div'));
 
         rightEl.css('left', '0px');
@@ -332,7 +332,7 @@ Fancy.modules['expander'] = true;
         me._expandedIds[id].rightEl = rightEl;
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         w.scroller.update();
       }, 100);
     },
@@ -340,7 +340,7 @@ Fancy.modules['expander'] = true;
      * @param {Number} rowIndex
      * @param {String} id
      */
-    addMargin: function (rowIndex, id) {
+    addMargin: function(rowIndex, id){
       var me = this,
         w = me.widget,
         height = me._expandedIds[id].height,
@@ -351,7 +351,7 @@ Fancy.modules['expander'] = true;
     /*
      * @param {Number} rowIndex
      */
-    clearMargin: function (rowIndex) {
+    clearMargin: function(rowIndex){
       var w = this.widget;
 
       w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').css('margin-top', '0');
@@ -359,31 +359,31 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    onBeforeSort: function () {
+    onBeforeSort: function(){
       this.reSet();
     },
     /*
      *
      */
-    onChangePage: function () {
+    onChangePage: function(){
       this.reSet();
     },
     /*
      *
      */
-    onFilter: function () {
+    onFilter: function(){
       this.reSet();
     },
     /*
      *
      */
-    onRemove: function () {
+    onRemove: function(){
       this.reSet();
     },
     /*
      *
      */
-    reSet: function () {
+    reSet: function(){
       var me = this,
         w = me.widget;
 
@@ -391,7 +391,7 @@ Fancy.modules['expander'] = true;
         return;
       }
 
-      for (var p in me._expandedIds) {
+      for (var p in me._expandedIds){
         var item = me._expandedIds[p];
 
         item.el.destroy();
@@ -407,7 +407,7 @@ Fancy.modules['expander'] = true;
       me.changeSidesSize();
       w.scroller.scrollDelta(1);
       w.setSidesHeight();
-      setTimeout(function () {
+      setTimeout(function(){
         w.setSidesHeight();
       }, 100);
     },
@@ -415,18 +415,18 @@ Fancy.modules['expander'] = true;
      * @param {Number} rowIndex
      * @param {String} id
      */
-    showRow: function (rowIndex, id) {
+    showRow: function(rowIndex, id){
       var me = this,
         w = me.widget,
         item = me._expandedIds[id];
 
       item.el.show();
 
-      if (w.leftColumns) {
+      if (w.leftColumns){
         item.leftEl.show();
       }
 
-      if (w.rightColumns) {
+      if (w.rightColumns){
         item.rightEl.show();
       }
 
@@ -436,15 +436,13 @@ Fancy.modules['expander'] = true;
      * @param {Number} rowIndex
      * @return {Number}
      */
-    getBeforeHeight: function (rowIndex) {
-      var me = this,
-        w = me.widget,
-        height = 0;
+    getBeforeHeight: function(rowIndex){
+      var height = 0;
 
-      for (var p in this._expandedIds) {
+      for (var p in this._expandedIds){
         var item = this._expandedIds[p];
 
-        if (item.rowIndex < rowIndex && !item.hidden && item.el.css('display') !== 'none') {
+        if (item.rowIndex < rowIndex && !item.hidden && item.el.css('display') !== 'none'){
           height += item.height;
         }
       }
@@ -454,26 +452,26 @@ Fancy.modules['expander'] = true;
     /*
      * @param {Boolean} [grouping]
      */
-    reSetTop: function (grouping) {
+    reSetTop: function(grouping){
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
         top = -w.scroller.scrollTop || 0,
         left = -w.scroller.scrollLeft || 0;
 
-      if (w.grouping) {
+      if (w.grouping){
         me.expandedGroups = {};
         var expanded = w.grouping.expanded;
 
-        for (var p in expanded) {
+        for (var p in expanded){
           me.expandedGroups[p] = me.expandedGroups[p] || {};
         }
       }
 
-      for (var p in me._expandedIds) {
+      for (var p in me._expandedIds){
         var item = me._expandedIds[p];
 
-        if (item.el.css('display') === 'none') {
+        if (item.el.css('display') === 'none'){
           continue;
         }
 
@@ -483,12 +481,12 @@ Fancy.modules['expander'] = true;
           rowIndex = me.getDisplayedRowsBefore(item, p),
           _top = top + (rowIndex) * cellHeight + beforeHeight;
 
-        if (w.grouping) {
+        if (w.grouping){
           var id = p,
             groupName = w.grouping.getGroupById(id),
             orderIndex = w.grouping.getGroupOrderIndex(groupName);
 
-          if (item.el.css('display') !== 'none') {
+          if (item.el.css('display') !== 'none'){
             me.expandedGroups[groupName] = me.expandedGroups[groupName] || {};
             me.expandedGroups[groupName][p] = item;
 
@@ -501,16 +499,16 @@ Fancy.modules['expander'] = true;
           left: left
         });
 
-        if (w.leftColumns) {
+        if (w.leftColumns){
           item.leftEl.css('top', _top);
         }
 
-        if (w.rightColumns) {
+        if (w.rightColumns){
           item.rightEl.css('top', _top);
         }
       }
 
-      if (w.grouping && grouping !== false) {
+      if (w.grouping && grouping !== false){
         w.grouping.setPositions();
         w.grouping.setExpanderCellsPosition();
       }
@@ -520,13 +518,13 @@ Fancy.modules['expander'] = true;
      * @param {String|Number} id
      * @return {Number}
      */
-    getDisplayedRowsBefore: function (item, id) {
+    getDisplayedRowsBefore: function(item, id){
       var w = this.widget;
 
-      if (w.grouping) {
+      if (w.grouping){
         var rowIndex = 0;
 
-        if (item.el.css('display') !== 'none') {
+        if (item.el.css('display') !== 'none'){
           rowIndex = w.store.getRow(id);
         }
 
@@ -538,21 +536,21 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    onScroll: function () {
+    onScroll: function(){
       this.reSetTop();
     },
     /*
      *
      */
-    reSetPlusScroll: function () {
+    reSetPlusScroll: function(){
       var me = this,
         w = me.widget;
 
       me.plusScroll = me.getPlusHeight();
       w.scroller.setRightKnobSize();
 
-      setTimeout(function () {
-        if (w.scroller.isRightScrollable() === false) {
+      setTimeout(function(){
+        if (w.scroller.isRightScrollable() === false){
           w.scroller.scroll(0);
         }
       }, 1);
@@ -560,14 +558,14 @@ Fancy.modules['expander'] = true;
     /*
      * @return {Number}
      */
-    getPlusHeight: function () {
+    getPlusHeight: function(){
       var me = this,
         plusHeight = 0;
 
-      for (var p in me._expandedIds) {
+      for (var p in me._expandedIds){
         var item = me._expandedIds[p];
 
-        if (!item.hidden && item.el.css('display') !== 'none') {
+        if (!item.hidden && item.el.css('display') !== 'none'){
           plusHeight += item.height;
         }
       }
@@ -579,11 +577,11 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    onColumnReSize: function () {
+    onColumnReSize: function(){
       var me = this,
         w = me.widget;
 
-      for (var p in me._expandedIds) {
+      for (var p in me._expandedIds){
         var item = me._expandedIds[p],
           width = w.getCenterFullWidth();
 
@@ -595,12 +593,12 @@ Fancy.modules['expander'] = true;
      * @param {Object} item
      * @return {Object}
      */
-    prepareData: function (item) {
+    prepareData: function(item){
       var me = this,
         w = me.widget,
         data = item.data;
 
-      if (me.dataFn) {
+      if (me.dataFn){
         data = me.dataFn(w, data);
       }
 
@@ -609,7 +607,7 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    changeSidesSize: function () {
+    changeSidesSize: function(){
       var w = this.widget;
 
       w.setSidesHeight();
@@ -619,23 +617,23 @@ Fancy.modules['expander'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onRowDBlClick: function (grid, o) {
+    onRowDBlClick: function(grid, o){
       var me = this,
         w = me.widget,
         rowIndex = Number(o.rowIndex),
         id = o.id,
         item = me._expandedIds[id];
 
-      if (w.edit) {
+      if (w.edit){
         w.un('rowdblclick', me.onRowDBlClick, me);
         return;
       }
 
-      if (item === undefined) {
+      if (item === undefined){
         me.expand(rowIndex);
       }
       else {
-        if (item.hidden === true && item.el.css('display') === 'none') {
+        if (item.hidden === true && item.el.css('display') === 'none'){
           me.expand(rowIndex);
         }
         else {
@@ -647,19 +645,19 @@ Fancy.modules['expander'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onRowTrackOver: function (grid, o) {
+    onRowTrackOver: function(grid, o){
       var me = this,
         w = me.widget,
         item = me._expandedIds[o.id];
 
-      if (item) {
+      if (item){
         item.el.addCls(GRID_ROW_EXPAND_OVER_CLS);
 
-        if (w.leftColumns) {
+        if (w.leftColumns){
           item.leftEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
         }
 
-        if (w.rightColumns) {
+        if (w.rightColumns){
           item.rightEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
         }
       }
@@ -668,19 +666,19 @@ Fancy.modules['expander'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onRowTrackLeave: function (grid, o) {
+    onRowTrackLeave: function(grid, o){
       var me = this,
         w = me.widget,
         item = me._expandedIds[o.id];
 
-      if (item) {
+      if (item){
         item.el.removeCls(GRID_ROW_EXPAND_OVER_CLS);
 
-        if (w.leftColumns) {
+        if (w.leftColumns){
           item.leftEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
         }
 
-        if (w.rightColumns) {
+        if (w.rightColumns){
           item.rightEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
         }
       }
@@ -688,7 +686,7 @@ Fancy.modules['expander'] = true;
     /*
      * @param {Object} e
      */
-    onExpandRowMouseEnter: function (e) {
+    onExpandRowMouseEnter: function(e){
       var me = this,
         w = me.widget,
         scroller = w.scroller,
@@ -697,7 +695,7 @@ Fancy.modules['expander'] = true;
 
       w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').addCls(GRID_ROW_EXPAND_OVER_CLS);
 
-      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {}
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown){}
       else {
         w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').addCls(GRID_ROW_OVER_CLS);
       }
@@ -705,7 +703,7 @@ Fancy.modules['expander'] = true;
     /*
      * @param {Object} e
      */
-    onExpandRowMouseLeave: function (e) {
+    onExpandRowMouseLeave: function(e){
       var me = this,
         w = me.widget,
         scroller = w.scroller,
@@ -714,7 +712,7 @@ Fancy.modules['expander'] = true;
 
       w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_EXPAND_OVER_CLS);
 
-      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {}
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown){}
       else {
         w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_OVER_CLS);
       }
@@ -722,12 +720,12 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    onSelect: function () {
+    onSelect: function(){
       var me = this,
         w = me.widget,
         selection = w.selection;
 
-      if (!selection || (!selection.row && !selection.rows)) {
+      if (!selection || (!selection.row && !selection.rows)){
         return;
       }
 
@@ -738,7 +736,7 @@ Fancy.modules['expander'] = true;
         i = 0,
         iL = rows.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var rowIndex = rows[i];
 
         w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + rowIndex + '"]').addCls(GRID_ROW_EXPAND_SELECTED_CLS);
@@ -747,12 +745,12 @@ Fancy.modules['expander'] = true;
     /*
      *
      */
-    onClearSelect: function () {
+    onClearSelect: function(){
       var me = this,
         w = me.widget,
         selection = w.selection;
 
-      if (!selection.row && !selection.rows) {
+      if (!selection.row && !selection.rows){
         return;
       }
 
@@ -763,7 +761,7 @@ Fancy.modules['expander'] = true;
         i = 0,
         iL = rows.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         shouldBeSelected[rows[i]] = true;
       }
 
@@ -771,10 +769,10 @@ Fancy.modules['expander'] = true;
         i = 0,
         iL = selected.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var index = selected.item(i).attr('index');
 
-        if (!shouldBeSelected[index]) {
+        if (!shouldBeSelected[index]){
           w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_EXPAND_SELECTED_CLS);
         }
       }
@@ -784,27 +782,27 @@ Fancy.modules['expander'] = true;
      * @param {Number} index
      * @param {String} groupName
      */
-    onGroupCollapse: function (grid, index, groupName) {
+    onGroupCollapse: function(grid, index, groupName){
       var me = this,
         w = me.widget,
         expandedGroups = me.expandedGroups;
 
-      if (expandedGroups[groupName]) {
+      if (expandedGroups[groupName]){
         var items = expandedGroups[groupName];
 
-        for (var q in items) {
+        for (var q in items){
           var item = items[q];
 
-          if (me._expandedIds[q]) {
+          if (me._expandedIds[q]){
             delete me._expandedIds[q];
           }
 
           item.el.hide();
-          if (item.leftEl.dom) {
+          if (item.leftEl.dom){
             item.leftEl.hide();
           }
 
-          if (item.rightEl.dom) {
+          if (item.rightEl.dom){
             item.rightEl.hide();
           }
         }
@@ -812,7 +810,7 @@ Fancy.modules['expander'] = true;
 
       me.reSetTop(false);
       me.reSetIndexes();
-      setTimeout(function () {
+      setTimeout(function(){
         w.grouping.setExpanderCellsPosition();
       }, 1);
     },
@@ -821,25 +819,25 @@ Fancy.modules['expander'] = true;
      * @param {Number} index
      * @param {String} groupName
      */
-    onGroupExpand: function (grid, index, groupName) {
+    onGroupExpand: function(){
       var me = this,
         w = me.widget;
 
       me.reSetTop(false);
       me.reSetIndexes();
-      setTimeout(function () {
+      setTimeout(function(){
         w.grouping.setExpanderCellsPosition();
       }, 1);
     },
     /*
      *
      */
-    reSetIndexes: function () {
+    reSetIndexes: function(){
       var me = this,
         w = me.widget,
         s = w.store;
 
-      for (var id in me._expandedIds) {
+      for (var id in me._expandedIds){
         me._expandedIds[id].rowIndex = s.getRow(id);
       }
     },
@@ -849,34 +847,34 @@ Fancy.modules['expander'] = true;
     onBeforeInsert: function(){
       this.reSet();
     },
-    onColumnDrag: function () {
+    onColumnDrag: function(){
       this.reSet();
       this.clearExpandedCheckBoxes();
     },
-    onLockColumn: function () {
+    onLockColumn: function(){
       this.reSet();
       this.clearExpandedCheckBoxes();
     },
-    onRightLockColumn: function () {
+    onRightLockColumn: function(){
       this.reSet();
       this.clearExpandedCheckBoxes();
     },
-    onUnLockColumn: function () {
+    onUnLockColumn: function(){
       this.reSet();
       this.clearExpandedCheckBoxes();
     },
-    clearExpandedCheckBoxes: function () {
+    clearExpandedCheckBoxes: function(){
       var me = this,
         w = me.widget;
 
-      w.el.select('.fancy-checkbox-expander.fancy-checkbox-on').each(function (cell) {
+      w.el.select('.fancy-checkbox-expander.fancy-checkbox-on').each(function(cell){
         var id = cell.attr('id'),
           checkBox = Fancy.getWidget(id);
 
         checkBox.setValue(false, false);
       });
     },
-    collapseAll: function () {
+    collapseAll: function(){
       var me = this;
 
       me.reSet();

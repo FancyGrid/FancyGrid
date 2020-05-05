@@ -2,7 +2,7 @@
  * @class Fancy.Panel
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -40,14 +40,14 @@
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.Super('constructor', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -56,15 +56,15 @@
       me.initTpl();
       me.render();
 
-      if (me.draggable) {
+      if (me.draggable){
         me.initDD();
       }
 
-      if (me.resizable) {
+      if (me.resizable){
         me.initResize();
       }
 
-      if (me.window) {
+      if (me.window){
         me.setActiveWindowWatcher();
       }
     },
@@ -105,7 +105,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
@@ -121,23 +121,23 @@
         F.error('Could not find renderTo element: ' + me.renderTo, 1);
       }
 
-      if (me.window === true) {
+      if (me.window === true){
         el.css({
           display: 'none',
           position: 'absolute'
         });
       }
 
-      if (me.frame === false) {
+      if (me.frame === false){
         el.addCls(PANEL_NOFRAME_CLS);
       }
 
       el.addCls(F.cls, me.cls, me.fieldCls);
-      if (me.theme !== 'default') {
-        el.addCls('fancy-theme-' + me.theme);
+      if (me.theme !== 'default'){
+        el.addCls(Fancy.getThemeCSSCls(me.theme));
       }
 
-      if (me.shadow) {
+      if (me.shadow){
         el.addCls(PANEL_SHADOW_CLS);
       }
 
@@ -146,30 +146,30 @@
         height: (me.height - minusHeight) + 'px'
       });
 
-      if (me.style) {
+      if (me.style){
         el.css(me.style);
       }
 
       var titleText = '',
         subTitleText = '';
 
-      if (F.isObject(me.title)) {
-        titleText = me.title.text
+      if (F.isObject(me.title)){
+        titleText = me.title.text;
       }
-      else if (F.isString(me.title)) {
-        titleText = me.title
+      else if (F.isString(me.title)){
+        titleText = me.title;
       }
 
-      if (F.isObject(me.subTitle)) {
-        subTitleText = me.subTitle.text
+      if (F.isObject(me.subTitle)){
+        subTitleText = me.subTitle.text;
       }
-      else if (F.isString(me.subTitle)) {
-        subTitleText = me.subTitle
+      else if (F.isString(me.subTitle)){
+        subTitleText = me.subTitle;
       }
 
       var imgCls = '';
 
-      if (F.isObject(me.title) && me.title.imgCls) {
+      if (F.isObject(me.title) && me.title.imgCls){
         imgCls = '<div class="' + PANEL_HEADER_IMG_CLS + ' ' + me.title.imgCls + '"></div>';
       }
 
@@ -186,59 +186,59 @@
         subTitle: subTitleText
       }));
 
-      if (F.isObject(me.title)) {
-        if (me.title.style) {
+      if (F.isObject(me.title)){
+        if (me.title.style){
           el.select('.' + PANEL_HEADER_CLS).css(me.title.style);
         }
 
-        if (me.title.cls) {
+        if (me.title.cls){
           el.select('.' + PANEL_HEADER_CLS).addCls(me.title.cls);
         }
 
-        if (me.title.tools) {
+        if (me.title.tools){
           me.tools = me.title.tools;
         }
       }
 
-      if (F.isObject(me.subTitle)) {
-        if (me.subTitle.style) {
+      if (F.isObject(me.subTitle)){
+        if (me.subTitle.style){
           el.select('.' + PANEL_SUB_HEADER_CLS).css(me.subTitle.style);
         }
 
-        if (me.subTitle.cls) {
+        if (me.subTitle.cls){
           el.select('.' + PANEL_SUB_HEADER_CLS).addCls(me.subTitle.cls);
         }
       }
 
-      if (me.title) {
+      if (me.title){
         el.select('.' + PANEL_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
       else {
         el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
       }
 
-      if (me.subTitle) {
+      if (me.subTitle){
         el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
         el.select('.' + PANEL_SUB_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         el.select('.' + PANEL_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         el.select('.' + PANEL_SUB_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         el.select('.' + PANEL_BBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         el.select('.' + PANEL_BUTTONS_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.footer) {
+      if (me.footer){
         el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
@@ -250,13 +250,13 @@
         me.el = F.get(me.el);
       }
 
-      if (me.modal) {
-        if (F.select(MODAL_CLS).length === 0) {
+      if (me.modal){
+        if (F.select(MODAL_CLS).length === 0){
           F.get(document.body).append('<div class="'+MODAL_CLS+'" style="display: none;"></div>');
         }
       }
 
-      if (me.id && !me.el.attr('id')) {
+      if (me.id && !me.el.attr('id')){
         me.el.attr('id', me.id);
       }
 
@@ -268,7 +268,7 @@
     /*
      *
      */
-    setHardBordersWidth: function () {
+    setHardBordersWidth: function(){
       var panelBodyBorders = this.panelBodyBorders;
 
       this.el.select('.' + PANEL_BODY_CLS).css({
@@ -276,20 +276,20 @@
         'border-right-width': panelBodyBorders[1],
         'border-bottom-width': panelBodyBorders[2],
         'border-left-width': panelBodyBorders[3]
-      })
+      });
     },
     /*
      *
      */
-    renderTools: function () {
+    renderTools: function(){
       var me = this,
         tools = me.tools;
 
-      if (tools === undefined) {
+      if (tools === undefined){
         return;
       }
 
-      F.each(tools, function (tool, i) {
+      F.each(tools, function(tool, i){
         tool.renderTo = me.el.select('.' + PANEL_HEADER_TOOLS_CLS).dom;
         me.tools[i] = new F.Tool(tool, me.scope || me);
       });
@@ -297,21 +297,21 @@
     /*
      *
      */
-    renderBars: function () {
+    renderBars: function(){
       var me = this,
         containsGrid = false,
         theme = me.theme,
         scope = this;
 
-      if (me.items && me.items[0]) {
-        if (me.items[0].type === 'grid') {
+      if (me.items && me.items[0]){
+        if (me.items[0].type === 'grid'){
           containsGrid = true;
         }
 
         scope = me.items[0];
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         me._bbar = new F.Bar({
           el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
@@ -327,7 +327,7 @@
         me.bbar = me._bbar.items;
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         me._buttons = new F.Bar({
           el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
@@ -341,7 +341,7 @@
         me.buttons = me._buttons.items;
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         me._tbar = new F.Bar({
           el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
@@ -356,7 +356,7 @@
         me.tbar = me._tbar.items;
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
@@ -371,7 +371,7 @@
         me.subTBar = me._subTBar.items;
       }
 
-      if (me.footer) {
+      if (me.footer){
         me._footer = new F.Bar({
           disableScroll: true,
           el: me.el.select('.' + PANEL_FOOTER_CLS),
@@ -390,14 +390,14 @@
      * @param {Number} x
      * @param {Number} y
      */
-    showAt: function (x, y) {
+    showAt: function(x, y){
       this.css({
         left: x + 'px',
         display: '',
         'z-index': 1000 + F.zIndex++
       });
 
-      if (y !== undefined) {
+      if (y !== undefined){
         this.css({
           top: y + 'px'
         });
@@ -406,28 +406,28 @@
     /*
      *
      */
-    show: function () {
+    show: function(){
       var me = this;
 
       me.el.show();
 
-      if (me.window !== true) {
+      if (me.window !== true){
         return;
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         me._buttons.checkScroll();
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         me._tbar.checkScroll();
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         me._bbar.checkScroll();
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         me._subTBar.checkScroll();
       }
 
@@ -442,11 +442,11 @@
       xy[0] = (viewSize[1] - width) / 2;
       xy[1] = (viewSize[0] - height) / 2;
 
-      if (xy[0] < 10) {
+      if (xy[0] < 10){
         xy[0] = 10;
       }
 
-      if (xy[1] < 10) {
+      if (xy[1] < 10){
         xy[1] = 10;
       }
 
@@ -467,7 +467,7 @@
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.css({
@@ -478,8 +478,8 @@
         F.select('.' + MODAL_CLS).css('display', 'none');
       }
 
-      F.each(this.items || [], function (item) {
-        if (item.type === 'combo') {
+      F.each(this.items || [], function(item){
+        if (item.type === 'combo'){
           item.hideList();
         }
       });
@@ -487,61 +487,61 @@
     /*
      * @param {String} value
      */
-    setTitle: function (value) {
+    setTitle: function(value){
       this.el.select('.' + PANEL_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
-    getTitle: function () {
+    getTitle: function(){
       return this.el.select('.' + PANEL_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @param {String} value
      */
-    setSubTitle: function (value) {
+    setSubTitle: function(value){
       this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
-    getSubTitle: function () {
+    getSubTitle: function(){
       return this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @return {Number}
      */
-    getHeight: function () {
+    getHeight: function(){
       return parseInt(this.css('height'));
     },
     /*
      * @param {String} value
      */
-    setWidth: function (value) {
+    setWidth: function(value){
       //TODO: Redo
       this.items[0].setWidth(value);
     },
     /*
      * @param {Number} value
      */
-    setHeight: function (value) {
+    setHeight: function(value){
       this.css('height', value);
       this.items[0].setHeight(value, false);
     },
     /*
      *
      */
-    setActiveWindowWatcher: function () {
+    setActiveWindowWatcher: function(){
       var me = this;
 
-      me.el.on('mousedown', function (e) {
+      me.el.on('mousedown', function(e){
         var targetEl = F.get(e.target);
 
-        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
+        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)){
           return;
         }
 
-        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
+        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))){
           me.css('z-index', 1000 + F.zIndex++);
         }
 

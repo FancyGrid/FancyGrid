@@ -2,7 +2,7 @@
  * @class Fancy.TextArea
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -24,13 +24,13 @@
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('change', 'key');
@@ -64,7 +64,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         input = me.el.getByTag('textarea');
@@ -76,11 +76,11 @@
       input.on('keydown', me.onKeyDown, me);
       me.on('key', me.onKey, me);
 
-      if (me.autoHeight) {
+      if (me.autoHeight){
         input.on('input', me.onChange, me);
       }
 
-      input.on('mousedown', function (e) {
+      input.on('mousedown', function(e){
         if(me.disabled){
           e.preventDefault();
         }
@@ -89,17 +89,17 @@
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    preRender: function () {
+    preRender: function(){
       var me = this;
 
-      if (me.tpl) {
+      if (me.tpl){
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -109,25 +109,25 @@
     /*
      *
      */
-    initHeight: function () {
+    initHeight: function(){
       var me = this,
         height;
 
-      if (me.height) {
+      if (me.height){
         height = me.height;
-        if (me.maxHeight < me.height) {
+        if (me.maxHeight < me.height){
           //me.maxHeight = me.height;
-          setTimeout(function () {
+          setTimeout(function(){
             me.input.css({
               'overflow-y': 'scroll'
             });
           }, 1);
         }
       }
-      else if (me.value) {
+      else if (me.value){
         var length = me.value.match(/\n/g);
 
-        if (length) {
+        if (length){
           length = length.length;
         }
         else {
@@ -140,12 +140,12 @@
         height = me.height;
       }
 
-      if (height < me.minHeight) {
+      if (height < me.minHeight){
         //height = me.minHeight;
       }
-      else if (height > me.maxHeight) {
+      else if (height > me.maxHeight){
         //height = me.maxHeight;
-        setTimeout(function () {
+        setTimeout(function(){
           me.input.css({
             'overflow-y': 'scroll'
           });
@@ -158,7 +158,7 @@
     /*
      *
      */
-    calcSize: function () {
+    calcSize: function(){
       var me = this,
         inputWidth,
         padding = me.padding,
@@ -167,10 +167,10 @@
         value2,
         value3;
 
-      if (F.isString(padding)) {
+      if (F.isString(padding)){
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
-        switch (padding.length) {
+        switch (padding.length){
           case 1:
             value = Number(padding[0]);
             padding = [value, value, value, value];
@@ -193,24 +193,24 @@
             break;
         }
       }
-      else if (F.isNumber(padding)) {
+      else if (F.isNumber(padding)){
         padding = [padding, padding, padding, padding];
       }
-      else if (padding === false) {
+      else if (padding === false){
         padding = [0, 0, 0, 0];
       }
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.inputHeight -= 40;
       }
 
       inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label) {
+      if (me.labelAlign !== 'top' && me.label){
         inputWidth -= me.labelWidth;
       }
 
-      if (me.height === me.inputHeight && me.padding !== false) {
+      if (me.height === me.inputHeight && me.padding !== false){
         me.inputHeight -= padding[0] + padding[2];
       }
 
@@ -220,19 +220,19 @@
     /*
      *
      */
-    onChange: function () {
+    onChange: function(){
       var me = this,
         value = me.input.dom.value,
         input = me.el.getByTag('textarea'),
         height = value.match(/\n/g).length * me.lineHeight;
 
-      if (height < me.minHeight) {
+      if (height < me.minHeight){
         height = me.minHeight;
         input.css({
           'overflow-y': 'hidden'
         });
       }
-      else if (height > me.maxHeight) {
+      else if (height > me.maxHeight){
         height = me.maxHeight;
         input.css({
           'overflow-y': 'scroll'

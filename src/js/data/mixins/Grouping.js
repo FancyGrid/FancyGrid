@@ -91,7 +91,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       });
     }
 
-    Fancy.each(groups, function (group){
+    Fancy.each(groups, function(group){
       data = data.concat(grouped[group]);
     });
 
@@ -115,8 +115,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       groupName = data[0].data[group];
 
     if(options && options.format && options.type === 'date'){
-      for (; i < iL; i++) {
-        if (data[i].data[group] === groupName) {
+      for (; i < iL; i++){
+        if (data[i].data[group] === groupName){
           values.push(Fancy.Date.parse(data[i].data[key], options.format, options.mode));
         }
         else {
@@ -131,8 +131,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       }
     }
     else {
-      for (; i < iL; i++) {
-        if (data[i].data[group] === groupName) {
+      for (; i < iL; i++){
+        if (data[i].data[group] === groupName){
           values.push(data[i].data[key]);
         }
         else {
@@ -147,7 +147,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       }
     }
 
-    if(iL > 0) {
+    if(iL > 0){
       result.push({
         values: values,
         groupName: groupName
@@ -259,7 +259,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * TODO: needs some map of elements for fast getting elements.
    */
-  getItemsByGroup: function (groupName) {
+  getItemsByGroup: function(groupName){
     var me = this,
       items = me.findItem(me.grouping.by, groupName);
 

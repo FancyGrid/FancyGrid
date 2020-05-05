@@ -178,9 +178,9 @@
 
       pathToSrc + 'widgets/Component.js', // Component
 
-      pathToSrc + "thirdparty/sheetjs/xlsx.full.min.js", // module excel
-      pathToSrc + "thirdparty/sheetjs/Blob.js", // module excel
-      pathToSrc + "thirdparty/sheetjs/FileSaver.js" // module excel
+      pathToSrc + 'thirdparty/sheetjs/xlsx.full.min.js', // module excel
+      pathToSrc + 'thirdparty/sheetjs/Blob.js', // module excel
+      pathToSrc + 'thirdparty/sheetjs/FileSaver.js' // module excel
     ];
 
   var i = 0,

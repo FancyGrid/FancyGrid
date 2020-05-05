@@ -25,7 +25,7 @@ Fancy.String = {
       }
     }
 
-    return tpl.replace(/\[(\d+)]/g, function(m, i) {
+    return tpl.replace(/\[(\d+)]/g, function(m, i){
       return arr[i];
     });
   },
@@ -33,14 +33,14 @@ Fancy.String = {
    * @param {String} str
    * @return {String}
    */
-  upFirstChar: function(str) {
+  upFirstChar: function(str){
     return str[0].toLocaleUpperCase() + str.substr(1, str.length);
   },
   /**
    * @param {String} str
    * @return {String}
    */
-  trim: function(str) {
+  trim: function(str){
     return str.replace(/\s/g, '');
   }
 };

@@ -33,18 +33,18 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 
     if( me.isPassword ){
       me.input.attr({
-        "type": "password"
+        'type': 'password'
       });
 
-      if(me.showPassTip) {
+      if(me.showPassTip){
         me.el.select('.fancy-field-text').item(0).append('<div class="fancy-field-pass-tip">abc</div>');
         me.passTipEl = me.el.select('.fancy-field-pass-tip').item(0);
 
-        me.passTipEl.on('mousedown', function (e) {
+        me.passTipEl.on('mousedown', function(e){
           e.preventDefault();
         });
 
-        me.passTipEl.on('click', function () {
+        me.passTipEl.on('click', function(){
           if(me.input.attr('type') !== 'password'){
             me.passTipEl.update('abc');
             me.input.attr('type', 'password');

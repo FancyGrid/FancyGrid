@@ -84,7 +84,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     el.on('mouseenter', me.onMouseOver, me);
     el.on('mouseleave', me.onMouseOut, me);
 
-    if (me.tip) {
+    if (me.tip){
       el.on('mousemove', me.onMouseMove, me);
     }
   },
@@ -111,7 +111,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     var me = this,
       pressed = [];
 
-    Fancy.each(me.items, function (item, i) {
+    Fancy.each(me.items, function(item, i){
       if(item.pressed){
         if(item.value){
           pressed.push(item.value);
@@ -129,7 +129,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    */
   clear: function(fire){
     if(this.allowToggle){
-      Fancy.each(this.items, function (item){
+      Fancy.each(this.items, function(item){
         item.setPressed(false, fire);
       });
     }

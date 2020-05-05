@@ -2,7 +2,7 @@
  * @class Fancy.grid.Body
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -32,6 +32,21 @@
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
+  var spark = {
+    sparklineline: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebar: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinetristate: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinediscrete: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebullet: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinepie: GRID_COLUMN_SPARKLINE_CLS,
+    sparklinebox: GRID_COLUMN_SPARKLINE_CLS,
+    circle: GRID_COLUMN_CHART_CIRCLE_CLS,
+    progressdonut: GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS,
+    grossloss: GRID_COLUMN_GROSSLOSS_CLS,
+    progressbar: GRID_COLUMN_PROGRESS_CLS,
+    hbar: GRID_COLUMN_H_BAR_CLS
+  };
+
   F.define('Fancy.grid.Body', {
     extend: F.Widget,
     mixins: [
@@ -50,13 +65,13 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -69,7 +84,7 @@
     /*
      *
      */
-    initTpl: function () {
+    initTpl: function(){
       var me = this;
 
       me.cellTpl = new F.Template(me.cellTpl);
@@ -78,7 +93,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget,
         id = w.id;
@@ -107,7 +122,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         w = me.widget,
         renderTo,
@@ -121,7 +136,7 @@
     /*
      *
      */
-    onAfterRender: function () {
+    onAfterRender: function(){
       this.update();
       this.setHeight();
     },
@@ -129,23 +144,24 @@
      * @param {Number} scrollLeft
      * @param {Boolean} animate
      */
-    setColumnsPosition: function (scrollLeft, animate) {
+    setColumnsPosition: function(scrollLeft, animate){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length,
         columnsWidth = 0,
-        bodyDomColumns = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
-        scrollLeft = scrollLeft || me.scrollLeft || 0;
+        bodyDomColumns = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
+
+      scrollLeft = scrollLeft || me.scrollLeft || 0;
 
       columnsWidth += scrollLeft;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i],
           columnEl = bodyDomColumns.item(i);
 
-        if(animate && !F.nojQuery) {
+        if(animate && !F.nojQuery){
           columnEl.animate({
             left: columnsWidth + 'px'
           }, F.ANIMATE_DURATION);
@@ -156,7 +172,7 @@
           });
         }
 
-        if (!column.hidden) {
+        if (!column.hidden){
           columnsWidth += column.width;
         }
       }
@@ -165,13 +181,13 @@
      * @param {Number} delta
      * @return {Object}
      */
-    wheelScroll: function (delta) {
+    wheelScroll: function(delta){
       var me = this,
         w = me.widget,
         knobOffSet = w.knobOffSet,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
 
-      if (columnsDom.length === 0) {
+      if (columnsDom.length === 0){
         return;
       }
 
@@ -191,15 +207,15 @@
         scrollRightPath = 0;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var columnEl = columnsDom.item(i),
           topValue = parseInt(columnEl.css('top')) + 30 * delta;
 
-        if (topValue > 0) {
+        if (topValue > 0){
           topValue = 0;
           o.newScroll = 0;
         }
-        else if (Math.abs(topValue) > scrollRightPath) {
+        else if (Math.abs(topValue) > scrollRightPath){
           topValue = -scrollRightPath - knobOffSet;
           o.newScroll = topValue;
         }
@@ -223,7 +239,7 @@
      * @param {Boolean} [animate]
      * @return {Object}
      */
-    scroll: function (y, x, animate) {
+    scroll: function(y, x, animate){
       var me = this,
         w = me.widget,
         scroller = w.scroller,
@@ -233,7 +249,7 @@
         iL = columnsDom.length,
         o = {};
 
-      if (y !== false && y !== null && y !== undefined) {
+      if (y !== false && y !== null && y !== undefined){
         o.scrollTop = y;
         if(w.infinite){
           if(scroller.scrollTop !== y){
@@ -251,7 +267,7 @@
                 me.infiniteTimeOutDate = new Date();
               }
 
-              me.infiniteTimeOut = setTimeout(function () {
+              me.infiniteTimeOut = setTimeout(function(){
                 w.leftBody.update();
                 w.body.update();
                 w.rightBody.update();
@@ -263,27 +279,27 @@
           }
         }
         else {
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             var columnEl = columnsDom.item(i);
             columnEl.css('top', -y + 'px');
           }
         }
       }
 
-      if (x !== false && x !== null && x !== undefined) {
+      if (x !== false && x !== null && x !== undefined){
         o.scrollLeft = x;
-        if (w.header) {
+        if (w.header){
           w.header.scroll(x, animate);
         }
         me.scrollLeft = x;
         w.body.setColumnsPosition(x, animate);
 
-        if (me.side === 'center') {
-          if (w.grouping) {
+        if (me.side === 'center'){
+          if (w.grouping){
             w.grouping.scrollLeft(x);
           }
 
-          if (w.summary) {
+          if (w.summary){
             w.summary.scrollLeft(x);
           }
         }
@@ -294,7 +310,7 @@
     /*
      *
      */
-    setHeight: function () {
+    setHeight: function(){
       var height = this.widget.getBodyHeight();
 
       this.css('height', height + 'px');
@@ -302,7 +318,7 @@
     /*
      * @param {Object} e
      */
-    onCellClick: function (e) {
+    onCellClick: function(e){
       var me = this,
         w = me.widget;
 
@@ -310,7 +326,7 @@
       w.fire('rowclick', me.getEventParams(e));
       w.fire('columnclick', me.getColumnEventParams(e));
 
-      if (w.activated === false) {
+      if (w.activated === false){
         w.activated = true;
         w.fire('activate');
       }
@@ -318,7 +334,7 @@
     /*
      * @param {Object} e
      */
-    onCellDblClick: function (e) {
+    onCellDblClick: function(e){
       var me = this,
         w = me.widget;
 
@@ -330,7 +346,7 @@
      * @param {Object} e
      * @return {false|Object}
      */
-    getEventParams: function (e) {
+    getEventParams: function(e){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -339,11 +355,11 @@
         cellEl = F.get(e.currentTarget),
         columnEl = cellEl.parent();
 
-      if (cellEl.parent().dom === undefined) {
+      if (cellEl.parent().dom === undefined){
         return false;
       }
 
-      if (s.getLength() === 0) {
+      if (s.getLength() === 0){
         return false;
       }
 
@@ -363,7 +379,7 @@
         data = s.get(rowIndex + infiniteScrolledToRow),
         item = s.getById(id);
 
-      if (column.smartIndexFn) {
+      if (column.smartIndexFn){
         value = column.smartIndexFn(data);
       }
 
@@ -385,7 +401,7 @@
      * @param {Object} e
      * @return {Object}
      */
-    getColumnEventParams: function (e) {
+    getColumnEventParams: function(e){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -403,7 +419,7 @@
           cell: cellEl.dom
         };
 
-      if (w.columnClickData) {
+      if (w.columnClickData){
         config.data = s.getColumnData(column.index, column.smartIndexFn);
       }
 
@@ -413,7 +429,7 @@
      * @param {Object} e
      * @return {Object}
      */
-    getColumnHoverEventParams: function (e) {
+    getColumnHoverEventParams: function(e){
       var me = this,
         columnEl = F.get(e.currentTarget),
         columnIndex = parseInt(columnEl.attr('index')),
@@ -432,34 +448,34 @@
     /*
      * @return {Array}
      */
-    getColumns: function () {
+    getColumns: function(){
       return this.widget.getColumns(this.side);
     },
     /*
      * @param {Object} e
      */
-    onCellMouseEnter: function (e) {
+    onCellMouseEnter: function(e){
       var me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
 
-      if (F.nojQuery && prevCellOver) {
-        if (me.fixZeptoBug) {
-          if (params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side) {
+      if (F.nojQuery && prevCellOver){
+        if (me.fixZeptoBug){
+          if (params.rowIndex !== prevCellOver.rowIndex || params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
             w.fire('cellleave', prevCellOver);
-            if (params.rowIndex !== prevCellOver.rowIndex) {
+            if (params.rowIndex !== prevCellOver.rowIndex){
               w.fire('rowleave', prevCellOver);
             }
           }
         }
       }
 
-      if (!prevCellOver) {
+      if (!prevCellOver){
         w.fire('rowenter', params);
       }
       else {
-        if (params.rowIndex !== me.prevCellOver.rowIndex) {
+        if (params.rowIndex !== me.prevCellOver.rowIndex){
           w.fire('rowenter', params);
         }
       }
@@ -471,7 +487,7 @@
     /*
      * @param {Object} e
      */
-    onCellMouseDown: function (e) {
+    onCellMouseDown: function(e){
       var me = this,
         w = me.widget,
         params = me.getEventParams(e),
@@ -493,7 +509,7 @@
       w.fire('cellmousedown', params);
       w.fire('columnmousedown', columnParams);
 
-      if (w.activated === false) {
+      if (w.activated === false){
         w.activated = true;
         w.fire('activate');
       }
@@ -501,14 +517,14 @@
     /*
      * @param {Object} e
      */
-    onCellMouseLeave: function (e) {
+    onCellMouseLeave: function(e){
       var me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
 
-      if (F.nojQuery) {
-        if (prevCellOver === undefined) {
+      if (F.nojQuery){
+        if (prevCellOver === undefined){
           return;
         }
 
@@ -523,17 +539,17 @@
     /*
      * @param {Object} e
      */
-    onColumnMouseEnter: function (e) {
+    onColumnMouseEnter: function(e){
       var me = this,
         w = me.widget,
         params = me.getColumnHoverEventParams(e),
         prevColumnOver = me.prevColumnOver;
 
-      if (!prevColumnOver) {
+      if (!prevColumnOver){
         w.fire('columnenter', params);
       }
-      else if (me.prevCellOver) {
-        if (params.rowIndex !== me.prevCellOver.rowIndex) {
+      else if (me.prevCellOver){
+        if (params.rowIndex !== me.prevCellOver.rowIndex){
           w.fire('rowenter', params);
         }
       }
@@ -543,7 +559,7 @@
     /*
      * @param {Object} e
      */
-    onColumnMouseLeave: function (e) {
+    onColumnMouseLeave: function(){
       var me = this,
         w = me.widget;
 
@@ -555,7 +571,7 @@
      * @param {Number} column
      * @return {Fancy.Element}
      */
-    getCell: function (row, column) {
+    getCell: function(row, column){
       var me = this,
         w = me.widget;
 
@@ -566,7 +582,7 @@
      * @param {Number} column
      * @return {HTMLElement}
      */
-    getDomCell: function (row, column) {
+    getDomCell: function(row, column){
       var me = this,
         w = me.widget,
         dom = me.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]').dom;
@@ -577,7 +593,7 @@
      * @param {Number} index
      * @return {HTMLElement}
      */
-    getDomColumn: function (index) {
+    getDomColumn: function(index){
       var me = this,
         w = me.widget;
 
@@ -586,7 +602,7 @@
     /*
      *
      */
-    destroy: function () {
+    destroy: function(){
       var me = this,
         el = me.el,
         cellSelector = 'div.' + GRID_CELL_CLS,
@@ -609,7 +625,7 @@
     /*
      * @param {Number} orderIndex
      */
-    hideColumn: function (orderIndex) {
+    hideColumn: function(orderIndex){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -627,9 +643,10 @@
 
       columnEl.hide();
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
+        columnEl = columnEls.item(i);
+
         var column = columns[i],
-          columnEl = columnEls.item(i),
           columnLeft = parseInt(columnEl.css('left'));
 
         if(column.hidden){
@@ -649,7 +666,7 @@
     /*
      * @param {Number} orderIndex
      */
-    showColumn: function (orderIndex) {
+    showColumn: function(orderIndex){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -667,16 +684,17 @@
 
       columnEl.show();
 
-      for (; i < iL; i++) {
-        var columnEl = columnEls.item(i),
-          columnLeft = parseInt(columnEl.css('left')),
+      for (; i < iL; i++){
+        columnEl = columnEls.item(i);
+
+        var columnLeft = parseInt(columnEl.css('left')),
           column = columns[i];
 
         if(column.hidden){
           continue;
         }
 
-        //if(columnLeft !== left) {
+        //if(columnLeft !== left){
           columnEl.stop();
           columnEl.animate({
             left: left
@@ -689,7 +707,7 @@
     /*
      * @param {Number} orderIndex
      */
-    removeColumn: function (orderIndex) {
+    removeColumn: function(orderIndex){
       var me = this,
         columns = me.el.select('.' + GRID_COLUMN_CLS),
         column = columns.item(orderIndex),
@@ -699,7 +717,7 @@
 
       column.destroy();
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var _column = columns.item(i),
           left = parseInt(_column.css('left')) - columnWidth;
 
@@ -711,7 +729,7 @@
      * @param {Number} index
      * @param {Object} column
      */
-    insertColumn: function (index, column) {
+    insertColumn: function(index, column){
       var me = this,
         w = me.widget,
         _columns = me.getColumns(),
@@ -729,7 +747,7 @@
         left = -w.scroller.scrollLeft;
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         if(!_columns[j].hidden){
           left += _columns[j].width;
         }
@@ -737,7 +755,7 @@
 
       passedLeft = left;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         if(_columns[i].hidden){
           continue;
         }
@@ -753,11 +771,11 @@
       el.addCls(GRID_COLUMN_CLS);
       el.attr('grid', w.id);
 
-      if (column.index === '$selected' || column.select) {
+      if (column.index === '$selected' || column.select){
         el.addCls(GRID_COLUMN_SELECT_CLS);
       }
       else {
-        switch (column.type) {
+        switch (column.type){
           case 'order':
             el.addCls(GRID_COLUMN_ORDER_CLS);
             break;
@@ -767,7 +785,7 @@
         }
       }
 
-      if (column.cls) {
+      if (column.cls){
         el.addCls(column.cls);
       }
 
@@ -778,7 +796,7 @@
         }
       }
 
-      if (column.type === 'text') {
+      if (column.type === 'text'){
         el.addCls(GRID_COLUMN_TEXT_CLS);
       }
 
@@ -787,12 +805,12 @@
       });
       el.attr('index', index);
 
-      if (column.cellAlign) {
+      if (column.cellAlign){
         el.css('text-align', column.cellAlign);
       }
 
-      if (column.ellipsis === true) {
-        switch (column.type) {
+      if (column.ellipsis === true){
+        switch (column.type){
           case 'string':
           case 'text':
           case 'number':
@@ -807,11 +825,11 @@
       var scrolled = w.scroller.getScroll();
       el.css('top', -scrolled);
 
-      if (index === 0 && columns.length) {
+      if (index === 0 && columns.length){
         el.css('left', '0px');
         me.el.dom.insertBefore(el.dom, columns.item(index).dom);
       }
-      else if (index !== 0 && columns.length) {
+      else if (index !== 0 && columns.length){
         if(index === columns.length){
           el.css('left', left + 'px');
           me.el.dom.appendChild(el.dom);
@@ -829,7 +847,7 @@
       me.checkDomCells();
       me.updateRows(undefined, index);
     },
-    reSetIndexes: function () {
+    reSetIndexes: function(){
       var me = this,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS);
 
@@ -852,7 +870,7 @@
     /*
      *
      */
-    updateColumnsSizes: function () {
+    updateColumnsSizes: function(){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -862,7 +880,7 @@
         left = -w.scroller.scrollLeft;
       }
 
-      F.each(columns, function (column, i) {
+      F.each(columns, function(column, i){
         if(column.hidden){
           return;
         }
@@ -879,18 +897,22 @@
           });
         }
         else{
+          el.$dom.stop();
+
           el.animate({
             width: column.width,
             left: left
-          }, ANIMATE_DURATION);
+          }, ANIMATE_DURATION, undefined, function (){
+            el.css('overflow', '');
+          });
 
-          el.css('overflow', '');
+          //el.css('overflow', '');
         }
 
         left += column.width;
       });
     },
-    reSetColumnsAlign: function () {
+    reSetColumnsAlign: function(){
       var me = this,
         columns = me.getColumns(),
         columnEls = this.el.select('.' + GRID_COLUMN_CLS);
@@ -901,7 +923,7 @@
         columnEl.css('text-align', column.cellAlign || '');
       });
     },
-    reSetColumnsCls: function () {
+    reSetColumnsCls: function(){
       var me = this,
         columns = me.getColumns(),
         columnEls = me.el.select('.' + GRID_COLUMN_CLS);
@@ -910,7 +932,7 @@
         var column = columns[i],
           clss = columnEl.attr('class').split(' ');
 
-        F.each(clss, function (cls) {
+        F.each(clss, function(cls){
           switch(cls){
             case GRID_COLUMN_CLS:
               break;
@@ -958,19 +980,19 @@
         }
       });
     },
-    onContextMenu: function (e) {
+    onContextMenu: function(e){
       var me = this,
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
     },
-    updateColumnsVisibility: function () {
+    updateColumnsVisibility: function(){
       var me = this,
         columns = me.getColumns(),
         //For jQuery :not does not work on me.el
         columnEls = me.el.parent().select(':not(.' + GRID_ROW_EXPAND_CLS + ') .' + GRID_COLUMN_CLS);
 
-      columnEls.each(function(columnEl, i) {
+      columnEls.each(function(columnEl, i){
         var column = columns[i];
 
         if(column.hidden){
@@ -982,20 +1004,5 @@
       });
     }
   });
-
-  var spark = {
-    sparklineline: GRID_COLUMN_SPARKLINE_CLS,
-    sparklinebar: GRID_COLUMN_SPARKLINE_CLS,
-    sparklinetristate: GRID_COLUMN_SPARKLINE_CLS,
-    sparklinediscrete: GRID_COLUMN_SPARKLINE_CLS,
-    sparklinebullet: GRID_COLUMN_SPARKLINE_CLS,
-    sparklinepie: GRID_COLUMN_SPARKLINE_CLS,
-    sparklinebox: GRID_COLUMN_SPARKLINE_CLS,
-    circle: GRID_COLUMN_CHART_CIRCLE_CLS,
-    progressdonut: GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS,
-    grossloss: GRID_COLUMN_GROSSLOSS_CLS,
-    progressbar: GRID_COLUMN_PROGRESS_CLS,
-    hbar: GRID_COLUMN_H_BAR_CLS
-  }
 
 })();

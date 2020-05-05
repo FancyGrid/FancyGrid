@@ -1,5 +1,5 @@
-(function(root, factory) {
-  if (typeof module === 'object' && module.exports) {
+(function(root, factory){
+  if (typeof module === 'object' && module.exports){
     module.exports = root.document ?
       factory(root) :
       factory;
@@ -18,9 +18,9 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.94',
+  version: '1.7.96',
   site: 'fancygrid.com',
-  COLORS: ["#9DB160", "#B26668", "#4091BA", "#8E658E", "#3B8D8B", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"]
+  COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
 
 window.Fancy = Fancy;
@@ -68,7 +68,7 @@ Fancy.namespace = function(){
   
   for(;i<iL;i++){
     var value = arguments[i],
-      parts = value.split("."),
+      parts = value.split('.'),
       j = 1,
       jL = parts.length;
     
@@ -108,12 +108,12 @@ Fancy.ns = Fancy.namespace;
  * @return {String}
  */
 Fancy.typeOf = function(value){
-  if(value === null) {
+  if(value === null){
     return 'null';
   }
 
   var type = typeof value;
-  if(type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean') {
+  if(type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean'){
     return type;
   }
 
@@ -211,9 +211,9 @@ Fancy.isDom = function(value){
     //Browsers not supporting W3 DOM2 don't have HTMLElement and
     //an exception is thrown and we end up here. Testing some
     //properties that all elements have (works on IE7)
-    return (typeof value === "object") &&
-      (value.nodeType===1) && (typeof value.style === "object") &&
-      (typeof value.ownerDocument ==="object");
+    return (typeof value === 'object') &&
+      (value.nodeType===1) && (typeof value.style === 'object') &&
+      (typeof value.ownerDocument ==='object');
   }
 };
 
@@ -319,7 +319,7 @@ Fancy.mixin = function(proto, classes){
 };
 
 Fancy.Mixin = function(name, config){
-  var parts = name.split("."),
+  var parts = name.split('.'),
     i = 1,
     iL = parts.length - 1;
 
@@ -692,20 +692,21 @@ var userAgent = navigator.userAgent.toLowerCase(),
   isChromium = window.chrome,
   winNav = window.navigator,
   vendorName = winNav.vendor,
-  isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-  isIOSChrome = winNav.userAgent.match("CriOS"),
-  isChrome = function() {
-    var isOpera = winNav.userAgent.indexOf("OPR") > -1;
+  isIEedge = winNav.userAgent.indexOf('Edge') > -1,
+  isIOSChrome = winNav.userAgent.match('CriOS'),
+  isChrome = function(){
+    var isOpera = winNav.userAgent.indexOf('OPR') > -1;
 
-    if (isIOSChrome) {
+    if (isIOSChrome){
       return true;
-    } else if (
+    }
+    else if (
       isChromium !== null &&
-      typeof isChromium !== "undefined" &&
-      vendorName === "Google Inc." &&
+      typeof isChromium !== 'undefined' &&
+      vendorName === 'Google Inc.' &&
       isOpera === false &&
       isIEedge === false
-    ) {
+    ){
       return true;
     } else {
       return false;
@@ -716,19 +717,19 @@ var userAgent = navigator.userAgent.toLowerCase(),
       ua,
       re;
 
-    if (navigator.appName == 'Microsoft Internet Explorer') {
+    if (navigator.appName == 'Microsoft Internet Explorer'){
       ua = navigator.userAgent;
-      re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+      re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
 
-      if (re.exec(ua) != null) {
+      if (re.exec(ua) != null){
         rv = parseFloat(RegExp.$1);
       }
     }
-    else if (navigator.appName == 'Netscape') {
+    else if (navigator.appName == 'Netscape'){
       ua = navigator.userAgent;
-      re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+      re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
 
-      if (re.exec(ua) != null) {
+      if (re.exec(ua) != null){
         rv = parseFloat(RegExp.$1);
       }
     }
@@ -771,15 +772,17 @@ Fancy.getViewSize = function(){
 /**
  * @return {Object}
  */
-Fancy.getScroll = function() {
+Fancy.getScroll = function(){
   var dd = document.documentElement,
     db = document.body;
 
-  if (dd && (dd.scrollTop || dd.scrollLeft)) {
+  if (dd && (dd.scrollTop || dd.scrollLeft)){
     return [dd.scrollTop, dd.scrollLeft];
-  } else if (db) {
+  }
+  else if (db){
     return [db.scrollTop, db.scrollLeft];
-  } else {
+  }
+  else {
     return [0, 0];
   }
 };
@@ -800,12 +803,13 @@ Fancy.getMouseWheelEventName = function(){
  * @param {Object} e
  * @return {Number}
  */
-Fancy.getWheelDelta = function(e) {
+Fancy.getWheelDelta = function(e){
   var delta = 0;
 
-  if (e.wheelDelta) { // IE/Opera way
+  if (e.wheelDelta){ // IE/Opera way
     delta = e.wheelDelta / 120;
-  } else if (e.detail) { // Mozilla way
+  }
+  else if (e.detail){ // Mozilla way
     delta = -e.detail / 3;
   }
 
@@ -839,10 +843,10 @@ Fancy.currency = {
 })();
 
 Fancy.modules = {};
-Fancy.getModulesList = function () {
+Fancy.getModulesList = function(){
   var list = [];
 
-  Fancy.each(Fancy.modules, function (value, p) {
+  Fancy.each(Fancy.modules, function(value, p){
     list.push(p);
   });
 
@@ -868,14 +872,14 @@ var FancyForm = function(){
   });
 };
 */
-(function() {
+(function(){
   var moduleNames = {};
 
   /**
    * @param {String} name
    * @param {Function} fn
    */
-  Fancy.loadModule = function (name, fn) {
+  Fancy.loadModule = function(name, fn){
     var body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       _name = name,
@@ -883,7 +887,7 @@ var FancyForm = function(){
       _v = Fancy.version.replace(/\./g, ''),
       MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
 
-    fn = fn || function () {};
+    fn = fn || function(){};
 
     if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
       return;
@@ -915,11 +919,11 @@ var FancyForm = function(){
 
     _script.charset = 'utf-8';
 
-    _script.onload = function () {
+    _script.onload = function(){
       Fancy.Modules.fire('loaded', name);
     };
 
-    _script.onerror = function () {
+    _script.onerror = function(){
       throw new Error('[FancyGrid Error] - module ' + name + ' was not loaded');
     };
 
@@ -931,7 +935,7 @@ var FancyForm = function(){
    * @param {Function} fn
    */
   Fancy.loadLang = function(i18n, fn){
-    if(Fancy.i18n[i18n] !== undefined) {
+    if(Fancy.i18n[i18n] !== undefined){
       return true;
     }
 
@@ -953,14 +957,14 @@ var FancyForm = function(){
     body.appendChild(_script);
   };
 
-  Fancy.loadStyle = function () {
+  Fancy.loadStyle = function(){
     var links = document.querySelectorAll('link');
 
     if(Fancy.stylesLoaded){
       return;
     }
 
-    Fancy.each(links, function (link) {
+    Fancy.each(links, function(link){
       if(/fancy\./.test(link.href)){
         Fancy.stylesLoaded = true;
       }
@@ -972,7 +976,7 @@ var FancyForm = function(){
       return;
     }
 
-    Fancy.each(links, function (link) {
+    Fancy.each(links, function(link){
       if(/fancy\./.test(link.href)){
         Fancy.stylesLoaded = true;
       }
@@ -1009,7 +1013,7 @@ var FancyForm = function(){
     }
   };
 
-  Fancy.error = function (message, code) {
+  Fancy.error = function(message, code){
     var errorNumber = '';
 
     if(code){
@@ -1030,6 +1034,8 @@ Fancy.defineTheme = function(name, o){
 
   if(o.extend){
     Fancy.apply(themeConfig, Fancy.getTheme(o.extend).config);
+    themeConfig.extendedThemes = themeConfig.extendedThemes || [];
+    themeConfig.extendedThemes.push(o.extend);
   }
   else if(name !== 'default'){
     Fancy.apply(themeConfig, Fancy.getTheme('default').config);
@@ -1039,6 +1045,23 @@ Fancy.defineTheme = function(name, o){
   o.config = themeConfig;
 
   Fancy.themes[name] = o;
+};
+
+/**
+ * @param {String} name
+ * @return {String}
+ */
+Fancy.getThemeCSSCls = function(name){
+  var cls = 'fancy-theme-' + name,
+    theme = Fancy.getTheme(name);
+
+  if(theme && theme.config.extendedThemes){
+    Fancy.each(theme.config.extendedThemes, function(name){
+      cls += ' ' + 'fancy-theme-' + name;
+    });
+  }
+
+  return cls;
 };
 
 /**
@@ -1126,6 +1149,13 @@ Fancy.defineTheme('extra-gray', {
     cellHeaderHeight: 28,
     barHeight: 32,
     datePickerHeight: 287
+  }
+});
+
+Fancy.defineTheme('extra-dark', {
+  extend: 'extra-gray',
+  config: {
+
   }
 });
 
@@ -1221,7 +1251,7 @@ Fancy.String = {
       }
     }
 
-    return tpl.replace(/\[(\d+)]/g, function(m, i) {
+    return tpl.replace(/\[(\d+)]/g, function(m, i){
       return arr[i];
     });
   },
@@ -1229,14 +1259,14 @@ Fancy.String = {
    * @param {String} str
    * @return {String}
    */
-  upFirstChar: function(str) {
+  upFirstChar: function(str){
     return str[0].toLocaleUpperCase() + str.substr(1, str.length);
   },
   /**
    * @param {String} str
    * @return {String}
    */
-  trim: function(str) {
+  trim: function(str){
     return str.replace(/\s/g, '');
   }
 };
@@ -1244,7 +1274,7 @@ Fancy.String = {
 
 Fancy.Array = {
   copy: function(a, deep){
-    if(!deep) {
+    if(!deep){
       return a.slice();
     }
 
@@ -1308,7 +1338,7 @@ Fancy.Array = {
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         if(Fancy.isNumber(values[i]) === false){
           continue;
         }
@@ -1336,13 +1366,13 @@ Fancy.Array = {
    * @param {Array} values
    * @return {Number}
    */
-  average: function (values) {
+  average: function(values){
     var sum = 0,
       i = 0,
       iL = values.length;
 
     for(;i<iL;i++){
-      if (Fancy.isNumber(values[i]) === false) {
+      if (Fancy.isNumber(values[i]) === false){
         continue;
       }
       sum += values[i];
@@ -1356,7 +1386,7 @@ Fancy.Array = {
    * @param {Array} insert
    * @return {Array}
    */
-  insert: function (arr, index, insert) {
+  insert: function(arr, index, insert){
     var arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
@@ -1366,7 +1396,7 @@ Fancy.Array = {
   /*
    *
    */
-  none: function () {
+  none: function(){
     return '';
   }
 };
@@ -1393,15 +1423,12 @@ Fancy.Object = {
    * @param {Object} o
    * @return {Boolean}
    */
-  isEmpty: function (o) {
-    var empty = true;
-
+  isEmpty: function(o){
     for(var p in o){
-      empty = false;
-      continue;
+      return false;
     }
 
-    return empty;
+    return true;
   }
 };
 /**
@@ -1421,7 +1448,7 @@ Fancy.Number = {
    * @return {Number}
    */
   getPrecision: function(value){
-    return (value + "").split(".")[1].length + 1;
+    return (value + '').split('.')[1].length + 1;
   },
   /**
    * @param {Number} value
@@ -1436,7 +1463,7 @@ Fancy.Number = {
    * @param {Number} [precision]
    * @return {String}
    */
-  format: function (value, sep, precision) {
+  format: function(value, sep, precision){
     var dot,
       result;
 
@@ -1555,7 +1582,7 @@ Fancy.Collection.prototype = {
 
     me.updateIndexMap();
   },
-  updateIndexMap: function () {
+  updateIndexMap: function(){
     var me = this,
       i = 0,
       iL = me.keys.length;
@@ -1806,7 +1833,6 @@ Fancy.Key = {
       case key.INSERT:
       case key.DOT:
         return true;
-        break;
       default:
         return false;
     }
@@ -1847,7 +1873,7 @@ ClassManager.prototype = {
    * @param {String} key
    */
   add: function(key, value){
-    var parts = key.split("."),
+    var parts = key.split('.'),
       i = 1,
       iL = parts.length - 1;
     
@@ -1894,7 +1920,7 @@ ClassManager.prototype = {
    * @return {Object}
    */
   getMixin: function(name){
-    var parts = name.split("."),
+    var parts = name.split('.'),
       j = 1,
       jL = parts.length;
 
@@ -2315,7 +2341,7 @@ Fancy.getPluginByType = function(ptype){
  * @class Fancy.WidgetManager
  * @singleton
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -2324,7 +2350,7 @@ Fancy.getPluginByType = function(ptype){
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.wtypes = new F.Data();
       this.widgets = new F.Data();
     },
@@ -2332,7 +2358,7 @@ Fancy.getPluginByType = function(ptype){
      * @param {String} wtype
      * @param {Object} widget
      */
-    addWidgetType: function (wtype, widget) {
+    addWidgetType: function(wtype, widget){
       widget.prototype.wtype = wtype;
       this.wtypes.add(wtype, widget);
     },
@@ -2340,21 +2366,21 @@ Fancy.getPluginByType = function(ptype){
      * @param {String} wtype
      * @return {Object}
      */
-    getWidgetClassByType: function (wtype) {
+    getWidgetClassByType: function(wtype){
       return this.wtypes.get(wtype);
     },
     /*
      * @param {String} id
      * @param {Object} widget
      */
-    addWidget: function (id, widget) {
+    addWidget: function(id, widget){
       this.widgets.add(id, widget);
     },
     /*
      * @param {String} id
      * @return {Object}
      */
-    getWidget: function (id) {
+    getWidget: function(id){
       return this.widgets.get(id);
     }
   });
@@ -2365,7 +2391,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} wtype
    * @param {Object} widget
    */
-  F.addWidgetType = function (wtype, widget) {
+  F.addWidgetType = function(wtype, widget){
     W.addWidgetType(wtype, widget);
   };
 
@@ -2373,7 +2399,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} wtype
    * @return {Object}
    */
-  F.getWidgetClassByType = function (wtype) {
+  F.getWidgetClassByType = function(wtype){
     return W.getWidgetClassByType(wtype);
   };
 
@@ -2381,7 +2407,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} id
    * @param {Object} widget
    */
-  F.addWidget = function (id, widget) {
+  F.addWidget = function(id, widget){
     W.addWidget(id, widget);
   };
 
@@ -2389,7 +2415,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} id
    * @return {Object} widget
    */
-  F.getWidget = function (id) {
+  F.getWidget = function(id){
     return W.getWidget(id);
   };
 
@@ -2589,7 +2615,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
       }
 
       if(lis.delay){
-        setTimeout(function () {
+        setTimeout(function(){
           lis.fn.apply(lis.scope || me, _args);
         }, lis.delay);
       }
@@ -2681,14 +2707,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} o
    * @param {Boolean} [fire]
    */
-  remove: function(o, fire) {
+  remove: function(o, fire){
     var me = this,
       id = o.id,
       index,
       orderIndex,
       itemData;
 
-    switch (Fancy.typeOf(o)) {
+    switch (Fancy.typeOf(o)){
       case 'string':
       case 'number':
         id = o;
@@ -2697,22 +2723,22 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
         id = o.id || o.data.id;
     }
 
-    if (me.isTree && me.treeCollapsing !== true) {
+    if (me.isTree && me.treeCollapsing !== true){
       var item = me.getById(id),
         parentItem = me.getById(item.get('parentId'));
 
-      if (item.get('leaf') === false && item.get('expanded')) {
+      if (item.get('leaf') === false && item.get('expanded')){
         var _i = item.data.child.length - 1;
 
-        Fancy.each(item.data.child, function (child, i, children) {
+        Fancy.each(item.data.child, function(child, i, children){
           me.remove(children[_i]);
           _i--;
         });
       }
 
-      if (parentItem) {
-        Fancy.each(parentItem.data.child, function (child, i) {
-          if (child.id === id) {
+      if (parentItem){
+        Fancy.each(parentItem.data.child, function(child, i){
+          if (child.id === id){
             parentItem.data.child.splice(i, 1);
             return true;
           }
@@ -2720,14 +2746,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       }
     }
 
-    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy) {
+    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
       if(fire !== false){
         me.proxyCRUD('DESTROY', id);
       }
       return;
     }
 
-    if (o.rowIndex) {
+    if (o.rowIndex){
       index = me.dataViewIndexes[o.rowIndex];
       orderIndex = o.rowIndex;
     }
@@ -2740,10 +2766,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       }
     }
 
-    if (me.isTree && me.treeCollapsing && me.filteredData) {
+    if (me.isTree && me.treeCollapsing && me.filteredData){
       //TODO:
       var _index;
-      Fancy.each(me.data, function (item, i) {
+      Fancy.each(me.data, function(item, i){
         if(item.data.id === id){
           _index = i;
           return true;
@@ -2757,22 +2783,22 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
 
-    if (me.paging) {
+    if (me.paging){
       orderIndex += me.showPage * me.pageSize;
     }
 
-    if (me.order) {
+    if (me.order){
       me.order.splice(orderIndex, 1);
     }
 
     //SLOW, needs all redo to another approach
     //Almost the same as resorting
-    if (me.changeOrderIndexes) {
+    if (me.changeOrderIndexes){
       me.changeOrderIndexes(index);
     }
 
-    if (me.paging) {
-      if (me.showPage !== 0 && me.showPage * me.pageSize === me.getTotal()) {
+    if (me.paging){
+      if (me.showPage !== 0 && me.showPage * me.pageSize === me.getTotal()){
         me.showPage--;
       }
       me.calcPages();
@@ -2780,11 +2806,11 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     delete me.map[id];
 
-    if (!me.treeCollapsing && fire !== false) {
+    if (!me.treeCollapsing && fire !== false){
       me.fire('remove', id, itemData, index);
     }
 
-    if(fire !== false) {
+    if(fire !== false){
       me.changeDataView();
     }
   },
@@ -2803,7 +2829,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    *
    */
-  removeAll: function () {
+  removeAll: function(){
     var me = this;
 
     me.data = [];
@@ -2863,7 +2889,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
-      if(fire !== false) {
+      if(fire !== false){
         me.once('create', me.onCreate, me);
         me.proxyCRUD('CREATE', o);
       }
@@ -2881,10 +2907,11 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   insertItem: function(o, index, fire){
     var me = this,
       model = me.model,
-      item = new model(o),
-      index = me.addIndex;
+      item = new model(o);
 
-    if(!me.treeExpanding && fire !== false) {
+    index = me.addIndex;
+
+    if(!me.treeExpanding && fire !== false){
       me.fire('beforeinsert');
     }
 
@@ -2897,12 +2924,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       me.order[index]--;
     }
 
-    if(fire !== false) {
+    if(fire !== false){
       me.changeDataView();
     }
 
     me.map[o.id] = item;
-    if(!me.treeExpanding &&  fire !== false) {
+    if(!me.treeExpanding &&  fire !== false){
       me.fire('insert', item);
     }
     return item;
@@ -3042,7 +3069,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
     me.inserted[o.id] = o;
     me.inserted.length++;
 
-    if(me.undoStoppped !== true) {
+    if(me.undoStoppped !== true){
       if(!me.redoing){
         me.redoActions = [];
       }
@@ -3053,7 +3080,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       });
     }
   },
-  clearDirty: function () {
+  clearDirty: function(){
     var me = this;
 
     me.changed = {
@@ -3070,6 +3097,27 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
 
     me.undoActions = [];
     me.redoActions = [];
+  },
+  /*
+   * @return {Boolean}
+   */
+  isDirty: function(){
+    var me = this,
+      dirty = false;
+
+    if(me.changed.length){
+      dirty = true;
+    }
+
+    if(me.removed.length){
+      dirty = true;
+    }
+
+    if(me.inserted.length){
+      dirty = true;
+    }
+
+    return dirty;
   }
 });
 /*
@@ -3094,7 +3142,6 @@ Fancy.define('Fancy.Store', {
   pageSize: 10,
   showPage: 0,
   pages: 0,
-  dirty: false,
   loading: false,
   /*
    * @constructor
@@ -3112,8 +3159,8 @@ Fancy.define('Fancy.Store', {
 
     me.setModel();
 
-    if(me.data) {
-      if (me.data.proxy) {
+    if(me.data){
+      if (me.data.proxy){
         me.initProxy();
       }
       else if(!me.widget.isTreeData){
@@ -3162,8 +3209,8 @@ Fancy.define('Fancy.Store', {
       me.initInfinite();
     }
 
-    if( me.initTrackDirty ) {
-      me.initTrackDirty()
+    if( me.initTrackDirty ){
+      me.initTrackDirty();
     }
   },
   /*
@@ -3202,8 +3249,8 @@ Fancy.define('Fancy.Store', {
     me.dataViewIndexes = {};
     me.map = {};
 
-    if(me.collapsed) {
-      for (; i < iL; i++) {
+    if(me.collapsed){
+      for (; i < iL; i++){
         item = new model(data[i]);
 
         me.data[i] = item;
@@ -3213,7 +3260,7 @@ Fancy.define('Fancy.Store', {
     else {
       if(me.expanded){
         //??? It looks like never reaches
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           item = new model(data[i]);
 
           me.data[i] = item;
@@ -3222,7 +3269,7 @@ Fancy.define('Fancy.Store', {
       }
       else {
         if(me.paging ){
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             item = new model(data[i]);
 
             me.data[i] = item;
@@ -3235,7 +3282,7 @@ Fancy.define('Fancy.Store', {
           }
         }
         else {
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             item = new model(data[i]);
 
             me.data[i] = item;
@@ -3249,9 +3296,9 @@ Fancy.define('Fancy.Store', {
     }
 
     if(me.isTree){
-      Fancy.each(me.data, function (item, i) {
+      Fancy.each(me.data, function(item){
         if(item.get('expanded')){
-          Fancy.each(item.data.child, function (_child,_i) {
+          Fancy.each(item.data.child, function(_child,_i){
             var childItem = me.getById(_child.id);
 
             item.data.child[_i] = childItem;
@@ -3270,7 +3317,7 @@ Fancy.define('Fancy.Store', {
 
     if(!item){
       if(me.order){
-        item = me.data[me.order[rowIndex]]
+        item = me.data[me.order[rowIndex]];
       }
       else {
         item = me.data[rowIndex];
@@ -3296,7 +3343,7 @@ Fancy.define('Fancy.Store', {
 
     if(!item){
       if(me.order){
-        item = me.data[me.order[rowIndex]]
+        item = me.data[me.order[rowIndex]];
       }
       else {
         item = me.data[rowIndex];
@@ -3418,7 +3465,7 @@ Fancy.define('Fancy.Store', {
         });
       }
 
-      if(me.proxyType === 'server' && me.autoSave) {
+      if(me.proxyType === 'server' && me.autoSave){
         me.proxyCRUD('UPDATE', id, data);
       }
 
@@ -3446,7 +3493,7 @@ Fancy.define('Fancy.Store', {
         //TODO: it is bad about perfomance, it needs to redo.
         var parentItem = me.getById(_item.data.parentId);
 
-        Fancy.each(parentItem.data.child, function (child, i) {
+        Fancy.each(parentItem.data.child, function(child){
           if(child.id === _item.id){
             child[key] = value;
           }
@@ -3496,8 +3543,8 @@ Fancy.define('Fancy.Store', {
       me.set(rowIndex, data);
     }
     else {
-      for (var p in data) {
-        if (pastData[p] == data[p]) {
+      for (var p in data){
+        if (pastData[p] == data[p]){
           continue;
         }
 
@@ -3624,7 +3671,7 @@ Fancy.define('Fancy.Store', {
     else{
       if(options.format){
         if(options.type === 'date'){
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             var value = data[i].data[key];
 
             if(value === null || value === ''){
@@ -3637,12 +3684,12 @@ Fancy.define('Fancy.Store', {
         }
         else{
           if(nestedKey){
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               values.push(this.getNestedValue(data[i].data, key));
             }
           }
           else {
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               values.push(data[i].data[key]);
             }
           }
@@ -3652,8 +3699,8 @@ Fancy.define('Fancy.Store', {
         if(options.groupMap){
           me.groupMap = {};
 
-          if(nestedKey) {
-            for (; i < iL; i++) {
+          if(nestedKey){
+            for (; i < iL; i++){
               var item = data[i],
                 value = this.getNestedValue(item.data, key);
 
@@ -3662,7 +3709,7 @@ Fancy.define('Fancy.Store', {
             }
           }
           else {
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               var item = data[i],
                 value = item.data[key];
 
@@ -3673,13 +3720,13 @@ Fancy.define('Fancy.Store', {
         }
         else {
           if(!nestedKey){
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               var itemData = data[i].data || data[i];
               values.push(itemData[key]);
             }
           }
           else {
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               values.push(this.getNestedValue(data[i].data || data[i], key));
             }
           }
@@ -3689,7 +3736,7 @@ Fancy.define('Fancy.Store', {
 
     return values;
   },
-  getNestedValue: function (data, key) {
+  getNestedValue: function(data, key){
     var splitted = key.split('.');
 
     if(splitted.length > 1){
@@ -3712,15 +3759,15 @@ Fancy.define('Fancy.Store', {
       isFiltered = me.isFiltered(),
       data = me.data;
 
-    if(isFiltered) {
-      if (!o.stoppedFilter && !o.doNotFired) {
+    if(isFiltered){
+      if (!o.stoppedFilter && !o.doNotFired){
         me.filterData();
       }
-      else if (me.paging && me.pageType === 'server') {
+      else if (me.paging && me.pageType === 'server'){
         return;
       }
 
-      if (!me.remoteFilter) {
+      if (!me.remoteFilter){
         data = me.filteredData;
 
         if(data === undefined){
@@ -3786,7 +3833,7 @@ Fancy.define('Fancy.Store', {
         for(;i<iL;i++){
           if(isFiltered === true){
             me.dataViewIndexes[dataView.length] = me.filterOrder[i];
-            item = data[ i ]
+            item = data[i];
           }
           else {
             me.dataViewIndexes[dataView.length] = me.order[i];
@@ -3840,12 +3887,12 @@ Fancy.define('Fancy.Store', {
       _data = [];
 
     if(fn){
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data.push(fn(me.data[i].data));
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data.push(me.data[i].data[key]);
       }
     }
@@ -3928,7 +3975,7 @@ Fancy.define('Fancy.Store', {
 
     if(complex){
       iL = me.data.length;
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         if(me.order){
           item = me.data[me.order[i]];
         }
@@ -3936,16 +3983,16 @@ Fancy.define('Fancy.Store', {
           item = me.data[i];
         }
 
-        if (item.data[key] === value) {
+        if (item.data[key] === value){
           founded.push(i);
         }
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         item = dataView[i];
 
-        if (item.data[key] === value) {
+        if (item.data[key] === value){
           founded.push(i);
         }
       }
@@ -4039,10 +4086,10 @@ Fancy.define('Fancy.Store', {
       me.smartIndexes = smartIndexes;
     }
   },
-  destroy: function () {
+  destroy: function(){
     var me = this;
 
-    Fancy.each(me.data, function (item) {
+    Fancy.each(me.data, function(item){
       delete item.data;
       delete item.id;
     });
@@ -4056,12 +4103,12 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  addField: function (index) {
+  addField: function(index){
     var me = this,
       fields = me.fields,
       presented = false;
 
-    Fancy.each(fields, function (field) {
+    Fancy.each(fields, function(field){
       if(field === index){
         presented = true;
         return true;
@@ -4075,16 +4122,15 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Boolean}
    */
-  isFiltered: function () {
+  isFiltered: function(){
     var me = this,
-      filters = me.filters || {},
-      filtered = false;
+      filters = me.filters || {};
 
     for(var p in filters){
-      filtered = true;
+      return true;
     }
 
-    return filtered;
+    return false;
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -4122,7 +4168,7 @@ Fancy.Element.prototype = {
   /*
    * @return {Fancy.Element}
    */
-  last: function () {
+  last: function(){
     return Fancy.get(this.$dom);
   },
   /*
@@ -4177,7 +4223,7 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  on: function(eventName, fn, scope, delegate) {
+  on: function(eventName, fn, scope, delegate){
     var me = this;
 
     if(scope){
@@ -4216,10 +4262,10 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  once: function(eventName, fn, scope, delegate) {
+  once: function(eventName, fn, scope, delegate){
     var me = this;
 
-    if (scope) {
+    if (scope){
       fn = Fancy.$.proxy(fn, scope);
     }
 
@@ -4243,10 +4289,10 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  un: function(eventName, fn, scope, delegate) {
+  un: function(eventName, fn, scope, delegate){
     var me = this;
 
-    if (scope) {
+    if (scope){
       fn = Fancy.$.proxy(fn, scope);
     }
 
@@ -4374,7 +4420,7 @@ Fancy.Element.prototype = {
         css: function(){},
         each: function(){},
         last: function(){},
-        attr: function () {}
+        attr: function(){}
       };
     }
 
@@ -4551,7 +4597,7 @@ Fancy.Element.prototype = {
   /*
    *
    */
-  stop: function () {
+  stop: function(){
     if(this.$dom.stop){
       this.$dom.stop();
     }
@@ -4607,14 +4653,6 @@ Fancy.Element.prototype = {
     }
   },
   /*
-   *
-   */
-  stop: function(){
-    if(this.$dom.stop){
-      this.$dom.stop();
-    }
-  },
-  /*
    * @return {Number}
    */
   index: function(){
@@ -4630,8 +4668,9 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr',
-        e = e.originalEvent || e;
+        tempAttr = 'fancy-tempt-attr';
+
+      e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -4842,6 +4881,11 @@ Fancy.Element.prototype = {
 
     return false;
   },
+  /*
+   * @param {String} eventName
+   * @param {Function} fn
+   * @param {Object} [scope]
+   */
   onTouchMove: function(eventName, fn, scope){
     var me = this,
       docEl = Fancy.get(document.body);
@@ -4852,8 +4896,9 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr',
-        e = e.originalEvent || e;
+        tempAttr = 'fancy-tempt-attr';
+
+      e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -4891,7 +4936,7 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
-  each: function (fn) {
+  each: function(fn){
     fn(this, 0);
   }
 };
@@ -4915,7 +4960,7 @@ Fancy.Elements.prototype = {
       dom = me.$dom;
 
     if(me.length > 1){
-      dom = me.$dom[0]
+      dom = me.$dom[0];
     }
 
     if( o2 === undefined ){
@@ -5171,13 +5216,13 @@ Fancy.Ajax = function(o){
 
   if(o.sendJSON){
     _o.dataType = 'json';
-    _o.contentType = "application/json; charset=utf-8";
+    _o.contentType = 'application/json; charset=utf-8';
     _o.data = JSON.stringify(_o.data);
   }
 
   if(o.getJSON){
     _o.dataType = 'json';
-    _o.contentType = "application/json; charset=utf-8";
+    _o.contentType = 'application/json; charset=utf-8';
   }
 
   if(o.headers){
@@ -5236,9 +5281,7 @@ Fancy.i18n.en = {
 };
 
 Fancy.i18n['en-US'] = Fancy.i18n.en;
-Fancy.controllers = {
-
-};
+Fancy.controllers = {};
 
 /*
  * @param {String} name
@@ -5271,7 +5314,7 @@ Fancy.define('Fancy.DD', {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
     this.init();
   },
@@ -5415,7 +5458,7 @@ Fancy.define('Fancy.Widget', {
           controller = Fancy.getController(controller);
 
           for(var p in controller){
-            if(me[p] === undefined ) {
+            if(me[p] === undefined ){
               me[p] = controller[p];
             }
           }
@@ -5434,7 +5477,7 @@ Fancy.define('Fancy.Widget', {
                 continue;
               }
 
-              if(me[p] === undefined ) {
+              if(me[p] === undefined ){
                 me[p] = _controller[p];
               }
             }
@@ -5480,8 +5523,8 @@ Fancy.define('Fancy.Widget', {
         handler = me[handler];
       }
 
-      if(selector) {
-        (function (event, handler, scope, selector) {
+      if(selector){
+        (function(event, handler, scope, selector){
           if(me.$events[event]){
             me.on(event, function(grid, o){
               var target = o.e.target,
@@ -5505,7 +5548,7 @@ Fancy.define('Fancy.Widget', {
             }, scope);
           }
           else {
-            me.on('render', function () {
+            me.on('render', function(){
               me.el.on(event, handler, scope, selector);
             });
           }
@@ -5582,13 +5625,13 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  show: function() {
+  show: function(){
     this.el.show();
   },
   /*
    *
    */
-  hide: function() {
+  hide: function(){
     this.el.hide();
   },
   /*
@@ -5637,7 +5680,7 @@ Fancy.define('Fancy.Plugin', {
   }
 });
 
-(function() {
+(function(){
   var toggleGroups = {};
 
   //SHORTCUTS
@@ -5670,7 +5713,7 @@ Fancy.define('Fancy.Plugin', {
     constructor: function(config, scope){
       var me = this;
 
-      if (config.toggleGroup) {
+      if (config.toggleGroup){
         toggleGroups[config.toggleGroup] = toggleGroups[config.toggleGroup] || {
             active: false,
             items: []
@@ -5701,7 +5744,7 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    setOns: function () {
+    setOns: function(){
       var me = this,
         el = me.el;
 
@@ -5804,7 +5847,7 @@ Fancy.define('Fancy.Plugin', {
         me.extraCls
       );
 
-      if (me.disabled) {
+      if (me.disabled){
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
@@ -5844,7 +5887,7 @@ Fancy.define('Fancy.Plugin', {
 
       me.el = F.get(renderTo.appendChild(el.dom));
 
-      if (me.disabled) {
+      if (me.disabled){
         me.disable();
       }
 
@@ -5879,7 +5922,7 @@ Fancy.define('Fancy.Plugin', {
      *
      */
     initToggle: function(){
-      if (!this.enableToggle) {
+      if (!this.enableToggle){
         return false;
       }
     },
@@ -5889,7 +5932,7 @@ Fancy.define('Fancy.Plugin', {
     setPressed: function(value, fire){
       var me = this;
 
-      if (value) {
+      if (value){
         me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
@@ -5905,7 +5948,7 @@ Fancy.define('Fancy.Plugin', {
       else {
         me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
-        if(me.toggleGroup) {
+        if(me.toggleGroup){
           delete toggleGroups[me.toggleGroup].active;
         }
       }
@@ -5935,11 +5978,11 @@ Fancy.define('Fancy.Plugin', {
 
       if(me.disabled !== true){
         if(handler){
-          if(F.isString(handler)) {
+          if(F.isString(handler)){
             handler = me.getHandler(handler);
           }
 
-          if (me.scope) {
+          if (me.scope){
             handler.apply(me.scope, [me]);
           }
           else {
@@ -6042,7 +6085,7 @@ Fancy.define('Fancy.Plugin', {
 
       me.text = text;
 
-      if (me.theme && Fancy.themes[me.theme]) {
+      if (me.theme && Fancy.themes[me.theme]){
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
@@ -6059,15 +6102,15 @@ Fancy.define('Fancy.Plugin', {
         width = 0;
       }
 
-      if(!width) {
+      if(!width){
         width += text.length * charWidth + charWidth * 2;
 
-        if (me.imageColor) {
+        if (me.imageColor){
           me.imageCls = BUTTON_IMAGE_COLOR_CLS;
         }
 
-        if (width < me.minWidth) {
-          if (me.text && me.text.length > 0) {
+        if (width < me.minWidth){
+          if (me.text && me.text.length > 0){
             width = me.minWidth;
           }
           else {
@@ -6075,11 +6118,11 @@ Fancy.define('Fancy.Plugin', {
           }
         }
 
-        if (me.imageCls && me.text) {
+        if (me.imageCls && me.text){
           width += me.imageWidth;
         }
 
-        if (me.menu) {
+        if (me.menu){
           width += me.rightImageWidth;
         }
       }
@@ -6112,7 +6155,7 @@ Fancy.define('Fancy.Plugin', {
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
     },
-    toggleMenuShow: function (e) {
+    toggleMenuShow: function(){
       var me = this,
         p = me.el.$dom.offset(),
         xy = [p.left, p.top + me.el.$dom.height()];
@@ -6124,11 +6167,11 @@ Fancy.define('Fancy.Plugin', {
         me.initMenu();
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
-    initMenu: function () {
+    initMenu: function(){
       var me = this,
         config = {
           theme: me.theme,
@@ -6211,7 +6254,7 @@ Fancy.define('Fancy.SegButton', {
 
     me.el = Fancy.get(renderTo.appendChild(el.dom));
 
-    Fancy.each(me.style, function (value, p) {
+    Fancy.each(me.style, function(value, p){
       me.el.css(p, value);
     });
 
@@ -6234,7 +6277,7 @@ Fancy.define('Fancy.SegButton', {
       var item = items[i];
       item.renderTo = me.el.dom;
 
-      if(me.allowToggle !== false) {
+      if(me.allowToggle !== false){
         item.enableToggle = true;
         if(me.multiToggle !== true){
           item.toggleGroup = toggleGroup;
@@ -6310,7 +6353,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setItems: function (values) {
+  setItems: function(values){
     var me = this;
 
     me.el.update('');
@@ -6321,7 +6364,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setActiveItem: function (index, fire) {
+  setActiveItem: function(index, fire){
     var me = this,
       items = me.items;
 
@@ -6358,7 +6401,7 @@ Fancy.define('Fancy.toolbar.Tab', {
 /*
  * @mixin Fancy.panel.mixin.PrepareConfig
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -6374,17 +6417,17 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} originalConfig
      * @return {Object}
      */
-    prepareConfigTheme: function (config, originalConfig) {
+    prepareConfigTheme: function(config, originalConfig){
       var themeName = config.theme || originalConfig.theme,
         themeConfig = Fancy.getTheme(themeName).config;
 
-      if (Fancy.isObject(themeName)) {
+      if (Fancy.isObject(themeName)){
         config.theme = themeName.name;
       }
 
       Fancy.applyIf(config, themeConfig);
 
-      if(config.theme) {
+      if(config.theme){
         this.theme = config.theme;
       }
 
@@ -6395,14 +6438,14 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} config
      * @return {Object}
      */
-    prepareConfigFooter: function (config) {
+    prepareConfigFooter: function(config){
       var footer = config.footer,
         lang = config.lang;
 
-      if (footer) {
+      if (footer){
         var bar = [];
 
-        if (Fancy.isString(footer.status)) {
+        if (Fancy.isString(footer.status)){
           bar.push({
             type: 'text',
             text: footer.status,
@@ -6410,22 +6453,22 @@ Fancy.define('Fancy.toolbar.Tab', {
           });
         }
 
-        if (footer.status && footer.source) {
+        if (footer.status && footer.source){
           bar.push('side');
         }
 
-        if (Fancy.isString(footer.source)) {
+        if (Fancy.isString(footer.source)){
           bar.push({
             type: 'text',
             text: footer.source,
             cls: FOOTER_SOURCE_CLS
           });
         }
-        else if (Fancy.isObject(footer.source)) {
+        else if (Fancy.isObject(footer.source)){
           var text = footer.source.text,
             sourceText = footer.source.sourceText || lang.sourceText;
 
-          if (footer.source.link) {
+          if (footer.source.link){
             var link = footer.source.link;
 
             link = link.replace('http://', '');
@@ -6454,28 +6497,28 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} originalConfig
      * @return {Object}
      */
-    prepareConfigLang: function (config, originalConfig) {
+    prepareConfigLang: function(config, originalConfig){
       var i18n = config.i18n || originalConfig.i18n,
         lang = Fancy.Object.copy(Fancy.i18n[i18n]);
 
-      if (config.lang) {
-        for (var p in config.lang) {
-          if (Fancy.isObject(config.lang[p]) === false) {
+      if (config.lang){
+        for (var p in config.lang){
+          if (Fancy.isObject(config.lang[p]) === false){
             lang[p] = config.lang[p];
           }
         }
 
         lang.paging = {};
-        if (config.lang.paging) {
+        if (config.lang.paging){
           Fancy.apply(lang.paging, config.lang.paging);
         }
 
-        for (var p in config.lang.paging) {
-          if (p === 'paging') {
+        for (var p in config.lang.paging){
+          if (p === 'paging'){
             continue;
           }
 
-          if (Fancy.isObject(p)) {
+          if (Fancy.isObject(p)){
             continue;
           }
 
@@ -6483,7 +6526,7 @@ Fancy.define('Fancy.toolbar.Tab', {
         }
 
         lang.date = {};
-        if (config.lang.date) {
+        if (config.lang.date){
           Fancy.apply(lang.date, config.lang.date);
         }
       }
@@ -6730,7 +6773,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     me.resizeMaskEl.css({
       width: newWidth,
       height: newHeight
-    })
+    });
   },
   /*
    *
@@ -6774,7 +6817,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
  * @class Fancy.Panel
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -6812,14 +6855,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.Super('constructor', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -6828,15 +6871,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.initTpl();
       me.render();
 
-      if (me.draggable) {
+      if (me.draggable){
         me.initDD();
       }
 
-      if (me.resizable) {
+      if (me.resizable){
         me.initResize();
       }
 
-      if (me.window) {
+      if (me.window){
         me.setActiveWindowWatcher();
       }
     },
@@ -6877,7 +6920,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
@@ -6893,23 +6936,23 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         F.error('Could not find renderTo element: ' + me.renderTo, 1);
       }
 
-      if (me.window === true) {
+      if (me.window === true){
         el.css({
           display: 'none',
           position: 'absolute'
         });
       }
 
-      if (me.frame === false) {
+      if (me.frame === false){
         el.addCls(PANEL_NOFRAME_CLS);
       }
 
       el.addCls(F.cls, me.cls, me.fieldCls);
-      if (me.theme !== 'default') {
-        el.addCls('fancy-theme-' + me.theme);
+      if (me.theme !== 'default'){
+        el.addCls(Fancy.getThemeCSSCls(me.theme));
       }
 
-      if (me.shadow) {
+      if (me.shadow){
         el.addCls(PANEL_SHADOW_CLS);
       }
 
@@ -6918,30 +6961,30 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         height: (me.height - minusHeight) + 'px'
       });
 
-      if (me.style) {
+      if (me.style){
         el.css(me.style);
       }
 
       var titleText = '',
         subTitleText = '';
 
-      if (F.isObject(me.title)) {
-        titleText = me.title.text
+      if (F.isObject(me.title)){
+        titleText = me.title.text;
       }
-      else if (F.isString(me.title)) {
-        titleText = me.title
+      else if (F.isString(me.title)){
+        titleText = me.title;
       }
 
-      if (F.isObject(me.subTitle)) {
-        subTitleText = me.subTitle.text
+      if (F.isObject(me.subTitle)){
+        subTitleText = me.subTitle.text;
       }
-      else if (F.isString(me.subTitle)) {
-        subTitleText = me.subTitle
+      else if (F.isString(me.subTitle)){
+        subTitleText = me.subTitle;
       }
 
       var imgCls = '';
 
-      if (F.isObject(me.title) && me.title.imgCls) {
+      if (F.isObject(me.title) && me.title.imgCls){
         imgCls = '<div class="' + PANEL_HEADER_IMG_CLS + ' ' + me.title.imgCls + '"></div>';
       }
 
@@ -6958,59 +7001,59 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         subTitle: subTitleText
       }));
 
-      if (F.isObject(me.title)) {
-        if (me.title.style) {
+      if (F.isObject(me.title)){
+        if (me.title.style){
           el.select('.' + PANEL_HEADER_CLS).css(me.title.style);
         }
 
-        if (me.title.cls) {
+        if (me.title.cls){
           el.select('.' + PANEL_HEADER_CLS).addCls(me.title.cls);
         }
 
-        if (me.title.tools) {
+        if (me.title.tools){
           me.tools = me.title.tools;
         }
       }
 
-      if (F.isObject(me.subTitle)) {
-        if (me.subTitle.style) {
+      if (F.isObject(me.subTitle)){
+        if (me.subTitle.style){
           el.select('.' + PANEL_SUB_HEADER_CLS).css(me.subTitle.style);
         }
 
-        if (me.subTitle.cls) {
+        if (me.subTitle.cls){
           el.select('.' + PANEL_SUB_HEADER_CLS).addCls(me.subTitle.cls);
         }
       }
 
-      if (me.title) {
+      if (me.title){
         el.select('.' + PANEL_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
       else {
         el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
       }
 
-      if (me.subTitle) {
+      if (me.subTitle){
         el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
         el.select('.' + PANEL_SUB_HEADER_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         el.select('.' + PANEL_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         el.select('.' + PANEL_SUB_TBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         el.select('.' + PANEL_BBAR_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         el.select('.' + PANEL_BUTTONS_CLS).removeCls(HIDDEN_CLS);
       }
 
-      if (me.footer) {
+      if (me.footer){
         el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
       }
 
@@ -7022,13 +7065,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.el = F.get(me.el);
       }
 
-      if (me.modal) {
-        if (F.select(MODAL_CLS).length === 0) {
+      if (me.modal){
+        if (F.select(MODAL_CLS).length === 0){
           F.get(document.body).append('<div class="'+MODAL_CLS+'" style="display: none;"></div>');
         }
       }
 
-      if (me.id && !me.el.attr('id')) {
+      if (me.id && !me.el.attr('id')){
         me.el.attr('id', me.id);
       }
 
@@ -7040,7 +7083,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    setHardBordersWidth: function () {
+    setHardBordersWidth: function(){
       var panelBodyBorders = this.panelBodyBorders;
 
       this.el.select('.' + PANEL_BODY_CLS).css({
@@ -7048,20 +7091,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         'border-right-width': panelBodyBorders[1],
         'border-bottom-width': panelBodyBorders[2],
         'border-left-width': panelBodyBorders[3]
-      })
+      });
     },
     /*
      *
      */
-    renderTools: function () {
+    renderTools: function(){
       var me = this,
         tools = me.tools;
 
-      if (tools === undefined) {
+      if (tools === undefined){
         return;
       }
 
-      F.each(tools, function (tool, i) {
+      F.each(tools, function(tool, i){
         tool.renderTo = me.el.select('.' + PANEL_HEADER_TOOLS_CLS).dom;
         me.tools[i] = new F.Tool(tool, me.scope || me);
       });
@@ -7069,21 +7112,21 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    renderBars: function () {
+    renderBars: function(){
       var me = this,
         containsGrid = false,
         theme = me.theme,
         scope = this;
 
-      if (me.items && me.items[0]) {
-        if (me.items[0].type === 'grid') {
+      if (me.items && me.items[0]){
+        if (me.items[0].type === 'grid'){
           containsGrid = true;
         }
 
         scope = me.items[0];
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         me._bbar = new F.Bar({
           el: me.el.select('.' + PANEL_BBAR_CLS),
           items: me.bbar,
@@ -7099,7 +7142,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.bbar = me._bbar.items;
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         me._buttons = new F.Bar({
           el: me.el.select('.' + PANEL_BUTTONS_CLS),
           items: me.buttons,
@@ -7113,7 +7156,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.buttons = me._buttons.items;
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         me._tbar = new F.Bar({
           el: me.el.select('.' + PANEL_TBAR_CLS),
           items: me.tbar,
@@ -7128,7 +7171,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.tbar = me._tbar.items;
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
@@ -7143,7 +7186,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.subTBar = me._subTBar.items;
       }
 
-      if (me.footer) {
+      if (me.footer){
         me._footer = new F.Bar({
           disableScroll: true,
           el: me.el.select('.' + PANEL_FOOTER_CLS),
@@ -7162,14 +7205,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Number} x
      * @param {Number} y
      */
-    showAt: function (x, y) {
+    showAt: function(x, y){
       this.css({
         left: x + 'px',
         display: '',
         'z-index': 1000 + F.zIndex++
       });
 
-      if (y !== undefined) {
+      if (y !== undefined){
         this.css({
           top: y + 'px'
         });
@@ -7178,28 +7221,28 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    show: function () {
+    show: function(){
       var me = this;
 
       me.el.show();
 
-      if (me.window !== true) {
+      if (me.window !== true){
         return;
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         me._buttons.checkScroll();
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         me._tbar.checkScroll();
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         me._bbar.checkScroll();
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         me._subTBar.checkScroll();
       }
 
@@ -7214,11 +7257,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       xy[0] = (viewSize[1] - width) / 2;
       xy[1] = (viewSize[0] - height) / 2;
 
-      if (xy[0] < 10) {
+      if (xy[0] < 10){
         xy[0] = 10;
       }
 
-      if (xy[1] < 10) {
+      if (xy[1] < 10){
         xy[1] = 10;
       }
 
@@ -7239,7 +7282,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.css({
@@ -7250,8 +7293,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         F.select('.' + MODAL_CLS).css('display', 'none');
       }
 
-      F.each(this.items || [], function (item) {
-        if (item.type === 'combo') {
+      F.each(this.items || [], function(item){
+        if (item.type === 'combo'){
           item.hideList();
         }
       });
@@ -7259,61 +7302,61 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {String} value
      */
-    setTitle: function (value) {
+    setTitle: function(value){
       this.el.select('.' + PANEL_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
-    getTitle: function () {
+    getTitle: function(){
       return this.el.select('.' + PANEL_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @param {String} value
      */
-    setSubTitle: function (value) {
+    setSubTitle: function(value){
       this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).update(value);
     },
     /*
      * @return {String}
      */
-    getSubTitle: function () {
+    getSubTitle: function(){
       return this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).dom.innerHTML;
     },
     /*
      * @return {Number}
      */
-    getHeight: function () {
+    getHeight: function(){
       return parseInt(this.css('height'));
     },
     /*
      * @param {String} value
      */
-    setWidth: function (value) {
+    setWidth: function(value){
       //TODO: Redo
       this.items[0].setWidth(value);
     },
     /*
      * @param {Number} value
      */
-    setHeight: function (value) {
+    setHeight: function(value){
       this.css('height', value);
       this.items[0].setHeight(value, false);
     },
     /*
      *
      */
-    setActiveWindowWatcher: function () {
+    setActiveWindowWatcher: function(){
       var me = this;
 
-      me.el.on('mousedown', function (e) {
+      me.el.on('mousedown', function(e){
         var targetEl = F.get(e.target);
 
-        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
+        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)){
           return;
         }
 
-        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
+        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))){
           me.css('z-index', 1000 + F.zIndex++);
         }
 
@@ -7342,14 +7385,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} config
      * @param {Object} scope
      */
-    constructor: function (config, scope) {
+    constructor: function(config, scope){
       this.scope = scope;
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
@@ -7363,7 +7406,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
@@ -7373,7 +7416,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = document.createElement('div');
@@ -7390,12 +7433,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onClick: function () {
+    onClick: function(){
       var me = this;
 
       me.fire('click');
-      if (me.handler) {
-        if (me.scope) {
+      if (me.handler){
+        if (me.scope){
           me.handler.apply(me.scope, [me]);
         }
         else {
@@ -7406,8 +7449,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {String} value
      */
-    setText: function (value) {
-      this.el.update(value)
+    setText: function(value){
+      this.el.update(value);
     }
   });
 
@@ -7415,7 +7458,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 /**
  * @class Fancy.panel.Tab
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -7432,12 +7475,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     extend: F.Panel,
     /*
-     * @constructor
-     * @param config
-     * @param scope
-     */
-    constructor: function (config) {
+   * @constructor
+   * @param {String|HtmlElement} renderTo
+   * @param {Object} config
+   */
+    constructor: function(renderTo, config){
       var me = this;
+
+      if(Fancy.isDom(renderTo)){
+        config = config || {};
+        config.renderTo = renderTo;
+      }
+      else{
+        config = renderTo;
+      }
+
+      config = config || {};
 
       Fancy.loadStyle();
 
@@ -7448,7 +7501,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.prepareTabs();
@@ -7462,7 +7515,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this;
 
       me.Super('render', arguments);
@@ -7486,18 +7539,18 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       me.renderTabWrappers();
 
-      if (!me.wrapped) {
+      if (!me.wrapped){
         me.el.addCls(PANEL_GRID_INSIDE_CLS);
       }
       me.el.addCls(PANEL_TAB_CLS);
 
       me.rendered = true;
     },
-    ons: function () {
+    ons: function(){
       var me = this;
 
-      if (me.responsive) {
-        F.$(window).bind('resize', function () {
+      if (me.responsive){
+        F.$(window).bind('resize', function(){
           me.onWindowResize();
 
           if(me.intWindowResize){
@@ -7509,23 +7562,23 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             delete me.intWindowResize;
 
             //Bug fix for Mac
-            setTimeout(function () {
+            setTimeout(function(){
               me.onWindowResize();
             }, 300);
           }, 30);
         });
       }
     },
-    onWindowResize: function () {
+    onWindowResize: function(){
       var me = this,
         renderTo = me.renderTo,
         el;
 
-      if (me.panel) {
+      if (me.panel){
         renderTo = me.panel.renderTo;
       }
 
-      if(me.responsive) {
+      if(me.responsive){
         el = F.get(renderTo);
       }
       else if(me.panel){
@@ -7549,7 +7602,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         newWidth = el.parent().width();
       }
 
-      if(me.responsive) {
+      if(me.responsive){
         me.setWidth(newWidth);
       }
       else if(me.fitWidth){
@@ -7566,37 +7619,37 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setHeight(height);
       }
     },
-    setPanelBodySize: function () {
+    setPanelBodySize: function(){
       var me = this,
         height = me.height,
         panelBodyBorders = me.panelBodyBorders;
 
-      if (me.title) {
+      if (me.title){
         height -= me.titleHeight;
       }
 
-      if (me.subTitle) {
+      if (me.subTitle){
         height -= me.subTitleHeight;
         height += panelBodyBorders[2];
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         height -= me.bbarHeight || me.barHeight;
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         height -= me.tbarHeight || me.barHeight;
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         height -= me.subTBarHeight || me.barHeight;
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         height -= me.buttonsHeight || me.barHeight;
       }
 
-      if (me.footer) {
+      if (me.footer){
         height -= me.barHeight;
       }
 
@@ -7613,13 +7666,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Object} config
      */
-    prepareConfigTheme: function (config) {
+    prepareConfigTheme: function(config){
       var me = this,
         themeName = config.theme || me.theme,
         themeConfig = F.getTheme(themeName).config,
         wrapped = me.wrapped || config.wrapped;
 
-      if (wrapped) {
+      if (wrapped){
         config.panelBodyBorders = [0, 0, 0, 0];
         me.panelBodyBorders = [0, 0, 0, 0];
       }
@@ -7630,12 +7683,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Object} config
      */
-    prepareConfigSize: function (config) {
+    prepareConfigSize: function(config){
       var renderTo = config.renderTo,
         el;
 
-      if (config.width === undefined) {
-        if (renderTo) {
+      if (config.width === undefined){
+        if (renderTo){
           config.responsive = true;
           el = Fancy.get(renderTo);
           config.width = parseInt(el.width());
@@ -7645,30 +7698,30 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    prepareTabs: function () {
+    prepareTabs: function(){
       var me = this,
         tabs = [],
         i = 0,
         iL = me.items.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var item = me.items[i],
           tabConfig = {
             type: 'tab'
           };
 
-        if (item.tabTitle) {
+        if (item.tabTitle){
           tabConfig.text = item.tabTitle;
         }
-        else if (item.title) {
+        else if (item.title){
           tabConfig.text = item.title;
           delete item.title;
         }
 
-        tabConfig.handler = (function (i) {
-          return function () {
+        tabConfig.handler = (function(i){
+          return function(){
             me.setActiveTab(i);
-          }
+          };
         })(i);
 
         tabs.push(tabConfig);
@@ -7677,10 +7730,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.tbar = tabs;
       me.tabs = tabs;
     },
-    renderTabWrappers: function () {
+    renderTabWrappers: function(){
       var me = this;
 
-      F.each(me.items, function (item) {
+      F.each(me.items, function(item){
         var el = F.get(document.createElement('div'));
 
         el.addCls(TAB_WRAPPER_CLS);
@@ -7688,12 +7741,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
       });
     },
-    setActiveTab: function (newActiveTab) {
+    setActiveTab: function(newActiveTab){
       var me = this,
         tabs = me.el.select('.' + TAB_WRAPPER_CLS),
         oldActiveTab = me.activeTab;
 
-      if (me.items.length === 0) {
+      if (me.items.length === 0){
         return;
       }
 
@@ -7710,8 +7763,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       item.width = me.panelBodyWidth;
       item.height = me.panelBodyHeight;
 
-      if (!item.rendered) {
-        switch (item.type) {
+      if (!item.rendered){
+        switch (item.type){
           case 'form':
             me.items[me.activeTab] = new FancyForm(item);
             break;
@@ -7728,7 +7781,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setActiveItemHeight();
       }
 
-      if (me.tabs) {
+      if (me.tabs){
         me.tbar[oldActiveTab].removeCls(TAB_TBAR_ACTIVE_CLS);
         me.tbar[me.activeTab].addCls(TAB_TBAR_ACTIVE_CLS);
       }
@@ -7736,7 +7789,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {String} value
      */
-    setWidth: function (value) {
+    setWidth: function(value){
       var me = this;
 
       me.width = value;
@@ -7749,7 +7802,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Number} value
      */
-    setHeight: function (value) {
+    setHeight: function(value){
       var me = this;
 
       me.height = value;
@@ -7759,26 +7812,26 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       me.setActiveItemHeight();
     },
-    setActiveItemWidth: function () {
+    setActiveItemWidth: function(){
       var me = this;
 
       me.items[me.activeTab].setWidth(me.panelBodyWidth);
     },
-    setActiveItemHeight: function () {
+    setActiveItemHeight: function(){
       var me = this;
 
       me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
     }
   });
 
-  FancyTab.get = function (id) {
+  FancyTab.get = function(id){
     var tabId = F.get(id).select('.' + PANEL_TAB_CLS).dom.id;
 
     return F.getWidget(tabId);
   };
 
-  if (!F.nojQuery && F.$) {
-    F.$.fn.FancyTab = function (o) {
+  if (!F.nojQuery && F.$){
+    F.$.fn.FancyTab = function(o){
       if(this.selector){
         o.renderTo = F.$(this.selector)[0].id;
       }
@@ -7795,7 +7848,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
  * @class Fancy.Bar
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -7838,22 +7891,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.init();
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.roles = {};
       me.render();
 
-      if (me.barScrollEnabled) {
+      if (me.barScrollEnabled){
         me.initScroll();
-        setTimeout(function () {
+        setTimeout(function(){
           me.checkScroll();
         }, 150);
       }
@@ -7861,7 +7914,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this;
 
       me.renderEl();
@@ -7871,10 +7924,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    renderEl: function () {
+    renderEl: function(){
       var me = this;
 
-      if (!me.el) {
+      if (!me.el){
         var el = F.get(document.createElement('div'));
 
         el.addCls(
@@ -7886,7 +7939,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
         me.el = F.get(me.renderTo.appendChild(el.dom));
 
-        if (me.style) {
+        if (me.style){
           me.el.css(me.style);
         }
       }
@@ -7899,7 +7952,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    renderItems: function () {
+    renderItems: function(){
       var me = this,
         containerEl = me.containerEl,
         items = me.items || [],
@@ -7910,33 +7963,33 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         sidePassed = iL - 1,
         passedRight = 0;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var item = items[i];
 
-        if (isSide) {
+        if (isSide){
           item = items[sidePassed];
           sidePassed--;
         }
 
-        if (item.toggleGroup) {
+        if (item.toggleGroup){
           item.enableToggle = true;
         }
 
-        if (F.isObject(item)) {
+        if (F.isObject(item)){
           item.type = item.type || 'button';
         }
 
-        if (isSide) {
+        if (isSide){
           me.floating = 'right';
           item.style = item.style || {};
           item.style['right'] = passedRight;
         }
 
-        if (F.isObject(item)) {
+        if (F.isObject(item)){
           item.renderTo = containerEl.dom;
         }
 
-        switch (item) {
+        switch (item){
           case '|':
             var style = {
               'float': me.floating,
@@ -7945,7 +7998,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
               'padding-left': '0px'
             };
 
-            if (me.floating === 'right') {
+            if (me.floating === 'right'){
               F.applyIf(style, {
                 right: '1px',
                 position: 'absolute'
@@ -7962,7 +8015,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             isSide = true;
             continue;
           default:
-            if (isSide) {
+            if (isSide){
               barItems[sidePassed] = me.renderItem(item);
             }
             else {
@@ -8000,7 +8053,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} item
      * @return {Object}
      */
-    renderItem: function (item) {
+    renderItem: function(item){
       var me = this,
         field,
         containerEl = me.containerEl,
@@ -8015,20 +8068,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         'float': me.floating
       });
 
-      if (me.floating === 'right') {
+      if (me.floating === 'right'){
         F.applyIf(item.style, {
           right: me.sideRight,
           position: 'absolute'
         });
       }
 
-      if (!item.scope && me.scope) {
+      if (!item.scope && me.scope){
         item.scope = me.scope;
       }
 
-      switch (item.type) {
+      switch (item.type){
         case 'wrapper':
-          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS) {
+          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS){
             containerEl.destroy();
             containerEl = me.el;
           }
@@ -8039,10 +8092,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             _item,
             width = 0;
 
-          for (; i < iL; i++) {
+          for (; i < iL; i++){
             _item = item.items[i];
 
-            if (F.isObject(_item)) {
+            if (F.isObject(_item)){
               _item.type = _item.type || 'button';
             }
 
@@ -8050,14 +8103,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             field = me.renderItem(_item);
             var fieldEl = field.el;
 
-            if (i === iL - 1) {
+            if (i === iL - 1){
               fieldEl.css('margin-right', '0px');
             }
             else {
               width += parseInt(fieldEl.css('margin-right'));
             }
 
-            if (F.nojQuery) {
+            if (F.nojQuery){
               width += parseInt(fieldEl.width());
             }
             else {
@@ -8198,7 +8251,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           item.events = item.events || [];
 
           item.events = item.events.concat([{
-            enter: function (field, value) {
+            enter: function(field, value){
               var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
               //this.search(['name', 'surname', 'position'], value);
@@ -8210,7 +8263,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
               }
             }
           }, {
-            key: function (field, value) {
+            key: function(field, value){
               var me = this,
                 grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
 
@@ -8218,19 +8271,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                 return;
               }
 
-              if (!me.autoEnterTime) {
+              if (!me.autoEnterTime){
                 me.autoEnterTime = new Date();
               }
 
-              if (me.intervalAutoEnter) {
+              if (me.intervalAutoEnter){
                 clearInterval(me.intervalAutoEnter);
               }
               delete me.intervalAutoEnter;
 
-              me.intervalAutoEnter = setInterval(function () {
+              me.intervalAutoEnter = setInterval(function(){
                 var now = new Date();
 
-                if (now - me.autoEnterTime > 500) {
+                if (now - me.autoEnterTime > 500){
                   clearInterval(me.intervalAutoEnter);
                   delete me.intervalAutoEnter;
                   value = field.getValue();
@@ -8244,19 +8297,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
               }, 200);
             }
           }, {
-            render: function (field) {
+            render: function(field){
               var me = this,
                 isIn = false;
 
-              field.el.on('mouseenter', function () {
+              field.el.on('mouseenter', function(){
                 isIn = true;
               }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
 
-              field.el.on('mousedown', function (e) {
+              field.el.on('mousedown', function(e){
                 e.preventDefault();
               }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
 
-              field.el.on('click', function (e) {
+              field.el.on('click', function(e){
                 var toShow = false,
                   grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).attr('id')),
                   columns = grid.columns || [],
@@ -8269,7 +8322,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                   height = 1;
 
                 if(grid.searching.items){
-                  F.each(grid.searching.items, function (item) {
+                  F.each(grid.searching.items, function(item){
                     items.push({
                       inputLabel: ' &nbsp;&nbsp;' + item.text,
                       value: true,
@@ -8277,22 +8330,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                     });
 
                     height += grid.fieldHeight;
-                  })
+                  });
                 }
                 else {
-                  for (; i < iL; i++) {
+                  for (; i < iL; i++){
                     var column = _columns[i],
                       title = column.title;
 
-                    if (title === undefined) {
+                    if (title === undefined){
                       title = '';
                     }
 
-                    if (column.searchable === false) {
+                    if (column.searchable === false){
                       continue;
                     }
 
-                    switch (column.type) {
+                    switch (column.type){
                       case 'color':
                       case 'combo':
                       case 'date':
@@ -8315,7 +8368,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                   }
                 }
 
-                if (!me.list) {
+                if (!me.list){
                   me.list = new FancyForm({
                     width: 150,
                     height: height,
@@ -8330,23 +8383,23 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                     items: items,
                     cls: FIELD_SEARCH_LIST_CLS,
                     events: [{
-                      set: function () {
+                      set: function(){
                         grid.searching.setKeys(me.list.get());
                       }
                     }, {
-                      init: function () {
-                        setTimeout(function () {
+                      init: function(){
+                        setTimeout(function(){
                           var listEl = me.list.el;
 
-                          listEl.on('mouseenter', function () {
+                          listEl.on('mouseenter', function(){
                             isIn = true;
                           });
 
-                          listEl.on('mouseleave', function () {
+                          listEl.on('mouseleave', function(){
                             isIn = false;
-                            setTimeout(function () {
-                              if (isIn === false) {
-                                if (me.list) {
+                            setTimeout(function(){
+                              if (isIn === false){
+                                if (me.list){
                                   listEl.css('display', 'none');
                                 }
                               }
@@ -8375,7 +8428,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                     }]
                   });
                 }
-                else if (me.list.el.css('display') !== 'none') {
+                else if (me.list.el.css('display') !== 'none'){
                   me.list.el.css('display', 'none');
                   return;
                 }
@@ -8387,14 +8440,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                   offset = el.offset(),
                   fieldHeight = parseInt(field.el.css('height'));
 
-                if (me.list && me.list.el) {
+                if (me.list && me.list.el){
                   me.list.css({
                     position: 'absolute',
                     top: offset.top + fieldHeight + 20,
                     left: offset.left
                   });
 
-                  if (toShow) {
+                  if (toShow){
                     me.list.css('display', 'block');
                   }
 
@@ -8405,16 +8458,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                 }
               }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
 
-              field.el.on('mouseleave', function () {
+              field.el.on('mouseleave', function(){
                 isIn = false;
-                setTimeout(function () {
-                  if (isIn === false) {
-                    if (me.list) {
+                setTimeout(function(){
+                  if (isIn === false){
+                    if (me.list){
                       me.list.el.css('display', 'none');
                     }
                   }
                 }, 750);
-              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS)
+              }, null, '.' + FIELD_SEARCH_PARAMS_LINK_CLS);
             }
           }]);
 
@@ -8427,7 +8480,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
           var cls = FIELD_SEARCH_CLS;
 
-          if (item.paramsMenu) {
+          if (item.paramsMenu){
             item.tpl = [
               '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
               '{label}',
@@ -8440,7 +8493,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             ];
 
             cls += ' ' + FIELD_SEARCH_PARAMED_CLS;
-            if (!item.paramsText) {
+            if (!item.paramsText){
               cls += ' ' + FIELD_SEARCH_PARAMED_EMPTY_CLS;
             }
           }
@@ -8457,12 +8510,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         default:
       }
 
-      if (me.floating === 'right') {
+      if (me.floating === 'right'){
         me.sideRight += field.width;
         me.sideRight += 7;
       }
 
-      if (item.role) {
+      if (item.role){
         me.roles[item.role] = field;
       }
 
@@ -8471,7 +8524,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    initScroll: function () {
+    initScroll: function(){
       var me = this;
 
       me.leftScroller = new F.Button({
@@ -8521,16 +8574,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @return {Number}
      */
-    getBarWidth: function () {
+    getBarWidth: function(){
       return parseInt(this.el.css('width'));
     },
     /*
      * @return {Number}
      */
-    getItemsWidth: function () {
+    getItemsWidth: function(){
       var width = 0;
 
-      F.each(this.items, function (item) {
+      F.each(this.items, function(item){
         if(item.el.css('display') === 'none' ){
           return;
         }
@@ -8547,7 +8600,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onPrevScrollClick: function () {
+    onPrevScrollClick: function(){
       var me = this;
 
       me.scrolled += me.tabScrollStep;
@@ -8556,7 +8609,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onNextScrollClick: function () {
+    onNextScrollClick: function(){
       var me = this;
 
       me.scrolled -= me.tabScrollStep;
@@ -8565,7 +8618,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    applyScrollChanges: function () {
+    applyScrollChanges: function(){
       var me = this,
         itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
@@ -8586,7 +8639,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.rightScroller.enable();
       }
 
-      if (itemsWidth < barWidth) {
+      if (itemsWidth < barWidth){
         me.scrolled = 0;
 
         me.leftScroller.el.hide();
@@ -8596,12 +8649,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.containerEl.css({'margin-left': '0px'});
         return;
       }
-      else if (me.scrolled > 0) {
+      else if (me.scrolled > 0){
         me.scrolled = 0;
         me.leftScroller.disable();
         me.rightScroller.enable();
       }
-      else if (me.scrolled < -scrollPath) {
+      else if (me.scrolled < -scrollPath){
         me.scrolled = -scrollPath;
         me.leftScroller.enable();
         me.rightScroller.disable();
@@ -8617,10 +8670,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onDocMouseUp: function () {
+    onDocMouseUp: function(){
       var me = this;
 
-      if (me.scrollInterval) {
+      if (me.scrollInterval){
         clearTimeout(me.scrollInterval);
         delete me.scrollInterval;
       }
@@ -8628,19 +8681,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    checkScroll: function () {
+    checkScroll: function(){
       var me = this,
         itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth();
 
-      if (me.disableScroll) {
+      if (me.disableScroll){
         return;
       }
 
-      if (itemsWidth > barWidth) {
+      if (itemsWidth > barWidth){
         me.enableScroll();
       }
-      else if(me.barScrollEnabled) {
+      else if(me.barScrollEnabled){
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
       }
@@ -8648,7 +8701,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    enableScroll: function () {
+    enableScroll: function(){
       var me = this;
 
       if(!me.barScrollEnabled){
@@ -8658,7 +8711,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      if (me.scrolled === 0) {
+      if (me.scrolled === 0){
         me.leftScroller.disable();
         me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
       }
@@ -8666,19 +8719,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    initTabEdit: function () {
+    initTabEdit: function(){
       var me = this;
 
-      if (!me.tabEdit) {
+      if (!me.tabEdit){
         return;
       }
 
       var i = me.items.length - 1;
 
-      for (; i > -1; i--) {
+      for (; i > -1; i--){
         var item = me.items[i];
 
-        switch (item.type) {
+        switch (item.type){
           case 'number':
           case 'string':
           case 'date':
@@ -8691,20 +8744,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} field
      * @param {Object} e
      */
-    onTabLastInput: function (field, e) {
+    onTabLastInput: function(field, e){
       var me = this,
         grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id'));
 
       //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
       e.preventDefault();
 
-      if (grid.leftColumns.length) {
-        setTimeout(function () {
+      if (grid.leftColumns.length){
+        setTimeout(function(){
           grid.leftBody.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
         }, 100);
       }
       else {
-        setTimeout(function () {
+        setTimeout(function(){
           grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
         }, 100);
       }
@@ -8806,25 +8859,25 @@ Fancy.define('Fancy.bar.Text', {
   /*
    * @return {String}
    */
-  get: function() {
+  get: function(){
     return this.el.dom.innerHTML;
   },
   /*
    * @return {String}
    */
-  getValue: function () {
+  getValue: function(){
     return this.get();
   },
   /*
    * @param {String} value
    */
-  set: function (value) {
+  set: function(value){
     this.el.dom.innerHTML = value;
   },
   /*
    *
    */
-  ons: function () {
+  ons: function(){
     var me = this,
       el = me.el;
 
@@ -8868,10 +8921,10 @@ Fancy.define('Fancy.bar.Text', {
       me.tooltip.destroy();
     }
 
-    if(me.tip === true) {
+    if(me.tip === true){
       me.tip = new Fancy.Template(me.tipTpl).getHTML({
         value: me.get()
-      })
+      });
     }
     else{
       switch (Fancy.typeOf(me.tip)){
@@ -8886,7 +8939,7 @@ Fancy.define('Fancy.bar.Text', {
       }
     }
 
-    if (me.tooltip) {
+    if (me.tooltip){
       me.tooltip.update(text);
     }
     else {
@@ -8935,6 +8988,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
   scrollable: false,
   /*
    * @constructor
+   * @param {String|HtmlElement} renderTo
    * @param {Object} config
    */
   constructor: function(renderTo, config){
@@ -8964,7 +9018,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     var preInit = function(){
       var i18n = config.i18n || me.i18n;
 
-      if( Fancy.loadLang(i18n, fn) === true ) {
+      if( Fancy.loadLang(i18n, fn) === true ){
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -9011,7 +9065,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       requiredModules.ajax = true;
     }
 
-    var containsMenu = function (item) {
+    var containsMenu = function(item){
       if(item.menu){
         requiredModules['menu'] = true;
         return true;
@@ -9023,7 +9077,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     Fancy.each(config.buttons, containsMenu);
     Fancy.each(config.subTBar, containsMenu);
 
-    var readItems = function (items) {
+    var readItems = function(items){
       var i = 0,
         iL = items.length,
         item;
@@ -9054,7 +9108,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     };
 
     for(var p in requiredModules){
-      if(Fancy.modules[p] === undefined) {
+      if(Fancy.modules[p] === undefined){
         me.neededModules[p] = true;
         me.neededModules.length++;
       }
@@ -9091,8 +9145,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       });
     }
     else {
-      for (var p in me.neededModules) {
-        if (p === 'length') {
+      for (var p in me.neededModules){
+        if (p === 'length'){
           continue;
         }
 
@@ -9135,7 +9189,7 @@ if(!Fancy.nojQuery && Fancy.$){
 /*
  * @mixin Fancy.form.field.Mixin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -9150,7 +9204,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
   F.ns('Fancy.form.field');
 
-  F.form.field.Mixin = function () {};
+  F.form.field.Mixin = function(){};
 
   F.form.field.Mixin.prototype = {
     padding: '8px 8px 0px 8px',
@@ -9163,7 +9217,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         input = me.el.getByTag('input');
@@ -9177,12 +9231,12 @@ if(!Fancy.nojQuery && Fancy.$){
       el.on('mouseleave', me.onMouseOut, me);
       me.on('key', me.onKey, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
 
-      if (me.format && me.format.inputFn) {
-        switch (me.value) {
+      if (me.format && me.format.inputFn){
+        switch (me.value){
           case '':
           case undefined:
             break;
@@ -9192,13 +9246,13 @@ if(!Fancy.nojQuery && Fancy.$){
         me.on('key', me.onKeyInputFn);
       }
 
-      if (me.stopPropagation) {
-        el.on('mousedown', function (e) {
+      if (me.stopPropagation){
+        el.on('mousedown', function(e){
           e.stopPropagation();
         });
       }
 
-      el.on('mousedown', function (e) {
+      el.on('mousedown', function(e){
         if(me.disabled){
           e.preventDefault();
           e.stopPropagation();
@@ -9210,7 +9264,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {*} value
      * @param {Object} e
      */
-    onKeyInputFn: function (field, value, e) {
+    onKeyInputFn: function(field, value, e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
@@ -9219,7 +9273,7 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.ENTER:
         case key.ESC:
         case key.LEFT:
@@ -9233,7 +9287,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {*} value
      */
-    formatValue: function (value) {
+    formatValue: function(value){
       var me = this;
       value = this.format.inputFn(value);
       var position = this.input.dom.selectionStart;
@@ -9249,17 +9303,17 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    setCaretPosition: function(position) {
+    setCaretPosition: function(position){
       var input = this.input.dom;
 
-      if(input.createTextRange) {
+      if(input.createTextRange){
         var range = input.createTextRange();
 
         range.move('character', position);
         range.select();
       }
       else {
-        if(input.selectionStart) {
+        if(input.selectionStart){
           input.focus();
           input.setSelectionRange(position, position);
         }
@@ -9271,7 +9325,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onMouseOver: function (e) {
+    onMouseOver: function(e){
       var me = this;
 
       if(me.disabled){
@@ -9280,14 +9334,14 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.fire('mouseover');
 
-      if (me.tip) {
+      if (me.tip){
         me.renderTip(e);
       }
     },
     /*
      * @param {Object} e
      */
-    onMouseOut: function (e) {
+    onMouseOut: function(){
       var me = this;
 
       if(me.disabled){
@@ -9296,7 +9350,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.fire('mouseout');
 
-      if (me.tip && me.tooltip) {
+      if (me.tip && me.tooltip){
         me.tooltipToDestroy = true;
         me.tooltip.destroy();
         delete me.tooltip;
@@ -9305,16 +9359,16 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = me.renderTo || document.body,
         renderAfter = me.renderAfter,
         renderBefore = me.renderBefore,
         el = F.get(document.createElement('div'));
 
-      if (F.isString(renderTo)) {
+      if (F.isString(renderTo)){
         renderTo = document.getElementById(renderTo);
-        if (!renderTo) {
+        if (!renderTo){
           renderTo = F.select(renderTo).item(0);
         }
       }
@@ -9332,31 +9386,31 @@ if(!Fancy.nojQuery && Fancy.$){
       var labelWidth = '',
         itemsHTML = '';
 
-      if (me.itemsHTML) {
+      if (me.itemsHTML){
         itemsHTML = me.itemsHTML;
       }
 
-      if (me.labelAlign === 'top' && me.label) {
+      if (me.labelAlign === 'top' && me.label){
         //auto fixing of wrong labelWidth.
         //will not fix right if user change color of label font-size to bigger
-        if (me.labelWidth < me.label.length * 7) {
+        if (me.labelWidth < me.label.length * 7){
           me.labelWidth = (me.label.length + 2) * 7;
         }
       }
 
-      if (me.labelWidth) {
+      if (me.labelWidth){
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
       var label = me.label;
 
-      if (me.label === '') {
+      if (me.label === ''){
         label = '&nbsp;';
       }
-      else if (me.label === undefined) {
+      else if (me.label === undefined){
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right') {
+      else if (me.labelAlign !== 'right'){
         label += ':';
       }
 
@@ -9364,18 +9418,18 @@ if(!Fancy.nojQuery && Fancy.$){
         inputLabelDisplay = '',
         inputLabel = '';
 
-      if (me.label === false) {
+      if (me.label === false){
         labelDisplay = 'display:none;';
       }
 
-      if (!me.inputLabel) {
+      if (!me.inputLabel){
         inputLabelDisplay = 'display:none;';
       }
       else {
         inputLabel = me.inputLabel;
       }
 
-      if (me.type === 'recaptcha') {
+      if (me.type === 'recaptcha'){
         el.update(me.tpl.getHTML({
             key: me.key
           })
@@ -9408,15 +9462,15 @@ if(!Fancy.nojQuery && Fancy.$){
       me.el = el;
       me.setStyle();
 
-      if (me.renderId === true) {
+      if (me.renderId === true){
         el.attr('id', me.id);
       }
 
-      if (renderAfter) {
+      if (renderAfter){
         renderAfter = F.get(renderAfter);
         el = renderAfter.after(el.dom.outerHTML).next();
       }
-      else if (renderBefore) {
+      else if (renderBefore){
         el = renderBefore.before(el.dom.outerHTML).prev();
       }
       else {
@@ -9424,26 +9478,26 @@ if(!Fancy.nojQuery && Fancy.$){
       }
       me.el = el;
 
-      if (me.type === 'textarea') {
+      if (me.type === 'textarea'){
         me.input = me.el.getByTag('textarea');
       }
       else {
         me.input = me.el.getByTag('input');
       }
 
-      if (me.name) {
+      if (me.name){
         me.input.name = me.name;
       }
 
       me.setSize();
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
         me.el.select('.' + FIELD_TEXT_CLS).css('float', 'none');
       }
-      else if (me.labelAlign === 'right') {
+      else if (me.labelAlign === 'right'){
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
-        switch (me.type) {
+        switch (me.type){
           case 'radio':
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).css('float', 'right');
@@ -9458,17 +9512,17 @@ if(!Fancy.nojQuery && Fancy.$){
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
-      else if (me.type !== 'radio') {}
+      else if (me.type !== 'radio'){}
 
       me.acceptedValue = me.value;
       me.fire('afterrender');
       me.fire('render');
 
-      if (me.type !== 'recaptcha' && me.type !== 'chat') {
-        setTimeout(function () {
-          if (me.input && me.input.dom) {
-            if (me.input.dom.value.length === 0) {
-              if (me.prevColor === undefined) {
+      if (me.type !== 'recaptcha' && me.type !== 'chat'){
+        setTimeout(function(){
+          if (me.input && me.input.dom){
+            if (me.input.dom.value.length === 0){
+              if (me.prevColor === undefined){
                 me.prevColor = me.input.css('color');
               }
 
@@ -9499,7 +9553,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onKeyDown: function (e) {
+    onKeyDown: function(e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
@@ -9512,8 +9566,8 @@ if(!Fancy.nojQuery && Fancy.$){
 
       //This disable filter expressions in number field
       /*
-      if (me.type === 'field.number') {
-        if (F.Key.isNumControl(keyCode, e) === false) {
+      if (me.type === 'field.number'){
+        if (F.Key.isNumControl(keyCode, e) === false){
           e.preventDefault();
           e.stopPropagation();
           return;
@@ -9521,14 +9575,14 @@ if(!Fancy.nojQuery && Fancy.$){
       }
       */
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.BACKSPACE:
         case key.DELETE:
-          switch(me.type) {
+          switch(me.type){
             case 'field.number':
             case 'field.string':
             case 'field.date':
-              setTimeout(function () {
+              setTimeout(function(){
                 if(me.getValue() === ''){
                   me.fire('empty');
                 }
@@ -9541,13 +9595,13 @@ if(!Fancy.nojQuery && Fancy.$){
           break;
         case key.ENTER:
           me.fire('enter', me.getValue());
-          if (me.type !== 'textarea') {
+          if (me.type !== 'textarea'){
             e.preventDefault();
             e.stopPropagation();
           }
           break;
         case key.UP:
-          switch (me.type) {
+          switch (me.type){
             case 'number':
             case 'field.number':
               if(this.spin){
@@ -9558,16 +9612,16 @@ if(!Fancy.nojQuery && Fancy.$){
 
           me.fire('up', me.getValue());
 
-          if (me.type !== 'textarea') {
+          if (me.type !== 'textarea'){
             e.preventDefault();
             e.stopPropagation();
           }
           break;
         case key.DOWN:
-          switch (me.type) {
+          switch (me.type){
             case 'number':
             case 'field.number':
-              if(this.spin) {
+              if(this.spin){
                 me.spinDown();
               }
               break;
@@ -9575,7 +9629,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
           me.fire('down', me.getValue());
 
-          if (me.type !== 'textarea') {
+          if (me.type !== 'textarea'){
             e.preventDefault();
             e.stopPropagation();
           }
@@ -9587,17 +9641,17 @@ if(!Fancy.nojQuery && Fancy.$){
           e.stopPropagation();
           break;
         default:
-          setTimeout(function () {
-            if (me.input) {
-              if (me.input.dom.value.length === 0) {
-                if (me.prevColor === undefined) {
+          setTimeout(function(){
+            if (me.input){
+              if (me.input.dom.value.length === 0){
+                if (me.prevColor === undefined){
                   me.prevColor = me.input.css('color');
                 }
 
                 me.input.css('color', 'grey');
               }
               else {
-                if (me.prevColor) {
+                if (me.prevColor){
                   me.input.css('color', me.prevColor);
                 }
                 else {
@@ -9608,7 +9662,7 @@ if(!Fancy.nojQuery && Fancy.$){
           }, 1);
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
@@ -9616,12 +9670,12 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Object} me
      * @param {*} value
      */
-    onKey: function (me, value) {
+    onKey: function(me, value){
       if(me.disabled){
         return;
       }
 
-      if (!me.isValid() || me.checkValidOnTyping) {
+      if (!me.isValid() || me.checkValidOnTyping){
         me.validate(value);
       }
     },
@@ -9629,7 +9683,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * It used also for validation.
      * @return {Boolean} - returns true/false if validation passed successful.
      */
-    onBlur: function () {
+    onBlur: function(){
       var me = this;
 
       if(me.disabled){
@@ -9638,9 +9692,9 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.fire('blur');
 
-      if (me.input) {
+      if (me.input){
         if(me.type === 'combo'){
-          setTimeout(function () {
+          setTimeout(function(){
             if(me.listItemClicked){}
             else{
               me.validate(me.input.dom.value);
@@ -9657,16 +9711,16 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {*} value
      */
-    validate: function (value) {
+    validate: function(value){
       var me = this,
         vtype = me.vtype;
 
-      if (vtype === undefined) {
+      if (vtype === undefined){
         return true;
       }
       else {
         var valid = F.isValid(vtype, value);
-        if (valid !== true) {
+        if (valid !== true){
           me.errorText = new F.Template(valid.text).getHTML(valid);
           me.failedValid();
 
@@ -9681,13 +9735,13 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    isValid: function () {
+    isValid: function(){
       return !this.hasCls(this.failedValidCls);
     },
     /*
      *
      */
-    onFocus: function (e) {
+    onFocus: function(){
       var me = this;
 
       if(me.disabled || me.editable === false){
@@ -9700,13 +9754,13 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    blur: function () {
+    blur: function(){
       this.input.blur();
     },
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
@@ -9722,16 +9776,16 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    get: function () {
+    get: function(){
       var me = this;
 
-      if (me.format) {
+      if (me.format){
         //Place of bugs
-        if (F.isString(me.format)) {}
-        else if (F.isObject(me.format)) {
-          if (me.format.inputFn) {
-            if (me.type === 'number' || me.type === 'field.number') {
-              if (isNaN(parseFloat(me.value))) {
+        if (F.isString(me.format)){}
+        else if (F.isObject(me.format)){
+          if (me.format.inputFn){
+            if (me.type === 'number' || me.type === 'field.number'){
+              if (isNaN(parseFloat(me.value))){
                 return me.value;
               }
 
@@ -9745,8 +9799,8 @@ if(!Fancy.nojQuery && Fancy.$){
       }
 
       /*
-      if (me.type === 'number' || me.type === 'field.number') {
-        if (isNaN(parseFloat(me.value))) {
+      if (me.type === 'number' || me.type === 'field.number'){
+        if (isNaN(parseFloat(me.value))){
           return me.value;
         }
 
@@ -9759,32 +9813,32 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    getValue: function () {
+    getValue: function(){
       return this.get();
     },
     /*
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function (value, onInput) {
+    set: function(value, onInput){
       var me = this;
 
       me.value = value;
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         me.formatValue(value);
       }
       else {
         me.input.dom.value = value;
       }
 
-      if (onInput !== false) {
+      if (onInput !== false){
         me.onInput();
       }
 
       me.validate(value);
     },
-    setLabel: function (value) {
+    setLabel: function(value){
       var me = this;
 
       me.el.select('.' + FIELD_LABEL_CLS).update(value);
@@ -9793,38 +9847,38 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       this.set('');
       this.clearValid();
     },
     /*
      *
      */
-    failedValid: function () {
+    failedValid: function(){
       var me = this;
 
-      if (me.hasCls(me.failedValidCls)) {
-        if (me.tooltip && me.errorText) {
+      if (me.hasCls(me.failedValidCls)){
+        if (me.tooltip && me.errorText){
           me.tooltip.update(me.errorText);
         }
       }
       else {
-        if (!me.tooltip && me.errorText) {
+        if (!me.tooltip && me.errorText){
           me.showErrorTip();
 
           me.el.on('mousemove', me.onMouseMove, me);
-          me.input.hover(function (e) {
-            if (me.errorText) {
+          me.input.hover(function(e){
+            if (me.errorText){
               me.showErrorTip();
               me.tooltip.show(e.pageX + 15, e.pageY - 25);
             }
-          }, function () {
+          }, function(){
             me.hideErrorTip();
           });
         }
@@ -9832,13 +9886,13 @@ if(!Fancy.nojQuery && Fancy.$){
         me.addCls(me.failedValidCls);
       }
     },
-    clearValid: function () {
+    clearValid: function(){
       this.removeCls(this.failedValidCls);
     },
     /*
      *
      */
-    successValid: function () {
+    successValid: function(){
       var me = this;
 
       me.removeCls(me.failedValidCls);
@@ -9848,10 +9902,10 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    showErrorTip: function () {
+    showErrorTip: function(){
       var me = this;
 
-      if (!me.tooltip) {
+      if (!me.tooltip){
         me.tooltip = new F.ToolTip({
           text: me.errorText
         });
@@ -9860,10 +9914,10 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    hideErrorTip: function () {
+    hideErrorTip: function(){
       var me = this;
 
-      if (me.tooltip) {
+      if (me.tooltip){
         me.tooltip.destroy();
         delete me.tooltip;
       }
@@ -9871,36 +9925,36 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} o
      */
-    setInputSize: function (o) {
+    setInputSize: function(o){
       var me = this;
 
       if(me.type === 'combo'){
         me.inputContainer.css('width', o.width);
       }
 
-      if (o.width) {
+      if (o.width){
         me.input.css('width', o.width);
       }
 
-      if (o.height && me.type !== 'set') {
+      if (o.height && me.type !== 'set'){
         me.input.css('height', o.height);
       }
     },
     /*
      *
      */
-    focus: function () {
+    focus: function(){
       var me = this;
 
       me.input.focus();
-      setTimeout(function () {
+      setTimeout(function(){
         me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
       }, 0);
     },
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.fire('beforehide');
@@ -9910,7 +9964,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    show: function () {
+    show: function(){
       var me = this;
 
       me.css('display', 'block');
@@ -9919,28 +9973,28 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Number|Object} width
      * @param {Number} height
      */
-    setSize: function (width, height) {
+    setSize: function(width, height){
       var me = this;
 
-      switch (me.type) {
+      switch (me.type){
         case 'set':
         case 'line':
       }
 
-      if (width === undefined && height === undefined) {
+      if (width === undefined && height === undefined){
         width = me.width;
         height = me.height;
       }
-      else if (height === undefined) {
+      else if (height === undefined){
         var o = width;
-        if (o.width) {
+        if (o.width){
           width = o.width;
         }
         else {
           width = me.width;
         }
 
-        if (o.height) {
+        if (o.height){
           height = o.height;
         }
         else {
@@ -9948,7 +10002,7 @@ if(!Fancy.nojQuery && Fancy.$){
         }
       }
 
-      if (me.size) {
+      if (me.size){
         me.size({
           width: width,
           height: height
@@ -9957,11 +10011,11 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      if (width !== undefined) {
+      if (width !== undefined){
         me.css('width', width);
       }
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.css('height', height * 1.5);
       }
       else {
@@ -9969,7 +10023,7 @@ if(!Fancy.nojQuery && Fancy.$){
           me.css('height', height);
         }
 
-        if (me.label) {
+        if (me.label){
           me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);
         }
       }
@@ -9982,18 +10036,18 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    setStyle: function () {
+    setStyle: function(){
       var me = this,
         style = me.style || {},
         padding = me.padding;
 
-      if (padding) {
-        if (F.isNumber(padding)) {
+      if (padding){
+        if (F.isNumber(padding)){
           padding = padding + 'px';
         }
-        else if (F.isString(padding)) {}
+        else if (F.isString(padding)){}
 
-        if (style.padding === undefined) {
+        if (style.padding === undefined){
           style.padding = padding;
         }
       }
@@ -10001,8 +10055,8 @@ if(!Fancy.nojQuery && Fancy.$){
         style.padding = '0px';
       }
 
-      if (me.hidden) {
-        me.css('display', 'none')
+      if (me.hidden){
+        me.css('display', 'none');
       }
 
       me.css(style);
@@ -10010,10 +10064,10 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    preRender: function () {
+    preRender: function(){
       var me = this;
 
-      if (me.tpl && F.isObject(me.tpl) === false) {
+      if (me.tpl && F.isObject(me.tpl) === false){
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -10022,7 +10076,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    calcSize: function () {
+    calcSize: function(){
       var me = this,
         inputWidth,
         inputHeight = me.inputHeight,
@@ -10032,10 +10086,10 @@ if(!Fancy.nojQuery && Fancy.$){
         value2,
         value3;
 
-      if (F.isString(padding)) {
+      if (F.isString(padding)){
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
-        switch (padding.length) {
+        switch (padding.length){
           case 1:
             value = Number(padding[0]);
             padding = [value, value, value, value];
@@ -10058,30 +10112,30 @@ if(!Fancy.nojQuery && Fancy.$){
             break;
         }
       }
-      else if (F.isNumber(padding)) {
+      else if (F.isNumber(padding)){
         padding = [padding, padding, padding, padding];
       }
-      else if (padding === false) {
+      else if (padding === false){
         padding = [0, 0, 0, 0];
       }
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.height *= 1.5;
       }
 
       inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label) {
+      if (me.labelAlign !== 'top' && me.label){
         inputWidth -= me.labelWidth;
       }
 
-      if (me.height === me.inputHeight && me.padding !== false) {
+      if (me.height === me.inputHeight && me.padding !== false){
         inputHeight -= padding[0] + padding[2];
       }
 
-      if (me.type === 'radio' && !me.column) {
+      if (me.type === 'radio' && !me.column){
         me.calcColumns();
-        if (me.rows !== 1) {
+        if (me.rows !== 1){
           inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
         }
       }
@@ -10093,7 +10147,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Number} value
      */
-    setWidth: function (value) {
+    setWidth: function(value){
       var me = this;
 
       me.width = value;
@@ -10107,7 +10161,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onMouseMove: function (e) {
+    onMouseMove: function(e){
       var me = this,
         //Link on grid if presented
         w = me.widget;
@@ -10130,24 +10184,24 @@ if(!Fancy.nojQuery && Fancy.$){
         }
       }
 
-      if (me.tooltip) {
+      if (me.tooltip){
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
-      else if (me.tip) {
+      else if (me.tip){
         me.renderTip(e);
       }
     },
     /*
      * @param {Object} e
      */
-    renderTip: function (e) {
+    renderTip: function(e){
       var me = this,
         value = '',
         tip = me.tip || me.tooltip,
         tpl,
         text;
 
-      if (me.getValue) {
+      if (me.getValue){
         switch(me.type){
           case 'button':
           case 'field.button':
@@ -10170,7 +10224,7 @@ if(!Fancy.nojQuery && Fancy.$){
           break;
       }
 
-      if (me.tooltip) {
+      if (me.tooltip){
         me.tooltip.update(text);
       }
       else {
@@ -10184,7 +10238,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @return {Object}
      */
-    getInputSelection: function () {
+    getInputSelection: function(){
       var me = this,
         start = 0,
         end = 0,
@@ -10195,16 +10249,16 @@ if(!Fancy.nojQuery && Fancy.$){
         endRange,
         el = me.input.dom;
 
-      if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+      if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number'){
         start = el.selectionStart;
         end = el.selectionEnd;
       }
       else {
         range = document.selection.createRange();
 
-        if (range && range.parentElement() == el) {
+        if (range && range.parentElement() == el){
           len = el.value.length;
-          normalizedValue = el.value.replace(/\r\n/g, "\n");
+          normalizedValue = el.value.replace(/\r\n/g, '\n');
 
           // Create a working TextRange that lives only in the input
           textInputRange = el.createTextRange();
@@ -10216,17 +10270,17 @@ if(!Fancy.nojQuery && Fancy.$){
           endRange = el.createTextRange();
           endRange.collapse(false);
 
-          if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+          if (textInputRange.compareEndPoints('StartToEnd', endRange) > -1){
             start = end = len;
           } else {
-            start = -textInputRange.moveStart("character", -len);
-            start += normalizedValue.slice(0, start).split("\n").length - 1;
+            start = -textInputRange.moveStart('character', -len);
+            start += normalizedValue.slice(0, start).split('\n').length - 1;
 
-            if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+            if (textInputRange.compareEndPoints('EndToEnd', endRange) > -1){
               end = len;
             } else {
-              end = -textInputRange.moveEnd("character", -len);
-              end += normalizedValue.slice(0, end).split("\n").length - 1;
+              end = -textInputRange.moveEnd('character', -len);
+              end += normalizedValue.slice(0, end).split('\n').length - 1;
             }
           }
         }
@@ -10240,7 +10294,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    enable: function () {
+    enable: function(){
       var me = this;
 
       me.disabled = false;
@@ -10257,7 +10311,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    disable: function () {
+    disable: function(){
       var me = this;
 
       me.disabled = true;
@@ -10274,7 +10328,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    getInputValue: function () {
+    getInputValue: function(){
       var me = this;
 
       return me.input.dom.value;
@@ -10282,7 +10336,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    clearInput: function () {
+    clearInput: function(){
       var me = this;
 
       if(me.input){
@@ -10327,18 +10381,18 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 
     if( me.isPassword ){
       me.input.attr({
-        "type": "password"
+        'type': 'password'
       });
 
-      if(me.showPassTip) {
+      if(me.showPassTip){
         me.el.select('.fancy-field-text').item(0).append('<div class="fancy-field-pass-tip">abc</div>');
         me.passTipEl = me.el.select('.fancy-field-pass-tip').item(0);
 
-        me.passTipEl.on('mousedown', function (e) {
+        me.passTipEl.on('mousedown', function(e){
           e.preventDefault();
         });
 
-        me.passTipEl.on('click', function () {
+        me.passTipEl.on('click', function(){
           if(me.input.attr('type') !== 'password'){
             me.passTipEl.update('abc');
             me.input.attr('type', 'password');
@@ -10380,7 +10434,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
  * @class Fancy.NumberField
  * @extends Fancy.Widget
  */
-(function() {
+(function(){
   /*
    * CONSTANTS
    */
@@ -10405,14 +10459,14 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       Fancy.apply(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'empty');
@@ -10424,7 +10478,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 
       me.ons();
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
@@ -10452,20 +10506,20 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         input = me.input,
         value = me.get(),
         oldValue = me.acceptedValue;
 
-      if (me.isValid()) {
+      if (me.isValid()){
         var _value = input.dom.value,
           _newValue = '',
           i = 0,
           iL = _value.length;
 
-        for (; i < iL; i++) {
-          switch (_value[i]) {
+        for (; i < iL; i++){
+          switch (_value[i]){
             case '0':
             case '1':
             case '2':
@@ -10484,7 +10538,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
           }
         }
 
-        if (!isNaN(Number(_newValue))) {
+        if (!isNaN(Number(_newValue))){
           me.value = _newValue;
           value = _newValue;
         }
@@ -10498,8 +10552,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {String} value
      * @return {Boolean}
      */
-    isNumber: function (value) {
-      if (value === '' || value === '-') {
+    isNumber: function(value){
+      if (value === '' || value === '-'){
         return true;
       }
 
@@ -10509,10 +10563,10 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Number|String} value
      * @return {Boolean}
      */
-    checkMinMax: function (value) {
+    checkMinMax: function(value){
       var me = this;
 
-      if (value === '' || value === '-') {
+      if (value === '' || value === '-'){
         return true;
       }
 
@@ -10523,22 +10577,22 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      * @param {Number} value
      */
-    setMin: function (value) {
+    setMin: function(value){
       this.min = value;
     },
     /*
      * @param {Number} value
      */
-    setMax: function (value) {
+    setMax: function(value){
       this.max = value;
     },
     /*
      *
      */
-    initSpin: function () {
+    initSpin: function(){
       var me = this;
 
-      if (me.spin !== true) {
+      if (me.spin !== true){
         return;
       }
 
@@ -10550,7 +10604,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      * @param {Object} e
      */
-    onMouseDownSpinUp: function (e) {
+    onMouseDownSpinUp: function(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -10566,23 +10620,23 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 
       me.spinUp();
 
-      me.spinInterval = setInterval(function () {
+      me.spinInterval = setInterval(function(){
         me.mouseDownSpinUp = false;
-        if (new Date() - time > timeInterval) {
-          if (timeInterval === 700) {
+        if (new Date() - time > timeInterval){
+          if (timeInterval === 700){
             timeInterval = 150;
           }
 
           time = new Date();
           me.spinUp();
           timeInterval--;
-          if (timeInterval < 20) {
+          if (timeInterval < 20){
             timeInterval = 20;
           }
         }
       }, 20);
 
-      docEl.once('mouseup', function () {
+      docEl.once('mouseup', function(){
         clearInterval(me.spinInterval);
       });
 
@@ -10591,7 +10645,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      * @param {Object} e
      */
-    onMouseDownSpinDown: function (e) {
+    onMouseDownSpinDown: function(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -10607,24 +10661,24 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
 
       me.spinDown();
 
-      me.spinInterval = setInterval(function () {
+      me.spinInterval = setInterval(function(){
         me.mouseDownSpinDown = false;
 
-        if (new Date() - time > timeInterval) {
-          if (timeInterval === 700) {
+        if (new Date() - time > timeInterval){
+          if (timeInterval === 700){
             timeInterval = 150;
           }
 
           time = new Date();
           me.spinDown();
           timeInterval--;
-          if (timeInterval < 20) {
+          if (timeInterval < 20){
             timeInterval = 20;
           }
         }
       }, 20);
 
-      docEl.once('mouseup', function () {
+      docEl.once('mouseup', function(){
         clearInterval(me.spinInterval);
       });
 
@@ -10633,22 +10687,22 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      *
      */
-    spinUp: function () {
+    spinUp: function(){
       var me = this,
         newValue = +me.get() + me.step;
 
-      if (Fancy.Number.isFloat(me.step)) {
+      if (Fancy.Number.isFloat(me.step)){
         newValue = Fancy.Number.correctFloat(newValue);
       }
 
-      if (isNaN(newValue)) {
+      if (isNaN(newValue)){
         newValue = me.min || 0;
       }
 
-      if (me.max !== undefined && newValue > me.max) {
+      if (me.max !== undefined && newValue > me.max){
         newValue = me.max;
       }
-      else if (newValue < me.min) {
+      else if (newValue < me.min){
         newValue = me.min;
       }
 
@@ -10657,22 +10711,22 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      *
      */
-    spinDown: function () {
+    spinDown: function(){
       var me = this,
         newValue = +me.get() - me.step;
 
-      if (Fancy.Number.isFloat(me.step)) {
+      if (Fancy.Number.isFloat(me.step)){
         newValue = Fancy.Number.correctFloat(newValue);
       }
 
-      if (isNaN(newValue)) {
+      if (isNaN(newValue)){
         newValue = me.min || 0;
       }
 
-      if (me.min !== undefined && newValue < me.min) {
+      if (me.min !== undefined && newValue < me.min){
         newValue = me.min;
       }
-      else if (newValue > me.max) {
+      else if (newValue > me.max){
         newValue = me.max;
       }
 
@@ -10796,7 +10850,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
  * @class Fancy.TextArea
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -10818,13 +10872,13 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('change', 'key');
@@ -10858,7 +10912,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         input = me.el.getByTag('textarea');
@@ -10870,11 +10924,11 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       input.on('keydown', me.onKeyDown, me);
       me.on('key', me.onKey, me);
 
-      if (me.autoHeight) {
+      if (me.autoHeight){
         input.on('input', me.onChange, me);
       }
 
-      input.on('mousedown', function (e) {
+      input.on('mousedown', function(e){
         if(me.disabled){
           e.preventDefault();
         }
@@ -10883,17 +10937,17 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    preRender: function () {
+    preRender: function(){
       var me = this;
 
-      if (me.tpl) {
+      if (me.tpl){
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -10903,25 +10957,25 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    initHeight: function () {
+    initHeight: function(){
       var me = this,
         height;
 
-      if (me.height) {
+      if (me.height){
         height = me.height;
-        if (me.maxHeight < me.height) {
+        if (me.maxHeight < me.height){
           //me.maxHeight = me.height;
-          setTimeout(function () {
+          setTimeout(function(){
             me.input.css({
               'overflow-y': 'scroll'
             });
           }, 1);
         }
       }
-      else if (me.value) {
+      else if (me.value){
         var length = me.value.match(/\n/g);
 
-        if (length) {
+        if (length){
           length = length.length;
         }
         else {
@@ -10934,12 +10988,12 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
         height = me.height;
       }
 
-      if (height < me.minHeight) {
+      if (height < me.minHeight){
         //height = me.minHeight;
       }
-      else if (height > me.maxHeight) {
+      else if (height > me.maxHeight){
         //height = me.maxHeight;
-        setTimeout(function () {
+        setTimeout(function(){
           me.input.css({
             'overflow-y': 'scroll'
           });
@@ -10952,7 +11006,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    calcSize: function () {
+    calcSize: function(){
       var me = this,
         inputWidth,
         padding = me.padding,
@@ -10961,10 +11015,10 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
         value2,
         value3;
 
-      if (F.isString(padding)) {
+      if (F.isString(padding)){
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
-        switch (padding.length) {
+        switch (padding.length){
           case 1:
             value = Number(padding[0]);
             padding = [value, value, value, value];
@@ -10987,24 +11041,24 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
             break;
         }
       }
-      else if (F.isNumber(padding)) {
+      else if (F.isNumber(padding)){
         padding = [padding, padding, padding, padding];
       }
-      else if (padding === false) {
+      else if (padding === false){
         padding = [0, 0, 0, 0];
       }
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.inputHeight -= 40;
       }
 
       inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label) {
+      if (me.labelAlign !== 'top' && me.label){
         inputWidth -= me.labelWidth;
       }
 
-      if (me.height === me.inputHeight && me.padding !== false) {
+      if (me.height === me.inputHeight && me.padding !== false){
         me.inputHeight -= padding[0] + padding[2];
       }
 
@@ -11014,19 +11068,19 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    onChange: function () {
+    onChange: function(){
       var me = this,
         value = me.input.dom.value,
         input = me.el.getByTag('textarea'),
         height = value.match(/\n/g).length * me.lineHeight;
 
-      if (height < me.minHeight) {
+      if (height < me.minHeight){
         height = me.minHeight;
         input.css({
           'overflow-y': 'hidden'
         });
       }
-      else if (height > me.maxHeight) {
+      else if (height > me.maxHeight){
         height = me.maxHeight;
         input.css({
           'overflow-y': 'scroll'
@@ -11047,7 +11101,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
  * @class Fancy.CheckBox
  * @extends Fancy.Widget
  */
-(function() {
+(function(){
   /*
    * CONSTANTS
    */
@@ -11072,14 +11126,14 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       Fancy.applyConfig(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents(
@@ -11098,7 +11152,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
         label: me.label
       });
 
-      if (me.expander) {
+      if (me.expander){
         me.addCls('fancy-checkbox-expander');
       }
 
@@ -11131,7 +11185,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el;
 
@@ -11141,14 +11195,14 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      * @param {Object} e
      */
-    onClick: function (e) {
+    onClick: function(e){
       var me = this,
         el = me.el;
 
@@ -11158,15 +11212,15 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
 
       me.fire('beforechange');
 
-      if (e.ctrlKey && me.stopIfCTRL) {
-        return
-      }
-
-      if (me.editable === false) {
+      if (e.ctrlKey && me.stopIfCTRL){
         return;
       }
 
-      if (me.canceledChange === true) {
+      if (me.editable === false){
+        return;
+      }
+
+      if (me.canceledChange === true){
         me.canceledChange = false;
         return;
       }
@@ -11184,31 +11238,30 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      * @params {Object} e
      */
-    onMouseDown: function (e) {
-
+    onMouseDown: function(e){
       e.preventDefault();
     },
     /*
      * @params {*} value
      * @params {Boolean} fire
      */
-    set: function (value, fire) {
+    set: function(value, fire){
       var me = this,
         el = me.el;
 
-      if (value === '') {
+      if (value === ''){
         value = false;
       }
 
-      if (value === true || value === 1) {
+      if (value === true || value === 1){
         el.addCls(me.checkedCls);
         value = true;
       }
-      else if (value === false || value === 0) {
+      else if (value === false || value === 0){
         el.removeClass(me.checkedCls);
         value = false;
       }
-      else if (value === undefined) {
+      else if (value === undefined){
         value = false;
       }
       else {
@@ -11216,7 +11269,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       }
 
       me.value = value;
-      if (fire !== false) {
+      if (fire !== false){
         me.fire('change', me.value);
       }
     },
@@ -11224,43 +11277,43 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
      * @params {*} value
      * @params {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @return {*}
      */
-    getValue: function () {
+    getValue: function(){
       return this.value;
     },
     /*
      * @return {*}
      */
-    get: function () {
+    get: function(){
       return this.getValue();
     },
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       this.set(false);
     },
     /*
      *
      */
-    toggle: function () {
+    toggle: function(){
       this.set(!this.value);
     },
     /*
      *
      */
-    destroy: function () {
+    destroy: function(){
       this.Super('destroy', arguments);
     },
     /*
      *
      */
-    checkMiddle: function () {
+    checkMiddle: function(){
       var me = this;
 
       if(me.middle){
@@ -11273,7 +11326,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      * @param {Boolean} value
      */
-    setMiddle: function (value) {
+    setMiddle: function(value){
       var me = this;
 
       me.middle = value;
@@ -11406,14 +11459,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.tags = this.tags || [];
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents(
@@ -11428,7 +11481,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.editable = false;
       }
 
-      if (!me.loadListData()) {
+      if (!me.loadListData()){
         me.data = me.configData(me.data);
       }
 
@@ -11448,28 +11501,28 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
        * Bug fix: #1074
        * Theme is not applied to list element.
        */
-      setTimeout(function () {
+      setTimeout(function(){
         me.applyTheme();
       }, 1);
     },
     /*
      * @return {Boolean}
      */
-    loadListData: function () {
+    loadListData: function(){
       var me = this;
 
-      if (!F.isObject(me.data)) {
+      if (!F.isObject(me.data)){
         return false;
       }
 
       var proxy = me.data.proxy,
         readerRootProperty = me.readerRootProperty;
 
-      if (!proxy || !proxy.url) {
+      if (!proxy || !proxy.url){
         throw new Error('[FancyGrid Error]: combo data url is not defined');
       }
 
-      if (proxy.reader && proxy.reader.root) {
+      if (proxy.reader && proxy.reader.root){
         readerRootProperty = proxy.reader.root;
       }
 
@@ -11478,7 +11531,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         params: proxy.params || {},
         method: proxy.method || 'GET',
         getJSON: true,
-        success: function (o) {
+        success: function(o){
           me.data = me.configData(o[readerRootProperty]);
           me.renderList();
           me.onsList();
@@ -11490,10 +11543,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               me.updateInput();
             }
           }
-          else if (me.value) {
+          else if (me.value){
             var displayValue = me.getDisplayValue(me.value);
 
-            if (displayValue) {
+            if (displayValue){
               me.input.dom.value = displayValue;
             }
           }
@@ -11508,17 +11561,17 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Array} data
      * @return {Array}
      */
-    configData: function (data) {
-      if (F.isObject(data) || data.length === 0) {
+    configData: function(data){
+      if (F.isObject(data) || data.length === 0){
         return data;
       }
 
-      if (!F.isObject(data[0])) {
+      if (!F.isObject(data[0])){
         var _data = [],
           i = 0,
           iL = data.length;
 
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           _data.push({
             text: data[i],
             value: i
@@ -11533,36 +11586,36 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    applyStyle: function () {
+    applyStyle: function(){
       var me = this;
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
-      if (me.style) {
+      if (me.style){
         me.css(me.style);
       }
     },
     /*
      *
      */
-    applyTheme: function () {
+    applyTheme: function(){
       var me = this;
 
-      if (me.theme && me.theme !== 'default') {
-        me.addCls('fancy-theme-' + me.theme);
-        me.list.addCls('fancy-theme-' + me.theme);
+      if (me.theme && me.theme !== 'default'){
+        me.addCls(Fancy.getThemeCSSCls(me.theme));
+        me.list.addCls(Fancy.getThemeCSSCls(me.theme));
 
         if(me.aheadList){
-          me.aheadList.addCls('fancy-theme-' + me.theme);
+          me.aheadList.addCls(Fancy.getThemeCSSCls(me.theme));
         }
       }
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
@@ -11580,7 +11633,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       drop.on('click', me.onDropClick, me);
       me.on('key', me.onKey, me);
 
-      if (me.typeAhead && me.editable) {
+      if (me.typeAhead && me.editable){
         me.input.on('keydown', me.onKeyDown, me);
       }
 
@@ -11592,16 +11645,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    onSubSearchKeyDown: function (e) {
+    onSubSearchKeyDown: function(e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -11619,12 +11672,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onKeyDown: function (e) {
+    onKeyDown: function(e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -11640,13 +11693,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         case key.TAB:
           break;
         case key.BACKSPACE:
-          setTimeout(function () {
-            if (me.input.dom.value.length === 0) {
+          setTimeout(function(){
+            if (me.input.dom.value.length === 0){
               me.value = -1;
               me.valueIndex = -1;
               me.hideAheadList();
 
-              if (me.multiSelect) {
+              if (me.multiSelect){
                 me.values = [];
                 me.clearListActive();
               }
@@ -11662,7 +11715,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
                 }
               }
 
-              if (me.generateAheadData().length === 0) {
+              if (me.generateAheadData().length === 0){
                 me.hideAheadList();
                 return;
               }
@@ -11673,8 +11726,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           }, 100);
           break;
         default:
-          setTimeout(function () {
-            if (me.generateAheadData().length === 0) {
+          setTimeout(function(){
+            if (me.generateAheadData().length === 0){
               me.hideAheadList();
               return;
             }
@@ -11684,14 +11737,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           }, 1);
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
     /*
      * @param {Object} e
      */
-    onInputClick: function (e) {
+    onInputClick: function(){
       var me = this,
         list = me.list;
 
@@ -11699,11 +11752,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         return;
       }
 
-      if (me.editable === true) {
+      if (me.editable === true){
         return;
       }
 
-      if (list.css('display') === 'none') {
+      if (list.css('display') === 'none'){
         me.showList();
       }
       else {
@@ -11713,7 +11766,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onDropClick: function (e) {
+    onDropClick: function(){
       var me = this,
         list = me.list;
 
@@ -11721,7 +11774,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         return;
       }
 
-      if (list.css('display') === 'none') {
+      if (list.css('display') === 'none'){
         F.combo.Manager.add(this);
         
         me.showList();
@@ -11730,14 +11783,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.hideList();
       }
 
-      if (me.editable === true) {
+      if (me.editable === true){
         me.input.focus();
       }
     },
     /*
      *
      */
-    showList: function () {
+    showList: function(){
       var me = this,
         list = me.list,
         el = me.input.parent().parent(),
@@ -11749,7 +11802,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.hideAheadList();
 
-      if (!me.list || me.data.length === 0) {
+      if (!me.list || me.data.length === 0){
         return;
       }
 
@@ -11783,9 +11836,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       var selected = list.select('.' + selectedItemCls);
 
-      if (selected.length === 0) {
+      if (selected.length === 0){
         if(me.multiSelect && me.values.length){
-          me.valuesIndex.each(function (i, value, length) {
+          me.valuesIndex.each(function(i, value, length){
             if(index === undefined){
               index = i;
             }
@@ -11801,7 +11854,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         if(me.multiSelect && selected.length !== me.valuesIndex.length){
           list.select('.' + selectedItemCls).removeCls(selectedItemCls);
 
-          me.valuesIndex.each(function (i, value, length) {
+          me.valuesIndex.each(function(i, value, length){
             if(index === undefined){
               index = i;
             }
@@ -11819,7 +11872,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       list.select('li').item(index).addCls(focusedItemCls);
       me.scrollToListItem(index);
 
-      if (!me.docSpy) {
+      if (!me.docSpy){
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
       }
@@ -11836,7 +11889,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    showAheadList: function () {
+    showAheadList: function(){
       var me = this,
         list = me.aheadList,
         el = me.input.parent().parent(),
@@ -11846,7 +11899,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.hideList();
 
-      if (!list || me.data.length === 0) {
+      if (!list || me.data.length === 0){
         return;
       }
 
@@ -11858,7 +11911,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         "z-index": 2000 + F.zIndex++
       });
 
-      if (!me.docSpy2) {
+      if (!me.docSpy2){
         me.docSpy2 = true;
         docEl.on('click', me.onDocClick, me);
       }
@@ -11866,11 +11919,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onDocClick: function (e) {
+    onDocClick: function(e){
       var me = this;
 
-      if (me.input.parent().parent().within(e.target) === false) {
-        if (me.list.within(e.target) === true) {
+      if (me.input.parent().parent().within(e.target) === false){
+        if (me.list.within(e.target) === true){
           return;
         }
         me.hideList();
@@ -11880,16 +11933,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    hideList: function () {
+    hideList: function(){
       var me = this;
 
-      if (!me.list) {
+      if (!me.list){
         return;
       }
 
       me.list.css('display', 'none');
 
-      if (me.docSpy) {
+      if (me.docSpy){
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
@@ -11898,16 +11951,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    hideAheadList: function () {
+    hideAheadList: function(){
       var me = this;
 
-      if (!me.aheadList) {
+      if (!me.aheadList){
         return;
       }
 
       me.aheadList.css('display', 'none');
 
-      if (me.docSpy) {
+      if (me.docSpy){
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
@@ -11916,7 +11969,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onInputMouseDown: function (e) {
+    onInputMouseDown: function(e){
       var me = this;
 
       if(me.disabled){
@@ -11924,14 +11977,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         return;
       }
 
-      if (me.editable === false) {
+      if (me.editable === false){
         e.preventDefault();
       }
     },
     /*
      * @param {Object} e
      */
-    onDropMouseDown: function (e) {
+    onDropMouseDown: function(e){
       if(this.disabled){
         e.stopPropagation();
       }
@@ -11941,7 +11994,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onsList: function () {
+    onsList: function(){
       var me = this;
 
       me.list.on('mousedown', me.onListItemMouseDown, me, 'li');
@@ -11956,7 +12009,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onsAheadList: function () {
+    onsAheadList: function(){
       var me = this;
 
       me.aheadList.on('click', me.onListItemClick, me, 'li');
@@ -11964,8 +12017,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onListItemOver: function (e) {
-      if(this.disabled) {
+    onListItemOver: function(e){
+      if(this.disabled){
         return;
       }
 
@@ -11979,7 +12032,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onListItemLeave: function () {
+    onListItemLeave: function(){
       if(this.disabled){
         return;
       }
@@ -11998,7 +12051,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onListItemClick: function (e) {
+    onListItemClick: function(e){
       var me = this,
         li = F.get(e.currentTarget),
         value = li.attr('value'),
@@ -12009,12 +12062,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         return;
       }
 
-      if (F.nojQuery && value === 0) {
+      if (F.nojQuery && value === 0){
         value = '';
       }
 
-      if (me.multiSelect) {
-        if (me.values.length === 0) {
+      if (me.multiSelect){
+        if (me.values.length === 0){
           me.clearListActive();
         }
 
@@ -12022,7 +12075,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         li.toggleCls(selectedItemCls);
 
-        if (li.hasCls(selectedItemCls)) {
+        if (li.hasCls(selectedItemCls)){
           me.addValue(value);
           li.addCls(focusedItemCls);
         }
@@ -12042,7 +12095,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.hideList();
       }
 
-      if (me.editable) {
+      if (me.editable){
         me.input.focus();
       }
       else {
@@ -12053,7 +12106,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function (value, onInput) {
+    set: function(value, onInput){
       var me = this,
         valueStr = '',
         index;
@@ -12094,13 +12147,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       else{
         index = me.getIndex(value);
 
-        if(index !== -1) {
+        if(index !== -1){
           me.valueIndex = index;
           valueStr = me.data[index][me.displayKey];
           me.selectItem(index);
         }
         else{
-          if (value !== -1 && value && value.length > 0) {
+          if (value !== -1 && value && value.length > 0){
             valueStr = '';
             //valueStr = value;
             me.value = -1;
@@ -12116,7 +12169,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.input.dom.value = valueStr;
 
-      if (onInput !== false) {
+      if (onInput !== false){
         me.onInput();
       }
 
@@ -12158,12 +12211,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       });
 
-      if(index !== -1) {
+      if(index !== -1){
         me.values.splice(index, 1);
         me.valuesIndex.remove(me.getIndex(v));
       }
 
-      if (me.values.length) {
+      if (me.values.length){
         me.value = me.values[me.values.length - 1];
       }
       else {
@@ -12180,13 +12233,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this,
         displayValues = [];
 
-      me.valuesIndex.each(function (i, v, length) {
+      me.valuesIndex.each(function(i, v, length){
         displayValues.push(me.data[i][me.displayKey]);
       });
 
       me.input.dom.value = displayValues.join(", ");
 
-      if (onInput !== false) {
+      if (onInput !== false){
         me.onInput();
       }
     },
@@ -12196,11 +12249,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     selectItem: function(index){
       var me = this;
 
-      if (!me.list) {
+      if (!me.list){
         return;
       }
 
-      if (!me.multiSelect) {
+      if (!me.multiSelect){
         me.clearListActive();
       }
 
@@ -12213,7 +12266,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div')),
@@ -12222,7 +12275,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       el.attr('id', me.id);
 
-      if (value === undefined) {
+      if (value === undefined){
         value = '';
       }
       else {
@@ -12235,7 +12288,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               me.valueIndex = i;
             }
 
-            if(me.data[i]) {
+            if(me.data[i]){
               value += me.data[i][me.displayKey] + ', ';
             }
           });
@@ -12245,7 +12298,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         else {
           index = me.getIndex(value);
 
-          if (index !== -1) {
+          if (index !== -1){
             me.valueIndex = index;
             value = me.data[index][me.displayKey];
           }
@@ -12264,19 +12317,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       var labelWidth = '';
 
-      if (me.labelWidth) {
+      if (me.labelWidth){
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
       var label = me.label;
 
-      if (me.label === '') {
+      if (me.label === ''){
         label = '&nbsp;';
       }
-      else if (me.label === undefined) {
+      else if (me.label === undefined){
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right') {
+      else if (me.labelAlign !== 'right'){
         label += ':';
       }
 
@@ -12308,19 +12361,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.setSize();
       renderTo.appendChild(el.dom);
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
       }
-      else if (me.labelAlign === 'right') {
+      else if (me.labelAlign === 'right'){
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
         F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
       }
 
-      if (me.valueIndex) {
+      if (me.valueIndex){
         me.acceptedValue = me.value;
       }
 
-      if (me.editable) {
+      if (me.editable){
         me.input.css('cursor', 'auto');
       }
       else {
@@ -12339,18 +12392,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.renderList();
 
-      if(me.leftTpl) {
-        setTimeout(function () {
+      if(me.leftTpl){
+        setTimeout(function(){
           me.updateLeft();
         }, 1);
 
         //Bug fix with images
-        setTimeout(function () {
+        setTimeout(function(){
           me.updateLeft();
         }, 500);
 
         //Bug fix with images
-        setTimeout(function () {
+        setTimeout(function(){
           me.updateLeft();
         }, 1000);
       }
@@ -12361,7 +12414,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    renderList: function () {
+    renderList: function(){
       var me = this,
         list = F.get(document.createElement('div')),
         listHtml = [];
@@ -12374,7 +12427,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
       }
 
-      if (me.list) {
+      if (me.list){
         me.list.destroy();
       }
 
@@ -12382,24 +12435,24 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         '<ul style="position: relative;">'
       ]);
 
-      F.each(me.data, function (row, i) {
+      F.each(me.data, function(row, i){
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
+        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()){
           isActive = me.selectedItemCls;
         }
 
-        if (displayValue === '' || displayValue === ' ') {
+        if (displayValue === '' || displayValue === ' '){
           displayValue = '&nbsp;';
         }
-        else if (me.listItemTpl) {
+        else if (me.listItemTpl){
           var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
 
-        if (me.multiSelect && me.itemCheckBox) {
+        if (me.multiSelect && me.itemCheckBox){
           listHtml.push('<li value="' + value + '" class="' + isActive + '"><div class="' + FIELD_CHECKBOX_INPUT_CLS + '" style=""></div><span class="' + FIELD_COMBO_LIST_VALUE_CLS + '">' + displayValue + '</span></li>');
         }
         else {
@@ -12418,7 +12471,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         width: me.getListWidth()
       });
 
-      if (me.data.length > me.maxListRows) {
+      if (me.data.length > me.maxListRows){
         /*
         list.css({
           height: me.listRowHeight * 9 + 'px',
@@ -12466,12 +12519,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listWidth = me.inputWidth + 14,
         minListWidth = me.minListWidth;
 
-      if (me.input) {
+      if (me.input){
         el = me.input.parent().parent();
         listWidth = el.width();
       }
 
-      if (minListWidth && minListWidth > listWidth) {
+      if (minListWidth && minListWidth > listWidth){
         listWidth = minListWidth;
       }
 
@@ -12485,12 +12538,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         inputValue = me.input.dom.value.toLocaleLowerCase(),
         aheadData = [];
 
-      if (me.multiSelect) {
+      if (me.multiSelect){
         var splitted = inputValue.split(', '),
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        F.each(inputValue, function (v, i) {
+        F.each(inputValue, function(v, i){
           if(inputSelection.start <= i){
             return true;
           }
@@ -12503,13 +12556,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         inputValue = splitted[passedCommas];
       }
 
-      F.each(me.data, function (item){
-        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
+      F.each(me.data, function(item){
+        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())){
           aheadData.push(item);
         }
       });
 
-      if (me.data.length === aheadData.length) {
+      if (me.data.length === aheadData.length){
         aheadData = [];
       }
 
@@ -12520,7 +12573,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    renderAheadList: function () {
+    renderAheadList: function(){
       var me = this,
         list,
         listHtml = [
@@ -12528,7 +12581,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         ],
         presented = false;
 
-      if (me.aheadList) {
+      if (me.aheadList){
         me.aheadList.firstChild().destroy();
         list = me.aheadList;
         presented = true;
@@ -12537,19 +12590,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         list = F.get(document.createElement('div'));
       }
 
-      F.each(me.aheadData, function (row, i) {
+      F.each(me.aheadData, function(row, i){
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (i === 0) {
+        if (i === 0){
           isActive = me.selectedItemCls;
         }
 
-        if (displayValue === '' || displayValue === ' ') {
+        if (displayValue === '' || displayValue === ' '){
           displayValue = '&nbsp;';
         }
-        else if (me.listItemTpl) {
+        else if (me.listItemTpl){
           var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
@@ -12559,7 +12612,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       listHtml.push('</ul>');
 
-      list.update(listHtml.join(""));
+      list.update(listHtml.join(''));
       list.css({
         display: 'none',
         left: '0px',
@@ -12572,7 +12625,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         overflow: 'auto'
       });
 
-      if (presented === false) {
+      if (presented === false){
         list.addClass(F.cls, 'fancy-combo-result-list');
         document.body.appendChild(list.dom);
         me.aheadList = list;
@@ -12585,7 +12638,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.css('display', 'none');
@@ -12595,7 +12648,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       var me = this;
 
       if(me.multiSelect){
@@ -12608,7 +12661,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    clearListActive: function () {
+    clearListActive: function(){
       var me = this,
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
@@ -12616,22 +12669,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
       me.list.select('.' + selectedItemCls).removeCls(selectedItemCls);
     },
-    clearFocused: function () {
+    clearFocused: function(){
       var me = this,
         focusedItemCls = me.focusedItemCls;
 
-      if(me.list) {
+      if(me.list){
         me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
 
-      if(me.aheadList) {
+      if(me.aheadList){
         me.aheadList.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
     },
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
@@ -12647,14 +12700,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @param {key} value
      * @return {*}
      */
-    getDisplayValue: function (value, returnPosition) {
+    getDisplayValue: function(value, returnPosition){
       var me = this,
         index = me.getIndex(value);
 
@@ -12672,14 +12725,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {key} value
      * @param {Boolean} [returnPosition]
      */
-    getValueKey: function (value, returnPosition) {
+    getValueKey: function(value, returnPosition){
       var me = this,
         i = 0,
         iL = me.data.length;
 
       for(;i<iL;i++){
-        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
-          if (returnPosition) {
+        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()){
+          if (returnPosition){
             return i;
           }
 
@@ -12690,27 +12743,27 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {*}
      */
-    get: function () {
+    get: function(){
       return this.getValue();
     },
     /*
      * @return {*}
      */
-    getValue: function () {
+    getValue: function(){
       var me = this;
 
-      if (me.multiSelect) {
+      if (me.multiSelect){
         return me.values;
       }
 
-      if (me.value === -1 || me.value === undefined) {
-        if (me.value === -1 && me.input.dom.value) {
+      if (me.value === -1 || me.value === undefined){
+        if (me.value === -1 && me.input.dom.value){
           return me.input.dom.value;
         }
         return '';
       }
 
-      if (me.valueKey !== undefined) {
+      if (me.valueKey !== undefined){
         return me.value;
       }
 
@@ -12719,7 +12772,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} o
      */
-    size: function (o) {
+    size: function(o){
       var me = this,
         width = o.width,
         height = o.height,
@@ -12727,21 +12780,21 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         inputContainer = me.inputContainer,
         drop = me.drop;
 
-      if (me.labelAlign !== 'top') {
+      if (me.labelAlign !== 'top'){
         me.inputHeight = height;
       }
 
-      if (height !== undefined) {
+      if (height !== undefined){
         me.height = height;
       }
 
-      if (width !== undefined) {
+      if (width !== undefined){
         me.width = width;
       }
 
       me.calcSize();
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.css({
           height: me.height * 1.5,
           width: me.width
@@ -12784,25 +12837,25 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onEnter: function (field, e) {
+    onEnter: function(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls,
         value;
 
-      if (me.multiSelect) {
-        if (!list) {
+      if (me.multiSelect){
+        if (!list){
           return;
         }
 
         var item = list.select('.' + focusedItemCls);
 
-        if (!item || !item.dom) {
+        if (!item || !item.dom){
           item = list.select('.' + selectedItemCls).last();
         }
 
-        if (item && item.dom) {
+        if (item && item.dom){
           value = item.attr('value');
 
           me.addValue(value);
@@ -12813,7 +12866,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.updateInput();
         }
       }
-      else if (list) {
+      else if (list){
         var item = list.select('.' + focusedItemCls);
 
         if(!item || !item.dom){
@@ -12835,7 +12888,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onEsc: function (field, e) {
+    onEsc: function(field, e){
       var me = this;
 
       me.hideList();
@@ -12845,23 +12898,23 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onUp: function (field, e) {
+    onUp: function(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list) {
+      if (list){
         list = me.getActiveList().select('ul');
         e.preventDefault();
         var activeLi = list.select('.' + focusedItemCls),
           notFocused = false;
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           activeLi = list.select('.' + selectedItemCls);
         }
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           notFocused = true;
           activeLi = list.lastChild();
         }
@@ -12874,7 +12927,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           lis = list.select('li'),
           height = parseInt(list.css('height'));
 
-        if (index !== 0 && !notFocused) {
+        if (index !== 0 && !notFocused){
           index--;
         }
         else {
@@ -12884,10 +12937,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         var nextActiveLi = lis.item(index),
           top = nextActiveLi.dom.offsetTop;
 
-        if (top - list.dom.scrollTop > height) {
+        if (top - list.dom.scrollTop > height){
           list.dom.scrollTop = 10000;
         }
-        else if (top - list.dom.scrollTop < 0) {
+        else if (top - list.dom.scrollTop < 0){
           list.dom.scrollTop = top;
         }
 
@@ -12900,24 +12953,24 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onDown: function (field, e) {
+    onDown: function(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list) {
+      if (list){
         list = me.getActiveList().select('ul');
         e.preventDefault();
 
         var activeLi = list.select('.' + focusedItemCls),
           notFocused = false;
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           activeLi = list.select('.' + selectedItemCls);
         }
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           notFocused = true;
           activeLi = list.firstChild();
         }
@@ -12931,7 +12984,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           lis = list.select('li'),
           height = parseInt(list.css('height'));
 
-        if (index !== lis.length - 1 && !notFocused) {
+        if (index !== lis.length - 1 && !notFocused){
           index++;
         }
         else {
@@ -12942,10 +12995,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           top = nextActiveLi.dom.offsetTop,
           nextActiveLiHeight = parseInt(nextActiveLi.css('height'));
 
-        if (top - list.dom.scrollTop < 0) {
+        if (top - list.dom.scrollTop < 0){
           list.dom.scrollTop = 0;
         }
-        else if (top + nextActiveLiHeight + 3 - list.dom.scrollTop > height) {
+        else if (top + nextActiveLiHeight + 3 - list.dom.scrollTop > height){
           list.dom.scrollTop = top - height + activeLiHeight + nextActiveLiHeight;
         }
 
@@ -12960,7 +13013,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Number} index
      */
-    scrollToListItem: function (index) {
+    scrollToListItem: function(index){
       var me = this,
         list = me.getActiveList().select('ul'),
         lis = list.select('li'),
@@ -12969,10 +13022,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         top = item.dom.offsetTop,
         height = parseInt(list.css('height'));
 
-      if (index === 0) {
+      if (index === 0){
         list.dom.scrollTop = 0;
       }
-      else if (index === lis.length - 1) {
+      else if (index === lis.length - 1){
         list.dom.scrollTop = 10000;
       }
       else {
@@ -12982,14 +13035,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {Fancy.Element}
      */
-    getActiveList: function () {
+    getActiveList: function(){
       var me = this,
         list = false;
 
-      if (me.list && me.list.css('display') !== 'none') {
+      if (me.list && me.list.css('display') !== 'none'){
         list = me.list;
       }
-      else if (me.aheadList && me.aheadList.css('display') !== 'none') {
+      else if (me.aheadList && me.aheadList.css('display') !== 'none'){
         list = me.aheadList;
       }
 
@@ -12998,7 +13051,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    initMultiSelect: function () {
+    initMultiSelect: function(){
       var me = this,
         value = me.value;
 
@@ -13031,7 +13084,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         index = -1;
 
       for(;i<iL;i++){
-        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()) {
+        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()){
           return i;
         }
       }
@@ -13063,7 +13116,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    updateLeft: function () {
+    updateLeft: function(){
       var me = this,
         item = me.data[me.getIndex(me.getValue())];
 
@@ -13082,14 +13135,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onSelectAllClick: function (e) {
+    onSelectAllClick: function(){
       var me = this,
         lis = me.list.select('li'),
         selectAllEl = me.list.select('.fancy-combo-list-select-all').item(0),
         value = selectAllEl.hasClass('fancy-combo-item-selected');
 
-      setTimeout(function() {
-        if (value) {
+      setTimeout(function(){
+        if (value){
           selectAllEl.removeCls('fancy-combo-item-selected');
         }
         else {
@@ -13097,7 +13150,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }, 100);
 
-      lis.each(function (li, i) {
+      lis.each(function(li, i){
         if(value){
           if(li.hasClass('fancy-combo-item-selected')){
             li.dom.click();
@@ -13116,7 +13169,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {String} value
      */
-    onSubSearchChange: function (field, value) {
+    onSubSearchChange: function(field, value){
       var me = this,
         lis = me.list.select('li'),
         height = 0,
@@ -13124,8 +13177,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       value = value.toLocaleLowerCase();
 
-      F.each(me.data, function (item, i){
-        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())) {
+      F.each(me.data, function(item, i){
+        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())){
           lis.item(i).css('display', 'block');
           height += parseInt(lis.item(i).css('height'));
         }
@@ -13143,7 +13196,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listUl.css('height', height);
       }
     },
-    isListInsideViewBox: function (el) {
+    isListInsideViewBox: function(el){
       var me = this,
         p = el.$dom.offset(),
         listHeight = me.calcListHeight() + el.$dom.height(),
@@ -13156,7 +13209,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       return true;
     },
-    calcListHeight: function () {
+    calcListHeight: function(){
       var me = this,
         listHeight = me.data.length * me.listRowHeight;
 
@@ -13173,7 +13226,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
  * @class Fancy.ButtonField
  * @extends Fancy.Widget
  */
-(function() {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   /*
@@ -13196,14 +13249,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('click');
@@ -13216,11 +13269,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.ons();
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
-      if (me.style) {
+      if (me.style){
         me.css(me.style);
       }
     },
@@ -13249,12 +13302,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         pressed: me.pressed,
         enableToggle: me.enableToggle,
         imageCls: me.imageCls,
-        handler: function () {
+        handler: function(){
           if(me.disabled){
             return;
           }
 
-          if (me.scope) {
+          if (me.scope){
             me.handler.apply(me.scope, [me]);
           }
           else {
@@ -13266,25 +13319,25 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el;
 
-      me.button.on('pressedchange', function (button, value) {
+      me.button.on('pressedchange', function(button, value){
         me.fire('pressedchange', value);
       });
 
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    onClick: function () {
+    onClick: function(){
       var me = this;
 
       if(me.disabled){
@@ -13293,11 +13346,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.fire('click');
 
-      if (me.handler) {
+      if (me.handler){
         me.handler();
       }
     },
-    setPressed: function (value) {
+    setPressed: function(value){
       this.button.setPressed(value);
     }
   });
@@ -13388,7 +13441,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     el.on('mouseenter', me.onMouseOver, me);
     el.on('mouseleave', me.onMouseOut, me);
 
-    if (me.tip) {
+    if (me.tip){
       el.on('mousemove', me.onMouseMove, me);
     }
   },
@@ -13415,7 +13468,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
     var me = this,
       pressed = [];
 
-    Fancy.each(me.items, function (item, i) {
+    Fancy.each(me.items, function(item, i){
       if(item.pressed){
         if(item.value){
           pressed.push(item.value);
@@ -13433,7 +13486,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    */
   clear: function(fire){
     if(this.allowToggle){
-      Fancy.each(this.items, function (item){
+      Fancy.each(this.items, function(item){
         item.setPressed(false, fire);
       });
     }
@@ -13499,7 +13552,7 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
  * @class Fancy.Radio
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -13527,13 +13580,13 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
@@ -13541,20 +13594,20 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
 
       var itemsHTML = '';
 
-      if (me.column) {
+      if (me.column){
         me.cls += ' ' + FIELD_RADIO_COLUMN_CLS;
         itemsHTML += '<div style="margin-left: ' + ( me.labelWidth ) + 'px;">';
       }
 
-      F.each(me.items, function (item, i) {
+      F.each(me.items, function(item, i){
         var marginLeft = '',
           itemCls = FIELD_TEXT_CLS;
 
-        if (!me.column && i !== 0) {
+        if (!me.column && i !== 0){
           marginLeft = 'margin-left:10px;';
         }
 
-        if (item.value === me.value) {
+        if (item.value === me.value){
           itemCls += ' ' + FIELD_RADIO_ON_CLS;
         }
 
@@ -13563,10 +13616,10 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
           '<div class="' + FIELD_RADIO_INPUT_CLS + '" style="float:left;' + marginLeft + '"></div>',
           '<div style="float:left;margin:7px 0 0 0;">' + item.text + '</div>',
           '</div>'
-        ].join("");
+        ].join('');
       });
 
-      if (me.column) {
+      if (me.column){
         itemsHTML += '</div>';
       }
 
@@ -13596,11 +13649,11 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = this.el;
 
-      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function () {
+      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function(){
         if(me.disabled){
           return;
         }
@@ -13612,14 +13665,14 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    onClick: function () {
+    onClick: function(){
       var me = this,
         checkedCls = me.checkedCls;
 
@@ -13637,7 +13690,7 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
     /*
      * @param {Object} e
      */
-    onMouseDown: function (e) {
+    onMouseDown: function(e){
       if(this.disabled){
         e.stopPropagation();
       }
@@ -13647,7 +13700,7 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function (value, fire) {
+    set: function(value, fire){
       var me = this,
         el = me.el,
         checkedCls = me.checkedCls,
@@ -13658,7 +13711,7 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
       el.select('[value=' + value + ']').addCls(checkedCls);
 
       me.value = value;
-      if (fire !== false) {
+      if (fire !== false){
         me.fire('change', me.value);
       }
     },
@@ -13666,49 +13719,49 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @return {*} value
      */
-    getValue: function () {
+    getValue: function(){
       return this.value;
     },
     /*
      * @return {*} value
      */
-    get: function () {
+    get: function(){
       return this.getValue();
     },
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       this.set(false);
     },
     /*
      *
      */
-    calcColumns: function () {
+    calcColumns: function(){
       var me = this,
         maxChars = 0,
         inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label) {
+      if (me.labelAlign !== 'top' && me.label){
         inputWidth -= me.labelWidth;
         inputWidth -= 20;
       }
 
-      F.Array.each(me.items, function (item) {
-        if (item.text.length > maxChars) {
+      F.Array.each(me.items, function(item){
+        if (item.text.length > maxChars){
           maxChars = item.text.length;
         }
       });
 
       var columns = Math.floor(inputWidth / (maxChars * 7 + 30));
 
-      if (me.columns && me.columns <= columns) {
+      if (me.columns && me.columns <= columns){
         columns = me.columns;
       }
       else {
@@ -13721,18 +13774,18 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
     /*
      *
      */
-    setColumnsStyle: function () {
+    setColumnsStyle: function(){
       var me = this;
 
-      if (!me.columns || me.rows === 1) {
+      if (!me.columns || me.rows === 1){
         return;
       }
 
       var radioEls = me.el.select('.' + FIELD_TEXT_CLS),
         radioInputs = me.el.select('.' + FIELD_TEXT_CLS + ' .' + FIELD_RADIO_INPUT_CLS);
 
-      radioEls.each(function (item, i) {
-        if (i % me.columns === 0) {
+      radioEls.each(function(item, i){
+        if (i % me.columns === 0){
           radioInputs.item(i).css('margin-left', '0px');
         }
 
@@ -13742,7 +13795,7 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
   });
 
 })();
-(function () {
+(function(){
 
   Fancy.vtypes = {};
 
@@ -13763,10 +13816,10 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
   Fancy.isValid = function(type, value){
     var vtype;
 
-    if (Fancy.isString(type)) {
+    if (Fancy.isString(type)){
       vtype = Fancy.vtypes[type];
     }
-    else if(Fancy.isObject(type)) {
+    else if(Fancy.isObject(type)){
       if(type.type){
         vtype = Fancy.vtypes[type.type];
         Fancy.applyIf(type, vtype);
@@ -13776,14 +13829,14 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
       }
     }
 
-    if (vtype.before) {
+    if (vtype.before){
       var before = vtype.before,
         list = [type];
 
-      if (Fancy.isString(before)) {
+      if (Fancy.isString(before)){
         list.push(before);
       }
-      else if (Fancy.isArray(before)) {
+      else if (Fancy.isArray(before)){
         list = list.concat(before);
       }
 
@@ -13792,33 +13845,33 @@ Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
       var i = 0,
         iL = list.length;
 
-      for (; i < iL; i++) {
-        if (Fancy.isObject(list[i])) {
+      for (; i < iL; i++){
+        if (Fancy.isObject(list[i])){
           vtype = list[i];
         }
         else {
           vtype = Fancy.vtypes[list[i]];
         }
 
-        if (vtype.re) {
+        if (vtype.re){
           if(vtype.re.test(value) === false){
             return vtype;
           }
         }
-        else if (vtype.fn) {
-          if (vtype.fn.apply(vtype, [value]) === false) {
+        else if (vtype.fn){
+          if (vtype.fn.apply(vtype, [value]) === false){
             return vtype;
           }
         }
       }
     }
     else{
-      if (vtype.re) {
+      if (vtype.re){
         if(vtype.re.test(value) === false){
           return vtype;
         }
       }
-      else if (vtype.fn.apply(vtype, [value]) === false) {
+      else if (vtype.fn.apply(vtype, [value]) === false){
         return vtype;
       }
     }
@@ -13890,7 +13943,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.remove(o, at)
+        me.remove(o, at);
       }, 100);
       return;
     }
@@ -13942,7 +13995,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  removeAll: function () {
+  removeAll: function(){
     var me = this;
 
     me.store.removeAll();
@@ -13965,7 +14018,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.add(o)
+        me.add(o);
       }, 100);
       return;
     }
@@ -13996,7 +14049,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.insert(index, o, fire)
+        me.insert(index, o, fire);
       }, 100);
       return;
     }
@@ -14056,7 +14109,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     if(!me.store){
       setTimeout(function(){
-        me.set(rowIndex, key, value)
+        me.set(rowIndex, key, value);
       }, 100);
       return;
     }
@@ -14092,10 +14145,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(!me.store){
       setTimeout(function(){
         if(rowIndex === -1){
-          me.setById(rowIndex, key, value)
+          me.setById(rowIndex, key, value);
         }
         else{
-          me.set(rowIndex, key, value)
+          me.set(rowIndex, key, value);
         }
       }, 100);
       return rowIndex;
@@ -14136,7 +14189,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * TODO: undo by id and key
    */
-  undo: function () {
+  undo: function(){
     var me = this,
       s = me.store,
       action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
@@ -14167,7 +14220,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  redo: function () {
+  redo: function(){
     var me = this,
       s = me.store,
       action = s.redoActions.splice(s.redoActions.length - 1, 1)[0];
@@ -14190,7 +14243,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  undoAll: function () {
+  undoAll: function(){
     var me = this,
       s = me.store,
       i = 0,
@@ -14203,7 +14256,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @params {Object} cell
    */
-  editCell: function (cell) {
+  editCell: function(cell){
     var me = this,
       side = me.getSideByCell(cell),
       rowIndex = Number(cell.attr('index')),
@@ -14225,7 +14278,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     info.item = item;
     info.data = item.data;
 
-    if (info.column.smartIndexFn) {
+    if (info.column.smartIndexFn){
       info.value = info.column.smartIndexFn(info.data);
     }
     else{
@@ -14238,7 +14291,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @params {Object} o
    * @return {Object}
    */
-  getCell: function (o) {
+  getCell: function(o){
     var me = this,
       side,
       body,
@@ -14445,7 +14498,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     Fancy.loadStyle();
 
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
-      if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker') {
+      if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker'){
         me.loadModules();
         return;
       }
@@ -14586,14 +14639,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.infinite = true;
     }
 
-    var containsMenu = function (item) {
+    var containsMenu = function(item){
       if(item.menu){
         requiredModules['menu'] = true;
         return true;
       }
     };
 
-    Fancy.each(me.events, function (e) {
+    Fancy.each(me.events, function(e){
       for(var p in e){
         if(p === 'contextmenu'){
           requiredModules.menu = true;
@@ -14601,7 +14654,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     });
 
-    Fancy.each(me.controls, function (c) {
+    Fancy.each(me.controls, function(c){
       if(c.event === 'contextmenu'){
         requiredModules.menu = true;
       }
@@ -14685,7 +14738,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     };
 
     for(var p in requiredModules){
-      if(Fancy.modules[p] === undefined) {
+      if(Fancy.modules[p] === undefined){
         me.neededModules[p] = true;
         me.neededModules.length++;
       }
@@ -14708,7 +14761,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     };
 
     if(me.neededModules.dom){
-      Fancy.loadModule('dom', function (name) {
+      Fancy.loadModule('dom', function(name){
         delete me.neededModules[name];
         me.neededModules.length--;
 
@@ -14717,8 +14770,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           me.init();
         }
         else{
-          for (var p in me.neededModules) {
-            if (p === 'length') {
+          for (var p in me.neededModules){
+            if (p === 'length'){
               continue;
             }
 
@@ -14728,8 +14781,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       });
     }
     else {
-      for (var p in me.neededModules) {
-        if (p === 'length') {
+      for (var p in me.neededModules){
+        if (p === 'length'){
           continue;
         }
 
@@ -14749,7 +14802,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     if(Fancy.isString(indexOrder)){
-      Fancy.each(me.columns, function (column, i) {
+      Fancy.each(me.columns, function(column, i){
         if(column.index === indexOrder){
           indexOrder = i;
           return true;
@@ -14762,6 +14815,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
     if(me.header){
       me.leftHeader.reSetCheckBoxes();
+
+      if(me.groupheader){
+        me.header.fixGroupHeaderSizing();
+        me.leftHeader.fixGroupHeaderSizing();
+      }
     }
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
@@ -14784,7 +14842,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     if(Fancy.isString(indexOrder)){
-      Fancy.each(me.columns, function (column, i) {
+      Fancy.each(me.columns, function(column, i){
         if(column.index === indexOrder){
           indexOrder = i;
           return true;
@@ -14795,6 +14853,15 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
+
+    if(me.header){
+      me.rightHeader.reSetCheckBoxes();
+
+      if(me.groupheader){
+        me.header.fixGroupHeaderSizing();
+        me.rightHeader.fixGroupHeaderSizing();
+      }
+    }
     me.body.reSetIndexes();
     me.rightBody.reSetIndexes();
 
@@ -14813,9 +14880,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       removedColumn;
 
     if(side === undefined){
-      if(Fancy.isString(indexOrder)) {
-        Fancy.each(me.leftColumns, function (column, i) {
-          if (column.index === indexOrder) {
+      if(Fancy.isString(indexOrder)){
+        Fancy.each(me.leftColumns, function(column, i){
+          if (column.index === indexOrder){
             side = 'left';
             indexOrder = i;
             return true;
@@ -14823,8 +14890,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         });
 
         if(side === undefined){
-          Fancy.each(me.rightColumns, function (column, i) {
-            if (column.index === indexOrder) {
+          Fancy.each(me.rightColumns, function(column, i){
+            if (column.index === indexOrder){
               side = 'right';
               indexOrder = i;
               return true;
@@ -14840,7 +14907,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     switch(side){
       case 'left':
         if(Fancy.isString(indexOrder)){
-          Fancy.each(me.leftColumns, function (column, i) {
+          Fancy.each(me.leftColumns, function(column, i){
             if(column.index === indexOrder){
               indexOrder = i;
               return true;
@@ -14858,7 +14925,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         break;
       case 'right':
         if(Fancy.isString(indexOrder)){
-          Fancy.each(me.rightColumns, function (column, i) {
+          Fancy.each(me.rightColumns, function(column, i){
             if(column.index === indexOrder){
               indexOrder = i;
               return true;
@@ -14882,6 +14949,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.grouping.insertGroupEls();
     }
 
+    if(me.header){
+      if(me.groupheader){
+        me.header.fixGroupHeaderSizing();
+
+        if(me.rightHeader){
+          me.rightHeader.fixGroupHeaderSizing();
+        }
+
+        if(me.leftHeader){
+          me.leftHeader.fixGroupHeaderSizing();
+        }
+      }
+    }
+
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
     me.rightBody.reSetIndexes();
@@ -14897,7 +14978,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number} toIndex
    * @param {Object} [grouping]
    */
-  moveColumn: function (fromSide, toSide, fromIndex, toIndex, grouping) {
+  moveColumn: function(fromSide, toSide, fromIndex, toIndex, grouping){
     var me = this,
       removedColumn;
 
@@ -14984,7 +15065,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.update();
   },
-  updateColumnsVisibilty: function () {
+  updateColumnsVisibilty: function(){
     var me = this;
 
     if(me.columns){
@@ -15008,12 +15089,12 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.rightBody.updateColumnsVisibility();
     }
   },
-  initColumnsIdSeedByIndex: function () {
+  initColumnsIdSeedByIndex: function(){
     var me = this;
 
     me.columnsIdsSeed = {};
   },
-  getColumnId: function (index) {
+  getColumnId: function(index){
     var me = this;
 
     if(me.columnsIdsSeed[index] === undefined){
@@ -15059,7 +15140,7 @@ FancyGrid.addValid = Fancy.addValid;
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyGrid = function(o){
     if(this.selector){
-      o.renderTo = $(this.selector)[0].id;
+      o.renderTo = Fancy.$(this.selector)[0].id;
     }
     else{
       o.renderTo = this.attr('id');
@@ -15072,7 +15153,7 @@ if(!Fancy.nojQuery && Fancy.$){
  * @class Fancy.grid.plugin.RowHeight
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -15085,7 +15166,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
 
       this.rows = {};
@@ -15093,14 +15174,14 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -15110,30 +15191,30 @@ if(!Fancy.nojQuery && Fancy.$){
       w.on('changepage', me.onChangePage, me);
       w.on('sort', me.onSort, me);
     },
-    onInit: function () {
+    onInit: function(){
       var me = this,
         w = me.widget;
 
-      setTimeout(function () {
+      setTimeout(function(){
         w.scroller.update(me.totalHeight);
       }, 50);
     },
     /*
      *
      */
-    onUpdate: function () {
+    onUpdate: function(){
       var me = this,
         w = me.widget,
         viewData = w.getDataView(),
         totalHeight = 0;
 
-      F.each(viewData, function (item) {
+      F.each(viewData, function(item){
         var id = item.id,
           height = me.rows[id],
           rowIndex = w.getRowById(id),
           cells = w.getDomRow(rowIndex);
 
-        F.each(cells, function (cellDom) {
+        F.each(cells, function(cellDom){
           var cell = F.get(cellDom);
 
           cell.css('height', height);
@@ -15148,7 +15229,7 @@ if(!Fancy.nojQuery && Fancy.$){
         me.totalHeight += w.grouping.getGroupRowsHeight();
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         w.setSidesHeight(me.totalHeight);
         w.scroller.update(me.totalHeight);
       }, 50);
@@ -15156,7 +15237,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    add: function (id, height) {
+    add: function(id, height){
       if(this.rows[id] && this.rows[id] > height){
         return;
       }
@@ -15166,11 +15247,11 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    getRowsHeight: function (items) {
+    getRowsHeight: function(items){
       var me = this,
         height = 0;
 
-      F.each(items, function (item) {
+      F.each(items, function(item){
         var id = item.get('id');
 
         height += me.rows[id];
@@ -15181,14 +15262,14 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    onColumnResize: function (grid, o) {
+    onColumnResize: function(grid, o){
       var me = this;
 
       me.rows = {};
 
       if(o.column.type === 'text' && o.column.autoHeight){
 
-        setTimeout(function () {
+        setTimeout(function(){
           me.widget.update();
           me.onUpdate();
         }, 400);
@@ -15197,7 +15278,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    onChangePage:  function (grid, o) {
+    onChangePage:  function(){
       var me = this;
 
       me.rows = {};
@@ -15205,7 +15286,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    onSort:  function (grid, o) {
+    onSort:  function(){
       var me = this;
 
       me.rows = {};
@@ -15217,7 +15298,7 @@ if(!Fancy.nojQuery && Fancy.$){
  * @class Fancy.grid.plugin.CellTip
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   var HIDE_TIMEOUT = 500;
@@ -15234,20 +15315,20 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget,
         docEl = F.get(document);
@@ -15261,19 +15342,19 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function (grid, o) {
+    onCellEnter: function(grid, o){
       var me = this,
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
 
-      if (column.cellTip) {
-        if (F.isString(column.cellTip)) {
+      if (column.cellTip){
+        if (F.isString(column.cellTip)){
           cellTip = column.cellTip;
         }
-        else if (F.isFunction(column.cellTip)) {
+        else if (F.isFunction(column.cellTip)){
           cellTip = column.cellTip(o);
-          if (cellTip === false) {
+          if (cellTip === false){
             return;
           }
         }
@@ -15297,7 +15378,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function () {
+    onCellLeave: function(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -15305,15 +15386,15 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function () {
+    onTouchEnd: function(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function (e) {
-      if (this.stopped === true) {
+    onDocMove: function(e){
+      if (this.stopped === true){
         return;
       }
 
@@ -15351,7 +15432,7 @@ if(!Fancy.nojQuery && Fancy.$){
  * @class Fancy.grid.plugin.HeaderCellTip
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
   var HIDE_TIMEOUT = 500;
@@ -15368,20 +15449,20 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget,
         docEl = F.get(document);
@@ -15395,25 +15476,25 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function (grid, o) {
+    onCellEnter: function(grid, o){
       var me = this,
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
 
-      if (column.headerCellTip) {
+      if (column.headerCellTip){
         var data = {
           title: column.title,
           columnIndex: o.columnIndex,
           side: o.side
         };
-        if (F.isString(column.headerCellTip)) {
+        if (F.isString(column.headerCellTip)){
           cellTip = column.headerCellTip;
         }
-        else if (F.isFunction(column.headerCellTip)) {
+        else if (F.isFunction(column.headerCellTip)){
           o.data = data;
           cellTip = column.headerCellTip(o);
-          if (cellTip === false) {
+          if (cellTip === false){
             return;
           }
         }
@@ -15431,7 +15512,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function () {
+    onCellLeave: function(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -15439,15 +15520,15 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function () {
+    onTouchEnd: function(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function (e) {
-      if (this.stopped === true) {
+    onDocMove: function(e){
+      if (this.stopped === true){
         return;
       }
 
@@ -15485,7 +15566,7 @@ if(!Fancy.nojQuery && Fancy.$){
  * @class Fancy.ToolTip
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -15499,13 +15580,13 @@ if(!Fancy.nojQuery && Fancy.$){
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.initTpl();
       this.render();
       this.ons();
@@ -15519,7 +15600,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div'));
@@ -15541,15 +15622,15 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Number} x
      * @param {Number} y
      */
-    show: function (x, y) {
+    show: function(x, y){
       var me = this;
 
-      if (me.timeout) {
+      if (me.timeout){
         clearInterval(me.timeout);
         delete me.timeout;
       }
 
-      if (me.css('display') === 'none') {
+      if (me.css('display') === 'none'){
         me.css({
           display: 'block'
         });
@@ -15563,16 +15644,16 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Number} [delay]
      */
-    hide: function (delay) {
+    hide: function(delay){
       var me = this;
 
-      if (me.timeout) {
+      if (me.timeout){
         clearInterval(me.timeout);
         delete me.timeout;
       }
 
-      if (delay) {
-        me.timeout = setTimeout(function () {
+      if (delay){
+        me.timeout = setTimeout(function(){
           me.el.hide();
         }, delay);
       }
@@ -15583,21 +15664,21 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    destroy: function () {
+    destroy: function(){
       this.el.destroy();
     },
     /*
      * @param {String} html
      */
-    update: function (html) {
+    update: function(html){
       this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
     },
-    ons: function () {
+    ons: function(){
       var me = this;
 
       me.el.on('mouseenter', me.onMouseEnter, me);
     },
-    onMouseEnter: function (e) {
+    onMouseEnter: function(){
       var me = this;
 
       //me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
@@ -15606,18 +15687,18 @@ if(!Fancy.nojQuery && Fancy.$){
   });
 
   F.tip = {
-    update: function (text) {
+    update: function(text){
       F.tip = new F.ToolTip({
         text: text
       });
     },
-    show: function (x, y) {
+    show: function(x, y){
       F.tip = new F.ToolTip({
         text: ' '
       });
       F.tip.show(x, y);
     },
-    hide: function () {
+    hide: function(){
       F.tip = new F.ToolTip({
         text: ' '
       });
@@ -15639,7 +15720,7 @@ Fancy.enableCompo = function(){
    * @param {String} selector
    * @param {Object} o
    */
-  Fancy.Component = function (selector, o) {
+  Fancy.Component = function(selector, o){
     componentsLength++;
     components[selector] = o;
   };
@@ -15651,10 +15732,10 @@ Fancy.enableCompo = function(){
     clearInterval(interval);
   };
 
-  function findComponent() {
+  function findComponent(){
     if (componentsLength === 0) return;
 
-    for (var p in components) {
+    for (var p in components){
       var comp = components[p],
         founded = doc.querySelectorAll(p),
         attrPreSelector = comp.appPreSelector ? comp.appPreSelector + '-' : 'data-',
@@ -15664,11 +15745,11 @@ Fancy.enableCompo = function(){
         j,
         jL;
 
-      if (founded.length === 0) {
+      if (founded.length === 0){
         return;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var itemConfig = {},
           item = founded[i],
           id = item.id || 'rand-id-' + (+new Date()),
@@ -15678,12 +15759,12 @@ Fancy.enableCompo = function(){
         jL = attrs.length;
 
         //Get values in attributes values
-        for (; j < jL; j++) {
+        for (; j < jL; j++){
           var attr = attrs[j],
             attrName = attr.name,
             attrValue = attr.value;
 
-          if (new RegExp(attrPreSelector).test(attrName)) {
+          if (new RegExp(attrPreSelector).test(attrName)){
             attrValue = prePareValue(attrValue);
 
             itemConfig[attrName.replace(attrPreSelector, '')] = attrValue;
@@ -15691,19 +15772,19 @@ Fancy.enableCompo = function(){
         }
 
         //Get values in innerHTML tags
-        (function getValuesInTags() {
+        (function getValuesInTags(){
           var childs = item.getElementsByTagName('*');
 
           j = 0;
           jL = childs.length;
 
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var child = childs[j],
               tagName = child.tagName.toLowerCase(),
               name,
               value;
 
-            if (new RegExp(preSelector).test(tagName)) {
+            if (new RegExp(preSelector).test(tagName)){
               name = tagName.replace(preSelector, '');
               value = prePareValue(child.innerHTML);
 
@@ -15723,12 +15804,12 @@ Fancy.enableCompo = function(){
    * @param {String} v
    * @return {String}
    */
-  function prePareValue(v) {
-    if (/\[/.test(v) || /\{/.test(v)) {
+  function prePareValue(v){
+    if (/\[/.test(v) || /\{/.test(v)){
       v = v.replace(/\n/g, '');
-      v = (new Function("return " + v + ";")());
+      v = (new Function('return ' + v + ';')());
     }
-    else if (!isNaN(Number(v))) {
+    else if (!isNaN(Number(v))){
       v = Number(v);
     }
     else {
@@ -15740,7 +15821,7 @@ Fancy.enableCompo = function(){
 
   findComponent();
 
-  doc.addEventListener("DOMContentLoaded", function() {
+  doc.addEventListener('DOMContentLoaded', function(){
     findComponent();
   });
 
@@ -15755,7 +15836,7 @@ Fancy.enableCompo = function(){
   Fancy.Component('fancy-grid', {
     preSelector: 'fancy',
     attrPreSelector: 'data',
-    init: function (el, config) {
+    init: function(el, config){
       config.renderTo = el;
 
       window[el.id] = new FancyGrid(config);
@@ -15765,7 +15846,7 @@ Fancy.enableCompo = function(){
   Fancy.Component('fancy-form', {
     preSelector: 'fancy',
     attrPreSelector: 'data',
-    init: function (el, config) {
+    init: function(el, config){
       config.renderTo = el;
 
       window[el.id] = new FancyForm(config);
@@ -15775,7 +15856,7 @@ Fancy.enableCompo = function(){
   Fancy.Component('fancy-tab', {
     preSelector: 'fancy',
     attrPreSelector: 'data',
-    init: function (el, config) {
+    init: function(el, config){
       config.renderTo = el;
 
       window[el.id] = new FancyTab(config);

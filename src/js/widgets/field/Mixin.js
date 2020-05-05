@@ -1,7 +1,7 @@
 /*
  * @mixin Fancy.form.field.Mixin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -16,7 +16,7 @@
 
   F.ns('Fancy.form.field');
 
-  F.form.field.Mixin = function () {};
+  F.form.field.Mixin = function(){};
 
   F.form.field.Mixin.prototype = {
     padding: '8px 8px 0px 8px',
@@ -29,7 +29,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         input = me.el.getByTag('input');
@@ -43,12 +43,12 @@
       el.on('mouseleave', me.onMouseOut, me);
       me.on('key', me.onKey, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
 
-      if (me.format && me.format.inputFn) {
-        switch (me.value) {
+      if (me.format && me.format.inputFn){
+        switch (me.value){
           case '':
           case undefined:
             break;
@@ -58,13 +58,13 @@
         me.on('key', me.onKeyInputFn);
       }
 
-      if (me.stopPropagation) {
-        el.on('mousedown', function (e) {
+      if (me.stopPropagation){
+        el.on('mousedown', function(e){
           e.stopPropagation();
         });
       }
 
-      el.on('mousedown', function (e) {
+      el.on('mousedown', function(e){
         if(me.disabled){
           e.preventDefault();
           e.stopPropagation();
@@ -76,7 +76,7 @@
      * @param {*} value
      * @param {Object} e
      */
-    onKeyInputFn: function (field, value, e) {
+    onKeyInputFn: function(field, value, e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
@@ -85,7 +85,7 @@
         return;
       }
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.ENTER:
         case key.ESC:
         case key.LEFT:
@@ -99,7 +99,7 @@
     /*
      * @param {*} value
      */
-    formatValue: function (value) {
+    formatValue: function(value){
       var me = this;
       value = this.format.inputFn(value);
       var position = this.input.dom.selectionStart;
@@ -115,17 +115,17 @@
     /*
      *
      */
-    setCaretPosition: function(position) {
+    setCaretPosition: function(position){
       var input = this.input.dom;
 
-      if(input.createTextRange) {
+      if(input.createTextRange){
         var range = input.createTextRange();
 
         range.move('character', position);
         range.select();
       }
       else {
-        if(input.selectionStart) {
+        if(input.selectionStart){
           input.focus();
           input.setSelectionRange(position, position);
         }
@@ -137,7 +137,7 @@
     /*
      * @param {Object} e
      */
-    onMouseOver: function (e) {
+    onMouseOver: function(e){
       var me = this;
 
       if(me.disabled){
@@ -146,14 +146,14 @@
 
       me.fire('mouseover');
 
-      if (me.tip) {
+      if (me.tip){
         me.renderTip(e);
       }
     },
     /*
      * @param {Object} e
      */
-    onMouseOut: function (e) {
+    onMouseOut: function(){
       var me = this;
 
       if(me.disabled){
@@ -162,7 +162,7 @@
 
       me.fire('mouseout');
 
-      if (me.tip && me.tooltip) {
+      if (me.tip && me.tooltip){
         me.tooltipToDestroy = true;
         me.tooltip.destroy();
         delete me.tooltip;
@@ -171,16 +171,16 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = me.renderTo || document.body,
         renderAfter = me.renderAfter,
         renderBefore = me.renderBefore,
         el = F.get(document.createElement('div'));
 
-      if (F.isString(renderTo)) {
+      if (F.isString(renderTo)){
         renderTo = document.getElementById(renderTo);
-        if (!renderTo) {
+        if (!renderTo){
           renderTo = F.select(renderTo).item(0);
         }
       }
@@ -198,31 +198,31 @@
       var labelWidth = '',
         itemsHTML = '';
 
-      if (me.itemsHTML) {
+      if (me.itemsHTML){
         itemsHTML = me.itemsHTML;
       }
 
-      if (me.labelAlign === 'top' && me.label) {
+      if (me.labelAlign === 'top' && me.label){
         //auto fixing of wrong labelWidth.
         //will not fix right if user change color of label font-size to bigger
-        if (me.labelWidth < me.label.length * 7) {
+        if (me.labelWidth < me.label.length * 7){
           me.labelWidth = (me.label.length + 2) * 7;
         }
       }
 
-      if (me.labelWidth) {
+      if (me.labelWidth){
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
       var label = me.label;
 
-      if (me.label === '') {
+      if (me.label === ''){
         label = '&nbsp;';
       }
-      else if (me.label === undefined) {
+      else if (me.label === undefined){
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right') {
+      else if (me.labelAlign !== 'right'){
         label += ':';
       }
 
@@ -230,18 +230,18 @@
         inputLabelDisplay = '',
         inputLabel = '';
 
-      if (me.label === false) {
+      if (me.label === false){
         labelDisplay = 'display:none;';
       }
 
-      if (!me.inputLabel) {
+      if (!me.inputLabel){
         inputLabelDisplay = 'display:none;';
       }
       else {
         inputLabel = me.inputLabel;
       }
 
-      if (me.type === 'recaptcha') {
+      if (me.type === 'recaptcha'){
         el.update(me.tpl.getHTML({
             key: me.key
           })
@@ -274,15 +274,15 @@
       me.el = el;
       me.setStyle();
 
-      if (me.renderId === true) {
+      if (me.renderId === true){
         el.attr('id', me.id);
       }
 
-      if (renderAfter) {
+      if (renderAfter){
         renderAfter = F.get(renderAfter);
         el = renderAfter.after(el.dom.outerHTML).next();
       }
-      else if (renderBefore) {
+      else if (renderBefore){
         el = renderBefore.before(el.dom.outerHTML).prev();
       }
       else {
@@ -290,26 +290,26 @@
       }
       me.el = el;
 
-      if (me.type === 'textarea') {
+      if (me.type === 'textarea'){
         me.input = me.el.getByTag('textarea');
       }
       else {
         me.input = me.el.getByTag('input');
       }
 
-      if (me.name) {
+      if (me.name){
         me.input.name = me.name;
       }
 
       me.setSize();
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
         me.el.select('.' + FIELD_TEXT_CLS).css('float', 'none');
       }
-      else if (me.labelAlign === 'right') {
+      else if (me.labelAlign === 'right'){
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
-        switch (me.type) {
+        switch (me.type){
           case 'radio':
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS + ':last'));
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).css('float', 'right');
@@ -324,17 +324,17 @@
             F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
         }
       }
-      else if (me.type !== 'radio') {}
+      else if (me.type !== 'radio'){}
 
       me.acceptedValue = me.value;
       me.fire('afterrender');
       me.fire('render');
 
-      if (me.type !== 'recaptcha' && me.type !== 'chat') {
-        setTimeout(function () {
-          if (me.input && me.input.dom) {
-            if (me.input.dom.value.length === 0) {
-              if (me.prevColor === undefined) {
+      if (me.type !== 'recaptcha' && me.type !== 'chat'){
+        setTimeout(function(){
+          if (me.input && me.input.dom){
+            if (me.input.dom.value.length === 0){
+              if (me.prevColor === undefined){
                 me.prevColor = me.input.css('color');
               }
 
@@ -365,7 +365,7 @@
     /*
      * @param {Object} e
      */
-    onKeyDown: function (e) {
+    onKeyDown: function(e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
@@ -378,8 +378,8 @@
 
       //This disable filter expressions in number field
       /*
-      if (me.type === 'field.number') {
-        if (F.Key.isNumControl(keyCode, e) === false) {
+      if (me.type === 'field.number'){
+        if (F.Key.isNumControl(keyCode, e) === false){
           e.preventDefault();
           e.stopPropagation();
           return;
@@ -387,14 +387,14 @@
       }
       */
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.BACKSPACE:
         case key.DELETE:
-          switch(me.type) {
+          switch(me.type){
             case 'field.number':
             case 'field.string':
             case 'field.date':
-              setTimeout(function () {
+              setTimeout(function(){
                 if(me.getValue() === ''){
                   me.fire('empty');
                 }
@@ -407,13 +407,13 @@
           break;
         case key.ENTER:
           me.fire('enter', me.getValue());
-          if (me.type !== 'textarea') {
+          if (me.type !== 'textarea'){
             e.preventDefault();
             e.stopPropagation();
           }
           break;
         case key.UP:
-          switch (me.type) {
+          switch (me.type){
             case 'number':
             case 'field.number':
               if(this.spin){
@@ -424,16 +424,16 @@
 
           me.fire('up', me.getValue());
 
-          if (me.type !== 'textarea') {
+          if (me.type !== 'textarea'){
             e.preventDefault();
             e.stopPropagation();
           }
           break;
         case key.DOWN:
-          switch (me.type) {
+          switch (me.type){
             case 'number':
             case 'field.number':
-              if(this.spin) {
+              if(this.spin){
                 me.spinDown();
               }
               break;
@@ -441,7 +441,7 @@
 
           me.fire('down', me.getValue());
 
-          if (me.type !== 'textarea') {
+          if (me.type !== 'textarea'){
             e.preventDefault();
             e.stopPropagation();
           }
@@ -453,17 +453,17 @@
           e.stopPropagation();
           break;
         default:
-          setTimeout(function () {
-            if (me.input) {
-              if (me.input.dom.value.length === 0) {
-                if (me.prevColor === undefined) {
+          setTimeout(function(){
+            if (me.input){
+              if (me.input.dom.value.length === 0){
+                if (me.prevColor === undefined){
                   me.prevColor = me.input.css('color');
                 }
 
                 me.input.css('color', 'grey');
               }
               else {
-                if (me.prevColor) {
+                if (me.prevColor){
                   me.input.css('color', me.prevColor);
                 }
                 else {
@@ -474,7 +474,7 @@
           }, 1);
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
@@ -482,12 +482,12 @@
      * @param {Object} me
      * @param {*} value
      */
-    onKey: function (me, value) {
+    onKey: function(me, value){
       if(me.disabled){
         return;
       }
 
-      if (!me.isValid() || me.checkValidOnTyping) {
+      if (!me.isValid() || me.checkValidOnTyping){
         me.validate(value);
       }
     },
@@ -495,7 +495,7 @@
      * It used also for validation.
      * @return {Boolean} - returns true/false if validation passed successful.
      */
-    onBlur: function () {
+    onBlur: function(){
       var me = this;
 
       if(me.disabled){
@@ -504,9 +504,9 @@
 
       me.fire('blur');
 
-      if (me.input) {
+      if (me.input){
         if(me.type === 'combo'){
-          setTimeout(function () {
+          setTimeout(function(){
             if(me.listItemClicked){}
             else{
               me.validate(me.input.dom.value);
@@ -523,16 +523,16 @@
     /*
      * @param {*} value
      */
-    validate: function (value) {
+    validate: function(value){
       var me = this,
         vtype = me.vtype;
 
-      if (vtype === undefined) {
+      if (vtype === undefined){
         return true;
       }
       else {
         var valid = F.isValid(vtype, value);
-        if (valid !== true) {
+        if (valid !== true){
           me.errorText = new F.Template(valid.text).getHTML(valid);
           me.failedValid();
 
@@ -547,13 +547,13 @@
     /*
      *
      */
-    isValid: function () {
+    isValid: function(){
       return !this.hasCls(this.failedValidCls);
     },
     /*
      *
      */
-    onFocus: function (e) {
+    onFocus: function(){
       var me = this;
 
       if(me.disabled || me.editable === false){
@@ -566,13 +566,13 @@
     /*
      *
      */
-    blur: function () {
+    blur: function(){
       this.input.blur();
     },
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
@@ -588,16 +588,16 @@
     /*
      *
      */
-    get: function () {
+    get: function(){
       var me = this;
 
-      if (me.format) {
+      if (me.format){
         //Place of bugs
-        if (F.isString(me.format)) {}
-        else if (F.isObject(me.format)) {
-          if (me.format.inputFn) {
-            if (me.type === 'number' || me.type === 'field.number') {
-              if (isNaN(parseFloat(me.value))) {
+        if (F.isString(me.format)){}
+        else if (F.isObject(me.format)){
+          if (me.format.inputFn){
+            if (me.type === 'number' || me.type === 'field.number'){
+              if (isNaN(parseFloat(me.value))){
                 return me.value;
               }
 
@@ -611,8 +611,8 @@
       }
 
       /*
-      if (me.type === 'number' || me.type === 'field.number') {
-        if (isNaN(parseFloat(me.value))) {
+      if (me.type === 'number' || me.type === 'field.number'){
+        if (isNaN(parseFloat(me.value))){
           return me.value;
         }
 
@@ -625,32 +625,32 @@
     /*
      *
      */
-    getValue: function () {
+    getValue: function(){
       return this.get();
     },
     /*
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function (value, onInput) {
+    set: function(value, onInput){
       var me = this;
 
       me.value = value;
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         me.formatValue(value);
       }
       else {
         me.input.dom.value = value;
       }
 
-      if (onInput !== false) {
+      if (onInput !== false){
         me.onInput();
       }
 
       me.validate(value);
     },
-    setLabel: function (value) {
+    setLabel: function(value){
       var me = this;
 
       me.el.select('.' + FIELD_LABEL_CLS).update(value);
@@ -659,38 +659,38 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       this.set('');
       this.clearValid();
     },
     /*
      *
      */
-    failedValid: function () {
+    failedValid: function(){
       var me = this;
 
-      if (me.hasCls(me.failedValidCls)) {
-        if (me.tooltip && me.errorText) {
+      if (me.hasCls(me.failedValidCls)){
+        if (me.tooltip && me.errorText){
           me.tooltip.update(me.errorText);
         }
       }
       else {
-        if (!me.tooltip && me.errorText) {
+        if (!me.tooltip && me.errorText){
           me.showErrorTip();
 
           me.el.on('mousemove', me.onMouseMove, me);
-          me.input.hover(function (e) {
-            if (me.errorText) {
+          me.input.hover(function(e){
+            if (me.errorText){
               me.showErrorTip();
               me.tooltip.show(e.pageX + 15, e.pageY - 25);
             }
-          }, function () {
+          }, function(){
             me.hideErrorTip();
           });
         }
@@ -698,13 +698,13 @@
         me.addCls(me.failedValidCls);
       }
     },
-    clearValid: function () {
+    clearValid: function(){
       this.removeCls(this.failedValidCls);
     },
     /*
      *
      */
-    successValid: function () {
+    successValid: function(){
       var me = this;
 
       me.removeCls(me.failedValidCls);
@@ -714,10 +714,10 @@
     /*
      *
      */
-    showErrorTip: function () {
+    showErrorTip: function(){
       var me = this;
 
-      if (!me.tooltip) {
+      if (!me.tooltip){
         me.tooltip = new F.ToolTip({
           text: me.errorText
         });
@@ -726,10 +726,10 @@
     /*
      *
      */
-    hideErrorTip: function () {
+    hideErrorTip: function(){
       var me = this;
 
-      if (me.tooltip) {
+      if (me.tooltip){
         me.tooltip.destroy();
         delete me.tooltip;
       }
@@ -737,36 +737,36 @@
     /*
      * @param {Object} o
      */
-    setInputSize: function (o) {
+    setInputSize: function(o){
       var me = this;
 
       if(me.type === 'combo'){
         me.inputContainer.css('width', o.width);
       }
 
-      if (o.width) {
+      if (o.width){
         me.input.css('width', o.width);
       }
 
-      if (o.height && me.type !== 'set') {
+      if (o.height && me.type !== 'set'){
         me.input.css('height', o.height);
       }
     },
     /*
      *
      */
-    focus: function () {
+    focus: function(){
       var me = this;
 
       me.input.focus();
-      setTimeout(function () {
+      setTimeout(function(){
         me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
       }, 0);
     },
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.fire('beforehide');
@@ -776,7 +776,7 @@
     /*
      *
      */
-    show: function () {
+    show: function(){
       var me = this;
 
       me.css('display', 'block');
@@ -785,28 +785,28 @@
      * @param {Number|Object} width
      * @param {Number} height
      */
-    setSize: function (width, height) {
+    setSize: function(width, height){
       var me = this;
 
-      switch (me.type) {
+      switch (me.type){
         case 'set':
         case 'line':
       }
 
-      if (width === undefined && height === undefined) {
+      if (width === undefined && height === undefined){
         width = me.width;
         height = me.height;
       }
-      else if (height === undefined) {
+      else if (height === undefined){
         var o = width;
-        if (o.width) {
+        if (o.width){
           width = o.width;
         }
         else {
           width = me.width;
         }
 
-        if (o.height) {
+        if (o.height){
           height = o.height;
         }
         else {
@@ -814,7 +814,7 @@
         }
       }
 
-      if (me.size) {
+      if (me.size){
         me.size({
           width: width,
           height: height
@@ -823,11 +823,11 @@
         return;
       }
 
-      if (width !== undefined) {
+      if (width !== undefined){
         me.css('width', width);
       }
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.css('height', height * 1.5);
       }
       else {
@@ -835,7 +835,7 @@
           me.css('height', height);
         }
 
-        if (me.label) {
+        if (me.label){
           me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);
         }
       }
@@ -848,18 +848,18 @@
     /*
      *
      */
-    setStyle: function () {
+    setStyle: function(){
       var me = this,
         style = me.style || {},
         padding = me.padding;
 
-      if (padding) {
-        if (F.isNumber(padding)) {
+      if (padding){
+        if (F.isNumber(padding)){
           padding = padding + 'px';
         }
-        else if (F.isString(padding)) {}
+        else if (F.isString(padding)){}
 
-        if (style.padding === undefined) {
+        if (style.padding === undefined){
           style.padding = padding;
         }
       }
@@ -867,8 +867,8 @@
         style.padding = '0px';
       }
 
-      if (me.hidden) {
-        me.css('display', 'none')
+      if (me.hidden){
+        me.css('display', 'none');
       }
 
       me.css(style);
@@ -876,10 +876,10 @@
     /*
      *
      */
-    preRender: function () {
+    preRender: function(){
       var me = this;
 
-      if (me.tpl && F.isObject(me.tpl) === false) {
+      if (me.tpl && F.isObject(me.tpl) === false){
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -888,7 +888,7 @@
     /*
      *
      */
-    calcSize: function () {
+    calcSize: function(){
       var me = this,
         inputWidth,
         inputHeight = me.inputHeight,
@@ -898,10 +898,10 @@
         value2,
         value3;
 
-      if (F.isString(padding)) {
+      if (F.isString(padding)){
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
-        switch (padding.length) {
+        switch (padding.length){
           case 1:
             value = Number(padding[0]);
             padding = [value, value, value, value];
@@ -924,30 +924,30 @@
             break;
         }
       }
-      else if (F.isNumber(padding)) {
+      else if (F.isNumber(padding)){
         padding = [padding, padding, padding, padding];
       }
-      else if (padding === false) {
+      else if (padding === false){
         padding = [0, 0, 0, 0];
       }
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.height *= 1.5;
       }
 
       inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label) {
+      if (me.labelAlign !== 'top' && me.label){
         inputWidth -= me.labelWidth;
       }
 
-      if (me.height === me.inputHeight && me.padding !== false) {
+      if (me.height === me.inputHeight && me.padding !== false){
         inputHeight -= padding[0] + padding[2];
       }
 
-      if (me.type === 'radio' && !me.column) {
+      if (me.type === 'radio' && !me.column){
         me.calcColumns();
-        if (me.rows !== 1) {
+        if (me.rows !== 1){
           inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
         }
       }
@@ -959,7 +959,7 @@
     /*
      * @param {Number} value
      */
-    setWidth: function (value) {
+    setWidth: function(value){
       var me = this;
 
       me.width = value;
@@ -973,7 +973,7 @@
     /*
      * @param {Object} e
      */
-    onMouseMove: function (e) {
+    onMouseMove: function(e){
       var me = this,
         //Link on grid if presented
         w = me.widget;
@@ -996,24 +996,24 @@
         }
       }
 
-      if (me.tooltip) {
+      if (me.tooltip){
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
-      else if (me.tip) {
+      else if (me.tip){
         me.renderTip(e);
       }
     },
     /*
      * @param {Object} e
      */
-    renderTip: function (e) {
+    renderTip: function(e){
       var me = this,
         value = '',
         tip = me.tip || me.tooltip,
         tpl,
         text;
 
-      if (me.getValue) {
+      if (me.getValue){
         switch(me.type){
           case 'button':
           case 'field.button':
@@ -1036,7 +1036,7 @@
           break;
       }
 
-      if (me.tooltip) {
+      if (me.tooltip){
         me.tooltip.update(text);
       }
       else {
@@ -1050,7 +1050,7 @@
     /*
      * @return {Object}
      */
-    getInputSelection: function () {
+    getInputSelection: function(){
       var me = this,
         start = 0,
         end = 0,
@@ -1061,16 +1061,16 @@
         endRange,
         el = me.input.dom;
 
-      if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+      if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number'){
         start = el.selectionStart;
         end = el.selectionEnd;
       }
       else {
         range = document.selection.createRange();
 
-        if (range && range.parentElement() == el) {
+        if (range && range.parentElement() == el){
           len = el.value.length;
-          normalizedValue = el.value.replace(/\r\n/g, "\n");
+          normalizedValue = el.value.replace(/\r\n/g, '\n');
 
           // Create a working TextRange that lives only in the input
           textInputRange = el.createTextRange();
@@ -1082,17 +1082,17 @@
           endRange = el.createTextRange();
           endRange.collapse(false);
 
-          if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+          if (textInputRange.compareEndPoints('StartToEnd', endRange) > -1){
             start = end = len;
           } else {
-            start = -textInputRange.moveStart("character", -len);
-            start += normalizedValue.slice(0, start).split("\n").length - 1;
+            start = -textInputRange.moveStart('character', -len);
+            start += normalizedValue.slice(0, start).split('\n').length - 1;
 
-            if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+            if (textInputRange.compareEndPoints('EndToEnd', endRange) > -1){
               end = len;
             } else {
-              end = -textInputRange.moveEnd("character", -len);
-              end += normalizedValue.slice(0, end).split("\n").length - 1;
+              end = -textInputRange.moveEnd('character', -len);
+              end += normalizedValue.slice(0, end).split('\n').length - 1;
             }
           }
         }
@@ -1106,7 +1106,7 @@
     /*
      *
      */
-    enable: function () {
+    enable: function(){
       var me = this;
 
       me.disabled = false;
@@ -1123,7 +1123,7 @@
     /*
      *
      */
-    disable: function () {
+    disable: function(){
       var me = this;
 
       me.disabled = true;
@@ -1140,7 +1140,7 @@
     /*
      *
      */
-    getInputValue: function () {
+    getInputValue: function(){
       var me = this;
 
       return me.input.dom.value;
@@ -1148,7 +1148,7 @@
     /*
      *
      */
-    clearInput: function () {
+    clearInput: function(){
       var me = this;
 
       if(me.input){

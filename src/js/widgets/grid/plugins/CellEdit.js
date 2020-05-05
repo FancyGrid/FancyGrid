@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.CellEdit
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -18,24 +18,24 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
-      w.once('render', function () {
+      w.once('render', function(){
         me.initEditorContainer();
         me.checkAutoInitEditors();
         w.on('scroll', me.onScroll, me);
@@ -48,7 +48,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} e
      */
-    onDocClick: function (grid, e) {
+    onDocClick: function(grid, e){
       var me = this,
         o = me.activeCellEditParams,
         editor = me.activeEditor,
@@ -56,27 +56,27 @@
         target = e.target,
         targetEl = F.get(target);
 
-      if (editor === undefined) {
+      if (editor === undefined){
         return;
       }
-      else if (o.column.type === 'date') {
+      else if (o.column.type === 'date'){
         return;
       }
-      else if (o.column.type === 'combo') {}
+      else if (o.column.type === 'combo'){}
       else {
         var cellEl = targetEl.closest('.' + GRID_CELL_CLS);
 
-        if (!cellEl.dom && !editor.el.within(target)) {
+        if (!cellEl.dom && !editor.el.within(target)){
           editor.hide();
         }
         return;
       }
 
-      if (editor.el.within(target) === false && editor.list.within(target) === false && me.comboClick !== true) {
+      if (editor.el.within(target) === false && editor.list.within(target) === false && me.comboClick !== true){
         inCombo = false;
       }
 
-      if (inCombo === false) {
+      if (inCombo === false){
         editor.hide();
       }
 
@@ -85,7 +85,7 @@
     /*
      *
      */
-    initEditorContainer: function () {
+    initEditorContainer: function(){
       var me = this,
         w = me.widget;
 
@@ -94,13 +94,13 @@
     /*
      * @param {Object} o
      */
-    edit: function (o) {
+    edit: function(o){
       var me = this,
         w = me.widget,
         s = w.store,
         column = o.column;
 
-      if (column.index === '$selected') {
+      if (column.index === '$selected'){
         return;
       }
 
@@ -110,7 +110,7 @@
       column.editor = me.generateEditor(column);
 
       //me.hideEditor();
-      if(!s.infiniteScrolledToRow) {
+      if(!s.infiniteScrolledToRow){
         w.scroller.scrollToCell(o.cell);
       }
       me.showEditor(o);
@@ -119,7 +119,7 @@
      * @param {Object} column
      * @return {Object}
      */
-    generateEditor: function (column) {
+    generateEditor: function(column){
       var me = this,
         w = me.widget,
         style = {
@@ -135,7 +135,7 @@
         renderTo,
         theme = w.theme;
 
-      if (column.editor) {
+      if (column.editor){
         return column.editor;
       }
 
@@ -148,7 +148,7 @@
         checkValidOnTyping: true
       };
 
-      switch (type) {
+      switch (type){
         case 'combo':
           var displayKey = 'text',
             valueKey = 'text',
@@ -161,21 +161,21 @@
               scope: me
             }];
 
-          if (column.editorEvents) {
+          if (column.editorEvents){
             var i = 0,
               iL = column.editorEvents.length;
 
-            for (; i < iL; i++) {
+            for (; i < iL; i++){
               events.push(column.editorEvents[i]);
             }
           }
 
-          if (column.displayKey !== undefined) {
+          if (column.displayKey !== undefined){
             displayKey = column.displayKey;
             valueKey = displayKey;
           }
 
-          if (theme === 'default') {
+          if (theme === 'default'){
             theme = undefined;
           }
 
@@ -288,19 +288,19 @@
             }]
           });
 
-          if (column.spin !== undefined) {
+          if (column.spin !== undefined){
             itemConfig.spin = column.spin;
           }
 
-          if (column.step !== undefined) {
+          if (column.step !== undefined){
             itemConfig.step = column.step;
           }
 
-          if (column.min !== undefined) {
+          if (column.min !== undefined){
             itemConfig.min = column.min;
           }
 
-          if (column.max !== undefined) {
+          if (column.max !== undefined){
             itemConfig.max = column.max;
           }
 
@@ -342,7 +342,7 @@
     /*
      * @param {Object} o
      */
-    showEditor: function (o) {
+    showEditor: function(o){
       var me = this,
         w = me.widget,
         column = o.column,
@@ -360,7 +360,7 @@
         return;
       }
 
-      if (type === 'combo') {
+      if (type === 'combo'){
         me.comboClick = true;
       }
 
@@ -369,7 +369,7 @@
       me.setEditorValue(o);
       //Bug fix with wrong validation on start
       if(o.value === ''){
-        setTimeout(function () {
+        setTimeout(function(){
           editor.validate(editor.get());
         }, 1);
       }
@@ -388,8 +388,8 @@
 
       editor.focus();
 
-      if (type === 'combo') {
-        if (o.value !== undefined) {
+      if (type === 'combo'){
+        if (o.value !== undefined){
           editor.set(o.value, false);
         }
       }
@@ -399,10 +399,10 @@
     /*
      * @param {Number} side
      */
-    setEditorSize: function (size) {
+    setEditorSize: function(size){
       var me = this;
 
-      if (me.activeEditor.wtype === 'field.combo') {
+      if (me.activeEditor.wtype === 'field.combo'){
         me.activeEditor.size(size);
       }
       else {
@@ -415,7 +415,7 @@
     /*
      *
      */
-    hideEditor: function () {
+    hideEditor: function(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -425,16 +425,16 @@
         editor = me.activeEditor,
         column;
 
-      if (editor) {
+      if (editor){
         column = o.column;
         value = editor.get();
 
-        if (s.proxyType === 'server' && column.type !== 'combo') {
+        if (s.proxyType === 'server' && column.type !== 'combo'){
           key = me.getActiveColumnKey();
           value = me.prepareValue(value);
 
           //date field when data item value is null
-          if(value === '' && s.get(o.rowIndex, key) === null) {}
+          if(value === '' && s.get(o.rowIndex, key) === null){}
           else{
             s.set(o.rowIndex, key, value);
           }
@@ -447,7 +447,7 @@
       delete me.activeEditor;
 
       //Bug fix: when editor is out of side, grid el scrolls
-      if (w.el.dom.scrollTop) {
+      if (w.el.dom.scrollTop){
         w.el.dom.scrollTop = 0;
       }
     },
@@ -455,7 +455,7 @@
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellPosition: function (cell) {
+    getCellPosition: function(cell){
       var me = this,
         w = me.widget,
         gridBorders = w.gridBorders,
@@ -473,7 +473,7 @@
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellSize: function (cell) {
+    getCellSize: function(cell){
       var me = this,
         w = me.widget,
         cellEl = F.get(cell),
@@ -481,7 +481,7 @@
         height = cellEl.height(),
         coeficient = 2;
 
-      if (F.nojQuery && w.panelBorderWidth === 2) {
+      if (F.nojQuery && w.panelBorderWidth === 2){
         coeficient = 1;
       }
 
@@ -496,13 +496,13 @@
     /*
      * @param {Object} o
      */
-    setEditorValue: function (o) {
+    setEditorValue: function(o){
       var me = this,
         editor = me.activeEditor;
 
-      switch (o.column.type) {
+      switch (o.column.type){
         case 'combo':
-          if (editor.valueIndex !== -1) {
+          if (editor.valueIndex !== -1){
             editor.set(editor.getValueKey(o.value), false);
           }
           break;
@@ -523,7 +523,7 @@
      * @param {Object} editor
      * @param {String} value
      */
-    onEditorEnter: function (editor, value) {
+    onEditorEnter: function(){
       var me = this,
         w = me.widget,
         selection = w.selection || {};
@@ -532,7 +532,7 @@
 
       if(selection.selectBottomCellAfterEdit){
         w.selectCellDown();
-        setTimeout(function () {
+        setTimeout(function(){
           w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
         }, 1);
       }
@@ -540,13 +540,13 @@
     /*
      *
      */
-    onHeaderCellMouseDown: function () {
+    onHeaderCellMouseDown: function(){
       this.hideEditor();
     },
     /*
      * @param {String} value
      */
-    setValue: function (value) {
+    setValue: function(value){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -554,22 +554,22 @@
         o = me.activeCellEditParams,
         editor = me.activeEditor;
 
-      if (editor === undefined) {
+      if (editor === undefined){
         return;
       }
 
-      if (editor.isValid() === false) {
+      if (editor.isValid() === false){
         return;
       }
 
-      if (s.proxyType === 'server') {
+      if (s.proxyType === 'server'){
         return;
       }
 
       //if(o.column.autoHeight){
       if(w.rowheight){
         //It could slow
-        setTimeout(function () {
+        setTimeout(function(){
           w.update();
         },1);
       }
@@ -578,7 +578,7 @@
 
       value = me.prepareValue(value);
 
-      if (editor.type === 'field.date' && editor.isEqual(s.get(o.rowIndex, key))) {
+      if (editor.type === 'field.date' && editor.isEqual(s.get(o.rowIndex, key))){
         return;
       }
 
@@ -587,31 +587,31 @@
     /*
      * @param {Object} editor
      */
-    onEditorBeforeHide: function (editor) {
-      if (editor.isValid()) {
+    onEditorBeforeHide: function(editor){
+      if (editor.isValid()){
         this.setValue(editor.getValue());
       }
     },
     /*
      *
      */
-    onScroll: function () {
+    onScroll: function(){
       this.hideEditor();
     },
     /*
      *
      */
-    onNativeScroll: function () {
+    onNativeScroll: function(){
       this.hideEditor();
     },
     /*
      * @param {Object} field
      */
-    onBlur: function (field) {
+    onBlur: function(field){
       var me = this;
 
-      if (!me.activeEditor || field.id === me.activeEditor.id) {
-        if (field.mouseDownSpinUp === true || field.mouseDownSpinDown) {
+      if (!me.activeEditor || field.id === me.activeEditor.id){
+        if (field.mouseDownSpinUp === true || field.mouseDownSpinDown){
           return;
         }
 
@@ -622,7 +622,7 @@
      * @param {*} value
      * @return {*}
      */
-    prepareValue: function (value) {
+    prepareValue: function(value){
       var me = this,
         type = me.getActiveColumnType(),
         o = me.activeCellEditParams,
@@ -636,32 +636,32 @@
         return format.beforeSaveFn(value);
       }
 
-      switch (type) {
+      switch (type){
         case 'number':
         case 'currency':
-          if (format && format.inputFn) {
+          if (format && format.inputFn){
             var _value = '',
               i = 0,
               iL = value.length;
 
-            if (F.isNumber(value)) {
+            if (F.isNumber(value)){
               return value;
             }
 
-            for (; i < iL; i++) {
-              if (!isNaN(Number(value[i]))) {
+            for (; i < iL; i++){
+              if (!isNaN(Number(value[i]))){
                 _value += value[i];
               }
             }
 
             value = _value;
           }
-          else if (value !== '') {
+          else if (value !== ''){
             value = Number(value);
           }
           break;
         case 'date':
-          if (column.format && column.format.read) {
+          if (column.format && column.format.read){
             var date = column.editor.getDate();
 
             if(value){
@@ -676,7 +676,7 @@
     /*
      * @return {String}
      */
-    getActiveColumnType: function () {
+    getActiveColumnType: function(){
       var o = this.activeCellEditParams,
         column = o.column;
 
@@ -685,7 +685,7 @@
     /*
      * @return {String}
      */
-    getActiveColumnKey: function () {
+    getActiveColumnKey: function(){
       var o = this.activeCellEditParams,
         column = o.column,
         key = column.index;
@@ -695,7 +695,7 @@
     /*
      * @param {Object} o
      */
-    onCheckBoxChange: function (o) {
+    onCheckBoxChange: function(o){
       var me = this,
         w = me.widget,
         column = o.column,
@@ -703,12 +703,12 @@
         s = w.store,
         value = me.checkBoxChangedValue;
 
-      if (me.activeEditor) {
+      if (me.activeEditor){
         me.hideEditor();
       }
 
-      if (me.checkBoxChangedValue === undefined) {
-        return
+      if (me.checkBoxChangedValue === undefined){
+        return;
       }
 
       delete me.checkBoxChangedValue;
@@ -722,7 +722,7 @@
      * @param {Object} combo
      * @param {*} value
      */
-    onComboChange: function (combo, value) {
+    onComboChange: function(combo, value){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -736,12 +736,12 @@
     /*
      *
      */
-    checkAutoInitEditors: function () {
+    checkAutoInitEditors: function(){
       var me = this,
         w = me.widget;
 
-      F.each(w.columns, function (column) {
-        if (column.editorAutoInit) {
+      F.each(w.columns, function(column){
+        if (column.editorAutoInit){
           column.editor = me.generateEditor(column);
         }
       });
@@ -751,7 +751,7 @@
      * @param {String} value
      * @param {Object} e
      */
-    onBeforeKey: function (field, value, e) {
+    onBeforeKey: function(field, value, e){
       var me = this,
         w = me.widget,
         selection = w.selection || {},
@@ -762,42 +762,42 @@
           if(selection.selectUpCellOnUp){
             me.hideEditor();
             w.selectCellUp();
-            setTimeout(function () {
+            setTimeout(function(){
               w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
             }, 1);
           }
           break;
         case key.DOWN:
-          if(selection.selectBottomCellOnDown) {
+          if(selection.selectBottomCellOnDown){
             me.hideEditor();
             w.selectCellDown();
-            setTimeout(function () {
+            setTimeout(function(){
               w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
             }, 1);
           }
           break;
         case key.LEFT:
-          if(selection.selectLeftCellOnLeftEnd) {
+          if(selection.selectLeftCellOnLeftEnd){
             var carret = field.getInputSelection();
 
             if(carret.start === 0 && carret.end === 0){
               me.hideEditor();
               w.selectCellLeft();
-              setTimeout(function () {
+              setTimeout(function(){
                 w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
               }, 1);
             }
           }
           break;
         case key.RIGHT:
-          if(selection.selectRightCellOnEnd) {
+          if(selection.selectRightCellOnEnd){
             var carret = field.getInputSelection(),
               length = field.input.dom.value.length;
 
             if(carret.start === length && carret.end === length){
               me.hideEditor();
               w.selectCellRight();
-              setTimeout(function () {
+              setTimeout(function(){
                 w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
               }, 1);
             }

@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.RowDragDrop
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -10,7 +10,6 @@
   var GRID_BODY_CLS = F.GRID_BODY_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
-  var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
 
   F.define('Fancy.grid.plugin.RowDragDrop', {
     extend: F.Plugin,
@@ -28,13 +27,13 @@
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -48,7 +47,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -58,13 +57,13 @@
       w.on('cellleave', me.onCellLeave, me);
       me.on('drop', me.onDrop, me);
     },
-    disableSelectionMove: function () {
+    disableSelectionMove: function(){
       var me = this,
         w = me.widget;
 
       w.selection.disableSelectionMove();
     },
-    showTip: function (e) {
+    showTip: function(e){
       var me = this,
         w = me.widget,
         selection = w.getSelection();
@@ -79,13 +78,13 @@
 
       me.updateTipText();
 
-      if (e) {
+      if (e){
         me.tip.show(e.pageX + 20, e.pageY + 20);
       }
 
       me.tipShown = true;
     },
-    hideTip: function () {
+    hideTip: function(){
       var me = this;
 
       if(me.tip){
@@ -94,7 +93,7 @@
 
       me.tipShown = false;
     },
-    onCellMouseDown: function (grid, o) {
+    onCellMouseDown: function(grid, o){
       var me = this,
         docEl = F.get(document),
         targetEl = F.get(o.e.target),
@@ -107,7 +106,7 @@
       me.cellMouseDown = F.get(o.cell);
       docEl.once('mouseup', me.onDocMouseUp, me);
     },
-    onDocMouseUp: function (e) {
+    onDocMouseUp: function(){
       var me = this,
         w = me.widget,
         docEl = F.get(document);
@@ -116,7 +115,7 @@
       me.mouseDownDragEl = false;
       delete me.tipValue;
 
-      if(me.tipShown) {
+      if(me.tipShown){
         docEl.un('mousemove', me.onDocMouseMove);
         me.hideTip();
         me.clearCellsMask();
@@ -127,7 +126,7 @@
       }
 
       if(w.selection){
-        setTimeout(function () {
+        setTimeout(function(){
           w.selection.clearOverCells();
         }, 1);
         w.enableSelection();
@@ -137,12 +136,12 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onRowEnter: function (grid, o) {
+    onRowEnter: function(grid, o){
       var me = this,
         w = me.widget,
         selected = w.getSelection();
 
-      if (!me.cellMouseDown || selected.length === 0 || !me.tipShown) {
+      if (!me.cellMouseDown || selected.length === 0 || !me.tipShown){
         return;
       }
 
@@ -169,7 +168,7 @@
               var rowsGoOneByOne = true,
                 prevRowIndex;
 
-              F.each(selected, function (item) {
+              F.each(selected, function(item){
                 if(prevRowIndex === undefined){
                   prevRowIndex = w.getRowById(item.id);
                   return;
@@ -204,7 +203,7 @@
             var rowsGoOneByOne = true,
               prevRowIndex;
 
-            F.each(selected, function (item) {
+            F.each(selected, function(item){
               if(prevRowIndex === undefined){
                 prevRowIndex = w.getRowById(item.id);
                 return;
@@ -253,7 +252,7 @@
       me.activeRowIndex = o.rowIndex;
       me.showCellsDropMask();
     },
-    onCellLeave: function (grid, params) {
+    onCellLeave: function(grid, params){
       var me = this,
         docEl = F.get(document),
         cell = F.get(params.cell);
@@ -284,18 +283,18 @@
      * @param {String} text
      * @param {Object} e
      */
-    initTip: function () {
+    initTip: function(){
       var me = this,
         dropNotOkCls = me.dropNotOkCls;
 
-      if (!me.tip) {
+      if (!me.tip){
         me.tip = new F.ToolTip({
           cls: dropNotOkCls,
           text: ''
         });
       }
     },
-    updateTipText: function () {
+    updateTipText: function(){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -307,14 +306,14 @@
       }
 
       me.tip.update(text);
-      if(selection.length && me.dropOK != false) {
+      if(selection.length && me.dropOK != false){
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
       else{
         me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
       }
     },
-    onDocMouseMove: function (e) {
+    onDocMouseMove: function(e){
       var me = this;
 
       if(me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS)){
@@ -324,7 +323,7 @@
         me.hideTip();
       }
     },
-    showCellsDropMask: function () {
+    showCellsDropMask: function(){
       var me = this,
         w = me.widget,
         rowIndex = me.activeRowIndex - 1;
@@ -337,14 +336,14 @@
         w.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').addCls(me.cellMaskCls);
       }
     },
-    clearCellsMask: function () {
+    clearCellsMask: function(){
       var me = this,
         w = me.widget;
 
       w.el.select('.' + me.cellMaskCls).removeCls(me.cellMaskCls);
       w.el.select('.' + me.cellFirstRowMaskCls).removeCls(me.cellFirstRowMaskCls);
     },
-    onDrop: function () {
+    onDrop: function(){
       var me = this,
         w = me.widget,
         selection = w.getSelection(),
@@ -365,7 +364,7 @@
         rowIndex = w.getRowById(me.insertItem.id) + 1;
         if(selection.length){
           var delta = 0;
-          F.each(selection, function (item) {
+          F.each(selection, function(item){
             var itemRowIndex = w.getRowById(item.id);
 
             if(itemRowIndex < rowIndex){
@@ -381,7 +380,7 @@
       w.store.changeDataView();
       w.update();
       if(!w.selection.memory){
-        F.each(selection, function (item) {
+        F.each(selection, function(item){
           var rowIndex = w.getRowById(item.id);
           w.flashRow(rowIndex);
         });
@@ -390,7 +389,7 @@
       delete w.draggingRows;
       w.enableSelection();
     },
-    onBeforeCellMouseDown: function (el, o) {
+    onBeforeCellMouseDown: function(el, o){
       var me = this,
         docEl = Fancy.get(document),
         w = me.widget,
@@ -416,7 +415,7 @@
           }
 
           me.mouseDownDragEl = true;
-          docEl.once('mousemove', function (e) {
+          docEl.once('mousemove', function(e){
             me.showTip(e);
             docEl.on('mousemove', me.onDocMouseMove, me);
           });
@@ -427,7 +426,7 @@
     /*
      *
      */
-    initDropCls: function () {
+    initDropCls: function(){
       var me = this,
         w = me.widget;
 
@@ -438,12 +437,12 @@
     /*
      *
      */
-    initEnterLeave: function () {
+    initEnterLeave: function(){
       var me = this,
         dropEl = F.select(me.dropCls);
 
-      if (dropEl.length === 0) {
-        setTimeout(function () {
+      if (dropEl.length === 0){
+        setTimeout(function(){
           me.initEnterLeave();
         }, 500);
         return;
@@ -451,7 +450,7 @@
 
       dropEl.on('mouseleave', me.onMouseLeaveDropGroup, me);
     },
-    onMouseLeaveDropGroup: function () {
+    onMouseLeaveDropGroup: function(){
       var me = this;
 
       me.dropOK = false;

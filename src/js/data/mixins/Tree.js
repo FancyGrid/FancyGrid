@@ -7,8 +7,9 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
    *
    */
   initTreeData: function(data){
-    var me = this,
-      data = data || me.data;
+    var me = this;
+
+    data = data || me.data;
 
     me.isTree = true;
 
@@ -26,14 +27,14 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       me.setData(data);
     }
   },
-  treeReadData: function (data, deep, parentId) {
+  treeReadData: function(data, deep, parentId){
     var me = this,
       w = me.widget,
       _data = [];
 
     deep = deep || 1;
 
-    Fancy.each(data, function (dataItem) {
+    Fancy.each(data, function(dataItem){
       //get model and init new item model
       if(dataItem.data){
         dataItem = dataItem.data;
@@ -86,11 +87,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _data;
   },
-  treeGetDataAsTree: function () {
+  treeGetDataAsTree: function(){
     var me = this,
       _core = [];
 
-    Fancy.each(me.data, function (item) {
+    Fancy.each(me.data, function(item){
       if(item.get('$deep') === 1){
         _core.push(item);
       }
@@ -98,14 +99,14 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _core;
   },
-  treeSort: function (data, action, key, type, customSort) {
+  treeSort: function(data, action, key, type, customSort){
     var me = this,
       _data = [],
       dataSorted = [],
       dataValues = {},
       sorted = [];
 
-    Fancy.each(data, function (item) {
+    Fancy.each(data, function(item){
       var itemData = item.data || item;
       _data.push(itemData[key]);
 
@@ -129,7 +130,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
       var prevValue;
 
-      Fancy.each(data, function (item) {
+      Fancy.each(data, function(item){
         var itemData = item.data || item;
 
         if(itemData[key] !== ''){
@@ -144,28 +145,28 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       });
     }
 
-    if(type === 'number') {
-      switch (action) {
+    if(type === 'number'){
+      switch (action){
         case 'asc':
           if(customSort){
-            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
               return customSort('asc', a, b);
             });
           }
           else {
-            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
               return a - b;
             });
           }
           break;
         case 'desc':
           if(customSort){
-            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
               return customSort('desc', a, b);
             });
           }
           else {
-            dataSorted = Fancy.Array.copy(_data).sort(function (a, b) {
+            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
               return b - a;
             });
           }
@@ -173,7 +174,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       }
     }
     else{
-      switch (action) {
+      switch (action){
         case 'asc':
           dataSorted = Fancy.Array.copy(_data).sort();
           break;
@@ -184,7 +185,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       }
     }
 
-    Fancy.each(dataSorted, function (v, i) {
+    Fancy.each(dataSorted, function(v, i){
       var item = dataValues[v];
 
       if(Fancy.isArray(item)){
@@ -215,11 +216,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return sorted;
   },
-  treeReadSortedId: function (data) {
+  treeReadSortedId: function(data){
     var me = this,
       ids = [];
 
-    Fancy.each(data, function (item) {
+    Fancy.each(data, function(item){
       ids.push(item.id);
       //!important
       item = me.getById(item.id);
@@ -236,12 +237,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return ids;
   },
-  treeReBuildData: function () {
+  treeReBuildData: function(){
     var me = this,
       coreData = [],
       data = [];
 
-    Fancy.each(me.data, function (item) {
+    Fancy.each(me.data, function(item){
       if(item.get('$deep') === 1){
         coreData.push(item.data);
       }

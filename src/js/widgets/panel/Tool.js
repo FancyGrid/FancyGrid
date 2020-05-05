@@ -16,14 +16,14 @@
      * @param {Object} config
      * @param {Object} scope
      */
-    constructor: function (config, scope) {
+    constructor: function(config, scope){
       this.scope = scope;
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
@@ -37,7 +37,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
@@ -47,7 +47,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = document.createElement('div');
@@ -64,12 +64,12 @@
     /*
      *
      */
-    onClick: function () {
+    onClick: function(){
       var me = this;
 
       me.fire('click');
-      if (me.handler) {
-        if (me.scope) {
+      if (me.handler){
+        if (me.scope){
           me.handler.apply(me.scope, [me]);
         }
         else {
@@ -80,8 +80,8 @@
     /*
      * @param {String} value
      */
-    setText: function (value) {
-      this.el.update(value)
+    setText: function(value){
+      this.el.update(value);
     }
   });
 

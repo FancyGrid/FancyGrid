@@ -1,7 +1,7 @@
 /*
  * @class Fancy.DatePicker
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -24,16 +24,16 @@
     /*
      * @param {Object} picker
      */
-    add: function (picker) {
+    add: function(picker){
       this.hide();
       this.opened.push(picker);
     },
-    hide: function () {
+    hide: function(){
       var opened = this.opened,
         i = 0,
         iL = opened.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         opened[i].hide();
       }
 
@@ -83,7 +83,7 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       var me = this;
 
       F.apply(me, config);
@@ -99,7 +99,7 @@
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -119,10 +119,10 @@
     /*
      *
      */
-    initFormat: function () {
+    initFormat: function(){
       var me = this;
 
-      if (me.format) {}
+      if (me.format){}
       else {
         me.format = F.i18n[me.i18n].date;
       }
@@ -130,7 +130,7 @@
     /*
      *
      */
-    initMonthPicker: function () {
+    initMonthPicker: function(){
       var me = this;
 
       if(me.monthPicker){
@@ -138,7 +138,7 @@
         return;
       }
 
-      if (!F.fullBuilt && F.MODULELOAD !== false && me.monthPicker && !F.modules['grid']) {
+      if (!F.fullBuilt && F.MODULELOAD !== false && me.monthPicker && !F.modules['grid']){
         return;
       }
 
@@ -172,16 +172,16 @@
     /*
      *
      */
-    initData: function () {
+    initData: function(){
       this.data = this.generateData();
     },
     /*
      *
      */
-    initDate: function () {
+    initDate: function(){
       var me = this;
 
-      if (me.date === undefined || me.date.toString() === 'Invalid Date') {
+      if (me.date === undefined || me.date.toString() === 'Invalid Date'){
         me.date = new Date();
       }
 
@@ -197,7 +197,7 @@
     /*
      *
      */
-    initColumns: function () {
+    initColumns: function(){
       var me = this,
         format = me.format,
         days = format.days,
@@ -208,18 +208,18 @@
         columns = [],
         today = new Date();
 
-      var render = function (o) {
+      var render = function(o){
         o.cls = '';
 
-        switch (o.rowIndex) {
+        switch (o.rowIndex){
           case 0:
-            if (Number(o.value) > 20) {
+            if (Number(o.value) > 20){
               o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
           case 4:
           case 5:
-            if (Number(o.value) < 15) {
+            if (Number(o.value) < 15){
               o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
@@ -228,15 +228,15 @@
         var date = me.date,
           showDate = me.showDate;
 
-        if (today.getMonth() === showDate.getMonth() && today.getFullYear() === showDate.getFullYear()) {
-          if (o.value === today.getDate()) {
-            if (o.rowIndex === 0) {
-              if (o.value < 20) {
+        if (today.getMonth() === showDate.getMonth() && today.getFullYear() === showDate.getFullYear()){
+          if (o.value === today.getDate()){
+            if (o.rowIndex === 0){
+              if (o.value < 20){
                 o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
-            else if (o.rowIndex === 4 || o.rowIndex === 5) {
-              if (o.value > 20) {
+            else if (o.rowIndex === 4 || o.rowIndex === 5){
+              if (o.value > 20){
                 o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
@@ -246,15 +246,15 @@
           }
         }
 
-        if (date.getMonth() === showDate.getMonth() && date.getFullYear() === showDate.getFullYear()) {
-          if (o.value === date.getDate()) {
-            if (o.rowIndex === 0) {
-              if (o.value < 20) {
+        if (date.getMonth() === showDate.getMonth() && date.getFullYear() === showDate.getFullYear()){
+          if (o.value === date.getDate()){
+            if (o.rowIndex === 0){
+              if (o.value < 20){
                 o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
-            else if (o.rowIndex === 4 || o.rowIndex === 5) {
-              if (o.value > 20) {
+            else if (o.rowIndex === 4 || o.rowIndex === 5){
+              if (o.value > 20){
                 o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
@@ -313,7 +313,7 @@
           break;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         columns.push({
           index: dayIndexes[i],
           title: days[i][charIndex].toLocaleUpperCase(),
@@ -337,7 +337,7 @@
     /*
      * @return {Array}
      */
-    getDataFields: function () {
+    getDataFields: function(){
       var me = this,
         fields = [],
         format = me.format,
@@ -347,14 +347,14 @@
         iL = days.length,
         dayIndexes = F.Date.dayIndexes;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         fields.push(dayIndexes[i]);
       }
 
       i = 0;
       iL = startDay;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         fields.push(dayIndexes[i]);
       }
 
@@ -363,7 +363,7 @@
     /*
      *
      */
-    generateData: function () {
+    generateData: function(){
       var me = this,
         format = me.format,
         startDay = format.startDay,
@@ -376,14 +376,14 @@
         iL = daysInMonth,
         keyPlus = 0;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var key = i + firstDayOfMonth - startDay + keyPlus;
-        if (key < 0) {
+        if (key < 0){
           key = 7 - startDay;
           keyPlus = key + 1;
         }
 
-        if (key === 0) {
+        if (key === 0){
           key = 7;
           keyPlus = key;
         }
@@ -399,7 +399,7 @@
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 0) {
+      if (month === 0){
         month = 11;
         year--;
       }
@@ -412,8 +412,8 @@
 
       i = 7;
 
-      while (i--) {
-        if (data[i] === undefined) {
+      while (i--){
+        if (data[i] === undefined){
           data[i] = prevDateDaysInMonth;
           prevDateDaysInMonth--;
         }
@@ -423,8 +423,8 @@
         iL = 42,
         nextMonthDay = 1;
 
-      for (; i < iL; i++) {
-        if (data[i] === undefined) {
+      for (; i < iL; i++){
+        if (data[i] === undefined){
           data[i] = nextMonthDay;
           nextMonthDay++;
         }
@@ -434,7 +434,7 @@
         i = 0,
         iL = 6;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data[i] = data.splice(0, 7);
       }
 
@@ -446,14 +446,14 @@
     /*
      *
      */
-    initBars: function () {
+    initBars: function(){
       this.initTBar();
       this.initBBar();
     },
     /*
      *
      */
-    initTBar: function () {
+    initTBar: function(){
       var me = this,
         tbar = [];
 
@@ -488,7 +488,7 @@
     /*
      *
      */
-    initBBar: function () {
+    initBBar: function(){
       var me = this,
         bbar = [];
 
@@ -508,7 +508,7 @@
     /*
      *
      */
-    onBackClick: function () {
+    onBackClick: function(){
       var me = this,
         date = me.showDate,
         month = date.getMonth(),
@@ -519,7 +519,7 @@
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 0) {
+      if (month === 0){
         month = 11;
         year--;
       }
@@ -536,7 +536,7 @@
     /*
      *
      */
-    onNextClick: function () {
+    onNextClick: function(){
       var me = this,
         date = me.showDate,
         month = date.getMonth(),
@@ -547,7 +547,7 @@
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 11) {
+      if (month === 11){
         month = 0;
         year++;
       }
@@ -564,7 +564,7 @@
     /*
      *
      */
-    onUpdate: function () {
+    onUpdate: function(){
       var me = this,
         value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
@@ -585,7 +585,7 @@
     /*
      *
      */
-    onClickToday: function () {
+    onClickToday: function(){
       var me = this,
         date = new Date();
 
@@ -600,7 +600,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellClick: function (grid, o) {
+    onCellClick: function(grid, o){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -624,10 +624,10 @@
 
       me.fire('changedate', me.date);
 
-      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)) {
+      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)){
         day = Number(o.value);
-        if (o.rowIndex < 3) {
-          if (month === 0) {
+        if (o.rowIndex < 3){
+          if (month === 0){
             year--;
             month = 11;
           }
@@ -636,7 +636,7 @@
           }
         }
         else {
-          if (month === 11) {
+          if (month === 11){
             year++;
             month = 11;
           }
@@ -657,10 +657,10 @@
     /*
      * @param {Object} e
      */
-    onMouseWheel: function (e) {
+    onMouseWheel: function(e){
       var delta = F.getWheelDelta(e.originalEvent || e);
 
-      if (delta < 0) {
+      if (delta < 0){
         this.onBackClick();
       }
       else {
@@ -670,13 +670,13 @@
     /*
      *
      */
-    onDateClick: function () {
+    onDateClick: function(){
       var me = this;
 
       me.initMonthPicker();
 
       me.monthPicker.panel.css('display', 'block');
-      if (F.$.fn.animate) {
+      if (F.$.fn.animate){
         me.monthPicker.panel.el.animate({
           top: '0px'
         });
@@ -690,13 +690,13 @@
     /*
      *
      */
-    onMonthCancelClick: function () {
+    onMonthCancelClick: function(){
       this.hideMonthPicker();
     },
     /*
      *
      */
-    onMonthOkClick: function () {
+    onMonthOkClick: function(){
       var me = this,
         monthPickerDate = me.monthPicker.date,
         newMonth = monthPickerDate.getMonth(),
@@ -725,14 +725,14 @@
     /*
      *
      */
-    hideMonthPicker: function () {
+    hideMonthPicker: function(){
       var el = this.monthPicker.panel.el;
 
-      if (F.$.fn.animate) {
+      if (F.$.fn.animate){
         el.animate({
           top: '-' + el.css('height')
         }, {
-          complete: function () {
+          complete: function(){
             el.css('display', 'none');
           }
         });
@@ -744,17 +744,17 @@
     /*
      * @param {Object} e
      */
-    onMouseDown: function (e) {
+    onMouseDown: function(e){
       e.preventDefault();
     },
     /*
      * @param {Date} date
      */
-    setDate: function (date, firstShow) {
+    setDate: function(date, firstShow){
       var me = this;
 
       me.date = date;
-      if(firstShow && me.showDate) {}
+      if(firstShow && me.showDate){}
       else {
         me.showDate = date;
       }

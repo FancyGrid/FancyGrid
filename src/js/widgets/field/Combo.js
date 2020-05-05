@@ -88,14 +88,14 @@
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.tags = this.tags || [];
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents(
@@ -110,7 +110,7 @@
         me.editable = false;
       }
 
-      if (!me.loadListData()) {
+      if (!me.loadListData()){
         me.data = me.configData(me.data);
       }
 
@@ -130,28 +130,28 @@
        * Bug fix: #1074
        * Theme is not applied to list element.
        */
-      setTimeout(function () {
+      setTimeout(function(){
         me.applyTheme();
       }, 1);
     },
     /*
      * @return {Boolean}
      */
-    loadListData: function () {
+    loadListData: function(){
       var me = this;
 
-      if (!F.isObject(me.data)) {
+      if (!F.isObject(me.data)){
         return false;
       }
 
       var proxy = me.data.proxy,
         readerRootProperty = me.readerRootProperty;
 
-      if (!proxy || !proxy.url) {
+      if (!proxy || !proxy.url){
         throw new Error('[FancyGrid Error]: combo data url is not defined');
       }
 
-      if (proxy.reader && proxy.reader.root) {
+      if (proxy.reader && proxy.reader.root){
         readerRootProperty = proxy.reader.root;
       }
 
@@ -160,7 +160,7 @@
         params: proxy.params || {},
         method: proxy.method || 'GET',
         getJSON: true,
-        success: function (o) {
+        success: function(o){
           me.data = me.configData(o[readerRootProperty]);
           me.renderList();
           me.onsList();
@@ -172,10 +172,10 @@
               me.updateInput();
             }
           }
-          else if (me.value) {
+          else if (me.value){
             var displayValue = me.getDisplayValue(me.value);
 
-            if (displayValue) {
+            if (displayValue){
               me.input.dom.value = displayValue;
             }
           }
@@ -190,17 +190,17 @@
      * @param {Array} data
      * @return {Array}
      */
-    configData: function (data) {
-      if (F.isObject(data) || data.length === 0) {
+    configData: function(data){
+      if (F.isObject(data) || data.length === 0){
         return data;
       }
 
-      if (!F.isObject(data[0])) {
+      if (!F.isObject(data[0])){
         var _data = [],
           i = 0,
           iL = data.length;
 
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           _data.push({
             text: data[i],
             value: i
@@ -215,36 +215,36 @@
     /*
      *
      */
-    applyStyle: function () {
+    applyStyle: function(){
       var me = this;
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
-      if (me.style) {
+      if (me.style){
         me.css(me.style);
       }
     },
     /*
      *
      */
-    applyTheme: function () {
+    applyTheme: function(){
       var me = this;
 
-      if (me.theme && me.theme !== 'default') {
-        me.addCls('fancy-theme-' + me.theme);
-        me.list.addCls('fancy-theme-' + me.theme);
+      if (me.theme && me.theme !== 'default'){
+        me.addCls(Fancy.getThemeCSSCls(me.theme));
+        me.list.addCls(Fancy.getThemeCSSCls(me.theme));
 
         if(me.aheadList){
-          me.aheadList.addCls('fancy-theme-' + me.theme);
+          me.aheadList.addCls(Fancy.getThemeCSSCls(me.theme));
         }
       }
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
@@ -262,7 +262,7 @@
       drop.on('click', me.onDropClick, me);
       me.on('key', me.onKey, me);
 
-      if (me.typeAhead && me.editable) {
+      if (me.typeAhead && me.editable){
         me.input.on('keydown', me.onKeyDown, me);
       }
 
@@ -274,16 +274,16 @@
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    onSubSearchKeyDown: function (e) {
+    onSubSearchKeyDown: function(e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -301,12 +301,12 @@
     /*
      * @param {Object} e
      */
-    onKeyDown: function (e) {
+    onKeyDown: function(e){
       var me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode) {
+      switch (keyCode){
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -322,13 +322,13 @@
         case key.TAB:
           break;
         case key.BACKSPACE:
-          setTimeout(function () {
-            if (me.input.dom.value.length === 0) {
+          setTimeout(function(){
+            if (me.input.dom.value.length === 0){
               me.value = -1;
               me.valueIndex = -1;
               me.hideAheadList();
 
-              if (me.multiSelect) {
+              if (me.multiSelect){
                 me.values = [];
                 me.clearListActive();
               }
@@ -344,7 +344,7 @@
                 }
               }
 
-              if (me.generateAheadData().length === 0) {
+              if (me.generateAheadData().length === 0){
                 me.hideAheadList();
                 return;
               }
@@ -355,8 +355,8 @@
           }, 100);
           break;
         default:
-          setTimeout(function () {
-            if (me.generateAheadData().length === 0) {
+          setTimeout(function(){
+            if (me.generateAheadData().length === 0){
               me.hideAheadList();
               return;
             }
@@ -366,14 +366,14 @@
           }, 1);
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
     /*
      * @param {Object} e
      */
-    onInputClick: function (e) {
+    onInputClick: function(){
       var me = this,
         list = me.list;
 
@@ -381,11 +381,11 @@
         return;
       }
 
-      if (me.editable === true) {
+      if (me.editable === true){
         return;
       }
 
-      if (list.css('display') === 'none') {
+      if (list.css('display') === 'none'){
         me.showList();
       }
       else {
@@ -395,7 +395,7 @@
     /*
      * @param {Object} e
      */
-    onDropClick: function (e) {
+    onDropClick: function(){
       var me = this,
         list = me.list;
 
@@ -403,7 +403,7 @@
         return;
       }
 
-      if (list.css('display') === 'none') {
+      if (list.css('display') === 'none'){
         F.combo.Manager.add(this);
         
         me.showList();
@@ -412,14 +412,14 @@
         me.hideList();
       }
 
-      if (me.editable === true) {
+      if (me.editable === true){
         me.input.focus();
       }
     },
     /*
      *
      */
-    showList: function () {
+    showList: function(){
       var me = this,
         list = me.list,
         el = me.input.parent().parent(),
@@ -431,7 +431,7 @@
 
       me.hideAheadList();
 
-      if (!me.list || me.data.length === 0) {
+      if (!me.list || me.data.length === 0){
         return;
       }
 
@@ -465,9 +465,9 @@
 
       var selected = list.select('.' + selectedItemCls);
 
-      if (selected.length === 0) {
+      if (selected.length === 0){
         if(me.multiSelect && me.values.length){
-          me.valuesIndex.each(function (i, value, length) {
+          me.valuesIndex.each(function(i, value, length){
             if(index === undefined){
               index = i;
             }
@@ -483,7 +483,7 @@
         if(me.multiSelect && selected.length !== me.valuesIndex.length){
           list.select('.' + selectedItemCls).removeCls(selectedItemCls);
 
-          me.valuesIndex.each(function (i, value, length) {
+          me.valuesIndex.each(function(i, value, length){
             if(index === undefined){
               index = i;
             }
@@ -501,7 +501,7 @@
       list.select('li').item(index).addCls(focusedItemCls);
       me.scrollToListItem(index);
 
-      if (!me.docSpy) {
+      if (!me.docSpy){
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
       }
@@ -518,7 +518,7 @@
     /*
      *
      */
-    showAheadList: function () {
+    showAheadList: function(){
       var me = this,
         list = me.aheadList,
         el = me.input.parent().parent(),
@@ -528,7 +528,7 @@
 
       me.hideList();
 
-      if (!list || me.data.length === 0) {
+      if (!list || me.data.length === 0){
         return;
       }
 
@@ -540,7 +540,7 @@
         "z-index": 2000 + F.zIndex++
       });
 
-      if (!me.docSpy2) {
+      if (!me.docSpy2){
         me.docSpy2 = true;
         docEl.on('click', me.onDocClick, me);
       }
@@ -548,11 +548,11 @@
     /*
      * @param {Object} e
      */
-    onDocClick: function (e) {
+    onDocClick: function(e){
       var me = this;
 
-      if (me.input.parent().parent().within(e.target) === false) {
-        if (me.list.within(e.target) === true) {
+      if (me.input.parent().parent().within(e.target) === false){
+        if (me.list.within(e.target) === true){
           return;
         }
         me.hideList();
@@ -562,16 +562,16 @@
     /*
      *
      */
-    hideList: function () {
+    hideList: function(){
       var me = this;
 
-      if (!me.list) {
+      if (!me.list){
         return;
       }
 
       me.list.css('display', 'none');
 
-      if (me.docSpy) {
+      if (me.docSpy){
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
@@ -580,16 +580,16 @@
     /*
      *
      */
-    hideAheadList: function () {
+    hideAheadList: function(){
       var me = this;
 
-      if (!me.aheadList) {
+      if (!me.aheadList){
         return;
       }
 
       me.aheadList.css('display', 'none');
 
-      if (me.docSpy) {
+      if (me.docSpy){
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
@@ -598,7 +598,7 @@
     /*
      * @param {Object} e
      */
-    onInputMouseDown: function (e) {
+    onInputMouseDown: function(e){
       var me = this;
 
       if(me.disabled){
@@ -606,14 +606,14 @@
         return;
       }
 
-      if (me.editable === false) {
+      if (me.editable === false){
         e.preventDefault();
       }
     },
     /*
      * @param {Object} e
      */
-    onDropMouseDown: function (e) {
+    onDropMouseDown: function(e){
       if(this.disabled){
         e.stopPropagation();
       }
@@ -623,7 +623,7 @@
     /*
      *
      */
-    onsList: function () {
+    onsList: function(){
       var me = this;
 
       me.list.on('mousedown', me.onListItemMouseDown, me, 'li');
@@ -638,7 +638,7 @@
     /*
      *
      */
-    onsAheadList: function () {
+    onsAheadList: function(){
       var me = this;
 
       me.aheadList.on('click', me.onListItemClick, me, 'li');
@@ -646,8 +646,8 @@
     /*
      * @param {Object} e
      */
-    onListItemOver: function (e) {
-      if(this.disabled) {
+    onListItemOver: function(e){
+      if(this.disabled){
         return;
       }
 
@@ -661,7 +661,7 @@
     /*
      *
      */
-    onListItemLeave: function () {
+    onListItemLeave: function(){
       if(this.disabled){
         return;
       }
@@ -680,7 +680,7 @@
     /*
      * @param {Object} e
      */
-    onListItemClick: function (e) {
+    onListItemClick: function(e){
       var me = this,
         li = F.get(e.currentTarget),
         value = li.attr('value'),
@@ -691,12 +691,12 @@
         return;
       }
 
-      if (F.nojQuery && value === 0) {
+      if (F.nojQuery && value === 0){
         value = '';
       }
 
-      if (me.multiSelect) {
-        if (me.values.length === 0) {
+      if (me.multiSelect){
+        if (me.values.length === 0){
           me.clearListActive();
         }
 
@@ -704,7 +704,7 @@
 
         li.toggleCls(selectedItemCls);
 
-        if (li.hasCls(selectedItemCls)) {
+        if (li.hasCls(selectedItemCls)){
           me.addValue(value);
           li.addCls(focusedItemCls);
         }
@@ -724,7 +724,7 @@
         me.hideList();
       }
 
-      if (me.editable) {
+      if (me.editable){
         me.input.focus();
       }
       else {
@@ -735,7 +735,7 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function (value, onInput) {
+    set: function(value, onInput){
       var me = this,
         valueStr = '',
         index;
@@ -776,13 +776,13 @@
       else{
         index = me.getIndex(value);
 
-        if(index !== -1) {
+        if(index !== -1){
           me.valueIndex = index;
           valueStr = me.data[index][me.displayKey];
           me.selectItem(index);
         }
         else{
-          if (value !== -1 && value && value.length > 0) {
+          if (value !== -1 && value && value.length > 0){
             valueStr = '';
             //valueStr = value;
             me.value = -1;
@@ -798,7 +798,7 @@
 
       me.input.dom.value = valueStr;
 
-      if (onInput !== false) {
+      if (onInput !== false){
         me.onInput();
       }
 
@@ -840,12 +840,12 @@
         }
       });
 
-      if(index !== -1) {
+      if(index !== -1){
         me.values.splice(index, 1);
         me.valuesIndex.remove(me.getIndex(v));
       }
 
-      if (me.values.length) {
+      if (me.values.length){
         me.value = me.values[me.values.length - 1];
       }
       else {
@@ -862,13 +862,13 @@
       var me = this,
         displayValues = [];
 
-      me.valuesIndex.each(function (i, v, length) {
+      me.valuesIndex.each(function(i, v, length){
         displayValues.push(me.data[i][me.displayKey]);
       });
 
       me.input.dom.value = displayValues.join(", ");
 
-      if (onInput !== false) {
+      if (onInput !== false){
         me.onInput();
       }
     },
@@ -878,11 +878,11 @@
     selectItem: function(index){
       var me = this;
 
-      if (!me.list) {
+      if (!me.list){
         return;
       }
 
-      if (!me.multiSelect) {
+      if (!me.multiSelect){
         me.clearListActive();
       }
 
@@ -895,7 +895,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div')),
@@ -904,7 +904,7 @@
 
       el.attr('id', me.id);
 
-      if (value === undefined) {
+      if (value === undefined){
         value = '';
       }
       else {
@@ -917,7 +917,7 @@
               me.valueIndex = i;
             }
 
-            if(me.data[i]) {
+            if(me.data[i]){
               value += me.data[i][me.displayKey] + ', ';
             }
           });
@@ -927,7 +927,7 @@
         else {
           index = me.getIndex(value);
 
-          if (index !== -1) {
+          if (index !== -1){
             me.valueIndex = index;
             value = me.data[index][me.displayKey];
           }
@@ -946,19 +946,19 @@
 
       var labelWidth = '';
 
-      if (me.labelWidth) {
+      if (me.labelWidth){
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
       var label = me.label;
 
-      if (me.label === '') {
+      if (me.label === ''){
         label = '&nbsp;';
       }
-      else if (me.label === undefined) {
+      else if (me.label === undefined){
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right') {
+      else if (me.labelAlign !== 'right'){
         label += ':';
       }
 
@@ -990,19 +990,19 @@
       me.setSize();
       renderTo.appendChild(el.dom);
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
       }
-      else if (me.labelAlign === 'right') {
+      else if (me.labelAlign === 'right'){
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
         F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
       }
 
-      if (me.valueIndex) {
+      if (me.valueIndex){
         me.acceptedValue = me.value;
       }
 
-      if (me.editable) {
+      if (me.editable){
         me.input.css('cursor', 'auto');
       }
       else {
@@ -1021,18 +1021,18 @@
 
       me.renderList();
 
-      if(me.leftTpl) {
-        setTimeout(function () {
+      if(me.leftTpl){
+        setTimeout(function(){
           me.updateLeft();
         }, 1);
 
         //Bug fix with images
-        setTimeout(function () {
+        setTimeout(function(){
           me.updateLeft();
         }, 500);
 
         //Bug fix with images
-        setTimeout(function () {
+        setTimeout(function(){
           me.updateLeft();
         }, 1000);
       }
@@ -1043,7 +1043,7 @@
     /*
      *
      */
-    renderList: function () {
+    renderList: function(){
       var me = this,
         list = F.get(document.createElement('div')),
         listHtml = [];
@@ -1056,7 +1056,7 @@
         listHtml.push('<div class="fancy-combo-list-sub-search-container"></div>');
       }
 
-      if (me.list) {
+      if (me.list){
         me.list.destroy();
       }
 
@@ -1064,24 +1064,24 @@
         '<ul style="position: relative;">'
       ]);
 
-      F.each(me.data, function (row, i) {
+      F.each(me.data, function(row, i){
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
+        if (String(me.value).toLocaleLowerCase() === String(value).toLocaleLowerCase()){
           isActive = me.selectedItemCls;
         }
 
-        if (displayValue === '' || displayValue === ' ') {
+        if (displayValue === '' || displayValue === ' '){
           displayValue = '&nbsp;';
         }
-        else if (me.listItemTpl) {
+        else if (me.listItemTpl){
           var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
 
-        if (me.multiSelect && me.itemCheckBox) {
+        if (me.multiSelect && me.itemCheckBox){
           listHtml.push('<li value="' + value + '" class="' + isActive + '"><div class="' + FIELD_CHECKBOX_INPUT_CLS + '" style=""></div><span class="' + FIELD_COMBO_LIST_VALUE_CLS + '">' + displayValue + '</span></li>');
         }
         else {
@@ -1100,7 +1100,7 @@
         width: me.getListWidth()
       });
 
-      if (me.data.length > me.maxListRows) {
+      if (me.data.length > me.maxListRows){
         /*
         list.css({
           height: me.listRowHeight * 9 + 'px',
@@ -1148,12 +1148,12 @@
         listWidth = me.inputWidth + 14,
         minListWidth = me.minListWidth;
 
-      if (me.input) {
+      if (me.input){
         el = me.input.parent().parent();
         listWidth = el.width();
       }
 
-      if (minListWidth && minListWidth > listWidth) {
+      if (minListWidth && minListWidth > listWidth){
         listWidth = minListWidth;
       }
 
@@ -1167,12 +1167,12 @@
         inputValue = me.input.dom.value.toLocaleLowerCase(),
         aheadData = [];
 
-      if (me.multiSelect) {
+      if (me.multiSelect){
         var splitted = inputValue.split(', '),
           inputSelection = me.getInputSelection(),
           passedCommas = 0;
 
-        F.each(inputValue, function (v, i) {
+        F.each(inputValue, function(v, i){
           if(inputSelection.start <= i){
             return true;
           }
@@ -1185,13 +1185,13 @@
         inputValue = splitted[passedCommas];
       }
 
-      F.each(me.data, function (item){
-        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())) {
+      F.each(me.data, function(item){
+        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())){
           aheadData.push(item);
         }
       });
 
-      if (me.data.length === aheadData.length) {
+      if (me.data.length === aheadData.length){
         aheadData = [];
       }
 
@@ -1202,7 +1202,7 @@
     /*
      *
      */
-    renderAheadList: function () {
+    renderAheadList: function(){
       var me = this,
         list,
         listHtml = [
@@ -1210,7 +1210,7 @@
         ],
         presented = false;
 
-      if (me.aheadList) {
+      if (me.aheadList){
         me.aheadList.firstChild().destroy();
         list = me.aheadList;
         presented = true;
@@ -1219,19 +1219,19 @@
         list = F.get(document.createElement('div'));
       }
 
-      F.each(me.aheadData, function (row, i) {
+      F.each(me.aheadData, function(row, i){
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
 
-        if (i === 0) {
+        if (i === 0){
           isActive = me.selectedItemCls;
         }
 
-        if (displayValue === '' || displayValue === ' ') {
+        if (displayValue === '' || displayValue === ' '){
           displayValue = '&nbsp;';
         }
-        else if (me.listItemTpl) {
+        else if (me.listItemTpl){
           var listTpl = new F.Template(me.listItemTpl);
           displayValue = listTpl.getHTML(row);
         }
@@ -1241,7 +1241,7 @@
 
       listHtml.push('</ul>');
 
-      list.update(listHtml.join(""));
+      list.update(listHtml.join(''));
       list.css({
         display: 'none',
         left: '0px',
@@ -1254,7 +1254,7 @@
         overflow: 'auto'
       });
 
-      if (presented === false) {
+      if (presented === false){
         list.addClass(F.cls, 'fancy-combo-result-list');
         document.body.appendChild(list.dom);
         me.aheadList = list;
@@ -1267,7 +1267,7 @@
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.css('display', 'none');
@@ -1277,7 +1277,7 @@
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       var me = this;
 
       if(me.multiSelect){
@@ -1290,7 +1290,7 @@
     /*
      *
      */
-    clearListActive: function () {
+    clearListActive: function(){
       var me = this,
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
@@ -1298,22 +1298,22 @@
       me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
       me.list.select('.' + selectedItemCls).removeCls(selectedItemCls);
     },
-    clearFocused: function () {
+    clearFocused: function(){
       var me = this,
         focusedItemCls = me.focusedItemCls;
 
-      if(me.list) {
+      if(me.list){
         me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
 
-      if(me.aheadList) {
+      if(me.aheadList){
         me.aheadList.select('.' + focusedItemCls).removeCls(focusedItemCls);
       }
     },
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
@@ -1329,14 +1329,14 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @param {key} value
      * @return {*}
      */
-    getDisplayValue: function (value, returnPosition) {
+    getDisplayValue: function(value, returnPosition){
       var me = this,
         index = me.getIndex(value);
 
@@ -1354,14 +1354,14 @@
      * @param {key} value
      * @param {Boolean} [returnPosition]
      */
-    getValueKey: function (value, returnPosition) {
+    getValueKey: function(value, returnPosition){
       var me = this,
         i = 0,
         iL = me.data.length;
 
       for(;i<iL;i++){
-        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()) {
-          if (returnPosition) {
+        if (String(me.data[i][me.displayKey]).toLocaleLowerCase() === String(value).toLocaleLowerCase()){
+          if (returnPosition){
             return i;
           }
 
@@ -1372,27 +1372,27 @@
     /*
      * @return {*}
      */
-    get: function () {
+    get: function(){
       return this.getValue();
     },
     /*
      * @return {*}
      */
-    getValue: function () {
+    getValue: function(){
       var me = this;
 
-      if (me.multiSelect) {
+      if (me.multiSelect){
         return me.values;
       }
 
-      if (me.value === -1 || me.value === undefined) {
-        if (me.value === -1 && me.input.dom.value) {
+      if (me.value === -1 || me.value === undefined){
+        if (me.value === -1 && me.input.dom.value){
           return me.input.dom.value;
         }
         return '';
       }
 
-      if (me.valueKey !== undefined) {
+      if (me.valueKey !== undefined){
         return me.value;
       }
 
@@ -1401,7 +1401,7 @@
     /*
      * @param {Object} o
      */
-    size: function (o) {
+    size: function(o){
       var me = this,
         width = o.width,
         height = o.height,
@@ -1409,21 +1409,21 @@
         inputContainer = me.inputContainer,
         drop = me.drop;
 
-      if (me.labelAlign !== 'top') {
+      if (me.labelAlign !== 'top'){
         me.inputHeight = height;
       }
 
-      if (height !== undefined) {
+      if (height !== undefined){
         me.height = height;
       }
 
-      if (width !== undefined) {
+      if (width !== undefined){
         me.width = width;
       }
 
       me.calcSize();
 
-      if (me.labelAlign === 'top') {
+      if (me.labelAlign === 'top'){
         me.css({
           height: me.height * 1.5,
           width: me.width
@@ -1466,25 +1466,25 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onEnter: function (field, e) {
+    onEnter: function(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls,
         value;
 
-      if (me.multiSelect) {
-        if (!list) {
+      if (me.multiSelect){
+        if (!list){
           return;
         }
 
         var item = list.select('.' + focusedItemCls);
 
-        if (!item || !item.dom) {
+        if (!item || !item.dom){
           item = list.select('.' + selectedItemCls).last();
         }
 
-        if (item && item.dom) {
+        if (item && item.dom){
           value = item.attr('value');
 
           me.addValue(value);
@@ -1495,7 +1495,7 @@
           me.updateInput();
         }
       }
-      else if (list) {
+      else if (list){
         var item = list.select('.' + focusedItemCls);
 
         if(!item || !item.dom){
@@ -1517,7 +1517,7 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onEsc: function (field, e) {
+    onEsc: function(field, e){
       var me = this;
 
       me.hideList();
@@ -1527,23 +1527,23 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onUp: function (field, e) {
+    onUp: function(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list) {
+      if (list){
         list = me.getActiveList().select('ul');
         e.preventDefault();
         var activeLi = list.select('.' + focusedItemCls),
           notFocused = false;
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           activeLi = list.select('.' + selectedItemCls);
         }
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           notFocused = true;
           activeLi = list.lastChild();
         }
@@ -1556,7 +1556,7 @@
           lis = list.select('li'),
           height = parseInt(list.css('height'));
 
-        if (index !== 0 && !notFocused) {
+        if (index !== 0 && !notFocused){
           index--;
         }
         else {
@@ -1566,10 +1566,10 @@
         var nextActiveLi = lis.item(index),
           top = nextActiveLi.dom.offsetTop;
 
-        if (top - list.dom.scrollTop > height) {
+        if (top - list.dom.scrollTop > height){
           list.dom.scrollTop = 10000;
         }
-        else if (top - list.dom.scrollTop < 0) {
+        else if (top - list.dom.scrollTop < 0){
           list.dom.scrollTop = top;
         }
 
@@ -1582,24 +1582,24 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onDown: function (field, e) {
+    onDown: function(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list) {
+      if (list){
         list = me.getActiveList().select('ul');
         e.preventDefault();
 
         var activeLi = list.select('.' + focusedItemCls),
           notFocused = false;
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           activeLi = list.select('.' + selectedItemCls);
         }
 
-        if (!activeLi.dom) {
+        if (!activeLi.dom){
           notFocused = true;
           activeLi = list.firstChild();
         }
@@ -1613,7 +1613,7 @@
           lis = list.select('li'),
           height = parseInt(list.css('height'));
 
-        if (index !== lis.length - 1 && !notFocused) {
+        if (index !== lis.length - 1 && !notFocused){
           index++;
         }
         else {
@@ -1624,10 +1624,10 @@
           top = nextActiveLi.dom.offsetTop,
           nextActiveLiHeight = parseInt(nextActiveLi.css('height'));
 
-        if (top - list.dom.scrollTop < 0) {
+        if (top - list.dom.scrollTop < 0){
           list.dom.scrollTop = 0;
         }
-        else if (top + nextActiveLiHeight + 3 - list.dom.scrollTop > height) {
+        else if (top + nextActiveLiHeight + 3 - list.dom.scrollTop > height){
           list.dom.scrollTop = top - height + activeLiHeight + nextActiveLiHeight;
         }
 
@@ -1642,7 +1642,7 @@
     /*
      * @param {Number} index
      */
-    scrollToListItem: function (index) {
+    scrollToListItem: function(index){
       var me = this,
         list = me.getActiveList().select('ul'),
         lis = list.select('li'),
@@ -1651,10 +1651,10 @@
         top = item.dom.offsetTop,
         height = parseInt(list.css('height'));
 
-      if (index === 0) {
+      if (index === 0){
         list.dom.scrollTop = 0;
       }
-      else if (index === lis.length - 1) {
+      else if (index === lis.length - 1){
         list.dom.scrollTop = 10000;
       }
       else {
@@ -1664,14 +1664,14 @@
     /*
      * @return {Fancy.Element}
      */
-    getActiveList: function () {
+    getActiveList: function(){
       var me = this,
         list = false;
 
-      if (me.list && me.list.css('display') !== 'none') {
+      if (me.list && me.list.css('display') !== 'none'){
         list = me.list;
       }
-      else if (me.aheadList && me.aheadList.css('display') !== 'none') {
+      else if (me.aheadList && me.aheadList.css('display') !== 'none'){
         list = me.aheadList;
       }
 
@@ -1680,7 +1680,7 @@
     /*
      *
      */
-    initMultiSelect: function () {
+    initMultiSelect: function(){
       var me = this,
         value = me.value;
 
@@ -1713,7 +1713,7 @@
         index = -1;
 
       for(;i<iL;i++){
-        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()) {
+        if(String(data[i][me.valueKey]).toLocaleLowerCase() == String(value).toLocaleLowerCase()){
           return i;
         }
       }
@@ -1745,7 +1745,7 @@
     /*
      *
      */
-    updateLeft: function () {
+    updateLeft: function(){
       var me = this,
         item = me.data[me.getIndex(me.getValue())];
 
@@ -1764,14 +1764,14 @@
     /*
      *
      */
-    onSelectAllClick: function (e) {
+    onSelectAllClick: function(){
       var me = this,
         lis = me.list.select('li'),
         selectAllEl = me.list.select('.fancy-combo-list-select-all').item(0),
         value = selectAllEl.hasClass('fancy-combo-item-selected');
 
-      setTimeout(function() {
-        if (value) {
+      setTimeout(function(){
+        if (value){
           selectAllEl.removeCls('fancy-combo-item-selected');
         }
         else {
@@ -1779,7 +1779,7 @@
         }
       }, 100);
 
-      lis.each(function (li, i) {
+      lis.each(function(li, i){
         if(value){
           if(li.hasClass('fancy-combo-item-selected')){
             li.dom.click();
@@ -1798,7 +1798,7 @@
      * @param {Object} field
      * @param {String} value
      */
-    onSubSearchChange: function (field, value) {
+    onSubSearchChange: function(field, value){
       var me = this,
         lis = me.list.select('li'),
         height = 0,
@@ -1806,8 +1806,8 @@
 
       value = value.toLocaleLowerCase();
 
-      F.each(me.data, function (item, i){
-        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())) {
+      F.each(me.data, function(item, i){
+        if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())){
           lis.item(i).css('display', 'block');
           height += parseInt(lis.item(i).css('height'));
         }
@@ -1825,7 +1825,7 @@
         listUl.css('height', height);
       }
     },
-    isListInsideViewBox: function (el) {
+    isListInsideViewBox: function(el){
       var me = this,
         p = el.$dom.offset(),
         listHeight = me.calcListHeight() + el.$dom.height(),
@@ -1838,7 +1838,7 @@
 
       return true;
     },
-    calcListHeight: function () {
+    calcListHeight: function(){
       var me = this,
         listHeight = me.data.length * me.listRowHeight;
 

@@ -7,12 +7,13 @@ Fancy.Date = {
   daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
   dayIndexes: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
   /**
-   * @param {String} date
+   * @param {String|Date} date
    * @param {String} format
-   * @param {String} lang
+   * @param {String|Object} lang
+   * @param {String} [mode]
    * @return {String}
    */
-  format: function(date, format, lang, mode) {
+  format: function(date, format, lang, mode){
     var value = '',
       h,
       _i,
@@ -54,13 +55,14 @@ Fancy.Date = {
     for(;i<iL; i++){
       var c = format[i];
 
-      switch (c) {
+      switch (c){
         case 'i':
           _i = date.getMinutes();
 
-          if (_i < 10) {
+          if (_i < 10){
             value += '0' + _i;
-          } else {
+          }
+          else {
             value += _i;
           }
 
@@ -70,9 +72,10 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'ss'){
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
 
@@ -83,9 +86,10 @@ Fancy.Date = {
             }
           }
           else {
-            if (_i < 10) {
+            if (_i < 10){
               value += '0' + _i;
-            } else {
+            }
+            else {
               value += _i;
             }
           }
@@ -95,9 +99,10 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'SS'){
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
 
@@ -114,9 +119,10 @@ Fancy.Date = {
         case 'a':
           h = date.getHours();
 
-          if (h < 12) {
+          if (h < 12){
             value += lang.date.am;
-          } else {
+          }
+          else {
             value += lang.date.pm;
           }
 
@@ -124,9 +130,10 @@ Fancy.Date = {
         case 'A':
           h = date.getHours();
 
-          if (h < 12) {
+          if (h < 12){
             value += lang.date.AM;
-          } else {
+          }
+          else {
             value += lang.date.PM;
           }
 
@@ -142,7 +149,7 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'mm'){
-              if (m < 10) {
+              if (m < 10){
                 m = '0' + m;
               }
               value += m;
@@ -151,9 +158,10 @@ Fancy.Date = {
             else if(format.substr(i, 2) === 'mi'){
               _i = date.getMinutes();
 
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
               i++;
@@ -163,7 +171,7 @@ Fancy.Date = {
             }
           }
           else {
-            if (m < 10) {
+            if (m < 10){
               m = '0' + m;
             }
             value += m;
@@ -174,7 +182,7 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'dd'){
-              if (d < 10) {
+              if (d < 10){
                 d = '0' + d;
               }
 
@@ -186,7 +194,7 @@ Fancy.Date = {
             }
           }
           else {
-            if (d < 10) {
+            if (d < 10){
               d = '0' + d;
             }
 
@@ -253,7 +261,7 @@ Fancy.Date = {
         case 'N':
           N = date.getDay();
 
-          if (N === 0) {
+          if (N === 0){
             N = 7;
           }
 
@@ -279,9 +287,10 @@ Fancy.Date = {
             else if(format.substr(i, 2) === 'MI'){
               _i = date.getMinutes();
 
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
 
@@ -327,11 +336,13 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'hh'){
-              if (h > 12) {
+              if (h > 12){
                 value += h - 12;
-              } else if (h > 9 && h < 13) {
+              }
+              else if (h > 9 && h < 13){
                 value += h;
-              } else {
+              }
+              else {
                 value += '0' + h;
               }
 
@@ -342,11 +353,13 @@ Fancy.Date = {
             }
           }
           else {
-            if (h > 12) {
+            if (h > 12){
               value += h - 12;
-            } else if (h > 9 && h < 13) {
+            }
+            else if (h > 9 && h < 13){
               value += h;
-            } else {
+            }
+            else {
               value += '0' + h;
             }
           }
@@ -371,7 +384,8 @@ Fancy.Date = {
           else {
             if(H < 10){
               value += '0' + H;
-            } else {
+            }
+            else {
               value += H;
             }
           }
@@ -396,6 +410,7 @@ Fancy.Date = {
   /**
    * @param {String} value
    * @param {String} format
+   * @param {String} [mode]
    * @return {Date}
    */
   parse: function(value, format, mode){
@@ -421,11 +436,11 @@ Fancy.Date = {
         jL,
         l;
 
-      switch (c) {
+      switch (c){
         case 'n':
           var n;
 
-          if (value[1] === '0' || value[1] === '1' || value[1] === '2') {
+          if (value[1] === '0' || value[1] === '1' || value[1] === '2'){
             n = value[0] + value[1];
             value = value.substr(2, value.length);
           }
@@ -437,7 +452,7 @@ Fancy.Date = {
           month = Number(n);
           break;
         case 'j':
-          if (Fancy.isNumber(parseInt(value[1]))) {
+          if (Fancy.isNumber(parseInt(value[1]))){
             j = value[0] + value[1];
             value = value.substr(2, value.length);
           }
@@ -470,7 +485,7 @@ Fancy.Date = {
           }
           else {
             var h;
-            if (value[1] === '0' || value[1] === '1' || value[1] === '2') {
+            if (value[1] === '0' || value[1] === '1' || value[1] === '2'){
               h = value[0] + value[1];
               value = value.substr(2, value.length);
             }
@@ -483,14 +498,14 @@ Fancy.Date = {
           }
           break;
         case 'a':
-          if (value[1] === 'm') {
+          if (value[1] === 'm'){
             hour += 12;
           }
 
           value = value.substr(2, value.length);
           break;
         case 'A':
-          if (value[1] === 'M') {
+          if (value[1] === 'M'){
             hour += 12;
           }
 
@@ -540,12 +555,12 @@ Fancy.Date = {
         case 'm':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'mm'){
-              switch (value[0]) {
+              switch (value[0]){
                 case '0':
                 case '1':
                 case '2':
                 case '3':
-                  if (isNaN(parseInt(value[1]))) {
+                  if (isNaN(parseInt(value[1]))){
                     month = Number(value[0]) - 1;
                     value = value.substr(1, value.length);
                   }
@@ -571,12 +586,12 @@ Fancy.Date = {
             }
           }
           else {
-            switch (value[0]) {
+            switch (value[0]){
               case '0':
               case '1':
               case '2':
               case '3':
-                if (isNaN(parseInt(value[1]))) {
+                if (isNaN(parseInt(value[1]))){
                   month = Number(value[0]) - 1;
                   value = value.substr(1, value.length);
                 }
@@ -594,7 +609,7 @@ Fancy.Date = {
         case 'd':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'dd'){
-              if (isNaN(parseInt(value[1]))) {
+              if (isNaN(parseInt(value[1]))){
                 day = Number(value[0]);
                 value = value.substr(1, value.length);
               }
@@ -609,7 +624,7 @@ Fancy.Date = {
             }
           }
           else {
-            if (isNaN(parseInt(value[1]))) {
+            if (isNaN(parseInt(value[1]))){
               day = Number(value[0]);
               value = value.substr(1, value.length);
             }
@@ -672,7 +687,7 @@ Fancy.Date = {
           }
           else {
             year = Number(value[0] + value[1]);
-            if (year < 51) {
+            if (year < 51){
               year = Number('20' + year);
             }
             else {
@@ -685,7 +700,7 @@ Fancy.Date = {
         case 'D':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'DD'){
-              if (isNaN(parseInt(value[1]))) {
+              if (isNaN(parseInt(value[1]))){
                 day = Number(value[0]);
                 value = value.substr(1, value.length);
               }
@@ -708,10 +723,10 @@ Fancy.Date = {
           j = 0;
           jL = 7;
 
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var d = lang.days[j];
 
-            if (l === d.substr(0, 3)) {
+            if (l === d.substr(0, 3)){
               value = value.substr(d.length, value.length);
               break;
             }
@@ -729,10 +744,10 @@ Fancy.Date = {
           j = 0;
           jL = 7;
 
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var m = lang.months[j];
 
-            if (l === m.substr(0, 3)) {
+            if (l === m.substr(0, 3)){
               value = value.substr(m.length, value.length);
               break;
             }
@@ -742,12 +757,12 @@ Fancy.Date = {
         case 'M':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'MM'){
-              switch (value[0]) {
+              switch (value[0]){
                 case '0':
                 case '1':
                 case '2':
                 case '3':
-                  if (isNaN(parseInt(value[1]))) {
+                  if (isNaN(parseInt(value[1]))){
                     month = Number(value[0]) - 1;
                     value = value.substr(1, value.length);
                   }
@@ -793,7 +808,7 @@ Fancy.Date = {
           }
           break;
         case 'G':
-          if (Fancy.isNumber(parseInt(value[1]))) {
+          if (Fancy.isNumber(parseInt(value[1]))){
             hour = Number(value[0] + value[1]);
             value = value.substr(2, value.length);
           } else {
@@ -878,7 +893,7 @@ Fancy.Date = {
  * @class Fancy.DateField
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -919,14 +934,14 @@ Fancy.Date = {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'showpicker');
@@ -939,15 +954,15 @@ Fancy.Date = {
 
       me.ons();
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
-      if (me.style) {
+      if (me.style){
         me.css(me.style);
       }
 
-      if (!F.isDate(me.value)) {
+      if (!F.isDate(me.value)){
         me.initDate();
       }
       else{
@@ -961,28 +976,28 @@ Fancy.Date = {
      * @param {String} value
      * @param {String} format
      */
-    initDate: function (value, format) {
+    initDate: function(value, format){
       var me = this;
 
-      if (value) {
-        if (F.typeOf(value) === 'date') {
+      if (value){
+        if (F.typeOf(value) === 'date'){
           me.date = value;
           return;
         }
 
         var date;
-        if (format) {
+        if (format){
           date = F.Date.parse(value, format, me.format.mode);
         }
         else {
           date = F.Date.parse(value, me.format.read, me.format.mode);
         }
 
-        if (date.toString === 'Invalid Date') {
+        if (date.toString === 'Invalid Date'){
           date = F.Date.parse(value, me.format.edit, me.format.mode);
         }
 
-        if (date.toString === 'Invalid Date') {
+        if (date.toString === 'Invalid Date'){
           return;
         }
 
@@ -990,13 +1005,13 @@ Fancy.Date = {
         return;
       }
 
-      switch (F.typeOf(value)) {
+      switch (F.typeOf(value)){
         case 'date':
           me.date = me.value;
           break;
         case 'undefined':
         case 'string':
-          if (!me.value) {
+          if (!me.value){
             delete me.date;
             return;
           }
@@ -1007,21 +1022,21 @@ Fancy.Date = {
     /*
      *
      */
-    changeInputValue: function () {
+    changeInputValue: function(){
       var me = this;
 
-      if (F.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date') {
+      if (F.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date'){
         me.input.dom.value = '';
         return;
       }
 
       var value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         value = me.format.inputFn(value);
       }
 
-      if (value === undefined) {
+      if (value === undefined){
         value = '';
       }
 
@@ -1032,11 +1047,11 @@ Fancy.Date = {
     /*
      *
      */
-    initFormat: function () {
+    initFormat: function(){
       var me = this;
 
-      if (me.format) {
-        if (F.isObject(me.format)) {
+      if (me.format){
+        if (F.isObject(me.format)){
           F.applyIf(me.format, F.i18n[me.i18n].date);
         }
       }
@@ -1047,20 +1062,20 @@ Fancy.Date = {
     /*
      * @param {*} value
      */
-    formatValue: function (value) {
+    formatValue: function(value){
       var me = this;
 
-      if (!me.value && value) {
+      if (!me.value && value){
         me.value = value;
       }
-      else if (!value && me.value) {
+      else if (!value && me.value){
         value = me.value;
       }
 
       if (!me.value){}
-      else if (F.typeOf(me.value) === 'date') {
+      else if (F.typeOf(me.value) === 'date'){
         me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
-        if (value === undefined) {
+        if (value === undefined){
           var _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
           value = F.Date.format(_date, me.format.edit, undefined, me.format.mode);
         }
@@ -1071,15 +1086,15 @@ Fancy.Date = {
         me.value = F.Date.format(date, me.format.edit, undefined, me.format.mode);
       }
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         value = me.format.inputFn(value);
       }
 
-      if (value === undefined) {
+      if (value === undefined){
         value = '';
       }
 
-      if (/NaN/.test(value)) {
+      if (/NaN/.test(value)){
         value = '';
       }
 
@@ -1088,7 +1103,7 @@ Fancy.Date = {
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         input = me.el.getByTag('input');
@@ -1103,28 +1118,28 @@ Fancy.Date = {
 
       me.on('beforehide', me.onBeforeHide, me);
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         me.on('key', me.onKeyInputFn);
       }
 
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    initPicker: function () {
+    initPicker: function(){
       var me = this;
 
-      if (me.picker === false || me.editable === false) {
+      if (me.picker === false || me.editable === false){
         return;
       }
 
-      if (me.dateImage === false) {
+      if (me.dateImage === false){
         me.el.select('.fancy-field-picker-button').css('display', 'none');
         me.input.on('click', me.onInputClick, me);
       }
@@ -1137,25 +1152,25 @@ Fancy.Date = {
     /*
      *
      */
-    onInputClick: function (e) {
+    onInputClick: function(e){
       e.preventDefault();
       this.toggleShowPicker();
     },
     /*
      *
      */
-    onInputMouseDown: function (e) {
+    onInputMouseDown: function(e){
       var me = this,
         picker = me.picker;
 
       if(picker && picker.el && picker.el.css('display') !== 'none'){
-        e.stopPropagation()
+        e.stopPropagation();
       }
     },
     /*
      * @param {Object} e
      */
-    onPickerButtonMouseDown: function (e) {
+    onPickerButtonMouseDown: function(e){
       var me = this;
 
       if(me.disabled){
@@ -1168,14 +1183,14 @@ Fancy.Date = {
     /*
      *
      */
-    showPicker: function () {
+    showPicker: function(){
       var me = this,
         el = me.el,
         input = me.input,
         docEl = F.get(document),
         firstShow = false;
 
-      if (me.picker === true) {
+      if (me.picker === true){
         firstShow = true;
         me.renderPicker();
       }
@@ -1191,7 +1206,7 @@ Fancy.Date = {
         y = offset.top + el.select('.' + FIELD_TEXT_CLS).height(),
         date = me.date || new Date();
 
-      if (date.toString() === 'Invalid Date') {
+      if (date.toString() === 'Invalid Date'){
         date = new Date();
       }
 
@@ -1203,7 +1218,7 @@ Fancy.Date = {
 
       me.fire('showpicker');
 
-      if (!me.docSpy) {
+      if (!me.docSpy){
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
       }
@@ -1211,16 +1226,16 @@ Fancy.Date = {
     /*
      *
      */
-    onDocClick: function (e) {
+    onDocClick: function(e){
       var me = this,
         datePicker = me.picker,
         monthPicker = datePicker.monthPicker,
         target = e.target;
 
-      if (target.tagName.toLocaleLowerCase() === 'input') {}
-      else if (F.get(target).hasCls('fancy-field-picker-button')) {}
-      else if (datePicker.panel.el.within(target)) {}
-      else if (monthPicker && monthPicker.panel.el.within(target)) {}
+      if (target.tagName.toLocaleLowerCase() === 'input'){}
+      else if (F.get(target).hasCls('fancy-field-picker-button')){}
+      else if (datePicker.panel.el.within(target)){}
+      else if (monthPicker && monthPicker.panel.el.within(target)){}
       else {
         me.hidePicker();
       }
@@ -1228,14 +1243,14 @@ Fancy.Date = {
     /*
      *
      */
-    hidePicker: function () {
+    hidePicker: function(){
       var me = this;
 
-      if (me.picker !== false && me.picker.hide) {
+      if (me.picker !== false && me.picker.hide){
         me.picker.hide();
       }
 
-      if (me.docSpy) {
+      if (me.docSpy){
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
@@ -1244,15 +1259,15 @@ Fancy.Date = {
     /*
      *
      */
-    toggleShowPicker: function () {
+    toggleShowPicker: function(){
       var me = this;
 
-      if (me.picker === true) {
+      if (me.picker === true){
         me.showPicker();
         return;
       }
 
-      if (me.picker.panel.el.css('display') === 'none') {
+      if (me.picker.panel.el.css('display') === 'none'){
         me.showPicker();
       }
       else {
@@ -1262,10 +1277,10 @@ Fancy.Date = {
     /*
      *
      */
-    renderPicker: function () {
+    renderPicker: function(){
       var me = this;
 
-      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false) {
+      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false){
         return;
       }
 
@@ -1295,17 +1310,17 @@ Fancy.Date = {
     /*
      * @return {String}
      */
-    get: function () {
+    get: function(){
       var me = this;
 
-      if (me.input.dom.value === '') {
+      if (me.input.dom.value === ''){
         delete me.date;
         delete me.value;
 
         return '';
       }
 
-      if (me.date) {
+      if (me.date){
         return F.Date.format(me.date, me.format.write, undefined, me.format.mode);
       }
       else {
@@ -1315,13 +1330,13 @@ Fancy.Date = {
     /*
      * @return {Date}
      */
-    getDate: function () {
+    getDate: function(){
       return this.date || '';
     },
     /*
      *
      */
-    onBeforeHide: function () {
+    onBeforeHide: function(){
       this.hidePicker();
     },
     /*
@@ -1329,10 +1344,10 @@ Fancy.Date = {
      * @param {Date} newDate
      * @param {Boolean} hidePicker
      */
-    onPickerChangeDate: function (picker, newDate, hidePicker) {
+    onPickerChangeDate: function(picker, newDate, hidePicker){
       var me = this;
 
-      if (hidePicker !== false) {
+      if (hidePicker !== false){
         me.picker.hide();
       }
 
@@ -1342,13 +1357,13 @@ Fancy.Date = {
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         input = me.input,
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
+      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date'){
         return;
       }
 
@@ -1360,7 +1375,7 @@ Fancy.Date = {
     /*
      * @return {Boolean}
      */
-    isValid: function () {
+    isValid: function(){
       var me = this;
 
       return F.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
@@ -1368,10 +1383,10 @@ Fancy.Date = {
     /*
      * @param {String|Date|Number} value
      */
-    set: function (value) {
+    set: function(value){
       var me = this;
 
-      switch (value) {
+      switch (value){
         case '':
         case undefined:
           delete me.value;
@@ -1387,7 +1402,7 @@ Fancy.Date = {
      * @param {*} oldValue
      * @return {Boolean}
      */
-    isEqual: function (oldValue) {
+    isEqual: function(oldValue){
       var me = this,
         oldDate = F.Date.parse(oldValue, me.format.read, me.format.mode),
         value = me.input.dom.value;
@@ -1396,13 +1411,13 @@ Fancy.Date = {
 
       return oldValue === value;
     },
-    onEnter: function () {
+    onEnter: function(){
       var me = this,
         input = me.input,
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (value === '') {
+      if (value === ''){
         me.initDate();
 
         me.fire('input', value);
@@ -1415,7 +1430,7 @@ Fancy.Date = {
  * @class Fancy.DateRangeField
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -1437,7 +1452,7 @@ Fancy.Date = {
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('changedatefrom', 'changedateto', 'change');
@@ -1452,7 +1467,7 @@ Fancy.Date = {
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = me.renderTo || document.body,
         el = F.get(document.createElement('div'));
@@ -1464,12 +1479,11 @@ Fancy.Date = {
     /*
      *
      */
-    preRender: function () {
-    },
+    preRender: function(){},
     /*
      *
      */
-    initDateFields: function () {
+    initDateFields: function(){
       var me = this,
         theme = me.theme;
 
@@ -1541,34 +1555,35 @@ Fancy.Date = {
     /*
      *
      */
-    onFocus1: function () {
+    onFocus1: function(){
       this.dateField2.hidePicker();
     },
     /*
      *
      */
-    onFocus2: function () {
+    onFocus2: function(){
       this.dateField1.hidePicker();
     },
     /*
      *
      */
-    onShowPicker1: function () {
+    onShowPicker1: function(){
       this.dateField2.hidePicker();
     },
     /*
      *
      */
-    onShowPicker2: function () {
+    onShowPicker2: function(){
       this.dateField1.hidePicker();
     },
     /*
      * @param {Object} field
      * @param {Date} date
      */
-    onChangeDate1: function (field, date) {
-      var me = this,
-        date = F.Date.parse(date, field.format.edit, field.format.mode);
+    onChangeDate1: function(field, date){
+      var me = this;
+
+      date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       me.fire('changedatefrom', date);
       me.fire('change');
@@ -1577,8 +1592,8 @@ Fancy.Date = {
      * @param {Object} field
      * @param {Date} date
      */
-    onChangeDate2: function (field, date) {
-      var date = F.Date.parse(date, field.format.edit, field.format.mode);
+    onChangeDate2: function(field, date){
+      date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       this.fire('changedateto', date);
       this.fire('change');
@@ -1586,7 +1601,7 @@ Fancy.Date = {
     /*
      *
      */
-    onEnter: function () {
+    onEnter: function(){
       this.dateField1.hidePicker();
       this.dateField2.hidePicker();
     }
@@ -1595,7 +1610,7 @@ Fancy.Date = {
 })();/*
  * @class Fancy.DatePicker
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -1618,16 +1633,16 @@ Fancy.Date = {
     /*
      * @param {Object} picker
      */
-    add: function (picker) {
+    add: function(picker){
       this.hide();
       this.opened.push(picker);
     },
-    hide: function () {
+    hide: function(){
       var opened = this.opened,
         i = 0,
         iL = opened.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         opened[i].hide();
       }
 
@@ -1677,7 +1692,7 @@ Fancy.Date = {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       var me = this;
 
       F.apply(me, config);
@@ -1693,7 +1708,7 @@ Fancy.Date = {
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -1713,10 +1728,10 @@ Fancy.Date = {
     /*
      *
      */
-    initFormat: function () {
+    initFormat: function(){
       var me = this;
 
-      if (me.format) {}
+      if (me.format){}
       else {
         me.format = F.i18n[me.i18n].date;
       }
@@ -1724,7 +1739,7 @@ Fancy.Date = {
     /*
      *
      */
-    initMonthPicker: function () {
+    initMonthPicker: function(){
       var me = this;
 
       if(me.monthPicker){
@@ -1732,7 +1747,7 @@ Fancy.Date = {
         return;
       }
 
-      if (!F.fullBuilt && F.MODULELOAD !== false && me.monthPicker && !F.modules['grid']) {
+      if (!F.fullBuilt && F.MODULELOAD !== false && me.monthPicker && !F.modules['grid']){
         return;
       }
 
@@ -1766,16 +1781,16 @@ Fancy.Date = {
     /*
      *
      */
-    initData: function () {
+    initData: function(){
       this.data = this.generateData();
     },
     /*
      *
      */
-    initDate: function () {
+    initDate: function(){
       var me = this;
 
-      if (me.date === undefined || me.date.toString() === 'Invalid Date') {
+      if (me.date === undefined || me.date.toString() === 'Invalid Date'){
         me.date = new Date();
       }
 
@@ -1791,7 +1806,7 @@ Fancy.Date = {
     /*
      *
      */
-    initColumns: function () {
+    initColumns: function(){
       var me = this,
         format = me.format,
         days = format.days,
@@ -1802,18 +1817,18 @@ Fancy.Date = {
         columns = [],
         today = new Date();
 
-      var render = function (o) {
+      var render = function(o){
         o.cls = '';
 
-        switch (o.rowIndex) {
+        switch (o.rowIndex){
           case 0:
-            if (Number(o.value) > 20) {
+            if (Number(o.value) > 20){
               o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
           case 4:
           case 5:
-            if (Number(o.value) < 15) {
+            if (Number(o.value) < 15){
               o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
@@ -1822,15 +1837,15 @@ Fancy.Date = {
         var date = me.date,
           showDate = me.showDate;
 
-        if (today.getMonth() === showDate.getMonth() && today.getFullYear() === showDate.getFullYear()) {
-          if (o.value === today.getDate()) {
-            if (o.rowIndex === 0) {
-              if (o.value < 20) {
+        if (today.getMonth() === showDate.getMonth() && today.getFullYear() === showDate.getFullYear()){
+          if (o.value === today.getDate()){
+            if (o.rowIndex === 0){
+              if (o.value < 20){
                 o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
-            else if (o.rowIndex === 4 || o.rowIndex === 5) {
-              if (o.value > 20) {
+            else if (o.rowIndex === 4 || o.rowIndex === 5){
+              if (o.value > 20){
                 o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
             }
@@ -1840,15 +1855,15 @@ Fancy.Date = {
           }
         }
 
-        if (date.getMonth() === showDate.getMonth() && date.getFullYear() === showDate.getFullYear()) {
-          if (o.value === date.getDate()) {
-            if (o.rowIndex === 0) {
-              if (o.value < 20) {
+        if (date.getMonth() === showDate.getMonth() && date.getFullYear() === showDate.getFullYear()){
+          if (o.value === date.getDate()){
+            if (o.rowIndex === 0){
+              if (o.value < 20){
                 o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
-            else if (o.rowIndex === 4 || o.rowIndex === 5) {
-              if (o.value > 20) {
+            else if (o.rowIndex === 4 || o.rowIndex === 5){
+              if (o.value > 20){
                 o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
             }
@@ -1907,7 +1922,7 @@ Fancy.Date = {
           break;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         columns.push({
           index: dayIndexes[i],
           title: days[i][charIndex].toLocaleUpperCase(),
@@ -1931,7 +1946,7 @@ Fancy.Date = {
     /*
      * @return {Array}
      */
-    getDataFields: function () {
+    getDataFields: function(){
       var me = this,
         fields = [],
         format = me.format,
@@ -1941,14 +1956,14 @@ Fancy.Date = {
         iL = days.length,
         dayIndexes = F.Date.dayIndexes;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         fields.push(dayIndexes[i]);
       }
 
       i = 0;
       iL = startDay;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         fields.push(dayIndexes[i]);
       }
 
@@ -1957,7 +1972,7 @@ Fancy.Date = {
     /*
      *
      */
-    generateData: function () {
+    generateData: function(){
       var me = this,
         format = me.format,
         startDay = format.startDay,
@@ -1970,14 +1985,14 @@ Fancy.Date = {
         iL = daysInMonth,
         keyPlus = 0;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var key = i + firstDayOfMonth - startDay + keyPlus;
-        if (key < 0) {
+        if (key < 0){
           key = 7 - startDay;
           keyPlus = key + 1;
         }
 
-        if (key === 0) {
+        if (key === 0){
           key = 7;
           keyPlus = key;
         }
@@ -1993,7 +2008,7 @@ Fancy.Date = {
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 0) {
+      if (month === 0){
         month = 11;
         year--;
       }
@@ -2006,8 +2021,8 @@ Fancy.Date = {
 
       i = 7;
 
-      while (i--) {
-        if (data[i] === undefined) {
+      while (i--){
+        if (data[i] === undefined){
           data[i] = prevDateDaysInMonth;
           prevDateDaysInMonth--;
         }
@@ -2017,8 +2032,8 @@ Fancy.Date = {
         iL = 42,
         nextMonthDay = 1;
 
-      for (; i < iL; i++) {
-        if (data[i] === undefined) {
+      for (; i < iL; i++){
+        if (data[i] === undefined){
           data[i] = nextMonthDay;
           nextMonthDay++;
         }
@@ -2028,7 +2043,7 @@ Fancy.Date = {
         i = 0,
         iL = 6;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         _data[i] = data.splice(0, 7);
       }
 
@@ -2040,14 +2055,14 @@ Fancy.Date = {
     /*
      *
      */
-    initBars: function () {
+    initBars: function(){
       this.initTBar();
       this.initBBar();
     },
     /*
      *
      */
-    initTBar: function () {
+    initTBar: function(){
       var me = this,
         tbar = [];
 
@@ -2082,7 +2097,7 @@ Fancy.Date = {
     /*
      *
      */
-    initBBar: function () {
+    initBBar: function(){
       var me = this,
         bbar = [];
 
@@ -2102,7 +2117,7 @@ Fancy.Date = {
     /*
      *
      */
-    onBackClick: function () {
+    onBackClick: function(){
       var me = this,
         date = me.showDate,
         month = date.getMonth(),
@@ -2113,7 +2128,7 @@ Fancy.Date = {
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 0) {
+      if (month === 0){
         month = 11;
         year--;
       }
@@ -2130,7 +2145,7 @@ Fancy.Date = {
     /*
      *
      */
-    onNextClick: function () {
+    onNextClick: function(){
       var me = this,
         date = me.showDate,
         month = date.getMonth(),
@@ -2141,7 +2156,7 @@ Fancy.Date = {
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 11) {
+      if (month === 11){
         month = 0;
         year++;
       }
@@ -2158,7 +2173,7 @@ Fancy.Date = {
     /*
      *
      */
-    onUpdate: function () {
+    onUpdate: function(){
       var me = this,
         value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
@@ -2179,7 +2194,7 @@ Fancy.Date = {
     /*
      *
      */
-    onClickToday: function () {
+    onClickToday: function(){
       var me = this,
         date = new Date();
 
@@ -2194,7 +2209,7 @@ Fancy.Date = {
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellClick: function (grid, o) {
+    onCellClick: function(grid, o){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -2218,10 +2233,10 @@ Fancy.Date = {
 
       me.fire('changedate', me.date);
 
-      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)) {
+      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)){
         day = Number(o.value);
-        if (o.rowIndex < 3) {
-          if (month === 0) {
+        if (o.rowIndex < 3){
+          if (month === 0){
             year--;
             month = 11;
           }
@@ -2230,7 +2245,7 @@ Fancy.Date = {
           }
         }
         else {
-          if (month === 11) {
+          if (month === 11){
             year++;
             month = 11;
           }
@@ -2251,10 +2266,10 @@ Fancy.Date = {
     /*
      * @param {Object} e
      */
-    onMouseWheel: function (e) {
+    onMouseWheel: function(e){
       var delta = F.getWheelDelta(e.originalEvent || e);
 
-      if (delta < 0) {
+      if (delta < 0){
         this.onBackClick();
       }
       else {
@@ -2264,13 +2279,13 @@ Fancy.Date = {
     /*
      *
      */
-    onDateClick: function () {
+    onDateClick: function(){
       var me = this;
 
       me.initMonthPicker();
 
       me.monthPicker.panel.css('display', 'block');
-      if (F.$.fn.animate) {
+      if (F.$.fn.animate){
         me.monthPicker.panel.el.animate({
           top: '0px'
         });
@@ -2284,13 +2299,13 @@ Fancy.Date = {
     /*
      *
      */
-    onMonthCancelClick: function () {
+    onMonthCancelClick: function(){
       this.hideMonthPicker();
     },
     /*
      *
      */
-    onMonthOkClick: function () {
+    onMonthOkClick: function(){
       var me = this,
         monthPickerDate = me.monthPicker.date,
         newMonth = monthPickerDate.getMonth(),
@@ -2319,14 +2334,14 @@ Fancy.Date = {
     /*
      *
      */
-    hideMonthPicker: function () {
+    hideMonthPicker: function(){
       var el = this.monthPicker.panel.el;
 
-      if (F.$.fn.animate) {
+      if (F.$.fn.animate){
         el.animate({
           top: '-' + el.css('height')
         }, {
-          complete: function () {
+          complete: function(){
             el.css('display', 'none');
           }
         });
@@ -2338,17 +2353,17 @@ Fancy.Date = {
     /*
      * @param {Object} e
      */
-    onMouseDown: function (e) {
+    onMouseDown: function(e){
       e.preventDefault();
     },
     /*
      * @param {Date} date
      */
-    setDate: function (date, firstShow) {
+    setDate: function(date, firstShow){
       var me = this;
 
       me.date = date;
-      if(firstShow && me.showDate) {}
+      if(firstShow && me.showDate){}
       else {
         me.showDate = date;
       }
@@ -2361,7 +2376,7 @@ Fancy.Date = {
  * @class Fancy.MonthPicker
  * @extends Fancy.Grid
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -2408,7 +2423,7 @@ Fancy.Date = {
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       var me = this;
 
       F.apply(me, config);
@@ -2423,7 +2438,7 @@ Fancy.Date = {
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.Super('init', arguments);
@@ -2437,16 +2452,16 @@ Fancy.Date = {
     /*
      *
      */
-    initData: function () {
+    initData: function(){
       this.data = this.generateData();
     },
     /*
      *
      */
-    initDate: function () {
+    initDate: function(){
       var me = this;
 
-      if (me.date === undefined) {
+      if (me.date === undefined){
         me.date = new Date();
       }
 
@@ -2455,10 +2470,10 @@ Fancy.Date = {
     /*
      *
      */
-    initLang: function () {
+    initLang: function(){
       var me = this;
 
-      if (me.lang) {
+      if (me.lang){
         return;
       }
 
@@ -2467,25 +2482,25 @@ Fancy.Date = {
     /*
      *
      */
-    initColumns: function () {
+    initColumns: function(){
       var me = this;
 
-      var renderMonth = function (o) {
+      var renderMonth = function(o){
         var date = me.date,
           month = date.getMonth();
 
-        if (me.lang.date.months[month].substr(0, 3) === o.value) {
+        if (me.lang.date.months[month].substr(0, 3) === o.value){
           o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
         }
 
         return o;
       };
 
-      var renderYear = function (o) {
+      var renderYear = function(o){
         var date = me.date,
           year = date.getFullYear();
 
-        if (year === Number(o.value)) {
+        if (year === Number(o.value)){
           o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
         }
 
@@ -2514,7 +2529,7 @@ Fancy.Date = {
     /*
      * @return {Object}
      */
-    generateData: function () {
+    generateData: function(){
       var me = this,
         lang = me.lang,
         date = me.showDate,
@@ -2528,14 +2543,14 @@ Fancy.Date = {
       i = 0;
       iL = 12;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         years.push(year - 5 + i);
       }
 
       i = 0;
       iL = 6;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         data[i] = {};
 
         data[i]['month1'] = months[i].substr(0, 3);
@@ -2553,14 +2568,14 @@ Fancy.Date = {
     /*
      *
      */
-    initBars: function () {
+    initBars: function(){
       this.initTBar();
       this.initBBar();
     },
     /*
      *
      */
-    initTBar: function () {
+    initTBar: function(){
       var me = this,
         tbar = [];
 
@@ -2583,7 +2598,7 @@ Fancy.Date = {
     /*
      *
      */
-    initBBar: function () {
+    initBBar: function(){
       var me = this,
         bbar = [],
         lang = me.lang;
@@ -2609,7 +2624,7 @@ Fancy.Date = {
     /*
      *
      */
-    onBackClick: function () {
+    onBackClick: function(){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -2631,7 +2646,7 @@ Fancy.Date = {
     /*
      *
      */
-    onNextClick: function () {
+    onNextClick: function(){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -2653,20 +2668,20 @@ Fancy.Date = {
     /*
      *
      */
-    onClickOk: function () {
+    onClickOk: function(){
       this.fire('okclick');
     },
     /*
      *
      */
-    onClickCancel: function () {
+    onClickCancel: function(){
       this.fire('cancelclick');
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellClick: function (grid, o) {
+    onCellClick: function(grid, o){
       var me = this,
         date = me.date,
         year = date.getFullYear(),
@@ -2679,7 +2694,7 @@ Fancy.Date = {
         cell = F.get(o.cell),
         body;
 
-      if (o.side === 'center') {
+      if (o.side === 'center'){
         body = me.body;
         year = Number(o.value);
       }
@@ -2691,7 +2706,7 @@ Fancy.Date = {
       body.el.select('.' + PICKER_MONTH_CELL_ACTIVE_CLS).removeCls(PICKER_MONTH_CELL_ACTIVE_CLS);
       cell.addCls(PICKER_MONTH_CELL_ACTIVE_CLS);
 
-      if (_date > 28) {
+      if (_date > 28){
         _date = 1;
       }
 
@@ -2703,17 +2718,17 @@ Fancy.Date = {
     /*
      * @param {Object} e
      */
-    onMouseWheel: function (e) {
+    onMouseWheel: function(e){
       var delta = F.getWheelDelta(e.originalEvent || e);
 
-      if (delta < 0) {
+      if (delta < 0){
         this.onBackClick();
       }
       else {
         this.onNextClick();
       }
     },
-    setDate: function (date) {
+    setDate: function(date){
       var me = this;
 
       me.date = date;

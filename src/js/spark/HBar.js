@@ -27,7 +27,7 @@ Fancy.define('Fancy.spark.HBar', {
     me.initId();
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.ons();
     }
   },
@@ -45,7 +45,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  ons: function() {
+  ons: function(){
     var me = this;
     
     if(me.tip !== false){
@@ -92,7 +92,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(e){
+  onMouseLeave: function(){
     var me = this;
 
     if(!me.tip || !me.tipTpl){
@@ -133,7 +133,7 @@ Fancy.define('Fancy.spark.HBar', {
 
     if(column.fields){
       iL = column.fields.length;
-      Fancy.each(column.fields, function (field) {
+      Fancy.each(column.fields, function(field){
         var key = column.index + '.' + field;
 
         if(disabled[key]){
@@ -144,7 +144,7 @@ Fancy.define('Fancy.spark.HBar', {
       });
     }
     else{
-      Fancy.each(fields, function (key) {
+      Fancy.each(fields, function(key){
         if(disabled[key]){
           return;
         }
@@ -288,7 +288,7 @@ Fancy.define('Fancy.spark.HBar', {
 
     i = 0;
 
-    for(;i<iL;i++) {
+    for(;i<iL;i++){
       if(column.fields){
         var key = column.fields[i],
           _value = me.data[column.index][key];

@@ -29,13 +29,13 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSize: function (config) {
+  prepareConfigSize: function(config){
     var el,
       me = this,
       renderTo = config.renderTo;
 
-    if(config.width === undefined) {
-      if (renderTo) {
+    if(config.width === undefined){
+      if (renderTo){
         config.responsive = true;
         el = Fancy.get(renderTo);
 
@@ -47,7 +47,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
 
     }
     else if(config.height === 'fit'){
-      setTimeout(function () {
+      setTimeout(function(){
         me.setHeightFit();
         me.on('changetab', me.onChangeTab, me);
       });
@@ -76,15 +76,15 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigBars: function(config) {
+  prepareConfigBars: function(config){
     var fn = function(bar){
       var i = 0,
         iL = bar.length;
 
-      for(;i<iL;i++) {
-        switch (bar[i].type) {
+      for(;i<iL;i++){
+        switch (bar[i].type){
           case 'date':
-            if (!bar[i].format) {
+            if (!bar[i].format){
               var date = config.lang.date;
               bar[i].format = {
                 read: date.read,
@@ -142,7 +142,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   /*
    *
    */
-  setHeightFit: function () {
+  setHeightFit: function(){
     var me = this,
       isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
       panelBodyBorders = me.panelBodyBorders,
@@ -207,7 +207,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   /*
    *
    */
-  onChangeTab: function () {
+  onChangeTab: function(){
     var me = this;
 
     me.setHeightFit();

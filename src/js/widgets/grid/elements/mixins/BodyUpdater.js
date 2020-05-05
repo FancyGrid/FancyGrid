@@ -1,7 +1,7 @@
 /*
  * @mixin Fancy.grid.body.mixin.Updater
  */
-(function() {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -36,13 +36,13 @@
   /*
    * @mixin Fancy.grid.body.mixin.Updater
    */
-  F.grid.body.mixin.Updater = function () {};
+  F.grid.body.mixin.Updater = function(){};
 
   F.grid.body.mixin.Updater.prototype = {
     /*
      * @param {String} type
      */
-    update: function (type) {
+    update: function(type){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -56,7 +56,7 @@
           me.checkDomColumns();
       }
 
-      if (s.loading) {
+      if (s.loading){
         return;
       }
 
@@ -110,7 +110,7 @@
     /*
      *
      */
-    checkDomColumns: function () {
+    checkDomColumns: function(){
       var me = this,
         w = me.widget,
         numExistedColumn = me.el.select('.' + GRID_COLUMN_CLS).length,
@@ -118,16 +118,16 @@
         i = 0,
         iL = columns.length;
 
-      if (iL <= numExistedColumn) {
+      if (iL <= numExistedColumn){
         return;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i],
           width = column.width,
           el = F.get(document.createElement('div'));
 
-        if (column.hidden) {
+        if (column.hidden){
           el.css('display', 'none');
         }
 
@@ -135,11 +135,11 @@
         el.attr('grid', w.id);
         el.attr('role', 'presentation');
 
-        if (column.index === '$selected' || column.select) {
+        if (column.index === '$selected' || column.select){
           el.addCls(GRID_COLUMN_SELECT_CLS);
         }
         else {
-          switch (column.type) {
+          switch (column.type){
             case 'order':
               el.addCls(GRID_COLUMN_ORDER_CLS);
               break;
@@ -160,11 +160,11 @@
           el.addCls(GRID_COLUMN_ROW_DRAG_CLS);
         }
 
-        if (column.cls) {
+        if (column.cls){
           el.addCls(column.cls);
         }
 
-        if (column.type === 'text') {
+        if (column.type === 'text'){
           el.addCls(GRID_COLUMN_TEXT_CLS);
         }
 
@@ -173,12 +173,12 @@
         });
         el.attr('index', i);
 
-        if (column.cellAlign) {
+        if (column.cellAlign){
           el.css('text-align', column.cellAlign);
         }
 
-        if (column.ellipsis === true) {
-          switch (column.type) {
+        if (column.ellipsis === true){
+          switch (column.type){
             case 'string':
             case 'text':
             case 'number':
@@ -198,7 +198,7 @@
     /*
      * @param {number} indexOrder
      */
-    checkDomCells: function (indexOrder) {
+    checkDomCells: function(indexOrder){
       var me = this,
         w = me.widget,
         body = w.body,
@@ -216,7 +216,7 @@
         }
       }
 
-      switch (me.side) {
+      switch (me.side){
         case 'left':
           columns = w.leftColumns;
           break;
@@ -234,23 +234,23 @@
         dataLength = s.getLength(),
         cellTpl = me.cellTpl;
 
-      if (w.cellWrapper) {
+      if (w.cellWrapper){
         cellTpl = me.cellWrapperTpl;
       }
 
-      if (indexOrder !== undefined) {
+      if (indexOrder !== undefined){
         j = indexOrder;
         jL = indexOrder;
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var columnDom = columsDom.item(j),
           delta = 0;
 
         delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
         i = iL - delta;
 
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           var cellHTML = cellTpl.getHTML({});
 
           var el = F.get(document.createElement('div'));
@@ -261,8 +261,8 @@
           el.addCls(GRID_CELL_CLS);
           el.attr('index', i);
 
-          if (i % 2 !== 0 && w.striped) {
-            el.addCls(GRID_CELL_EVEN_CLS)
+          if (i % 2 !== 0 && w.striped){
+            el.addCls(GRID_CELL_EVEN_CLS);
           }
           el.update(cellHTML);
           columnDom.dom.appendChild(el.dom);
@@ -272,7 +272,7 @@
           }
         }
 
-        if (w.nativeScroller && (me.side === 'left' || me.side === 'right')) {
+        if (w.nativeScroller && (me.side === 'left' || me.side === 'right')){
           columnDom.select('.' + GRID_PSEUDO_CELL_CLS).destroy();
 
           var cellHTML = cellTpl.getHTML({
@@ -295,21 +295,21 @@
      * @param {Number} rowIndex
      * @param {Number} columnIndex
      */
-    updateRows: function (rowIndex, columnIndex) {
+    updateRows: function(rowIndex, columnIndex){
       var me = this,
         w = me.widget,
         i = 0,
         columns,
         iL;
 
-      if (rowIndex === undefined) {
+      if (rowIndex === undefined){
         me.clearDirty();
       }
       else {
         me.clearDirty(rowIndex);
       }
 
-      switch (me.side) {
+      switch (me.side){
         case 'left':
           columns = w.leftColumns;
           break;
@@ -323,7 +323,7 @@
 
       iL = columns.length;
 
-      if (columnIndex !== undefined) {
+      if (columnIndex !== undefined){
         i = columnIndex;
         iL = columnIndex + 1;
 
@@ -333,10 +333,10 @@
         }
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var column = columns[i];
 
-        switch (column.type) {
+        switch (column.type){
           case 'string':
           case 'number':
           case 'combo':
@@ -428,7 +428,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderUniversal: function (i, rowIndex) {
+    renderUniversal: function(i, rowIndex){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -454,14 +454,14 @@
         isComplexInner = true;
       }
 
-      if (column.index !== undefined) {
+      if (column.index !== undefined){
         key = column.index;
       }
       else {
         key = column.type === 'action' ? 'none' : undefined;
       }
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -476,11 +476,11 @@
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
         if(jL > numOfVisibleCells){
-          jL = numOfVisibleCells
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         if(w.infinite){
           var rowData = s.dataView[j + infiniteScrolledToRow],
             cell = cellsDom.item(j);
@@ -514,11 +514,11 @@
           value,
           dirty = false;
 
-        if (s.changed[o.id] && s.changed[o.id][column.index]) {
+        if (s.changed[o.id] && s.changed[o.id][column.index]){
           dirty = true;
         }
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
@@ -527,26 +527,26 @@
 
         o.value = value;
 
-        if (column.format) {
+        if (column.format){
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        switch (column.type) {
+        switch (column.type){
           case 'currency':
-            if (value !== '') {
+            if (value !== ''){
               value = currencySign + value;
             }
             o.value = value;
             break;
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
-        switch (value) {
+        switch (value){
           case '':
           case null:
           case undefined:
@@ -554,15 +554,15 @@
             break;
         }
 
-        if (w.cellStylingCls) {
+        if (w.cellStylingCls){
           me.clearCls(cell);
         }
 
-        if (o.cls) {
+        if (o.cls){
           cell.addCls(o.cls);
         }
 
-        if (dirty && w.dirtyEnabled) {
+        if (dirty && w.dirtyEnabled){
           me.enableCellDirty(cell);
         }
 
@@ -593,7 +593,7 @@
             inner.update(complexInner.join(' '));
           }
         }
-        else if (!o.column.widget) {
+        else if (!o.column.widget){
           inner.update(value);
         }
 
@@ -612,7 +612,7 @@
     /*
      * @param {Number} i
      */
-    renderOrder: function (i) {
+    renderOrder: function(i){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -626,21 +626,21 @@
         jL = s.getLength(),
         plusValue = 0;
 
-      if (w.paging) {
+      if (w.paging){
         plusValue += s.showPage * s.pageSize;
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
 
         plusValue = s.infiniteScrolledToRow;
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           id = s.getId(j),
           o = {
@@ -655,17 +655,17 @@
 
         o.value = value;
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
         var cell = cellsDom.item(j);
-        if (w.cellStylingCls) {
+        if (w.cellStylingCls){
           me.clearCls(cell);
         }
 
-        if (o.cls) {
+        if (o.cls){
           cell.addCls(o.cls);
         }
 
@@ -678,7 +678,7 @@
      * @param {Number} rowIndex
      * @param {Boolean} [complex]
      */
-    renderRowDrag: function (i, rowIndex, complex) {
+    renderRowDrag: function(i, rowIndex, complex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -691,15 +691,15 @@
         j = 0,
         jL = s.getLength();
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           id = s.getId(j),
           o = {
@@ -715,11 +715,11 @@
         o.value = value;
 
         var cell = cellsDom.item(j);
-        if (w.cellStylingCls) {
+        if (w.cellStylingCls){
           me.clearCls(cell);
         }
 
-        if (o.cls) {
+        if (o.cls){
           cell.addCls(o.cls);
         }
 
@@ -737,7 +737,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderTree: function (i, rowIndex) {
+    renderTree: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -750,7 +750,7 @@
         jL,
         key = column.index;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -759,15 +759,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var cellInnerEl = cellsDomInner.item(j),
           dataItem = w.get(j),
           value = dataItem.get(key),
@@ -843,7 +843,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderExpand: function (i, rowIndex) {
+    renderExpand: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -855,7 +855,7 @@
         j,
         jL;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -864,15 +864,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var cellInnerEl = cellsDomInner.item(j),
           checkBox = cellInnerEl.select('.fancy-field-checkbox'),
           checkBoxId,
@@ -880,7 +880,7 @@
           dataItem = w.get(j),
           dataItemId = dataItem.id;
 
-        if (isCheckBoxInside === false) {
+        if (isCheckBoxInside === false){
           cellsDomInner.item(j).update('');
 
           checkBox = new F.CheckBox({
@@ -894,10 +894,10 @@
               display: 'inline-block'
             },
             events: [{
-              change: function (checkbox, value) {
+              change: function(checkbox, value){
                 rowIndex = checkbox.el.parent().parent().attr('index');
 
-                if (value) {
+                if (value){
                   w.expander.expand(rowIndex);
                 }
                 else {
@@ -911,7 +911,7 @@
           checkBoxId = checkBox.dom.id;
           checkBox = F.getWidget(checkBoxId);
 
-          if (w.expander._expandedIds[dataItemId]) {
+          if (w.expander._expandedIds[dataItemId]){
             checkBox.set(true, false);
           }
           else {
@@ -943,10 +943,10 @@
     /*
      * @param {Fancy.Element} cell
      */
-    clearCls: function (cell) {
+    clearCls: function(cell){
       var w = this.widget;
 
-      F.each(w.cellStylingCls, function (cls) {
+      F.each(w.cellStylingCls, function(cls){
         cell.removeCls(cls);
       });
     },
@@ -954,7 +954,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderColor: function (i, rowIndex) {
+    renderColor: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -967,7 +967,7 @@
         j,
         jL;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -976,15 +976,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -994,14 +994,14 @@
           },
           value;
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
           value = s.get(j, key);
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
@@ -1019,7 +1019,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCombo: function (i, rowIndex) {
+    renderCombo: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1033,7 +1033,7 @@
         j,
         jL;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1042,7 +1042,7 @@
         jL = s.getLength();
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var value = s.get(j, key),
           o = {
             rowIndex: j,
@@ -1050,7 +1050,7 @@
             style: {}
           };
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
@@ -1063,7 +1063,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCheckbox: function (i, rowIndex, isSwitcher) {
+    renderCheckbox: function(i, rowIndex, isSwitcher){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1082,7 +1082,7 @@
         widgetName = 'Switcher';
       }
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1091,15 +1091,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           value = s.get(j, key),
           cellInnerEl = cellsDomInner.item(j),
@@ -1119,20 +1119,20 @@
             value: value
           };
 
-        if (s.changed[o.id] && s.changed[o.id][column.index]) {
+        if (s.changed[o.id] && s.changed[o.id][column.index]){
           dirty = true;
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
-        if (isCheckBoxInside === false) {
-          if (!o.stopped) {
+        if (isCheckBoxInside === false){
+          if (!o.stopped){
             var editable = true;
 
-            if (w.rowEdit) {
+            if (w.rowEdit){
               editable = false;
             }
 
@@ -1149,18 +1149,18 @@
                 display: 'inline-block'
               },
               events: [{
-                beforechange: function (checkbox) {
-                  if (column.index === '$selected' || column.select) {
+                beforechange: function(checkbox){
+                  if (column.index === '$selected' || column.select){
                     return;
                   }
 
-                  if (column.editable !== true) {
+                  if (column.editable !== true){
                     checkbox.canceledChange = true;
                   }
                 }
               }, {
-                change: function (checkbox, value) {
-                  if (column.index === '$selected' || column.select) {
+                change: function(checkbox, value){
+                  if (column.index === '$selected' || column.select){
                     return;
                   }
 
@@ -1176,7 +1176,7 @@
         else {
           checkBoxId = checkBox.dom.id;
           checkBox = F.getWidget(checkBoxId);
-          if (o.stopped) {
+          if (o.stopped){
             checkBox.destroy();
             cellsDomInner.item(j).update(value);
           }
@@ -1185,18 +1185,18 @@
           }
         }
 
-        if (w.cellStylingCls) {
+        if (w.cellStylingCls){
           me.clearCls(cell);
         }
 
-        if (o.cls) {
+        if (o.cls){
           cell.addCls(o.cls);
         }
 
         cell.css(o.style);
 
-        if (dirty && w.dirtyEnabled) {
-          var cell = cellsDom.item(j);
+        if (dirty && w.dirtyEnabled){
+          cell = cellsDom.item(j);
           me.enableCellDirty(cell);
         }
       }
@@ -1206,7 +1206,7 @@
      * @param {Number} rowIndex
      * @param {Boolean} [complex]
      */
-    renderSelect: function (i, rowIndex, complex) {
+    renderSelect: function(i, rowIndex, complex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1218,7 +1218,7 @@
         j,
         jL;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1227,15 +1227,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var item,
           value = false,
           id = s.get(j, 'id'),
@@ -1245,12 +1245,12 @@
           isCheckBoxInside = checkBox.length !== 0,
           editable = true;
 
-        if (w.selection.memory) {
-          if (w.selection.memory.all && !w.selection.memory.excepted[id]) {
+        if (w.selection.memory){
+          if (w.selection.memory.all && !w.selection.memory.excepted[id]){
             value = true;
             w.selection.domSelectRow(j);
           }
-          else if (w.selection.memory.has(id)) {
+          else if (w.selection.memory.has(id)){
             value = true;
             w.selection.domSelectRow(j);
           }
@@ -1264,8 +1264,8 @@
             var $selected = item.get('$selected');
 
             if($selected){
-              var recurseSelect = function (childs) {
-                F.each(childs, function (child) {
+              var recurseSelect = function(childs){
+                F.each(childs, function(child){
                   if(!child.fields){
                     return;
                   }
@@ -1289,7 +1289,7 @@
             }
             else if($selected === false){
               /*
-              F.each(item.data.child, function (child) {
+              F.each(item.data.child, function(child){
                 if(!child.fields){
                   return;
                 }
@@ -1315,12 +1315,12 @@
           editable = false;
         }
 
-        if (isCheckBoxInside === false) {
+        if (isCheckBoxInside === false){
           var renderTo = cellsDomInner.item(j);
 
           if(complex){
             renderTo = renderTo.select('.fancy-grid-cell-inner-select').item(0).dom;
-            if(!Fancy.isBoolean(value)) {
+            if(!Fancy.isBoolean(value)){
               value = false;
             }
           }
@@ -1342,8 +1342,8 @@
               display: 'inline-block'
             },
             events: [{
-              beforechange: function (field) {
-                if(w.selection.stopOneTick) {
+              beforechange: function(field){
+                if(w.selection.stopOneTick){
                   field.canceledChange = true;
                 }
               }
@@ -1372,7 +1372,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderImage: function (i, rowIndex) {
+    renderImage: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1386,7 +1386,7 @@
         j,
         jL;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1395,15 +1395,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var value = s.get(j, key),
           data = s.get(j),
           o = {
@@ -1414,13 +1414,13 @@
           },
           attr = '';
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
-        if (o.attr) {
-          for (var p in o.attr) {
+        if (o.attr){
+          for (var p in o.attr){
             attr += p + '="' + o.attr[p] + '"';
           }
         }
@@ -1436,7 +1436,7 @@
      * @param {Number} rowIndex
      * @param {String} type
      */
-    renderSparkLine: function (i, rowIndex, type) {
+    renderSparkLine: function(i, rowIndex, type){
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -1455,7 +1455,7 @@
 
       columnDom.addCls(GRID_COLUMN_SPARKLINE_CLS);
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1468,7 +1468,7 @@
         sparkWidth = columnWidth - 20,
         widthName;
 
-      switch (type) {
+      switch (type){
         case 'line':
         case 'pie':
         case 'box':
@@ -1490,15 +1490,15 @@
           break;
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var value = s.get(j, key),
           data = s.get(j),
           o = {
@@ -1508,18 +1508,18 @@
             style: {}
           };
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
-        if (F.isArray(column.values)) {
+        if (F.isArray(column.values)){
           var k = 0,
             kL = column.values.length;
 
           value = [];
 
-          for (; k < kL; k++) {
+          for (; k < kL; k++){
             value.push(s.get(j, column.values[k]));
           }
         }
@@ -1534,7 +1534,7 @@
 
         F.apply(sparkConfig, _sparkConfig);
 
-        if (type === 'bar' || type === 'tristate') {
+        if (type === 'bar' || type === 'tristate'){
           sparkWidth = columnWidth - 20;
           sparkWidth = sparkWidth / value.length;
         }
@@ -1548,7 +1548,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderProgressDonut: function (i, rowIndex) {
+    renderProgressDonut: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1564,7 +1564,7 @@
 
       columnDom.addCls(GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS);
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1573,15 +1573,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -1591,7 +1591,7 @@
           },
           value;
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
@@ -1600,12 +1600,12 @@
 
         o.value = value;
 
-        if (column.format) {
+        if (column.format){
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
@@ -1619,7 +1619,7 @@
           value: value
         });
 
-        if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width) {
+        if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width){
           sparkConfig.size = w.cellHeaderHeight - 3 * 2;
         }
 
@@ -1632,7 +1632,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderGrossLoss: function (i, rowIndex) {
+    renderGrossLoss: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1648,7 +1648,7 @@
 
       columnDom.addCls(GRID_COLUMN_GROSSLOSS_CLS);
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1659,19 +1659,19 @@
 
       var sparkConfig = column.sparkConfig || {};
 
-      if (sparkConfig.showOnMax) {
+      if (sparkConfig.showOnMax){
         sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -1681,7 +1681,7 @@
           },
           value;
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
@@ -1690,12 +1690,12 @@
 
         o.value = value;
 
-        if (column.format) {
+        if (column.format){
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
@@ -1715,7 +1715,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderProgressBar: function (i, rowIndex) {
+    renderProgressBar: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1732,7 +1732,7 @@
 
       columnDom.addCls(GRID_COLUMN_PROGRESS_CLS);
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1742,19 +1742,19 @@
       }
 
       var sparkConfig = column.sparkConfig || {};
-      if (sparkConfig.percents === false) {
+      if (sparkConfig.percents === false){
         maxValue = Math.max.apply(Math, s.getColumnData(key));
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -1765,7 +1765,7 @@
           cell = cellsDom.item(j),
           value;
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
@@ -1774,29 +1774,29 @@
 
         o.value = value;
 
-        if (column.format) {
+        if (column.format){
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
         cell.css(o.style);
 
-        if (w.cellStylingCls) {
+        if (w.cellStylingCls){
           me.clearCls(cell);
         }
 
-        if (o.cls) {
+        if (o.cls){
           cell.addCls(o.cls);
         }
 
         var _renderTo = F.get(cellsDomInner.item(j).dom);
 
-        if (_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).length) {
+        if (_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).length){
           var spark = F.getWidget(_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).item(0).attr('id'));
           spark.value = value;
           spark.maxValue = maxValue;
@@ -1818,7 +1818,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderHBar: function (i, rowIndex) {
+    renderHBar: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1842,19 +1842,19 @@
         kL,
         maxItemValue = Number.MIN_VALUE;
 
-      if (F.isArray(column.index)) {
+      if (F.isArray(column.index)){
         iL = column.index.length;
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           var _key = column.index[i];
 
-          if (disabled[_key]) {
+          if (disabled[_key]){
             continue;
           }
 
           values[_key] = s.getColumnData(_key);
 
           var _maxItemValue = Math.max.apply(Math, values[_key]);
-          if (_maxItemValue > maxItemValue) {
+          if (_maxItemValue > maxItemValue){
             maxItemValue = _maxItemValue;
           }
 
@@ -1867,12 +1867,12 @@
 
         iL = data.length;
 
-        for (; i < iL; i++) {
+        for (; i < iL; i++){
           var n = 0,
             nL = data[i].length;
 
-          for (; n < nL; n++) {
-            if (disabled[n]) {
+          for (; n < nL; n++){
+            if (disabled[n]){
               continue;
             }
 
@@ -1881,18 +1881,18 @@
           }
         }
 
-        for (var p in values) {
+        for (var p in values){
           var _maxItemValue = Math.max.apply(Math, values[p]);
           fields.push(p);
 
-          if (_maxItemValue > maxItemValue) {
+          if (_maxItemValue > maxItemValue){
             maxItemValue = _maxItemValue;
           }
 
           kL = values[p].length;
         }
 
-        if (!column.fields) {
+        if (!column.fields){
           column.fields = fields;
         }
       }
@@ -1900,13 +1900,13 @@
       var sum = [],
         k = 0;
 
-      for (; k < kL; k++) {
+      for (; k < kL; k++){
         sum[k] = 0;
-        for (var p in values) {
-          if (column.fields && disabled[column.index + '.' + p]) {
+        for (var p in values){
+          if (column.fields && disabled[column.index + '.' + p]){
             continue;
           }
-          else if (disabled[p]) {
+          else if (disabled[p]){
             continue;
           }
 
@@ -1918,7 +1918,7 @@
 
       sparkConfig.maxItemValue = maxItemValue;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1927,15 +1927,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -1945,7 +1945,7 @@
           },
           value;
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
@@ -1954,12 +1954,12 @@
 
         o.value = value;
 
-        if (column.format) {
+        if (column.format){
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
@@ -1968,7 +1968,7 @@
 
         var _renderTo = F.get(cellsDomInner.item(j).dom);
 
-        if (_renderTo.select('.fancy-spark-hbar').length) {
+        if (_renderTo.select('.fancy-spark-hbar').length){
           var spark = F.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
           spark.maxValue = maxValue;
           spark.maxItemValue = maxItemValue;
@@ -1992,7 +1992,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCircle: function (i, rowIndex) {
+    renderCircle: function(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -2008,32 +2008,32 @@
 
       columnDom.addCls(GRID_COLUMN_CHART_CIRCLE_CLS);
 
-      function pieChart(percentage, size) {
+      function pieChart(percentage, size){
         //http://jsfiddle.net/da5LN/62/
 
-        var svgns = "http://www.w3.org/2000/svg";
-        var chart = document.createElementNS(svgns, "svg:svg");
-        chart.setAttribute("width", size);
-        chart.setAttribute("height", size);
-        chart.setAttribute("viewBox", "0 0 " + size + " " + size);
+        var svgns = 'http://www.w3.org/2000/svg';
+        var chart = document.createElementNS(svgns, 'svg:svg');
+        chart.setAttribute('width', size);
+        chart.setAttribute('height', size);
+        chart.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
 
-        var back = document.createElementNS(svgns, "circle");
-        back.setAttributeNS(null, "cx", size / 2);
-        back.setAttributeNS(null, "cy", size / 2);
-        back.setAttributeNS(null, "r", size / 2);
-        var color = "#F0F0F0";
-        if (size > 50) {
-          color = "F0F0F0";
+        var back = document.createElementNS(svgns, 'circle');
+        back.setAttributeNS(null, 'cx', size / 2);
+        back.setAttributeNS(null, 'cy', size / 2);
+        back.setAttributeNS(null, 'r', size / 2);
+        var color = '#F0F0F0';
+        if (size > 50){
+          color = 'F0F0F0';
         }
 
-        if (percentage < 0) {
+        if (percentage < 0){
           color = '#F9DDE0';
         }
 
-        back.setAttributeNS(null, "fill", color);
+        back.setAttributeNS(null, 'fill', color);
         chart.appendChild(back);
 
-        var path = document.createElementNS(svgns, "path");
+        var path = document.createElementNS(svgns, 'path');
         var unit = (Math.PI * 2) / 100;
         var startangle = 0;
         var endangle = percentage * unit - 0.001;
@@ -2042,35 +2042,35 @@
         var x2 = (size / 2) + (size / 2) * Math.sin(endangle);
         var y2 = (size / 2) - (size / 2) * Math.cos(endangle);
         var big = 0;
-        if (endangle - startangle > Math.PI) {
+        if (endangle - startangle > Math.PI){
           big = 1;
         }
-        var d = "M " + (size / 2) + "," + (size / 2) +
-          " L " + x1 + "," + y1 +
-          " A " + (size / 2) + "," + (size / 2) +
-          " 0 " + big + " 1 " +
-          x2 + "," + y2 +
-          " Z";
+        var d = 'M ' + (size / 2) + ',' + (size / 2) +
+          ' L ' + x1 + ',' + y1 +
+          ' A ' + (size / 2) + ',' + (size / 2) +
+          ' 0 ' + big + ' 1 ' +
+          x2 + ',' + y2 +
+          ' Z';
 
-        path.setAttribute("d", d); // Set this path
-        if (percentage < 0) {
-          path.setAttribute("fill", '#EA7369');
+        path.setAttribute('d', d); // Set this path
+        if (percentage < 0){
+          path.setAttribute('fill', '#EA7369');
         }
         else {
-          path.setAttribute("fill", '#44A4D3');
+          path.setAttribute('fill', '#44A4D3');
         }
         chart.appendChild(path);
 
-        var front = document.createElementNS(svgns, "circle");
-        front.setAttributeNS(null, "cx", (size / 2));
-        front.setAttributeNS(null, "cy", (size / 2));
-        front.setAttributeNS(null, "r", (size * 0.25));
-        front.setAttributeNS(null, "fill", "#fff");
+        var front = document.createElementNS(svgns, 'circle');
+        front.setAttributeNS(null, 'cx', (size / 2));
+        front.setAttributeNS(null, 'cy', (size / 2));
+        front.setAttributeNS(null, 'r', (size * 0.25));
+        front.setAttributeNS(null, 'fill', '#fff');
         chart.appendChild(front);
         return chart;
       }
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -2079,15 +2079,15 @@
         jL = s.getLength();
       }
 
-      if(w.infinite) {
+      if(w.infinite){
         var numOfVisibleCells = w.getNumOfVisibleCells();
 
-        if (jL > numOfVisibleCells) {
-          jL = numOfVisibleCells
+        if (jL > numOfVisibleCells){
+          jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++) {
+      for (; j < jL; j++){
         var value,
           data = s.get(j),
           o = {
@@ -2096,7 +2096,7 @@
             style: {}
           };
 
-        if (column.smartIndexFn) {
+        if (column.smartIndexFn){
           value = column.smartIndexFn(data);
         }
         else {
@@ -2105,14 +2105,14 @@
 
         o.value = value;
 
-        if (column.render) {
+        if (column.render){
           o = column.render(o);
           value = o.value;
         }
 
         var innerDom = cellsDomInner.item(j).dom;
 
-        if (innerDom.innerHTML === '') {
+        if (innerDom.innerHTML === ''){
 
           innerDom.appendChild(pieChart(value, cellHeight));
         }
@@ -2121,7 +2121,7 @@
     /*
      *
      */
-    removeNotUsedCells: function () {
+    removeNotUsedCells: function(){
       var me = this,
         w = me.widget,
         store = w.store,
@@ -2129,13 +2129,13 @@
         i = 0,
         iL = columnsDom.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var columnDom = columnsDom.item(i),
           cellsDom = columnDom.select('.' + GRID_CELL_CLS),
           j = store.getLength(),
           jL = cellsDom.length;
 
-        for (; j < jL; j++) {
+        for (; j < jL; j++){
           cellsDom.item(j).remove();
         }
       }
@@ -2144,18 +2144,18 @@
      * @param {String|Object} format
      * @return {Function|String|Object}
      */
-    getFormat: function (format) {
+    getFormat: function(format){
       var me = this,
         w = me.widget,
         lang = w.lang;
 
-      switch (format) {
+      switch (format){
         case 'number':
-          return function (value) {
+          return function(value){
             return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
           };
         case 'date':
-          return function (value) {
+          return function(value){
             var date = F.Date.parse(value, lang.date.read, format.mode);
             value = F.Date.format(date, lang.date.write, format.mode);
 
@@ -2163,10 +2163,10 @@
           };
       }
 
-      switch (format.type) {
+      switch (format.type){
         case 'date':
-          return function (value) {
-            if (!value || value.length === 0) {
+          return function(value){
+            if (!value || value.length === 0){
               return '';
             }
 
@@ -2183,7 +2183,7 @@
       }
 
       /*
-      if (format.inputFn) {
+      if (format.inputFn){
         return format.inputFn;
       }
       */
@@ -2193,8 +2193,8 @@
      * @param {*} format
      * @return {String}
      */
-    format: function (value, format) {
-      switch (F.typeOf(format)) {
+    format: function(value, format){
+      switch (F.typeOf(format)){
         case 'string':
           value = this.getFormat(format)(value);
           break;
@@ -2203,7 +2203,7 @@
           break;
         case 'object':
           /*
-          if (format.inputFn) {
+          if (format.inputFn){
             value = format.inputFn(value);
           }
           else {
@@ -2223,8 +2223,8 @@
     /*
      * @param {Fancy.Element} cell
      */
-    enableCellDirty: function (cell) {
-      if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
+    enableCellDirty: function(cell){
+      if (cell.hasCls(GRID_CELL_DIRTY_CLS)){
         return;
       }
 
@@ -2234,10 +2234,10 @@
     /*
      * @param {Number} rowIndex
      */
-    clearDirty: function (rowIndex) {
+    clearDirty: function(rowIndex){
       var me = this;
 
-      if (rowIndex !== undefined) {
+      if (rowIndex !== undefined){
         me.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + GRID_CELL_DIRTY_EL_CLS).destroy();
         me.el.select('.' + GRID_CELL_DIRTY_CLS + '[index="' + rowIndex + '"]').removeCls(GRID_CELL_DIRTY_CLS);
         return;
@@ -2249,21 +2249,21 @@
     /*
      *
      */
-    showEmptyText: function () {
+    showEmptyText: function(){
       var me = this,
         w = me.widget,
         s = w.store;
 
-      if (me.side !== 'center') {
+      if (me.side !== 'center'){
         return;
       }
 
-      if (me.emptyTextEl) {
+      if (me.emptyTextEl){
         me.emptyTextEl.destroy();
         delete me.emptyTextEl;
       }
 
-      if (s.dataView.length === 0) {
+      if (s.dataView.length === 0){
         var el = F.get(document.createElement('div'));
 
         el.addCls(GRID_EMPTY_CLS);

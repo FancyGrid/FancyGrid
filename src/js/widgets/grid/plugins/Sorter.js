@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.Sorter
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -23,31 +23,31 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
-      w.once('render', function () {
+      w.once('render', function(){
         me.onsHeaders();
       });
     },
     /*
      *
      */
-    onsHeaders: function () {
+    onsHeaders: function(){
       var me = this,
         w = me.widget;
 
@@ -57,7 +57,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onHeaderCellClick: function (grid, o) {
+    onHeaderCellClick: function(grid, o){
       var me = this,
         w = me.widget,
         columndrag = w.columndrag,
@@ -75,25 +75,25 @@
         return;
       }
 
-      if (target.tagName.toLocaleLowerCase() === 'input') {
+      if (target.tagName.toLocaleLowerCase() === 'input'){
         return;
       }
 
       var field = cellEl.select('.' + FIELD_CLS);
-      if (field.length > 0 && field.item(0).within(target) === true) {
+      if (field.length > 0 && field.item(0).within(target) === true){
         return;
       }
 
-      if (cellEl.hasCls(GRID_COLUMN_RESIZER_CLS) || w.startResizing) {
+      if (cellEl.hasCls(GRID_COLUMN_RESIZER_CLS) || w.startResizing){
         return;
       }
 
       columns = w.getColumns(side);
 
-      if (cellEl.hasCls(GRID_COLUMN_SORT_ASC)) {
+      if (cellEl.hasCls(GRID_COLUMN_SORT_ASC)){
         action = 'desc';
       }
-      else if (cellEl.hasCls(GRID_COLUMN_SORT_DESC)) {
+      else if (cellEl.hasCls(GRID_COLUMN_SORT_DESC)){
         if(!w.multiSort){
           action = 'drop';
         }
@@ -121,7 +121,7 @@
      * @param {Object} column
      * @param {Object} cell
      */
-    sort: function (dir, index, side, column, cell) {
+    sort: function(dir, index, side, column, cell){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -133,9 +133,9 @@
 
       w.sorting = true;
 
-      if (!column || !cell) {
-        for (; i < iL; i++) {
-          if (columns[i].index === index) {
+      if (!column || !cell){
+        for (; i < iL; i++){
+          if (columns[i].index === index){
             column = columns[i];
             cell = header.getCell(i);
             break;
@@ -143,18 +143,18 @@
         }
       }
 
-      if (column.sortable !== true) {
+      if (column.sortable !== true){
         return;
       }
 
-      if (w.multiSort) {
+      if (w.multiSort){
         me.clearHeaderMultiSortCls(dir, cell);
       }
       else {
         me.clearHeaderSortCls();
       }
 
-      switch (dir) {
+      switch (dir){
         case 'asc':
           cell.addCls(GRID_COLUMN_SORT_ASC);
           break;
@@ -168,22 +168,22 @@
       var format,
         mode;
 
-      if (column.format) {
-        if (F.isString(column.format)) {
-          switch (column.format) {
+      if (column.format){
+        if (F.isString(column.format)){
+          switch (column.format){
             case 'date':
               format = w.lang.date.read;
-              if (column.format.mode) {
+              if (column.format.mode){
                 mode = column.format.mode;
               }
               break;
           }
         }
         else {
-          switch (column.type) {
+          switch (column.type){
             case 'date':
               format = column.format.read;
-              if (column.format.mode) {
+              if (column.format.mode){
                 mode = column.format.mode;
               }
               break;
@@ -191,9 +191,9 @@
         }
       }
 
-      if (w.grouping) {
-        if (s.remoteSort) {
-          s.once('load', function () {
+      if (w.grouping){
+        if (s.remoteSort){
+          s.once('load', function(){
             w.grouping.reGroup();
             //Write code instead of reGroup
           });
@@ -213,14 +213,14 @@
      * @param {String} dir
      * @param {Fancy.Element} cellEl
      */
-    clearHeaderMultiSortCls: function (dir, cellEl) {
+    clearHeaderMultiSortCls: function(dir, cellEl){
       var me = this,
         w = me.widget,
         s = w.store,
         itemsASC,
         itemsDESC;
 
-      switch (dir.toLocaleUpperCase()) {
+      switch (dir.toLocaleUpperCase()){
         case 'ASC':
           cellEl.removeCls(GRID_COLUMN_SORT_DESC);
           break;
@@ -232,7 +232,7 @@
       itemsASC = w.el.select('.' + GRID_COLUMN_SORT_ASC);
       itemsDESC = w.el.select('.' + GRID_COLUMN_SORT_DESC);
 
-      if (itemsASC.length + itemsDESC.length < s.multiSortLimit) {
+      if (itemsASC.length + itemsDESC.length < s.multiSortLimit){
         return;
       }
 
@@ -241,7 +241,7 @@
         iL = itemsASC.length,
         cellToRemoveCls;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var cell = itemsASC.item(i),
           sideEl = cell.parent().parent(),
           side,
@@ -249,13 +249,13 @@
           key,
           index = cell.attr('index');
 
-        if (sideEl.hasCls(GRID_CENTER_CLS)) {
+        if (sideEl.hasCls(GRID_CENTER_CLS)){
           side = 'center';
         }
-        else if (sideEl.hasCls(GRID_LEFT_CLS)) {
+        else if (sideEl.hasCls(GRID_LEFT_CLS)){
           side = 'left';
         }
-        else if (sideEl.hasCls(GRID_RIGHT_CLS)) {
+        else if (sideEl.hasCls(GRID_RIGHT_CLS)){
           side = 'right';
         }
 
@@ -264,7 +264,7 @@
 
         var firstSorter = s.sorters[0];
 
-        if (firstSorter.key === key) {
+        if (firstSorter.key === key){
           cellToRemoveCls = cell;
         }
       }
@@ -272,7 +272,7 @@
       var i = 0,
         iL = itemsDESC.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var cell = itemsDESC.item(i),
           sideEl = cell.parent().parent(),
           side,
@@ -280,13 +280,13 @@
           key,
           index = cell.attr('index');
 
-        if (sideEl.hasCls(GRID_CENTER_CLS)) {
+        if (sideEl.hasCls(GRID_CENTER_CLS)){
           side = 'center';
         }
-        else if (sideEl.hasCls(GRID_LEFT_CLS)) {
+        else if (sideEl.hasCls(GRID_LEFT_CLS)){
           side = 'left';
         }
-        else if (sideEl.hasCls(GRID_RIGHT_CLS)) {
+        else if (sideEl.hasCls(GRID_RIGHT_CLS)){
           side = 'right';
         }
 
@@ -295,7 +295,7 @@
 
         var firstSorter = s.sorters[0];
 
-        if (firstSorter.key === key) {
+        if (firstSorter.key === key){
           cellToRemoveCls = cell;
         }
       }
@@ -306,13 +306,13 @@
     /*
      *
      */
-    clearHeaderSortCls: function () {
+    clearHeaderSortCls: function(){
       var el = this.widget.el;
 
       el.select('.' + GRID_COLUMN_SORT_ASC).removeCls(GRID_COLUMN_SORT_ASC);
       el.select('.' + GRID_COLUMN_SORT_DESC).removeCls(GRID_COLUMN_SORT_DESC);
     },
-    updateSortedHeader: function () {
+    updateSortedHeader: function(){
       var me = this,
         w = me.widget,
         header,
@@ -320,7 +320,7 @@
 
       me.clearHeaderSortCls();
 
-      F.each(s.sorters, function (sorter, i) {
+      F.each(s.sorters, function(sorter){
         var info = w.getColumnOrderByKey(sorter.key),
           cls = sorter.dir === 'ASC'? GRID_COLUMN_SORT_ASC : GRID_COLUMN_SORT_DESC;
 

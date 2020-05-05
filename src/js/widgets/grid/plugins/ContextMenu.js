@@ -2,7 +2,7 @@
  * @class Fancy.grid.plugin.ContextMenu
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -27,20 +27,20 @@
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -50,7 +50,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onContextMenu: function (grid, o) {
+    onContextMenu: function(grid, o){
       var me = this,
         e = o.e;
 
@@ -60,18 +60,18 @@
         me.initMenu();
       }
 
-      setTimeout(function (){
+      setTimeout(function(){
         me.showMenu(e, true);
       }, 50);
 
     },
-    initMenu: function () {
+    initMenu: function(){
       var me = this,
         w = me.widget,
         items = [],
         _items =  me.items || F.Array.copy(me.defaultItems);
 
-      F.each(_items, function (item, i) {
+      F.each(_items, function(item, i){
         var type = item,
           _item = {};
 
@@ -185,7 +185,7 @@
 
                     rowIndex = w.getRowById(selection[selection.length - 1].id) + 1;
 
-                    F.each(selection, function (item) {
+                    F.each(selection, function(item){
                       var _item = F.Object.copy(item);
                       _item.id = F.id(null, 'TEMP-');
                       data.push(_item);
@@ -193,7 +193,7 @@
 
                     w.insert(rowIndex, data);
 
-                    F.each(data, function (item) {
+                    F.each(data, function(item){
                       var rowIndex = w.getRowById(item.id);
 
                       w.flashRow(rowIndex);
@@ -216,7 +216,7 @@
         items: items
       });
     },
-    showMenu: function (e, eventPosition) {
+    showMenu: function(e, eventPosition){
       var me = this,
         w = me.widget,
         selection = w.selection,
@@ -263,7 +263,7 @@
       }
 
       setTimeout(function(){
-        Fancy.get(document).once('click', function(e){
+        Fancy.get(document).once('click', function(){
           me.hideMenu();
         });
       }, 50);

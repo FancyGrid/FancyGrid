@@ -24,7 +24,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
     me.initId();
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.ons();
     }
   },
@@ -42,7 +42,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  ons: function() {
+  ons: function(){
     var me = this;
     
     if(me.tip !== false){
@@ -54,7 +54,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(e){
+  onMouseEnter: function(){
     var me = this,
       value = me.el.attr('value'),
       suffix = '%',
@@ -87,10 +87,11 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(e){
+  onMouseLeave: function(){
     if(!this.tip || !this.tipTpl){
       return;
     }
+
     Fancy.tip.hide(500);
   },
   /*
@@ -100,6 +101,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
     if(!this.tip || !this.tipTpl){
       return;
     }
+
     Fancy.tip.show(e.pageX + 15, e.pageY - 25);
   },
   /*
@@ -119,7 +121,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
       attrValue = me.value;
     }
     else {
-      if (attrValue < 1) {
+      if (attrValue < 1){
         attrValue = me.value.toFixed(1);
       }
       else {
@@ -181,7 +183,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
         data: me.data
       });
 
-      me.el.css(_style)
+      me.el.css(_style);
     }
   },
   /*

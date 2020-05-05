@@ -1,6 +1,6 @@
 Fancy.modules['menu'] = true;
 
-(function() {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -28,7 +28,7 @@ Fancy.modules['menu'] = true;
      * @param {Object} config
      * @param {Object} scope
      */
-    constructor: function (config) {
+    constructor: function(config){
       Fancy.applyConfig(this, config);
 
       if(this.theme){
@@ -40,7 +40,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('hide');
@@ -57,7 +57,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el;
 
@@ -85,7 +85,7 @@ Fancy.modules['menu'] = true;
       me.fire('beforerender');
 
       if( me.theme !== 'default' ){
-        el.addCls('fancy-theme-' + me.theme);
+        el.addCls(Fancy.getThemeCSSCls(me.theme));
       }
 
       el.addClass(
@@ -146,7 +146,7 @@ Fancy.modules['menu'] = true;
     /*
      * @return {Number}
      */
-    getItemsHeight: function () {
+    getItemsHeight: function(){
       var me = this,
         items = me.items,
         itemHeight = this.itemHeight,
@@ -154,7 +154,7 @@ Fancy.modules['menu'] = true;
         i = 0,
         iL = items.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var item = items[i];
 
         if(item.type === 'sep' || item.type === '-' || item === '-'){
@@ -170,7 +170,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    renderItems: function () {
+    renderItems: function(){
       var me = this,
         i = 0,
         iL = me.items.length,
@@ -204,7 +204,7 @@ Fancy.modules['menu'] = true;
           itemEl.addCls(item.cls);
         }
 
-        if(item.type !== 'sep' && item.type !== '-') {
+        if(item.type !== 'sep' && item.type !== '-'){
           var text = [
             item.image === false ? '' : '<div class="' + MENU_ITEM_IMAGE_CLS + ' ' + imageCls + '"></div>',
             '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>'
@@ -216,10 +216,10 @@ Fancy.modules['menu'] = true;
 
           text.push('<div class="' + MENU_ITEM_RIGHT_IMAGE_CLS + ' ' + (item.items ? MENU_ITEM_EXPAND_CLS : '') + '"></div>');
 
-          itemEl.update(text.join(""));
+          itemEl.update(text.join(''));
         }
 
-        if (item.image === false) {
+        if (item.image === false){
           itemEl.addCls(MENU_ITEM_NO_IMAGE_CLS);
         }
 
@@ -227,7 +227,7 @@ Fancy.modules['menu'] = true;
           itemEl.addCls(MENU_ITEM_DISABLED_CLS);
         }
 
-        switch (item.type) {
+        switch (item.type){
           case '':
           case '-':
           case 'sep':
@@ -272,31 +272,31 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    applyDefaults: function () {
+    applyDefaults: function(){
       var me = this,
         i = 0,
         iL = me.items.length;
 
-      if (!me.defaults) {
+      if (!me.defaults){
         return;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         Fancy.applyIf(me.items[i], me.defaults);
       }
     },
     /*
      * @param {Object} e
      */
-    onItemClick: function (e) {
+    onItemClick: function(e){
       var me = this,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
         item = me.items[index],
         args = [me, item];
 
-      if (item.handler && !item.disabled) {
-        if (item.scope) {
+      if (item.handler && !item.disabled){
+        if (item.scope){
           item.handler.apply(item.scope, args);
         }
         else {
@@ -307,7 +307,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onItemEnter: function (e) {
+    onItemEnter: function(e){
       var me = this,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
@@ -344,7 +344,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    onItemLeave: function () {},
+    onItemLeave: function(){},
     /*
      * @param {Number} x
      * @param {Number} y
@@ -373,7 +373,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    hide: function () {
+    hide: function(){
       var me = this;
 
       me.el.hide();
@@ -400,7 +400,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    activateItem: function (index) {
+    activateItem: function(index){
       var me = this,
         item = me.items[index];
 
@@ -414,10 +414,10 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    deActivateItem: function () {
+    deActivateItem: function(){
       var activeItem = this.activeItem;
 
-      if (!activeItem) {
+      if (!activeItem){
         return;
       }
 
@@ -427,7 +427,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onItemMouseDown: function(e) {
+    onItemMouseDown: function(e){
       var target = e.target;
 
       if(target.tagName.toLocaleLowerCase() === 'input'){}
@@ -438,7 +438,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    enableItem: function (index) {
+    enableItem: function(index){
       var me = this,
         item = me.items[index];
 
@@ -448,7 +448,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    disableItem: function (index) {
+    disableItem: function(index){
       var me = this,
         item = me.items[index];
 
@@ -458,7 +458,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    checkPosition: function () {
+    checkPosition: function(){
       var me = this,
         el = me.el,
         offset = el.offset(),
@@ -492,7 +492,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    setChecked: function (index, clear) {
+    setChecked: function(index, clear){
       var me = this;
 
       if(clear){
@@ -507,10 +507,10 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    clearChecked: function () {
+    clearChecked: function(){
       var me = this;
 
-      me.el.select('.fancy-checkbox-on').each(function (el) {
+      me.el.select('.fancy-checkbox-on').each(function(el){
         var id = el.attr('id'),
           checkBox = F.getWidget(id);
 
@@ -572,13 +572,13 @@ Fancy.modules['menu'] = true;
       me.activeMenu.hide();
       delete me.activeMenu;
     }
-  })
+  });
 
 })();/*
  * @class Fancy.grid.plugin.ContextMenu
  * @extends Fancy.Plugin
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -603,20 +603,20 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
@@ -626,7 +626,7 @@ Fancy.modules['menu'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onContextMenu: function (grid, o) {
+    onContextMenu: function(grid, o){
       var me = this,
         e = o.e;
 
@@ -636,18 +636,18 @@ Fancy.modules['menu'] = true;
         me.initMenu();
       }
 
-      setTimeout(function (){
+      setTimeout(function(){
         me.showMenu(e, true);
       }, 50);
 
     },
-    initMenu: function () {
+    initMenu: function(){
       var me = this,
         w = me.widget,
         items = [],
         _items =  me.items || F.Array.copy(me.defaultItems);
 
-      F.each(_items, function (item, i) {
+      F.each(_items, function(item, i){
         var type = item,
           _item = {};
 
@@ -761,7 +761,7 @@ Fancy.modules['menu'] = true;
 
                     rowIndex = w.getRowById(selection[selection.length - 1].id) + 1;
 
-                    F.each(selection, function (item) {
+                    F.each(selection, function(item){
                       var _item = F.Object.copy(item);
                       _item.id = F.id(null, 'TEMP-');
                       data.push(_item);
@@ -769,7 +769,7 @@ Fancy.modules['menu'] = true;
 
                     w.insert(rowIndex, data);
 
-                    F.each(data, function (item) {
+                    F.each(data, function(item){
                       var rowIndex = w.getRowById(item.id);
 
                       w.flashRow(rowIndex);
@@ -792,7 +792,7 @@ Fancy.modules['menu'] = true;
         items: items
       });
     },
-    showMenu: function (e, eventPosition) {
+    showMenu: function(e, eventPosition){
       var me = this,
         w = me.widget,
         selection = w.selection,
@@ -839,7 +839,7 @@ Fancy.modules['menu'] = true;
       }
 
       setTimeout(function(){
-        Fancy.get(document).once('click', function(e){
+        Fancy.get(document).once('click', function(){
           me.hideMenu();
         });
       }, 50);
@@ -856,7 +856,7 @@ Fancy.modules['menu'] = true;
 })();/*
  * @mixin Fancy.grid.header.mixin.Menu
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -875,7 +875,7 @@ Fancy.modules['menu'] = true;
      * @param {Object} column
      * @param {Array} columns
      */
-    showMenu: function (cell, index, column, columns) {
+    showMenu: function(cell, index, column, columns){
       var me = this,
         w = me.widget,
         offset = cell.offset();
@@ -890,7 +890,7 @@ Fancy.modules['menu'] = true;
       me.hideMenu();
       cell.addCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
 
-      if (!column.menu.rendered) {
+      if (!column.menu.rendered){
         column._menu = column.menu;
         column.menu = me.generateMenu(column, columns);
         column.menu = new F.Menu({
@@ -917,23 +917,23 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    hideMenu: function () {
+    hideMenu: function(){
       var me = this,
         w = me.widget,
         header = w.header,
         rightHeader = w.rightHeader,
         leftHeader = w.leftHeader;
 
-      switch (me.side) {
+      switch (me.side){
         case 'left':
-          if (header.activeMenu) {
+          if (header.activeMenu){
             header.activeMenu.hide();
             header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete header.activeMenu;
             delete header.activeCell;
           }
 
-          if (rightHeader.activeMenu) {
+          if (rightHeader.activeMenu){
             rightHeader.activeMenu.hide();
             rightHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete rightHeader.activeMenu;
@@ -941,14 +941,14 @@ Fancy.modules['menu'] = true;
           }
           break;
         case 'center':
-          if (leftHeader.activeMenu) {
+          if (leftHeader.activeMenu){
             leftHeader.activeMenu.hide();
             leftHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete leftHeader.activeMenu;
             delete leftHeader.activeCell;
           }
 
-          if (rightHeader.activeMenu) {
+          if (rightHeader.activeMenu){
             rightHeader.activeMenu.hide();
             rightHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete rightHeader.activeMenu;
@@ -956,14 +956,14 @@ Fancy.modules['menu'] = true;
           }
           break;
         case 'right':
-          if (leftHeader.activeMenu) {
+          if (leftHeader.activeMenu){
             leftHeader.activeMenu.hide();
             leftHeader.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete leftHeader.activeMenu;
             delete leftHeader.activeCell;
           }
 
-          if (header.activeMenu) {
+          if (header.activeMenu){
             header.activeMenu.hide();
             header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete header.activeMenu;
@@ -972,7 +972,7 @@ Fancy.modules['menu'] = true;
           break;
       }
 
-      if (me.activeMenu) {
+      if (me.activeMenu){
         me.activeMenu.hide();
         me.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
       }
@@ -984,7 +984,7 @@ Fancy.modules['menu'] = true;
      * @param {Object} column
      * @param {Array} columns
      */
-    generateMenu: function (column, columns) {
+    generateMenu: function(column, columns){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -1000,7 +1000,7 @@ Fancy.modules['menu'] = true;
           text: lang.sortAsc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
-          handler: function () {
+          handler: function(){
             w.sorter.sort('asc', column.index, me.side);
             column.menu.hide();
           }
@@ -1009,7 +1009,7 @@ Fancy.modules['menu'] = true;
           text: lang.sortDesc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
-          handler: function () {
+          handler: function(){
             w.sorter.sort('desc', column.index, me.side);
             column.menu.hide();
           }
@@ -1022,7 +1022,7 @@ Fancy.modules['menu'] = true;
         itemSizeColumn = {
           text: lang.autoSizeColumn,
           cls: cls,
-          handler: function () {
+          handler: function(){
             w.autoSizeColumn(column.index, me.side);
             column.menu.hide();
           }
@@ -1030,14 +1030,14 @@ Fancy.modules['menu'] = true;
         itemSizeColumns = {
           text: lang.autoSizeColumns,
           cls: cls,
-          handler: function () {
+          handler: function(){
             w.autoSizeColumns();
             column.menu.hide();
           }
         };
 
-      for (; i < iL; i++) {
-        if (column.index === columns[i].index) {
+      for (; i < iL; i++){
+        if (column.index === columns[i].index){
           indexOrder = i;
           break;
         }
@@ -1056,7 +1056,7 @@ Fancy.modules['menu'] = true;
       }
 
       if(Fancy.isArray(column.menu)){
-        F.each(column.menu, function (item) {
+        F.each(column.menu, function(item){
           switch (item){
             case '|':
               menu.push('-');
@@ -1073,12 +1073,12 @@ Fancy.modules['menu'] = true;
               menu.push(itemSizeColumns);
               break;
             case 'lock':
-              switch (me.side) {
+              switch (me.side){
                 case 'left':
                 case 'right':
                   menu.push({
                     text: lang.unlock,
-                    handler: function () {
+                    handler: function(){
                       column.menu.hide();
                       w.unLockColumn(indexOrder, me.side);
                     }
@@ -1087,7 +1087,7 @@ Fancy.modules['menu'] = true;
                 case 'center':
                   menu.push({
                     text: lang.lock,
-                    handler: function () {
+                    handler: function(){
                       column.menu.hide();
                       w.lockColumn(indexOrder, me.side);
                     }
@@ -1095,7 +1095,7 @@ Fancy.modules['menu'] = true;
 
                   menu.push({
                     text: lang.rightLock,
-                    handler: function () {
+                    handler: function(){
                       column.menu.hide();
                       w.rightLockColumn(indexOrder, me.side);
                     }
@@ -1109,40 +1109,40 @@ Fancy.modules['menu'] = true;
         });
       }
       else {
-        if (menuSortable) {
+        if (menuSortable){
           menu.push(itemSortAsc);
           menu.push(itemSortDesc);
           menu.push('-');
         }
 
-        if (menuColumns) {
+        if (menuColumns){
           menu.push(itemColumns);
         }
 
-        if (menuLockable) {
-          switch (me.side) {
+        if (menuLockable){
+          switch (me.side){
             case 'left':
             case 'right':
-              if (column.menuColumns !== false) {
+              if (column.menuColumns !== false){
                 menu.push('-');
               }
 
               menu.push({
                 text: lang.unlock,
-                handler: function () {
+                handler: function(){
                   column.menu.hide();
                   w.unLockColumn(indexOrder, me.side);
                 }
               });
               break;
             case 'center':
-              if (column.menuColumns !== false) {
+              if (column.menuColumns !== false){
                 menu.push('-');
               }
 
               menu.push({
                 text: lang.lock,
-                handler: function () {
+                handler: function(){
                   column.menu.hide();
                   w.lockColumn(indexOrder, me.side);
                 }
@@ -1150,7 +1150,7 @@ Fancy.modules['menu'] = true;
 
               menu.push({
                 text: lang.rightLock,
-                handler: function () {
+                handler: function(){
                   column.menu.hide();
                   w.rightLockColumn(indexOrder, me.side);
                 }
@@ -1165,7 +1165,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Array} columns
      */
-    prepareColumns: function (columns) {
+    prepareColumns: function(columns){
       var me = this,
         w = me.widget,
         _columns = [],
@@ -1174,7 +1174,7 @@ Fancy.modules['menu'] = true;
         group = [],
         groupName;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var value = true,
           column = columns[i];
 
@@ -1182,7 +1182,7 @@ Fancy.modules['menu'] = true;
           continue;
         }
 
-        if (column.hidden) {
+        if (column.hidden){
           value = false;
         }
 
@@ -1190,12 +1190,12 @@ Fancy.modules['menu'] = true;
           text: column.title,
           checked: value,
           index: column.index,
-          handler: function (menu, item) {
-            if (item.checked === true && !item.checkbox.get()) {
+          handler: function(menu, item){
+            if (item.checked === true && !item.checkbox.get()){
               item.checkbox.set(true);
             }
 
-            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1) {
+            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
               item.checkbox.set(true);
               return;
             }
@@ -1203,7 +1203,7 @@ Fancy.modules['menu'] = true;
             item.checked = !item.checked;
             item.checkbox.set(item.checked);
 
-            if (item.checked) {
+            if (item.checked){
               w.showColumn(me.side, item.index);
             }
             else {
@@ -1216,13 +1216,13 @@ Fancy.modules['menu'] = true;
           }
         };
 
-        if (column.grouping) {
+        if (column.grouping){
           group = group || [];
           group.push(columnConfig);
           groupName = column.grouping;
           continue;
         }
-        else if (group.length) {
+        else if (group.length){
           _columns.push({
             text: groupName,
             items: group
@@ -1234,7 +1234,7 @@ Fancy.modules['menu'] = true;
         _columns.push(columnConfig);
       }
 
-      if (group.length) {
+      if (group.length){
         _columns.push({
           text: groupName,
           items: group
@@ -1246,7 +1246,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    onMenuHide: function () {
+    onMenuHide: function(){
       this.el.select('.' + GRID_HEADER_COLUMN_TRIGGERED_CLS).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
     },
     /*
@@ -1254,7 +1254,7 @@ Fancy.modules['menu'] = true;
      * @param {Array} columns
      * @param {Boolean} hard
      */
-    updateColumnsMenu: function (column, columns, hard) {
+    updateColumnsMenu: function(column, columns, hard){
       var me = this,
         menu = column.menu,
         columnsMenu,
@@ -1262,10 +1262,10 @@ Fancy.modules['menu'] = true;
         iL = menu.items.length,
         item;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         item = menu.items[i];
 
-        if (item.index === 'columns') {
+        if (item.index === 'columns'){
           columnsMenu = item;
           break;
         }
@@ -1280,24 +1280,24 @@ Fancy.modules['menu'] = true;
       iL = columnsMenu.items.length;
       var rendered = false;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         item = columnsMenu.items[i];
         var _column = columns[i];
 
-        if (item.checkbox) {
+        if (item.checkbox){
           item.checkbox.set(!_column.hidden, false);
           rendered = true;
         }
       }
 
-      if (!rendered && !hard) {
+      if (!rendered && !hard){
         columnsMenu.items = me.prepareColumns(columns);
       }
     },
     /*
      *
      */
-    destroyMenus: function () {
+    destroyMenus: function(){
       var me = this,
         w = me.widget,
         columns = w.getColumns(me.side),
@@ -1305,10 +1305,10 @@ Fancy.modules['menu'] = true;
         iL = columns.length,
         column;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         column = columns[i];
 
-        if (F.isObject(column.menu)) {
+        if (F.isObject(column.menu)){
           column.menu.destroy();
         }
       }

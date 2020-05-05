@@ -2,7 +2,7 @@
  * @class Fancy.Radio
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -30,13 +30,13 @@
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
@@ -44,20 +44,20 @@
 
       var itemsHTML = '';
 
-      if (me.column) {
+      if (me.column){
         me.cls += ' ' + FIELD_RADIO_COLUMN_CLS;
         itemsHTML += '<div style="margin-left: ' + ( me.labelWidth ) + 'px;">';
       }
 
-      F.each(me.items, function (item, i) {
+      F.each(me.items, function(item, i){
         var marginLeft = '',
           itemCls = FIELD_TEXT_CLS;
 
-        if (!me.column && i !== 0) {
+        if (!me.column && i !== 0){
           marginLeft = 'margin-left:10px;';
         }
 
-        if (item.value === me.value) {
+        if (item.value === me.value){
           itemCls += ' ' + FIELD_RADIO_ON_CLS;
         }
 
@@ -66,10 +66,10 @@
           '<div class="' + FIELD_RADIO_INPUT_CLS + '" style="float:left;' + marginLeft + '"></div>',
           '<div style="float:left;margin:7px 0 0 0;">' + item.text + '</div>',
           '</div>'
-        ].join("");
+        ].join('');
       });
 
-      if (me.column) {
+      if (me.column){
         itemsHTML += '</div>';
       }
 
@@ -99,11 +99,11 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = this.el;
 
-      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function () {
+      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function(){
         if(me.disabled){
           return;
         }
@@ -115,14 +115,14 @@
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    onClick: function () {
+    onClick: function(){
       var me = this,
         checkedCls = me.checkedCls;
 
@@ -140,7 +140,7 @@
     /*
      * @param {Object} e
      */
-    onMouseDown: function (e) {
+    onMouseDown: function(e){
       if(this.disabled){
         e.stopPropagation();
       }
@@ -150,7 +150,7 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function (value, fire) {
+    set: function(value, fire){
       var me = this,
         el = me.el,
         checkedCls = me.checkedCls,
@@ -161,7 +161,7 @@
       el.select('[value=' + value + ']').addCls(checkedCls);
 
       me.value = value;
-      if (fire !== false) {
+      if (fire !== false){
         me.fire('change', me.value);
       }
     },
@@ -169,49 +169,49 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @return {*} value
      */
-    getValue: function () {
+    getValue: function(){
       return this.value;
     },
     /*
      * @return {*} value
      */
-    get: function () {
+    get: function(){
       return this.getValue();
     },
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       this.set(false);
     },
     /*
      *
      */
-    calcColumns: function () {
+    calcColumns: function(){
       var me = this,
         maxChars = 0,
         inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label) {
+      if (me.labelAlign !== 'top' && me.label){
         inputWidth -= me.labelWidth;
         inputWidth -= 20;
       }
 
-      F.Array.each(me.items, function (item) {
-        if (item.text.length > maxChars) {
+      F.Array.each(me.items, function(item){
+        if (item.text.length > maxChars){
           maxChars = item.text.length;
         }
       });
 
       var columns = Math.floor(inputWidth / (maxChars * 7 + 30));
 
-      if (me.columns && me.columns <= columns) {
+      if (me.columns && me.columns <= columns){
         columns = me.columns;
       }
       else {
@@ -224,18 +224,18 @@
     /*
      *
      */
-    setColumnsStyle: function () {
+    setColumnsStyle: function(){
       var me = this;
 
-      if (!me.columns || me.rows === 1) {
+      if (!me.columns || me.rows === 1){
         return;
       }
 
       var radioEls = me.el.select('.' + FIELD_TEXT_CLS),
         radioInputs = me.el.select('.' + FIELD_TEXT_CLS + ' .' + FIELD_RADIO_INPUT_CLS);
 
-      radioEls.each(function (item, i) {
-        if (i % me.columns === 0) {
+      radioEls.each(function(item, i){
+        if (i % me.columns === 0){
           radioInputs.item(i).css('margin-left', '0px');
         }
 

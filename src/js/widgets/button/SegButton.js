@@ -57,7 +57,7 @@ Fancy.define('Fancy.SegButton', {
 
     me.el = Fancy.get(renderTo.appendChild(el.dom));
 
-    Fancy.each(me.style, function (value, p) {
+    Fancy.each(me.style, function(value, p){
       me.el.css(p, value);
     });
 
@@ -80,7 +80,7 @@ Fancy.define('Fancy.SegButton', {
       var item = items[i];
       item.renderTo = me.el.dom;
 
-      if(me.allowToggle !== false) {
+      if(me.allowToggle !== false){
         item.enableToggle = true;
         if(me.multiToggle !== true){
           item.toggleGroup = toggleGroup;
@@ -156,7 +156,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setItems: function (values) {
+  setItems: function(values){
     var me = this;
 
     me.el.update('');
@@ -167,7 +167,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setActiveItem: function (index, fire) {
+  setActiveItem: function(index, fire){
     var me = this,
       items = me.items;
 

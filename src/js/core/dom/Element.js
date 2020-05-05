@@ -39,18 +39,18 @@ var guid = 1;
 Fancy.proxy = function( fn, context ){
   var tmp, args, proxy;
 
-  if ( typeof context === "string" ) {
+  if ( typeof context === 'string' ){
     tmp = fn[ context ];
     context = fn;
     fn = tmp;
   }
 
-  if ( !Fancy.isFunction( fn ) ) {
+  if ( !Fancy.isFunction( fn ) ){
     return undefined;
   }
   
   args = slice.call( arguments, 2 );
-  proxy = function() {
+  proxy = function(){
     return fn.apply( context || this, args.concat( slice.call( arguments ) ) );
   };
 
@@ -197,7 +197,7 @@ El.prototype = {
     if(typeof className === 'string'){
       me.each(function(dom){
         if( className && !Fancy.get(dom).hasClass(className) ){
-          dom.className = dom.className + " " + className;
+          dom.className = dom.className + ' '  + className;
         }
       });
     }
@@ -228,9 +228,9 @@ El.prototype = {
       me.each(function(dom){
         var el = Fancy.get(dom);
         if( el.hasClass(className) ){
-          var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)', "g");
+          var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)', 'g');
           
-          el[0].className = el[0].className.replace(re, " ");
+          el[0].className = el[0].className.replace(re, ' ');
         }
       });
     }
@@ -338,7 +338,7 @@ El.prototype = {
         }
         
         if(prop == 'opacity'){
-          if (dom.style.filter.match) {
+          if (dom.style.filter.match){
             m = dom.style.filter.match(opacityRe);
   
             if(m){
@@ -399,7 +399,7 @@ El.prototype = {
     // Support: IE <=11 only
 		// Running getBoundingClientRect on a
 		// disconnected node in IE throws an error
-		if ( !dom.getClientRects().length ) {
+		if ( !dom.getClientRects().length ){
 			return { top: 0, left: 0 };
 		}
     
@@ -408,8 +408,8 @@ El.prototype = {
     // Make sure element is not hidden (display: none)
 		if( rect.width || rect.height ){
 			var doc = dom.ownerDocument,
-			  win = getWindow( doc ),
-			  docElem = doc.documentElement;
+        win = getWindow( doc ),
+        docElem = doc.documentElement;
 
 			return {
 				top: rect.top + win.pageYOffset - docElem.clientTop,
@@ -452,7 +452,7 @@ El.prototype = {
     return isWithin;
   },
   on: function(eventName, fn, scope, delegate){
-    if (scope) {
+    if (scope){
       fn = Fancy.proxy(fn, scope);
     }
     
@@ -465,32 +465,32 @@ El.prototype = {
   }
 };
 
-function on( elem, types, selector, data, fn, one ) {
+function on( elem, types, selector, data, fn, one ){
 	var origFn, type;
 
 	// Types can be a map of types/handlers
-	if ( typeof types === "object" ) {
+	if ( typeof types === 'object' ){
 
 		// ( types-Object, selector, data )
-		if ( typeof selector !== "string" ) {
+		if ( typeof selector !== 'string' ){
 
 			// ( types-Object, data )
 			data = data || selector;
 			selector = undefined;
 		}
-		for ( type in types ) {
+		for ( type in types ){
 			on( elem, type, selector, data, types[ type ], one );
 		}
 		return elem;
 	}
 
-	if ( data == null && fn == null ) {
+	if ( data == null && fn == null ){
 
 		// ( types, fn )
 		fn = selector;
 		data = selector = undefined;
-	} else if ( fn == null ) {
-		if ( typeof selector === "string" ) {
+	} else if ( fn == null ){
+		if ( typeof selector === 'string' ){
 
 			// ( types, selector, fn )
 			fn = data;
@@ -503,15 +503,15 @@ function on( elem, types, selector, data, fn, one ) {
 			selector = undefined;
 		}
 	}
-	if ( fn === false ) {
+	if ( fn === false ){
 		fn = returnFalse;
-	} else if ( !fn ) {
+	} else if ( !fn ){
 		return elem;
 	}
 
-	if ( one === 1 ) {
+	if ( one === 1 ){
 		origFn = fn;
-		fn = function( event ) {
+		fn = function( event ){
 
 			// Can use an empty set, since event contains the info
 			jQuery().off( event );
@@ -521,7 +521,7 @@ function on( elem, types, selector, data, fn, one ) {
 		// Use same guid so caller can remove using origFn
 		fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
 	}
-	return elem.each( function() {
+	return elem.each( function(){
 		jQuery.event.add( this, types, fn, data, selector );
 	} );
 }

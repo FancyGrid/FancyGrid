@@ -1,6 +1,6 @@
 Fancy.Array = {
   copy: function(a, deep){
-    if(!deep) {
+    if(!deep){
       return a.slice();
     }
 
@@ -64,7 +64,7 @@ Fancy.Array = {
       }
     }
     else {
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         if(Fancy.isNumber(values[i]) === false){
           continue;
         }
@@ -92,13 +92,13 @@ Fancy.Array = {
    * @param {Array} values
    * @return {Number}
    */
-  average: function (values) {
+  average: function(values){
     var sum = 0,
       i = 0,
       iL = values.length;
 
     for(;i<iL;i++){
-      if (Fancy.isNumber(values[i]) === false) {
+      if (Fancy.isNumber(values[i]) === false){
         continue;
       }
       sum += values[i];
@@ -112,7 +112,7 @@ Fancy.Array = {
    * @param {Array} insert
    * @return {Array}
    */
-  insert: function (arr, index, insert) {
+  insert: function(arr, index, insert){
     var arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
@@ -122,7 +122,7 @@ Fancy.Array = {
   /*
    *
    */
-  none: function () {
+  none: function(){
     return '';
   }
 };

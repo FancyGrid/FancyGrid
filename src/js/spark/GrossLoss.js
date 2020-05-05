@@ -23,7 +23,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
     me.preRender();    
     me.render();
 
-    if( me.inited !== true ) {
+    if( me.inited !== true ){
       me.ons();
     }
   },
@@ -120,7 +120,7 @@ Fancy.define('Fancy.spark.GrossLoss', {
 
     me.renderTo.innerHTML = value;
 
-    if(me.value < 0) {
+    if(me.value < 0){
       me.el = Fancy.get(me.renderTo).select('.fancy-grid-grossloss-loss').item(0);
     }
     else{

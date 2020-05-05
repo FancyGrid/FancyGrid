@@ -1,4 +1,4 @@
-(function() {
+(function(){
   var toggleGroups = {};
 
   //SHORTCUTS
@@ -31,7 +31,7 @@
     constructor: function(config, scope){
       var me = this;
 
-      if (config.toggleGroup) {
+      if (config.toggleGroup){
         toggleGroups[config.toggleGroup] = toggleGroups[config.toggleGroup] || {
             active: false,
             items: []
@@ -62,7 +62,7 @@
     /*
      *
      */
-    setOns: function () {
+    setOns: function(){
       var me = this,
         el = me.el;
 
@@ -165,7 +165,7 @@
         me.extraCls
       );
 
-      if (me.disabled) {
+      if (me.disabled){
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
@@ -205,7 +205,7 @@
 
       me.el = F.get(renderTo.appendChild(el.dom));
 
-      if (me.disabled) {
+      if (me.disabled){
         me.disable();
       }
 
@@ -240,7 +240,7 @@
      *
      */
     initToggle: function(){
-      if (!this.enableToggle) {
+      if (!this.enableToggle){
         return false;
       }
     },
@@ -250,7 +250,7 @@
     setPressed: function(value, fire){
       var me = this;
 
-      if (value) {
+      if (value){
         me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
@@ -266,7 +266,7 @@
       else {
         me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
-        if(me.toggleGroup) {
+        if(me.toggleGroup){
           delete toggleGroups[me.toggleGroup].active;
         }
       }
@@ -296,11 +296,11 @@
 
       if(me.disabled !== true){
         if(handler){
-          if(F.isString(handler)) {
+          if(F.isString(handler)){
             handler = me.getHandler(handler);
           }
 
-          if (me.scope) {
+          if (me.scope){
             handler.apply(me.scope, [me]);
           }
           else {
@@ -403,7 +403,7 @@
 
       me.text = text;
 
-      if (me.theme && Fancy.themes[me.theme]) {
+      if (me.theme && Fancy.themes[me.theme]){
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
@@ -420,15 +420,15 @@
         width = 0;
       }
 
-      if(!width) {
+      if(!width){
         width += text.length * charWidth + charWidth * 2;
 
-        if (me.imageColor) {
+        if (me.imageColor){
           me.imageCls = BUTTON_IMAGE_COLOR_CLS;
         }
 
-        if (width < me.minWidth) {
-          if (me.text && me.text.length > 0) {
+        if (width < me.minWidth){
+          if (me.text && me.text.length > 0){
             width = me.minWidth;
           }
           else {
@@ -436,11 +436,11 @@
           }
         }
 
-        if (me.imageCls && me.text) {
+        if (me.imageCls && me.text){
           width += me.imageWidth;
         }
 
-        if (me.menu) {
+        if (me.menu){
           width += me.rightImageWidth;
         }
       }
@@ -473,7 +473,7 @@
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
     },
-    toggleMenuShow: function (e) {
+    toggleMenuShow: function(){
       var me = this,
         p = me.el.$dom.offset(),
         xy = [p.left, p.top + me.el.$dom.height()];
@@ -485,11 +485,11 @@
         me.initMenu();
       }
 
-      setTimeout(function () {
+      setTimeout(function(){
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
-    initMenu: function () {
+    initMenu: function(){
       var me = this,
         config = {
           theme: me.theme,

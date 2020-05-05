@@ -1,7 +1,7 @@
 /**
  * @class Fancy.panel.Tab
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -18,12 +18,22 @@
   F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     extend: F.Panel,
     /*
-     * @constructor
-     * @param config
-     * @param scope
-     */
-    constructor: function (config) {
+   * @constructor
+   * @param {String|HtmlElement} renderTo
+   * @param {Object} config
+   */
+    constructor: function(renderTo, config){
       var me = this;
+
+      if(Fancy.isDom(renderTo)){
+        config = config || {};
+        config.renderTo = renderTo;
+      }
+      else{
+        config = renderTo;
+      }
+
+      config = config || {};
 
       Fancy.loadStyle();
 
@@ -34,7 +44,7 @@
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.prepareTabs();
@@ -48,7 +58,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this;
 
       me.Super('render', arguments);
@@ -72,18 +82,18 @@
 
       me.renderTabWrappers();
 
-      if (!me.wrapped) {
+      if (!me.wrapped){
         me.el.addCls(PANEL_GRID_INSIDE_CLS);
       }
       me.el.addCls(PANEL_TAB_CLS);
 
       me.rendered = true;
     },
-    ons: function () {
+    ons: function(){
       var me = this;
 
-      if (me.responsive) {
-        F.$(window).bind('resize', function () {
+      if (me.responsive){
+        F.$(window).bind('resize', function(){
           me.onWindowResize();
 
           if(me.intWindowResize){
@@ -95,23 +105,23 @@
             delete me.intWindowResize;
 
             //Bug fix for Mac
-            setTimeout(function () {
+            setTimeout(function(){
               me.onWindowResize();
             }, 300);
           }, 30);
         });
       }
     },
-    onWindowResize: function () {
+    onWindowResize: function(){
       var me = this,
         renderTo = me.renderTo,
         el;
 
-      if (me.panel) {
+      if (me.panel){
         renderTo = me.panel.renderTo;
       }
 
-      if(me.responsive) {
+      if(me.responsive){
         el = F.get(renderTo);
       }
       else if(me.panel){
@@ -135,7 +145,7 @@
         newWidth = el.parent().width();
       }
 
-      if(me.responsive) {
+      if(me.responsive){
         me.setWidth(newWidth);
       }
       else if(me.fitWidth){
@@ -152,37 +162,37 @@
         me.setHeight(height);
       }
     },
-    setPanelBodySize: function () {
+    setPanelBodySize: function(){
       var me = this,
         height = me.height,
         panelBodyBorders = me.panelBodyBorders;
 
-      if (me.title) {
+      if (me.title){
         height -= me.titleHeight;
       }
 
-      if (me.subTitle) {
+      if (me.subTitle){
         height -= me.subTitleHeight;
         height += panelBodyBorders[2];
       }
 
-      if (me.bbar) {
+      if (me.bbar){
         height -= me.bbarHeight || me.barHeight;
       }
 
-      if (me.tbar) {
+      if (me.tbar){
         height -= me.tbarHeight || me.barHeight;
       }
 
-      if (me.subTBar) {
+      if (me.subTBar){
         height -= me.subTBarHeight || me.barHeight;
       }
 
-      if (me.buttons) {
+      if (me.buttons){
         height -= me.buttonsHeight || me.barHeight;
       }
 
-      if (me.footer) {
+      if (me.footer){
         height -= me.barHeight;
       }
 
@@ -199,13 +209,13 @@
     /*
      * @param {Object} config
      */
-    prepareConfigTheme: function (config) {
+    prepareConfigTheme: function(config){
       var me = this,
         themeName = config.theme || me.theme,
         themeConfig = F.getTheme(themeName).config,
         wrapped = me.wrapped || config.wrapped;
 
-      if (wrapped) {
+      if (wrapped){
         config.panelBodyBorders = [0, 0, 0, 0];
         me.panelBodyBorders = [0, 0, 0, 0];
       }
@@ -216,12 +226,12 @@
     /*
      * @param {Object} config
      */
-    prepareConfigSize: function (config) {
+    prepareConfigSize: function(config){
       var renderTo = config.renderTo,
         el;
 
-      if (config.width === undefined) {
-        if (renderTo) {
+      if (config.width === undefined){
+        if (renderTo){
           config.responsive = true;
           el = Fancy.get(renderTo);
           config.width = parseInt(el.width());
@@ -231,30 +241,30 @@
     /*
      *
      */
-    prepareTabs: function () {
+    prepareTabs: function(){
       var me = this,
         tabs = [],
         i = 0,
         iL = me.items.length;
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var item = me.items[i],
           tabConfig = {
             type: 'tab'
           };
 
-        if (item.tabTitle) {
+        if (item.tabTitle){
           tabConfig.text = item.tabTitle;
         }
-        else if (item.title) {
+        else if (item.title){
           tabConfig.text = item.title;
           delete item.title;
         }
 
-        tabConfig.handler = (function (i) {
-          return function () {
+        tabConfig.handler = (function(i){
+          return function(){
             me.setActiveTab(i);
-          }
+          };
         })(i);
 
         tabs.push(tabConfig);
@@ -263,10 +273,10 @@
       me.tbar = tabs;
       me.tabs = tabs;
     },
-    renderTabWrappers: function () {
+    renderTabWrappers: function(){
       var me = this;
 
-      F.each(me.items, function (item) {
+      F.each(me.items, function(item){
         var el = F.get(document.createElement('div'));
 
         el.addCls(TAB_WRAPPER_CLS);
@@ -274,12 +284,12 @@
         item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
       });
     },
-    setActiveTab: function (newActiveTab) {
+    setActiveTab: function(newActiveTab){
       var me = this,
         tabs = me.el.select('.' + TAB_WRAPPER_CLS),
         oldActiveTab = me.activeTab;
 
-      if (me.items.length === 0) {
+      if (me.items.length === 0){
         return;
       }
 
@@ -296,8 +306,8 @@
       item.width = me.panelBodyWidth;
       item.height = me.panelBodyHeight;
 
-      if (!item.rendered) {
-        switch (item.type) {
+      if (!item.rendered){
+        switch (item.type){
           case 'form':
             me.items[me.activeTab] = new FancyForm(item);
             break;
@@ -314,7 +324,7 @@
         me.setActiveItemHeight();
       }
 
-      if (me.tabs) {
+      if (me.tabs){
         me.tbar[oldActiveTab].removeCls(TAB_TBAR_ACTIVE_CLS);
         me.tbar[me.activeTab].addCls(TAB_TBAR_ACTIVE_CLS);
       }
@@ -322,7 +332,7 @@
     /*
      * @param {String} value
      */
-    setWidth: function (value) {
+    setWidth: function(value){
       var me = this;
 
       me.width = value;
@@ -335,7 +345,7 @@
     /*
      * @param {Number} value
      */
-    setHeight: function (value) {
+    setHeight: function(value){
       var me = this;
 
       me.height = value;
@@ -345,26 +355,26 @@
 
       me.setActiveItemHeight();
     },
-    setActiveItemWidth: function () {
+    setActiveItemWidth: function(){
       var me = this;
 
       me.items[me.activeTab].setWidth(me.panelBodyWidth);
     },
-    setActiveItemHeight: function () {
+    setActiveItemHeight: function(){
       var me = this;
 
       me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
     }
   });
 
-  FancyTab.get = function (id) {
+  FancyTab.get = function(id){
     var tabId = F.get(id).select('.' + PANEL_TAB_CLS).dom.id;
 
     return F.getWidget(tabId);
   };
 
-  if (!F.nojQuery && F.$) {
-    F.$.fn.FancyTab = function (o) {
+  if (!F.nojQuery && F.$){
+    F.$.fn.FancyTab = function(o){
       if(this.selector){
         o.renderTo = F.$(this.selector)[0].id;
       }

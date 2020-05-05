@@ -2,7 +2,7 @@
  * @class Fancy.DateRangeField
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -24,7 +24,7 @@
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('changedatefrom', 'changedateto', 'change');
@@ -39,7 +39,7 @@
     /*
      *
      */
-    render: function () {
+    render: function(){
       var me = this,
         renderTo = me.renderTo || document.body,
         el = F.get(document.createElement('div'));
@@ -51,12 +51,11 @@
     /*
      *
      */
-    preRender: function () {
-    },
+    preRender: function(){},
     /*
      *
      */
-    initDateFields: function () {
+    initDateFields: function(){
       var me = this,
         theme = me.theme;
 
@@ -128,34 +127,35 @@
     /*
      *
      */
-    onFocus1: function () {
+    onFocus1: function(){
       this.dateField2.hidePicker();
     },
     /*
      *
      */
-    onFocus2: function () {
+    onFocus2: function(){
       this.dateField1.hidePicker();
     },
     /*
      *
      */
-    onShowPicker1: function () {
+    onShowPicker1: function(){
       this.dateField2.hidePicker();
     },
     /*
      *
      */
-    onShowPicker2: function () {
+    onShowPicker2: function(){
       this.dateField1.hidePicker();
     },
     /*
      * @param {Object} field
      * @param {Date} date
      */
-    onChangeDate1: function (field, date) {
-      var me = this,
-        date = F.Date.parse(date, field.format.edit, field.format.mode);
+    onChangeDate1: function(field, date){
+      var me = this;
+
+      date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       me.fire('changedatefrom', date);
       me.fire('change');
@@ -164,8 +164,8 @@
      * @param {Object} field
      * @param {Date} date
      */
-    onChangeDate2: function (field, date) {
-      var date = F.Date.parse(date, field.format.edit, field.format.mode);
+    onChangeDate2: function(field, date){
+      date = F.Date.parse(date, field.format.edit, field.format.mode);
 
       this.fire('changedateto', date);
       this.fire('change');
@@ -173,7 +173,7 @@
     /*
      *
      */
-    onEnter: function () {
+    onEnter: function(){
       this.dateField1.hidePicker();
       this.dateField2.hidePicker();
     }

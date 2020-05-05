@@ -201,7 +201,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     if(o.totalCount !== undefined && o.totalCount !== o[me.readerRootProperty].length){
       me.totalCount = o.totalCount;
       me.pageType = 'server';
-      if(me.remoteSort === undefined) {
+      if(me.remoteSort === undefined){
         me.remoteSort = true;
       }
       //Not sure what is better about type of paging, sorting, filtering

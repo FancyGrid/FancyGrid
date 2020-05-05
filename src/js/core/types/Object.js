@@ -21,14 +21,11 @@ Fancy.Object = {
    * @param {Object} o
    * @return {Boolean}
    */
-  isEmpty: function (o) {
-    var empty = true;
-
+  isEmpty: function(o){
     for(var p in o){
-      empty = false;
-      continue;
+      return false;
     }
 
-    return empty;
+    return true;
   }
 };

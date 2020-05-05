@@ -2,9 +2,9 @@
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
 
-if( Fancy.nojQuery ) {
+if( Fancy.nojQuery ){
 
-  (function ($, undefined) {
+  (function($, undefined){
     var prefix = '', eventPrefix,
       vendors = {Webkit: 'webkit', Moz: '', O: 'o'},
       testEl = document.createElement('div'),
@@ -14,16 +14,16 @@ if( Fancy.nojQuery ) {
       animationName, animationDuration, animationTiming, animationDelay,
       cssReset = {}
 
-    function dasherize(str) {
+    function dasherize(str){
       return str.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase()
     }
 
-    function normalizeEvent(name) {
+    function normalizeEvent(name){
       return eventPrefix ? eventPrefix + name : name.toLowerCase()
     }
 
-    $.each(vendors, function (vendor, event) {
-      if (testEl.style[vendor + 'TransitionProperty'] !== undefined) {
+    $.each(vendors, function(vendor, event){
+      if (testEl.style[vendor + 'TransitionProperty'] !== undefined){
         prefix = '-' + vendor.toLowerCase() + '-'
         eventPrefix = event
         return false
@@ -48,7 +48,7 @@ if( Fancy.nojQuery ) {
       animationEnd: normalizeEvent('AnimationEnd')
     }
 
-    $.fn.animate = function (properties, duration, ease, callback, delay) {
+    $.fn.animate = function(properties, duration, ease, callback, delay){
       if ($.isFunction(duration))
         callback = duration, ease = undefined, duration = undefined
       if ($.isFunction(ease))
@@ -61,7 +61,7 @@ if( Fancy.nojQuery ) {
       return this.anim(properties, duration, ease, callback, delay)
     }
 
-    $.fn.anim = function (properties, duration, ease, callback, delay) {
+    $.fn.anim = function(properties, duration, ease, callback, delay){
       var key, cssValues = {}, cssProperties, transforms = '',
         that = this, wrappedCallback, endEvent = $.fx.transitionEnd,
         fired = false
@@ -70,7 +70,7 @@ if( Fancy.nojQuery ) {
       if (delay === undefined) delay = 0
       if ($.fx.off) duration = 0
 
-      if (typeof properties == 'string') {
+      if (typeof properties == 'string'){
         // keyframe animation
         cssValues[animationName] = properties
         cssValues[animationDuration] = duration + 's'
@@ -85,7 +85,7 @@ if( Fancy.nojQuery ) {
           else cssValues[key] = properties[key], cssProperties.push(dasherize(key))
 
         if (transforms) cssValues[transform] = transforms, cssProperties.push(transform)
-        if (duration > 0 && typeof properties === 'object') {
+        if (duration > 0 && typeof properties === 'object'){
           cssValues[transitionProperty] = cssProperties.join(', ')
           cssValues[transitionDuration] = duration + 's'
           cssValues[transitionDelay] = delay + 's'
@@ -93,8 +93,8 @@ if( Fancy.nojQuery ) {
         }
       }
 
-      wrappedCallback = function (event) {
-        if (typeof event !== 'undefined') {
+      wrappedCallback = function(event){
+        if (typeof event !== 'undefined'){
           if (event.target !== event.currentTarget) return // makes sure the event didn't bubble from "below"
           $(event.target).unbind(endEvent, wrappedCallback)
         } else
@@ -104,11 +104,11 @@ if( Fancy.nojQuery ) {
         $(this).css(cssReset)
         callback && callback.call(this)
       }
-      if (duration > 0) {
+      if (duration > 0){
         this.bind(endEvent, wrappedCallback)
         // transitionEnd is not always firing on older Android phones
         // so make sure it gets fired
-        setTimeout(function () {
+        setTimeout(function(){
           if (fired) return
           wrappedCallback.call(that)
         }, ((duration + delay) * 1000) + 25)
@@ -119,8 +119,8 @@ if( Fancy.nojQuery ) {
 
       this.css(cssValues)
 
-      if (duration <= 0) setTimeout(function () {
-        that.each(function () {
+      if (duration <= 0) setTimeout(function(){
+        that.each(function(){
           wrappedCallback.call(this)
         })
       }, 0)

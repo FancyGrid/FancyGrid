@@ -35,7 +35,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @constructor
    */
-  constructor: function () {
+  constructor: function(){
     var me = this;
 
     me.tags = me.tags || [];
@@ -44,7 +44,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  init: function () {
+  init: function(){
     var me = this;
 
     me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key', 'enter', 'up', 'down', 'esc');
@@ -108,8 +108,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     var me = this;
 
     if( me.theme && me.theme !== 'default' ){
-      me.addCls('fancy-theme-' + me.theme);
-      me.list.addCls('fancy-theme-' + me.theme);
+      me.addCls(Fancy.getThemeCSSCls(me.theme));
+      me.list.addCls(Fancy.getThemeCSSCls(me.theme));
     }
   },
   fieldCls: 'fancy fancy-field fancy-tag-field',
@@ -141,11 +141,11 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onInputClick: function(e){
+  onInputClick: function(){
     var me = this,
       list = me.list;
 
-    if (list.css('display') === 'none') {
+    if (list.css('display') === 'none'){
       me.showList();
     }
     else {
@@ -155,11 +155,11 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onDropClick: function(e){
+  onDropClick: function(){
     var me = this,
       list = me.list;
 
-    if (list.css('display') === 'none') {
+    if (list.css('display') === 'none'){
       me.showList();
     }
     else {
@@ -182,7 +182,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       left: xy[0] + 'px',
       top: xy[1] + 'px',
       width: el.width(),
-      "z-index": 2000 + Fancy.zIndex++
+      'z-index': 2000 + Fancy.zIndex++
     });
 
     if(!me.docSpy){
@@ -236,8 +236,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       list = me.list,
       liEls = list.select('li');
 
-    liEls.hover(function (e) {
-      if (me.listItemOver) {
+    liEls.hover(function(e){
+      if (me.listItemOver){
         me.listItemOver.removeCls('fancy-tag-field-list-active');
       }
       Fancy.get(e.target).addCls('fancy-tag-field-list-active');
@@ -263,13 +263,13 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {*} value
    * @param {Boolean} onInput
    */
-  set: function (value, onInput) {
+  set: function(value, onInput){
     var me = this,
       i = 0,
       iL = me.data.length;
 
-    for (; i < iL; i++) {
-      if (me.data[i][me.valueKey] == value) {
+    for (; i < iL; i++){
+      if (me.data[i][me.valueKey] == value){
         me.valueIndex = i;
         break;
       }
@@ -277,7 +277,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     me.value = value;
 
-    if (onInput !== false) {
+    if (onInput !== false){
       me.onInput();
     }
   },
@@ -321,7 +321,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         }]
       });
 
-      checkBox.el.hover(function () {
+      checkBox.el.hover(function(){
         var el = Fancy.get(this);
         me.clearListActive();
 
@@ -329,7 +329,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       });
     }
 
-    me.on('change', function (me, value) {
+    me.on('change', function(me){
       var checkBox = Fancy.getWidget(me.list.select('li[value="' + me.value + '"] .fancy-field-checkbox').attr('id'));
 
       checkBox.toggle();
@@ -363,12 +363,12 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       return;
     }
 
-    if (me.tags.length > 1) {
+    if (me.tags.length > 1){
       item = me.el.select('input').item(0).before([
         '<span data-tag="fancy-tag-full" class="fancy-tag-field-item">',
         '...',
         '</span>'
-      ].join(""));
+      ].join(''));
 
       newInputWidth = 0;
       me.isFull = true;
@@ -378,17 +378,17 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         '<span data-tag="' + tagValue + '" class="fancy-tag-field-item">',
           tagValue,
         '</span>'
-      ].join(""));
+      ].join(''));
 
       item = me.el.select('[data-tag="' + tagValue + '"]').item(0);
       newInputWidth = inputWidth - item.width();
     }
 
-    if (newInputWidth < 0) {
+    if (newInputWidth < 0){
       newInputWidth = 0;
     }
 
-    if (newInputWidth === 0) {
+    if (newInputWidth === 0){
       me.input.css('display', 'none');
     }
 
@@ -404,7 +404,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       list = Fancy.get( document.createElement('div') ),
       value = me.value;
 
-    if (value === undefined) {
+    if (value === undefined){
       value = '';
     }
     else {
@@ -412,8 +412,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         iL = me.data.length,
         found = false;
 
-      for (; i < iL; i++) {
-        if (me.data[i][me.valueKey] === value) {
+      for (; i < iL; i++){
+        if (me.data[i][me.valueKey] === value){
           me.valueIndex = i;
           value = me.data[i][me.displayKey];
           found = true;
@@ -421,7 +421,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         }
       }
 
-      if (found === false) {
+      if (found === false){
         value = '';
       }
     }
@@ -431,7 +431,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     var labelWidth = '';
 
-    if (me.labelWidth) {
+    if (me.labelWidth){
       labelWidth = 'width:' + me.labelWidth + 'px;';
     }
 
@@ -439,15 +439,15 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       '<ul style="position: relative;">'
     ];
 
-    Fancy.each(me.data, function (row, i) {
+    Fancy.each(me.data, function(row, i){
       var isActive = '',
         value = row[me.displayKey];
 
-      if (i === 0) {
+      if (i === 0){
         isActive = 'fancy-tag-field-list-active';
       }
 
-      if (value === '' || value === ' ') {
+      if (value === '' || value === ' '){
         value = '&nbsp;';
       }
 
@@ -458,13 +458,13 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     var label = me.label;
 
-    if (me.label === '') {
+    if (me.label === ''){
       label = '&nbsp;';
     }
-    else if (me.label === undefined) {
+    else if (me.label === undefined){
       label = '&nbsp;';
     }
-    else if (me.labelAlign !== 'right') {
+    else if (me.labelAlign !== 'right'){
       label += ':';
     }
 
@@ -483,7 +483,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     me.el = el;
 
     list.addCls('fancy fancy-tag-field-result-list');
-    list.update( listHtml.join("") );
+    list.update( listHtml.join('') );
     list.css({
       display: 'none',
       left: '0px',
@@ -491,7 +491,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       width: me.inputWidth + 14
     });
 
-    if (me.data.length > 9) {
+    if (me.data.length > 9){
       list.css({
         height: me.listRowHeight * 9 + 'px',
         overflow: 'auto'
@@ -501,15 +501,15 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     document.body.appendChild(list.dom);
     me.list = list;
 
-    if (me.labelAlign === 'top') {
+    if (me.labelAlign === 'top'){
       me.el.addCls('fancy-field-label-align-top');
     }
-    else if (me.labelAlign === 'right') {
+    else if (me.labelAlign === 'right'){
       me.el.addCls('fancy-field-label-align-right');
       $(el).find('.fancy-field-label').insertAfter($(el).find('.fancy-tag-field-text'));
     }
 
-    if (me.valueIndex) {
+    if (me.valueIndex){
       me.acceptedValue = me.value;
     }
 
@@ -562,22 +562,22 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     me.data = data;
 
-    Fancy.each(me.data, function (row, i) {
+    Fancy.each(me.data, function(row, i){
       var isActive = '',
         value = row[me.displayKey];
 
-      if (i === 0) {
+      if (i === 0){
         isActive = activeListItemCls;
       }
 
-      if (value === '' || value === ' ') {
+      if (value === '' || value === ' '){
         value = '&nbsp;';
       }
 
       listHtml.push('<li value="' + row[me.valueKey] + '" class="' + isActive + '">' + value + '</li>');
     });
 
-    me.list.select('ul').update(listHtml.join(""));
+    me.list.select('ul').update(listHtml.join(''));
     me.onsList();
   },
   /*
@@ -596,7 +596,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       iL = me.data.length;
 
     for(; i < iL; i++){
-      if (me.data[i][me.valueKey] == value) {
+      if (me.data[i][me.valueKey] == value){
         return me.data[i][me.displayKey];
       }
     }
@@ -610,7 +610,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       iL = me.data.length;
 
     for(; i < iL; i++){
-      if (me.data[i][me.displayKey] === value) {
+      if (me.data[i][me.displayKey] === value){
         return me.data[i][me.valueKey];
       }
     }
@@ -645,7 +645,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       keyCode = e.keyCode,
       key = Fancy.key;
 
-    switch(keyCode) {
+    switch(keyCode){
       case key.ESC:
         me.fire('esc', e);
         break;
@@ -661,7 +661,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       case key.TAB:
         break;
       default:
-        setTimeout(function() {
+        setTimeout(function(){
           if(me.generateAheadData().length === 0){
             me.hideAheadList();
             return;
@@ -766,7 +766,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       if(top - height > 0){
         list.dom.scrollTop = 0;
       }
-      else if(top - height > -parseInt( activeLi.css('height') ) ) {
+      else if(top - height > -parseInt( activeLi.css('height') ) ){
         list.dom.scrollTop = list.dom.scrollTop + (top - height) + parseInt(activeLi.css('height'));
       }
 
@@ -837,16 +837,16 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       list = Fancy.get( document.createElement('div'));
     }
 
-    Fancy.each(me.aheadData, function (row, i) {
+    Fancy.each(me.aheadData, function(row, i){
       var isActive = '',
         displayValue = row[me.displayKey],
         value = row[me.valueKey];
 
-      if (i === 0) {
+      if (i === 0){
         isActive = me.selectedItemCls;
       }
 
-      if (displayValue === '' || displayValue === ' ') {
+      if (displayValue === '' || displayValue === ' '){
         displayValue = '&nbsp;';
       }
 
@@ -855,7 +855,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     listHtml.push('</ul>');
 
-    list.update( listHtml.join("") );
+    list.update( listHtml.join('') );
     list.css({
       display: 'none',
       left: '0px',
@@ -863,7 +863,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       width: me.inputWidth + 14
     });
 
-    if (me.aheadData.length > 9) {
+    if (me.aheadData.length > 9){
       list.css({
         height: me.listRowHeight * 9 + 'px',
         overflow: 'auto'
@@ -905,7 +905,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       left: xy[0] + 'px',
       top: xy[1] + 'px',
       width: el.width(),
-      "z-index": 2000 + Fancy.zIndex++
+      'z-index': 2000 + Fancy.zIndex++
     });
 
     if(!me.docSpy2){

@@ -15,7 +15,7 @@ Fancy.Number = {
    * @return {Number}
    */
   getPrecision: function(value){
-    return (value + "").split(".")[1].length + 1;
+    return (value + '').split('.')[1].length + 1;
   },
   /**
    * @param {Number} value
@@ -30,7 +30,7 @@ Fancy.Number = {
    * @param {Number} [precision]
    * @return {String}
    */
-  format: function (value, sep, precision) {
+  format: function(value, sep, precision){
     var dot,
       result;
 

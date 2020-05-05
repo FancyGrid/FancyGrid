@@ -22,7 +22,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       if(child){
         var filteredChild = [];
 
-        Fancy.each(child, function (_child) {
+        Fancy.each(child, function(_child){
           var item = _child.data? _child: new me.model(_child),
             filterChild = me.filterCheckItem(item);
 
@@ -98,7 +98,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           case '=':
           case '==':
             if(Fancy.isArray(value)){
-              Fancy.each(value, function (_v, i) {
+              Fancy.each(value, function(_v, i){
                 value[i] = String(_v);
               });
 
@@ -123,7 +123,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           case '!=':
             if(Fancy.isArray(value)){
-              Fancy.each(value, function (_v, i) {
+              Fancy.each(value, function(_v, i){
                 value[i] = String(_v);
               });
 
@@ -135,7 +135,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             }
             break;
           case '':
-            var checkEqual = function (value, indexValue) {
+            var checkEqual = function(value, indexValue){
               value = String(value).toLocaleLowerCase();
               indexValue = String(indexValue).toLocaleLowerCase();
 
@@ -221,8 +221,8 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
     me.filteredDataMap = {};
 
-    for (; i < iL; i++) {
-      if (me.order) {
+    for (; i < iL; i++){
+      if (me.order){
         filterOrder.push(me.order[i]);
         item = data[me.order[i]];
       }
@@ -231,7 +231,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         item = data[i];
       }
 
-      if (me.filterCheckItem(item)) {
+      if (me.filterCheckItem(item)){
         filteredData.push(item);
         me.filteredDataMap[item.id] = item;
       }
@@ -300,19 +300,17 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @return {Boolean}
    */
-  hasFilters: function () {
+  hasFilters: function(){
     var me = this;
 
     if(!me.filters){
       return false;
     }
 
-    var containsFilter = false;
-
     for(var p in me.filters){
-      containsFilter = true;
+      return true;
     }
 
-    return containsFilter;
+    return false;
   }
 });

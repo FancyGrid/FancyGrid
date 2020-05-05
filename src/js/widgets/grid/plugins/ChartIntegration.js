@@ -48,7 +48,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
 
         kL = fields.length;
 
-        for (; k < kL; k++) {
+        for (; k < kL; k++){
           keys[fields[k]] = true;
         }
       }
@@ -141,10 +141,10 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
       var _chart = chart[i],
         type = _chart.type;
 
-      switch(type) {
+      switch(type){
         case 'highchart':
         case 'highcharts':
-          if (_chart.sortBind !== false) {
+          if (_chart.sortBind !== false){
             var categories = w.highchart.sort(_chart, o);
             chart[i].categories = categories.original;
           }

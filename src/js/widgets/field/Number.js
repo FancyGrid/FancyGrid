@@ -2,7 +2,7 @@
  * @class Fancy.NumberField
  * @extends Fancy.Widget
  */
-(function() {
+(function(){
   /*
    * CONSTANTS
    */
@@ -27,14 +27,14 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       Fancy.apply(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'empty');
@@ -46,7 +46,7 @@
 
       me.ons();
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
@@ -74,20 +74,20 @@
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         input = me.input,
         value = me.get(),
         oldValue = me.acceptedValue;
 
-      if (me.isValid()) {
+      if (me.isValid()){
         var _value = input.dom.value,
           _newValue = '',
           i = 0,
           iL = _value.length;
 
-        for (; i < iL; i++) {
-          switch (_value[i]) {
+        for (; i < iL; i++){
+          switch (_value[i]){
             case '0':
             case '1':
             case '2':
@@ -106,7 +106,7 @@
           }
         }
 
-        if (!isNaN(Number(_newValue))) {
+        if (!isNaN(Number(_newValue))){
           me.value = _newValue;
           value = _newValue;
         }
@@ -120,8 +120,8 @@
      * @param {String} value
      * @return {Boolean}
      */
-    isNumber: function (value) {
-      if (value === '' || value === '-') {
+    isNumber: function(value){
+      if (value === '' || value === '-'){
         return true;
       }
 
@@ -131,10 +131,10 @@
      * @param {Number|String} value
      * @return {Boolean}
      */
-    checkMinMax: function (value) {
+    checkMinMax: function(value){
       var me = this;
 
-      if (value === '' || value === '-') {
+      if (value === '' || value === '-'){
         return true;
       }
 
@@ -145,22 +145,22 @@
     /*
      * @param {Number} value
      */
-    setMin: function (value) {
+    setMin: function(value){
       this.min = value;
     },
     /*
      * @param {Number} value
      */
-    setMax: function (value) {
+    setMax: function(value){
       this.max = value;
     },
     /*
      *
      */
-    initSpin: function () {
+    initSpin: function(){
       var me = this;
 
-      if (me.spin !== true) {
+      if (me.spin !== true){
         return;
       }
 
@@ -172,7 +172,7 @@
     /*
      * @param {Object} e
      */
-    onMouseDownSpinUp: function (e) {
+    onMouseDownSpinUp: function(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -188,23 +188,23 @@
 
       me.spinUp();
 
-      me.spinInterval = setInterval(function () {
+      me.spinInterval = setInterval(function(){
         me.mouseDownSpinUp = false;
-        if (new Date() - time > timeInterval) {
-          if (timeInterval === 700) {
+        if (new Date() - time > timeInterval){
+          if (timeInterval === 700){
             timeInterval = 150;
           }
 
           time = new Date();
           me.spinUp();
           timeInterval--;
-          if (timeInterval < 20) {
+          if (timeInterval < 20){
             timeInterval = 20;
           }
         }
       }, 20);
 
-      docEl.once('mouseup', function () {
+      docEl.once('mouseup', function(){
         clearInterval(me.spinInterval);
       });
 
@@ -213,7 +213,7 @@
     /*
      * @param {Object} e
      */
-    onMouseDownSpinDown: function (e) {
+    onMouseDownSpinDown: function(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -229,24 +229,24 @@
 
       me.spinDown();
 
-      me.spinInterval = setInterval(function () {
+      me.spinInterval = setInterval(function(){
         me.mouseDownSpinDown = false;
 
-        if (new Date() - time > timeInterval) {
-          if (timeInterval === 700) {
+        if (new Date() - time > timeInterval){
+          if (timeInterval === 700){
             timeInterval = 150;
           }
 
           time = new Date();
           me.spinDown();
           timeInterval--;
-          if (timeInterval < 20) {
+          if (timeInterval < 20){
             timeInterval = 20;
           }
         }
       }, 20);
 
-      docEl.once('mouseup', function () {
+      docEl.once('mouseup', function(){
         clearInterval(me.spinInterval);
       });
 
@@ -255,22 +255,22 @@
     /*
      *
      */
-    spinUp: function () {
+    spinUp: function(){
       var me = this,
         newValue = +me.get() + me.step;
 
-      if (Fancy.Number.isFloat(me.step)) {
+      if (Fancy.Number.isFloat(me.step)){
         newValue = Fancy.Number.correctFloat(newValue);
       }
 
-      if (isNaN(newValue)) {
+      if (isNaN(newValue)){
         newValue = me.min || 0;
       }
 
-      if (me.max !== undefined && newValue > me.max) {
+      if (me.max !== undefined && newValue > me.max){
         newValue = me.max;
       }
-      else if (newValue < me.min) {
+      else if (newValue < me.min){
         newValue = me.min;
       }
 
@@ -279,22 +279,22 @@
     /*
      *
      */
-    spinDown: function () {
+    spinDown: function(){
       var me = this,
         newValue = +me.get() - me.step;
 
-      if (Fancy.Number.isFloat(me.step)) {
+      if (Fancy.Number.isFloat(me.step)){
         newValue = Fancy.Number.correctFloat(newValue);
       }
 
-      if (isNaN(newValue)) {
+      if (isNaN(newValue)){
         newValue = me.min || 0;
       }
 
-      if (me.min !== undefined && newValue < me.min) {
+      if (me.min !== undefined && newValue < me.min){
         newValue = me.min;
       }
-      else if (newValue > me.max) {
+      else if (newValue > me.max){
         newValue = me.max;
       }
 

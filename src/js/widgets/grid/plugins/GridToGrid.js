@@ -3,7 +3,7 @@
  * @extends Fancy.Plugin
  */
 Fancy.modules['dd'] = true;
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -27,13 +27,13 @@ Fancy.modules['dd'] = true;
     /*
      * @param {Object} config
      */
-    constructor: function () {
+    constructor: function(){
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('drop');
@@ -46,7 +46,7 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    initDropCls: function () {
+    initDropCls: function(){
       var me = this,
         dropCls = '.' + me.dropGroup;
 
@@ -63,15 +63,15 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         w = me.widget;
 
-      w.on('render', function () {
+      w.on('render', function(){
         me.addDragDropCls();
       });
 
-      if (me.dropGroup) {
+      if (me.dropGroup){
         w.on('beforecellmousedown', me.onBeforeCellMouseDown, me);
         w.on('cellmousedown', me.onCellMouseDown, me);
         w.on('cellleave', me.onCellLeave, me);
@@ -84,14 +84,14 @@ Fancy.modules['dd'] = true;
      * @param {Object} dd
      * @param {*} items
      */
-    onDropItems: function (dd, items) {
+    onDropItems: function(dd, items){
       var me = this,
         w = me.widget,
         dropGrid = me.dropGrid,
         rowIndex = dropGrid.activeRowEnterIndex === undefined ? dropGrid.getViewTotal() : dropGrid.activeRowEnterIndex;
 
       w.fire('dropitems', items, rowIndex);
-      if (me.onDrop) {
+      if (me.onDrop){
         me.onDrop.apply(w, [items, rowIndex]);
       }
     },
@@ -99,7 +99,7 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onBeforeCellMouseDown: function (grid, o) {
+    onBeforeCellMouseDown: function(grid, o){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -108,21 +108,21 @@ Fancy.modules['dd'] = true;
         e = o.e,
         isCTRL = e.ctrlKey;
 
-      if (isCTRL && w.multiSelect === true) {
+      if (isCTRL && w.multiSelect === true){
         return;
       }
 
-      if (selected.length > 1) {
+      if (selected.length > 1){
         var passed = false;
 
-        F.each(selected, function (item) {
-          if (item.id === o.id) {
+        F.each(selected, function(item){
+          if (item.id === o.id){
             passed = true;
             return true;
           }
         });
 
-        if (passed === false) {
+        if (passed === false){
           return;
         }
 
@@ -131,7 +131,7 @@ Fancy.modules['dd'] = true;
         docEl.once('mouseup', me.onDocMouseUp, me);
         docEl.on('mousemove', me.onDocMouseMove, me);
 
-        docEl.once('mouseup', function () {
+        docEl.once('mouseup', function(){
           w.enableSelection();
         }, me);
 
@@ -150,23 +150,23 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellMouseDown: function (grid, o) {
+    onCellMouseDown: function(grid, o){
       var me = this,
         w = me.widget,
         docEl = F.get(document);
 
-      if (w.selection.enabled === false) {
+      if (w.selection.enabled === false){
         return;
       }
 
       var e = o.e,
         isCTRL = e.ctrlKey;
 
-      if (isCTRL && w.multiSelect === true) {
+      if (isCTRL && w.multiSelect === true){
         return;
       }
 
-      if (o.column.index === '$selected') {}
+      if (o.column.index === '$selected'){}
       else {
         w.clearSelection();
       }
@@ -180,12 +180,12 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    initEnterLeave: function () {
+    initEnterLeave: function(){
       var me = this,
         dropEl = F.select(me.dropCls);
 
-      if (dropEl.length === 0) {
-        setTimeout(function () {
+      if (dropEl.length === 0){
+        setTimeout(function(){
           me.initEnterLeave();
         }, 500);
         return;
@@ -197,10 +197,10 @@ Fancy.modules['dd'] = true;
     /*
      * @param {Object} e
      */
-    onMouseEnterDropGroup: function (e) {
+    onMouseEnterDropGroup: function(e){
       var me = this;
 
-      if (!me.cellMouseDown) {
+      if (!me.cellMouseDown){
         return;
       }
 
@@ -208,16 +208,16 @@ Fancy.modules['dd'] = true;
 
       me.dropGrid = F.getWidget(targetEl.closest('.' + GRID_CLS).attr('id'));
 
-      if (me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false) {
+      if (me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false){
         me.dropOK = false;
-        if (me.tip) {
+        if (me.tip){
           me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
         }
         return;
       }
 
       me.setDropGridCellsMask();
-      if (!me.dropGridEventInited) {
+      if (!me.dropGridEventInited){
         me.onsDropGrid();
       }
 
@@ -225,17 +225,17 @@ Fancy.modules['dd'] = true;
 
       me.dropOK = true;
 
-      if (me.tip) {
+      if (me.tip){
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
     },
     /*
      * @param {Object} e
      */
-    onMouseLeaveDropGroup: function (e) {
+    onMouseLeaveDropGroup: function(e){
       var me = this;
 
-      if (!me.cellMouseDown) {
+      if (!me.cellMouseDown){
         return;
       }
 
@@ -248,18 +248,18 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    setDropGridCellsMask: function () {
+    setDropGridCellsMask: function(){
       var me = this,
         dropGrid = me.dropGrid,
         total;
 
-      if (!dropGrid || !me.cellMouseDown) {
+      if (!dropGrid || !me.cellMouseDown){
         return;
       }
 
       total = dropGrid.getTotal();
 
-      if (total === 0) {
+      if (total === 0){
         dropGrid.el.addCls(me.dropHeaderMaskCls);
       }
       else {
@@ -269,7 +269,7 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    onsDropGrid: function () {
+    onsDropGrid: function(){
       var me = this;
 
       me.dropGrid.on('rowenter', me.onDropGridRowEnter, me);
@@ -281,10 +281,10 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onDropGridRowEnter: function (grid, o) {
+    onDropGridRowEnter: function(grid, o){
       var me = this;
 
-      if (me.cellMouseDown === false) {
+      if (me.cellMouseDown === false){
         //Fix core bug. In future needs to find out what it is.
         //'un' does not unset handler
         me.dropGrid.un('rowenter', me.onDropGridRowEnter);
@@ -293,18 +293,18 @@ Fancy.modules['dd'] = true;
 
       me.clearCellsMask();
 
-      if (o.rowIndex === 0) {
+      if (o.rowIndex === 0){
         grid.el.addCls(me.dropHeaderMaskCls);
       }
       else {
         grid.el.select('.' + GRID_CELL_CLS + '[index="' + (o.rowIndex - 1) + '"]').addCls(me.cellMaskCls);
       }
 
-      if (me.cellMouseDown === false) {
+      if (me.cellMouseDown === false){
         me.clearCellsMask();
       }
 
-      if (me.dropGrid) {
+      if (me.dropGrid){
         me.dropGrid.activeRowEnterIndex = o.rowIndex;
       }
     },
@@ -312,21 +312,21 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onDropGridRowLeave: function (grid, o) {
+    onDropGridRowLeave: function(){
       var me = this;
 
       me.clearCellsMask();
       me.setDropGridCellsMask();
 
-      if (me.dropGrid) {
+      if (me.dropGrid){
         delete me.dropGrid.activeRowEnterIndex;
       }
     },
-    clearCellsMask: function () {
+    clearCellsMask: function(){
       var me = this,
         cellMaskCls = me.cellMaskCls;
 
-      if (!me.dropGrid) {
+      if (!me.dropGrid){
         return;
       }
 
@@ -336,20 +336,20 @@ Fancy.modules['dd'] = true;
     /*
      * @param {Object} e
      */
-    onDocMouseUp: function (e) {
+    onDocMouseUp: function(){
       var me = this,
         w = me.widget,
         docEl = F.get(document);
 
       me.cellMouseDown = false;
-      if (me.tip) {
+      if (me.tip){
         me.tip.hide();
       }
       w.enableSelection();
 
       docEl.un('mousemove', me.onDocMouseMove);
 
-      if (me.dropOK === true) {
+      if (me.dropOK === true){
         w.clearSelection();
         me.dropGrid.clearSelection();
         me.fire('drop', me.dragItems);
@@ -362,7 +362,7 @@ Fancy.modules['dd'] = true;
 
       me.clearCellsMask();
 
-      if (me.dropGrid) {
+      if (me.dropGrid){
         me.dropGrid.un('rowenter', me.onDropGridRowEnter);
         me.dropGrid.un('rowleave', me.onDropGridRowLeave);
         //delete me.dropGrid;
@@ -373,8 +373,8 @@ Fancy.modules['dd'] = true;
     /*
      * @param {Object} e
      */
-    onDocMouseMove: function (e) {
-      if (!this.dragItems) {
+    onDocMouseMove: function(e){
+      if (!this.dragItems){
         return;
       }
 
@@ -384,18 +384,18 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function (grid, o) {
+    onCellLeave: function(grid, o){
       var me = this,
         w = me.widget,
         lang = w.lang;
 
-      setTimeout(function () {
-        if (me.onceStopDrag) {
+      setTimeout(function(){
+        if (me.onceStopDrag){
           me.onceStopDrag = false;
           return;
         }
 
-        if (me.cellMouseDown !== true || me.dragItems) {
+        if (me.cellMouseDown !== true || me.dragItems){
           return;
         }
 
@@ -415,14 +415,14 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function (grid, o) {
+    onCellEnter: function(grid, o){
       var me = this;
 
-      if (me.cellMouseDown !== true || me.dragItems) {
+      if (me.cellMouseDown !== true || me.dragItems){
         return;
       }
 
-      if (o.rowIndex !== me.activeRowIndex) {
+      if (o.rowIndex !== me.activeRowIndex){
         me.onceStopDrag = true;
         me.activeRowIndex = o.rowIndex;
       }
@@ -431,18 +431,18 @@ Fancy.modules['dd'] = true;
      * @param {String} text
      * @param {Object} e
      */
-    initTip: function (text, e) {
+    initTip: function(text, e){
       var me = this,
         dropNotOkCls = me.dropNotOkCls;
 
-      if (!me.tip) {
+      if (!me.tip){
         me.tip = new F.ToolTip({
           cls: dropNotOkCls,
           text: text
         });
       }
 
-      if (e) {
+      if (e){
         me.tip.show(e.pageX + 20, e.pageY + 20);
       }
 

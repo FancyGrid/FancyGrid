@@ -7,12 +7,13 @@ Fancy.Date = {
   daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
   dayIndexes: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
   /**
-   * @param {String} date
+   * @param {String|Date} date
    * @param {String} format
-   * @param {String} lang
+   * @param {String|Object} lang
+   * @param {String} [mode]
    * @return {String}
    */
-  format: function(date, format, lang, mode) {
+  format: function(date, format, lang, mode){
     var value = '',
       h,
       _i,
@@ -54,13 +55,14 @@ Fancy.Date = {
     for(;i<iL; i++){
       var c = format[i];
 
-      switch (c) {
+      switch (c){
         case 'i':
           _i = date.getMinutes();
 
-          if (_i < 10) {
+          if (_i < 10){
             value += '0' + _i;
-          } else {
+          }
+          else {
             value += _i;
           }
 
@@ -70,9 +72,10 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'ss'){
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
 
@@ -83,9 +86,10 @@ Fancy.Date = {
             }
           }
           else {
-            if (_i < 10) {
+            if (_i < 10){
               value += '0' + _i;
-            } else {
+            }
+            else {
               value += _i;
             }
           }
@@ -95,9 +99,10 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'SS'){
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
 
@@ -114,9 +119,10 @@ Fancy.Date = {
         case 'a':
           h = date.getHours();
 
-          if (h < 12) {
+          if (h < 12){
             value += lang.date.am;
-          } else {
+          }
+          else {
             value += lang.date.pm;
           }
 
@@ -124,9 +130,10 @@ Fancy.Date = {
         case 'A':
           h = date.getHours();
 
-          if (h < 12) {
+          if (h < 12){
             value += lang.date.AM;
-          } else {
+          }
+          else {
             value += lang.date.PM;
           }
 
@@ -142,7 +149,7 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'mm'){
-              if (m < 10) {
+              if (m < 10){
                 m = '0' + m;
               }
               value += m;
@@ -151,9 +158,10 @@ Fancy.Date = {
             else if(format.substr(i, 2) === 'mi'){
               _i = date.getMinutes();
 
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
               i++;
@@ -163,7 +171,7 @@ Fancy.Date = {
             }
           }
           else {
-            if (m < 10) {
+            if (m < 10){
               m = '0' + m;
             }
             value += m;
@@ -174,7 +182,7 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'dd'){
-              if (d < 10) {
+              if (d < 10){
                 d = '0' + d;
               }
 
@@ -186,7 +194,7 @@ Fancy.Date = {
             }
           }
           else {
-            if (d < 10) {
+            if (d < 10){
               d = '0' + d;
             }
 
@@ -253,7 +261,7 @@ Fancy.Date = {
         case 'N':
           N = date.getDay();
 
-          if (N === 0) {
+          if (N === 0){
             N = 7;
           }
 
@@ -279,9 +287,10 @@ Fancy.Date = {
             else if(format.substr(i, 2) === 'MI'){
               _i = date.getMinutes();
 
-              if (_i < 10) {
+              if (_i < 10){
                 value += '0' + _i;
-              } else {
+              }
+              else {
                 value += _i;
               }
 
@@ -327,11 +336,13 @@ Fancy.Date = {
 
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'hh'){
-              if (h > 12) {
+              if (h > 12){
                 value += h - 12;
-              } else if (h > 9 && h < 13) {
+              }
+              else if (h > 9 && h < 13){
                 value += h;
-              } else {
+              }
+              else {
                 value += '0' + h;
               }
 
@@ -342,11 +353,13 @@ Fancy.Date = {
             }
           }
           else {
-            if (h > 12) {
+            if (h > 12){
               value += h - 12;
-            } else if (h > 9 && h < 13) {
+            }
+            else if (h > 9 && h < 13){
               value += h;
-            } else {
+            }
+            else {
               value += '0' + h;
             }
           }
@@ -371,7 +384,8 @@ Fancy.Date = {
           else {
             if(H < 10){
               value += '0' + H;
-            } else {
+            }
+            else {
               value += H;
             }
           }
@@ -396,6 +410,7 @@ Fancy.Date = {
   /**
    * @param {String} value
    * @param {String} format
+   * @param {String} [mode]
    * @return {Date}
    */
   parse: function(value, format, mode){
@@ -421,11 +436,11 @@ Fancy.Date = {
         jL,
         l;
 
-      switch (c) {
+      switch (c){
         case 'n':
           var n;
 
-          if (value[1] === '0' || value[1] === '1' || value[1] === '2') {
+          if (value[1] === '0' || value[1] === '1' || value[1] === '2'){
             n = value[0] + value[1];
             value = value.substr(2, value.length);
           }
@@ -437,7 +452,7 @@ Fancy.Date = {
           month = Number(n);
           break;
         case 'j':
-          if (Fancy.isNumber(parseInt(value[1]))) {
+          if (Fancy.isNumber(parseInt(value[1]))){
             j = value[0] + value[1];
             value = value.substr(2, value.length);
           }
@@ -470,7 +485,7 @@ Fancy.Date = {
           }
           else {
             var h;
-            if (value[1] === '0' || value[1] === '1' || value[1] === '2') {
+            if (value[1] === '0' || value[1] === '1' || value[1] === '2'){
               h = value[0] + value[1];
               value = value.substr(2, value.length);
             }
@@ -483,14 +498,14 @@ Fancy.Date = {
           }
           break;
         case 'a':
-          if (value[1] === 'm') {
+          if (value[1] === 'm'){
             hour += 12;
           }
 
           value = value.substr(2, value.length);
           break;
         case 'A':
-          if (value[1] === 'M') {
+          if (value[1] === 'M'){
             hour += 12;
           }
 
@@ -540,12 +555,12 @@ Fancy.Date = {
         case 'm':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'mm'){
-              switch (value[0]) {
+              switch (value[0]){
                 case '0':
                 case '1':
                 case '2':
                 case '3':
-                  if (isNaN(parseInt(value[1]))) {
+                  if (isNaN(parseInt(value[1]))){
                     month = Number(value[0]) - 1;
                     value = value.substr(1, value.length);
                   }
@@ -571,12 +586,12 @@ Fancy.Date = {
             }
           }
           else {
-            switch (value[0]) {
+            switch (value[0]){
               case '0':
               case '1':
               case '2':
               case '3':
-                if (isNaN(parseInt(value[1]))) {
+                if (isNaN(parseInt(value[1]))){
                   month = Number(value[0]) - 1;
                   value = value.substr(1, value.length);
                 }
@@ -594,7 +609,7 @@ Fancy.Date = {
         case 'd':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'dd'){
-              if (isNaN(parseInt(value[1]))) {
+              if (isNaN(parseInt(value[1]))){
                 day = Number(value[0]);
                 value = value.substr(1, value.length);
               }
@@ -609,7 +624,7 @@ Fancy.Date = {
             }
           }
           else {
-            if (isNaN(parseInt(value[1]))) {
+            if (isNaN(parseInt(value[1]))){
               day = Number(value[0]);
               value = value.substr(1, value.length);
             }
@@ -672,7 +687,7 @@ Fancy.Date = {
           }
           else {
             year = Number(value[0] + value[1]);
-            if (year < 51) {
+            if (year < 51){
               year = Number('20' + year);
             }
             else {
@@ -685,7 +700,7 @@ Fancy.Date = {
         case 'D':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'DD'){
-              if (isNaN(parseInt(value[1]))) {
+              if (isNaN(parseInt(value[1]))){
                 day = Number(value[0]);
                 value = value.substr(1, value.length);
               }
@@ -708,10 +723,10 @@ Fancy.Date = {
           j = 0;
           jL = 7;
 
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var d = lang.days[j];
 
-            if (l === d.substr(0, 3)) {
+            if (l === d.substr(0, 3)){
               value = value.substr(d.length, value.length);
               break;
             }
@@ -729,10 +744,10 @@ Fancy.Date = {
           j = 0;
           jL = 7;
 
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var m = lang.months[j];
 
-            if (l === m.substr(0, 3)) {
+            if (l === m.substr(0, 3)){
               value = value.substr(m.length, value.length);
               break;
             }
@@ -742,12 +757,12 @@ Fancy.Date = {
         case 'M':
           if(mode === 'sql'){
             if(format.substr(i, 2) === 'MM'){
-              switch (value[0]) {
+              switch (value[0]){
                 case '0':
                 case '1':
                 case '2':
                 case '3':
-                  if (isNaN(parseInt(value[1]))) {
+                  if (isNaN(parseInt(value[1]))){
                     month = Number(value[0]) - 1;
                     value = value.substr(1, value.length);
                   }
@@ -793,7 +808,7 @@ Fancy.Date = {
           }
           break;
         case 'G':
-          if (Fancy.isNumber(parseInt(value[1]))) {
+          if (Fancy.isNumber(parseInt(value[1]))){
             hour = Number(value[0] + value[1]);
             value = value.substr(2, value.length);
           } else {

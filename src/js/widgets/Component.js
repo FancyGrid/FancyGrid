@@ -12,7 +12,7 @@ Fancy.enableCompo = function(){
    * @param {String} selector
    * @param {Object} o
    */
-  Fancy.Component = function (selector, o) {
+  Fancy.Component = function(selector, o){
     componentsLength++;
     components[selector] = o;
   };
@@ -24,10 +24,10 @@ Fancy.enableCompo = function(){
     clearInterval(interval);
   };
 
-  function findComponent() {
+  function findComponent(){
     if (componentsLength === 0) return;
 
-    for (var p in components) {
+    for (var p in components){
       var comp = components[p],
         founded = doc.querySelectorAll(p),
         attrPreSelector = comp.appPreSelector ? comp.appPreSelector + '-' : 'data-',
@@ -37,11 +37,11 @@ Fancy.enableCompo = function(){
         j,
         jL;
 
-      if (founded.length === 0) {
+      if (founded.length === 0){
         return;
       }
 
-      for (; i < iL; i++) {
+      for (; i < iL; i++){
         var itemConfig = {},
           item = founded[i],
           id = item.id || 'rand-id-' + (+new Date()),
@@ -51,12 +51,12 @@ Fancy.enableCompo = function(){
         jL = attrs.length;
 
         //Get values in attributes values
-        for (; j < jL; j++) {
+        for (; j < jL; j++){
           var attr = attrs[j],
             attrName = attr.name,
             attrValue = attr.value;
 
-          if (new RegExp(attrPreSelector).test(attrName)) {
+          if (new RegExp(attrPreSelector).test(attrName)){
             attrValue = prePareValue(attrValue);
 
             itemConfig[attrName.replace(attrPreSelector, '')] = attrValue;
@@ -64,19 +64,19 @@ Fancy.enableCompo = function(){
         }
 
         //Get values in innerHTML tags
-        (function getValuesInTags() {
+        (function getValuesInTags(){
           var childs = item.getElementsByTagName('*');
 
           j = 0;
           jL = childs.length;
 
-          for (; j < jL; j++) {
+          for (; j < jL; j++){
             var child = childs[j],
               tagName = child.tagName.toLowerCase(),
               name,
               value;
 
-            if (new RegExp(preSelector).test(tagName)) {
+            if (new RegExp(preSelector).test(tagName)){
               name = tagName.replace(preSelector, '');
               value = prePareValue(child.innerHTML);
 
@@ -96,12 +96,12 @@ Fancy.enableCompo = function(){
    * @param {String} v
    * @return {String}
    */
-  function prePareValue(v) {
-    if (/\[/.test(v) || /\{/.test(v)) {
+  function prePareValue(v){
+    if (/\[/.test(v) || /\{/.test(v)){
       v = v.replace(/\n/g, '');
-      v = (new Function("return " + v + ";")());
+      v = (new Function('return ' + v + ';')());
     }
-    else if (!isNaN(Number(v))) {
+    else if (!isNaN(Number(v))){
       v = Number(v);
     }
     else {
@@ -113,7 +113,7 @@ Fancy.enableCompo = function(){
 
   findComponent();
 
-  doc.addEventListener("DOMContentLoaded", function() {
+  doc.addEventListener('DOMContentLoaded', function(){
     findComponent();
   });
 
@@ -128,7 +128,7 @@ Fancy.enableCompo = function(){
   Fancy.Component('fancy-grid', {
     preSelector: 'fancy',
     attrPreSelector: 'data',
-    init: function (el, config) {
+    init: function(el, config){
       config.renderTo = el;
 
       window[el.id] = new FancyGrid(config);
@@ -138,7 +138,7 @@ Fancy.enableCompo = function(){
   Fancy.Component('fancy-form', {
     preSelector: 'fancy',
     attrPreSelector: 'data',
-    init: function (el, config) {
+    init: function(el, config){
       config.renderTo = el;
 
       window[el.id] = new FancyForm(config);
@@ -148,7 +148,7 @@ Fancy.enableCompo = function(){
   Fancy.Component('fancy-tab', {
     preSelector: 'fancy',
     attrPreSelector: 'data',
-    init: function (el, config) {
+    init: function(el, config){
       config.renderTo = el;
 
       window[el.id] = new FancyTab(config);

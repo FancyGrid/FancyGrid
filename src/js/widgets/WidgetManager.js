@@ -2,7 +2,7 @@
  * @class Fancy.WidgetManager
  * @singleton
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -11,7 +11,7 @@
     /*
      * @constructor
      */
-    constructor: function () {
+    constructor: function(){
       this.wtypes = new F.Data();
       this.widgets = new F.Data();
     },
@@ -19,7 +19,7 @@
      * @param {String} wtype
      * @param {Object} widget
      */
-    addWidgetType: function (wtype, widget) {
+    addWidgetType: function(wtype, widget){
       widget.prototype.wtype = wtype;
       this.wtypes.add(wtype, widget);
     },
@@ -27,21 +27,21 @@
      * @param {String} wtype
      * @return {Object}
      */
-    getWidgetClassByType: function (wtype) {
+    getWidgetClassByType: function(wtype){
       return this.wtypes.get(wtype);
     },
     /*
      * @param {String} id
      * @param {Object} widget
      */
-    addWidget: function (id, widget) {
+    addWidget: function(id, widget){
       this.widgets.add(id, widget);
     },
     /*
      * @param {String} id
      * @return {Object}
      */
-    getWidget: function (id) {
+    getWidget: function(id){
       return this.widgets.get(id);
     }
   });
@@ -52,7 +52,7 @@
    * @param {String} wtype
    * @param {Object} widget
    */
-  F.addWidgetType = function (wtype, widget) {
+  F.addWidgetType = function(wtype, widget){
     W.addWidgetType(wtype, widget);
   };
 
@@ -60,7 +60,7 @@
    * @param {String} wtype
    * @return {Object}
    */
-  F.getWidgetClassByType = function (wtype) {
+  F.getWidgetClassByType = function(wtype){
     return W.getWidgetClassByType(wtype);
   };
 
@@ -68,7 +68,7 @@
    * @param {String} id
    * @param {Object} widget
    */
-  F.addWidget = function (id, widget) {
+  F.addWidget = function(id, widget){
     W.addWidget(id, widget);
   };
 
@@ -76,7 +76,7 @@
    * @param {String} id
    * @return {Object} widget
    */
-  F.getWidget = function (id) {
+  F.getWidget = function(id){
     return W.getWidget(id);
   };
 

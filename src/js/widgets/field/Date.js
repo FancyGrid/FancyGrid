@@ -2,7 +2,7 @@
  * @class Fancy.DateField
  * @extends Fancy.Widget
  */
-(function () {
+(function(){
   //SHORTCUTS
   var F = Fancy;
 
@@ -43,14 +43,14 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       F.apply(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'showpicker');
@@ -63,15 +63,15 @@
 
       me.ons();
 
-      if (me.hidden) {
+      if (me.hidden){
         me.css('display', 'none');
       }
 
-      if (me.style) {
+      if (me.style){
         me.css(me.style);
       }
 
-      if (!F.isDate(me.value)) {
+      if (!F.isDate(me.value)){
         me.initDate();
       }
       else{
@@ -85,28 +85,28 @@
      * @param {String} value
      * @param {String} format
      */
-    initDate: function (value, format) {
+    initDate: function(value, format){
       var me = this;
 
-      if (value) {
-        if (F.typeOf(value) === 'date') {
+      if (value){
+        if (F.typeOf(value) === 'date'){
           me.date = value;
           return;
         }
 
         var date;
-        if (format) {
+        if (format){
           date = F.Date.parse(value, format, me.format.mode);
         }
         else {
           date = F.Date.parse(value, me.format.read, me.format.mode);
         }
 
-        if (date.toString === 'Invalid Date') {
+        if (date.toString === 'Invalid Date'){
           date = F.Date.parse(value, me.format.edit, me.format.mode);
         }
 
-        if (date.toString === 'Invalid Date') {
+        if (date.toString === 'Invalid Date'){
           return;
         }
 
@@ -114,13 +114,13 @@
         return;
       }
 
-      switch (F.typeOf(value)) {
+      switch (F.typeOf(value)){
         case 'date':
           me.date = me.value;
           break;
         case 'undefined':
         case 'string':
-          if (!me.value) {
+          if (!me.value){
             delete me.date;
             return;
           }
@@ -131,21 +131,21 @@
     /*
      *
      */
-    changeInputValue: function () {
+    changeInputValue: function(){
       var me = this;
 
-      if (F.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date') {
+      if (F.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date'){
         me.input.dom.value = '';
         return;
       }
 
       var value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         value = me.format.inputFn(value);
       }
 
-      if (value === undefined) {
+      if (value === undefined){
         value = '';
       }
 
@@ -156,11 +156,11 @@
     /*
      *
      */
-    initFormat: function () {
+    initFormat: function(){
       var me = this;
 
-      if (me.format) {
-        if (F.isObject(me.format)) {
+      if (me.format){
+        if (F.isObject(me.format)){
           F.applyIf(me.format, F.i18n[me.i18n].date);
         }
       }
@@ -171,20 +171,20 @@
     /*
      * @param {*} value
      */
-    formatValue: function (value) {
+    formatValue: function(value){
       var me = this;
 
-      if (!me.value && value) {
+      if (!me.value && value){
         me.value = value;
       }
-      else if (!value && me.value) {
+      else if (!value && me.value){
         value = me.value;
       }
 
       if (!me.value){}
-      else if (F.typeOf(me.value) === 'date') {
+      else if (F.typeOf(me.value) === 'date'){
         me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
-        if (value === undefined) {
+        if (value === undefined){
           var _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
           value = F.Date.format(_date, me.format.edit, undefined, me.format.mode);
         }
@@ -195,15 +195,15 @@
         me.value = F.Date.format(date, me.format.edit, undefined, me.format.mode);
       }
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         value = me.format.inputFn(value);
       }
 
-      if (value === undefined) {
+      if (value === undefined){
         value = '';
       }
 
-      if (/NaN/.test(value)) {
+      if (/NaN/.test(value)){
         value = '';
       }
 
@@ -212,7 +212,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el,
         input = me.el.getByTag('input');
@@ -227,28 +227,28 @@
 
       me.on('beforehide', me.onBeforeHide, me);
 
-      if (me.format && me.format.inputFn) {
+      if (me.format && me.format.inputFn){
         me.on('key', me.onKeyInputFn);
       }
 
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    initPicker: function () {
+    initPicker: function(){
       var me = this;
 
-      if (me.picker === false || me.editable === false) {
+      if (me.picker === false || me.editable === false){
         return;
       }
 
-      if (me.dateImage === false) {
+      if (me.dateImage === false){
         me.el.select('.fancy-field-picker-button').css('display', 'none');
         me.input.on('click', me.onInputClick, me);
       }
@@ -261,25 +261,25 @@
     /*
      *
      */
-    onInputClick: function (e) {
+    onInputClick: function(e){
       e.preventDefault();
       this.toggleShowPicker();
     },
     /*
      *
      */
-    onInputMouseDown: function (e) {
+    onInputMouseDown: function(e){
       var me = this,
         picker = me.picker;
 
       if(picker && picker.el && picker.el.css('display') !== 'none'){
-        e.stopPropagation()
+        e.stopPropagation();
       }
     },
     /*
      * @param {Object} e
      */
-    onPickerButtonMouseDown: function (e) {
+    onPickerButtonMouseDown: function(e){
       var me = this;
 
       if(me.disabled){
@@ -292,14 +292,14 @@
     /*
      *
      */
-    showPicker: function () {
+    showPicker: function(){
       var me = this,
         el = me.el,
         input = me.input,
         docEl = F.get(document),
         firstShow = false;
 
-      if (me.picker === true) {
+      if (me.picker === true){
         firstShow = true;
         me.renderPicker();
       }
@@ -315,7 +315,7 @@
         y = offset.top + el.select('.' + FIELD_TEXT_CLS).height(),
         date = me.date || new Date();
 
-      if (date.toString() === 'Invalid Date') {
+      if (date.toString() === 'Invalid Date'){
         date = new Date();
       }
 
@@ -327,7 +327,7 @@
 
       me.fire('showpicker');
 
-      if (!me.docSpy) {
+      if (!me.docSpy){
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
       }
@@ -335,16 +335,16 @@
     /*
      *
      */
-    onDocClick: function (e) {
+    onDocClick: function(e){
       var me = this,
         datePicker = me.picker,
         monthPicker = datePicker.monthPicker,
         target = e.target;
 
-      if (target.tagName.toLocaleLowerCase() === 'input') {}
-      else if (F.get(target).hasCls('fancy-field-picker-button')) {}
-      else if (datePicker.panel.el.within(target)) {}
-      else if (monthPicker && monthPicker.panel.el.within(target)) {}
+      if (target.tagName.toLocaleLowerCase() === 'input'){}
+      else if (F.get(target).hasCls('fancy-field-picker-button')){}
+      else if (datePicker.panel.el.within(target)){}
+      else if (monthPicker && monthPicker.panel.el.within(target)){}
       else {
         me.hidePicker();
       }
@@ -352,14 +352,14 @@
     /*
      *
      */
-    hidePicker: function () {
+    hidePicker: function(){
       var me = this;
 
-      if (me.picker !== false && me.picker.hide) {
+      if (me.picker !== false && me.picker.hide){
         me.picker.hide();
       }
 
-      if (me.docSpy) {
+      if (me.docSpy){
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
@@ -368,15 +368,15 @@
     /*
      *
      */
-    toggleShowPicker: function () {
+    toggleShowPicker: function(){
       var me = this;
 
-      if (me.picker === true) {
+      if (me.picker === true){
         me.showPicker();
         return;
       }
 
-      if (me.picker.panel.el.css('display') === 'none') {
+      if (me.picker.panel.el.css('display') === 'none'){
         me.showPicker();
       }
       else {
@@ -386,10 +386,10 @@
     /*
      *
      */
-    renderPicker: function () {
+    renderPicker: function(){
       var me = this;
 
-      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false) {
+      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false){
         return;
       }
 
@@ -419,17 +419,17 @@
     /*
      * @return {String}
      */
-    get: function () {
+    get: function(){
       var me = this;
 
-      if (me.input.dom.value === '') {
+      if (me.input.dom.value === ''){
         delete me.date;
         delete me.value;
 
         return '';
       }
 
-      if (me.date) {
+      if (me.date){
         return F.Date.format(me.date, me.format.write, undefined, me.format.mode);
       }
       else {
@@ -439,13 +439,13 @@
     /*
      * @return {Date}
      */
-    getDate: function () {
+    getDate: function(){
       return this.date || '';
     },
     /*
      *
      */
-    onBeforeHide: function () {
+    onBeforeHide: function(){
       this.hidePicker();
     },
     /*
@@ -453,10 +453,10 @@
      * @param {Date} newDate
      * @param {Boolean} hidePicker
      */
-    onPickerChangeDate: function (picker, newDate, hidePicker) {
+    onPickerChangeDate: function(picker, newDate, hidePicker){
       var me = this;
 
-      if (hidePicker !== false) {
+      if (hidePicker !== false){
         me.picker.hide();
       }
 
@@ -466,13 +466,13 @@
     /*
      *
      */
-    onInput: function () {
+    onInput: function(){
       var me = this,
         input = me.input,
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date') {
+      if (F.Date.parse(value, me.format.edit, me.format.mode).toString() === 'Invalid Date'){
         return;
       }
 
@@ -484,7 +484,7 @@
     /*
      * @return {Boolean}
      */
-    isValid: function () {
+    isValid: function(){
       var me = this;
 
       return F.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
@@ -492,10 +492,10 @@
     /*
      * @param {String|Date|Number} value
      */
-    set: function (value) {
+    set: function(value){
       var me = this;
 
-      switch (value) {
+      switch (value){
         case '':
         case undefined:
           delete me.value;
@@ -511,7 +511,7 @@
      * @param {*} oldValue
      * @return {Boolean}
      */
-    isEqual: function (oldValue) {
+    isEqual: function(oldValue){
       var me = this,
         oldDate = F.Date.parse(oldValue, me.format.read, me.format.mode),
         value = me.input.dom.value;
@@ -520,13 +520,13 @@
 
       return oldValue === value;
     },
-    onEnter: function () {
+    onEnter: function(){
       var me = this,
         input = me.input,
         value = input.dom.value,
         oldValue = me.acceptedValue;
 
-      if (value === '') {
+      if (value === ''){
         me.initDate();
 
         me.fire('input', value);

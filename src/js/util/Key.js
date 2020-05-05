@@ -163,7 +163,6 @@ Fancy.Key = {
       case key.INSERT:
       case key.DOT:
         return true;
-        break;
       default:
         return false;
     }

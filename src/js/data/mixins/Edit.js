@@ -8,14 +8,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} o
    * @param {Boolean} [fire]
    */
-  remove: function(o, fire) {
+  remove: function(o, fire){
     var me = this,
       id = o.id,
       index,
       orderIndex,
       itemData;
 
-    switch (Fancy.typeOf(o)) {
+    switch (Fancy.typeOf(o)){
       case 'string':
       case 'number':
         id = o;
@@ -24,22 +24,22 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
         id = o.id || o.data.id;
     }
 
-    if (me.isTree && me.treeCollapsing !== true) {
+    if (me.isTree && me.treeCollapsing !== true){
       var item = me.getById(id),
         parentItem = me.getById(item.get('parentId'));
 
-      if (item.get('leaf') === false && item.get('expanded')) {
+      if (item.get('leaf') === false && item.get('expanded')){
         var _i = item.data.child.length - 1;
 
-        Fancy.each(item.data.child, function (child, i, children) {
+        Fancy.each(item.data.child, function(child, i, children){
           me.remove(children[_i]);
           _i--;
         });
       }
 
-      if (parentItem) {
-        Fancy.each(parentItem.data.child, function (child, i) {
-          if (child.id === id) {
+      if (parentItem){
+        Fancy.each(parentItem.data.child, function(child, i){
+          if (child.id === id){
             parentItem.data.child.splice(i, 1);
             return true;
           }
@@ -47,14 +47,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       }
     }
 
-    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy) {
+    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
       if(fire !== false){
         me.proxyCRUD('DESTROY', id);
       }
       return;
     }
 
-    if (o.rowIndex) {
+    if (o.rowIndex){
       index = me.dataViewIndexes[o.rowIndex];
       orderIndex = o.rowIndex;
     }
@@ -67,10 +67,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       }
     }
 
-    if (me.isTree && me.treeCollapsing && me.filteredData) {
+    if (me.isTree && me.treeCollapsing && me.filteredData){
       //TODO:
       var _index;
-      Fancy.each(me.data, function (item, i) {
+      Fancy.each(me.data, function(item, i){
         if(item.data.id === id){
           _index = i;
           return true;
@@ -84,22 +84,22 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
 
-    if (me.paging) {
+    if (me.paging){
       orderIndex += me.showPage * me.pageSize;
     }
 
-    if (me.order) {
+    if (me.order){
       me.order.splice(orderIndex, 1);
     }
 
     //SLOW, needs all redo to another approach
     //Almost the same as resorting
-    if (me.changeOrderIndexes) {
+    if (me.changeOrderIndexes){
       me.changeOrderIndexes(index);
     }
 
-    if (me.paging) {
-      if (me.showPage !== 0 && me.showPage * me.pageSize === me.getTotal()) {
+    if (me.paging){
+      if (me.showPage !== 0 && me.showPage * me.pageSize === me.getTotal()){
         me.showPage--;
       }
       me.calcPages();
@@ -107,11 +107,11 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     delete me.map[id];
 
-    if (!me.treeCollapsing && fire !== false) {
+    if (!me.treeCollapsing && fire !== false){
       me.fire('remove', id, itemData, index);
     }
 
-    if(fire !== false) {
+    if(fire !== false){
       me.changeDataView();
     }
   },
@@ -130,7 +130,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    *
    */
-  removeAll: function () {
+  removeAll: function(){
     var me = this;
 
     me.data = [];
@@ -190,7 +190,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
-      if(fire !== false) {
+      if(fire !== false){
         me.once('create', me.onCreate, me);
         me.proxyCRUD('CREATE', o);
       }
@@ -208,10 +208,11 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   insertItem: function(o, index, fire){
     var me = this,
       model = me.model,
-      item = new model(o),
-      index = me.addIndex;
+      item = new model(o);
 
-    if(!me.treeExpanding && fire !== false) {
+    index = me.addIndex;
+
+    if(!me.treeExpanding && fire !== false){
       me.fire('beforeinsert');
     }
 
@@ -224,12 +225,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       me.order[index]--;
     }
 
-    if(fire !== false) {
+    if(fire !== false){
       me.changeDataView();
     }
 
     me.map[o.id] = item;
-    if(!me.treeExpanding &&  fire !== false) {
+    if(!me.treeExpanding &&  fire !== false){
       me.fire('insert', item);
     }
     return item;

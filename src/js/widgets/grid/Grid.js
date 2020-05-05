@@ -156,7 +156,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     Fancy.loadStyle();
 
     if(Fancy.fullBuilt !== true && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false && me.fullBuilt !== true && me.neededModules !== true){
-      if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker') {
+      if(me.wtype !== 'datepicker' && me.wtype !== 'monthpicker'){
         me.loadModules();
         return;
       }
@@ -297,14 +297,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.infinite = true;
     }
 
-    var containsMenu = function (item) {
+    var containsMenu = function(item){
       if(item.menu){
         requiredModules['menu'] = true;
         return true;
       }
     };
 
-    Fancy.each(me.events, function (e) {
+    Fancy.each(me.events, function(e){
       for(var p in e){
         if(p === 'contextmenu'){
           requiredModules.menu = true;
@@ -312,7 +312,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     });
 
-    Fancy.each(me.controls, function (c) {
+    Fancy.each(me.controls, function(c){
       if(c.event === 'contextmenu'){
         requiredModules.menu = true;
       }
@@ -396,7 +396,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     };
 
     for(var p in requiredModules){
-      if(Fancy.modules[p] === undefined) {
+      if(Fancy.modules[p] === undefined){
         me.neededModules[p] = true;
         me.neededModules.length++;
       }
@@ -419,7 +419,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     };
 
     if(me.neededModules.dom){
-      Fancy.loadModule('dom', function (name) {
+      Fancy.loadModule('dom', function(name){
         delete me.neededModules[name];
         me.neededModules.length--;
 
@@ -428,8 +428,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           me.init();
         }
         else{
-          for (var p in me.neededModules) {
-            if (p === 'length') {
+          for (var p in me.neededModules){
+            if (p === 'length'){
               continue;
             }
 
@@ -439,8 +439,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       });
     }
     else {
-      for (var p in me.neededModules) {
-        if (p === 'length') {
+      for (var p in me.neededModules){
+        if (p === 'length'){
           continue;
         }
 
@@ -460,7 +460,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     if(Fancy.isString(indexOrder)){
-      Fancy.each(me.columns, function (column, i) {
+      Fancy.each(me.columns, function(column, i){
         if(column.index === indexOrder){
           indexOrder = i;
           return true;
@@ -473,6 +473,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
     if(me.header){
       me.leftHeader.reSetCheckBoxes();
+
+      if(me.groupheader){
+        me.header.fixGroupHeaderSizing();
+        me.leftHeader.fixGroupHeaderSizing();
+      }
     }
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
@@ -495,7 +500,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     if(Fancy.isString(indexOrder)){
-      Fancy.each(me.columns, function (column, i) {
+      Fancy.each(me.columns, function(column, i){
         if(column.index === indexOrder){
           indexOrder = i;
           return true;
@@ -506,6 +511,15 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
+
+    if(me.header){
+      me.rightHeader.reSetCheckBoxes();
+
+      if(me.groupheader){
+        me.header.fixGroupHeaderSizing();
+        me.rightHeader.fixGroupHeaderSizing();
+      }
+    }
     me.body.reSetIndexes();
     me.rightBody.reSetIndexes();
 
@@ -524,9 +538,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       removedColumn;
 
     if(side === undefined){
-      if(Fancy.isString(indexOrder)) {
-        Fancy.each(me.leftColumns, function (column, i) {
-          if (column.index === indexOrder) {
+      if(Fancy.isString(indexOrder)){
+        Fancy.each(me.leftColumns, function(column, i){
+          if (column.index === indexOrder){
             side = 'left';
             indexOrder = i;
             return true;
@@ -534,8 +548,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         });
 
         if(side === undefined){
-          Fancy.each(me.rightColumns, function (column, i) {
-            if (column.index === indexOrder) {
+          Fancy.each(me.rightColumns, function(column, i){
+            if (column.index === indexOrder){
               side = 'right';
               indexOrder = i;
               return true;
@@ -551,7 +565,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     switch(side){
       case 'left':
         if(Fancy.isString(indexOrder)){
-          Fancy.each(me.leftColumns, function (column, i) {
+          Fancy.each(me.leftColumns, function(column, i){
             if(column.index === indexOrder){
               indexOrder = i;
               return true;
@@ -569,7 +583,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         break;
       case 'right':
         if(Fancy.isString(indexOrder)){
-          Fancy.each(me.rightColumns, function (column, i) {
+          Fancy.each(me.rightColumns, function(column, i){
             if(column.index === indexOrder){
               indexOrder = i;
               return true;
@@ -593,6 +607,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.grouping.insertGroupEls();
     }
 
+    if(me.header){
+      if(me.groupheader){
+        me.header.fixGroupHeaderSizing();
+
+        if(me.rightHeader){
+          me.rightHeader.fixGroupHeaderSizing();
+        }
+
+        if(me.leftHeader){
+          me.leftHeader.fixGroupHeaderSizing();
+        }
+      }
+    }
+
     me.body.reSetIndexes();
     me.leftBody.reSetIndexes();
     me.rightBody.reSetIndexes();
@@ -608,7 +636,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number} toIndex
    * @param {Object} [grouping]
    */
-  moveColumn: function (fromSide, toSide, fromIndex, toIndex, grouping) {
+  moveColumn: function(fromSide, toSide, fromIndex, toIndex, grouping){
     var me = this,
       removedColumn;
 
@@ -695,7 +723,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.update();
   },
-  updateColumnsVisibilty: function () {
+  updateColumnsVisibilty: function(){
     var me = this;
 
     if(me.columns){
@@ -719,12 +747,12 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.rightBody.updateColumnsVisibility();
     }
   },
-  initColumnsIdSeedByIndex: function () {
+  initColumnsIdSeedByIndex: function(){
     var me = this;
 
     me.columnsIdsSeed = {};
   },
-  getColumnId: function (index) {
+  getColumnId: function(index){
     var me = this;
 
     if(me.columnsIdsSeed[index] === undefined){
@@ -770,7 +798,7 @@ FancyGrid.addValid = Fancy.addValid;
 if(!Fancy.nojQuery && Fancy.$){
   Fancy.$.fn.FancyGrid = function(o){
     if(this.selector){
-      o.renderTo = $(this.selector)[0].id;
+      o.renderTo = Fancy.$(this.selector)[0].id;
     }
     else{
       o.renderTo = this.attr('id');

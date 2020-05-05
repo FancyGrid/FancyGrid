@@ -168,7 +168,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     me.resizeMaskEl.css({
       width: newWidth,
       height: newHeight
-    })
+    });
   },
   /*
    *

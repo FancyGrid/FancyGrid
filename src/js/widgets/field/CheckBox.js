@@ -2,7 +2,7 @@
  * @class Fancy.CheckBox
  * @extends Fancy.Widget
  */
-(function() {
+(function(){
   /*
    * CONSTANTS
    */
@@ -27,14 +27,14 @@
      * @constructor
      * @param {Object} config
      */
-    constructor: function (config) {
+    constructor: function(config){
       Fancy.applyConfig(this, config);
       this.Super('const', arguments);
     },
     /*
      *
      */
-    init: function () {
+    init: function(){
       var me = this;
 
       me.addEvents(
@@ -53,7 +53,7 @@
         label: me.label
       });
 
-      if (me.expander) {
+      if (me.expander){
         me.addCls('fancy-checkbox-expander');
       }
 
@@ -86,7 +86,7 @@
     /*
      *
      */
-    ons: function () {
+    ons: function(){
       var me = this,
         el = me.el;
 
@@ -96,14 +96,14 @@
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip) {
+      if (me.tip){
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      * @param {Object} e
      */
-    onClick: function (e) {
+    onClick: function(e){
       var me = this,
         el = me.el;
 
@@ -113,15 +113,15 @@
 
       me.fire('beforechange');
 
-      if (e.ctrlKey && me.stopIfCTRL) {
-        return
-      }
-
-      if (me.editable === false) {
+      if (e.ctrlKey && me.stopIfCTRL){
         return;
       }
 
-      if (me.canceledChange === true) {
+      if (me.editable === false){
+        return;
+      }
+
+      if (me.canceledChange === true){
         me.canceledChange = false;
         return;
       }
@@ -139,31 +139,30 @@
     /*
      * @params {Object} e
      */
-    onMouseDown: function (e) {
-
+    onMouseDown: function(e){
       e.preventDefault();
     },
     /*
      * @params {*} value
      * @params {Boolean} fire
      */
-    set: function (value, fire) {
+    set: function(value, fire){
       var me = this,
         el = me.el;
 
-      if (value === '') {
+      if (value === ''){
         value = false;
       }
 
-      if (value === true || value === 1) {
+      if (value === true || value === 1){
         el.addCls(me.checkedCls);
         value = true;
       }
-      else if (value === false || value === 0) {
+      else if (value === false || value === 0){
         el.removeClass(me.checkedCls);
         value = false;
       }
-      else if (value === undefined) {
+      else if (value === undefined){
         value = false;
       }
       else {
@@ -171,7 +170,7 @@
       }
 
       me.value = value;
-      if (fire !== false) {
+      if (fire !== false){
         me.fire('change', me.value);
       }
     },
@@ -179,43 +178,43 @@
      * @params {*} value
      * @params {Boolean} onInput
      */
-    setValue: function (value, onInput) {
+    setValue: function(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @return {*}
      */
-    getValue: function () {
+    getValue: function(){
       return this.value;
     },
     /*
      * @return {*}
      */
-    get: function () {
+    get: function(){
       return this.getValue();
     },
     /*
      *
      */
-    clear: function () {
+    clear: function(){
       this.set(false);
     },
     /*
      *
      */
-    toggle: function () {
+    toggle: function(){
       this.set(!this.value);
     },
     /*
      *
      */
-    destroy: function () {
+    destroy: function(){
       this.Super('destroy', arguments);
     },
     /*
      *
      */
-    checkMiddle: function () {
+    checkMiddle: function(){
       var me = this;
 
       if(me.middle){
@@ -228,7 +227,7 @@
     /*
      * @param {Boolean} value
      */
-    setMiddle: function (value) {
+    setMiddle: function(value){
       var me = this;
 
       me.middle = value;

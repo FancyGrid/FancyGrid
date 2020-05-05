@@ -193,7 +193,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
       }
 
       if(lis.delay){
-        setTimeout(function () {
+        setTimeout(function(){
           lis.fn.apply(lis.scope || me, _args);
         }, lis.delay);
       }

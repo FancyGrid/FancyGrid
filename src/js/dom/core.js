@@ -55,11 +55,11 @@ if( Fancy.nojQuery ){
         'contenteditable': 'contentEditable'
       },
       isArray = Array.isArray ||
-        function (object) {
+        function(object){
           return object instanceof Array
         };
 
-    zepto.matches = function (element, selector) {
+    zepto.matches = function(element, selector){
       if (!selector || !element || element.nodeType !== 1) return false
       var matchesSelector = element.webkitMatchesSelector || element.mozMatchesSelector ||
         element.oMatchesSelector || element.matchesSelector
@@ -72,52 +72,52 @@ if( Fancy.nojQuery ){
       return match
     };
 
-    function type(obj) {
+    function type(obj){
       return obj == null ? String(obj) :
       class2type[toString.call(obj)] || "object"
     }
 
-    function isFunction(value) {
+    function isFunction(value){
       return type(value) == "function"
     }
 
-    function isWindow(obj) {
+    function isWindow(obj){
       return obj != null && obj == obj.window
     }
 
-    function isDocument(obj) {
+    function isDocument(obj){
       return obj != null && obj.nodeType == obj.DOCUMENT_NODE
     }
 
-    function isObject(obj) {
+    function isObject(obj){
       return type(obj) == "object"
     }
 
-    function isPlainObject(obj) {
+    function isPlainObject(obj){
       return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
     }
 
-    function likeArray(obj) {
+    function likeArray(obj){
       return typeof obj.length == 'number'
     }
 
-    function compact(array) {
-      return filter.call(array, function (item) {
+    function compact(array){
+      return filter.call(array, function(item){
         return item != null
       })
     }
 
-    function flatten(array) {
+    function flatten(array){
       return array.length > 0 ? $.fn.concat.apply([], array) : array
     }
 
-    camelize = function (str) {
-      return str.replace(/-+(.)?/g, function (match, chr) {
+    camelize = function(str){
+      return str.replace(/-+(.)?/g, function(match, chr){
         return chr ? chr.toUpperCase() : ''
       })
     };
 
-    function dasherize(str) {
+    function dasherize(str){
       return str.replace(/::/g, '/')
         .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
         .replace(/([a-z\d])([A-Z])/g, '$1_$2')
@@ -125,24 +125,24 @@ if( Fancy.nojQuery ){
         .toLowerCase()
     }
 
-    uniq = function (array) {
-      return filter.call(array, function (item, idx) {
+    uniq = function(array){
+      return filter.call(array, function(item, idx){
         return array.indexOf(item) == idx
       })
     };
 
-    function classRE(name) {
+    function classRE(name){
       return name in classCache ?
         classCache[name] : (classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|$)'))
     }
 
-    function maybeAddPx(name, value) {
+    function maybeAddPx(name, value){
       return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value
     }
 
-    function defaultDisplay(nodeName) {
+    function defaultDisplay(nodeName){
       var element, display
-      if (!elementDisplay[nodeName]) {
+      if (!elementDisplay[nodeName]){
         element = document.createElement(nodeName)
         document.body.appendChild(element)
         display = getComputedStyle(element, '').getPropertyValue("display")
@@ -153,15 +153,15 @@ if( Fancy.nojQuery ){
       return elementDisplay[nodeName]
     }
 
-    function children(element) {
+    function children(element){
       return 'children' in element ?
         slice.call(element.children) :
-        $.map(element.childNodes, function (node) {
+        $.map(element.childNodes, function(node){
           if (node.nodeType == 1) return node
         })
     }
 
-    function Z(dom, selector) {
+    function Z(dom, selector){
       var i, len = dom ? dom.length : 0
       for (i = 0; i < len; i++) this[i] = dom[i]
       this.length = len
@@ -173,27 +173,27 @@ if( Fancy.nojQuery ){
     // The generated DOM nodes are returned as an array.
     // This function can be overridden in plugins for example to make
     // it compatible with browsers that don't support the DOM fully.
-    zepto.fragment = function (html, name, properties) {
+    zepto.fragment = function(html, name, properties){
       var dom, nodes, container
 
       // A special case optimization for a single tag
       if (singleTagRE.test(html)) dom = $(document.createElement(RegExp.$1))
 
-      if (!dom) {
+      if (!dom){
         if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
         if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
         if (!(name in containers)) name = '*'
 
         container = containers[name]
         container.innerHTML = '' + html
-        dom = $.each(slice.call(container.childNodes), function () {
+        dom = $.each(slice.call(container.childNodes), function(){
           container.removeChild(this)
         })
       }
 
-      if (isPlainObject(properties)) {
+      if (isPlainObject(properties)){
         nodes = $(dom)
-        $.each(properties, function (key, value) {
+        $.each(properties, function(key, value){
           if (methodAttributes.indexOf(key) > -1) nodes[key](value)
           else nodes.attr(key, value)
         })
@@ -205,13 +205,13 @@ if( Fancy.nojQuery ){
     // `$.zepto.Z` swaps out the prototype of the given `dom` array
     // of nodes with `$.fn` and thus supplying all the Zepto functions
     // to the array. This method can be overridden in plugins.
-    zepto.Z = function (dom, selector) {
+    zepto.Z = function(dom, selector){
       return new Z(dom, selector)
     };
 
     // `$.zepto.isZ` should return `true` if the given object is a Zepto
     // collection. This method can be overridden in plugins.
-    zepto.isZ = function (object) {
+    zepto.isZ = function(object){
       return object instanceof zepto.Z
     };
 
@@ -219,12 +219,12 @@ if( Fancy.nojQuery ){
     // takes a CSS selector and an optional context (and handles various
     // special cases).
     // This method can be overridden in plugins.
-    zepto.init = function (selector, context) {
+    zepto.init = function(selector, context){
       var dom;
       // If nothing given, return an empty Zepto collection
       if (!selector) return zepto.Z()
       // Optimize for string selectors
-      else if (typeof selector == 'string') {
+      else if (typeof selector == 'string'){
         selector = selector.trim()
         // If it's a html fragment, create nodes from it
         // Note: In both Chrome 21 and Firefox 15, DOM error 12
@@ -268,9 +268,9 @@ if( Fancy.nojQuery ){
       return zepto.init(selector, context)
     };
 
-    function extend(target, source, deep) {
+    function extend(target, source, deep){
       for (key in source)
-        if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
+        if (deep && (isPlainObject(source[key]) || isArray(source[key]))){
           if (isPlainObject(source[key]) && !isPlainObject(target[key]))
             target[key] = {}
           if (isArray(source[key]) && !isArray(target[key]))
@@ -282,13 +282,13 @@ if( Fancy.nojQuery ){
 
     // Copy all but undefined properties from one or more
     // objects to the `target` object.
-    $.extend = function (target) {
+    $.extend = function(target){
       var deep, args = slice.call(arguments, 1)
-      if (typeof target == 'boolean') {
+      if (typeof target == 'boolean'){
         deep = target
         target = args.shift()
       }
-      args.forEach(function (arg) {
+      args.forEach(function(arg){
         extend(target, arg, deep)
       })
       return target
@@ -297,7 +297,7 @@ if( Fancy.nojQuery ){
     // `$.zepto.qsa` is Zepto's CSS selector implementation which
     // uses `document.querySelectorAll` and optimizes for some special cases, like `#id`.
     // This method can be overridden in plugins.
-    zepto.qsa = function (element, selector) {
+    zepto.qsa = function(element, selector){
       var found,
         maybeID = selector[0] == '#',
         maybeClass = !maybeID && selector[0] == '.',
@@ -314,30 +314,30 @@ if( Fancy.nojQuery ){
           )
     };
 
-    function filtered(nodes, selector) {
+    function filtered(nodes, selector){
       return selector == null ? $(nodes) : $(nodes).filter(selector)
     }
 
     $.contains = document.documentElement.contains ?
-      function (parent, node) {
+      function(parent, node){
         return parent !== node && parent.contains(node)
       } :
-      function (parent, node) {
+      function(parent, node){
         while (node && (node = node.parentNode))
           if (node === parent) return true
         return false
       }
 
-    function funcArg(context, arg, idx, payload) {
+    function funcArg(context, arg, idx, payload){
       return isFunction(arg) ? arg.call(context, idx, payload) : arg
     }
 
-    function setAttribute(node, name, value) {
+    function setAttribute(node, name, value){
       value == null ? node.removeAttribute(name) : node.setAttribute(name, value)
     }
 
     // access className property while respecting SVGAnimatedString
-    function className(node, value) {
+    function className(node, value){
       var klass = node.className || '',
         svg = klass && klass.baseVal !== undefined
 
@@ -353,7 +353,7 @@ if( Fancy.nojQuery ){
     // "08"    => "08"
     // JSON    => parse if valid
     // String  => self
-    function deserializeValue(value) {
+    function deserializeValue(value){
       try {
         return value ?
         value == "true" ||
@@ -363,7 +363,7 @@ if( Fancy.nojQuery ){
               /^[\[\{]/.test(value) ? $.parseJSON(value) :
                 value )
           : value
-      } catch (e) {
+      } catch (e){
         return value
       }
     }
@@ -374,18 +374,18 @@ if( Fancy.nojQuery ){
     $.isArray = isArray
     $.isPlainObject = isPlainObject
 
-    $.isEmptyObject = function (obj) {
+    $.isEmptyObject = function(obj){
       var name
       for (name in obj) return false
       return true
     };
 
-    $.inArray = function (elem, array, i) {
+    $.inArray = function(elem, array, i){
       return emptyArray.indexOf.call(array, elem, i)
     };
 
     $.camelCase = camelize
-    $.trim = function (str) {
+    $.trim = function(str){
       return str == null ? "" : String.prototype.trim.call(str)
     };
 
@@ -395,24 +395,24 @@ if( Fancy.nojQuery ){
     $.expr = {};
     $.noop = function(){};
 
-    $.map = function (elements, callback) {
+    $.map = function(elements, callback){
       var value, values = [], i, key
       if (likeArray(elements))
-        for (i = 0; i < elements.length; i++) {
+        for (i = 0; i < elements.length; i++){
           value = callback(elements[i], i)
           if (value != null) values.push(value)
         }
       else
-        for (key in elements) {
+        for (key in elements){
           value = callback(elements[key], key)
           if (value != null) values.push(value)
         }
       return flatten(values)
     };
 
-    $.each = function (elements, callback) {
+    $.each = function(elements, callback){
       var i, key
-      if (likeArray(elements)) {
+      if (likeArray(elements)){
         for (i = 0; i < elements.length; i++)
           if (callback.call(elements[i], i, elements[i]) === false) return elements
       } else {
@@ -423,14 +423,14 @@ if( Fancy.nojQuery ){
       return elements
     };
 
-    $.grep = function (elements, callback) {
+    $.grep = function(elements, callback){
       return filter.call(elements, callback)
     };
 
     if (window.JSON) $.parseJSON = JSON.parse
 
     // Populate the class2type map
-    $.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function (i, name) {
+    $.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name){
       class2type["[object " + name + "]"] = name.toLowerCase()
     });
 
@@ -448,9 +448,9 @@ if( Fancy.nojQuery ){
       sort: emptyArray.sort,
       splice: emptyArray.splice,
       indexOf: emptyArray.indexOf,
-      concat: function () {
+      concat: function(){
         var i, value, args = []
-        for (i = 0; i < arguments.length; i++) {
+        for (i = 0; i < arguments.length; i++){
           value = arguments[i]
           args[i] = zepto.isZ(value) ? value.toArray() : value
         }
@@ -459,180 +459,180 @@ if( Fancy.nojQuery ){
 
       // `map` and `slice` in the jQuery API work differently
       // from their array counterparts
-      map: function (fn) {
-        return $($.map(this, function (el, i) {
+      map: function(fn){
+        return $($.map(this, function(el, i){
           return fn.call(el, i, el)
         }))
       },
-      slice: function () {
+      slice: function(){
         return $(slice.apply(this, arguments))
       },
 
-      ready: function (callback) {
+      ready: function(callback){
         // need to check if document.body exists for IE as that browser reports
         // document ready when it hasn't yet created the body element
         if (readyRE.test(document.readyState) && document.body) callback($)
-        else document.addEventListener('DOMContentLoaded', function () {
+        else document.addEventListener('DOMContentLoaded', function(){
           callback($)
         }, false)
         return this
       },
-      get: function (idx) {
+      get: function(idx){
         return idx === undefined ? slice.call(this) : this[idx >= 0 ? idx : idx + this.length]
       },
-      toArray: function () {
+      toArray: function(){
         return this.get()
       },
-      size: function () {
+      size: function(){
         return this.length
       },
-      remove: function () {
-        return this.each(function () {
+      remove: function(){
+        return this.each(function(){
           if (this.parentNode != null)
             this.parentNode.removeChild(this)
         })
       },
-      each: function (callback) {
-        emptyArray.every.call(this, function (el, idx) {
+      each: function(callback){
+        emptyArray.every.call(this, function(el, idx){
           return callback.call(el, idx, el) !== false
         })
         return this
       },
-      filter: function (selector) {
+      filter: function(selector){
         if (isFunction(selector)) return this.not(this.not(selector))
-        return $(filter.call(this, function (element) {
+        return $(filter.call(this, function(element){
           return zepto.matches(element, selector)
         }))
       },
-      add: function (selector, context) {
+      add: function(selector, context){
         return $(uniq(this.concat($(selector, context))))
       },
-      is: function (selector) {
+      is: function(selector){
         return this.length > 0 && zepto.matches(this[0], selector)
       },
-      not: function (selector) {
+      not: function(selector){
         var nodes = []
         if (isFunction(selector) && selector.call !== undefined)
-          this.each(function (idx) {
+          this.each(function(idx){
             if (!selector.call(this, idx)) nodes.push(this)
           })
         else {
           var excludes = typeof selector == 'string' ? this.filter(selector) :
             (likeArray(selector) && isFunction(selector.item)) ? slice.call(selector) : $(selector)
-          this.forEach(function (el) {
+          this.forEach(function(el){
             if (excludes.indexOf(el) < 0) nodes.push(el)
           })
         }
         return $(nodes)
       },
-      has: function (selector) {
-        return this.filter(function () {
+      has: function(selector){
+        return this.filter(function(){
           return isObject(selector) ?
             $.contains(this, selector) :
             $(this).find(selector).size()
         })
       },
-      eq: function (idx) {
+      eq: function(idx){
         return idx === -1 ? this.slice(idx) : this.slice(idx, +idx + 1)
       },
-      first: function () {
+      first: function(){
         var el = this[0]
         return el && !isObject(el) ? el : $(el)
       },
-      last: function () {
+      last: function(){
         var el = this[this.length - 1]
         return el && !isObject(el) ? el : $(el)
       },
-      find: function (selector) {
+      find: function(selector){
         var result, $this = this
         if (!selector) result = $()
         else if (typeof selector == 'object')
-          result = $(selector).filter(function () {
+          result = $(selector).filter(function(){
             var node = this
-            return emptyArray.some.call($this, function (parent) {
+            return emptyArray.some.call($this, function(parent){
               return $.contains(parent, node)
             })
           })
         else if (this.length == 1) result = $(zepto.qsa(this[0], selector))
-        else result = this.map(function () {
+        else result = this.map(function(){
             return zepto.qsa(this, selector)
           })
         return result
       },
-      closest: function (selector, context) {
+      closest: function(selector, context){
         var node = this[0], collection = false
         if (typeof selector == 'object') collection = $(selector)
         while (node && !(collection ? collection.indexOf(node) >= 0 : zepto.matches(node, selector)))
           node = node !== context && !isDocument(node) && node.parentNode
         return $(node)
       },
-      parents: function (selector) {
+      parents: function(selector){
         var ancestors = [], nodes = this
         while (nodes.length > 0)
-          nodes = $.map(nodes, function (node) {
-            if ((node = node.parentNode) && !isDocument(node) && ancestors.indexOf(node) < 0) {
+          nodes = $.map(nodes, function(node){
+            if ((node = node.parentNode) && !isDocument(node) && ancestors.indexOf(node) < 0){
               ancestors.push(node)
               return node
             }
           })
         return filtered(ancestors, selector)
       },
-      parent: function (selector) {
+      parent: function(selector){
         return filtered(uniq(this.pluck('parentNode')), selector)
       },
-      children: function (selector) {
-        return filtered(this.map(function () {
+      children: function(selector){
+        return filtered(this.map(function(){
           return children(this)
         }), selector)
       },
-      contents: function () {
-        return this.map(function () {
+      contents: function(){
+        return this.map(function(){
           return this.contentDocument || slice.call(this.childNodes)
         })
       },
-      siblings: function (selector) {
-        return filtered(this.map(function (i, el) {
-          return filter.call(children(el.parentNode), function (child) {
+      siblings: function(selector){
+        return filtered(this.map(function(i, el){
+          return filter.call(children(el.parentNode), function(child){
             return child !== el
           })
         }), selector)
       },
-      empty: function () {
-        return this.each(function () {
+      empty: function(){
+        return this.each(function(){
           this.innerHTML = ''
         })
       },
       // `pluck` is borrowed from Prototype.js
-      pluck: function (property) {
-        return $.map(this, function (el) {
+      pluck: function(property){
+        return $.map(this, function(el){
           return el[property]
         })
       },
-      show: function () {
-        return this.each(function () {
+      show: function(){
+        return this.each(function(){
           this.style.display == "none" && (this.style.display = '')
           if (getComputedStyle(this, '').getPropertyValue("display") == "none")
             this.style.display = defaultDisplay(this.nodeName)
         })
       },
-      replaceWith: function (newContent) {
+      replaceWith: function(newContent){
         return this.before(newContent).remove()
       },
-      wrap: function (structure) {
+      wrap: function(structure){
         var func = isFunction(structure)
         if (this[0] && !func)
           var dom = $(structure).get(0),
             clone = dom.parentNode || this.length > 1
 
-        return this.each(function (index) {
+        return this.each(function(index){
           $(this).wrapAll(
             func ? structure.call(this, index) :
               clone ? dom.cloneNode(true) : dom
           )
         })
       },
-      wrapAll: function (structure) {
-        if (this[0]) {
+      wrapAll: function(structure){
+        if (this[0]){
           $(this[0]).before(structure = $(structure))
           var children
           // drill down to the inmost element
@@ -641,85 +641,85 @@ if( Fancy.nojQuery ){
         }
         return this
       },
-      wrapInner: function (structure) {
+      wrapInner: function(structure){
         var func = isFunction(structure)
-        return this.each(function (index) {
+        return this.each(function(index){
           var self = $(this), contents = self.contents(),
             dom = func ? structure.call(this, index) : structure
           contents.length ? contents.wrapAll(dom) : self.append(dom)
         })
       },
-      unwrap: function () {
-        this.parent().each(function () {
+      unwrap: function(){
+        this.parent().each(function(){
           $(this).replaceWith($(this).children())
         })
         return this
       },
-      clone: function () {
-        return this.map(function () {
+      clone: function(){
+        return this.map(function(){
           return this.cloneNode(true)
         })
       },
-      hide: function () {
+      hide: function(){
         return this.css("display", "none")
       },
-      toggle: function (setting) {
-        return this.each(function () {
+      toggle: function(setting){
+        return this.each(function(){
           var el = $(this)
             ;
           (setting === undefined ? el.css("display") == "none" : setting) ? el.show() : el.hide()
         })
       },
-      prev: function (selector) {
+      prev: function(selector){
         return $(this.pluck('previousElementSibling')).filter(selector || '*')
       },
-      next: function (selector) {
+      next: function(selector){
         return $(this.pluck('nextElementSibling')).filter(selector || '*')
       },
-      html: function (html) {
+      html: function(html){
         return 0 in arguments ?
-          this.each(function (idx) {
+          this.each(function(idx){
             var originHtml = this.innerHTML
             $(this).empty().append(funcArg(this, html, idx, originHtml))
           }) :
           (0 in this ? this[0].innerHTML : null)
       },
-      text: function (text) {
+      text: function(text){
         return 0 in arguments ?
-          this.each(function (idx) {
+          this.each(function(idx){
             var newText = funcArg(this, text, idx, this.textContent)
             this.textContent = newText == null ? '' : '' + newText
           }) :
           (0 in this ? this.pluck('textContent').join("") : null)
       },
-      attr: function (name, value) {
+      attr: function(name, value){
         var result
         return (typeof name == 'string' && !(1 in arguments)) ?
           (!this.length || this[0].nodeType !== 1 ? undefined :
               (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
           ) :
-          this.each(function (idx) {
+          this.each(function(idx){
             if (this.nodeType !== 1) return
             if (isObject(name)) for (key in name) setAttribute(this, key, name[key])
             else setAttribute(this, name, funcArg(this, value, idx, this.getAttribute(name)))
           })
       },
-      removeAttr: function (name) {
-        return this.each(function () {
-          this.nodeType === 1 && name.split(' ').forEach(function (attribute) {
+      removeAttr: function(name){
+        return this.each(function(){
+          this.nodeType === 1 && name.split(' ').forEach(function(attribute){
             setAttribute(this, attribute)
           }, this)
         })
       },
-      prop: function (name, value) {
+      prop: function(name, value){
         name = propMap[name] || name
         return (1 in arguments) ?
-          this.each(function (idx) {
+          this.each(function(idx){
             this[name] = funcArg(this, value, idx, this[name])
           }) :
           (this[0] && this[0][name])
       },
-      data: function (name, value) {
+      data: function(name, value){
         var attrName = 'data-' + name.replace(capitalRE, '-$1').toLowerCase()
 
         var data = (1 in arguments) ?
@@ -728,20 +728,20 @@ if( Fancy.nojQuery ){
 
         return data !== null ? deserializeValue(data) : undefined
       },
-      val: function (value) {
+      val: function(value){
         return 0 in arguments ?
-          this.each(function (idx) {
+          this.each(function(idx){
             this.value = funcArg(this, value, idx, this.value)
           }) :
           (this[0] && (this[0].multiple ?
-              $(this[0]).find('option').filter(function () {
+              $(this[0]).find('option').filter(function(){
                 return this.selected
               }).pluck('value') :
               this[0].value)
           )
       },
-      offset: function (coordinates) {
-        if (coordinates) return this.each(function (index) {
+      offset: function(coordinates){
+        if (coordinates) return this.each(function(index){
           var $this = $(this),
             coords = funcArg(this, coordinates, index, $this.offset()),
             parentOffset = $this.offsetParent().offset(),
@@ -764,16 +764,16 @@ if( Fancy.nojQuery ){
           height: Math.round(obj.height)
         }
       },
-      css: function (property, value) {
-        if (arguments.length < 2) {
+      css: function(property, value){
+        if (arguments.length < 2){
           var computedStyle, element = this[0]
           if (!element) return
           computedStyle = getComputedStyle(element, '')
           if (typeof property == 'string')
             return element.style[camelize(property)] || computedStyle.getPropertyValue(property)
-          else if (isArray(property)) {
+          else if (isArray(property)){
             var props = {}
-            $.each(property, function (_, prop) {
+            $.each(property, function(_, prop){
               props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
             })
             return props
@@ -781,9 +781,9 @@ if( Fancy.nojQuery ){
         }
 
         var css = ''
-        if (type(property) == 'string') {
+        if (type(property) == 'string'){
           if (!value && value !== 0)
-            this.each(function () {
+            this.each(function(){
               this.style.removeProperty(dasherize(property))
             })
           else
@@ -791,84 +791,84 @@ if( Fancy.nojQuery ){
         } else {
           for (key in property)
             if (!property[key] && property[key] !== 0)
-              this.each(function () {
+              this.each(function(){
                 this.style.removeProperty(dasherize(key))
               })
             else
               css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
         }
 
-        return this.each(function () {
+        return this.each(function(){
           this.style.cssText += ';' + css
         })
       },
-      index: function (element) {
+      index: function(element){
         return element ? this.indexOf($(element)[0]) : this.parent().children().indexOf(this[0])
       },
-      hasClass: function (name) {
+      hasClass: function(name){
         if (!name) return false
-        return emptyArray.some.call(this, function (el) {
+        return emptyArray.some.call(this, function(el){
           return this.test(className(el))
         }, classRE(name))
       },
-      addClass: function (name) {
+      addClass: function(name){
         if (!name) return this
-        return this.each(function (idx) {
+        return this.each(function(idx){
           if (!('className' in this)) return
           classList = []
           var cls = className(this), newName = funcArg(this, name, idx, cls)
-          newName.split(/\s+/g).forEach(function (klass) {
+          newName.split(/\s+/g).forEach(function(klass){
             if (!$(this).hasClass(klass)) classList.push(klass)
           }, this)
           classList.length && className(this, cls + (cls ? " " : "") + classList.join(" "))
         })
       },
-      removeClass: function (name) {
-        return this.each(function (idx) {
+      removeClass: function(name){
+        return this.each(function(idx){
           if (!('className' in this)) return
           if (name === undefined) return className(this, '')
           classList = className(this)
-          funcArg(this, name, idx, classList).split(/\s+/g).forEach(function (klass) {
+          funcArg(this, name, idx, classList).split(/\s+/g).forEach(function(klass){
             classList = classList.replace(classRE(klass), " ")
           })
           className(this, classList.trim())
         })
       },
-      toggleClass: function (name, when) {
+      toggleClass: function(name, when){
         if (!name) return this
-        return this.each(function (idx) {
+        return this.each(function(idx){
           var $this = $(this), names = funcArg(this, name, idx, className(this))
-          names.split(/\s+/g).forEach(function (klass) {
+          names.split(/\s+/g).forEach(function(klass){
             (when === undefined ? !$this.hasClass(klass) : when) ?
               $this.addClass(klass) : $this.removeClass(klass)
           })
         })
       },
-      scrollTop: function (value) {
+      scrollTop: function(value){
         if (!this.length) return
         var hasScrollTop = 'scrollTop' in this[0]
         if (value === undefined) return hasScrollTop ? this[0].scrollTop : this[0].pageYOffset
         return this.each(hasScrollTop ?
-          function () {
+          function(){
             this.scrollTop = value
           } :
-          function () {
+          function(){
             this.scrollTo(this.scrollX, value)
           })
       },
-      scrollLeft: function (value) {
+      scrollLeft: function(value){
         if (!this.length) return
         var hasScrollLeft = 'scrollLeft' in this[0]
         if (value === undefined) return hasScrollLeft ? this[0].scrollLeft : this[0].pageXOffset
         return this.each(hasScrollLeft ?
-          function () {
+          function(){
             this.scrollLeft = value
           } :
-          function () {
+          function(){
             this.scrollTo(value, this.scrollY)
           })
       },
-      position: function () {
+      position: function(){
         if (!this.length) return
 
         var elem = this[0],
@@ -894,8 +894,8 @@ if( Fancy.nojQuery ){
           left: offset.left - parentOffset.left
         }
       },
-      offsetParent: function () {
-        return this.map(function () {
+      offsetParent: function(){
+        return this.map(function(){
           var parent = this.offsetParent || document.body
           while (parent && !rootNodeRE.test(parent.nodeName) && $(parent).css("position") == "static")
             parent = parent.offsetParent
@@ -909,25 +909,25 @@ if( Fancy.nojQuery ){
 
       // Generate the `width` and `height` functions
     ;
-    ['width', 'height'].forEach(function (dimension) {
+    ['width', 'height'].forEach(function(dimension){
       var dimensionProperty =
-        dimension.replace(/./, function (m) {
+        dimension.replace(/./, function(m){
           return m[0].toUpperCase()
         })
 
-      $.fn[dimension] = function (value) {
+      $.fn[dimension] = function(value){
         var offset, el = this[0]
         if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
           isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
           (offset = this.offset()) && offset[dimension]
-        else return this.each(function (idx) {
+        else return this.each(function(idx){
           el = $(this)
           el.css(dimension, funcArg(this, value, idx, el[dimension]()))
         })
       }
     })
 
-    function traverseNode(node, fun) {
+    function traverseNode(node, fun){
       fun(node)
       for (var i = 0, len = node.childNodes.length; i < len; i++)
         traverseNode(node.childNodes[i], fun)
@@ -935,12 +935,12 @@ if( Fancy.nojQuery ){
 
     // Generate the `after`, `prepend`, `before`, `append`,
     // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
-    adjacencyOperators.forEach(function (operator, operatorIndex) {
+    adjacencyOperators.forEach(function(operator, operatorIndex){
       var inside = operatorIndex % 2 //=> prepend, append
 
-      $.fn[operator] = function () {
+      $.fn[operator] = function(){
         // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
-        var argType, nodes = $.map(arguments, function (arg) {
+        var argType, nodes = $.map(arguments, function(arg){
             argType = type(arg)
             return argType == "object" || argType == "array" || arg == null ?
               arg : zepto.fragment(arg)
@@ -948,7 +948,7 @@ if( Fancy.nojQuery ){
           parent, copyByClone = this.length > 1
         if (nodes.length < 1) return this
 
-        return this.each(function (_, target) {
+        return this.each(function(_, target){
           parent = inside ? target : target.parentNode
 
           // convert all methods to a "before" operation
@@ -959,12 +959,12 @@ if( Fancy.nojQuery ){
 
           var parentInDocument = $.contains(document.documentElement, parent)
 
-          nodes.forEach(function (node) {
+          nodes.forEach(function(node){
             if (copyByClone) node = node.cloneNode(true)
             else if (!parent) return $(node).remove()
 
             parent.insertBefore(node, target)
-            if (parentInDocument) traverseNode(node, function (el) {
+            if (parentInDocument) traverseNode(node, function(el){
               if (el.nodeName != null && el.nodeName.toUpperCase() === 'SCRIPT' &&
                 (!el.type || el.type === 'text/javascript') && !el.src)
                 window['eval'].call(window, el.innerHTML)
@@ -977,7 +977,7 @@ if( Fancy.nojQuery ){
       // prepend  => prependTo
       // before   => insertBefore
       // append   => appendTo
-      $.fn[inside ? operator + 'To' : 'insert' + (operatorIndex ? 'Before' : 'After')] = function (html) {
+      $.fn[inside ? operator + 'To' : 'insert' + (operatorIndex ? 'Before' : 'After')] = function(html){
         $(html)[operator](this)
         return this
       }

@@ -85,7 +85,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     var keyCode = e.keyCode,
       key = Fancy.key;
 
-    switch(keyCode) {
+    switch(keyCode){
       case key.TAB:
         this.fire('tab', e);
         break;
@@ -96,8 +96,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} e
    */
   onTab: function(me, e){
-    var me = this,
-      w = me.widget,
+    var w = me.widget,
       activeParams = me.activeCellEditParams;
 
     if(!activeParams){
@@ -108,10 +107,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
     var params = me.getNextCellEditParam();
 
-    if(w.celledit) {
+    if(w.celledit){
       w.celledit.hideEditor();
-      if (w.tabEdit !== false) {
-        setTimeout(function () {
+      if (w.tabEdit !== false){
+        setTimeout(function(){
           w.celledit.edit(params);
         }, 100);
       }
@@ -249,7 +248,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       side: side,
       rowIndex: rowIndex,
       columnIndex: columnIndex
-    }
+    };
   },
   /*
    * @return {String}
@@ -291,7 +290,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       w = me.widget,
       column = o.column;
 
-    if(w.rowedit) {}
+    if(w.rowedit){}
     else if(w.celledit){
       w.celledit.hideEditor();
     }
@@ -330,7 +329,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {String} key
    * @param {*} value
    */
-  onStoreCRUDUpdate: function(store, id, key, value){
+  onStoreCRUDUpdate: function(store, id){
     delete store.changed[id];
 
     this.clearDirty();
@@ -352,7 +351,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   clearDirty: function(){
     var w = this.widget;
 
-    setTimeout(function() {
+    setTimeout(function(){
       w.leftBody.clearDirty();
       w.body.clearDirty();
       w.rightBody.clearDirty();

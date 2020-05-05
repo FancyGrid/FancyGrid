@@ -33,7 +33,7 @@ Fancy.Element.prototype = {
   /*
    * @return {Fancy.Element}
    */
-  last: function () {
+  last: function(){
     return Fancy.get(this.$dom);
   },
   /*
@@ -88,7 +88,7 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  on: function(eventName, fn, scope, delegate) {
+  on: function(eventName, fn, scope, delegate){
     var me = this;
 
     if(scope){
@@ -127,10 +127,10 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  once: function(eventName, fn, scope, delegate) {
+  once: function(eventName, fn, scope, delegate){
     var me = this;
 
-    if (scope) {
+    if (scope){
       fn = Fancy.$.proxy(fn, scope);
     }
 
@@ -154,10 +154,10 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  un: function(eventName, fn, scope, delegate) {
+  un: function(eventName, fn, scope, delegate){
     var me = this;
 
-    if (scope) {
+    if (scope){
       fn = Fancy.$.proxy(fn, scope);
     }
 
@@ -285,7 +285,7 @@ Fancy.Element.prototype = {
         css: function(){},
         each: function(){},
         last: function(){},
-        attr: function () {}
+        attr: function(){}
       };
     }
 
@@ -462,7 +462,7 @@ Fancy.Element.prototype = {
   /*
    *
    */
-  stop: function () {
+  stop: function(){
     if(this.$dom.stop){
       this.$dom.stop();
     }
@@ -518,14 +518,6 @@ Fancy.Element.prototype = {
     }
   },
   /*
-   *
-   */
-  stop: function(){
-    if(this.$dom.stop){
-      this.$dom.stop();
-    }
-  },
-  /*
    * @return {Number}
    */
   index: function(){
@@ -541,8 +533,9 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr',
-        e = e.originalEvent || e;
+        tempAttr = 'fancy-tempt-attr';
+
+      e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -753,6 +746,11 @@ Fancy.Element.prototype = {
 
     return false;
   },
+  /*
+   * @param {String} eventName
+   * @param {Function} fn
+   * @param {Object} [scope]
+   */
   onTouchMove: function(eventName, fn, scope){
     var me = this,
       docEl = Fancy.get(document.body);
@@ -763,8 +761,9 @@ Fancy.Element.prototype = {
 
     var wrappedFn = function(e, target){
       var tempId = Fancy.id(),
-        tempAttr = 'fancy-tempt-attr',
-        e = e.originalEvent || e;
+        tempAttr = 'fancy-tempt-attr';
+
+      e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
@@ -802,7 +801,7 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
-  each: function (fn) {
+  each: function(fn){
     fn(this, 0);
   }
 };
@@ -826,7 +825,7 @@ Fancy.Elements.prototype = {
       dom = me.$dom;
 
     if(me.length > 1){
-      dom = me.$dom[0]
+      dom = me.$dom[0];
     }
 
     if( o2 === undefined ){
@@ -1082,13 +1081,13 @@ Fancy.Ajax = function(o){
 
   if(o.sendJSON){
     _o.dataType = 'json';
-    _o.contentType = "application/json; charset=utf-8";
+    _o.contentType = 'application/json; charset=utf-8';
     _o.data = JSON.stringify(_o.data);
   }
 
   if(o.getJSON){
     _o.dataType = 'json';
-    _o.contentType = "application/json; charset=utf-8";
+    _o.contentType = 'application/json; charset=utf-8';
   }
 
   if(o.headers){
