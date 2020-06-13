@@ -10,11 +10,15 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
   filterCheckItem: function(item){
     var me = this,
       w = me.widget,
-      caseSensitive = w.filter.caseSensitive,
+      caseSensitive = w.filterCaseSensitive,
       filters = me.filters,
       passed = true,
       wait = false,
       waitPassed = false;
+
+    if(item.data === undefined){
+      item = new Fancy.Model(item);
+    }
 
     if(me.isTree){
       var child = item.get('child');

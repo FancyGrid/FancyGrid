@@ -1004,6 +1004,10 @@ Fancy.define('Fancy.Store', {
     var me = this,
       filters = me.filters || {};
 
+    if(me._clearedFilter){
+      return true;
+    }
+
     for(var p in filters){
       return true;
     }

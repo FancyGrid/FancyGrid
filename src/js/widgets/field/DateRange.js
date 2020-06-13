@@ -78,6 +78,9 @@
         }, {
           change: me.onChangeDate1,
           scope: me
+        },{
+          empty: me.onChangeDate1,
+          scope: me
         }, {
           focus: me.onFocus1,
           scope: me
@@ -109,6 +112,9 @@
           scope: me
         }, {
           change: me.onChangeDate2,
+          scope: me
+        },{
+          empty: me.onChangeDate2,
           scope: me
         }, {
           focus: me.onFocus2,
@@ -155,7 +161,9 @@
     onChangeDate1: function(field, date){
       var me = this;
 
-      date = F.Date.parse(date, field.format.edit, field.format.mode);
+      if(date){
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
+      }
 
       me.fire('changedatefrom', date);
       me.fire('change');

@@ -15,13 +15,13 @@ Fancy.modules['filter'] = true;
   var GRID_HEADER_CELL_FILTER_CLS = F.GRID_HEADER_CELL_FILTER_CLS;
   var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
   var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+  var GRID_HEADER_CELL_FILTERED_CLS = F.GRID_HEADER_CELL_FILTERED_CLS;
 
   F.define('Fancy.grid.plugin.Filter', {
     extend: F.Plugin,
     ptype: 'grid.filter',
     inWidgetName: 'filter',
     autoEnterDelay: 500,
-    caseSensitive: true,
     /*
      * @constructor
      * @param {Object} config
@@ -313,19 +313,8 @@ Fancy.modules['filter'] = true;
               scope: me
             });
 
-            var format;
-
-            if (F.isString(column.format)){
-              switch (column.format){
-                case 'date':
-                  format = column.format;
-                  break;
-              }
-            }
-
             field = new F.DateRangeField({
               renderTo: dom.dom,
-              value: new Date(),
               format: column.format,
               label: false,
               padding: false,
@@ -972,6 +961,11 @@ Fancy.modules['filter'] = true;
         w = me.widget,
         s = w.store;
 
+      s._clearedFilter = true;
+      setTimeout(function(){
+        delete s._clearedFilter;
+      }, 1);
+
       if (operator === undefined){
         delete s.filters[index];
       }
@@ -985,8 +979,21 @@ Fancy.modules['filter'] = true;
         me.updateStoreFilters();
       }
     },
-    onFilter: function(){
-      this.widget.scroll(0);
+    onFilter: function(grid, filter){
+      var me = this,
+        w = me.widget;
+
+      w.scroll(0);
+
+      if(w.header && filter){
+        w.el.select('.' + GRID_HEADER_CELL_FILTERED_CLS).removeCls(GRID_HEADER_CELL_FILTERED_CLS);
+
+        for(var p in filter){
+          var cell = w.getHeaderCell(p);
+
+          cell.addCls(GRID_HEADER_CELL_FILTERED_CLS);
+        }
+      }
     },
     /*
      * @param {Array} data

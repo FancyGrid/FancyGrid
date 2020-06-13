@@ -2228,6 +2228,11 @@
   height: 60px;
 }
 /*
+.fancy-grid-header-cell-filtered .fancy-grid-header-cell-text {
+  font-style: italic;
+}
+*/
+/*
  drag.less
 */
 .fancy-drop-not-ok {
@@ -3330,6 +3335,9 @@
   font-weight: 400;
   font-size: 12px;
 }
+.fancy-theme-extra-gray .fancy-grid-header-cell-sortable .fancy-grid-header-cell-text {
+  cursor: pointer;
+}
 .fancy-theme-extra-gray .fancy-panel-body {
   border-top-width: 0 !important;
   border-left-width: 0 !important;
@@ -3391,7 +3399,8 @@
   background: #F5F7F7;
   color: rgba(0, 0, 0, 0.54);
   font-size: 12px;
-  font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;
 }
@@ -3543,7 +3552,9 @@
 .fancy-theme-extra-gray .fancy-button {
   line-height: 9px;
   min-height: 25px;
+  font-weight: 600;
   height: 25px !important;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
 }
 .fancy-theme-extra-gray .fancy-button div.fancy-button-image-color {
   margin-top: 3px;
@@ -3722,6 +3733,9 @@
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2226%22%20height%3D%2226%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M119.5%20326.9L3.5%20209.1c-4.7-4.7-4.7-12.3%200-17l7.1-7.1c4.7-4.7%2012.3-4.7%2017%200L128%20287.3l100.4-102.2c4.7-4.7%2012.3-4.7%2017%200l7.1%207.1c4.7%204.7%204.7%2012.3%200%2017L136.5%20327c-4.7%204.6-12.3%204.6-17-.1z%22%2F%3E%3C%2Fsvg%3E');
   background-position: 0 0;
 }
+.fancy-theme-extra-gray .fancy-grid-header-cell-text {
+  font-weight: 600;
+}
 .fancy-theme-extra-gray .fancy-grid-column-sort-ASC .fancy-grid-header-cell-text {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M288.662%20352H31.338c-17.818%200-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81%2020.474-7.81%2028.284%200l128.662%20128.662c12.6%2012.599%203.676%2034.142-14.142%2034.142z%22%2F%3E%3C%2Fsvg%3E');
 }
@@ -3807,6 +3821,7 @@
 }
 .fancy-theme-extra-gray .fancy-grid-cell-inner {
   margin-top: 7px;
+  height: 15px;
 }
 .fancy-theme-extra-gray .fancy-grid-column-h-bar .fancy-grid-cell-inner {
   margin-top: 2px;
@@ -3950,6 +3965,7 @@
   color: rgba(0, 0, 0, 0.54);
   font-size: 12px;
   font-weight: 600 !important;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
 }
 .fancy-theme-extra-gray.fancy-panel .fancy-panel-sub-tbar {
   border-top-width: 0;

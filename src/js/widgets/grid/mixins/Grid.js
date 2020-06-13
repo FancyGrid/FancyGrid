@@ -1120,11 +1120,17 @@
         var o = me.getColumnOrderByKey(index);
 
         header = me.getHeader(o.side);
+        if(!header){
+          return;
+        }
         cell = header.getCell(o.order);
       }
       else {
         side = side || 'center';
         header = me.getHeader(side);
+        if(!header){
+          return;
+        }
         cell = header.getCell(index);
       }
 

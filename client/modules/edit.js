@@ -741,7 +741,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       //Bug fix with wrong validation on start
       if(o.value === ''){
         setTimeout(function(){
-          editor.validate(editor.get());
+          var value = editor.get();
+
+          if(value === '' && editor.input){
+            value = editor.input.dom.value;
+          }
+
+          editor.validate(value);
         }, 1);
       }
 

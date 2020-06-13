@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.96',
+  version: '1.7.97',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -551,6 +551,7 @@ Fancy.apply(Fancy, {
   GRID_HEADER_CELL_CHECKBOX_CLS: 'fancy-grid-header-cell-checkbox',
   GRID_HEADER_CELL_SORTABLE_CLS: 'fancy-grid-header-cell-sortable',
   GRID_HEADER_CELL_NOT_SORTABLE_CLS: 'fancy-grid-header-cell-not-sortable',
+  GRID_HEADER_CELL_FILTERED_CLS: 'fancy-grid-header-cell-filtered',
   //grid cell
   GRID_CELL_CLS: 'fancy-grid-cell',
   GRID_CELL_INNER_CLS: 'fancy-grid-cell-inner',
@@ -4125,6 +4126,10 @@ Fancy.define('Fancy.Store', {
   isFiltered: function(){
     var me = this,
       filters = me.filters || {};
+
+    if(me._clearedFilter){
+      return true;
+    }
 
     for(var p in filters){
       return true;
@@ -14390,6 +14395,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   barScrollEnabled: true,
   startResizing: false,
   startEditByTyping: false,
+  filterCaseSensitive: true,
   /*
    * @constructoloadr
    * @param {*} renderTo
