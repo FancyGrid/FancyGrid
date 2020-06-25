@@ -152,7 +152,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       columns = w.getColumns(side);
       nextColumn = columns[cellInfo.columnIndex];
 
-      if(me.tabColumnsSupport[nextColumn.type] && nextColumn.editable === true){
+      if(me.tabColumnsSupport[nextColumn.type] && nextColumn.editable === true && !nextColumn.hidden){
         break;
       }
     }

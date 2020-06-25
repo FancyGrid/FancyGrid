@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.97',
+  version: '1.7.98',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -2616,9 +2616,11 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
       }
 
       if(lis.delay){
-        setTimeout(function(){
-          lis.fn.apply(lis.scope || me, _args);
-        }, lis.delay);
+        setTimeout((function(lis){
+          return function(){
+            lis.fn.apply(lis.scope || me, _args);
+          };
+        })(lis), lis.delay);
       }
       else{
         lis.fn.apply(lis.scope || me, _args);
@@ -6374,6 +6376,48 @@ Fancy.define('Fancy.SegButton', {
       items = me.items;
 
     items[index].setPressed(true, fire);
+  },
+  /*
+   * @param {Array|String|Number} value
+   * Note: duplicate code in button SegButton
+   */
+  setValue: function(value){
+    var me = this,
+      items = me.items;
+
+    me.clear(false);
+
+    switch (Fancy.typeOf(value)){
+      case 'array':
+        Fancy.each(value, function(v){
+          switch (Fancy.typeOf(v)){
+            case 'string':
+              Fancy.each(items, function(item){
+                if(item.value === v){
+                  item.setPressed(true, true);
+                }
+              });
+              break;
+            case 'number':
+              items[v].setPressed(true, true);
+              break;
+          }
+        });
+        break;
+      case 'string':
+        Fancy.each(items, function(item){
+          if(item.value === value){
+            item.setPressed(true, true);
+          }
+        });
+        break;
+      case 'number':
+        var button = items[value];
+        if(button){
+          button.setPressed(true, true);
+        }
+        break;
+    }
   }
 });
 /**
@@ -6508,8 +6552,11 @@ Fancy.define('Fancy.toolbar.Tab', {
 
       if (config.lang){
         for (var p in config.lang){
-          if (Fancy.isObject(config.lang[p]) === false){
-            lang[p] = config.lang[p];
+          switch(Fancy.isObject(config.lang[p])) {
+            case false:
+            case undefined:
+              lang[p] = config.lang[p];
+              break;
           }
         }
 
@@ -6852,7 +6899,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   F.define('Fancy.Panel', {
     extend: F.Widget,
     barScrollEnabled: true,
-    tabScrollStep: 50,
+    tabScrollStep: 80,
     mixins: [
       'Fancy.panel.mixin.DD',
       'Fancy.panel.mixin.Resize'
@@ -7890,7 +7937,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
-    tabScrollStep: 50,
+    tabScrollStep: 80,
     barScrollEnabled: true,
     /*
      * constructor
@@ -8596,8 +8643,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         width += item.el.width();
         width += parseInt(item.el.css('margin-left'));
         width += parseInt(item.el.css('margin-right'));
-        width += parseInt(item.el.css('padding-right'));
-        width += parseInt(item.el.css('padding-left'));
+
+        if(!F.nojQuery){
+          width += parseInt(item.el.css('padding-right'));
+          width += parseInt(item.el.css('padding-left'));
+          width += parseInt(item.el.css('border-left-width'));
+          width += parseInt(item.el.css('border-right-width'));
+        }
       });
 
       return width;
@@ -8609,6 +8661,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var me = this;
 
       me.scrolled += me.tabScrollStep;
+
+      if(me.scrolled > -20){
+        me.scrolled = 0;
+      }
+
       me.applyScrollChanges();
     },
     /*
@@ -8625,8 +8682,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      */
     applyScrollChanges: function(){
       var me = this,
-        itemsWidth = me.getItemsWidth(),
-        barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
+        itemsWidth = me.getItemsWidth() + me.tabOffSet,
+        //itemsWidth = me.getItemsWidth(),
+        barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')) - me.tabOffSet * 2,
         scrollPath = itemsWidth - barWidth;
 
       if(me.scrolled === 0){
@@ -8650,7 +8708,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
 
-        //me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
         me.containerEl.css({'margin-left': '0px'});
         return;
       }
@@ -8668,9 +8725,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      //me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
-      //me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
-      me.containerEl.css({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'});
+      me.containerEl.css({'margin-left': (me.scrolled + 20) + 'px'});
     },
     /*
      *
@@ -8718,7 +8773,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       if (me.scrolled === 0){
         me.leftScroller.disable();
-        me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
+        me.containerEl.css('margin-left', 20 + 'px');
       }
     },
     /*
@@ -13495,6 +13550,48 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
         item.setPressed(false, fire);
       });
     }
+  },
+  /*
+   * @param {Array|String|Number} value
+   * Note: duplicate code in button SegButton
+   */
+  setValue: function(value){
+    var me = this,
+      items = me.items;
+
+    me.clear(false);
+
+    switch (Fancy.typeOf(value)){
+      case 'array':
+        Fancy.each(value, function(v){
+          switch (Fancy.typeOf(v)){
+            case 'string':
+              Fancy.each(items, function(item){
+                if(item.value === v){
+                  item.setPressed(true, true);
+                }
+              });
+              break;
+            case 'number':
+              items[v].setPressed(true, true);
+              break;
+          }
+        });
+        break;
+      case 'string':
+        Fancy.each(items, function(item){
+          if(item.value === value){
+            item.setPressed(true, true);
+          }
+        });
+        break;
+      case 'number':
+        var button = items[value];
+        if(button){
+          button.setPressed(true, true);
+        }
+        break;
+    }
   }
 });
 /*
@@ -14416,7 +14513,12 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     var fn = function(params){
       if(params){
+        var lang = config.lang;
         Fancy.apply(config, params);
+
+        if(lang){
+          Fancy.apply(config.lang, lang);
+        }
       }
 
       if(config.id){

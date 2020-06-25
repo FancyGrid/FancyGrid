@@ -1060,18 +1060,18 @@
       }
     },
     /*
-     * @param {Number} i
+     * @param {Number} columnIndex
      * @param {Number} rowIndex
      */
-    renderCheckbox: function(i, rowIndex, isSwitcher){
+    renderCheckbox: function(columnIndex, rowIndex, isSwitcher){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
-        column = columns[i],
+        column = columns[columnIndex],
         key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
+        columnDom = columsDom.item(columnIndex),
         cellsDom = columnDom.select('.' + GRID_CELL_CLS),
         cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
         j,
@@ -1104,7 +1104,7 @@
           value = s.get(j, key),
           cellInnerEl = cellsDomInner.item(j),
           cell = cellsDom.item(j),
-          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
+          checkBox = isSwitcher? cellInnerEl.select('.fancy-field-switcher') : cellInnerEl.select('.fancy-field-checkbox'),
           checkBoxId,
           isCheckBoxInside = checkBox.length !== 0,
           dirty = false,
@@ -2152,7 +2152,15 @@
       switch (format){
         case 'number':
           return function(value){
-            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
+            var splitted = value.toString().split(lang.decimalSeparator);
+
+            splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
+
+            if(splitted[1]){
+              return splitted[0] + lang.decimalSeparator + splitted[1];
+            }
+
+            return splitted[0];
           };
         case 'date':
           return function(value){

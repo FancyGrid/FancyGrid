@@ -560,27 +560,32 @@ Fancy.modules['filter'] = true;
         columnFilter = s.filters[column.index];
 
       if(columnFilter){
-        for(var p in columnFilter){
-          var _value = columnFilter[p];
-          switch(p){
-            case '':
-              value += _value;
-              break;
-            default:
-              if(column.type === 'combo'){
-                value = value || [];
-                if(Fancy.isObject(_value)){
-                  for(var q in _value){
-                    value.push(q);
+        if(columnFilter.type === 'date'){
+          value = [columnFilter['>='], columnFilter['<=']];
+        }
+        else{
+          for (var p in columnFilter){
+            var _value = columnFilter[p];
+            switch (p){
+              case '':
+                value += _value;
+                break;
+              default:
+                if (column.type === 'combo'){
+                  value = value || [];
+                  if (Fancy.isObject( _value )){
+                    for (var q in _value){
+                      value.push( q );
+                    }
+                  }
+                  else{
+                    value.push( _value );
                   }
                 }
                 else{
-                  value.push(_value);
+                  value += p + _value + ',';
                 }
-              }
-              else {
-                value += p + _value + ',';
-              }
+            }
           }
         }
       }
@@ -786,6 +791,7 @@ Fancy.modules['filter'] = true;
             }
             break;
           case 'checkbox':
+          case 'switcher':
             field = new F.Combo({
               renderTo: dom.dom,
               label: false,

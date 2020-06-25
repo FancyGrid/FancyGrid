@@ -57,7 +57,14 @@
      */
     initDateFields: function(){
       var me = this,
-        theme = me.theme;
+        theme = me.theme,
+        value1,
+        value2;
+
+      if(F.isArray(me.value)){
+        value1 = new Date(Number(me.value[0]));
+        value2 = new Date(Number(me.value[1]));
+      }
 
       me.dateField1 = new F.DateField({
         renderTo: me.el.dom,
@@ -66,6 +73,7 @@
         width: me.width / 2,
         padding: false,
         theme: theme,
+        value: value1,
         style: {
           position: 'absolute',
           bottom: '2px',
@@ -77,9 +85,11 @@
           scope: me
         }, {
           change: me.onChangeDate1,
+          delay: 1,
           scope: me
         },{
           empty: me.onChangeDate1,
+          delay: 1,
           scope: me
         }, {
           focus: me.onFocus1,
@@ -101,6 +111,7 @@
         width: me.width / 2,
         padding: false,
         theme: theme,
+        value: value2,
         style: {
           position: 'absolute',
           bottom: '2px',
@@ -112,10 +123,12 @@
           scope: me
         }, {
           change: me.onChangeDate2,
-          scope: me
+          scope: me,
+          delay: 1
         },{
           empty: me.onChangeDate2,
-          scope: me
+          scope: me,
+          delay: 1
         }, {
           focus: me.onFocus2,
           scope: me

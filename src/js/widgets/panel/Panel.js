@@ -32,7 +32,7 @@
   F.define('Fancy.Panel', {
     extend: F.Widget,
     barScrollEnabled: true,
-    tabScrollStep: 50,
+    tabScrollStep: 80,
     mixins: [
       'Fancy.panel.mixin.DD',
       'Fancy.panel.mixin.Resize'

@@ -39,7 +39,7 @@
     sideRight: 3,
     scrolled: 0,
     tabOffSet: 5,
-    tabScrollStep: 50,
+    tabScrollStep: 80,
     barScrollEnabled: true,
     /*
      * constructor
@@ -745,8 +745,13 @@
         width += item.el.width();
         width += parseInt(item.el.css('margin-left'));
         width += parseInt(item.el.css('margin-right'));
-        width += parseInt(item.el.css('padding-right'));
-        width += parseInt(item.el.css('padding-left'));
+
+        if(!F.nojQuery){
+          width += parseInt(item.el.css('padding-right'));
+          width += parseInt(item.el.css('padding-left'));
+          width += parseInt(item.el.css('border-left-width'));
+          width += parseInt(item.el.css('border-right-width'));
+        }
       });
 
       return width;
@@ -758,6 +763,11 @@
       var me = this;
 
       me.scrolled += me.tabScrollStep;
+
+      if(me.scrolled > -20){
+        me.scrolled = 0;
+      }
+
       me.applyScrollChanges();
     },
     /*
@@ -774,8 +784,9 @@
      */
     applyScrollChanges: function(){
       var me = this,
-        itemsWidth = me.getItemsWidth(),
-        barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')),
+        itemsWidth = me.getItemsWidth() + me.tabOffSet,
+        //itemsWidth = me.getItemsWidth(),
+        barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')) - me.tabOffSet * 2,
         scrollPath = itemsWidth - barWidth;
 
       if(me.scrolled === 0){
@@ -799,7 +810,6 @@
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
 
-        //me.containerEl.animate({'margin-left': '0px'}, F.ANIMATE_DURATION);
         me.containerEl.css({'margin-left': '0px'});
         return;
       }
@@ -817,9 +827,7 @@
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      //me.containerEl.css('margin-left', (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px');
-      //me.containerEl.animate({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'}, F.ANIMATE_DURATION);
-      me.containerEl.css({'margin-left': (me.scrolled + me.leftScroller.el.width() + me.tabOffSet) + 'px'});
+      me.containerEl.css({'margin-left': (me.scrolled + 20) + 'px'});
     },
     /*
      *
@@ -867,7 +875,7 @@
 
       if (me.scrolled === 0){
         me.leftScroller.disable();
-        me.containerEl.css('margin-left', (me.leftScroller.el.width() + me.tabOffSet) + 'px');
+        me.containerEl.css('margin-left', 20 + 'px');
       }
     },
     /*

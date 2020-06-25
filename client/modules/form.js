@@ -53,7 +53,7 @@ Fancy.modules['form'] = true;
   var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
   F.Mixin('Fancy.form.mixin.Form', {
-    tabScrollStep: 50,
+    tabScrollStep: 80,
     /*
      *
      */
@@ -625,6 +625,10 @@ Fancy.modules['form'] = true;
 
           if (item.name === name){
             value = item.get();
+
+            if(item.type === 'number' && value !== '' && value !== ' ' && F.isString(value)){
+              value = Number(value);
+            }
             return true;
           }
         });

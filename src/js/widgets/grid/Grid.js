@@ -69,7 +69,12 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     var fn = function(params){
       if(params){
+        var lang = config.lang;
         Fancy.apply(config, params);
+
+        if(lang){
+          Fancy.apply(config.lang, lang);
+        }
       }
 
       if(config.id){

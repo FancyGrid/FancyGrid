@@ -291,6 +291,12 @@ Fancy.modules['summary'] = true;
             }
             else {
               value = F.Array[column.summary](columnValues);
+
+              if(column.type === 'number'){
+                var precision = column.precision || 0;
+
+                value = value.toFixed(precision);
+              }
             }
             break;
           case 'object':

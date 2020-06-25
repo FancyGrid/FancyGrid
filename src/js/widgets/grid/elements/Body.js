@@ -950,7 +950,12 @@
         }
 
         if(column.ellipsis){
-          columnEl.addCls(GRID_COLUMN_ELLIPSIS_CLS);
+          switch (column.type){
+            case 'checkbox':
+              break;
+            default:
+              columnEl.addCls(GRID_COLUMN_ELLIPSIS_CLS);
+          }
         }
 
         switch(column.type){

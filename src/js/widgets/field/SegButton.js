@@ -133,5 +133,47 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
         item.setPressed(false, fire);
       });
     }
+  },
+  /*
+   * @param {Array|String|Number} value
+   * Note: duplicate code in button SegButton
+   */
+  setValue: function(value){
+    var me = this,
+      items = me.items;
+
+    me.clear(false);
+
+    switch (Fancy.typeOf(value)){
+      case 'array':
+        Fancy.each(value, function(v){
+          switch (Fancy.typeOf(v)){
+            case 'string':
+              Fancy.each(items, function(item){
+                if(item.value === v){
+                  item.setPressed(true, true);
+                }
+              });
+              break;
+            case 'number':
+              items[v].setPressed(true, true);
+              break;
+          }
+        });
+        break;
+      case 'string':
+        Fancy.each(items, function(item){
+          if(item.value === value){
+            item.setPressed(true, true);
+          }
+        });
+        break;
+      case 'number':
+        var button = items[value];
+        if(button){
+          button.setPressed(true, true);
+        }
+        break;
+    }
   }
 });

@@ -103,8 +103,11 @@
 
       if (config.lang){
         for (var p in config.lang){
-          if (Fancy.isObject(config.lang[p]) === false){
-            lang[p] = config.lang[p];
+          switch(Fancy.isObject(config.lang[p])) {
+            case false:
+            case undefined:
+              lang[p] = config.lang[p];
+              break;
           }
         }
 
