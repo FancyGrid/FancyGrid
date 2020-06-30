@@ -879,8 +879,9 @@
     },
     /*
      * @param {Number} orderIndex
+     * @param {Number} [columnWidth]
      */
-    showCell: function(orderIndex){
+    showCell: function(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -890,6 +891,10 @@
         i = 0,
         iL = cells.length,
         columns = me.getColumns();
+
+      if(F.isNumber(columnWidth)){
+        cell.css('width', columnWidth + 'px');
+      }
 
       cell.show();
 

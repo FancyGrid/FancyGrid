@@ -1911,7 +1911,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             case 'rowdrag':
               break;
             default:
-              editor.set(data[column.index], false);
+              var value = data[column.index];
+              if(value === undefined){
+                value = '';
+              }
+
+              editor.set(value, false);
           }
         }
       });

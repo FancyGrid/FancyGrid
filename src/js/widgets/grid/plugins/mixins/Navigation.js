@@ -83,6 +83,13 @@
           e.preventDefault();
           me.scrollPageDOWN();
           break;
+        case key.HOME:
+          e.preventDefault();
+          me.scrollHome();
+          break;
+        case key.END:
+          e.preventDefault();
+          me.scrollEnd();
         case key.ENTER:
           if(w.celledit && !w.celledit.activeEditor){
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
@@ -639,6 +646,24 @@
       }
 
       w.scroll(newScroll);
+    },
+    /*
+     *
+     */
+    scrollHome: function(){
+      var me = this,
+        w = me.widget;
+
+      w.scroll(0);
+    },
+    /*
+     *
+     */
+    scrollEnd: function(){
+      var me = this,
+        w = me.widget;
+
+      w.scroll(1000000);
     }
   });
 

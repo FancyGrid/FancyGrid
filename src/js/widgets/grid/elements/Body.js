@@ -665,8 +665,9 @@
     },
     /*
      * @param {Number} orderIndex
+     * @param {Number} [columnWidth]
      */
-    showColumn: function(orderIndex){
+    showColumn: function(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -680,6 +681,10 @@
       if(me.side === 'center'){
         scrollLeft = w.scroller.scrollLeft;
         left -= scrollLeft;
+      }
+
+      if(F.isNumber(columnWidth)){
+        columnEl.css('width', columnWidth + 'px');
       }
 
       columnEl.show();

@@ -500,8 +500,16 @@ Fancy.modules['filter'] = true;
                 fieldFrom = F.getWidget(els.item(0).attr('id')),
                 fieldTo = F.getWidget(els.item(1).attr('id'));
 
-              fieldFrom.clear();
-              fieldTo.clear();
+              switch(sign){
+                case '>':
+                case '>=':
+                  fieldFrom.set(new Date(value));
+                  break;
+                case '<':
+                case '<=':
+                  fieldTo.set(new Date(value));
+                  break;
+              }
               break;
             case 'combo':
               var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),

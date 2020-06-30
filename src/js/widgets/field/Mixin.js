@@ -162,10 +162,8 @@
 
       me.fire('mouseout');
 
-      if (me.tip && me.tooltip){
-        me.tooltipToDestroy = true;
-        me.tooltip.destroy();
-        delete me.tooltip;
+      if (me.tip){
+        F.tip.hide();
       }
     },
     /*
@@ -677,7 +675,7 @@
 
       if (me.hasCls(me.failedValidCls)){
         if (me.tooltip && me.errorText){
-          me.tooltip.update(me.errorText);
+          F.tip.update(me.errorText);
         }
       }
       else {
@@ -688,7 +686,7 @@
           me.input.hover(function(e){
             if (me.errorText){
               me.showErrorTip();
-              me.tooltip.show(e.pageX + 15, e.pageY - 25);
+              F.tip.show(e.pageX + 15, e.pageY - 25);
             }
           }, function(){
             me.hideErrorTip();
@@ -717,22 +715,13 @@
     showErrorTip: function(){
       var me = this;
 
-      if (!me.tooltip){
-        me.tooltip = new F.ToolTip({
-          text: me.errorText
-        });
-      }
+      F.tip.update(me.errorText);
     },
     /*
      *
      */
     hideErrorTip: function(){
-      var me = this;
-
-      if (me.tooltip){
-        me.tooltip.destroy();
-        delete me.tooltip;
-      }
+      F.tip.hide();
     },
     /*
      * @param {Object} o
@@ -982,22 +971,20 @@
         return;
       }
 
-      delete me.tooltipToDestroy;
-
       if(w){
         if(w.startResizing && me.tooltip){
-          me.tooltip.destroy();
+          F.tip.hide();
           return;
         }
 
         if(w.columndrag && w.columndrag.status === 'dragging'){
-          me.tooltip.destroy();
+          F.tip.hide();
           return;
         }
       }
 
       if (me.tooltip){
-        me.tooltip.show(e.pageX + 15, e.pageY - 25);
+        F.tip.show(e.pageX + 15, e.pageY - 25);
       }
       else if (me.tip){
         me.renderTip(e);
@@ -1009,7 +996,7 @@
     renderTip: function(e){
       var me = this,
         value = '',
-        tip = me.tip || me.tooltip,
+        tip = me.tip,
         tpl,
         text;
 
@@ -1036,16 +1023,8 @@
           break;
       }
 
-      if (me.tooltip){
-        me.tooltip.update(text);
-      }
-      else {
-        me.tooltip = new F.ToolTip({
-          text: text
-        });
-      }
-
-      me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      F.tip.update(text);
+      F.tip.show(e.pageX + 15, e.pageY - 25);
     },
     /*
      * @return {Object}

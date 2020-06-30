@@ -1312,6 +1312,10 @@
       }
 
       s.destroy();
+
+      if(me.responsiveOverver){
+        me.responsiveOverver.stop();
+      }
     },
     clearData: function(){
       var me = this;
@@ -2222,8 +2226,8 @@
         me._tempSumColumnsWidth += column.width;
       }
 
-      header.showCell(orderIndex);
-      body.showColumn(orderIndex);
+      header.showCell(orderIndex, column.width);
+      body.showColumn(orderIndex, column.width);
 
       if (me.rowedit){
         me.rowedit.showField(orderIndex, side);
@@ -3798,10 +3802,18 @@
         }, 30);
       };
 
-      if ('ResizeObserver' in window){
+      if('ResizeObserver' in window){
         setTimeout(function(){
-          var myObserver = new ResizeObserver(onWindowResize),
-            dom = me.el.parent().dom;
+          var myObserver;
+          if(me.nativeResizeObserver){
+            myObserver = new ResizeObserver(onWindowResize);
+          }
+          else{
+            myObserver = new F.ResizeObserver(onWindowResize);
+            me.responsiveOverver = myObserver;
+          }
+
+          var dom = me.el.parent().dom;
 
           if(!dom){
             return;
@@ -3812,6 +3824,17 @@
         F.$(window).bind('resize', onWindowResize);
       }
       else {
+        setTimeout(function(){
+          var myObserver = new F.ResizeObserver(onWindowResize),
+            dom = me.el.parent().dom;
+
+          if(!dom){
+            return;
+          }
+
+          me.responsiveOverver = myObserver;
+          myObserver.observe(dom);
+        }, 100);
         F.$(window).bind('resize', onWindowResize);
       }
     },
@@ -4098,5 +4121,37 @@
       return me.store.sorters;
     }
   });
+
+  F.ResizeObserver = function(fn){
+    this.fn = fn;
+  };
+
+  F.ResizeObserver.prototype.observe = function(el){
+    this.el = el;
+    this.init();
+  };
+
+  F.ResizeObserver.prototype.init = function(){
+    var me = this;
+
+    me.width = me.el.clientWidth;
+    me.height = me.el.clientHeight;
+
+    me.interval = setInterval(function(){
+      var width = me.el.clientWidth,
+        height = me.el.clientHeight;
+
+      if(width !== me.width || height !== me.height){
+        me.fn();
+        me.width = me.el.clientWidth;
+        me.height = me.el.clientHeight;
+      }
+
+    }, 100);
+  };
+
+  F.ResizeObserver.prototype.stop = function(){
+    clearInterval(this.interval);
+  };
 
 })();

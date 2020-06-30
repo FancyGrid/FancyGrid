@@ -195,6 +195,7 @@ Fancy.modules['column-drag'] = true;
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }
+            me.clearColumnMenus();
           }
         }, 10);
       }
@@ -682,6 +683,20 @@ Fancy.modules['column-drag'] = true;
         start: F.Array.min(values),
         end: F.Array.max(values)
       };
+    },
+    /*
+     *
+     */
+    clearColumnMenus: function (){
+      var me = this,
+        w = me.widget;
+
+      F.each(w.columns, function(column){
+        if(F.isObject(column.menu) && column._menu){
+          column.menu = column._menu;
+          delete column._menu;
+        }
+      });
     }
   });
 

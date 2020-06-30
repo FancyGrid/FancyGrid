@@ -101,7 +101,7 @@ Fancy.defineTheme('gray', {
   config: {
     panelBorderWidth: 0,
     //borders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 

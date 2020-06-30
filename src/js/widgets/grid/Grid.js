@@ -49,6 +49,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   startResizing: false,
   startEditByTyping: false,
   filterCaseSensitive: true,
+  nativeResizeObserver: false,
   /*
    * @constructoloadr
    * @param {*} renderTo

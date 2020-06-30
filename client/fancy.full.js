@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.98',
+  version: '1.7.99',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1128,7 +1128,7 @@ Fancy.defineTheme('gray', {
   config: {
     panelBorderWidth: 0,
     //borders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -17026,10 +17026,8 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.fire('mouseout');
 
-      if (me.tip && me.tooltip){
-        me.tooltipToDestroy = true;
-        me.tooltip.destroy();
-        delete me.tooltip;
+      if (me.tip){
+        F.tip.hide();
       }
     },
     /*
@@ -17541,7 +17539,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
       if (me.hasCls(me.failedValidCls)){
         if (me.tooltip && me.errorText){
-          me.tooltip.update(me.errorText);
+          F.tip.update(me.errorText);
         }
       }
       else {
@@ -17552,7 +17550,7 @@ if(!Fancy.nojQuery && Fancy.$){
           me.input.hover(function(e){
             if (me.errorText){
               me.showErrorTip();
-              me.tooltip.show(e.pageX + 15, e.pageY - 25);
+              F.tip.show(e.pageX + 15, e.pageY - 25);
             }
           }, function(){
             me.hideErrorTip();
@@ -17581,22 +17579,13 @@ if(!Fancy.nojQuery && Fancy.$){
     showErrorTip: function(){
       var me = this;
 
-      if (!me.tooltip){
-        me.tooltip = new F.ToolTip({
-          text: me.errorText
-        });
-      }
+      F.tip.update(me.errorText);
     },
     /*
      *
      */
     hideErrorTip: function(){
-      var me = this;
-
-      if (me.tooltip){
-        me.tooltip.destroy();
-        delete me.tooltip;
-      }
+      F.tip.hide();
     },
     /*
      * @param {Object} o
@@ -17846,22 +17835,20 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      delete me.tooltipToDestroy;
-
       if(w){
         if(w.startResizing && me.tooltip){
-          me.tooltip.destroy();
+          F.tip.hide();
           return;
         }
 
         if(w.columndrag && w.columndrag.status === 'dragging'){
-          me.tooltip.destroy();
+          F.tip.hide();
           return;
         }
       }
 
       if (me.tooltip){
-        me.tooltip.show(e.pageX + 15, e.pageY - 25);
+        F.tip.show(e.pageX + 15, e.pageY - 25);
       }
       else if (me.tip){
         me.renderTip(e);
@@ -17873,7 +17860,7 @@ if(!Fancy.nojQuery && Fancy.$){
     renderTip: function(e){
       var me = this,
         value = '',
-        tip = me.tip || me.tooltip,
+        tip = me.tip,
         tpl,
         text;
 
@@ -17900,16 +17887,8 @@ if(!Fancy.nojQuery && Fancy.$){
           break;
       }
 
-      if (me.tooltip){
-        me.tooltip.update(text);
-      }
-      else {
-        me.tooltip = new F.ToolTip({
-          text: text
-        });
-      }
-
-      me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      F.tip.update(text);
+      F.tip.show(e.pageX + 15, e.pageY - 25);
     },
     /*
      * @return {Object}
@@ -26936,6 +26915,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       s.destroy();
+
+      if(me.responsiveOverver){
+        me.responsiveOverver.stop();
+      }
     },
     clearData: function(){
       var me = this;
@@ -27846,8 +27829,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me._tempSumColumnsWidth += column.width;
       }
 
-      header.showCell(orderIndex);
-      body.showColumn(orderIndex);
+      header.showCell(orderIndex, column.width);
+      body.showColumn(orderIndex, column.width);
 
       if (me.rowedit){
         me.rowedit.showField(orderIndex, side);
@@ -29422,10 +29405,18 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }, 30);
       };
 
-      if ('ResizeObserver' in window){
+      if('ResizeObserver' in window){
         setTimeout(function(){
-          var myObserver = new ResizeObserver(onWindowResize),
-            dom = me.el.parent().dom;
+          var myObserver;
+          if(me.nativeResizeObserver){
+            myObserver = new ResizeObserver(onWindowResize);
+          }
+          else{
+            myObserver = new F.ResizeObserver(onWindowResize);
+            me.responsiveOverver = myObserver;
+          }
+
+          var dom = me.el.parent().dom;
 
           if(!dom){
             return;
@@ -29436,6 +29427,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         F.$(window).bind('resize', onWindowResize);
       }
       else {
+        setTimeout(function(){
+          var myObserver = new F.ResizeObserver(onWindowResize),
+            dom = me.el.parent().dom;
+
+          if(!dom){
+            return;
+          }
+
+          me.responsiveOverver = myObserver;
+          myObserver.observe(dom);
+        }, 100);
         F.$(window).bind('resize', onWindowResize);
       }
     },
@@ -29723,6 +29725,38 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
   });
 
+  F.ResizeObserver = function(fn){
+    this.fn = fn;
+  };
+
+  F.ResizeObserver.prototype.observe = function(el){
+    this.el = el;
+    this.init();
+  };
+
+  F.ResizeObserver.prototype.init = function(){
+    var me = this;
+
+    me.width = me.el.clientWidth;
+    me.height = me.el.clientHeight;
+
+    me.interval = setInterval(function(){
+      var width = me.el.clientWidth,
+        height = me.el.clientHeight;
+
+      if(width !== me.width || height !== me.height){
+        me.fn();
+        me.width = me.el.clientWidth;
+        me.height = me.el.clientHeight;
+      }
+
+    }, 100);
+  };
+
+  F.ResizeObserver.prototype.stop = function(){
+    clearInterval(this.interval);
+  };
+
 })();
 /**
  * @class Fancy.Grid
@@ -29775,6 +29809,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   startResizing: false,
   startEditByTyping: false,
   filterCaseSensitive: true,
+  nativeResizeObserver: false,
   /*
    * @constructoloadr
    * @param {*} renderTo
@@ -31482,6 +31517,16 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         return w.body.el.dom.scrollTop;
       }
 
+      if(w.columns.length === 0){
+        if(w.leftColumns.length){
+          return Math.abs(parseInt(w.leftBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
+        }
+
+        if(w.rightColumns.length){
+          return Math.abs(parseInt(w.rightBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
+        }
+      }
+
       return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
     },
     /*
@@ -31493,6 +31538,16 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if(w.nativeScroller){
         return w.body.el.dom.scrollLeft;
+      }
+
+      if(w.columns.length === 0){
+        if(w.leftColumns.length){
+          return Math.abs(parseInt(w.leftBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
+        }
+
+        if(w.rightColumns.length){
+          return Math.abs(parseInt(w.rightBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
+        }
       }
 
       return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
@@ -33891,6 +33946,7 @@ Fancy.modules['column-drag'] = true;
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }
+            me.clearColumnMenus();
           }
         }, 10);
       }
@@ -34378,6 +34434,20 @@ Fancy.modules['column-drag'] = true;
         start: F.Array.min(values),
         end: F.Array.max(values)
       };
+    },
+    /*
+     *
+     */
+    clearColumnMenus: function (){
+      var me = this,
+        w = me.widget;
+
+      F.each(w.columns, function(column){
+        if(F.isObject(column.menu) && column._menu){
+          column.menu = column._menu;
+          delete column._menu;
+        }
+      });
     }
   });
 
@@ -36913,7 +36983,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             case 'rowdrag':
               break;
             default:
-              editor.set(data[column.index], false);
+              var value = data[column.index];
+              if(value === undefined){
+                value = '';
+              }
+
+              editor.set(value, false);
           }
         }
       });
@@ -40498,6 +40573,13 @@ Fancy.modules['selection'] = true;
           e.preventDefault();
           me.scrollPageDOWN();
           break;
+        case key.HOME:
+          e.preventDefault();
+          me.scrollHome();
+          break;
+        case key.END:
+          e.preventDefault();
+          me.scrollEnd();
         case key.ENTER:
           if(w.celledit && !w.celledit.activeEditor){
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
@@ -41054,6 +41136,24 @@ Fancy.modules['selection'] = true;
       }
 
       w.scroll(newScroll);
+    },
+    /*
+     *
+     */
+    scrollHome: function(){
+      var me = this,
+        w = me.widget;
+
+      w.scroll(0);
+    },
+    /*
+     *
+     */
+    scrollEnd: function(){
+      var me = this,
+        w = me.widget;
+
+      w.scroll(1000000);
     }
   });
 
@@ -43341,6 +43441,7 @@ Fancy.modules['column-drag'] = true;
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }
+            me.clearColumnMenus();
           }
         }, 10);
       }
@@ -43828,6 +43929,20 @@ Fancy.modules['column-drag'] = true;
         start: F.Array.min(values),
         end: F.Array.max(values)
       };
+    },
+    /*
+     *
+     */
+    clearColumnMenus: function (){
+      var me = this,
+        w = me.widget;
+
+      F.each(w.columns, function(column){
+        if(F.isObject(column.menu) && column._menu){
+          column.menu = column._menu;
+          delete column._menu;
+        }
+      });
     }
   });
 
@@ -45961,8 +46076,16 @@ Fancy.modules['filter'] = true;
                 fieldFrom = F.getWidget(els.item(0).attr('id')),
                 fieldTo = F.getWidget(els.item(1).attr('id'));
 
-              fieldFrom.clear();
-              fieldTo.clear();
+              switch(sign){
+                case '>':
+                case '>=':
+                  fieldFrom.set(new Date(value));
+                  break;
+                case '<':
+                case '<=':
+                  fieldTo.set(new Date(value));
+                  break;
+              }
               break;
             case 'combo':
               var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
@@ -52213,8 +52336,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     },
     /*
      * @param {Number} orderIndex
+     * @param {Number} [columnWidth]
      */
-    showColumn: function(orderIndex){
+    showColumn: function(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -52228,6 +52352,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       if(me.side === 'center'){
         scrollLeft = w.scroller.scrollLeft;
         left -= scrollLeft;
+      }
+
+      if(F.isNumber(columnWidth)){
+        columnEl.css('width', columnWidth + 'px');
       }
 
       columnEl.show();
@@ -53903,8 +54031,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     },
     /*
      * @param {Number} orderIndex
+     * @param {Number} [columnWidth]
      */
-    showCell: function(orderIndex){
+    showCell: function(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
         cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
@@ -53914,6 +54043,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         i = 0,
         iL = cells.length,
         columns = me.getColumns();
+
+      if(F.isNumber(columnWidth)){
+        cell.css('width', columnWidth + 'px');
+      }
 
       cell.show();
 

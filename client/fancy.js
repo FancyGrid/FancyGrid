@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.98',
+  version: '1.7.99',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1127,7 +1127,7 @@ Fancy.defineTheme('gray', {
   config: {
     panelBorderWidth: 0,
     //borders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -9410,10 +9410,8 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.fire('mouseout');
 
-      if (me.tip && me.tooltip){
-        me.tooltipToDestroy = true;
-        me.tooltip.destroy();
-        delete me.tooltip;
+      if (me.tip){
+        F.tip.hide();
       }
     },
     /*
@@ -9925,7 +9923,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
       if (me.hasCls(me.failedValidCls)){
         if (me.tooltip && me.errorText){
-          me.tooltip.update(me.errorText);
+          F.tip.update(me.errorText);
         }
       }
       else {
@@ -9936,7 +9934,7 @@ if(!Fancy.nojQuery && Fancy.$){
           me.input.hover(function(e){
             if (me.errorText){
               me.showErrorTip();
-              me.tooltip.show(e.pageX + 15, e.pageY - 25);
+              F.tip.show(e.pageX + 15, e.pageY - 25);
             }
           }, function(){
             me.hideErrorTip();
@@ -9965,22 +9963,13 @@ if(!Fancy.nojQuery && Fancy.$){
     showErrorTip: function(){
       var me = this;
 
-      if (!me.tooltip){
-        me.tooltip = new F.ToolTip({
-          text: me.errorText
-        });
-      }
+      F.tip.update(me.errorText);
     },
     /*
      *
      */
     hideErrorTip: function(){
-      var me = this;
-
-      if (me.tooltip){
-        me.tooltip.destroy();
-        delete me.tooltip;
-      }
+      F.tip.hide();
     },
     /*
      * @param {Object} o
@@ -10230,22 +10219,20 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      delete me.tooltipToDestroy;
-
       if(w){
         if(w.startResizing && me.tooltip){
-          me.tooltip.destroy();
+          F.tip.hide();
           return;
         }
 
         if(w.columndrag && w.columndrag.status === 'dragging'){
-          me.tooltip.destroy();
+          F.tip.hide();
           return;
         }
       }
 
       if (me.tooltip){
-        me.tooltip.show(e.pageX + 15, e.pageY - 25);
+        F.tip.show(e.pageX + 15, e.pageY - 25);
       }
       else if (me.tip){
         me.renderTip(e);
@@ -10257,7 +10244,7 @@ if(!Fancy.nojQuery && Fancy.$){
     renderTip: function(e){
       var me = this,
         value = '',
-        tip = me.tip || me.tooltip,
+        tip = me.tip,
         tpl,
         text;
 
@@ -10284,16 +10271,8 @@ if(!Fancy.nojQuery && Fancy.$){
           break;
       }
 
-      if (me.tooltip){
-        me.tooltip.update(text);
-      }
-      else {
-        me.tooltip = new F.ToolTip({
-          text: text
-        });
-      }
-
-      me.tooltip.show(e.pageX + 15, e.pageY - 25);
+      F.tip.update(text);
+      F.tip.show(e.pageX + 15, e.pageY - 25);
     },
     /*
      * @return {Object}
@@ -14493,6 +14472,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   startResizing: false,
   startEditByTyping: false,
   filterCaseSensitive: true,
+  nativeResizeObserver: false,
   /*
    * @constructoloadr
    * @param {*} renderTo
