@@ -1083,6 +1083,12 @@
           me.rightEl.destroy();
         }
       }
+    },
+    /*
+     * @return {Boolean}
+     */
+    isVisible: function(){
+      return this.el.css('display') !== 'none';
     }
   });
 

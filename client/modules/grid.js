@@ -6223,7 +6223,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
             me.responsiveOverver = myObserver;
           }
 
-          var dom = me.el.parent().dom;
+          var dom;
+
+          if(me.panel){
+            dom = me.panel.el.parent().dom;
+          }
+          else{
+            dom = me.el.parent().dom;
+          }
 
           if(!dom){
             return;
@@ -7715,7 +7722,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           i = 0;
 
         for (; i <= columnIndex; i++){
-          passedWidth += columns[i].width;
+          if(!columns[i].hidden){
+            passedWidth += columns[i].width;
+          }
         }
 
         if (passedWidth - bottomScroll > bodyViewWidth){

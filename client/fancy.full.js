@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.99',
+  version: '1.7.100',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -29416,7 +29416,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             me.responsiveOverver = myObserver;
           }
 
-          var dom = me.el.parent().dom;
+          var dom;
+
+          if(me.panel){
+            dom = me.panel.el.parent().dom;
+          }
+          else{
+            dom = me.el.parent().dom;
+          }
 
           if(!dom){
             return;
@@ -31726,7 +31733,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           i = 0;
 
         for (; i <= columnIndex; i++){
-          passedWidth += columns[i].width;
+          if(!columns[i].hidden){
+            passedWidth += columns[i].width;
+          }
         }
 
         if (passedWidth - bottomScroll > bodyViewWidth){
@@ -35773,7 +35782,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               scope: me
             }]
           });
-
+          break;
+        case 'checkbox':
+        case 'switcher':
           break;
         default:
           F.error('Type ' + type + ' editor does not exit');
@@ -35804,6 +35815,18 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if (type === 'combo'){
         me.comboClick = true;
+      }
+
+      if(!editor){
+        if(column.editable !== false && column.index){
+          switch (type){
+            case 'checkbox':
+            case 'switcher':
+              w.setById(o.item.id, column.index, !o.value);
+              break;
+          }
+        }
+        return;
       }
 
       me.activeEditor = editor;
@@ -37341,6 +37364,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           me.rightEl.destroy();
         }
       }
+    },
+    /*
+     * @return {Boolean}
+     */
+    isVisible: function(){
+      return this.el.css('display') !== 'none';
     }
   });
 
@@ -40540,6 +40569,14 @@ Fancy.modules['selection'] = true;
         });
       }
 
+      if(w.celledit && w.celledit.activeEditor){
+        return;
+      }
+
+      if(w.rowedit && w.rowedit.el && w.rowedit.isVisible()){
+        return;
+      }
+
       switch (keyCode){
         case key.TAB:
           break;
@@ -40580,6 +40617,43 @@ Fancy.modules['selection'] = true;
         case key.END:
           e.preventDefault();
           me.scrollEnd();
+          break;
+        case key.SPACE:
+          if(w.celledit && !w.celledit.activeEditor){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
+              var activeCell = w.selection.getActiveCell();
+
+              if (activeCell){
+                var info = w.selection.getActiveCellInfo(),
+                  columns = w.getColumns( info.side );
+
+                info.column = columns[info.columnIndex];
+                if (info.column.editable !== true){
+                  return;
+                }
+
+                switch(info.column.type){
+                  case 'checkbox':
+                  case 'switcher':
+                    info.cell = activeCell.dom;
+                    var item = w.get(info.rowIndex);
+                    info.item = item;
+                    info.data = item.data;
+
+                    if (info.column.smartIndexFn){
+                      info.value = info.column.smartIndexFn(info.data);
+                    }
+                    else{
+                      info.value = w.store.get(info.rowIndex, info.column.index);
+                    }
+
+                    w.celledit.edit(info);
+                    break;
+                }
+              }
+            }
+          }
+          break;
         case key.ENTER:
           if(w.celledit && !w.celledit.activeEditor){
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){

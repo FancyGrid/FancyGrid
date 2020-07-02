@@ -702,7 +702,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               scope: me
             }]
           });
-
+          break;
+        case 'checkbox':
+        case 'switcher':
           break;
         default:
           F.error('Type ' + type + ' editor does not exit');
@@ -733,6 +735,18 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if (type === 'combo'){
         me.comboClick = true;
+      }
+
+      if(!editor){
+        if(column.editable !== false && column.index){
+          switch (type){
+            case 'checkbox':
+            case 'switcher':
+              w.setById(o.item.id, column.index, !o.value);
+              break;
+          }
+        }
+        return;
       }
 
       me.activeEditor = editor;
@@ -2269,6 +2283,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           me.rightEl.destroy();
         }
       }
+    },
+    /*
+     * @return {Boolean}
+     */
+    isVisible: function(){
+      return this.el.css('display') !== 'none';
     }
   });
 

@@ -3813,7 +3813,14 @@
             me.responsiveOverver = myObserver;
           }
 
-          var dom = me.el.parent().dom;
+          var dom;
+
+          if(me.panel){
+            dom = me.panel.el.parent().dom;
+          }
+          else{
+            dom = me.el.parent().dom;
+          }
 
           if(!dom){
             return;

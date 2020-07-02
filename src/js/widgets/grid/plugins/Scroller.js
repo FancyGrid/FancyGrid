@@ -1108,7 +1108,9 @@
           i = 0;
 
         for (; i <= columnIndex; i++){
-          passedWidth += columns[i].width;
+          if(!columns[i].hidden){
+            passedWidth += columns[i].width;
+          }
         }
 
         if (passedWidth - bottomScroll > bodyViewWidth){

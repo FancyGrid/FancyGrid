@@ -331,7 +331,9 @@
               scope: me
             }]
           });
-
+          break;
+        case 'checkbox':
+        case 'switcher':
           break;
         default:
           F.error('Type ' + type + ' editor does not exit');
@@ -362,6 +364,18 @@
 
       if (type === 'combo'){
         me.comboClick = true;
+      }
+
+      if(!editor){
+        if(column.editable !== false && column.index){
+          switch (type){
+            case 'checkbox':
+            case 'switcher':
+              w.setById(o.item.id, column.index, !o.value);
+              break;
+          }
+        }
+        return;
       }
 
       me.activeEditor = editor;
