@@ -1313,8 +1313,9 @@
 
       s.destroy();
 
-      if(me.responsiveOverver){
+      if(me.responsiveOverver && me.responsiveOverver.stop){
         me.responsiveOverver.stop();
+        delete me.responsiveOverver;
       }
     },
     clearData: function(){
@@ -2786,6 +2787,14 @@
     /*
      *
      */
+    clearSorter: function(){
+      if(this.sorter){
+        this.sorter.clearSort();
+      }
+    },
+    /*
+     *
+     */
     hideLoadMask: function(){
       this.loadmask.hide();
     },
@@ -3137,6 +3146,18 @@
         s.setData(data);
       }
 
+      if(s.sorters){
+        s.reSort();
+      }
+
+      if(s.filterOrder){
+        me.filter.updateStoreFilters(false);
+      }
+
+      s.clearDirty();
+
+      //Not sure that it is needed.
+      //Without method update, grid won't be updated.
       me.setSidesHeight();
     },
     /*
@@ -4159,6 +4180,9 @@
 
   F.ResizeObserver.prototype.stop = function(){
     clearInterval(this.interval);
+
+    delete this.width;
+    delete this.height;
   };
 
 })();

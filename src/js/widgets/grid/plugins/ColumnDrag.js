@@ -195,6 +195,7 @@ Fancy.modules['column-drag'] = true;
             if(w.sorter){
               w.sorter.updateSortedHeader();
             }
+            me.updateColumnHeaderLImages();
             me.clearColumnMenus();
           }
         }, 10);
@@ -697,6 +698,27 @@ Fancy.modules['column-drag'] = true;
           delete column._menu;
         }
       });
+    },
+    /*
+     *
+     */
+    updateColumnHeaderLImages: function (){
+      var me = this,
+        w = me.widget;
+
+      if(!w.header){
+        return;
+      }
+
+      w.header.updateLImages();
+
+      if(w.leftColumns.length){
+        w.leftHeader.updateLImages();
+      }
+
+      if(w.rightColumns.length){
+        w.rightHeader.updateLImages();
+      }
     }
   });
 

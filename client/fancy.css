@@ -1479,6 +1479,12 @@
 .fancy-grid-header-cell-text {
   font-weight: bold;
 }
+.fancy-grid-header-cell-left-image {
+  display: none;
+}
+.fancy-grid-header-cell-contains-left-image .fancy-grid-header-cell-text {
+  margin-left: 11px;
+}
 .fancy-grid-disable-column-lines .fancy-grid-cell {
   border-right-color: transparent !important;
 }
@@ -3884,7 +3890,7 @@
 }
 .fancy-theme-extra-gray .fancy-grid-cell-inner {
   margin-top: 7px;
-  height: 15px;
+  height: 16px;
 }
 .fancy-theme-extra-gray .fancy-grid-column-h-bar .fancy-grid-cell-inner {
   margin-top: 2px;

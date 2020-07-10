@@ -148,6 +148,13 @@
                 if(info.column.editable !== true){
                   return;
                 }
+
+                switch(info.column.type){
+                  case 'switcher':
+                  case 'checkbox':
+                    return;
+                }
+
                 info.cell = activeCell.dom;
                 var item = w.get(info.rowIndex);
                 info.item = item;

@@ -801,8 +801,19 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
+  /*
+   * @param {Function} fn
+   */
   each: function(fn){
     fn(this, 0);
+  },
+  /*
+   *
+   */
+  getCls: function(){
+    var classList = this.dom.className.split(/\s+/);
+
+    return classList;
   }
 };
 

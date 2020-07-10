@@ -88,7 +88,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     me.changeDataView();
-    me.fire('sort', {
+    me.fire( 'sort', {
       key: key,
       action: action
     });
@@ -394,7 +394,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    *
    */
-  initMultiSort:function(){
+  initMultiSort: function(){
     var me = this;
 
     me.multiSortInited = true;
@@ -522,6 +522,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
     me.order = order;
   },
+  /*
+   *
+   */
   reSort: function(){
     var me = this;
     
@@ -737,6 +740,23 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
          mode: mode,
          sorter: column.sorter
       });
+
+      delete w.sorting;
+    },
+    /*
+     *
+     */
+    clearSort: function(){
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      me.clearHeaderSortCls();
+
+      w.sorting = true;
+
+      delete s.order;
+      s.changeDataView();
 
       delete w.sorting;
     },

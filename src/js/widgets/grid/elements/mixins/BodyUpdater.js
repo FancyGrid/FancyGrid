@@ -528,7 +528,7 @@
         o.value = value;
 
         if (column.format){
-          o.value = me.format(o.value, column.format);
+          o.value = me.format(o.value, column.format, column.precision);
           value = o.value;
         }
 
@@ -537,6 +537,7 @@
             if (value !== ''){
               value = currencySign + value;
             }
+
             o.value = value;
             break;
         }
@@ -2151,13 +2152,41 @@
 
       switch (format){
         case 'number':
-          return function(value){
+          return function(value, precision){
             var splitted = value.toString().split(lang.decimalSeparator);
+            precision = precision || 0;
 
             splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
 
             if(splitted[1]){
+              if(precision > 0){
+                if(splitted[1].length < precision){
+                  var end = '',
+                    i = splitted[1].length;
+
+                  for(;i<precision;i++){
+                    end += '0';
+                  }
+
+                  return splitted[0] + lang.decimalSeparator + splitted[1] + end;
+                }
+                else{
+                  splitted[1] = String(splitted[1]).substring(0, precision);
+                }
+              }
+
               return splitted[0] + lang.decimalSeparator + splitted[1];
+            }
+
+            if(precision > 0 && splitted[0] !== ''){
+              var end = '',
+                i = 0;
+
+              for(;i<precision;i++){
+                end += '0';
+              }
+
+              return splitted[0] + lang.decimalSeparator + end;
             }
 
             return splitted[0];
@@ -2199,12 +2228,13 @@
     /*
      * @param {String} value
      * @param {*} format
+     * @param {Number} [precision]
      * @return {String}
      */
-    format: function(value, format){
+    format: function(value, format, precision){
       switch (F.typeOf(format)){
         case 'string':
-          value = this.getFormat(format)(value);
+          value = this.getFormat(format)(value, precision);
           break;
         case 'function':
           value = format(value);

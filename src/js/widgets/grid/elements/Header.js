@@ -11,6 +11,8 @@
   var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
   var GRID_HEADER_CELL_CONTAINER_CLS = F.GRID_HEADER_CELL_CONTAINER_CLS;
   var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
+  var GRID_HEADER_CELL_LEFT_IMAGE_CLS = F.GRID_HEADER_CELL_LEFT_IMAGE_CLS;
+  var GRID_HEADER_CELL_CONTAINS_LI = F.GRID_HEADER_CELL_CONTAINS_LI;
   var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
   var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
   var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
@@ -36,6 +38,7 @@
     cellTpl: [
       '<div role="columnheader" col-id="{id}" class="' + GRID_HEADER_CELL_CLS + ' {cls}" style="display:{display};width:{columnWidth}px;height: {height};left: {left};" {groupIndex} index="{index}">',
         '<div class="' + GRID_HEADER_CELL_CONTAINER_CLS + '" style="height: {height};">',
+          '<span class="' + GRID_HEADER_CELL_LEFT_IMAGE_CLS + ' {headerLImageCls}">&nbsp;</span>',
           '<span class="' + GRID_HEADER_CELL_TEXT_CLS + '">{columnName}</span>',
           '<span class="' + GRID_HEADER_CELL_TRIGGER_CLS + '">',
             '<div class="' + GRID_HEADER_CELL_TRIGGER_IMAGE_CLS + '"></div>',
@@ -183,6 +186,10 @@
           }
         }
 
+        if(column.headerLImageCls){
+          cls += ' ' + GRID_HEADER_CELL_CONTAINS_LI;
+        }
+
         if(column.headerCls){
           cls += ' ' + column.headerCls;
         }
@@ -207,7 +214,8 @@
           left: 'initial',
           groupIndex: groupIndex,
           display: column.hidden ? 'none' : '',
-          id: column.id || ''
+          id: column.id || '',
+          headerLImageCls: column.headerLImageCls || ''
         };
 
         html += me.cellTpl.getHTML(cellConfig);
@@ -238,7 +246,7 @@
     insertCell: function(index, column){
       var me = this,
         w = me.widget,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cells = me.getCells(),
         columns = me.getColumns(),
         cls = '',
         title = column.title || column.header,
@@ -250,8 +258,7 @@
         cellHeight = parseInt(cells.item(0).css('height'));
       }
       else{
-        var _cells = w.header.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
-        //cellHeight = parseInt(_cells.item(0).css('height'));
+        //cellHeight = parseInt(cells.item(0).css('height'));
         //cellHeight = parseInt(w.header.el.css('height'));
       }
 
@@ -344,7 +351,7 @@
         left -= w.scroller.scrollLeft;
       }
 
-      cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+      cells = me.getCells();
 
       for (; i < iL; i++){
         var column = columns[i];
@@ -399,7 +406,7 @@
         w = me.widget,
         columns = me.getColumns(),
         cellsWidth = 0,
-        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cellsDom = me.getCells();
 
       cellsWidth += me.scrollLeft || 0;
 
@@ -478,7 +485,7 @@
         w = me.widget,
         CELL_HEADER_HEIGHT = w.cellHeaderHeight,
         columns = me.getColumns(),
-        cellsDom = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cellsDom = me.getCells(),
         left = 0,
         groups = {},
         groupsWidth = {},
@@ -609,7 +616,8 @@
      * @return {Fancy.Element}
      */
     getDomCell: function(index){
-      return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
+      //return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
+      return this.getCells().item(index);
     },
     /*
      * @param {Event} e
@@ -796,7 +804,7 @@
     hideCell: function(orderIndex){
       var me = this,
         w = me.widget,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cells = me.getCells(),
         cell = cells.item(orderIndex),
         cellWidth = parseInt(cell.css('width')),
         i = 0,
@@ -884,7 +892,7 @@
     showCell: function(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cells = me.getCells(),
         cell = cells.item(orderIndex),
         cellWidth,
         left = 0,
@@ -977,7 +985,7 @@
      */
     removeCell: function(orderIndex){
       var me = this,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cells = me.getCells(),
         cell = cells.item(orderIndex),
         cellWidth = parseInt(cell.css('width')),
         i = orderIndex + 1,
@@ -1043,7 +1051,7 @@
         columns = me.getColumns(),
         i = 0,
         iL = columns.length,
-        cells = me.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = me.getCells();
 
       for (; i < iL; i++){
         var column = columns[i];
@@ -1112,7 +1120,7 @@
      *
      */
     reSetIndexes: function(){
-      var cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+      var cells = this.getCells();
 
       cells.each(function(cell, i){
         cell.attr('index', i);
@@ -1124,7 +1132,7 @@
     reSetGroupIndexes: function(){
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = me.getCells();
 
       cells.each(function(cell, i){
         var column = columns[i],
@@ -1251,7 +1259,7 @@
     reSetColumnsAlign: function(){
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = me.getCells();
 
       cells.each(function(cell, i){
         var column = columns[i];
@@ -1277,7 +1285,7 @@
     reSetColumnsCls: function(){
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')'),
+        cells = me.getCells(),
         columnsCls = [];
 
       F.each(columns, function(column){
@@ -1321,7 +1329,7 @@
     updateCellsVisibility: function(){
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = me.getCells();
 
       cells.each(function(cell, i){
         var column = columns[i];
@@ -1337,7 +1345,7 @@
     reSetCheckBoxes: function(){
       var me = this,
         columns = me.getColumns(),
-        cells = this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+        cells = me.getCells();
 
       F.each(columns, function(column, i){
         var cell = cells.item(i),
@@ -1515,6 +1523,40 @@
         column: column,
         columnIndex: columnIndex
       };
+    },
+    updateLImages: function(){
+      var me = this,
+        cells = me.getCells(),
+        columns = me.getColumns();
+
+      cells.each(function(cell){
+        var index = cell.attr('index'),
+          column = columns[index],
+          headerLImageCls = column.headerLImageCls,
+          LIel = cell.select('.' + GRID_HEADER_CELL_LEFT_IMAGE_CLS),
+          classList = LIel.getCls();
+
+        F.each(classList, function(cls){
+          if(cls === GRID_HEADER_CELL_LEFT_IMAGE_CLS){
+            return;
+          }
+
+          if(!headerLImageCls || cls !== column.headerLImageCls){
+            LIel.removeCls(cls);
+          }
+        });
+
+        if(headerLImageCls){
+          LIel.addCls(headerLImageCls);
+          cell.addCls(GRID_HEADER_CELL_CONTAINS_LI);
+        }
+        else{
+          cell.removeCls(GRID_HEADER_CELL_CONTAINS_LI);
+        }
+      });
+    },
+    getCells: function(){
+      return this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
     }
   });
 

@@ -796,8 +796,10 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
+      s.changeDataView();
+
       if(update !== false){
-        s.changeDataView();
+        //s.changeDataView();
         w.update();
 
         w.fire('filter', s.filters);

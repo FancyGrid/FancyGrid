@@ -210,6 +210,23 @@
       delete w.sorting;
     },
     /*
+     *
+     */
+    clearSort: function(){
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      me.clearHeaderSortCls();
+
+      w.sorting = true;
+
+      delete s.order;
+      s.changeDataView();
+
+      delete w.sorting;
+    },
+    /*
      * @param {String} dir
      * @param {Fancy.Element} cellEl
      */
