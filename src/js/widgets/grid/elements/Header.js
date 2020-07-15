@@ -491,10 +491,19 @@
         groupsWidth = {},
         groupsLeft = {},
         rows = me.calcRows(),
-        isFilterHeader = w.filter && w.filter.header;
+        isFilterHeader = w.filter && w.filter.header,
+        isFilterGroupHeader = false;
 
       if(me.side === 'center'){
         left = w.scroller.scrollLeft;
+      }
+
+      if(isFilterHeader){
+        F.each( columns, function(column, i){
+          if (column.grouping && column.filter && column.filter.header){
+            isFilterGroupHeader = true;
+          }
+        } );
       }
 
       F.each(columns, function(column, i){
@@ -518,7 +527,7 @@
           top = CELL_HEADER_HEIGHT + 'px';
           height = CELL_HEADER_HEIGHT;
 
-          if(isFilterHeader){
+          if(isFilterGroupHeader){
             height = CELL_HEADER_HEIGHT * 2;
           }
 

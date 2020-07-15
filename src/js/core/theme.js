@@ -113,8 +113,7 @@ Fancy.defineTheme('gray', {
 Fancy.defineTheme('extra-gray', {
   config: {
     panelBorderWidth: 0,
-    //gridBorders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -137,7 +136,7 @@ Fancy.defineTheme('extra-dark', {
 Fancy.defineTheme('dark', {
   config: {
     panelBorderWidth: 1,
-    gridBorders: [0,1,1,1],
+    gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -192,7 +191,7 @@ Fancy.defineTheme('material', {
     subTitleHeight: 48,
     groupRowHeight: 40,
     //borders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,

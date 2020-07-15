@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.101',
+  version: '1.7.102',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1142,8 +1142,7 @@ Fancy.defineTheme('gray', {
 Fancy.defineTheme('extra-gray', {
   config: {
     panelBorderWidth: 0,
-    //gridBorders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -1166,7 +1165,7 @@ Fancy.defineTheme('extra-dark', {
 Fancy.defineTheme('dark', {
   config: {
     panelBorderWidth: 1,
-    gridBorders: [0,1,1,1],
+    gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -1221,7 +1220,7 @@ Fancy.defineTheme('material', {
     subTitleHeight: 48,
     groupRowHeight: 40,
     //borders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -2416,6 +2415,45 @@ Fancy.Number = {
     }
 
     return result;
+  },
+  currencyFormat: function(value, decimalSeparator, thousandSeparator, precision){
+    var splitted = value.toString().split(decimalSeparator);
+    precision = precision || 0;
+
+    splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+
+    if(splitted[1]){
+      if(precision > 0){
+        if (splitted[1].length < precision){
+          var end = '',
+            i = splitted[1].length;
+
+          for (; i < precision; i++) {
+            end += '0';
+          }
+
+          return splitted[0] + decimalSeparator + splitted[1] + end;
+        }
+        else {
+          splitted[1] = String(splitted[1]).substring(0, precision);
+        }
+      }
+
+      return splitted[0] + decimalSeparator + splitted[1];
+    }
+
+    if(precision > 0 && splitted[0] !== ''){
+      var end = '',
+        i = 0;
+
+      for (; i < precision; i++) {
+        end += '0';
+      }
+
+      return splitted[0] + decimalSeparator + end;
+    }
+
+    return splitted[0];
   }
 };
 /*
@@ -23303,6 +23341,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           if(column.format === undefined){
             column.format = 'number';
           }
+
+          if(column.ellipsis !== false){
+            column.ellipsis = true;
+          }
+
+          if(!column.editFormat){
+            column.editFormat = 'currency';
+          }
+
+          if(!column.beforeSaveFormat){
+            column.beforeSaveFormat = 'currency';
+          }
           break;
         case 'string':
         case 'number':
@@ -35942,6 +35992,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       editor.focus();
 
+      if(editor.input && column.cellAlign){
+        editor.input.css('text-align', column.cellAlign);
+      }
+
       if (type === 'combo'){
         if (o.value !== undefined){
           editor.set(o.value, false);
@@ -35983,6 +36037,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         column = o.column;
         value = editor.get();
 
+        if(o.column.beforeSaveFormat){
+          switch (F.typeOf(o.column.beforeSaveFormat)){
+            case 'string':
+              value = this.getBeforeSaveFormat(o.column.beforeSaveFormat)(value, o);
+              break;
+            case 'function':
+              value = o.column.beforeSaveFormat(value, o);
+              break;
+          }
+        }
+
         if (s.proxyType === 'server' && column.type !== 'combo'){
           key = me.getActiveColumnKey();
           value = me.prepareValue(value);
@@ -35994,6 +36059,11 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           }
         }
 
+        var editorValue = editor.getValue();
+
+        if(editorValue !== value){
+          editor.setValue(value);
+        }
         editor.hide();
         editor.hideErrorTip();
       }
@@ -36012,13 +36082,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     getCellPosition: function(cell){
       var me = this,
         w = me.widget,
-        gridBorders = w.gridBorders,
         cellEl = F.get(cell),
         cellOffset = cellEl.offset(),
         gridOffset = w.el.offset(),
+        leftBorder = parseInt(w.el.css('border-left-width')),
+        topBorder = parseInt(w.el.css('border-top-width')),
         offset = {
-          left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 2 + 'px',
-          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - (gridBorders[0] + gridBorders[2]) + 'px'
+          left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 1 - leftBorder + 'px',
+          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - 1 - topBorder + 'px'
         };
 
       return offset;
@@ -36028,19 +36099,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @return {Object}
      */
     getCellSize: function(cell){
-      var me = this,
-        w = me.widget,
-        cellEl = F.get(cell),
-        width = cellEl.width(),
-        height = cellEl.height(),
-        coeficient = 2;
-
-      if (F.nojQuery && w.panelBorderWidth === 2){
-        coeficient = 1;
-      }
-
-      width += parseInt(cellEl.css('border-right-width')) * coeficient;
-      height += parseInt(cellEl.css('border-bottom-width')) * coeficient;
+      var cellEl = F.get(cell),
+        width = cellEl.dom.clientWidth + 2,
+        height = cellEl.dom.clientHeight + 2;
 
       return {
         width: width,
@@ -36053,6 +36114,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     setEditorValue: function(o){
       var me = this,
         editor = me.activeEditor;
+
+      if(o.column.editFormat){
+        switch (F.typeOf(o.column.editFormat)){
+          case 'function':
+            o.value = o.column.editFormat(o.value, o);
+            break;
+          case 'string':
+            o.value = me.getEditFormat(o.column.editFormat)(o.value, o);
+            break;
+        }
+      }
 
       switch (o.column.type){
         case 'combo':
@@ -36357,6 +36429,53 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             }
           }
           break;
+      }
+    },
+    /*
+     * @param {String} value
+     * @return Function
+     */
+    getEditFormat: function(type){
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        decimalSeparator = lang.decimalSeparator,
+        thousandSeparator = lang.thousandSeparator;
+
+      switch(type){
+        case 'currency':
+          return function(value, params){
+            var currencySign = params.column.currency || lang.currencySign,
+              precision = params.column.precision || 0;
+
+            value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
+
+            if(value !== ''){
+              value = currencySign + value;
+            }
+
+            return value;
+          };
+      }
+    },
+    getBeforeSaveFormat: function(type){
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        thousandSeparator = lang.thousandSeparator;
+
+      switch(type){
+        case 'currency':
+          return function(value, params){
+            var currencySign = params.column.currency || lang.currencySign;
+
+            value = value.replace(currencySign, '').replace(thousandSeparator, '');
+            if(value !== ''){
+              value = Number(value);
+            }
+
+            return value;
+          };
       }
     }
   });
@@ -36774,6 +36893,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           }
         }
 
+        if(editor.input && column.cellAlign){
+          editor.input.css('text-align', column.cellAlign);
+        }
+
         column.rowEditor = editor;
       }
 
@@ -37076,6 +37199,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Array} columns
      */
     _setValues: function(data, columns){
+      var me = this;
+
       E(columns, function(column){
         var editor = column.rowEditor;
 
@@ -37092,6 +37217,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
               var value = data[column.index];
               if(value === undefined){
                 value = '';
+              }
+
+              if(column.editFormat){
+                switch (F.typeOf(column.editFormat)){
+                  case 'function':
+                    value = column.editFormat(value, {column: column});
+                    break;
+                  case 'string':
+                    value = me.getEditFormat(column.editFormat)(value, {column: column});
+                    break;
+                }
               }
 
               editor.set(value, false);
@@ -37453,6 +37589,33 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      */
     isVisible: function(){
       return this.el.css('display') !== 'none';
+    },
+    /*
+     * @param {String} value
+     * @return Function
+     */
+    getEditFormat: function(type){
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        decimalSeparator = lang.decimalSeparator,
+        thousandSeparator = lang.thousandSeparator;
+
+      switch(type){
+        case 'currency':
+          return function(value, params){
+            var currencySign = params.column.currency || lang.currencySign,
+              precision = params.column.precision || 0;
+
+            value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
+
+            if(value !== ''){
+              value = currencySign + value;
+            }
+
+            return value;
+          };
+      }
     }
   });
 
@@ -44344,6 +44507,10 @@ Fancy.modules['summary'] = true;
      * @param {Number} value
      */
     scrollLeft: function(value){
+      if(!this.el){
+        return;
+      }
+
       this.el.firstChild().css('left', value);
     },
     /*
@@ -44396,6 +44563,7 @@ Fancy.modules['summary'] = true;
     updateSide: function(side){
       var me = this,
         w = me.widget,
+        lang = w.lang,
         body = w.getBody(side),
         s = w.store,
         cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
@@ -44427,10 +44595,18 @@ Fancy.modules['summary'] = true;
             else {
               value = F.Array[column.summary](columnValues);
 
-              if(column.type === 'number'){
+              if(column.type === 'number' || column.type === 'currency'){
                 var precision = column.precision || 0;
 
                 value = value.toFixed(precision);
+              }
+
+              if(column.type === 'currency'){
+                if (value !== ''){
+                  var currencySign = column.currency || lang.currencySign;
+
+                  value = currencySign + value;
+                }
               }
             }
             break;
@@ -47088,7 +47264,9 @@ Fancy.modules['filter'] = true;
         for(var p in filter){
           var cell = w.getHeaderCell(p);
 
-          cell.addCls(GRID_HEADER_CELL_FILTERED_CLS);
+          if(cell){
+            cell.addCls( GRID_HEADER_CELL_FILTERED_CLS );
+          }
         }
       }
     },
@@ -49756,6 +49934,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             case 'string':
             case 'text':
             case 'number':
+            case 'currency':
             case 'date':
             case 'combo':
             case 'tree':
@@ -52007,6 +52186,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
 
       me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
+
+      me.el.on('mouseleave', me.onBodyLeave, me);
     },
     /*
      *
@@ -52806,6 +52987,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         left += column.width;
       });
     },
+    /*
+     *
+     */
     reSetColumnsAlign: function(){
       var me = this,
         columns = me.getColumns(),
@@ -52817,6 +53001,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         columnEl.css('text-align', column.cellAlign || '');
       });
     },
+    /*
+     *
+     */
     reSetColumnsCls: function(){
       var me = this,
         columns = me.getColumns(),
@@ -52879,12 +53066,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
       });
     },
+    /*
+     *
+     */
     onContextMenu: function(e){
       var me = this,
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
     },
+    /*
+     *
+     */
     updateColumnsVisibility: function(){
       var me = this,
         columns = me.getColumns(),
@@ -52901,6 +53094,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           columnEl.show();
         }
       });
+    },
+    /*
+     *
+     */
+    onBodyLeave: function(){
+      delete this.prevCellOver;
     }
   });
 
@@ -53861,10 +54060,19 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         groupsWidth = {},
         groupsLeft = {},
         rows = me.calcRows(),
-        isFilterHeader = w.filter && w.filter.header;
+        isFilterHeader = w.filter && w.filter.header,
+        isFilterGroupHeader = false;
 
       if(me.side === 'center'){
         left = w.scroller.scrollLeft;
+      }
+
+      if(isFilterHeader){
+        F.each( columns, function(column, i){
+          if (column.grouping && column.filter && column.filter.header){
+            isFilterGroupHeader = true;
+          }
+        } );
       }
 
       F.each(columns, function(column, i){
@@ -53888,7 +54096,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           top = CELL_HEADER_HEIGHT + 'px';
           height = CELL_HEADER_HEIGHT;
 
-          if(isFilterHeader){
+          if(isFilterGroupHeader){
             height = CELL_HEADER_HEIGHT * 2;
           }
 

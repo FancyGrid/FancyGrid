@@ -1330,7 +1330,9 @@ Fancy.modules['filter'] = true;
         for(var p in filter){
           var cell = w.getHeaderCell(p);
 
-          cell.addCls(GRID_HEADER_CELL_FILTERED_CLS);
+          if(cell){
+            cell.addCls( GRID_HEADER_CELL_FILTERED_CLS );
+          }
         }
       }
     },

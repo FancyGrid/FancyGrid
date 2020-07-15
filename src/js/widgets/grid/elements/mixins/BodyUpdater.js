@@ -182,6 +182,7 @@
             case 'string':
             case 'text':
             case 'number':
+            case 'currency':
             case 'date':
             case 'combo':
             case 'tree':

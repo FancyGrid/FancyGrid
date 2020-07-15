@@ -87,5 +87,44 @@ Fancy.Number = {
     }
 
     return result;
+  },
+  currencyFormat: function(value, decimalSeparator, thousandSeparator, precision){
+    var splitted = value.toString().split(decimalSeparator);
+    precision = precision || 0;
+
+    splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+
+    if(splitted[1]){
+      if(precision > 0){
+        if (splitted[1].length < precision){
+          var end = '',
+            i = splitted[1].length;
+
+          for (; i < precision; i++) {
+            end += '0';
+          }
+
+          return splitted[0] + decimalSeparator + splitted[1] + end;
+        }
+        else {
+          splitted[1] = String(splitted[1]).substring(0, precision);
+        }
+      }
+
+      return splitted[0] + decimalSeparator + splitted[1];
+    }
+
+    if(precision > 0 && splitted[0] !== ''){
+      var end = '',
+        i = 0;
+
+      for (; i < precision; i++) {
+        end += '0';
+      }
+
+      return splitted[0] + decimalSeparator + end;
+    }
+
+    return splitted[0];
   }
 };

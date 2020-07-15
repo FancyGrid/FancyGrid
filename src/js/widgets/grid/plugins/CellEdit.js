@@ -408,6 +408,10 @@
 
       editor.focus();
 
+      if(editor.input && column.cellAlign){
+        editor.input.css('text-align', column.cellAlign);
+      }
+
       if (type === 'combo'){
         if (o.value !== undefined){
           editor.set(o.value, false);
@@ -449,6 +453,17 @@
         column = o.column;
         value = editor.get();
 
+        if(o.column.beforeSaveFormat){
+          switch (F.typeOf(o.column.beforeSaveFormat)){
+            case 'string':
+              value = this.getBeforeSaveFormat(o.column.beforeSaveFormat)(value, o);
+              break;
+            case 'function':
+              value = o.column.beforeSaveFormat(value, o);
+              break;
+          }
+        }
+
         if (s.proxyType === 'server' && column.type !== 'combo'){
           key = me.getActiveColumnKey();
           value = me.prepareValue(value);
@@ -460,6 +475,11 @@
           }
         }
 
+        var editorValue = editor.getValue();
+
+        if(editorValue !== value){
+          editor.setValue(value);
+        }
         editor.hide();
         editor.hideErrorTip();
       }
@@ -478,13 +498,14 @@
     getCellPosition: function(cell){
       var me = this,
         w = me.widget,
-        gridBorders = w.gridBorders,
         cellEl = F.get(cell),
         cellOffset = cellEl.offset(),
         gridOffset = w.el.offset(),
+        leftBorder = parseInt(w.el.css('border-left-width')),
+        topBorder = parseInt(w.el.css('border-top-width')),
         offset = {
-          left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 2 + 'px',
-          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - (gridBorders[0] + gridBorders[2]) + 'px'
+          left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 1 - leftBorder + 'px',
+          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - 1 - topBorder + 'px'
         };
 
       return offset;
@@ -494,19 +515,9 @@
      * @return {Object}
      */
     getCellSize: function(cell){
-      var me = this,
-        w = me.widget,
-        cellEl = F.get(cell),
-        width = cellEl.width(),
-        height = cellEl.height(),
-        coeficient = 2;
-
-      if (F.nojQuery && w.panelBorderWidth === 2){
-        coeficient = 1;
-      }
-
-      width += parseInt(cellEl.css('border-right-width')) * coeficient;
-      height += parseInt(cellEl.css('border-bottom-width')) * coeficient;
+      var cellEl = F.get(cell),
+        width = cellEl.dom.clientWidth + 2,
+        height = cellEl.dom.clientHeight + 2;
 
       return {
         width: width,
@@ -519,6 +530,17 @@
     setEditorValue: function(o){
       var me = this,
         editor = me.activeEditor;
+
+      if(o.column.editFormat){
+        switch (F.typeOf(o.column.editFormat)){
+          case 'function':
+            o.value = o.column.editFormat(o.value, o);
+            break;
+          case 'string':
+            o.value = me.getEditFormat(o.column.editFormat)(o.value, o);
+            break;
+        }
+      }
 
       switch (o.column.type){
         case 'combo':
@@ -823,6 +845,53 @@
             }
           }
           break;
+      }
+    },
+    /*
+     * @param {String} value
+     * @return Function
+     */
+    getEditFormat: function(type){
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        decimalSeparator = lang.decimalSeparator,
+        thousandSeparator = lang.thousandSeparator;
+
+      switch(type){
+        case 'currency':
+          return function(value, params){
+            var currencySign = params.column.currency || lang.currencySign,
+              precision = params.column.precision || 0;
+
+            value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
+
+            if(value !== ''){
+              value = currencySign + value;
+            }
+
+            return value;
+          };
+      }
+    },
+    getBeforeSaveFormat: function(type){
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        thousandSeparator = lang.thousandSeparator;
+
+      switch(type){
+        case 'currency':
+          return function(value, params){
+            var currencySign = params.column.currency || lang.currencySign;
+
+            value = value.replace(currencySign, '').replace(thousandSeparator, '');
+            if(value !== ''){
+              value = Number(value);
+            }
+
+            return value;
+          };
       }
     }
   });

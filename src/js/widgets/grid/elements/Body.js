@@ -118,6 +118,8 @@
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
 
       me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
+
+      me.el.on('mouseleave', me.onBodyLeave, me);
     },
     /*
      *
@@ -917,6 +919,9 @@
         left += column.width;
       });
     },
+    /*
+     *
+     */
     reSetColumnsAlign: function(){
       var me = this,
         columns = me.getColumns(),
@@ -928,6 +933,9 @@
         columnEl.css('text-align', column.cellAlign || '');
       });
     },
+    /*
+     *
+     */
     reSetColumnsCls: function(){
       var me = this,
         columns = me.getColumns(),
@@ -990,12 +998,18 @@
         }
       });
     },
+    /*
+     *
+     */
     onContextMenu: function(e){
       var me = this,
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
     },
+    /*
+     *
+     */
     updateColumnsVisibility: function(){
       var me = this,
         columns = me.getColumns(),
@@ -1012,6 +1026,12 @@
           columnEl.show();
         }
       });
+    },
+    /*
+     *
+     */
+    onBodyLeave: function(){
+      delete this.prevCellOver;
     }
   });
 

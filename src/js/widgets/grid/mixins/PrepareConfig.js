@@ -505,6 +505,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           if(column.format === undefined){
             column.format = 'number';
           }
+
+          if(column.ellipsis !== false){
+            column.ellipsis = true;
+          }
+
+          if(!column.editFormat){
+            column.editFormat = 'currency';
+          }
+
+          if(!column.beforeSaveFormat){
+            column.beforeSaveFormat = 'currency';
+          }
           break;
         case 'string':
         case 'number':

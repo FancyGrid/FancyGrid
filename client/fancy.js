@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.101',
+  version: '1.7.102',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1141,8 +1141,7 @@ Fancy.defineTheme('gray', {
 Fancy.defineTheme('extra-gray', {
   config: {
     panelBorderWidth: 0,
-    //gridBorders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -1165,7 +1164,7 @@ Fancy.defineTheme('extra-dark', {
 Fancy.defineTheme('dark', {
   config: {
     panelBorderWidth: 1,
-    gridBorders: [0,1,1,1],
+    gridBorders: [1,1,1,1],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -1220,7 +1219,7 @@ Fancy.defineTheme('material', {
     subTitleHeight: 48,
     groupRowHeight: 40,
     //borders: [0,0,1,0],
-    gridBorders: [0,0,1,0],
+    gridBorders: [1,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -1523,6 +1522,45 @@ Fancy.Number = {
     }
 
     return result;
+  },
+  currencyFormat: function(value, decimalSeparator, thousandSeparator, precision){
+    var splitted = value.toString().split(decimalSeparator);
+    precision = precision || 0;
+
+    splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+
+    if(splitted[1]){
+      if(precision > 0){
+        if (splitted[1].length < precision){
+          var end = '',
+            i = splitted[1].length;
+
+          for (; i < precision; i++) {
+            end += '0';
+          }
+
+          return splitted[0] + decimalSeparator + splitted[1] + end;
+        }
+        else {
+          splitted[1] = String(splitted[1]).substring(0, precision);
+        }
+      }
+
+      return splitted[0] + decimalSeparator + splitted[1];
+    }
+
+    if(precision > 0 && splitted[0] !== ''){
+      var end = '',
+        i = 0;
+
+      for (; i < precision; i++) {
+        end += '0';
+      }
+
+      return splitted[0] + decimalSeparator + end;
+    }
+
+    return splitted[0];
   }
 };
 /*

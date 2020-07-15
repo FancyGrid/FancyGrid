@@ -505,6 +505,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           if(column.format === undefined){
             column.format = 'number';
           }
+
+          if(column.ellipsis !== false){
+            column.ellipsis = true;
+          }
+
+          if(!column.editFormat){
+            column.editFormat = 'currency';
+          }
+
+          if(!column.beforeSaveFormat){
+            column.beforeSaveFormat = 'currency';
+          }
           break;
         case 'string':
         case 'number':
@@ -9753,6 +9765,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             case 'string':
             case 'text':
             case 'number':
+            case 'currency':
             case 'date':
             case 'combo':
             case 'tree':
@@ -12003,6 +12016,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
 
       me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
+
+      me.el.on('mouseleave', me.onBodyLeave, me);
     },
     /*
      *
@@ -12802,6 +12817,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         left += column.width;
       });
     },
+    /*
+     *
+     */
     reSetColumnsAlign: function(){
       var me = this,
         columns = me.getColumns(),
@@ -12813,6 +12831,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         columnEl.css('text-align', column.cellAlign || '');
       });
     },
+    /*
+     *
+     */
     reSetColumnsCls: function(){
       var me = this,
         columns = me.getColumns(),
@@ -12875,12 +12896,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         }
       });
     },
+    /*
+     *
+     */
     onContextMenu: function(e){
       var me = this,
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
     },
+    /*
+     *
+     */
     updateColumnsVisibility: function(){
       var me = this,
         columns = me.getColumns(),
@@ -12897,6 +12924,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           columnEl.show();
         }
       });
+    },
+    /*
+     *
+     */
+    onBodyLeave: function(){
+      delete this.prevCellOver;
     }
   });
 
@@ -13393,10 +13426,19 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         groupsWidth = {},
         groupsLeft = {},
         rows = me.calcRows(),
-        isFilterHeader = w.filter && w.filter.header;
+        isFilterHeader = w.filter && w.filter.header,
+        isFilterGroupHeader = false;
 
       if(me.side === 'center'){
         left = w.scroller.scrollLeft;
+      }
+
+      if(isFilterHeader){
+        F.each( columns, function(column, i){
+          if (column.grouping && column.filter && column.filter.header){
+            isFilterGroupHeader = true;
+          }
+        } );
       }
 
       F.each(columns, function(column, i){
@@ -13420,7 +13462,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           top = CELL_HEADER_HEIGHT + 'px';
           height = CELL_HEADER_HEIGHT;
 
-          if(isFilterHeader){
+          if(isFilterGroupHeader){
             height = CELL_HEADER_HEIGHT * 2;
           }
 

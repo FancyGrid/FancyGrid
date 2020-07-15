@@ -209,6 +209,10 @@ Fancy.modules['summary'] = true;
      * @param {Number} value
      */
     scrollLeft: function(value){
+      if(!this.el){
+        return;
+      }
+
       this.el.firstChild().css('left', value);
     },
     /*
@@ -261,6 +265,7 @@ Fancy.modules['summary'] = true;
     updateSide: function(side){
       var me = this,
         w = me.widget,
+        lang = w.lang,
         body = w.getBody(side),
         s = w.store,
         cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
@@ -292,10 +297,18 @@ Fancy.modules['summary'] = true;
             else {
               value = F.Array[column.summary](columnValues);
 
-              if(column.type === 'number'){
+              if(column.type === 'number' || column.type === 'currency'){
                 var precision = column.precision || 0;
 
                 value = value.toFixed(precision);
+              }
+
+              if(column.type === 'currency'){
+                if (value !== ''){
+                  var currencySign = column.currency || lang.currencySign;
+
+                  value = currencySign + value;
+                }
               }
             }
             break;

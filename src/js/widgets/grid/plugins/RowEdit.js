@@ -410,6 +410,10 @@
           }
         }
 
+        if(editor.input && column.cellAlign){
+          editor.input.css('text-align', column.cellAlign);
+        }
+
         column.rowEditor = editor;
       }
 
@@ -712,6 +716,8 @@
      * @param {Array} columns
      */
     _setValues: function(data, columns){
+      var me = this;
+
       E(columns, function(column){
         var editor = column.rowEditor;
 
@@ -728,6 +734,17 @@
               var value = data[column.index];
               if(value === undefined){
                 value = '';
+              }
+
+              if(column.editFormat){
+                switch (F.typeOf(column.editFormat)){
+                  case 'function':
+                    value = column.editFormat(value, {column: column});
+                    break;
+                  case 'string':
+                    value = me.getEditFormat(column.editFormat)(value, {column: column});
+                    break;
+                }
               }
 
               editor.set(value, false);
@@ -1089,6 +1106,33 @@
      */
     isVisible: function(){
       return this.el.css('display') !== 'none';
+    },
+    /*
+     * @param {String} value
+     * @return Function
+     */
+    getEditFormat: function(type){
+      var me = this,
+        w = me.widget,
+        lang = w.lang,
+        decimalSeparator = lang.decimalSeparator,
+        thousandSeparator = lang.thousandSeparator;
+
+      switch(type){
+        case 'currency':
+          return function(value, params){
+            var currencySign = params.column.currency || lang.currencySign,
+              precision = params.column.precision || 0;
+
+            value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
+
+            if(value !== ''){
+              value = currencySign + value;
+            }
+
+            return value;
+          };
+      }
     }
   });
 
