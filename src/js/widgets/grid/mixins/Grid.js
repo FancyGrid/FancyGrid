@@ -4147,6 +4147,58 @@
       }
 
       return me.store.sorters;
+    },
+    /*
+     * @param {String} index
+     * @param {Array} data
+     */
+    setColumnComboData: function(index, data){
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function(column){
+        if(column.index === index){
+          column.data = data;
+
+          if(column.editor){
+            delete column.editor;
+          }
+
+          if(column.filterField){
+            var comboData = [];
+            if(F.isObject(data[0])){
+              comboData = data;
+            }
+            else{
+              F.each(data, function(value, i){
+                comboData.push({
+                  value: i,
+                  text: value
+                });
+              });
+            }
+
+            column.filterField.setData(comboData);
+          }
+
+          if(column.rowEditor){
+            var comboData = [];
+            if(F.isObject(data[0])){
+              comboData = data;
+            }
+            else{
+              F.each(data, function(value, i){
+                comboData.push({
+                  value: i,
+                  text: value
+                });
+              });
+            }
+
+            column.rowEditor.setData(comboData);
+          }
+        }
+      });
     }
   });
 

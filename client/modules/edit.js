@@ -516,7 +516,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         renderTo: renderTo,
         label: false,
         style: style,
-        checkValidOnTyping: true
+        checkValidOnTyping: true,
+        column: column
       };
 
       switch (type){
@@ -527,7 +528,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             events = [{
               change: me.onComboChange,
               scope: me
-            },{
+            }, {
               beforekey: me.onBeforeKey,
               scope: me
             }];
@@ -781,6 +782,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if(editor.input && column.cellAlign){
         editor.input.css('text-align', column.cellAlign);
+
+        if(column.type === 'date' && column.cellAlign === 'right'){
+          editor.input.css('padding-right', '23px');
+        }
       }
 
       if (type === 'combo'){
@@ -872,11 +877,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         cellEl = F.get(cell),
         cellOffset = cellEl.offset(),
         gridOffset = w.el.offset(),
+        //leftBorder = w.panel?  parseInt(w.el.css('border-left-width')),
         leftBorder = parseInt(w.el.css('border-left-width')),
-        topBorder = parseInt(w.el.css('border-top-width')),
+        //topBorder = parseInt(w.el.css('border-top-width')),
+        topBorder = parseInt(getComputedStyle(w.el.dom)['border-top-width']),
+        topFix = w.panel && F.nojQuery? 1 : 1,
         offset = {
           left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 1 - leftBorder + 'px',
-          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - 1 - topBorder + 'px'
+          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - topFix - topBorder + 'px'
         };
 
       return offset;
@@ -1264,6 +1272,25 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             return value;
           };
       }
+    },
+    onComboAddNewValue: function(field, value){
+      var me = this,
+        w = me.widget,
+        column = field.column,
+        index = column.index,
+        data = column.data;
+
+      if(F.isObject(data[0])){
+        data.push({
+          text: value,
+          value: value
+        });
+      }
+      else{
+        data.push(value);
+      }
+
+      w.setColumnComboData(index, data);
     }
   });
 
@@ -2069,8 +2096,24 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         w = me.widget,
         s = w.store,
         data = me.prepareChanged(),
-        rowIndex = s.getRow(me.activeId);
+        rowIndex = s.getRow(me.activeId),
+        values = me.getComboNewValues();
 
+      for(var p in values){
+        var _values = s.getColumnUniqueData(p);
+        if(F.isString(_values[0])){
+          _values.push(values[p]);
+        }
+        else{
+          _values.push({
+            value: values[p],
+            text: values[p]
+          });
+        }
+        w.setColumnComboData(p, _values);
+      }
+
+      F.apply(data, values);
       s.setItemData(rowIndex, data);
       w.update();
 
@@ -2402,6 +2445,28 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             return value;
           };
       }
+    },
+    /*
+     *
+     */
+    getComboNewValues: function(){
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(),
+        values = {};
+
+      F.each(columns, function(column){
+        if(column.type === 'combo' && column.editable && column.rowEditor){
+          var editor = column.rowEditor,
+            value = editor.get();
+
+          if(editor.value === -1 && F.isString(value) && value.length){
+            values[column.index] = value;
+          }
+        }
+      });
+
+      return values;
     }
   });
 

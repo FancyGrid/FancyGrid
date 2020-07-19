@@ -102,7 +102,8 @@
         'focus', 'blur', 'input',
         'up', 'down', 'change', 'key', 'enter', 'esc',
         'empty',
-        'load'
+        'load',
+        'add-new-value'
       );
       me.Super('init', arguments);
 
@@ -1208,7 +1209,8 @@
         listHtml = [
           '<ul style="position: relative;">'
         ],
-        presented = false;
+        presented = false,
+        displayedValue = me.getDisplayValue();
 
       if (me.aheadList){
         me.aheadList.firstChild().destroy();
@@ -1507,7 +1509,13 @@
         me.set(value);
       }
       else {
-        me.set(me.input.dom.value);
+        if(me.input.dom.value === ''){
+          me.set(me.input.dom.value);
+        }
+        else{
+          var value = me.input.dom.value;
+          me.detectedNewValue(value);
+        }
       }
 
       me.hideList();
@@ -1758,6 +1766,12 @@
       var me = this;
 
       me.data = data;
+      if (me.multiSelect){
+        me.values = [];
+        me.valuesIndex = new F.Collection();
+        me.clearListActive();
+      }
+
       me.renderList();
       me.onsList();
     },
@@ -1847,6 +1861,18 @@
       }
 
       return listHeight;
+    },
+    detectedNewValue: function(value){
+      var me = this;
+
+      me.data.push({
+        text: value,
+        value: value
+      });
+
+      me.set(value);
+
+      this.fire('add-new-value', value);
     }
   });
 

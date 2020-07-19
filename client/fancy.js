@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.102',
+  version: '1.7.103',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3938,6 +3938,31 @@ Fancy.define('Fancy.Store', {
       for (; i < iL; i++){
         _data.push(me.data[i].data[key]);
       }
+    }
+
+    return _data;
+  },
+  /*
+   * @param {String|Number} key
+   * @param {Function} fn
+   * @return {Array}
+   */
+  getColumnUniqueData: function(key){
+    var me = this,
+      i = 0,
+      iL = me.data.length,
+      _data = [],
+      map = {};
+
+    for (;i<iL;i++){
+      var value = me.data[i].data[key];
+
+      if(map[value] === true){
+        continue;
+      }
+
+      map[value] = true;
+      _data.push(value);
     }
 
     return _data;
@@ -11563,7 +11588,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         'focus', 'blur', 'input',
         'up', 'down', 'change', 'key', 'enter', 'esc',
         'empty',
-        'load'
+        'load',
+        'add-new-value'
       );
       me.Super('init', arguments);
 
@@ -12669,7 +12695,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listHtml = [
           '<ul style="position: relative;">'
         ],
-        presented = false;
+        presented = false,
+        displayedValue = me.getDisplayValue();
 
       if (me.aheadList){
         me.aheadList.firstChild().destroy();
@@ -12968,7 +12995,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.set(value);
       }
       else {
-        me.set(me.input.dom.value);
+        if(me.input.dom.value === ''){
+          me.set(me.input.dom.value);
+        }
+        else{
+          var value = me.input.dom.value;
+          me.detectedNewValue(value);
+        }
       }
 
       me.hideList();
@@ -13219,6 +13252,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this;
 
       me.data = data;
+      if (me.multiSelect){
+        me.values = [];
+        me.valuesIndex = new F.Collection();
+        me.clearListActive();
+      }
+
       me.renderList();
       me.onsList();
     },
@@ -13308,6 +13347,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       return listHeight;
+    },
+    detectedNewValue: function(value){
+      var me = this;
+
+      me.data.push({
+        text: value,
+        value: value
+      });
+
+      me.set(value);
+
+      this.fire('add-new-value', value);
     }
   });
 

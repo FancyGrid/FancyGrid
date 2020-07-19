@@ -583,7 +583,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigColumnsWidth: function(config){
-    var columns = config.columns,
+    var me = this,
+      columns = config.columns,
       width = config.width,
       columnsWithoutWidth = [],
       flexColumns = [],
@@ -633,6 +634,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     Fancy.each(columns, function(column, i){
+      if(column.autoWidth){
+        config.autoColumnWidth = true;
+      }
+
       if(column.flex){
         config.hasFlexColumns = true;
       }
@@ -656,6 +661,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'expand':
           if(column.width === undefined){
             column.width = 38;
+          }
+          break;
+        case 'combo':
+          if(!column.data){
+            column.data = [];
+            setTimeout(function(){
+              me.on('init', function(){
+                var data = me.store.getColumnUniqueData(column.index);
+
+                me.setColumnComboData(column.index, data);
+              });
+            }, 1);
           }
           break;
       }

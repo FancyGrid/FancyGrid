@@ -778,6 +778,31 @@ Fancy.define('Fancy.Store', {
     return _data;
   },
   /*
+   * @param {String|Number} key
+   * @param {Function} fn
+   * @return {Array}
+   */
+  getColumnUniqueData: function(key){
+    var me = this,
+      i = 0,
+      iL = me.data.length,
+      _data = [],
+      map = {};
+
+    for (;i<iL;i++){
+      var value = me.data[i].data[key];
+
+      if(map[value] === true){
+        continue;
+      }
+
+      map[value] = true;
+      _data.push(value);
+    }
+
+    return _data;
+  },
+  /*
    * @return {Array}
    */
   getData: function(){

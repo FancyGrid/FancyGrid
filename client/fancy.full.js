@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.102',
+  version: '1.7.103',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -7423,6 +7423,31 @@ Fancy.define('Fancy.Store', {
       for (; i < iL; i++){
         _data.push(me.data[i].data[key]);
       }
+    }
+
+    return _data;
+  },
+  /*
+   * @param {String|Number} key
+   * @param {Function} fn
+   * @return {Array}
+   */
+  getColumnUniqueData: function(key){
+    var me = this,
+      i = 0,
+      iL = me.data.length,
+      _data = [],
+      map = {};
+
+    for (;i<iL;i++){
+      var value = me.data[i].data[key];
+
+      if(map[value] === true){
+        continue;
+      }
+
+      map[value] = true;
+      _data.push(value);
     }
 
     return _data;
@@ -19927,7 +19952,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         'focus', 'blur', 'input',
         'up', 'down', 'change', 'key', 'enter', 'esc',
         'empty',
-        'load'
+        'load',
+        'add-new-value'
       );
       me.Super('init', arguments);
 
@@ -21033,7 +21059,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listHtml = [
           '<ul style="position: relative;">'
         ],
-        presented = false;
+        presented = false,
+        displayedValue = me.getDisplayValue();
 
       if (me.aheadList){
         me.aheadList.firstChild().destroy();
@@ -21332,7 +21359,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.set(value);
       }
       else {
-        me.set(me.input.dom.value);
+        if(me.input.dom.value === ''){
+          me.set(me.input.dom.value);
+        }
+        else{
+          var value = me.input.dom.value;
+          me.detectedNewValue(value);
+        }
       }
 
       me.hideList();
@@ -21583,6 +21616,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       var me = this;
 
       me.data = data;
+      if (me.multiSelect){
+        me.values = [];
+        me.valuesIndex = new F.Collection();
+        me.clearListActive();
+      }
+
       me.renderList();
       me.onsList();
     },
@@ -21672,6 +21711,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       return listHeight;
+    },
+    detectedNewValue: function(value){
+      var me = this;
+
+      me.data.push({
+        text: value,
+        value: value
+      });
+
+      me.set(value);
+
+      this.fire('add-new-value', value);
     }
   });
 
@@ -23419,7 +23470,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigColumnsWidth: function(config){
-    var columns = config.columns,
+    var me = this,
+      columns = config.columns,
       width = config.width,
       columnsWithoutWidth = [],
       flexColumns = [],
@@ -23469,6 +23521,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     Fancy.each(columns, function(column, i){
+      if(column.autoWidth){
+        config.autoColumnWidth = true;
+      }
+
       if(column.flex){
         config.hasFlexColumns = true;
       }
@@ -23492,6 +23548,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'expand':
           if(column.width === undefined){
             column.width = 38;
+          }
+          break;
+        case 'combo':
+          if(!column.data){
+            column.data = [];
+            setTimeout(function(){
+              me.on('init', function(){
+                var data = me.store.getColumnUniqueData(column.index);
+
+                me.setColumnComboData(column.index, data);
+              });
+            }, 1);
           }
           break;
       }
@@ -29820,6 +29888,58 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       return me.store.sorters;
+    },
+    /*
+     * @param {String} index
+     * @param {Array} data
+     */
+    setColumnComboData: function(index, data){
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function(column){
+        if(column.index === index){
+          column.data = data;
+
+          if(column.editor){
+            delete column.editor;
+          }
+
+          if(column.filterField){
+            var comboData = [];
+            if(F.isObject(data[0])){
+              comboData = data;
+            }
+            else{
+              F.each(data, function(value, i){
+                comboData.push({
+                  value: i,
+                  text: value
+                });
+              });
+            }
+
+            column.filterField.setData(comboData);
+          }
+
+          if(column.rowEditor){
+            var comboData = [];
+            if(F.isObject(data[0])){
+              comboData = data;
+            }
+            else{
+              F.each(data, function(value, i){
+                comboData.push({
+                  value: i,
+                  text: value
+                });
+              });
+            }
+
+            column.rowEditor.setData(comboData);
+          }
+        }
+      });
     }
   });
 
@@ -35729,7 +35849,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         renderTo: renderTo,
         label: false,
         style: style,
-        checkValidOnTyping: true
+        checkValidOnTyping: true,
+        column: column
       };
 
       switch (type){
@@ -35740,7 +35861,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             events = [{
               change: me.onComboChange,
               scope: me
-            },{
+            }, {
               beforekey: me.onBeforeKey,
               scope: me
             }];
@@ -35994,6 +36115,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if(editor.input && column.cellAlign){
         editor.input.css('text-align', column.cellAlign);
+
+        if(column.type === 'date' && column.cellAlign === 'right'){
+          editor.input.css('padding-right', '23px');
+        }
       }
 
       if (type === 'combo'){
@@ -36085,11 +36210,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         cellEl = F.get(cell),
         cellOffset = cellEl.offset(),
         gridOffset = w.el.offset(),
+        //leftBorder = w.panel?  parseInt(w.el.css('border-left-width')),
         leftBorder = parseInt(w.el.css('border-left-width')),
-        topBorder = parseInt(w.el.css('border-top-width')),
+        //topBorder = parseInt(w.el.css('border-top-width')),
+        topBorder = parseInt(getComputedStyle(w.el.dom)['border-top-width']),
+        topFix = w.panel && F.nojQuery? 1 : 1,
         offset = {
           left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 1 - leftBorder + 'px',
-          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - 1 - topBorder + 'px'
+          top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - topFix - topBorder + 'px'
         };
 
       return offset;
@@ -36477,6 +36605,25 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             return value;
           };
       }
+    },
+    onComboAddNewValue: function(field, value){
+      var me = this,
+        w = me.widget,
+        column = field.column,
+        index = column.index,
+        data = column.data;
+
+      if(F.isObject(data[0])){
+        data.push({
+          text: value,
+          value: value
+        });
+      }
+      else{
+        data.push(value);
+      }
+
+      w.setColumnComboData(index, data);
     }
   });
 
@@ -37283,8 +37430,24 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         w = me.widget,
         s = w.store,
         data = me.prepareChanged(),
-        rowIndex = s.getRow(me.activeId);
+        rowIndex = s.getRow(me.activeId),
+        values = me.getComboNewValues();
 
+      for(var p in values){
+        var _values = s.getColumnUniqueData(p);
+        if(F.isString(_values[0])){
+          _values.push(values[p]);
+        }
+        else{
+          _values.push({
+            value: values[p],
+            text: values[p]
+          });
+        }
+        w.setColumnComboData(p, _values);
+      }
+
+      F.apply(data, values);
       s.setItemData(rowIndex, data);
       w.update();
 
@@ -37616,6 +37779,28 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             return value;
           };
       }
+    },
+    /*
+     *
+     */
+    getComboNewValues: function(){
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(),
+        values = {};
+
+      F.each(columns, function(column){
+        if(column.type === 'combo' && column.editable && column.rowEditor){
+          var editor = column.rowEditor,
+            value = editor.get();
+
+          if(editor.value === -1 && F.isString(value) && value.length){
+            values[column.index] = value;
+          }
+        }
+      });
+
+      return values;
     }
   });
 
@@ -46739,6 +46924,7 @@ Fancy.modules['filter'] = true;
           case 'checkbox':
           case 'switcher':
             field = new F.Combo({
+              theme: theme,
               renderTo: dom.dom,
               label: false,
               padding: false,

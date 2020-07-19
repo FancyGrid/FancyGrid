@@ -800,8 +800,24 @@
         w = me.widget,
         s = w.store,
         data = me.prepareChanged(),
-        rowIndex = s.getRow(me.activeId);
+        rowIndex = s.getRow(me.activeId),
+        values = me.getComboNewValues();
 
+      for(var p in values){
+        var _values = s.getColumnUniqueData(p);
+        if(F.isString(_values[0])){
+          _values.push(values[p]);
+        }
+        else{
+          _values.push({
+            value: values[p],
+            text: values[p]
+          });
+        }
+        w.setColumnComboData(p, _values);
+      }
+
+      F.apply(data, values);
       s.setItemData(rowIndex, data);
       w.update();
 
@@ -1133,6 +1149,28 @@
             return value;
           };
       }
+    },
+    /*
+     *
+     */
+    getComboNewValues: function(){
+      var me = this,
+        w = me.widget,
+        columns = w.getColumns(),
+        values = {};
+
+      F.each(columns, function(column){
+        if(column.type === 'combo' && column.editable && column.rowEditor){
+          var editor = column.rowEditor,
+            value = editor.get();
+
+          if(editor.value === -1 && F.isString(value) && value.length){
+            values[column.index] = value;
+          }
+        }
+      });
+
+      return values;
     }
   });
 

@@ -3354,9 +3354,9 @@
   border-bottom: 0 solid #ddd;
 }
 .fancy-theme-gray.fancy-panel-grid-inside .fancy-grid {
-  border-right-width: 0;
-  border-left-width: 0;
-  border-top: 0;
+  border-right-width: 0px !important;
+  border-left-width: 0px !important;
+  border-top-width: 0px !important;
 }
 .fancy-theme-gray.fancy-panel .fancy-panel-header {
   background-color: #626262;
@@ -3537,6 +3537,9 @@
 }
 .fancy-theme-extra-gray .fancy-grid-editors .fancy-field-picker-button {
   background-position-y: 7px;
+}
+.fancy-theme-extra-gray .fancy-grid-editors .fancy-combo-dropdown-button {
+  background-position-y: 15px;
 }
 .fancy-theme-extra-gray .fancy-date-picker-cell-active {
   background-color: #E0E5E9;
@@ -3978,6 +3981,12 @@
 .fancy-theme-extra-gray .fancy-grid-header-cell-trigger-disabled .fancy-grid-header-cell-container {
   padding-right: 8px !important;
 }
+.fancy-theme-extra-gray .fancy-grid-row-edit .fancy-combo .fancy-field-text-input {
+  padding-top: 5px;
+}
+.fancy-theme-extra-gray .fancy-grid-row-edit .fancy-combo .fancy-combo-dropdown-button {
+  top: -3px;
+}
 .fancy-theme-extra-gray.fancy-panel .fancy-toolbar-tab {
   min-height: unset;
   background: unset;
@@ -4048,7 +4057,7 @@
   border-bottom: 1px solid #d3dbe1;
 }
 .fancy-theme-extra-gray.fancy-combo-result-list li {
-  padding: 4px 0 3px 8px;
+  padding: 6px 0 6px 8px;
 }
 .fancy-theme-extra-gray.fancy-combo-result-list .fancy-field-checkbox-input {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20rx%3D%222%22%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%2214%22%20height%3D%2214%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20rx%3D%222%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');

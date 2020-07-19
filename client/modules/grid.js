@@ -583,7 +583,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @return {Object}
    */
   prepareConfigColumnsWidth: function(config){
-    var columns = config.columns,
+    var me = this,
+      columns = config.columns,
       width = config.width,
       columnsWithoutWidth = [],
       flexColumns = [],
@@ -633,6 +634,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     Fancy.each(columns, function(column, i){
+      if(column.autoWidth){
+        config.autoColumnWidth = true;
+      }
+
       if(column.flex){
         config.hasFlexColumns = true;
       }
@@ -656,6 +661,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'expand':
           if(column.width === undefined){
             column.width = 38;
+          }
+          break;
+        case 'combo':
+          if(!column.data){
+            column.data = [];
+            setTimeout(function(){
+              me.on('init', function(){
+                var data = me.store.getColumnUniqueData(column.index);
+
+                me.setColumnComboData(column.index, data);
+              });
+            }, 1);
           }
           break;
       }
@@ -6569,6 +6586,58 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       return me.store.sorters;
+    },
+    /*
+     * @param {String} index
+     * @param {Array} data
+     */
+    setColumnComboData: function(index, data){
+      var me = this,
+        columns = me.getColumns();
+
+      F.each(columns, function(column){
+        if(column.index === index){
+          column.data = data;
+
+          if(column.editor){
+            delete column.editor;
+          }
+
+          if(column.filterField){
+            var comboData = [];
+            if(F.isObject(data[0])){
+              comboData = data;
+            }
+            else{
+              F.each(data, function(value, i){
+                comboData.push({
+                  value: i,
+                  text: value
+                });
+              });
+            }
+
+            column.filterField.setData(comboData);
+          }
+
+          if(column.rowEditor){
+            var comboData = [];
+            if(F.isObject(data[0])){
+              comboData = data;
+            }
+            else{
+              F.each(data, function(value, i){
+                comboData.push({
+                  value: i,
+                  text: value
+                });
+              });
+            }
+
+            column.rowEditor.setData(comboData);
+          }
+        }
+      });
     }
   });
 

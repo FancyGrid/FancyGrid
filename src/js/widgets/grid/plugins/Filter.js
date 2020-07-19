@@ -482,6 +482,7 @@ Fancy.modules['filter'] = true;
           case 'checkbox':
           case 'switcher':
             field = new F.Combo({
+              theme: theme,
               renderTo: dom.dom,
               label: false,
               padding: false,
