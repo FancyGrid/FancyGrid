@@ -603,6 +603,8 @@
           cell.css('height', '');
           var cellHeight = parseInt(cell.css('height')) + 4;
 
+          w.rowheight.waitToShow();
+
           if(cellHeight < w.cellHeight){
             cellHeight = w.cellHeight;
           }

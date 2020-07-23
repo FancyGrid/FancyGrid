@@ -113,6 +113,7 @@
 
       if (!me.loadListData()){
         me.data = me.configData(me.data);
+        me.data = Fancy.Array.copy(me.data);
       }
 
       if(me.multiSelect && me.data.length){
@@ -448,7 +449,7 @@
         top: xy[1] + 3 + 'px',
         opacity: 0,
         width: me.getListWidth(),
-        "z-index": 2000 + F.zIndex++
+        'z-index': 2000 + F.zIndex++
       });
 
       if(me.listCls){
@@ -703,7 +704,9 @@
 
         me.clearFocused();
 
-        li.toggleCls(selectedItemCls);
+        if(me.getTypeActiveList() === 'list'){
+          li.toggleCls(selectedItemCls);
+        }
 
         if (li.hasCls(selectedItemCls)){
           me.addValue(value);
@@ -1187,7 +1190,12 @@
       }
 
       F.each(me.data, function(item){
-        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())){
+        var re = inputValue;
+        if(re){
+          re = re.replace(/\(/g, '').replace(/\)/, '');
+        }
+
+        if (new RegExp('^' + re).test(item[me.displayKey].toLocaleLowerCase())){
           aheadData.push(item);
         }
       });
@@ -1257,7 +1265,7 @@
       });
 
       if (presented === false){
-        list.addClass(F.cls, 'fancy-combo-result-list');
+        list.addClass(F.cls, FIELD_COMBO_RESULT_LIST_CLS);
         document.body.appendChild(list.dom);
         me.aheadList = list;
 
@@ -1655,9 +1663,7 @@
         list = me.getActiveList().select('ul'),
         lis = list.select('li'),
         item = lis.item(index),
-        //top = item.position().top,
-        top = item.dom.offsetTop,
-        height = parseInt(list.css('height'));
+        top = item.dom.offsetTop;
 
       if (index === 0){
         list.dom.scrollTop = 0;
@@ -1684,6 +1690,19 @@
       }
 
       return list;
+    },
+    /*
+     * @return {String}
+     */
+    getTypeActiveList: function(){
+      var me = this;
+
+      if (me.list && me.list.css('display') !== 'none'){
+        return 'list';
+      }
+      else if (me.aheadList && me.aheadList.css('display') !== 'none'){
+        return 'ahead';
+      }
     },
     /*
      *
@@ -1869,6 +1888,15 @@
         text: value,
         value: value
       });
+
+      if (me.multiSelect){
+        me.values = [];
+        me.valuesIndex = new F.Collection();
+        me.clearListActive();
+      }
+
+      me.renderList();
+      me.onsList();
 
       me.set(value);
 

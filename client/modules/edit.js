@@ -531,6 +531,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             }, {
               beforekey: me.onBeforeKey,
               scope: me
+            },{
+              'add-new-value': me.onComboAddNewValue,
+              scope: me
             }];
 
           if (column.editorEvents){
@@ -2092,6 +2095,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      *
      */
     onClickUpdate: function(){
+      this.saveChanges();
+    },
+    /*
+     *
+     */
+    saveChanges: function(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -2233,15 +2242,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      *
      */
     onFieldEnter: function(){
-      var me = this,
-        w = me.widget,
-        s = w.store,
-        rowIndex = s.getRow(me.activeId);
-
-      s.setItemData(rowIndex, me.changed);
-      w.update();
-
-      me.hide();
+      this.saveChanges();
     },
     /*
      * @param {Number} index
@@ -2462,6 +2463,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
           if(editor.value === -1 && F.isString(value) && value.length){
             values[column.index] = value;
+          }
+          else if(editor.getInputValue() !== value){
+            values[column.index] = editor.getInputValue();
           }
         }
       });

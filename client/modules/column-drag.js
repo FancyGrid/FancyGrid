@@ -147,7 +147,6 @@ Fancy.modules['column-drag'] = true;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
@@ -155,6 +154,7 @@ Fancy.modules['column-drag'] = true;
           if(me.okPosition === 'right'){
             inIndex++;
           }
+
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
 
@@ -297,7 +297,23 @@ Fancy.modules['column-drag'] = true;
 
       me.inSide = side;
       me.inCell = cell;
-      me.inIndex = Number(cell.attr('index'));
+
+      if(me.inUpGroupCell){
+        var header = w.getHeader(side),
+          cells = header.el.select('[group-index="' + cell.attr('index') + '"]'),
+          index;
+
+        cells.each(function(cell){
+          if(cell.css('display') !== 'none' && index === undefined){
+            index = Number(cell.attr('index'));
+          }
+        });
+
+        me.inIndex = index;
+      }
+      else{
+        me.inIndex = Number(cell.attr('index'));
+      }
     },
     onMouseMoveCell: function(e){
       var me = this,
@@ -641,20 +657,21 @@ Fancy.modules['column-drag'] = true;
       header.updateTitles();
       header.updateCellsSizes();
       header.reSetCheckBoxes();
-      if(w.groupheader){
-        w.header.fixGroupHeaderSizing();
-        if(w.leftColumns){
-          w.leftHeader.fixGroupHeaderSizing();
-        }
-
-        if(w.rightColumns){
-          w.rightHeader.fixGroupHeaderSizing();
-        }
-
-        header.reSetGroupIndexes();
-      }
 
       setTimeout(function(){
+        if(w.groupheader){
+          w.header.fixGroupHeaderSizing();
+          if(w.leftColumns){
+            w.leftHeader.fixGroupHeaderSizing();
+          }
+
+          if(w.rightColumns){
+            w.rightHeader.fixGroupHeaderSizing();
+          }
+
+          header.reSetGroupIndexes();
+        }
+
         header.reSetColumnsAlign();
         header.reSetColumnsCls();
         body.reSetColumnsAlign();
@@ -871,7 +888,6 @@ Fancy.modules['column-drag'] = true;
           if(me.okPosition === 'right'){
             inIndex++;
           }
-
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
         else{
@@ -879,6 +895,7 @@ Fancy.modules['column-drag'] = true;
           if(me.okPosition === 'right'){
             inIndex++;
           }
+
           w.moveColumn(me.activeSide, me.inSide, me.activeIndex, inIndex, me.activeCellTopGroup);
         }
 
@@ -1021,7 +1038,23 @@ Fancy.modules['column-drag'] = true;
 
       me.inSide = side;
       me.inCell = cell;
-      me.inIndex = Number(cell.attr('index'));
+
+      if(me.inUpGroupCell){
+        var header = w.getHeader(side),
+          cells = header.el.select('[group-index="' + cell.attr('index') + '"]'),
+          index;
+
+        cells.each(function(cell){
+          if(cell.css('display') !== 'none' && index === undefined){
+            index = Number(cell.attr('index'));
+          }
+        });
+
+        me.inIndex = index;
+      }
+      else{
+        me.inIndex = Number(cell.attr('index'));
+      }
     },
     onMouseMoveCell: function(e){
       var me = this,
@@ -1365,20 +1398,21 @@ Fancy.modules['column-drag'] = true;
       header.updateTitles();
       header.updateCellsSizes();
       header.reSetCheckBoxes();
-      if(w.groupheader){
-        w.header.fixGroupHeaderSizing();
-        if(w.leftColumns){
-          w.leftHeader.fixGroupHeaderSizing();
-        }
-
-        if(w.rightColumns){
-          w.rightHeader.fixGroupHeaderSizing();
-        }
-
-        header.reSetGroupIndexes();
-      }
 
       setTimeout(function(){
+        if(w.groupheader){
+          w.header.fixGroupHeaderSizing();
+          if(w.leftColumns){
+            w.leftHeader.fixGroupHeaderSizing();
+          }
+
+          if(w.rightColumns){
+            w.rightHeader.fixGroupHeaderSizing();
+          }
+
+          header.reSetGroupIndexes();
+        }
+
         header.reSetColumnsAlign();
         header.reSetColumnsCls();
         body.reSetColumnsAlign();

@@ -4314,8 +4314,16 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
       }
 
-      bodyHeight -= gridBorders[0] + gridBorders[2];
+      if (me.summary){
+        if(me.summary.el){
+          bodyHeight -= me.summary.el.dom.clientHeight;
+        }
+        else{
+          bodyHeight -= me.cellHeight;
+        }
+      }
 
+      bodyHeight -= gridBorders[0] + gridBorders[2];
 
       if (me.body){
         me.body.css('height', bodyHeight);
@@ -10254,6 +10262,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(o.column.autoHeight){
           cell.css('height', '');
           var cellHeight = parseInt(cell.css('height')) + 4;
+
+          w.rowheight.waitToShow();
 
           if(cellHeight < w.cellHeight){
             cellHeight = w.cellHeight;

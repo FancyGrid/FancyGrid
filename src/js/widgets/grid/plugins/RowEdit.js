@@ -796,6 +796,12 @@
      *
      */
     onClickUpdate: function(){
+      this.saveChanges();
+    },
+    /*
+     *
+     */
+    saveChanges: function(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -937,15 +943,7 @@
      *
      */
     onFieldEnter: function(){
-      var me = this,
-        w = me.widget,
-        s = w.store,
-        rowIndex = s.getRow(me.activeId);
-
-      s.setItemData(rowIndex, me.changed);
-      w.update();
-
-      me.hide();
+      this.saveChanges();
     },
     /*
      * @param {Number} index
@@ -1166,6 +1164,9 @@
 
           if(editor.value === -1 && F.isString(value) && value.length){
             values[column.index] = value;
+          }
+          else if(editor.getInputValue() !== value){
+            values[column.index] = editor.getInputValue();
           }
         }
       });

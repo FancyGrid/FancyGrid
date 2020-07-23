@@ -523,8 +523,22 @@
                 }
 
                 if (!me.list){
+                  var maxLength = 0;
+                  F.each(items, function(item){
+                    var label = item.inputLabel.replace(/\&nbsp\;/g, '');
+                    if(label.length > maxLength){
+                      maxLength = item.inputLabel.length;
+                    }
+                  });
+
+                  var formWidth = 150;
+
+                  if(maxLength > 15){
+                    formWidth = 9 * maxLength;
+                  }
+
                   me.list = new FancyForm({
-                    width: 150,
+                    width: formWidth,
                     height: height,
                     theme: theme,
                     defaults: {
@@ -852,6 +866,20 @@
         return;
       }
 
+      if(me.isParentHidden()){
+        me.checkVisInt = setInterval(function(){
+          if(!me.isParentHidden()){
+            me.checkScroll();
+            clearInterval(me.checkVisInt);
+            delete me.checkVisInt;
+          }
+        }, 300);
+      }
+      else{
+        clearInterval(me.checkVisInt);
+        delete me.checkVisInt;
+      }
+
       if (itemsWidth > barWidth){
         me.enableScroll();
       }
@@ -923,6 +951,32 @@
           grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
         }, 100);
       }
+    },
+    isParentHidden: function(parent, deep){
+      var me = this,
+        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id')),
+        deep = deep || 1;
+
+      if(!grid){
+        return false;
+      }
+
+      if(!parent){
+        parent = grid.el;
+      }
+
+      if(parent.css('display') === 'none'){
+        return true;
+      }
+
+      if(deep > 5 || parent.dom.tagName.toLocaleLowerCase() === 'body'){
+        return false;
+      }
+
+      deep++;
+      parent = parent.parent();
+
+      return me.isParentHidden(parent, deep);
     }
   });
 

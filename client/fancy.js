@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.103',
+  version: '1.7.105',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -7610,21 +7610,40 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     constructor: function(renderTo, config){
       var me = this;
 
-      if(Fancy.isDom(renderTo)){
+      var fn = function(){
+        if(Fancy.isDom(renderTo)){
+          config = config || {};
+          config.renderTo = renderTo;
+        }
+        else{
+          config = renderTo;
+        }
+
         config = config || {};
-        config.renderTo = renderTo;
+
+        Fancy.loadStyle();
+
+        me.prepareConfigTheme(config);
+        me.prepareConfigSize(config);
+        Fancy.applyConfig(me, config);
+        me.Super('const', arguments);
+      };
+
+      if(!Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false){
+        if(Fancy.nojQuery){
+          Fancy.loadModule('dom', function(){
+            Fancy.loadModule('grid', function(){
+              fn();
+            });
+          });
+        }
+        else{
+          fn();
+        }
       }
       else{
-        config = renderTo;
+        fn();
       }
-
-      config = config || {};
-
-      Fancy.loadStyle();
-
-      me.prepareConfigTheme(config);
-      me.prepareConfigSize(config);
-      me.Super('const', arguments);
     },
     /*
      *
@@ -7633,9 +7652,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var me = this;
 
       me.prepareTabs();
-      me.Super('init', arguments);
+      me.Super( 'init', arguments );
 
-      me.setActiveTab(me.activeTab);
+      me.setActiveTab( me.activeTab );
       me.ons();
     },
     activeTab: 0,
@@ -7733,9 +7752,6 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       if(me.responsive){
         me.setWidth(newWidth);
       }
-      else if(me.fitWidth){
-        //me.setWidthFit();
-      }
 
       if(me.responsiveHeight){
         var height = parseInt(el.height());
@@ -7746,6 +7762,17 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
         me.setHeight(height);
       }
+
+      me.setPanelBodySize();
+
+      // Clear height and width for
+      var els = me.el.select('.' + TAB_WRAPPER_CLS + ' .' + PANEL_CLS + ':first-child');
+      els.each(function(el){
+        el.css({
+          height: 'auto',
+          width: 'auto'
+        });
+      });
     },
     setPanelBodySize: function(){
       var me = this,
@@ -7815,11 +7842,24 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       var renderTo = config.renderTo,
         el;
 
-      if (config.width === undefined){
+      if(config.width === undefined){
         if (renderTo){
           config.responsive = true;
           el = Fancy.get(renderTo);
           config.width = parseInt(el.width());
+        }
+      }
+
+      if(config.height === undefined){
+        if(renderTo){
+          config.responsiveHeight = true;
+          el = Fancy.get(renderTo);
+          var height = parseInt(el.height());
+          if(height < 50){
+            height = parseInt(el.parent().css('height'));
+          }
+
+          config.height = height;
         }
       }
     },
@@ -8497,8 +8537,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                 }
 
                 if (!me.list){
+                  var maxLength = 0;
+                  F.each(items, function(item){
+                    var label = item.inputLabel.replace(/\&nbsp\;/g, '');
+                    if(label.length > maxLength){
+                      maxLength = item.inputLabel.length;
+                    }
+                  });
+
+                  var formWidth = 150;
+
+                  if(maxLength > 15){
+                    formWidth = 9 * maxLength;
+                  }
+
                   me.list = new FancyForm({
-                    width: 150,
+                    width: formWidth,
                     height: height,
                     theme: theme,
                     defaults: {
@@ -8826,6 +8880,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         return;
       }
 
+      if(me.isParentHidden()){
+        me.checkVisInt = setInterval(function(){
+          if(!me.isParentHidden()){
+            me.checkScroll();
+            clearInterval(me.checkVisInt);
+            delete me.checkVisInt;
+          }
+        }, 300);
+      }
+      else{
+        clearInterval(me.checkVisInt);
+        delete me.checkVisInt;
+      }
+
       if (itemsWidth > barWidth){
         me.enableScroll();
       }
@@ -8897,6 +8965,32 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
         }, 100);
       }
+    },
+    isParentHidden: function(parent, deep){
+      var me = this,
+        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id')),
+        deep = deep || 1;
+
+      if(!grid){
+        return false;
+      }
+
+      if(!parent){
+        parent = grid.el;
+      }
+
+      if(parent.css('display') === 'none'){
+        return true;
+      }
+
+      if(deep > 5 || parent.dom.tagName.toLocaleLowerCase() === 'body'){
+        return false;
+      }
+
+      deep++;
+      parent = parent.parent();
+
+      return me.isParentHidden(parent, deep);
     }
   });
 
@@ -11599,6 +11693,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       if (!me.loadListData()){
         me.data = me.configData(me.data);
+        me.data = Fancy.Array.copy(me.data);
       }
 
       if(me.multiSelect && me.data.length){
@@ -11934,7 +12029,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         top: xy[1] + 3 + 'px',
         opacity: 0,
         width: me.getListWidth(),
-        "z-index": 2000 + F.zIndex++
+        'z-index': 2000 + F.zIndex++
       });
 
       if(me.listCls){
@@ -12189,7 +12284,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
         me.clearFocused();
 
-        li.toggleCls(selectedItemCls);
+        if(me.getTypeActiveList() === 'list'){
+          li.toggleCls(selectedItemCls);
+        }
 
         if (li.hasCls(selectedItemCls)){
           me.addValue(value);
@@ -12673,7 +12770,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       F.each(me.data, function(item){
-        if (new RegExp('^' + inputValue).test(item[me.displayKey].toLocaleLowerCase())){
+        var re = inputValue;
+        if(re){
+          re = re.replace(/\(/g, '').replace(/\)/, '');
+        }
+
+        if (new RegExp('^' + re).test(item[me.displayKey].toLocaleLowerCase())){
           aheadData.push(item);
         }
       });
@@ -12743,7 +12845,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       });
 
       if (presented === false){
-        list.addClass(F.cls, 'fancy-combo-result-list');
+        list.addClass(F.cls, FIELD_COMBO_RESULT_LIST_CLS);
         document.body.appendChild(list.dom);
         me.aheadList = list;
 
@@ -13141,9 +13243,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         list = me.getActiveList().select('ul'),
         lis = list.select('li'),
         item = lis.item(index),
-        //top = item.position().top,
-        top = item.dom.offsetTop,
-        height = parseInt(list.css('height'));
+        top = item.dom.offsetTop;
 
       if (index === 0){
         list.dom.scrollTop = 0;
@@ -13170,6 +13270,19 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       }
 
       return list;
+    },
+    /*
+     * @return {String}
+     */
+    getTypeActiveList: function(){
+      var me = this;
+
+      if (me.list && me.list.css('display') !== 'none'){
+        return 'list';
+      }
+      else if (me.aheadList && me.aheadList.css('display') !== 'none'){
+        return 'ahead';
+      }
     },
     /*
      *
@@ -13355,6 +13468,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         text: value,
         value: value
       });
+
+      if (me.multiSelect){
+        me.values = [];
+        me.valuesIndex = new F.Collection();
+        me.clearListActive();
+      }
+
+      me.renderList();
+      me.onsList();
 
       me.set(value);
 
@@ -15353,6 +15475,7 @@ if(!Fancy.nojQuery && Fancy.$){
     inWidgetName: 'rowheight',
     cellTip: '{value}',
     stopped: true,
+    waitingForParentVisibility: false,
     /*
      * @param {Object} config
      */
@@ -15480,6 +15603,61 @@ if(!Fancy.nojQuery && Fancy.$){
       var me = this;
 
       me.rows = {};
+    },
+    /*
+     *
+     */
+    waitToShow: function(){
+      var me = this;
+
+      if(me.waitingForParentVisibility){
+        return;
+      }
+
+      me.waitingForParentVisibility = true;
+
+      var w = me.widget,
+        parentEl = me.getHiddenParent(w.el);
+
+      if(!parentEl){
+        return;
+      }
+
+      me.intWaitToShow = setInterval(function(){
+        if(parentEl.css('display') === 'none'){
+          return;
+        }
+
+        clearInterval(me.intWaitToShow);
+
+        me.widget.update();
+        me.onUpdate();
+      }, 350);
+    },
+    /*
+     *
+     */
+    getHiddenParent: function(el, deep){
+      var deep = deep || 0,
+        maxDeep = 10;
+
+      deep++;
+
+      if(deep > maxDeep){
+        return;
+      }
+
+      if(el.css('display') === 'none'){
+        return el;
+      }
+
+      if(el.dom.tagName.toLocaleLowerCase === 'BODY'){
+        return;
+      }
+
+      el = el.parent();
+
+      return this.getHiddenParent(el, deep);
     }
   });
 

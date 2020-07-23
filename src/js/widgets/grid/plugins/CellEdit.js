@@ -160,6 +160,9 @@
             }, {
               beforekey: me.onBeforeKey,
               scope: me
+            },{
+              'add-new-value': me.onComboAddNewValue,
+              scope: me
             }];
 
           if (column.editorEvents){

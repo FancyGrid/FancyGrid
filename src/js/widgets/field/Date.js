@@ -330,6 +330,7 @@
       if (!me.docSpy){
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
+        docEl.on('scroll', me.onDocScroll, me);
       }
     },
     /*
@@ -352,6 +353,12 @@
     /*
      *
      */
+    onDocScroll: function(){
+      this.hidePicker();
+    },
+    /*
+     *
+     */
     hidePicker: function(){
       var me = this;
 
@@ -363,6 +370,7 @@
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
+        docEl.un('scroll', me.onDocScroll, me);
       }
     },
     /*

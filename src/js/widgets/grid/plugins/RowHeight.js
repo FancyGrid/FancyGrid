@@ -12,6 +12,7 @@
     inWidgetName: 'rowheight',
     cellTip: '{value}',
     stopped: true,
+    waitingForParentVisibility: false,
     /*
      * @param {Object} config
      */
@@ -139,6 +140,61 @@
       var me = this;
 
       me.rows = {};
+    },
+    /*
+     *
+     */
+    waitToShow: function(){
+      var me = this;
+
+      if(me.waitingForParentVisibility){
+        return;
+      }
+
+      me.waitingForParentVisibility = true;
+
+      var w = me.widget,
+        parentEl = me.getHiddenParent(w.el);
+
+      if(!parentEl){
+        return;
+      }
+
+      me.intWaitToShow = setInterval(function(){
+        if(parentEl.css('display') === 'none'){
+          return;
+        }
+
+        clearInterval(me.intWaitToShow);
+
+        me.widget.update();
+        me.onUpdate();
+      }, 350);
+    },
+    /*
+     *
+     */
+    getHiddenParent: function(el, deep){
+      var deep = deep || 0,
+        maxDeep = 10;
+
+      deep++;
+
+      if(deep > maxDeep){
+        return;
+      }
+
+      if(el.css('display') === 'none'){
+        return el;
+      }
+
+      if(el.dom.tagName.toLocaleLowerCase === 'BODY'){
+        return;
+      }
+
+      el = el.parent();
+
+      return this.getHiddenParent(el, deep);
     }
   });
 

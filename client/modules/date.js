@@ -1221,6 +1221,7 @@ Fancy.Date = {
       if (!me.docSpy){
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
+        docEl.on('scroll', me.onDocScroll, me);
       }
     },
     /*
@@ -1243,6 +1244,12 @@ Fancy.Date = {
     /*
      *
      */
+    onDocScroll: function(){
+      this.hidePicker();
+    },
+    /*
+     *
+     */
     hidePicker: function(){
       var me = this;
 
@@ -1254,6 +1261,7 @@ Fancy.Date = {
         var docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
+        docEl.un('scroll', me.onDocScroll, me);
       }
     },
     /*

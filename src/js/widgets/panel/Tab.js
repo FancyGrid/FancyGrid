@@ -25,21 +25,40 @@
     constructor: function(renderTo, config){
       var me = this;
 
-      if(Fancy.isDom(renderTo)){
+      var fn = function(){
+        if(Fancy.isDom(renderTo)){
+          config = config || {};
+          config.renderTo = renderTo;
+        }
+        else{
+          config = renderTo;
+        }
+
         config = config || {};
-        config.renderTo = renderTo;
+
+        Fancy.loadStyle();
+
+        me.prepareConfigTheme(config);
+        me.prepareConfigSize(config);
+        Fancy.applyConfig(me, config);
+        me.Super('const', arguments);
+      };
+
+      if(!Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false){
+        if(Fancy.nojQuery){
+          Fancy.loadModule('dom', function(){
+            Fancy.loadModule('grid', function(){
+              fn();
+            });
+          });
+        }
+        else{
+          fn();
+        }
       }
       else{
-        config = renderTo;
+        fn();
       }
-
-      config = config || {};
-
-      Fancy.loadStyle();
-
-      me.prepareConfigTheme(config);
-      me.prepareConfigSize(config);
-      me.Super('const', arguments);
     },
     /*
      *
@@ -48,9 +67,9 @@
       var me = this;
 
       me.prepareTabs();
-      me.Super('init', arguments);
+      me.Super( 'init', arguments );
 
-      me.setActiveTab(me.activeTab);
+      me.setActiveTab( me.activeTab );
       me.ons();
     },
     activeTab: 0,
@@ -148,9 +167,6 @@
       if(me.responsive){
         me.setWidth(newWidth);
       }
-      else if(me.fitWidth){
-        //me.setWidthFit();
-      }
 
       if(me.responsiveHeight){
         var height = parseInt(el.height());
@@ -161,6 +177,17 @@
 
         me.setHeight(height);
       }
+
+      me.setPanelBodySize();
+
+      // Clear height and width for
+      var els = me.el.select('.' + TAB_WRAPPER_CLS + ' .' + PANEL_CLS + ':first-child');
+      els.each(function(el){
+        el.css({
+          height: 'auto',
+          width: 'auto'
+        });
+      });
     },
     setPanelBodySize: function(){
       var me = this,
@@ -230,11 +257,24 @@
       var renderTo = config.renderTo,
         el;
 
-      if (config.width === undefined){
+      if(config.width === undefined){
         if (renderTo){
           config.responsive = true;
           el = Fancy.get(renderTo);
           config.width = parseInt(el.width());
+        }
+      }
+
+      if(config.height === undefined){
+        if(renderTo){
+          config.responsiveHeight = true;
+          el = Fancy.get(renderTo);
+          var height = parseInt(el.height());
+          if(height < 50){
+            height = parseInt(el.parent().css('height'));
+          }
+
+          config.height = height;
         }
       }
     },

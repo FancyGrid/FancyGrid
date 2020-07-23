@@ -152,7 +152,7 @@
                 switch(info.column.type){
                   case 'switcher':
                   case 'checkbox':
-                    return;
+                    return
                 }
 
                 info.cell = activeCell.dom;
@@ -174,10 +174,31 @@
           break;
         case key.BACKSPACE:
         case key.DELETE:
-          //TODO
+          if(w.selection && w.selection.selModel === 'cell'){
+            var activeCell = w.selection.getActiveCell();
+
+            if(activeCell){
+              var info = w.selection.getActiveCellInfo(),
+                columns = w.getColumns(info.side);
+
+              info.column = columns[info.columnIndex];
+              if(info.column.editable !== true){
+                return;
+              }
+              info.cell = activeCell.dom;
+              var item = w.get(info.rowIndex);
+              info.item = item;
+              info.data = item.data;
+
+              info.value = '';
+
+              w.celledit.edit(info);
+            }
+          }
           break;
         case key.ESC:
         case key.ALT:
+        case key.CTRL:
         case key.SHIFT:
         case key.CAPS_LOCK:
         case key.F1:
