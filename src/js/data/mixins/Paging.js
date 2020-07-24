@@ -112,7 +112,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.pages = Math.ceil(me.getTotal() / me.pageSize);
       if(!isNaN(oldPages) && oldPages > me.pages){
         //me.showPage--;
-        me.showPage = Math.floor((me.getTotal()/me.pageSize));
+        me.showPage = 0;
         if(me.showPage < 0){
           me.showPage = 0;
         }
