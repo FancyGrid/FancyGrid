@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.105',
+  version: '1.7.106',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3740,26 +3740,49 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
    *
    */
   calcPages: function(){
-    var me = this;
+    var me = this,
+      w = me.widget,
+      pageOverFlowType;
+
+    switch(w.paging.pageOverFlowType){
+      case undefined:
+      case 'last':
+        pageOverFlowType = 'last';
+        break;
+      case 'first':
+        pageOverFlowType = 'first';
+        break;
+    }
 
     if(me.pageType === 'server'){
       var oldPages = me.pages;
       me.pages = Math.ceil(me.getTotal() / me.pageSize);
       if(!isNaN(oldPages) && oldPages > me.pages){
         //me.showPage--;
-        me.showPage = Math.floor((me.getTotal()/me.pageSize));
-        if(me.showPage < 0){
+        if(pageOverFlowType === 'last'){
+          me.showPage = Math.floor((me.getTotal()/me.pageSize));
+          if(me.showPage < 0){
+            me.showPage = 0;
+          }
+        }
+        else{
           me.showPage = 0;
         }
+
         return 'needs reload';
       }
     }
     else {
-      me.pages = Math.ceil(me.getTotal() / me.pageSize);
+      me.pages = Math.ceil( me.getTotal() / me.pageSize );
     }
 
     if(me.showPage >= me.pages){
-      me.showPage = me.pages - 1;
+      if(pageOverFlowType === 'last'){
+        me.showPage = me.pages - 1;
+      }
+      else{
+        me.showPage = 0;
+      }
     }
 
     if(me.showPage < 0){
@@ -24612,7 +24635,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var me = this,
       lang = config.lang,
       paging = config.paging,
-      barType = 'bbar';
+      barType = 'bbar',
+      pageOverFlowType = 'last';
 
     if(!paging){
       return config;
@@ -24634,10 +24658,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
 
+    if(paging.pageOverFlowType){
+      pageOverFlowType = paging.pageOverFlowType;
+    }
+
     config._plugins.push({
       i18n: originalConfig.i18n,
       type: 'grid.paging',
-      barType: barType
+      barType: barType,
+      pageOverFlowType: pageOverFlowType
     });
 
     if(barType === 'both'){
@@ -25801,6 +25830,21 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(info.column.editable !== true){
       return;
     }
+
+    switch(info.column.type){
+      case 'string':
+      case 'number':
+      case 'combo':
+      case 'currency':
+      case 'date':
+      case 'image':
+      case 'text':
+      case 'tree':
+        break;
+      default:
+        return;
+    }
+
     info.cell = cell.dom;
 
     var item = me.get(info.rowIndex);

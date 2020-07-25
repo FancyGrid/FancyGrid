@@ -343,6 +343,21 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(info.column.editable !== true){
       return;
     }
+
+    switch(info.column.type){
+      case 'string':
+      case 'number':
+      case 'combo':
+      case 'currency':
+      case 'date':
+      case 'image':
+      case 'text':
+      case 'tree':
+        break;
+      default:
+        return;
+    }
+
     info.cell = cell.dom;
 
     var item = me.get(info.rowIndex);

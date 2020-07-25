@@ -1595,7 +1595,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var me = this,
       lang = config.lang,
       paging = config.paging,
-      barType = 'bbar';
+      barType = 'bbar',
+      pageOverFlowType = 'last';
 
     if(!paging){
       return config;
@@ -1617,10 +1618,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
 
+    if(paging.pageOverFlowType){
+      pageOverFlowType = paging.pageOverFlowType;
+    }
+
     config._plugins.push({
       i18n: originalConfig.i18n,
       type: 'grid.paging',
-      barType: barType
+      barType: barType,
+      pageOverFlowType: pageOverFlowType
     });
 
     if(barType === 'both'){

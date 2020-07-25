@@ -105,26 +105,49 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
    *
    */
   calcPages: function(){
-    var me = this;
+    var me = this,
+      w = me.widget,
+      pageOverFlowType;
+
+    switch(w.paging.pageOverFlowType){
+      case undefined:
+      case 'last':
+        pageOverFlowType = 'last';
+        break;
+      case 'first':
+        pageOverFlowType = 'first';
+        break;
+    }
 
     if(me.pageType === 'server'){
       var oldPages = me.pages;
       me.pages = Math.ceil(me.getTotal() / me.pageSize);
       if(!isNaN(oldPages) && oldPages > me.pages){
         //me.showPage--;
-        me.showPage = Math.floor((me.getTotal()/me.pageSize));
-        if(me.showPage < 0){
+        if(pageOverFlowType === 'last'){
+          me.showPage = Math.floor((me.getTotal()/me.pageSize));
+          if(me.showPage < 0){
+            me.showPage = 0;
+          }
+        }
+        else{
           me.showPage = 0;
         }
+
         return 'needs reload';
       }
     }
     else {
-      me.pages = Math.ceil(me.getTotal() / me.pageSize);
+      me.pages = Math.ceil( me.getTotal() / me.pageSize );
     }
 
     if(me.showPage >= me.pages){
-      me.showPage = me.pages - 1;
+      if(pageOverFlowType === 'last'){
+        me.showPage = me.pages - 1;
+      }
+      else{
+        me.showPage = 0;
+      }
     }
 
     if(me.showPage < 0){

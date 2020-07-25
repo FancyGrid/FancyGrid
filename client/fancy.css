@@ -3956,10 +3956,10 @@
   margin-top: 4px;
 }
 .fancy-theme-extra-gray .fancy-grid-body .fancy-grid-column-row-drag .fancy-grid-cell-inner-rowdrag {
-  top: -4px;
+  top: -5px;
 }
 .fancy-theme-extra-gray .fancy-grid-body .fancy-grid-column-row-drag svg {
-  margin-top: 0;
+  margin-top: 2px;
 }
 .fancy-theme-extra-gray .fancy-grid-body .fancy-grid-column-row-drag .fancy-grid-cell .fancy-field-checkbox {
   margin-top: 0;
