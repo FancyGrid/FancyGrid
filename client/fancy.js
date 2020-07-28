@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.106',
+  version: '1.7.107',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -609,6 +609,8 @@ Fancy.apply(Fancy, {
   GRID_ROW_EXPAND_SELECTED_CLS: 'fancy-grid-expand-row-selected',
   //grid body
   GRID_BODY_CLS: 'fancy-grid-body',
+  //activation active cell
+  GRID_ACTIVE_CELL_ENABLED: 'fancy-grid-active-cell-enabled',
   /*
    * Menu cls-s
    */
@@ -9821,6 +9823,9 @@ if(!Fancy.nojQuery && Fancy.$){
         case key.TAB:
           me.fire('tab', e);
           break;
+        case key.ESC:
+          me.fire('esc', e);
+          break;
         case key.ENTER:
           me.fire('enter', me.getValue());
           if (me.type !== 'textarea'){
@@ -10579,7 +10584,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
   init: function(){
     var me = this;
 
-    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab','change', 'key', 'empty');
+    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab','change', 'key', 'empty');
 
     me.Super('init', arguments);
 
@@ -10678,7 +10683,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     init: function(){
       var me = this;
 
-      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'empty');
+      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab', 'change', 'key', 'empty');
 
       me.Super('init', arguments);
 
@@ -14801,14 +14806,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'remove',
       'insert',
       'set',
+      'change',
       'update',
       'beforesort', 'sort',
       'beforeload', 'load', 'servererror', 'serversuccess',
       'select', 'selectrow', 'deselectrow',
       'clearselect',
       'activate', 'deactivate',
-      'beforeedit',//Not coded
-      'startedit',
+      'beforeedit', 'startedit', 'beforeendedit', 'endedit',
       'changepage', 'changepagesize',
       'dropitems',
       'dragrows',
@@ -15666,7 +15671,7 @@ if(!Fancy.nojQuery && Fancy.$){
         return el;
       }
 
-      if(el.dom.tagName.toLocaleLowerCase === 'BODY'){
+      if(el.dom.tagName.toLocaleLowerCase() === 'body'){
         return;
       }
 

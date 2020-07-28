@@ -25,6 +25,7 @@
      */
     onsNav: function(){
       var me = this,
+        w = me.widget,
         doc = Fancy.get(document);
 
       doc.on('keydown', me.onKeyDown, me);
@@ -137,7 +138,7 @@
           break;
         case key.ENTER:
           if(w.celledit && !w.celledit.activeEditor){
-            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells' || w.selection.activeCell){
               var activeCell = w.selection.getActiveCell();
 
               if(activeCell){
@@ -152,7 +153,7 @@
                 switch(info.column.type){
                   case 'switcher':
                   case 'checkbox':
-                    return
+                    return;
                 }
 
                 info.cell = activeCell.dom;
@@ -254,7 +255,7 @@
         */
         default:
           if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor){
-            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells' || w.selection.activeCell){
               var activeCell = w.selection.getActiveCell();
 
               if(activeCell){
@@ -279,6 +280,9 @@
           break;
       }
     },
+    /*
+     * @return {Cell}
+     */
     moveRight: function(){
       var me = this,
         w = me.widget,
@@ -424,12 +428,29 @@
           break;
         case 'column':
         case 'columns':
-          me.clearSelection();
-          me.selectColumn(info.columnIndex, info.side);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectColumn( info.columnIndex, info.side );
+            nextCell.addCls( GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS );
+            w.scroller.scrollToCell( nextCell.dom, true );
+          }
+          break;
+        case 'row':
+        case 'rows':
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls( GRID_CELL_ACTIVE_CLS );
+            w.scroller.scrollToCell( nextCell.dom, true );
+          }
           break;
       }
+
+      return nextCell;
     },
     moveLeft: function(){
       var me = this,
@@ -606,13 +627,29 @@
           break;
         case 'column':
         case 'columns':
-          me.clearSelection();
-          me.selectColumn(info.columnIndex, info.side);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectColumn(info.columnIndex, info.side);
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+            w.scroller.scrollToCell( nextCell.dom, true );
+          }
+          break;
+        case 'row':
+        case 'rows':
+          w.selection.clearActiveCell();
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS);
           w.scroller.scrollToCell(nextCell.dom, true);
           break;
       }
     },
+    /*
+     * @return {Cell}
+     */
     moveUp: function(){
       var me = this,
         w = me.widget,
@@ -639,16 +676,36 @@
           break;
         case 'row':
         case 'rows':
-          me.clearSelection();
-          me.selectRow(info.rowIndex);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
-          if(me.selModel === 'rows'){
-            me.updateHeaderCheckBox();
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectRow( info.rowIndex );
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+            w.scroller.scrollToCell( nextCell.dom, true );
+            if (me.selModel === 'rows'){
+              me.updateHeaderCheckBox();
+            }
+          }
+          break;
+        case 'column':
+        case 'columns':
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
           }
           break;
       }
+
+      return nextCell;
     },
+    /*
+     * @return {Cell|undefined}
+     */
     moveDown: function(){
       var me = this,
         w = me.widget,
@@ -672,15 +729,32 @@
           break;
         case 'row':
         case 'rows':
-          me.clearSelection();
-          me.selectRow(info.rowIndex);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
-          if(me.selModel === 'rows'){
-            me.updateHeaderCheckBox();
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectRow(info.rowIndex);
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+            if(me.selModel === 'rows'){
+              me.updateHeaderCheckBox();
+            }
+          }
+          break;
+        case 'column':
+        case 'columns':
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
           }
           break;
       }
+
+      return nextCell;
     },
     /*
      *
@@ -690,7 +764,14 @@
         w = me.widget,
         bodyHeight = parseInt(w.body.el.height()),
         scroller = w.scroller,
+        newScroll;
+
+      if(w.nativeScroller){
+        newScroll = w.body.el.dom.scrollTop - bodyHeight;
+      }
+      else{
         newScroll = scroller.scrollTop - bodyHeight;
+      }
 
       if(newScroll < 0){
         newScroll = 0;
@@ -708,7 +789,14 @@
         bodyViewHeight = w.getBodyHeight() - gridBorders[0] - gridBorders[2],
         viewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2],
         scroller = w.scroller,
+        newScroll;
+
+      if(w.nativeScroller){
+        newScroll = w.body.el.dom.scrollTop + bodyViewHeight;
+      }
+      else{
         newScroll = scroller.scrollTop + bodyViewHeight;
+      }
 
       if(newScroll > viewHeight - bodyViewHeight){
         newScroll = viewHeight - bodyViewHeight;

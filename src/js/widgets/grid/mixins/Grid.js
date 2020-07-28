@@ -868,6 +868,7 @@
       var me = this;
 
       me.fire('set', o);
+      me.fire('change', o);
     },
     /*
      * @param {Object} store
@@ -1259,7 +1260,7 @@
       return me.selection.moveRight();
     },
     /*
-     *
+     * @return {Cell|undefined}
      */
     selectCellDown: function(){
       var me = this;
@@ -1954,6 +1955,10 @@
 
       me.activated = false;
       doc.un('click', me.onDeactivateClick, me);
+
+      if(me.selection && me.selection.activeCell){
+        me.selection.clearActiveCell();
+      }
     },
     /*
      * @param {Object} e

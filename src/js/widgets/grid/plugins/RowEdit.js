@@ -13,6 +13,7 @@
   var GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
   var GRID_ROW_EDIT_BUTTON_UPDATE_CLS =  F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
   var GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
+  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -81,6 +82,8 @@
         return;
       }
 
+      me.activeCellEditParams = o;
+
       w.scroller.scrollToCell(o.cell);
       me.showEditor(o);
     },
@@ -90,6 +93,10 @@
     showEditor: function(o){
       var me = this,
         w = me.widget;
+
+      if(w.selection && w.selection.activeCell){
+        w.el.removeCls(GRID_ACTIVE_CELL_ENABLED);
+      }
 
       w.fire('beforeedit', o);
 
@@ -862,7 +869,14 @@
      *
      */
     hide: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
+
+      w.fire('beforeendedit', me.activeCellEditParams);
+
+      if(w.selection && w.selection.activeCell){
+        w.el.addCls(GRID_ACTIVE_CELL_ENABLED);
+      }
 
       if (!me.el){
         return;
@@ -879,6 +893,8 @@
       }
 
       me.buttonsEl.hide();
+
+      w.fire('endedit', me.activeCellEditParams);
     },
     /*
      *

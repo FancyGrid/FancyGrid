@@ -1091,7 +1091,12 @@
         me.scroll(rightScroll);
       }
       else if (passedHeight - rightScroll > bodyViewHeight){
-        rightScroll = passedHeight - bodyViewHeight + 5;
+        var extraBottomOffset = 5;
+        if(w.nativeScroller){
+          extraBottomOffset = 20;
+        }
+
+        rightScroll = passedHeight - bodyViewHeight + extraBottomOffset;
         me.scroll(rightScroll);
       }
       else if(passedHeight - rightScroll < w.cellHeight){

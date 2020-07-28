@@ -188,7 +188,7 @@
         return el;
       }
 
-      if(el.dom.tagName.toLocaleLowerCase === 'BODY'){
+      if(el.dom.tagName.toLocaleLowerCase() === 'body'){
         return;
       }
 

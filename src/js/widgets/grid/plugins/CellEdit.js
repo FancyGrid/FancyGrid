@@ -8,6 +8,7 @@
 
   //CONSTANTS
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
   F.define('Fancy.grid.plugin.CellEdit', {
     extend: F.Plugin,
@@ -104,6 +105,10 @@
         return;
       }
 
+      if(w.selection && w.selection.activeCell){
+        w.el.removeCls(GRID_ACTIVE_CELL_ENABLED);
+      }
+
       me.activeCellEditParams = o;
       w.edit.activeCellEditParams = o;
 
@@ -156,6 +161,9 @@
             data = column.data,
             events = [{
               change: me.onComboChange,
+              scope: me
+            },{
+              esc: me.onComboEsc,
               scope: me
             }, {
               beforekey: me.onBeforeKey,
@@ -234,6 +242,9 @@
             events: [{
               enter: me.onEditorEnter,
               scope: me
+            },{
+              esc: me.onEditorEsc,
+              scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
               scope: me
@@ -260,6 +271,9 @@
             events: [{
               enter: me.onEditorEnter,
               scope: me
+            },{
+              esc: me.onEditorEsc,
+              scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
               scope: me
@@ -279,6 +293,9 @@
             format: column.format,
             events: [{
               enter: me.onEditorEnter,
+              scope: me
+            },{
+              esc: me.onEditorEsc,
               scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
@@ -323,6 +340,9 @@
             checkValidOnTyping: true,
             events: [{
               enter: me.onEditorEnter,
+              scope: me
+            },{
+              esc: me.onEditorEsc,
               scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
@@ -457,6 +477,16 @@
         editor = me.activeEditor,
         column;
 
+      if(!editor){
+        return;
+      }
+
+      w.fire('beforeendedit', o);
+
+      if(w.selection && w.selection.activeCell){
+        w.el.addCls(GRID_ACTIVE_CELL_ENABLED);
+      }
+
       if (editor){
         column = o.column;
         value = editor.get();
@@ -492,7 +522,10 @@
         editor.hideErrorTip();
       }
 
-      delete me.activeEditor;
+      setTimeout(function(){
+        delete me.activeEditor;
+        w.fire('endedit', o);
+      },1);
 
       //Bug fix: when editor is out of side, grid el scrolls
       if (w.el.dom.scrollTop){
@@ -574,6 +607,30 @@
     },
     /*
      * @param {Object} editor
+     */
+    onEditorEsc: function(){
+      var me = this;
+
+      me.hideEditor();
+    },
+    /*
+     * @param {Object} editor
+     */
+    onComboEsc: function(editor){
+      var me = this;
+
+      if(editor.list && editor.list.css('display') === 'block'){
+        return;
+      }
+
+      if(editor.aheadList && editor.aheadList.css('display') === 'block'){
+        return;
+      }
+
+      me.hideEditor();
+    },
+    /*
+     * @param {Object} editor
      * @param {String} value
      */
     onEditorEnter: function(){
@@ -584,10 +641,31 @@
       me.hideEditor();
 
       if(selection.selectBottomCellAfterEdit){
-        w.selectCellDown();
+        var cell = w.selectCellDown();
         setTimeout(function(){
           w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
         }, 1);
+      }
+
+      switch(selection.continueEditOnEnter){
+        case 'right':
+          var cell = selection.moveRight();
+
+          if(cell){
+            setTimeout(function(){
+              w.editCell(cell);
+            }, 100);
+          }
+          break;
+        case 'bottom':
+          var cell = selection.moveDown();
+
+          if(cell){
+            setTimeout(function(){
+              w.editCell(cell);
+            }, 100);
+          }
+          break;
       }
     },
     /*

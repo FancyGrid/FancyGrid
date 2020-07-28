@@ -944,7 +944,7 @@ Fancy.Date = {
     init: function(){
       var me = this;
 
-      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'tab', 'change', 'key', 'showpicker');
+      me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab', 'change', 'key', 'showpicker');
 
       me.initFormat();
       me.Super('init', arguments);

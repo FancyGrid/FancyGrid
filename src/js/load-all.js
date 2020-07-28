@@ -4,6 +4,7 @@
     pathToSrc = '/src/js/';
 
   var files = [
+      pathToSrc + 'console.js',
       pathToSrc + 'core/Fancy.js',
       pathToSrc + 'core/theme.js',
 

@@ -403,6 +403,9 @@
         case key.TAB:
           me.fire('tab', e);
           break;
+        case key.ESC:
+          me.fire('esc', e);
+          break;
         case key.ENTER:
           me.fire('enter', me.getValue());
           if (me.type !== 'textarea'){

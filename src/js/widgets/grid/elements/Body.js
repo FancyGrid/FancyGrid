@@ -436,7 +436,12 @@
         columnEl = F.get(e.currentTarget),
         columnIndex = parseInt(columnEl.attr('index')),
         columns = me.getColumns(),
-        column = columns[columnIndex];
+        column = columns[columnIndex],
+        cell = e.target;
+
+      if(!F.get(cell).hasCls(GRID_CELL_CLS)){
+        cell = F.get(cell).parent('.' + GRID_CELL_CLS).dom;
+      }
 
       return {
         e: e,
@@ -444,7 +449,7 @@
         columnIndex: columnIndex,
         column: column,
         columnDom: columnEl.dom,
-        cell: e.target
+        cell: cell
       };
     },
     /*

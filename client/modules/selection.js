@@ -23,6 +23,7 @@ Fancy.modules['selection'] = true;
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
   var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
+  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_ON_CLS = F.FIELD_CHECKBOX_ON_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
@@ -55,7 +56,8 @@ Fancy.modules['selection'] = true;
      *
      */
     init: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.Super('init', arguments);
 
@@ -64,6 +66,12 @@ Fancy.modules['selection'] = true;
       }
 
       me.ons();
+
+      if(me.activeCell){
+        w.once('init', function(){
+          w.el.addCls(GRID_ACTIVE_CELL_ENABLED);
+        });
+      }
     },
     /*
      *
@@ -590,6 +598,10 @@ Fancy.modules['selection'] = true;
       }
 
       if(me.checkOnly && !F.get(params.e.target).hasClass(FIELD_CHECKBOX_INPUT_CLS)){
+        if(me.activeCell){
+          me.clearActiveCell();
+          F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
+        }
         return;
       }
 
@@ -923,7 +935,7 @@ Fancy.modules['selection'] = true;
       }
 
       me.clearActiveCell();
-      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
+      //F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      * @param {Object} grid
@@ -1143,8 +1155,6 @@ Fancy.modules['selection'] = true;
 
       var hasSelection = F.get(params.cell).hasClass(GRID_CELL_SELECTED_CLS);
 
-      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
-
       if (params.column.index === '$selected' || params.column.select){
         var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id')),
           checked = checkbox.get();
@@ -1186,6 +1196,8 @@ Fancy.modules['selection'] = true;
         }
         w.fire('select', me.getSelection());
       }
+
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      * @param {Object} grid
@@ -3135,6 +3147,7 @@ Fancy.modules['selection'] = true;
      */
     onsNav: function(){
       var me = this,
+        w = me.widget,
         doc = Fancy.get(document);
 
       doc.on('keydown', me.onKeyDown, me);
@@ -3247,7 +3260,7 @@ Fancy.modules['selection'] = true;
           break;
         case key.ENTER:
           if(w.celledit && !w.celledit.activeEditor){
-            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells' || w.selection.activeCell){
               var activeCell = w.selection.getActiveCell();
 
               if(activeCell){
@@ -3262,7 +3275,7 @@ Fancy.modules['selection'] = true;
                 switch(info.column.type){
                   case 'switcher':
                   case 'checkbox':
-                    return
+                    return;
                 }
 
                 info.cell = activeCell.dom;
@@ -3364,7 +3377,7 @@ Fancy.modules['selection'] = true;
         */
         default:
           if(w.startEditByTyping && w.celledit && !w.celledit.activeEditor){
-            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
+            if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells' || w.selection.activeCell){
               var activeCell = w.selection.getActiveCell();
 
               if(activeCell){
@@ -3389,6 +3402,9 @@ Fancy.modules['selection'] = true;
           break;
       }
     },
+    /*
+     * @return {Cell}
+     */
     moveRight: function(){
       var me = this,
         w = me.widget,
@@ -3534,12 +3550,29 @@ Fancy.modules['selection'] = true;
           break;
         case 'column':
         case 'columns':
-          me.clearSelection();
-          me.selectColumn(info.columnIndex, info.side);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectColumn( info.columnIndex, info.side );
+            nextCell.addCls( GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS );
+            w.scroller.scrollToCell( nextCell.dom, true );
+          }
+          break;
+        case 'row':
+        case 'rows':
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls( GRID_CELL_ACTIVE_CLS );
+            w.scroller.scrollToCell( nextCell.dom, true );
+          }
           break;
       }
+
+      return nextCell;
     },
     moveLeft: function(){
       var me = this,
@@ -3716,13 +3749,29 @@ Fancy.modules['selection'] = true;
           break;
         case 'column':
         case 'columns':
-          me.clearSelection();
-          me.selectColumn(info.columnIndex, info.side);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectColumn(info.columnIndex, info.side);
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+            w.scroller.scrollToCell( nextCell.dom, true );
+          }
+          break;
+        case 'row':
+        case 'rows':
+          w.selection.clearActiveCell();
+          nextCell.addCls(GRID_CELL_ACTIVE_CLS);
           w.scroller.scrollToCell(nextCell.dom, true);
           break;
       }
     },
+    /*
+     * @return {Cell}
+     */
     moveUp: function(){
       var me = this,
         w = me.widget,
@@ -3749,16 +3798,36 @@ Fancy.modules['selection'] = true;
           break;
         case 'row':
         case 'rows':
-          me.clearSelection();
-          me.selectRow(info.rowIndex);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
-          if(me.selModel === 'rows'){
-            me.updateHeaderCheckBox();
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectRow( info.rowIndex );
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+            w.scroller.scrollToCell( nextCell.dom, true );
+            if (me.selModel === 'rows'){
+              me.updateHeaderCheckBox();
+            }
+          }
+          break;
+        case 'column':
+        case 'columns':
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
           }
           break;
       }
+
+      return nextCell;
     },
+    /*
+     * @return {Cell|undefined}
+     */
     moveDown: function(){
       var me = this,
         w = me.widget,
@@ -3782,15 +3851,32 @@ Fancy.modules['selection'] = true;
           break;
         case 'row':
         case 'rows':
-          me.clearSelection();
-          me.selectRow(info.rowIndex);
-          nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
-          if(me.selModel === 'rows'){
-            me.updateHeaderCheckBox();
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
+          else{
+            me.clearSelection();
+            me.selectRow(info.rowIndex);
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
+            if(me.selModel === 'rows'){
+              me.updateHeaderCheckBox();
+            }
+          }
+          break;
+        case 'column':
+        case 'columns':
+          if(w.selection && w.selection.activeCell){
+            w.selection.clearActiveCell();
+            nextCell.addCls(GRID_CELL_ACTIVE_CLS);
+            w.scroller.scrollToCell(nextCell.dom, true);
           }
           break;
       }
+
+      return nextCell;
     },
     /*
      *
@@ -3800,7 +3886,14 @@ Fancy.modules['selection'] = true;
         w = me.widget,
         bodyHeight = parseInt(w.body.el.height()),
         scroller = w.scroller,
+        newScroll;
+
+      if(w.nativeScroller){
+        newScroll = w.body.el.dom.scrollTop - bodyHeight;
+      }
+      else{
         newScroll = scroller.scrollTop - bodyHeight;
+      }
 
       if(newScroll < 0){
         newScroll = 0;
@@ -3818,7 +3911,14 @@ Fancy.modules['selection'] = true;
         bodyViewHeight = w.getBodyHeight() - gridBorders[0] - gridBorders[2],
         viewHeight = w.getCellsViewHeight() - gridBorders[0] - gridBorders[2],
         scroller = w.scroller,
+        newScroll;
+
+      if(w.nativeScroller){
+        newScroll = w.body.el.dom.scrollTop + bodyViewHeight;
+      }
+      else{
         newScroll = scroller.scrollTop + bodyViewHeight;
+      }
 
       if(newScroll > viewHeight - bodyViewHeight){
         newScroll = viewHeight - bodyViewHeight;

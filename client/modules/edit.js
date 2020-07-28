@@ -379,6 +379,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
   //CONSTANTS
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
   F.define('Fancy.grid.plugin.CellEdit', {
     extend: F.Plugin,
@@ -475,6 +476,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
+      if(w.selection && w.selection.activeCell){
+        w.el.removeCls(GRID_ACTIVE_CELL_ENABLED);
+      }
+
       me.activeCellEditParams = o;
       w.edit.activeCellEditParams = o;
 
@@ -527,6 +532,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             data = column.data,
             events = [{
               change: me.onComboChange,
+              scope: me
+            },{
+              esc: me.onComboEsc,
               scope: me
             }, {
               beforekey: me.onBeforeKey,
@@ -605,6 +613,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             events: [{
               enter: me.onEditorEnter,
               scope: me
+            },{
+              esc: me.onEditorEsc,
+              scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
               scope: me
@@ -631,6 +642,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             events: [{
               enter: me.onEditorEnter,
               scope: me
+            },{
+              esc: me.onEditorEsc,
+              scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
               scope: me
@@ -650,6 +664,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             format: column.format,
             events: [{
               enter: me.onEditorEnter,
+              scope: me
+            },{
+              esc: me.onEditorEsc,
               scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
@@ -694,6 +711,9 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             checkValidOnTyping: true,
             events: [{
               enter: me.onEditorEnter,
+              scope: me
+            },{
+              esc: me.onEditorEsc,
               scope: me
             }, {
               beforehide: me.onEditorBeforeHide,
@@ -828,6 +848,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         editor = me.activeEditor,
         column;
 
+      if(!editor){
+        return;
+      }
+
+      w.fire('beforeendedit', o);
+
+      if(w.selection && w.selection.activeCell){
+        w.el.addCls(GRID_ACTIVE_CELL_ENABLED);
+      }
+
       if (editor){
         column = o.column;
         value = editor.get();
@@ -863,7 +893,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         editor.hideErrorTip();
       }
 
-      delete me.activeEditor;
+      setTimeout(function(){
+        delete me.activeEditor;
+        w.fire('endedit', o);
+      },1);
 
       //Bug fix: when editor is out of side, grid el scrolls
       if (w.el.dom.scrollTop){
@@ -945,6 +978,30 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     },
     /*
      * @param {Object} editor
+     */
+    onEditorEsc: function(){
+      var me = this;
+
+      me.hideEditor();
+    },
+    /*
+     * @param {Object} editor
+     */
+    onComboEsc: function(editor){
+      var me = this;
+
+      if(editor.list && editor.list.css('display') === 'block'){
+        return;
+      }
+
+      if(editor.aheadList && editor.aheadList.css('display') === 'block'){
+        return;
+      }
+
+      me.hideEditor();
+    },
+    /*
+     * @param {Object} editor
      * @param {String} value
      */
     onEditorEnter: function(){
@@ -955,10 +1012,31 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       me.hideEditor();
 
       if(selection.selectBottomCellAfterEdit){
-        w.selectCellDown();
+        var cell = w.selectCellDown();
         setTimeout(function(){
           w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
         }, 1);
+      }
+
+      switch(selection.continueEditOnEnter){
+        case 'right':
+          var cell = selection.moveRight();
+
+          if(cell){
+            setTimeout(function(){
+              w.editCell(cell);
+            }, 100);
+          }
+          break;
+        case 'bottom':
+          var cell = selection.moveDown();
+
+          if(cell){
+            setTimeout(function(){
+              w.editCell(cell);
+            }, 100);
+          }
+          break;
       }
     },
     /*
@@ -1312,6 +1390,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   var GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
   var GRID_ROW_EDIT_BUTTON_UPDATE_CLS =  F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
   var GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
+  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
@@ -1380,6 +1459,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
+      me.activeCellEditParams = o;
+
       w.scroller.scrollToCell(o.cell);
       me.showEditor(o);
     },
@@ -1389,6 +1470,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     showEditor: function(o){
       var me = this,
         w = me.widget;
+
+      if(w.selection && w.selection.activeCell){
+        w.el.removeCls(GRID_ACTIVE_CELL_ENABLED);
+      }
 
       w.fire('beforeedit', o);
 
@@ -2161,7 +2246,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      *
      */
     hide: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
+
+      w.fire('beforeendedit', me.activeCellEditParams);
+
+      if(w.selection && w.selection.activeCell){
+        w.el.addCls(GRID_ACTIVE_CELL_ENABLED);
+      }
 
       if (!me.el){
         return;
@@ -2178,6 +2270,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
 
       me.buttonsEl.hide();
+
+      w.fire('endedit', me.activeCellEditParams);
     },
     /*
      *

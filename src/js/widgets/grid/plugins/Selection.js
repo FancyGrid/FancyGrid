@@ -23,6 +23,7 @@ Fancy.modules['selection'] = true;
   var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
   var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
+  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
   var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
   var FIELD_CHECKBOX_ON_CLS = F.FIELD_CHECKBOX_ON_CLS;
   var FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
@@ -55,7 +56,8 @@ Fancy.modules['selection'] = true;
      *
      */
     init: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.Super('init', arguments);
 
@@ -64,6 +66,12 @@ Fancy.modules['selection'] = true;
       }
 
       me.ons();
+
+      if(me.activeCell){
+        w.once('init', function(){
+          w.el.addCls(GRID_ACTIVE_CELL_ENABLED);
+        });
+      }
     },
     /*
      *
@@ -590,6 +598,10 @@ Fancy.modules['selection'] = true;
       }
 
       if(me.checkOnly && !F.get(params.e.target).hasClass(FIELD_CHECKBOX_INPUT_CLS)){
+        if(me.activeCell){
+          me.clearActiveCell();
+          F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
+        }
         return;
       }
 
@@ -923,7 +935,7 @@ Fancy.modules['selection'] = true;
       }
 
       me.clearActiveCell();
-      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
+      //F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      * @param {Object} grid
@@ -1143,8 +1155,6 @@ Fancy.modules['selection'] = true;
 
       var hasSelection = F.get(params.cell).hasClass(GRID_CELL_SELECTED_CLS);
 
-      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
-
       if (params.column.index === '$selected' || params.column.select){
         var checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id')),
           checked = checkbox.get();
@@ -1186,6 +1196,8 @@ Fancy.modules['selection'] = true;
         }
         w.fire('select', me.getSelection());
       }
+
+      F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      * @param {Object} grid

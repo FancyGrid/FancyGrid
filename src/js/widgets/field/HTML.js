@@ -22,7 +22,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   init: function(){
     var me = this;
 
-    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'change', 'key');
+    me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'change', 'key');
 
     me.Super('init', arguments);
 
