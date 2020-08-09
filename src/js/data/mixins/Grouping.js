@@ -157,6 +157,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     return result;
   },
   /*
+   * @param {String} key
+   */
+  addGroup: function(key){
+    var me = this,
+      w = me.widget,
+      grouping = w.grouping;
+
+    grouping.by = key;
+    me.orderDataByGroupOnStart();
+  },
+  /*
    * @param {String} [dataProperty]
    * @return {Object}
    */
@@ -264,5 +275,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       items = me.findItem(me.grouping.by, groupName);
 
     return items;
+  },
+  /*
+   *
+   */
+  clearGroup: function(){
+    var me = this;
+
+    delete me.expanded;
+    delete me.collapsed;
+    delete me.groupMap;
+    delete me.grouping;
+    delete me.grouping;
   }
 });

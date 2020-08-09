@@ -459,7 +459,7 @@ Fancy.modules['expander'] = true;
         top = -w.scroller.scrollTop || 0,
         left = -w.scroller.scrollLeft || 0;
 
-      if (w.grouping){
+      if(w.isGroupable()){
         me.expandedGroups = {};
         var expanded = w.grouping.expanded;
 
@@ -481,7 +481,7 @@ Fancy.modules['expander'] = true;
           rowIndex = me.getDisplayedRowsBefore(item, p),
           _top = top + (rowIndex) * cellHeight + beforeHeight;
 
-        if (w.grouping){
+        if(w.isGroupable()){
           var id = p,
             groupName = w.grouping.getGroupById(id),
             orderIndex = w.grouping.getGroupOrderIndex(groupName);
@@ -508,7 +508,7 @@ Fancy.modules['expander'] = true;
         }
       }
 
-      if (w.grouping && grouping !== false){
+      if (w.isGroupable() && grouping !== false){
         w.grouping.setPositions();
         w.grouping.setExpanderCellsPosition();
       }
@@ -521,7 +521,7 @@ Fancy.modules['expander'] = true;
     getDisplayedRowsBefore: function(item, id){
       var w = this.widget;
 
-      if (w.grouping){
+      if(w.isGroupable()){
         var rowIndex = 0;
 
         if (item.el.css('display') !== 'none'){

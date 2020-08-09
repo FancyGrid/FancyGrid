@@ -53,7 +53,7 @@
       w.on('beforecolumndrag', me.onBeforeColumnDrag, me);
       w.on('columndrag', me.onColumnDrag, me);
 
-      if (w.grouping){
+      if(w.grouping && w.grouping.by){
         w.on('collapse', me.onCollapse, me);
         w.on('expand', me.onExpand, me);
       }
@@ -133,7 +133,7 @@
         }
       }
 
-      me.setSizes();
+      me.setSizes(o);
     },
     /*
      *
@@ -465,7 +465,7 @@
     /*
      *
      */
-    setSizes: function(){
+    setSizes: function(o){
       var me = this,
         w = me.widget;
 
@@ -481,19 +481,37 @@
         me._setSizes(w.rightBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.rightColumns, 'right');
       }
 
-      me.setElSize();
+      me.setElSize(o);
     },
     /*
      *
      */
-    setElSize: function(){
-      var w = this.widget,
+    setElSize: function(o){
+      var me = this,
+        w = me.widget,
         centerWidth = w.getCenterViewWidth(),
-        centerFullWidth = w.getCenterFullWidth();
+        centerFullWidth = w.getCenterFullWidth(),
+        rowHeight;
 
       if (centerWidth < centerFullWidth){
-        this.el.css('width', centerFullWidth);
+        me.el.css('width', centerFullWidth);
       }
+
+      if(o && o.cell){
+        rowHeight = o.cell.clientHeight + 2;
+
+        me.el.css( 'height', rowHeight + 'px' );
+
+        if (w.leftColumns){
+          me.leftEl.css( 'height', rowHeight + 'px' );
+        }
+
+        if (w.rightColumns){
+          me.rightEl.css( 'height', rowHeight + 'px' );
+        }
+      }
+
+      //me.el.css('height', '');
     },
     /*
      * @private
@@ -602,7 +620,7 @@
         newTop = w.cellHeight * rowIndex - 1 - scrollTop,
         plusTop = 0;
 
-      if (w.grouping){
+      if(w.grouping && w.grouping.by){
         plusTop += w.grouping.getOffsetForRow(rowIndex);
         newTop += plusTop;
       }
@@ -648,7 +666,7 @@
       }
 
       if (showOnTop){
-        if (w.grouping){
+        if(w.grouping && w.grouping.by){
           if (w.getViewTotal() - 3 < rowIndex - w.grouping.getSpecialRowsUnder(rowIndex)){
             buttonTop = newTop - parseInt(me.buttonsEl.css('height')) + 1;
           }

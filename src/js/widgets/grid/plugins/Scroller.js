@@ -1071,7 +1071,7 @@
         return;
       }
 
-      if(w.grouping){
+      if(w.isGroupable()){
         passedHeight += w.grouping.getSpecialRowsAbove(rowIndex) * w.groupRowHeight;
       }
 

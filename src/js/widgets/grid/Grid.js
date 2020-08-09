@@ -610,7 +610,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         break;
     }
 
-    if(side === 'left' && me.grouping && me.leftColumns.length === 0){
+    if(side === 'left' && me.isGroupable() && me.leftColumns.length === 0){
       me.grouping.insertGroupEls();
     }
 
@@ -730,7 +730,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.update();
   },
-  updateColumnsVisibilty: function(){
+  updateColumnsVisibility: function(){
     var me = this;
 
     if(me.columns){
@@ -774,6 +774,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     return index + '-' + me.columnsIdsSeed[index];
+  },
+  /*
+   * @return {Boolean}
+   */
+  isGroupable: function(){
+    var me = this;
+
+    return me.grouping && me.grouping.by;
   }
 });
 

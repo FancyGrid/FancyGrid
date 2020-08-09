@@ -430,7 +430,10 @@
       editor.show();
       editor.el.css(cellXY);
 
-      editor.focus();
+      if (type === 'combo' && editor.subSearch){}
+      else{
+        editor.focus();
+      }
 
       if(editor.input && column.cellAlign){
         editor.input.css('text-align', column.cellAlign);
@@ -443,6 +446,10 @@
       if (type === 'combo'){
         if (o.value !== undefined){
           editor.set(o.value, false);
+        }
+
+        if(editor.subSearch){
+          editor.showList();
         }
       }
 

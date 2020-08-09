@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.107',
+  version: '1.7.108',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3215,7 +3215,7 @@ Fancy.define('Fancy.Store', {
 
     me.readSmartIndexes();
 
-    if(me.widget.grouping){
+    if(me.widget.isGroupable()){
       me.orderDataByGroupOnStart();
     }
 
@@ -3795,6 +3795,7 @@ Fancy.define('Fancy.Store', {
    */
   changeDataView: function(o){
     var me = this,
+      w = me.widget,
       o = o || {},
       groupBy,
       dataView = [],
@@ -14316,7 +14317,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.paging.updateBar();
     }
 
-    if(me.grouping){
+    if(me.isGroupable()){
       me.grouping.reGroup();
     }
   },
@@ -15277,7 +15278,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         break;
     }
 
-    if(side === 'left' && me.grouping && me.leftColumns.length === 0){
+    if(side === 'left' && me.isGroupable() && me.leftColumns.length === 0){
       me.grouping.insertGroupEls();
     }
 
@@ -15397,7 +15398,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.update();
   },
-  updateColumnsVisibilty: function(){
+  updateColumnsVisibility: function(){
     var me = this;
 
     if(me.columns){
@@ -15441,6 +15442,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     }
 
     return index + '-' + me.columnsIdsSeed[index];
+  },
+  /*
+   * @return {Boolean}
+   */
+  isGroupable: function(){
+    var me = this;
+
+    return me.grouping && me.grouping.by;
   }
 });
 
@@ -15558,7 +15567,7 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.totalHeight = totalHeight;
 
-      if(w.grouping){
+      if(w.isGroupable()){
         me.totalHeight += w.grouping.getGroupRowsHeight();
       }
 

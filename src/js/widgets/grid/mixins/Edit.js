@@ -77,7 +77,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.paging.updateBar();
     }
 
-    if(me.grouping){
+    if(me.isGroupable()){
       me.grouping.reGroup();
     }
   },

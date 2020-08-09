@@ -3997,6 +3997,15 @@
 .fancy-theme-extra-gray .fancy-grid-row-edit .fancy-combo .fancy-combo-dropdown-button {
   top: -3px;
 }
+.fancy-theme-extra-gray .fancy-grid-row-edit .fancy-field-field-text {
+  line-height: 7px;
+}
+.fancy-theme-extra-gray .fancy-grid-row-edit .fancy-field-checkbox {
+  margin-top: -2px !important;
+}
+.fancy-theme-extra-gray .fancy-grid-row-edit .fancy-field-switcher {
+  margin-top: -2px !important;
+}
 .fancy-theme-extra-gray .fancy-grid-active-cell-enabled .fancy-grid-cell-active {
   box-shadow: 0 0 0 2px #B5B9C4;
 }

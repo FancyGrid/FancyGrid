@@ -203,7 +203,7 @@ Fancy.modules['column-drag'] = true;
 
       me.hideHint();
       setTimeout(function(){
-        w.updateColumnsVisibilty();
+        w.updateColumnsVisibility();
       }, 100);
 
       w.scroller.update();

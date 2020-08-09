@@ -40,6 +40,12 @@ Fancy.modules['grouping'] = true;
       me._expanded = {};
 
       me.initTpl();
+
+      if(!me.by){
+        delete me._expanded;
+        return;
+      }
+
       me.initGroups();
       me.initOrder();
       me.calcPlusScroll();
@@ -62,24 +68,47 @@ Fancy.modules['grouping'] = true;
      */
     ons: function(){
       var me = this,
-        w = me.widget,
-        s = w.store;
+        w = me.widget;
 
       w.once('render', function(){
         me.renderGroupedRows();
         me.update();
 
-        w.el.on('click', me.onClick, me, 'div.' + GRID_ROW_GROUP_CLS);
-        w.el.on('mousedown', me.onMouseDown, me, 'div.' + GRID_ROW_GROUP_CLS);
-        w.on('scroll', me.onScroll, me);
+        me.onGridRender();
+      }, me);
+    },
+    onGridRender: function(){
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
-        w.on('columnresize', me.onColumnResize, me);
+      w.el.on('click', me.onClick, me, 'div.' + GRID_ROW_GROUP_CLS);
+      w.el.on('mousedown', me.onMouseDown, me, 'div.' + GRID_ROW_GROUP_CLS);
+      w.on('scroll', me.onScroll, me);
 
-        s.on('insert', me.onInsert, me);
-        s.on('remove', me.onRemove, me);
+      w.on('columnresize', me.onColumnResize, me);
 
-        w.on('columndrag', me.onColumnDrag, me);
-      });
+      s.on('insert', me.onInsert, me);
+      s.on('remove', me.onRemove, me);
+
+      w.on('columndrag', me.onColumnDrag, me);
+    },
+    uns: function(){
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      w.el.un('click', me.onClick, me, 'div.' + GRID_ROW_GROUP_CLS);
+      w.el.un('mousedown', me.onMouseDown, me, 'div.' + GRID_ROW_GROUP_CLS);
+
+      w.un('scroll', me.onScroll);
+
+      w.un('columnresize', me.onColumnResize);
+
+      s.un('insert', me.onInsert);
+      s.un('remove', me.onRemove);
+
+      w.un('columndrag', me.onColumnDrag);
     },
     onInsert: function(){
       this.reGroup();
@@ -1054,6 +1083,38 @@ Fancy.modules['grouping'] = true;
       me.configParams();
       me.renderGroupedRows();
       w.setSidesHeight();
+    },
+    /*
+     * 
+     */
+    addGroup: function(setEvents){
+      var me = this;
+
+      me.reGroup();
+
+      if(setEvents){
+        me.onGridRender();
+      }
+    },
+    /*
+     *
+     */
+    clearGroup: function(){
+      var me = this;
+
+      delete me.collapsed;
+      delete me.expanded;
+      delete me._expanded;
+      delete me.groups;
+      delete me.groupsCounts;
+      delete me.by;
+      delete me.by;
+      delete me.plusScroll;
+      delete me.prevRows;
+
+      me.removeGroupRows();
+      me.removeCells();
+      me.uns();
     },
     /*
      * @param {Number} value

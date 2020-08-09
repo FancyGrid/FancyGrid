@@ -191,7 +191,7 @@
         }
       }
 
-      if (w.grouping){
+      if(w.grouping && w.grouping.by){
         if (s.remoteSort){
           s.once('load', function(){
             w.grouping.reGroup();

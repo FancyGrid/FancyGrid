@@ -1368,6 +1368,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.grouping){
       var groupConfig = config.grouping;
 
+      if(groupConfig === true){
+        groupConfig = {};
+      }
+
       Fancy.apply(groupConfig, {
         type: 'grid.grouping'
       });

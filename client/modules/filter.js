@@ -916,7 +916,7 @@ Fancy.modules['filter'] = true;
         me.clearFilter(field.filterIndex, undefined, false);
         me.updateStoreFilters();
 
-        if (w.grouping){
+        if(w.grouping && w.grouping.by){
           w.grouping.reGroup();
         }
 
@@ -969,7 +969,7 @@ Fancy.modules['filter'] = true;
         me.updateStoreFilters();
       }
 
-      if (w.grouping){
+      if(w.grouping && w.grouping.by){
         if (s.remoteSort){
           s.once('load', function(){
             w.grouping.reGroup();
@@ -1480,7 +1480,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
       me.clear();
       me.updateStoreSearches();
 
-      if(w.grouping){
+      if(w.isGroupable()){
         w.grouping.reGroup();
       }
 
@@ -1503,7 +1503,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
       },1);
     }
 
-    if(w.grouping){
+    if(w.isGroupable()){
       if(s.remoteSort){
         s.once('load', function(){
           w.grouping.reGroup();

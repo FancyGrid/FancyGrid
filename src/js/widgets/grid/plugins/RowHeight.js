@@ -75,7 +75,7 @@
 
       me.totalHeight = totalHeight;
 
-      if(w.grouping){
+      if(w.isGroupable()){
         me.totalHeight += w.grouping.getGroupRowsHeight();
       }
 

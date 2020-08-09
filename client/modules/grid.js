@@ -1368,6 +1368,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.grouping){
       var groupConfig = config.grouping;
 
+      if(groupConfig === true){
+        groupConfig = {};
+      }
+
       Fancy.apply(groupConfig, {
         type: 'grid.grouping'
       });
@@ -2525,7 +2529,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         fields: fields
       });
 
-      if (me.grouping && me.grouping.collapsed !== undefined){
+      if(me.isGroupable() && me.grouping.collapsed !== undefined){
         collapsed = me.grouping.collapsed;
       }
 
@@ -3030,7 +3034,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
-      if (me.grouping){
+      if (me.isGroupable()){
         height += me.grouping.groups.length * me.groupRowHeight;
       }
 
@@ -3345,7 +3349,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         scrollBottomHeight = 0,
         cellsHeight = 0;
 
-      if (me.grouping){
+      if(me.isGroupable()){
         plusScroll += me.grouping.plusScroll;
       }
 
@@ -4587,7 +4591,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
-      if (me.grouping){
+      if (me.isGroupable()){
         me.grouping.updateGroupRows();
       }
 
@@ -4723,7 +4727,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
-      if (me.grouping){
+      if (me.isGroupable()){
         me.grouping.updateGroupRows();
       }
 
@@ -4935,7 +4939,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
-      if (me.grouping){
+      if (me.isGroupable()){
         switch (side){
           case 'left':
             if (me.leftColumns.length === 1){
@@ -5100,7 +5104,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         height += me.cellHeaderHeight * headerRows;
       }
 
-      if (me.grouping){
+      if (me.isGroupable()){
         height += me.grouping.groups.length * me.groupRowHeight;
       }
 
@@ -6663,6 +6667,34 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           }
         }
       });
+    },
+    /*
+     *
+     */
+    clearGroup: function(){
+      var me = this,
+        s = me.store;
+
+      s.clearGroup();
+      me.grouping.clearGroup();
+
+      s.changeDataView();
+      me.update();
+      me.setSidesHeight();
+      me.scroller.update();
+    },
+    /*
+     * @param {String} key
+     */
+    addGroup: function(key){
+      var me = this,
+        s = me.store,
+        isBySet = !me.grouping.by;
+
+      s.addGroup(key);
+      me.grouping.addGroup(isBySet);
+      me.setSidesHeight();
+      me.scroller.update();
     }
   });
 
@@ -7815,7 +7847,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         return;
       }
 
-      if(w.grouping){
+      if(w.isGroupable()){
         passedHeight += w.grouping.getSpecialRowsAbove(rowIndex) * w.groupRowHeight;
       }
 
@@ -12296,7 +12328,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         w.body.setColumnsPosition(x, animate);
 
         if (me.side === 'center'){
-          if (w.grouping){
+          if(w.grouping && w.grouping.by){
             w.grouping.scrollLeft(x);
           }
 

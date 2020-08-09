@@ -297,7 +297,7 @@
         w.body.setColumnsPosition(x, animate);
 
         if (me.side === 'center'){
-          if (w.grouping){
+          if(w.grouping && w.grouping.by){
             w.grouping.scrollLeft(x);
           }
 
