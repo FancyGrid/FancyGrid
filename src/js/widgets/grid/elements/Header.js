@@ -87,6 +87,7 @@
 
       w.on('render', me.onAfterRender, me);
       w.on('docmove', me.onDocMove, me);
+      w.on('columndrag', me.onColumnDrag, me);
       el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
       el.on('click', me.onCellClick, me, headerCellSelector);
       el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
@@ -1129,10 +1130,15 @@
      *
      */
     reSetIndexes: function(){
-      var cells = this.getCells();
+      var me = this,
+        cells = this.getCells(),
+        columns = me.getColumns();
 
       cells.each(function(cell, i){
         cell.attr('index', i);
+        //reset id-s
+        var column = columns[i];
+        cell.attr('col-id', column.id);
       });
     },
     /*
@@ -1564,8 +1570,17 @@
         }
       });
     },
+    /*
+     *
+     */
     getCells: function(){
       return this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+    },
+    /*
+     *
+     */
+    onColumnDrag: function(){
+      this.reSetIndexes();
     }
   });
 

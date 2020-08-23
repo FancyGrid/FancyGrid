@@ -139,8 +139,26 @@
      *
      */
     onAfterRender: function(){
-      this.update();
-      this.setHeight();
+      var me = this,
+        w = me.widget,
+        s = w.store;
+
+      if(me.side === 'left' && !w.leftColumns.length){
+        return;
+      }
+
+      if(me.side === 'right' && !w.rightColumns.length){
+        return;
+      }
+
+      if(!w.grouping || (w.grouping && !w.grouping.by)){
+        me.update();
+      }
+      else if(w.grouping && s.proxyType === 'server'){
+        me.update();
+      }
+
+      me.setHeight();
     },
     /*
      * @param {Number} scrollLeft

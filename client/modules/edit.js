@@ -1882,7 +1882,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
 
       if(o && o.cell){
-        rowHeight = o.cell.clientHeight + 2;
+        //rowHeight = o.cell.clientHeight + 2;
+        rowHeight = o.cell.clientHeight + 3;
 
         me.el.css( 'height', rowHeight + 'px' );
 

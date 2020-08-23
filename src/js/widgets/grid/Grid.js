@@ -189,18 +189,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     //hbar chart column does not work without it.
     //TODO: Needs to study how to fix it and do not run.
     //It is not possible to replicate but unless production sample.
+    //Also it is needed to auto height
     me.update();
     me.initTextSelection();
     me.initTouch();
-
+    me.initDebug();
     me.fire('beforeinit');
 
     setTimeout(function(){
       me.inited = true;
       me.fire('init');
-
       me.setBodysHeight();
+      me._setColumnsAutoWidth();
     }, 1);
+
   },
   /*
    *
@@ -782,6 +784,23 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var me = this;
 
     return me.grouping && me.grouping.by;
+  },
+  /*
+   *
+   */
+  _setColumnsAutoWidth: function(){
+    var me = this;
+
+    if(!me.autoColumnWidth){
+      return;
+    }
+
+    var columns = me.getColumns();
+    Fancy.each(columns, function(column){
+      if(column.autoWidth && column.index){
+        me.autoSizeColumn(column.id, true);
+      }
+    });
   }
 });
 

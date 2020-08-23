@@ -323,8 +323,8 @@
         }
 
         if(me.menu){
-          me.toggle();
           me.toggleMenuShow(e);
+          me.toggle();
         }
       }
     },
@@ -478,6 +478,11 @@
         p = me.el.$dom.offset(),
         xy = [p.left, p.top + me.el.$dom.height()];
 
+      if(me.pressed){
+        me.menu.hide();
+        return;
+      }
+
       if(F.isArray(me.menu)){
         me.initMenu();
       }
@@ -489,6 +494,9 @@
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
+    /*
+     *
+     */
     initMenu: function(){
       var me = this,
         config = {
@@ -508,6 +516,9 @@
 
       me.menu = new F.Menu(config);
     },
+    /*
+     *
+     */
     onMenuHide: function(){
       this.setPressed(false);
     }

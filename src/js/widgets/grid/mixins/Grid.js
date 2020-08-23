@@ -117,10 +117,22 @@
       me.model = modelName;
       me.fields = fields;
 
-      if (me.store.filters){
+      if (me.store.filters && !F.Object.isEmpty(me.store.filters)){
         setTimeout(function(){
           me.filter.updateStoreFilters();
         }, 1);
+      }
+    },
+    initDebug: function(){
+      var me = this;
+
+      if(F.DEBUG){
+        if (me.panel){
+          me.panel.addCls('fancy-debug');
+        }
+        else {
+          me.addCls('fancy-debug');
+        }
       }
     },
     /*
@@ -1543,15 +1555,12 @@
      */
     getColumnByIndex: function(key){
       var me = this,
-        leftColumns = me.leftColumns || [],
-        columns = me.columns || [],
-        rightColumns = me.rightColumns || [],
-        _columns = leftColumns.concat(columns).concat(rightColumns),
+        columns = me.getColumns(),
         i = 0,
-        iL = _columns.length;
+        iL = columns.length;
 
       for (; i < iL; i++){
-        var column = _columns[i];
+        var column = columns[i];
         if (column.index === key){
           return column;
         }
@@ -1563,6 +1572,23 @@
      */
     getColumn: function(key){
       return this.getColumnByIndex(key);
+    },
+    /*
+     * @param {String} id
+     * @return {Object}
+     */
+    getColumnById: function(id){
+      var me = this,
+        columns = me.getColumns(),
+        i = 0,
+        iL = columns.length;
+
+      for (; i < iL; i++){
+        var column = columns[i];
+        if (column.id === id){
+          return column;
+        }
+      }
     },
     /*
      * @param {String} key
@@ -1594,6 +1620,48 @@
         if (!side){
           F.each(rightColumns, function(column, i){
             if (column.index === key){
+              side = 'right';
+              order = i;
+            }
+          });
+        }
+      }
+
+      return {
+        side: side,
+        order: order
+      };
+    },
+    /*
+     * @param {String} id
+     * @return {Object}
+     */
+    getColumnOrderById: function(id){
+      var me = this,
+        leftColumns = me.leftColumns || [],
+        columns = me.columns || [],
+        rightColumns = me.rightColumns || [],
+        side = '',
+        order;
+
+      F.each(columns, function(column, i){
+        if (column.id === id){
+          side = 'center';
+          order = i;
+        }
+      });
+
+      if (!side){
+        F.each(leftColumns, function(column, i){
+          if (column.index === id){
+            side = 'left';
+            order = i;
+          }
+        });
+
+        if (!side){
+          F.each(rightColumns, function(column, i){
+            if (column.index === id){
               side = 'right';
               order = i;
             }
@@ -2024,8 +2092,9 @@
     /*
      * @param {String|Number} side
      * @param {String|Number} [index]
+      @param {Object} [column]
      */
-    hideColumn: function(side, index){
+    hideColumn: function(side, index, column){
       var me = this;
       if (index === undefined && !F.isArray(index) && !F.isArray(side)){
         index = side;
@@ -2061,20 +2130,28 @@
         return;
       }
 
+      if(column){
+        var info = me.getColumnOrderById(column.id);
+        side = info.side;
+      }
+
       var body = me.getBody(side),
         header = me.getHeader(side),
         columns = me.getColumns(side),
         orderIndex,
         i = 0,
         iL = columns.length,
-        column,
         centerEl = me.centerEl,
         leftEl = me.leftEl,
         leftHeader = me.leftHeader,
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      if (F.isNumber(index)){
+      if(column){
+        orderIndex = info.order;
+        column.hidden = true;
+      }
+      else if (F.isNumber(index)){
         column = columns[index];
 
         if (column.hidden){
@@ -2150,9 +2227,10 @@
     },
     /*
      * @param {String|Number} side
-     * @param {String|Number} [index]
+     * @param {String|Number|Array} [index]
+     * @param {Object} [column]
      */
-    showColumn: function(side, index){
+    showColumn: function(side, index, column){
       var me = this;
 
       if (index === undefined && !F.isArray(index) && !F.isArray(side)){
@@ -2199,20 +2277,28 @@
         return;
       }
 
+      if(column){
+        var info = me.getColumnOrderById(column.id);
+        side = info.side;
+      }
+
       var body = me.getBody(side),
         header = me.getHeader(side),
         columns = me.getColumns(side),
         orderIndex,
         i = 0,
         iL = columns.length,
-        column,
         centerEl = me.centerEl,
         leftEl = me.leftEl,
         leftHeader = me.leftHeader,
         rightEl = me.rightEl,
         rightHeader = me.rightHeader;
 
-      if (F.isNumber(index)){
+      if(column){
+        orderIndex = info.order;
+        column.hidden = false;
+      }
+      else if (F.isNumber(index)){
         column = columns[index];
         if (!column.hidden){
           return;
@@ -2272,7 +2358,7 @@
         }
       }
 
-      if (me.isGroupable()){
+      if(me.isGroupable()){
         me.grouping.updateGroupRows();
       }
 
@@ -2428,15 +2514,27 @@
           column.locked = true;
           extraLeft = 0;
           var extraHeaderWidth = 0;
+          var extraWidth = 0;
+
           if (me.leftColumns.length === 0){
             if (!F.nojQuery){
               extraLeft = 1;
+              extraWidth = 2;
             }
             me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
+          }
+          else{
+              extraWidth = 2;
           }
 
           if (!F.nojQuery){
             extraHeaderWidth = 0;
+          }
+
+          var newWidth = leftEl.dom.clientWidth + column.width + extraWidth;
+
+          if(newWidth - parseInt(leftEl.css('width')) - column.width < -10 ){
+            newWidth = parseInt(leftEl.css('width')) + column.width;
           }
 
           me.leftColumns.splice(index, 0, column);
@@ -2444,7 +2542,9 @@
           leftHeader.reSetIndexes();
           leftHeader.css('width', parseInt(leftHeader.css('width')) + extraHeaderWidth);
           leftBody.insertColumn(index, column);
-          leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          //leftEl.css('width', leftEl.dom.clientWidth + column.width + extraWidth);
+          //leftEl.css('width', parseInt(leftEl.css('width')) + column.width);
+          leftEl.css('width', newWidth);
           //leftEl.css('width', parseInt(leftHeader.css('width')));
           centerEl.css('width', parseInt(centerEl.css('width')) - column.width);
           centerEl.css('left', parseInt(centerEl.css('left')) + column.width + extraLeft);
@@ -3989,10 +4089,19 @@
     },
     /*
      * @param {String} index
+     * @param {String|Boolean} [side]
      */
     autoSizeColumn: function(index, side){
       var me = this,
+        info;
+
+      if(F.isBoolean(side)){
+        info = me.getColumnOrderById(index);
+        side = info.side;
+      }
+      else{
         info = me.getColumnOrderByKey(index);
+      }
 
       if(!info || info.order === undefined){
         F.error('Column index was not found');
@@ -4007,11 +4116,11 @@
         offsetWidth;
 
       columnEl.css('width', '');
-      offsetWidth = columnEl.dom.offsetWidth;
+      offsetWidth = columnEl.dom.offsetWidth + 2;
       columnEl.css('width', width);
 
       if(me.header){
-        var headerCell = me.getHeaderCell(index, side);
+        var headerCell = me.getHeaderCell(info.order, side);
         width = headerCell.css('width');
 
         headerCell.css('width', '');
@@ -4023,44 +4132,22 @@
         }
       }
 
-      me.setColumnWidth(index, offsetWidth, side);
+      me.setColumnWidth(info.order, offsetWidth, side);
     },
     /*
      *
      */
     autoSizeColumns: function(){
       var me = this,
-        leftColumns = me.getColumns('left'),
-        rightColumns = me.getColumns('right'),
-        columns = me.getColumns('center');
-
-      F.each(leftColumns, function(column){
-        if(me.isServiceColumn(column)){
-          return;
-        }
-
-        if(column.index){
-          me.autoSizeColumn(column.index, 'left');
-        }
-      });
+        columns = me.getColumns();
 
       F.each(columns, function(column){
         if(me.isServiceColumn(column)){
           return;
         }
 
-        if(column.index){
-          me.autoSizeColumn(column.index, 'center');
-        }
-      });
-
-      F.each(rightColumns, function(column){
-        if(me.isServiceColumn(column)){
-          return;
-        }
-
-        if(column.index){
-          me.autoSizeColumn(column.index, 'right');
+        if(column.id){
+          me.autoSizeColumn(column.id, true);
         }
       });
     },
@@ -4240,6 +4327,14 @@
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
       me.scroller.update();
+    },
+    /*
+     * @return {Boolean}
+     */
+    isGroupable: function(){
+      var me = this;
+
+      return me.grouping && me.grouping.by;
     }
   });
 

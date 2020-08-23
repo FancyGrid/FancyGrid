@@ -54,13 +54,9 @@ Fancy.modules['grouping'] = true;
       me.ons();
 
       if (!me.collapsed && w.store.data){
-        setTimeout(function(){
-          w.store.changeDataView({
-            doNotFired: true
-          });
-
-          w.update();
-        }, 100);
+        w.store.changeDataView({
+          doNotFired: true
+        });
       }
     },
     /*

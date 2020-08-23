@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.108',
+  version: '1.7.110',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3795,7 +3795,6 @@ Fancy.define('Fancy.Store', {
    */
   changeDataView: function(o){
     var me = this,
-      w = me.widget,
       o = o || {},
       groupBy,
       dataView = [],
@@ -6091,8 +6090,8 @@ Fancy.define('Fancy.Plugin', {
         }
 
         if(me.menu){
-          me.toggle();
           me.toggleMenuShow(e);
+          me.toggle();
         }
       }
     },
@@ -6246,6 +6245,11 @@ Fancy.define('Fancy.Plugin', {
         p = me.el.$dom.offset(),
         xy = [p.left, p.top + me.el.$dom.height()];
 
+      if(me.pressed){
+        me.menu.hide();
+        return;
+      }
+
       if(F.isArray(me.menu)){
         me.initMenu();
       }
@@ -6257,6 +6261,9 @@ Fancy.define('Fancy.Plugin', {
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
+    /*
+     *
+     */
     initMenu: function(){
       var me = this,
         config = {
@@ -6276,6 +6283,9 @@ Fancy.define('Fancy.Plugin', {
 
       me.menu = new F.Menu(config);
     },
+    /*
+     *
+     */
     onMenuHide: function(){
       this.setPressed(false);
     }
@@ -14857,18 +14867,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     //hbar chart column does not work without it.
     //TODO: Needs to study how to fix it and do not run.
     //It is not possible to replicate but unless production sample.
+    //Also it is needed to auto height
     me.update();
     me.initTextSelection();
     me.initTouch();
-
+    me.initDebug();
     me.fire('beforeinit');
 
     setTimeout(function(){
       me.inited = true;
       me.fire('init');
-
       me.setBodysHeight();
+      me._setColumnsAutoWidth();
     }, 1);
+
   },
   /*
    *
@@ -15450,6 +15462,23 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var me = this;
 
     return me.grouping && me.grouping.by;
+  },
+  /*
+   *
+   */
+  _setColumnsAutoWidth: function(){
+    var me = this;
+
+    if(!me.autoColumnWidth){
+      return;
+    }
+
+    var columns = me.getColumns();
+    Fancy.each(columns, function(column){
+      if(column.autoWidth && column.index){
+        me.autoSizeColumn(column.id, true);
+      }
+    });
   }
 });
 

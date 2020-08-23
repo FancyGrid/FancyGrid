@@ -25,9 +25,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     var w = this.widget;
     type = type || '';
 
-    w.leftBody.update(type);
+    if(w.leftColumns && w.leftColumns.length){
+      w.leftBody.update(type);
+    }
     w.body.update(type);
-    w.rightBody.update(type);
+    if(w.rightColumns && w.rightColumns.length){
+      w.rightBody.update( type );
+    }
   },
   /*
    * @param {Number} rowIndex

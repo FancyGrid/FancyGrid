@@ -1642,6 +1642,10 @@
 .fancy-grid-state-filtered .fancy-grid-row-drag-el {
   display: none;
 }
+.fancy-debug .fancy-grid-header-cell-trigger {
+  opacity: 1;
+  visibility: visible;
+}
 /*
  scroll.less
 */
@@ -3893,6 +3897,9 @@
 }
 .fancy-theme-extra-gray .fancy-menu-item {
   color: #888;
+}
+.fancy-theme-extra-gray .fancy-menu-item .fancy-field-text-input {
+  height: 25px !important;
 }
 .fancy-theme-extra-gray .fancy-menu-item-active {
   background: rgba(98, 98, 98, 0.9);

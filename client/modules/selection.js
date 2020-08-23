@@ -3297,7 +3297,7 @@ Fancy.modules['selection'] = true;
           break;
         case key.BACKSPACE:
         case key.DELETE:
-          if(w.selection && w.selection.selModel === 'cell'){
+          if(w.selection && (w.selection.selModel === 'cell' || w.selection.activeCell)){
             var activeCell = w.selection.getActiveCell();
 
             if(activeCell){

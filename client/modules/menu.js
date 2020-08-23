@@ -1169,17 +1169,14 @@ Fancy.modules['menu'] = true;
       var me = this,
         w = me.widget,
         _columns = [],
-        i = 0,
-        iL = columns.length,
         group = [],
         groupName;
 
-      for (; i < iL; i++){
-        var value = true,
-          column = columns[i];
+      F.each(columns, function(column){
+        var value = true;
 
         if(column.columnMenu === false){
-          continue;
+          return;
         }
 
         if (column.hidden){
@@ -1190,6 +1187,7 @@ Fancy.modules['menu'] = true;
           text: column.title,
           checked: value,
           index: column.index,
+          column: column,
           handler: function(menu, item){
             if (item.checked === true && !item.checkbox.get()){
               item.checkbox.set(true);
@@ -1204,10 +1202,10 @@ Fancy.modules['menu'] = true;
             item.checkbox.set(item.checked);
 
             if (item.checked){
-              w.showColumn(me.side, item.index);
+              w.showColumn(me.side, item.index, column);
             }
             else {
-              w.hideColumn(me.side, item.index);
+              w.hideColumn(me.side, item.index, column);
             }
 
             if(w.responsive){
@@ -1220,7 +1218,7 @@ Fancy.modules['menu'] = true;
           group = group || [];
           group.push(columnConfig);
           groupName = column.grouping;
-          continue;
+          return;
         }
         else if (group.length){
           _columns.push({
@@ -1232,7 +1230,7 @@ Fancy.modules['menu'] = true;
         }
 
         _columns.push(columnConfig);
-      }
+      });
 
       if (group.length){
         _columns.push({
