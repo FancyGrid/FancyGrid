@@ -759,6 +759,10 @@ Fancy.modules['grouping'] = true;
       el.addCls(GRID_ROW_GROUP_CLS);
       el.attr('group', groupText);
       if (addText){
+        if(groupText === ''){
+          groupText = '&nbsp;';
+        }
+
         var text = me.tpl.getHTML({
           text: groupText,
           number: groupCount

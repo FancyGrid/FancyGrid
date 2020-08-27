@@ -419,6 +419,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       headers = proxy.headers || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
+    if(Fancy.isObject(id)){
+      data = id;
+      id = id.id;
+    }
+
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
 

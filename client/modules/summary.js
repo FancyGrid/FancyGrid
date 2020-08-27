@@ -494,10 +494,10 @@ Fancy.modules['summary'] = true;
         var cell = cells.item(i);
 
         if(column.hidden){
-          //cell.css('display', 'none');
+          cell.css('display', 'none');
         }
         else{
-          //cell.css('display', '');
+          cell.css('display', '');
         }
 
         cell.animate({width: column.width}, ANIMATE_DURATION);

@@ -350,8 +350,13 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      state.width = o.width;
-      state.height = o.height;
+      if(!w.responsiveWidth){
+        state.width = o.width;
+      }
+
+      if(!w.responsiveHeight){
+        state.height = o.height;
+      }
 
       localStorage.setItem(name, JSON.stringify(state));
 
@@ -368,7 +373,9 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      state.width = value;
+      if(!w.responsiveWidth){
+        state.width = value;
+      }
 
       localStorage.setItem(name, JSON.stringify(state));
 
@@ -385,7 +392,9 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      state.height = value;
+      if(!w.responsiveHeight){
+        state.height = value;
+      }
 
       localStorage.setItem(name, JSON.stringify(state));
 

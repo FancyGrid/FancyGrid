@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.110',
+  version: '1.7.111',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -2930,7 +2930,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if(me.getById(o.id)){
-      me.remove(o.id);
+      me.remove(o.id, fire);
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
@@ -15470,6 +15470,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var me = this;
 
     if(!me.autoColumnWidth){
+      return;
+    }
+
+    if(me.state && !Fancy.Object.isEmpty(JSON.parse(me.state.getState()))){
       return;
     }
 

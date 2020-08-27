@@ -630,6 +630,8 @@ Fancy.modules['menu'] = true;
       var me = this,
         e = o.e;
 
+      me.activeItem = o;
+
       e.preventDefault();
 
       if(!me.menu){
@@ -690,6 +692,11 @@ Fancy.modules['menu'] = true;
                   case 'rows':
                   case 'row':
                     var selection = w.getSelection();
+
+                    if(selection.length === 0 && me.activeItem){
+                      selection = me.activeItem.data;
+                    }
+
                     w.remove(selection);
                     w.clearSelection();
                     break;
@@ -756,16 +763,25 @@ Fancy.modules['menu'] = true;
                       rowIndex;
 
                     if(!selection.length){
-                      return;
+                      if(me.activeItem){
+                        rowIndex = w.getRowById( me.activeItem.data.id ) + 1;
+
+                        data = F.Object.copy(me.activeItem.data);
+                        data.id = F.id(null, 'TEMP-');
+                      }
+                      else{
+                        return;
+                      }
                     }
+                    else{
+                      rowIndex = w.getRowById( selection[selection.length - 1].id ) + 1;
 
-                    rowIndex = w.getRowById(selection[selection.length - 1].id) + 1;
-
-                    F.each(selection, function(item){
-                      var _item = F.Object.copy(item);
-                      _item.id = F.id(null, 'TEMP-');
-                      data.push(_item);
-                    });
+                      F.each( selection, function(item){
+                        var _item = F.Object.copy( item );
+                        _item.id = F.id(null, 'TEMP-');
+                        data.push( _item );
+                      } );
+                    }
 
                     w.insert(rowIndex, data);
 
@@ -850,6 +866,8 @@ Fancy.modules['menu'] = true;
       setTimeout(function(){
         me.menu.hide();
       }, 50);
+
+      delete me.activeItem;
     }
   });
 

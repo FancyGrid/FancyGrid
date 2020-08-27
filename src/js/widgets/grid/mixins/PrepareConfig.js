@@ -2189,6 +2189,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.width === undefined){
       if(renderTo){
         config.responsive = true;
+        config.responsiveWidth = true;
         el = Fancy.get(renderTo);
         config.width = parseInt(el.width());
 
@@ -2358,17 +2359,35 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     name = name + '-memory-columns';
     var memoryColumns = JSON.parse(localStorage.getItem(name));
 
+    if(!memoryColumns){
+      return false;
+    }
+
     if(columns.length !== memoryColumns.length){
       return true;
     }
 
     var wasChanges = false;
     
-    Fancy.each(memoryColumns, function (column, i){
+    Fancy.each(memoryColumns, function(column, i){
       for(var p in column){
-        if(column[p] !== memoryColumns[i][p]){
+        if(column[p] !== columns[i][p]){
           wasChanges = true;
           return true;
+        }
+      }
+    });
+
+    Fancy.each(columns, function(column, i){
+      for(var p in column){
+        switch(Fancy.typeOf(column[p])){
+          case 'number':
+          case 'string':
+            if(memoryColumns[i][p] === undefined){
+              wasChanges = true;
+              return true;
+            }
+            break;
         }
       }
     });

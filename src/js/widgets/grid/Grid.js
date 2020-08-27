@@ -795,6 +795,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
+    if(me.state && !Fancy.Object.isEmpty(JSON.parse(me.state.getState()))){
+      return;
+    }
+
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && column.index){

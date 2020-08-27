@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.110',
+  version: '1.7.111',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -4344,6 +4344,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       headers = proxy.headers || {},
       sendJSON = me.writerType === 'json' || me.autoSave === false;
 
+    if(Fancy.isObject(id)){
+      data = id;
+      id = id.id;
+    }
+
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
 
@@ -5591,7 +5596,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if(me.getById(o.id)){
-      me.remove(o.id);
+      me.remove(o.id, fire);
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
@@ -25268,6 +25273,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     if(config.width === undefined){
       if(renderTo){
         config.responsive = true;
+        config.responsiveWidth = true;
         el = Fancy.get(renderTo);
         config.width = parseInt(el.width());
 
@@ -25437,17 +25443,35 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     name = name + '-memory-columns';
     var memoryColumns = JSON.parse(localStorage.getItem(name));
 
+    if(!memoryColumns){
+      return false;
+    }
+
     if(columns.length !== memoryColumns.length){
       return true;
     }
 
     var wasChanges = false;
     
-    Fancy.each(memoryColumns, function (column, i){
+    Fancy.each(memoryColumns, function(column, i){
       for(var p in column){
-        if(column[p] !== memoryColumns[i][p]){
+        if(column[p] !== columns[i][p]){
           wasChanges = true;
           return true;
+        }
+      }
+    });
+
+    Fancy.each(columns, function(column, i){
+      for(var p in column){
+        switch(Fancy.typeOf(column[p])){
+          case 'number':
+          case 'string':
+            if(memoryColumns[i][p] === undefined){
+              wasChanges = true;
+              return true;
+            }
+            break;
         }
       }
     });
@@ -28060,6 +28084,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     hideColumn: function(side, index, column){
       var me = this;
+
       if (index === undefined && !F.isArray(index) && !F.isArray(side)){
         index = side;
         side = this.getSideByColumnIndex(index);
@@ -31132,6 +31157,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var me = this;
 
     if(!me.autoColumnWidth){
+      return;
+    }
+
+    if(me.state && !Fancy.Object.isEmpty(JSON.parse(me.state.getState()))){
       return;
     }
 
@@ -43718,6 +43747,10 @@ Fancy.modules['grouping'] = true;
       el.addCls(GRID_ROW_GROUP_CLS);
       el.attr('group', groupText);
       if (addText){
+        if(groupText === ''){
+          groupText = '&nbsp;';
+        }
+
         var text = me.tpl.getHTML({
           text: groupText,
           number: groupCount
@@ -45708,10 +45741,10 @@ Fancy.modules['summary'] = true;
         var cell = cells.item(i);
 
         if(column.hidden){
-          //cell.css('display', 'none');
+          cell.css('display', 'none');
         }
         else{
-          //cell.css('display', '');
+          cell.css('display', '');
         }
 
         cell.animate({width: column.width}, ANIMATE_DURATION);
@@ -47003,6 +47036,8 @@ Fancy.modules['summary'] = true;
       var me = this,
         e = o.e;
 
+      me.activeItem = o;
+
       e.preventDefault();
 
       if(!me.menu){
@@ -47063,6 +47098,11 @@ Fancy.modules['summary'] = true;
                   case 'rows':
                   case 'row':
                     var selection = w.getSelection();
+
+                    if(selection.length === 0 && me.activeItem){
+                      selection = me.activeItem.data;
+                    }
+
                     w.remove(selection);
                     w.clearSelection();
                     break;
@@ -47129,16 +47169,25 @@ Fancy.modules['summary'] = true;
                       rowIndex;
 
                     if(!selection.length){
-                      return;
+                      if(me.activeItem){
+                        rowIndex = w.getRowById( me.activeItem.data.id ) + 1;
+
+                        data = F.Object.copy(me.activeItem.data);
+                        data.id = F.id(null, 'TEMP-');
+                      }
+                      else{
+                        return;
+                      }
                     }
+                    else{
+                      rowIndex = w.getRowById( selection[selection.length - 1].id ) + 1;
 
-                    rowIndex = w.getRowById(selection[selection.length - 1].id) + 1;
-
-                    F.each(selection, function(item){
-                      var _item = F.Object.copy(item);
-                      _item.id = F.id(null, 'TEMP-');
-                      data.push(_item);
-                    });
+                      F.each( selection, function(item){
+                        var _item = F.Object.copy( item );
+                        _item.id = F.id(null, 'TEMP-');
+                        data.push( _item );
+                      } );
+                    }
 
                     w.insert(rowIndex, data);
 
@@ -47223,6 +47272,8 @@ Fancy.modules['summary'] = true;
       setTimeout(function(){
         me.menu.hide();
       }, 50);
+
+      delete me.activeItem;
     }
   });
 
@@ -50227,8 +50278,13 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      state.width = o.width;
-      state.height = o.height;
+      if(!w.responsiveWidth){
+        state.width = o.width;
+      }
+
+      if(!w.responsiveHeight){
+        state.height = o.height;
+      }
 
       localStorage.setItem(name, JSON.stringify(state));
 
@@ -50245,7 +50301,9 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      state.width = value;
+      if(!w.responsiveWidth){
+        state.width = value;
+      }
 
       localStorage.setItem(name, JSON.stringify(state));
 
@@ -50262,7 +50320,9 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      state.height = value;
+      if(!w.responsiveHeight){
+        state.height = value;
+      }
 
       localStorage.setItem(name, JSON.stringify(state));
 

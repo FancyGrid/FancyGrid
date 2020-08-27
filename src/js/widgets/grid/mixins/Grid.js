@@ -2096,6 +2096,7 @@
      */
     hideColumn: function(side, index, column){
       var me = this;
+
       if (index === undefined && !F.isArray(index) && !F.isArray(side)){
         index = side;
         side = this.getSideByColumnIndex(index);

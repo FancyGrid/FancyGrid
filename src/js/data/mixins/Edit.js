@@ -186,7 +186,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
     if(me.getById(o.id)){
-      me.remove(o.id);
+      me.remove(o.id, fire);
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
