@@ -499,75 +499,81 @@
         marginTop,
         marginLeft;
 
-      if (me.rightKnobDown){
-        if (F.isTouch){
-          deltaY = me.mouseDownXY.y - y;
-          marginTop = deltaY + me.rightKnobTop;
-        }
-        else {
-          deltaY = y - me.mouseDownXY.y;
-          marginTop = deltaY + me.rightKnobTop;
-        }
+      if(me.scrollInterval){
+        clearInterval(me.scrollInterval);
+      }
 
-        if (marginTop < me.knobOffSet){
-          marginTop = me.knobOffSet;
-        }
-
-        if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
-          marginTop = me.bodyViewHeight - me.rightKnobHeight;
-        }
-
-        //if (marginTop < me.rightScrollScale){
-        if (marginTop < 0){
-          marginTop = 0;
-        }
-
-        topScroll = me.rightScrollScale * marginTop;
-
-        if(w.doubleHorizontalScroll && me.scrollBottomEl.css('display') !== 'none'){
-          if(marginTop < me.cornerSize){
-            marginTop = me.cornerSize;
+      me.scrollInterval = setTimeout(function(){
+        if(me.rightKnobDown){
+          if (F.isTouch){
+            deltaY = me.mouseDownXY.y - y;
+            marginTop = deltaY + me.rightKnobTop;
           }
+          else{
+            deltaY = y - me.mouseDownXY.y;
+            marginTop = deltaY + me.rightKnobTop;
+          }
+
+          if (marginTop < me.knobOffSet){
+            marginTop = me.knobOffSet;
+          }
+
+          if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
+            marginTop = me.bodyViewHeight - me.rightKnobHeight;
+          }
+
+          //if (marginTop < me.rightScrollScale){
+          if (marginTop < 0){
+            marginTop = 0;
+          }
+
+          topScroll = me.rightScrollScale * marginTop;
+
+          if (w.doubleHorizontalScroll && me.scrollBottomEl.css( 'display' ) !== 'none'){
+            if (marginTop < me.cornerSize){
+              marginTop = me.cornerSize;
+            }
+          }
+
+          me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
+          me.scroll( topScroll );
         }
 
-        me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
-        me.scroll(topScroll);
-      }
+        if (me.bottomKnobDown){
+          if (F.isTouch){
+            deltaX = me.mouseDownXY.x - x;
+            deltaY = me.mouseDownXY.y - y;
+            marginLeft = deltaX + me.bottomKnobLeft;
+          }
+          else{
+            deltaX = x - me.mouseDownXY.x;
+            deltaY = y - me.mouseDownXY.y;
+            marginLeft = deltaX + me.bottomKnobLeft;
+          }
 
-      if (me.bottomKnobDown){
-        if (F.isTouch){
-          deltaX = me.mouseDownXY.x - x;
-          deltaY = me.mouseDownXY.y - y;
-          marginLeft = deltaX + me.bottomKnobLeft;
+          if (marginLeft < 1){
+            marginLeft = 1;
+          }
+
+          if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
+            marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
+          }
+
+          if (me.bottomScrollScale < 0 && marginLeft < 0){
+            marginLeft = 0;
+            me.bottomScrollScale = 0;
+          }
+
+          me.bottomKnob.css( 'margin-left', marginLeft + 'px' );
+          bottomScroll = Math.ceil( me.bottomScrollScale * (marginLeft - 1) );
+
+          if (w.doubleHorizontalScroll){
+            me.topKnob.css( 'margin-left', marginLeft + 'px' );
+          }
+
+          me.scroll( false, bottomScroll );
         }
-        else {
-          deltaX = x - me.mouseDownXY.x;
-          deltaY = y - me.mouseDownXY.y;
-          marginLeft = deltaX + me.bottomKnobLeft;
-        }
-
-        if (marginLeft < 1){
-          marginLeft = 1;
-        }
-
-        if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
-          marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
-        }
-
-        if (me.bottomScrollScale < 0 && marginLeft < 0){
-          marginLeft = 0;
-          me.bottomScrollScale = 0;
-        }
-
-        me.bottomKnob.css('margin-left', marginLeft + 'px');
-        bottomScroll = Math.ceil(me.bottomScrollScale * (marginLeft - 1));
-
-        if(w.doubleHorizontalScroll){
-          me.topKnob.css('margin-left', marginLeft + 'px');
-        }
-
-        me.scroll(false, bottomScroll);
-      }
+      }, 1);
     },
     /*
      * @param {Number} [viewHeight]

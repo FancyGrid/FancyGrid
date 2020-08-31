@@ -22,6 +22,8 @@
   var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
   var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
   var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
+  var GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
+  var GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
 
   var PANEL_CLS = F.PANEL_CLS;
   var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
@@ -434,6 +436,37 @@
       else {
         me.scroller.update();
       }
+    },
+    /*
+     *
+     */
+    lightStartUpdate: function(){
+      var me = this;
+
+      if(me.rowheight){
+        me.rowheight.onUpdate();
+      }
+
+      me.bugFixReFreshChartColumns('left');
+      me.bugFixReFreshChartColumns('center');
+      me.bugFixReFreshChartColumns('right');
+    },
+    /*
+     *
+     */
+    bugFixReFreshChartColumns: function(side){
+      var me = this,
+        body = me.getBody(side),
+        columns = me.getColumns(side);
+
+      F.each(columns, function(column, i){
+        switch(column.type){
+          case 'grossloss':
+          case 'hbar':
+            body.renderHBar(i);
+            break;
+        }
+      });
     },
     /*
      * @param {String} side
@@ -4318,8 +4351,9 @@
     },
     /*
      * @param {String} key
+     * @param {Boolean} [expand]
      */
-    addGroup: function(key){
+    addGroup: function(key, expand){
       var me = this,
         s = me.store,
         isBySet = !me.grouping.by;
@@ -4328,6 +4362,10 @@
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
       me.scroller.update();
+
+      if(expand){
+        me.expandGroup();
+      }
     },
     /*
      * @return {Boolean}
@@ -4336,6 +4374,48 @@
       var me = this;
 
       return me.grouping && me.grouping.by;
+    },
+    /*
+     * @param {key} [group]
+     */
+    expandGroup: function(group){
+      var me = this,
+        grouping = me.grouping,
+        groups = grouping.groups;
+
+      if(group){
+        me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+        grouping.expand(grouping.by, group);
+      }
+      else{
+        F.each(groups, function(group){
+          me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+          grouping.expand(grouping.by, group);
+        });
+      }
+
+      grouping.update();
+    },
+    /*
+     * @param {key} [group]
+     */
+    collapseGroup: function(group){
+      var me = this,
+        grouping = me.grouping,
+        groups = grouping.groups;
+
+      if(group){
+        me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+        grouping.collapse(grouping.by, group);
+      }
+      else{
+        F.each(groups, function(group){
+          me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+          grouping.collapse(grouping.by, group);
+        });
+      }
+
+      grouping.update();
     }
   });
 

@@ -160,5 +160,5 @@ Fancy.define('Fancy.bar.Text', {
       me.tooltip.destroy();
       delete me.tooltip;
     }
-  },
+  }
 });

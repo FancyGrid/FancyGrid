@@ -2496,6 +2496,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
   var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
   var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
+  var GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
+  var GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
 
   var PANEL_CLS = F.PANEL_CLS;
   var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
@@ -2908,6 +2910,37 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       else {
         me.scroller.update();
       }
+    },
+    /*
+     *
+     */
+    lightStartUpdate: function(){
+      var me = this;
+
+      if(me.rowheight){
+        me.rowheight.onUpdate();
+      }
+
+      me.bugFixReFreshChartColumns('left');
+      me.bugFixReFreshChartColumns('center');
+      me.bugFixReFreshChartColumns('right');
+    },
+    /*
+     *
+     */
+    bugFixReFreshChartColumns: function(side){
+      var me = this,
+        body = me.getBody(side),
+        columns = me.getColumns(side);
+
+      F.each(columns, function(column, i){
+        switch(column.type){
+          case 'grossloss':
+          case 'hbar':
+            body.renderHBar(i);
+            break;
+        }
+      });
     },
     /*
      * @param {String} side
@@ -6792,8 +6825,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     },
     /*
      * @param {String} key
+     * @param {Boolean} [expand]
      */
-    addGroup: function(key){
+    addGroup: function(key, expand){
       var me = this,
         s = me.store,
         isBySet = !me.grouping.by;
@@ -6802,6 +6836,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
       me.scroller.update();
+
+      if(expand){
+        me.expandGroup();
+      }
     },
     /*
      * @return {Boolean}
@@ -6810,6 +6848,48 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this;
 
       return me.grouping && me.grouping.by;
+    },
+    /*
+     * @param {key} [group]
+     */
+    expandGroup: function(group){
+      var me = this,
+        grouping = me.grouping,
+        groups = grouping.groups;
+
+      if(group){
+        me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+        grouping.expand(grouping.by, group);
+      }
+      else{
+        F.each(groups, function(group){
+          me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+          grouping.expand(grouping.by, group);
+        });
+      }
+
+      grouping.update();
+    },
+    /*
+     * @param {key} [group]
+     */
+    collapseGroup: function(group){
+      var me = this,
+        grouping = me.grouping,
+        groups = grouping.groups;
+
+      if(group){
+        me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+        grouping.collapse(grouping.by, group);
+      }
+      else{
+        F.each(groups, function(group){
+          me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
+          grouping.collapse(grouping.by, group);
+        });
+      }
+
+      grouping.update();
     }
   });
 
@@ -7394,75 +7474,81 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         marginTop,
         marginLeft;
 
-      if (me.rightKnobDown){
-        if (F.isTouch){
-          deltaY = me.mouseDownXY.y - y;
-          marginTop = deltaY + me.rightKnobTop;
-        }
-        else {
-          deltaY = y - me.mouseDownXY.y;
-          marginTop = deltaY + me.rightKnobTop;
-        }
+      if(me.scrollInterval){
+        clearInterval(me.scrollInterval);
+      }
 
-        if (marginTop < me.knobOffSet){
-          marginTop = me.knobOffSet;
-        }
-
-        if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
-          marginTop = me.bodyViewHeight - me.rightKnobHeight;
-        }
-
-        //if (marginTop < me.rightScrollScale){
-        if (marginTop < 0){
-          marginTop = 0;
-        }
-
-        topScroll = me.rightScrollScale * marginTop;
-
-        if(w.doubleHorizontalScroll && me.scrollBottomEl.css('display') !== 'none'){
-          if(marginTop < me.cornerSize){
-            marginTop = me.cornerSize;
+      me.scrollInterval = setTimeout(function(){
+        if(me.rightKnobDown){
+          if (F.isTouch){
+            deltaY = me.mouseDownXY.y - y;
+            marginTop = deltaY + me.rightKnobTop;
           }
+          else{
+            deltaY = y - me.mouseDownXY.y;
+            marginTop = deltaY + me.rightKnobTop;
+          }
+
+          if (marginTop < me.knobOffSet){
+            marginTop = me.knobOffSet;
+          }
+
+          if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
+            marginTop = me.bodyViewHeight - me.rightKnobHeight;
+          }
+
+          //if (marginTop < me.rightScrollScale){
+          if (marginTop < 0){
+            marginTop = 0;
+          }
+
+          topScroll = me.rightScrollScale * marginTop;
+
+          if (w.doubleHorizontalScroll && me.scrollBottomEl.css( 'display' ) !== 'none'){
+            if (marginTop < me.cornerSize){
+              marginTop = me.cornerSize;
+            }
+          }
+
+          me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
+          me.scroll( topScroll );
         }
 
-        me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
-        me.scroll(topScroll);
-      }
+        if (me.bottomKnobDown){
+          if (F.isTouch){
+            deltaX = me.mouseDownXY.x - x;
+            deltaY = me.mouseDownXY.y - y;
+            marginLeft = deltaX + me.bottomKnobLeft;
+          }
+          else{
+            deltaX = x - me.mouseDownXY.x;
+            deltaY = y - me.mouseDownXY.y;
+            marginLeft = deltaX + me.bottomKnobLeft;
+          }
 
-      if (me.bottomKnobDown){
-        if (F.isTouch){
-          deltaX = me.mouseDownXY.x - x;
-          deltaY = me.mouseDownXY.y - y;
-          marginLeft = deltaX + me.bottomKnobLeft;
+          if (marginLeft < 1){
+            marginLeft = 1;
+          }
+
+          if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
+            marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
+          }
+
+          if (me.bottomScrollScale < 0 && marginLeft < 0){
+            marginLeft = 0;
+            me.bottomScrollScale = 0;
+          }
+
+          me.bottomKnob.css( 'margin-left', marginLeft + 'px' );
+          bottomScroll = Math.ceil( me.bottomScrollScale * (marginLeft - 1) );
+
+          if (w.doubleHorizontalScroll){
+            me.topKnob.css( 'margin-left', marginLeft + 'px' );
+          }
+
+          me.scroll( false, bottomScroll );
         }
-        else {
-          deltaX = x - me.mouseDownXY.x;
-          deltaY = y - me.mouseDownXY.y;
-          marginLeft = deltaX + me.bottomKnobLeft;
-        }
-
-        if (marginLeft < 1){
-          marginLeft = 1;
-        }
-
-        if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
-          marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
-        }
-
-        if (me.bottomScrollScale < 0 && marginLeft < 0){
-          marginLeft = 0;
-          me.bottomScrollScale = 0;
-        }
-
-        me.bottomKnob.css('margin-left', marginLeft + 'px');
-        bottomScroll = Math.ceil(me.bottomScrollScale * (marginLeft - 1));
-
-        if(w.doubleHorizontalScroll){
-          me.topKnob.css('margin-left', marginLeft + 'px');
-        }
-
-        me.scroll(false, bottomScroll);
-      }
+      }, 1);
     },
     /*
      * @param {Number} [viewHeight]
@@ -13355,7 +13441,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
-                left: passedWidth,
+                left: passedWidth
               };
             }
 

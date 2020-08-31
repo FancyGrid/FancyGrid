@@ -350,11 +350,11 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      if(!w.responsiveWidth){
+      if(!w.responsiveWidth && !w.wrapped){
         state.width = o.width;
       }
 
-      if(!w.responsiveHeight){
+      if(!w.responsiveHeight && !w.wrapped){
         state.height = o.height;
       }
 
@@ -373,7 +373,7 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      if(!w.responsiveWidth){
+      if(!w.responsiveWidth && !w.wrapped){
         state.width = value;
       }
 
@@ -392,7 +392,7 @@ Fancy.modules['state'] = true;
 
       state = JSON.parse(state);
 
-      if(!w.responsiveHeight){
+      if(!w.responsiveHeight && !w.wrapped){
         state.height = value;
       }
 

@@ -308,7 +308,7 @@ Fancy.modules['grouping'] = true;
     extend: F.Plugin,
     ptype: 'grid.grouping',
     inWidgetName: 'grouping',
-    tpl: '{text}:{number}',
+    tpl: '{text}: {number}',
     sortGroups: 'asc',
     _renderFirstTime: true,
     /*

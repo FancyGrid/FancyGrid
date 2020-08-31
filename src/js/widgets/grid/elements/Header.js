@@ -145,7 +145,7 @@
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
-                left: passedWidth,
+                left: passedWidth
               };
             }
 

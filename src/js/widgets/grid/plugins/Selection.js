@@ -1499,7 +1499,7 @@ Fancy.modules['selection'] = true;
           if (params.side === 'center'){
             numOfSelectedCells += me.selectCells({
               columnIndex: 0,
-              rowIndex: start.rowIndex,
+              rowIndex: start.rowIndex
             }, end, 'center');
 
             me.clearSelection('right');

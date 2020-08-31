@@ -50,7 +50,7 @@
     init: function(){
       var me = this;
 
-      me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'pressedchange');
+      me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'pressedchange', 'init-menu');
       me.Super('init', arguments);
 
       me.style = me.style || {};
@@ -515,6 +515,8 @@
       }
 
       me.menu = new F.Menu(config);
+
+      me.fire('init-menu');
     },
     /*
      *

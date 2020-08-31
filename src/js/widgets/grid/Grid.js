@@ -190,7 +190,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     //TODO: Needs to study how to fix it and do not run.
     //It is not possible to replicate but unless production sample.
     //Also it is needed to auto height
-    me.update();
+    //me.update();
+    me.lightStartUpdate();
     me.initTextSelection();
     me.initTouch();
     me.initDebug();
