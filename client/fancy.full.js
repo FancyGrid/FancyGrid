@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.112',
+  version: '1.7.113',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5659,10 +5659,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 Fancy.modules['grouping'] = true;
 Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
-   * @param {String} group
+   * @param {String} groupBy
    * @param {*} value
    */
-  expand: function(group, value){
+  expand: function(groupBy, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -5677,13 +5677,21 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     me.expanded = me.expanded || {};
-    me.expanded[value] = true;
 
-    for(;i<iL;i++){
+    if(Fancy.isArray(value)){
+      Fancy.each(value, function(_value){
+        me.expanded[_value] = true;
+      });
+    }
+    else{
+      me.expanded[value] = true;
+    }
+
+    for (; i < iL; i++){
       var item = data[i];
 
-      if(me.expanded[ item.data[group] ]){
-        dataView.push(item);
+      if (me.expanded[item.data[groupBy]]){
+        dataView.push( item );
         dataViewMap[item.id] = dataView.length - 1;
         dataViewIndexes[dataView.length - 1] = i;
       }
@@ -5888,7 +5896,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
         break;
       case 'desc':
       case 'DESC':
-        upperGroups = upperGroups.sort().reverse();
+        upperGroups = upperGroups.reverse();
         break;
       case false:
         break;
@@ -26452,6 +26460,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       F.each(columns, function(column, i){
         switch(column.type){
           case 'grossloss':
+            body.renderGrossLoss(i);
+            break;
           case 'hbar':
             body.renderHBar(i);
             break;
@@ -30380,8 +30390,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       else{
         F.each(groups, function(group){
           me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
-          grouping.expand(grouping.by, group);
+          //grouping.expand(grouping.by, group);
         });
+
+        grouping.expand(grouping.by, groups);
       }
 
       grouping.update();
@@ -41681,12 +41693,26 @@ Fancy.modules['selection'] = true;
         case key.UP:
           me.keyNavigating = true;
           e.preventDefault();
-          me.moveUp();
+          if(me.intervalUp){
+            clearInterval(me.intervalUp);
+          }
+
+          me.intervalUp = setTimeout(function(){
+            me.moveUp();
+            delete me.intervalUp;
+          }, 1);
           break;
         case key.DOWN:
           me.keyNavigating = true;
           e.preventDefault();
-          me.moveDown();
+          if(me.intervalDown){
+            clearInterval(me.intervalDown);
+          }
+
+          me.intervalDown = setTimeout(function(){
+            me.moveDown();
+            delete me.intervalDown;
+          }, 1);
           break;
         case key.LEFT:
           me.keyNavigating = true;
@@ -43569,21 +43595,45 @@ Fancy.modules['grouping'] = true;
         iL = groups.length;
 
         E(groups, function(group){
-          var upperGroup = group.toLocaleUpperCase();
+          var upperGroup;
+
+          if(!isNaN(Number(group)) && group !== '' && group !== ' '){
+            group = Number(group);
+            upperGroup = group;
+          }
+          else{
+            upperGroup = group.toLocaleUpperCase();
+          }
 
           groupNameUpperCase[upperGroup] = group;
           upperGroups.push(upperGroup);
         });
 
+        var areGroupsNumber = me.areGroupsNumber(upperGroups);
+
         switch(me.sortGroups){
           case 'asc':
           case 'ASC':
           case true:
-            upperGroups = upperGroups.sort();
+            if(areGroupsNumber){
+              upperGroups = upperGroups.sort(function(a, b){
+                return a - b;
+              });
+            }
+            else{
+              upperGroups = upperGroups.sort();
+            }
             break;
           case 'desc':
           case 'DESC':
-            upperGroups = upperGroups.sort().reverse();
+            if(areGroupsNumber){
+              upperGroups = upperGroups.reverse();
+            }
+            else{
+              upperGroups = upperGroups.sort(function(a, b){
+                return b - a;
+              });
+            }
             break;
           case false:
             break;
@@ -43952,16 +44002,28 @@ Fancy.modules['grouping'] = true;
      * @param {String} group
      * @param {String} value
      */
-    expand: function(group, value){
+    expand: function(groupBy, value){
       var me = this,
         w = me.widget,
         s = w.store;
 
-      s.expand(group, value);
-      me._expanded[value] = true;
-      me.expanded[value] = true;
+      if(F.isArray(value)){
+        me.initGroups();
+        me.initOrder();
 
-      w.fire('expand', group, value);
+        s.expand(groupBy, value);
+        F.each(value, function(_value){
+          me._expanded[_value] = true;
+          me.expanded[_value] = true;
+        });
+      }
+      else{
+        s.expand(groupBy, value);
+        me._expanded[value] = true;
+        me.expanded[value] = true;
+      }
+
+      w.fire('expand', groupBy, value);
     },
     /*
      *
@@ -44588,6 +44650,21 @@ Fancy.modules['grouping'] = true;
       });
 
       return numberFilledGroups * w.groupRowHeight;
+    },
+    /*
+     * @param {Array} groups
+     */
+    areGroupsNumber: function(groups){
+      var isString = false;
+
+      F.each(groups, function(group){
+        if(F.isString(group) && group !== '' && group !== ' '){
+          isString = true;
+          return true;
+        }
+      });
+
+      return !isString;
     }
   });
 

@@ -202,21 +202,45 @@ Fancy.modules['grouping'] = true;
         iL = groups.length;
 
         E(groups, function(group){
-          var upperGroup = group.toLocaleUpperCase();
+          var upperGroup;
+
+          if(!isNaN(Number(group)) && group !== '' && group !== ' '){
+            group = Number(group);
+            upperGroup = group;
+          }
+          else{
+            upperGroup = group.toLocaleUpperCase();
+          }
 
           groupNameUpperCase[upperGroup] = group;
           upperGroups.push(upperGroup);
         });
 
+        var areGroupsNumber = me.areGroupsNumber(upperGroups);
+
         switch(me.sortGroups){
           case 'asc':
           case 'ASC':
           case true:
-            upperGroups = upperGroups.sort();
+            if(areGroupsNumber){
+              upperGroups = upperGroups.sort(function(a, b){
+                return a - b;
+              });
+            }
+            else{
+              upperGroups = upperGroups.sort();
+            }
             break;
           case 'desc':
           case 'DESC':
-            upperGroups = upperGroups.sort().reverse();
+            if(areGroupsNumber){
+              upperGroups = upperGroups.reverse();
+            }
+            else{
+              upperGroups = upperGroups.sort(function(a, b){
+                return b - a;
+              });
+            }
             break;
           case false:
             break;
@@ -585,16 +609,28 @@ Fancy.modules['grouping'] = true;
      * @param {String} group
      * @param {String} value
      */
-    expand: function(group, value){
+    expand: function(groupBy, value){
       var me = this,
         w = me.widget,
         s = w.store;
 
-      s.expand(group, value);
-      me._expanded[value] = true;
-      me.expanded[value] = true;
+      if(F.isArray(value)){
+        me.initGroups();
+        me.initOrder();
 
-      w.fire('expand', group, value);
+        s.expand(groupBy, value);
+        F.each(value, function(_value){
+          me._expanded[_value] = true;
+          me.expanded[_value] = true;
+        });
+      }
+      else{
+        s.expand(groupBy, value);
+        me._expanded[value] = true;
+        me.expanded[value] = true;
+      }
+
+      w.fire('expand', groupBy, value);
     },
     /*
      *
@@ -1221,6 +1257,21 @@ Fancy.modules['grouping'] = true;
       });
 
       return numberFilledGroups * w.groupRowHeight;
+    },
+    /*
+     * @param {Array} groups
+     */
+    areGroupsNumber: function(groups){
+      var isString = false;
+
+      F.each(groups, function(group){
+        if(F.isString(group) && group !== '' && group !== ' '){
+          isString = true;
+          return true;
+        }
+      });
+
+      return !isString;
     }
   });
 

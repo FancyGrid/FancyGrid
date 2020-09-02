@@ -4,10 +4,10 @@
 Fancy.modules['grouping'] = true;
 Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
-   * @param {String} group
+   * @param {String} groupBy
    * @param {*} value
    */
-  expand: function(group, value){
+  expand: function(groupBy, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -22,13 +22,21 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     me.expanded = me.expanded || {};
-    me.expanded[value] = true;
 
-    for(;i<iL;i++){
+    if(Fancy.isArray(value)){
+      Fancy.each(value, function(_value){
+        me.expanded[_value] = true;
+      });
+    }
+    else{
+      me.expanded[value] = true;
+    }
+
+    for (; i < iL; i++){
       var item = data[i];
 
-      if(me.expanded[ item.data[group] ]){
-        dataView.push(item);
+      if (me.expanded[item.data[groupBy]]){
+        dataView.push( item );
         dataViewMap[item.id] = dataView.length - 1;
         dataViewIndexes[dataView.length - 1] = i;
       }
@@ -233,7 +241,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
         break;
       case 'desc':
       case 'DESC':
-        upperGroups = upperGroups.sort().reverse();
+        upperGroups = upperGroups.reverse();
         break;
       case false:
         break;

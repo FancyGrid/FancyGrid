@@ -2936,6 +2936,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       F.each(columns, function(column, i){
         switch(column.type){
           case 'grossloss':
+            body.renderGrossLoss(i);
+            break;
           case 'hbar':
             body.renderHBar(i);
             break;
@@ -6864,8 +6866,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       else{
         F.each(groups, function(group){
           me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
-          grouping.expand(grouping.by, group);
+          //grouping.expand(grouping.by, group);
         });
+
+        grouping.expand(grouping.by, groups);
       }
 
       grouping.update();

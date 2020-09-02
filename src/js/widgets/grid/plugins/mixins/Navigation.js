@@ -65,12 +65,26 @@
         case key.UP:
           me.keyNavigating = true;
           e.preventDefault();
-          me.moveUp();
+          if(me.intervalUp){
+            clearInterval(me.intervalUp);
+          }
+
+          me.intervalUp = setTimeout(function(){
+            me.moveUp();
+            delete me.intervalUp;
+          }, 1);
           break;
         case key.DOWN:
           me.keyNavigating = true;
           e.preventDefault();
-          me.moveDown();
+          if(me.intervalDown){
+            clearInterval(me.intervalDown);
+          }
+
+          me.intervalDown = setTimeout(function(){
+            me.moveDown();
+            delete me.intervalDown;
+          }, 1);
           break;
         case key.LEFT:
           me.keyNavigating = true;
