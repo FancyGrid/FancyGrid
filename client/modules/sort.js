@@ -8,12 +8,14 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String} type
    * @param {String|Number} key
-   * @param {Object} options
+   * @param {Object} [options]
    */
   sort: function(action, type, key, options){
     var me = this,
       fn,
       sortType;
+
+    options = options || {};
 
     me.fire('beforesort', {
       key: 'key',
@@ -87,7 +89,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.changeDataView();
+    if(options.update !== false){
+      me.changeDataView();
+    }
+
     me.fire( 'sort', {
       key: key,
       action: action
@@ -529,7 +534,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     var me = this;
     
     Fancy.each(me.sorters, function(sorter){
-      me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {});
+      me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {
+        update: false
+      });
     });
   }
 });/*

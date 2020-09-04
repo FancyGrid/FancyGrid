@@ -945,6 +945,11 @@ Fancy.modules['selection'] = true;
       var me = this,
         w = me.widget;
 
+      //On Touch Devices it happens
+      if(params === false){
+        return;
+      }
+
       if(w.startResizing){
         return;
       }

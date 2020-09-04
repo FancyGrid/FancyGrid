@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.113',
+  version: '1.7.114',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -4883,12 +4883,14 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String} type
    * @param {String|Number} key
-   * @param {Object} options
+   * @param {Object} [options]
    */
   sort: function(action, type, key, options){
     var me = this,
       fn,
       sortType;
+
+    options = options || {};
 
     me.fire('beforesort', {
       key: 'key',
@@ -4962,7 +4964,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.changeDataView();
+    if(options.update !== false){
+      me.changeDataView();
+    }
+
     me.fire( 'sort', {
       key: key,
       action: action
@@ -5404,7 +5409,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     var me = this;
     
     Fancy.each(me.sorters, function(sorter){
-      me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {});
+      me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {
+        update: false
+      });
     });
   }
 });
@@ -29303,6 +29310,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       s.clearDirty();
 
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
+      }
+
       //Not sure that it is needed.
       //Without method update, grid won't be updated.
       me.setSidesHeight();
@@ -30359,6 +30372,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         isBySet = !me.grouping.by;
 
       s.addGroup(key);
+
+      if(s.sorters){
+        s.reSort();
+      }
+
+      if(s.filterOrder){
+        me.filter.updateStoreFilters(false);
+      }
+
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
       me.scroller.update();
@@ -30380,6 +30402,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     expandGroup: function(group){
       var me = this,
+        s = me.store,
         grouping = me.grouping,
         groups = grouping.groups;
 
@@ -30394,6 +30417,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         });
 
         grouping.expand(grouping.by, groups);
+      }
+
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
       }
 
       grouping.update();
@@ -39450,6 +39479,11 @@ Fancy.modules['selection'] = true;
       var me = this,
         w = me.widget;
 
+      //On Touch Devices it happens
+      if(params === false){
+        return;
+      }
+
       if(w.startResizing){
         return;
       }
@@ -43942,6 +43976,7 @@ Fancy.modules['grouping'] = true;
     onClick: function(e){
       var me = this,
         w = me.widget,
+        s = w.store,
         rowEl = F.get(e.currentTarget),
         isCollapsed,
         group = rowEl.attr('group');
@@ -43959,6 +43994,20 @@ Fancy.modules['grouping'] = true;
       }
       else {
         me.expand(me.by, group);
+      }
+
+      if(s.sorters){
+        s.reSort();
+      }
+
+      if(s.filterOrder){
+        w.filter.updateStoreFilters(false);
+      }
+
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
       }
 
       //update works very slow in this case
@@ -46639,7 +46688,7 @@ Fancy.modules['summary'] = true;
       delete w.$onChangeUpdate;
 
       //if(!child){
-        w.update();
+      //  w.update();
       //}
 
       //Sorted
@@ -46655,8 +46704,16 @@ Fancy.modules['summary'] = true;
           delete s.order;
           delete s.filterOrder;
           s.reSort();
+
+          s.changeDataView({
+            doNotFired: true
+          });
         }
       }
+
+      //if(!child){
+        w.update();
+      //}
 
       w.fire('treeexpand');
     },

@@ -549,6 +549,7 @@ Fancy.modules['grouping'] = true;
     onClick: function(e){
       var me = this,
         w = me.widget,
+        s = w.store,
         rowEl = F.get(e.currentTarget),
         isCollapsed,
         group = rowEl.attr('group');
@@ -566,6 +567,20 @@ Fancy.modules['grouping'] = true;
       }
       else {
         me.expand(me.by, group);
+      }
+
+      if(s.sorters){
+        s.reSort();
+      }
+
+      if(s.filterOrder){
+        w.filter.updateStoreFilters(false);
+      }
+
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
       }
 
       //update works very slow in this case

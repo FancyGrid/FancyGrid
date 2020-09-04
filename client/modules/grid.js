@@ -5779,6 +5779,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       s.clearDirty();
 
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
+      }
+
       //Not sure that it is needed.
       //Without method update, grid won't be updated.
       me.setSidesHeight();
@@ -6835,6 +6841,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         isBySet = !me.grouping.by;
 
       s.addGroup(key);
+
+      if(s.sorters){
+        s.reSort();
+      }
+
+      if(s.filterOrder){
+        me.filter.updateStoreFilters(false);
+      }
+
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
       me.scroller.update();
@@ -6856,6 +6871,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     expandGroup: function(group){
       var me = this,
+        s = me.store,
         grouping = me.grouping,
         groups = grouping.groups;
 
@@ -6870,6 +6886,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         });
 
         grouping.expand(grouping.by, groups);
+      }
+
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
       }
 
       grouping.update();

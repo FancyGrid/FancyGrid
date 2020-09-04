@@ -3305,6 +3305,12 @@
 
       s.clearDirty();
 
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
+      }
+
       //Not sure that it is needed.
       //Without method update, grid won't be updated.
       me.setSidesHeight();
@@ -4361,6 +4367,15 @@
         isBySet = !me.grouping.by;
 
       s.addGroup(key);
+
+      if(s.sorters){
+        s.reSort();
+      }
+
+      if(s.filterOrder){
+        me.filter.updateStoreFilters(false);
+      }
+
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
       me.scroller.update();
@@ -4382,6 +4397,7 @@
      */
     expandGroup: function(group){
       var me = this,
+        s = me.store,
         grouping = me.grouping,
         groups = grouping.groups;
 
@@ -4396,6 +4412,12 @@
         });
 
         grouping.expand(grouping.by, groups);
+      }
+
+      if(s.sorters || s.filterOrder){
+        s.changeDataView({
+          doNotFired: true
+        });
       }
 
       grouping.update();

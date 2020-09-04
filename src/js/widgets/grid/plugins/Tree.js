@@ -348,7 +348,7 @@
       delete w.$onChangeUpdate;
 
       //if(!child){
-        w.update();
+      //  w.update();
       //}
 
       //Sorted
@@ -364,8 +364,16 @@
           delete s.order;
           delete s.filterOrder;
           s.reSort();
+
+          s.changeDataView({
+            doNotFired: true
+          });
         }
       }
+
+      //if(!child){
+        w.update();
+      //}
 
       w.fire('treeexpand');
     },

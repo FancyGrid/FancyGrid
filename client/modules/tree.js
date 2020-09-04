@@ -602,7 +602,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       delete w.$onChangeUpdate;
 
       //if(!child){
-        w.update();
+      //  w.update();
       //}
 
       //Sorted
@@ -618,8 +618,16 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           delete s.order;
           delete s.filterOrder;
           s.reSort();
+
+          s.changeDataView({
+            doNotFired: true
+          });
         }
       }
+
+      //if(!child){
+        w.update();
+      //}
 
       w.fire('treeexpand');
     },
