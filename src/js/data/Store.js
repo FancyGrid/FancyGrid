@@ -49,7 +49,7 @@ Fancy.define('Fancy.Store', {
     me.readSmartIndexes();
 
     if(me.widget.isGroupable()){
-      me.orderDataByGroupOnStart();
+      me.orderDataByGroup();
     }
 
     if(me.widget.isTreeData){

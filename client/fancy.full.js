@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.114',
+  version: '1.7.115',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5745,7 +5745,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   changeOrderByGroups: function(groups, by){
     var me = this,
       grouped = {},
-      data = [];
+      data = [],
+      notGroupedData = [];
 
     Fancy.each(groups, function(group){
       grouped[group] = [];
@@ -5758,12 +5759,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
         if(grouped[group]){
           grouped[group].push(item);
         }
+        else{
+          notGroupedData.push(item);
+        }
       });
     }
 
     Fancy.each(groups, function(group){
       data = data.concat(grouped[group]);
     });
+
+    data = data.concat(notGroupedData);
 
     me.grouping = {
       by: by
@@ -5835,7 +5841,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       grouping = w.grouping;
 
     grouping.by = key;
-    me.orderDataByGroupOnStart();
+    me.orderDataByGroup();
   },
   /*
    * @param {String} [dataProperty]
@@ -5852,6 +5858,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       throw new Error('[FancyGrid Error] - not set by param in grouping');
     }
 
+    //var values = me.getColumnOriginalValues(by, {
     var values = me.getColumnOriginalValues(by, {
         dataProperty: dataProperty,
         groupMap: true
@@ -5859,6 +5866,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       _groups = {};
 
     Fancy.each(values, function(value){
+      value = String(value);
+
       if(_groups[value] === undefined){
         _groups[value] = 0;
       }
@@ -5872,6 +5881,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       groups.push(p);
     }
 
+    groups = me.sortGroupNames(groups);
+
     return {
       groups: groups,
       _groups: _groups
@@ -5880,41 +5891,11 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    *
    */
-  orderDataByGroupOnStart: function(){
+  orderDataByGroup: function(){
     var me = this,
       grouping = me.widget.grouping,
       o = me.initGroups(),
-      groups = o.groups,
-      groupNameUpperCase = {},
-      upperGroups = [];
-
-    Fancy.each(groups, function(group){
-      var upperGroup = group.toLocaleUpperCase();
-
-      groupNameUpperCase[upperGroup] = group;
-      upperGroups.push(upperGroup);
-    });
-
-    switch(me.widget.grouping.sortGroups){
-      case 'asc':
-      case 'ASC':
-      case true:
-        upperGroups = upperGroups.sort();
-        break;
-      case 'desc':
-      case 'DESC':
-        upperGroups = upperGroups.reverse();
-        break;
-      case false:
-        break;
-    }
-
-    var i = 0,
-      iL = groups.length;
-
-    for(;i<iL;i++){
-      groups[i] = groupNameUpperCase[ upperGroups[i] ];
-    }
+      groups = me.sortGroupNames(o.groups);
 
     me.changeOrderByGroups(groups, grouping.by);
 
@@ -5924,7 +5905,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
     else{
       Fancy.each(groups, function(group){
-        if( !grouping.expanded || grouping.expanded[group] === undefined ){
+        if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
       });
@@ -5933,6 +5914,71 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     me.changeDataView({
       doNotFired: true
     });
+  },
+  /*
+   * @param {Array} groups
+   * @return {Array}
+   */
+  sortGroupNames: function(groups){
+    var me = this,
+      grouping = me.widget.grouping,
+      groupNameUpperCase = {},
+      upperGroups = [],
+      sortedGroups = [],
+      sortGroups = grouping.sortGroups || 'asc';
+
+    Fancy.each(groups, function(group){
+      var upperGroup = String(group).toLocaleUpperCase();
+
+      if(!isNaN(Number(group)) && group !== '' && group !== ' '){
+        upperGroup = String(Number(group));
+      }
+      else{
+        upperGroup = group.toLocaleUpperCase();
+      }
+
+      groupNameUpperCase[upperGroup] = group;
+      upperGroups.push(upperGroup);
+    });
+
+    var areGroupsNumber = me.areGroupsNumber(upperGroups);
+
+    switch(sortGroups){
+      case 'asc':
+      case 'ASC':
+      case true:
+        if(areGroupsNumber){
+          upperGroups = upperGroups.sort(function(a, b){
+            return Number(a) - Number(b);
+          });
+        }
+        else{
+          upperGroups = upperGroups.sort();
+        }
+        break;
+      case 'desc':
+      case 'DESC':
+        if(areGroupsNumber){
+          upperGroups = upperGroups.sort(function(a, b){
+            return Number(b) - Number(a);
+          });
+        }
+        else{
+          upperGroups = upperGroups.reverse();
+        }
+        break;
+      case false:
+        break;
+    }
+
+    var i = 0,
+      iL = groups.length;
+
+    for(;i<iL;i++){
+      sortedGroups[i] = groupNameUpperCase[ upperGroups[i] ];
+    }
+
+    return sortedGroups;
   },
   /*
    * @param {String} groupName
@@ -5957,6 +6003,21 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     delete me.groupMap;
     delete me.grouping;
     delete me.grouping;
+  },
+  /*
+   * @param {Array} groups
+   */
+  areGroupsNumber: function(groups){
+    var isString = false;
+
+    Fancy.each(groups, function(group){
+      if(Fancy.isString(group) && group !== '' && group !== ' '){
+        isString = true;
+        return true;
+      }
+    });
+
+    return !isString;
   }
 });
 /*
@@ -6049,16 +6110,16 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
         switch(q){
           case '<':
-            passed = Number(indexValue) < value;
+            passed = Number(indexValue) < Number(value);
             break;
           case '>':
-            passed = Number(indexValue) > value;
+            passed = Number(indexValue) > Number(value);
             break;
           case '<=':
-            passed = Number(indexValue) <= value;
+            passed = Number(indexValue) <= Number(value);
             break;
           case '>=':
-            passed = Number(indexValue) >= value;
+            passed = Number(indexValue) >= Number(value);
             break;
           case '=':
           case '==':
@@ -6767,7 +6828,7 @@ Fancy.define('Fancy.Store', {
     me.readSmartIndexes();
 
     if(me.widget.isGroupable()){
-      me.orderDataByGroupOnStart();
+      me.orderDataByGroup();
     }
 
     if(me.widget.isTreeData){
@@ -18686,7 +18747,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         '{label}',
       '</div>',
       '<div class="' + FIELD_TEXT_CLS + '">',
-        '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
+        '<input autocomplete="off" placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
         '<div class="fancy-field-picker-button"></div>',
         '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
       '</div>',
@@ -19385,7 +19446,12 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Date} date
      */
     onChangeDate2: function(field, date){
-      date = F.Date.parse(date, field.format.edit, field.format.mode);
+      if(date === undefined){
+        date = '';
+      }
+      else {
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
+      }
 
       this.fire('changedateto', date);
       this.fire('change');
@@ -24685,11 +24751,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
       }
 
+      var groupsMap = {};
+
+      Fancy.each(groups, function(group){
+        groupsMap[group.title || group.text || ''] = group;
+      });
+
       config.columns = _columns;
 
       config._plugins.push({
         type: 'grid.groupheader',
-        groups: groups
+        groups: groups,
+        groupsMap: groupsMap
       });
 
       config.isGroupedHeader = true;
@@ -28142,7 +28215,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          F.error('Column does not exist');
+          var info = me.getColumnOrderById(index);
+
+          if(!info.side){
+            F.error('Column does not exist');
+          }
+
+          column = me.getColumnById(index);
+          side = info.side;
         }
       }
 
@@ -28279,7 +28359,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          F.error('Column does not exist');
+          var info = me.getColumnOrderById(index);
+
+          if(!info.side){
+            F.error('Column does not exist');
+          }
+
+          column = me.getColumnById(index);
+          side = info.side;
         }
       }
 
@@ -28875,13 +28962,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
       else if (sign === undefined || sign === null){
         if (s.filters && s.filters[index]){
-          s.filters[index] = {};
+          //s.filters[index] = {};
+          delete s.filters[index];
         }
       }
       else {
         if (me.filter && s.filters && s.filters[index] && s.filters[index][sign] !== undefined){
           delete s.filters[index][sign];
+
+          if(F.Object.isEmpty(s.filters[index])){
+            delete s.filters[index];
+          }
         }
+      }
+
+      if(F.Object.isEmpty(s.filter)){
+        delete s.filteredData;
+        delete s.filterOrder;
+        delete s.filteredDataMap;
       }
 
       if(me.searching && index === undefined && sign === undefined){
@@ -28900,11 +28998,41 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
-          s.changeDataView();
+          if(s.grouping && s.grouping.by){
+            var grouping = me.grouping;
+
+            if(s.isFiltered()){
+              //s.filterData();
+              s.changeDataView();
+              grouping.initGroups('filteredData');
+            }
+            else{
+              grouping.initGroups();
+            }
+
+            grouping.reFreshExpanded();
+            grouping.initOrder();
+            s.changeDataView();
+            /*
+            s.changeDataView({
+              stoppedFilter: true
+            });
+            */
+
+            grouping.updateGroupRows();
+            grouping.setCellsPosition();
+            grouping.setPositions();
+            grouping.reFreshGroupTexts();
+          }
+          else{
+            s.changeDataView();
+          }
+
           me.update();
+          me.setSidesHeight();
 
           delete me.intervalUpdatingFilter;
-        }, 1);
+        }, 100);
       }
 
       if (me.filter && updateHeaderField !== false){
@@ -30378,16 +30506,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(s.filterOrder){
-        me.filter.updateStoreFilters(false);
+        //me.filter.updateStoreFilters(false);
       }
 
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
-      me.scroller.update();
+      //me.scroller.update();
 
       if(expand){
         me.expandGroup();
       }
+
+      me.scroller.update();
+      me.scroll(0, 0);
     },
     /*
      * @return {Boolean}
@@ -30423,6 +30554,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         s.changeDataView({
           doNotFired: true
         });
+      }
+
+      if(s.filterOrder && s.grouping && s.grouping.by){
+        me.filter.reGroupAccordingToFilters();
       }
 
       grouping.update();
@@ -32068,8 +32203,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bodyViewHeight -= knobOffSet;
       }
 
-      me.rightKnob.stop();
-      me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
+      //me.rightKnob.stop();
+      //me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
+      me.rightKnob.css({height: knobHeight});
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
       me.rightScrollScale = (cellsViewHeight - bodyViewHeight) / (bodyViewHeight - knobHeight);
@@ -32150,12 +32286,14 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         knobWidth = me.minBottomKnobWidth;
       }
 
-      me.bottomKnob.stop();
-      me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      //me.bottomKnob.stop();
+      //me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      me.bottomKnob.css({width: knobWidth});
 
       if(w.doubleHorizontalScroll){
-        me.topKnob.stop();
-        me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+        //me.topKnob.stop();
+        //me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+        me.topKnob.css({width: knobWidth}, F.ANIMATE_DURATION);
       }
 
       me.bottomKnobWidth = knobWidth;
@@ -41687,7 +41825,6 @@ Fancy.modules['selection'] = true;
      */
     onsNav: function(){
       var me = this,
-        w = me.widget,
         doc = Fancy.get(document);
 
       doc.on('keydown', me.onKeyDown, me);
@@ -43464,12 +43601,9 @@ Fancy.modules['grouping'] = true;
 
       me.Super('init', arguments);
 
-      me._expanded = {};
-
       me.initTpl();
 
       if(!me.by){
-        delete me._expanded;
         return;
       }
 
@@ -43557,8 +43691,6 @@ Fancy.modules['grouping'] = true;
         });
 
         delete s.expanded[removedGroup];
-        delete me.expanded[removedGroup];
-        delete me._expanded[removedGroup];
       }
     },
     /*
@@ -43607,11 +43739,7 @@ Fancy.modules['grouping'] = true;
       var me = this,
         w = me.widget,
         s = w.store,
-        groups = [],
-        i,
-        iL,
-        groupNameUpperCase = {},
-        upperGroups = [];
+        groups;
 
       if (me.order && me.order.length !== 0){
         switch (F.typeOf(me.order)){
@@ -43624,58 +43752,7 @@ Fancy.modules['grouping'] = true;
         }
       }
       else {
-        groups = me.groups;
-        i = 0;
-        iL = groups.length;
-
-        E(groups, function(group){
-          var upperGroup;
-
-          if(!isNaN(Number(group)) && group !== '' && group !== ' '){
-            group = Number(group);
-            upperGroup = group;
-          }
-          else{
-            upperGroup = group.toLocaleUpperCase();
-          }
-
-          groupNameUpperCase[upperGroup] = group;
-          upperGroups.push(upperGroup);
-        });
-
-        var areGroupsNumber = me.areGroupsNumber(upperGroups);
-
-        switch(me.sortGroups){
-          case 'asc':
-          case 'ASC':
-          case true:
-            if(areGroupsNumber){
-              upperGroups = upperGroups.sort(function(a, b){
-                return a - b;
-              });
-            }
-            else{
-              upperGroups = upperGroups.sort();
-            }
-            break;
-          case 'desc':
-          case 'DESC':
-            if(areGroupsNumber){
-              upperGroups = upperGroups.reverse();
-            }
-            else{
-              upperGroups = upperGroups.sort(function(a, b){
-                return b - a;
-              });
-            }
-            break;
-          case false:
-            break;
-        }
-
-        for (; i < iL; i++){
-          groups[i] = groupNameUpperCase[upperGroups[i]];
-        }
+        groups = s.sortGroupNames(me.groups);
       }
 
       me.groups = groups;
@@ -43697,7 +43774,6 @@ Fancy.modules['grouping'] = true;
         w = me.widget,
         s = w.store;
 
-      me.expanded = me.expanded || {};
       s.expanded = s.expanded || {};
 
       if (me.collapsed){
@@ -43705,10 +43781,8 @@ Fancy.modules['grouping'] = true;
       }
       else {
         E(me.groups, function(group){
-          if (me.expanded[group] === undefined){
+          if (s.expanded[group] === undefined){
             s.expanded[group] = true;
-            me.expanded[group] = true;
-            me._expanded[group] = true;
           }
         });
       }
@@ -43716,7 +43790,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    renderGroupedRows: function(){
+    renderGroupedRows: function(groups){
       var me = this,
         w = me.widget,
         body = w.body,
@@ -43729,7 +43803,9 @@ Fancy.modules['grouping'] = true;
         el,
         passedTop = 0;
 
-      E(me.groups, function(groupText){
+      groups = groups || me.groups;
+
+      E(groups, function(groupText){
         var groupCount = me.groupsCounts[groupText];
 
         if (leftWidth){
@@ -43822,7 +43898,6 @@ Fancy.modules['grouping'] = true;
               top = parseInt(groupEl.css('top')),
               el = me.generateGroupRow(groupText, groupCount, false, top);
 
-
             el.css('width', rightWidth);
             rightBody.el.dom.appendChild(el.dom);
           });
@@ -43853,6 +43928,40 @@ Fancy.modules['grouping'] = true;
       if (rightColumns.length){
         rightBody.el.select('.' + GRID_ROW_GROUP_CLS).remove();
       }
+    },
+    /*
+     *
+     */
+    clearGroupRows: function(){
+      var me = this,
+        w = me.widget,
+        rows = w.el.select('.' + GRID_ROW_GROUP_CLS),
+        toRemove = [],
+        presentedGroups = {},
+        missedGroups = [];
+
+      rows.each(function(el){
+        var group = el.attr('group');
+
+        if(!me.groupsCounts[group]){
+          toRemove.push(el);
+        }
+        else{
+          presentedGroups[group] = true;
+        }
+      });
+
+      F.each(toRemove, function(el){
+        el.destroy();
+      });
+
+      F.each(me.groups, function(group){
+        if(!presentedGroups[group]){
+          missedGroups.push(group);
+        }
+      });
+
+      me.renderGroupedRows(missedGroups);
     },
     /*
     *
@@ -43938,6 +44047,8 @@ Fancy.modules['grouping'] = true;
       else {
         el.css('top', '0px');
       }
+
+      el.css('visibility', 'hidden');
 
       return el;
     },
@@ -44042,8 +44153,6 @@ Fancy.modules['grouping'] = true;
         s = w.store;
 
       s.collapse(group, value);
-      delete me._expanded[value];
-      delete me.expanded[value];
 
       w.fire('collapse', group, value);
     },
@@ -44061,15 +44170,9 @@ Fancy.modules['grouping'] = true;
         me.initOrder();
 
         s.expand(groupBy, value);
-        F.each(value, function(_value){
-          me._expanded[_value] = true;
-          me.expanded[_value] = true;
-        });
       }
       else{
         s.expand(groupBy, value);
-        me._expanded[value] = true;
-        me.expanded[value] = true;
       }
 
       w.fire('expand', groupBy, value);
@@ -44081,23 +44184,17 @@ Fancy.modules['grouping'] = true;
       var me = this,
         w = me.widget,
         s = w.store,
-        top = -w.scroller.scrollTop || 0,
-        leftRows = w.leftBody.el.select('.' + GRID_ROW_GROUP_CLS),
-        rows = w.body.el.select('.' + GRID_ROW_GROUP_CLS),
-        rightRows = w.rightBody.el.select('.' + GRID_ROW_GROUP_CLS);
+        top = -w.scroller.scrollTop || 0;
 
-      E(me.groups, function(groupName, i){
-        if (leftRows.length){
-          leftRows.item(i).css('top', top + 'px');
-        }
+      E(me.groups, function(groupName){
+        var groupEls = w.el.select('.' + GRID_ROW_GROUP_CLS +'[group="' + groupName + '"]');
 
-        if (rows.length){
-          rows.item(i).css('top', top + 'px');
-        }
-
-        if (rightRows.length){
-          rightRows.item(i).css('top', top + 'px');
-        }
+        groupEls.each(function(el){
+          el.css({
+            top: top + 'px',
+            visibility: 'visible'
+          });
+        });
 
         if (w.expander){
           var expanded = w.expander.expandedGroups[groupName];
@@ -44111,7 +44208,7 @@ Fancy.modules['grouping'] = true;
 
         top += w.groupRowHeight;
 
-        if (me._expanded[groupName] === true){
+        if (s.expanded[groupName] === true){
           if(w.rowheight){
             var items = s.getItemsByGroup(groupName),
               groupRowsHeight = w.rowheight.getRowsHeight(items);
@@ -44135,6 +44232,7 @@ Fancy.modules['grouping'] = true;
     setCellsPosition: function(index, side){
       var me = this,
         w = me.widget,
+        s = w.store,
         i = 0,
         iL = me.groups.length,
         j = 0,
@@ -44153,7 +44251,7 @@ Fancy.modules['grouping'] = true;
       for (; i < iL; i++){
         var groupName = me.groups[i];
 
-        if (me._expanded[groupName] === true){
+        if (s.expanded[groupName] === true){
           rows.push(row);
           marginedRows[row] = true;
 
@@ -44301,7 +44399,7 @@ Fancy.modules['grouping'] = true;
         nextPlusTop = 0;
 
       E(me.groups, function(groupName){
-        if (me._expanded[groupName] === true){
+        if (s.expanded[groupName] === true){
           var iL = rowIndex + groupsCounts[groupName];
 
           for (; rowIndex < iL; rowIndex++){
@@ -44311,7 +44409,7 @@ Fancy.modules['grouping'] = true;
             }
 
             var dataItemId = dataItem.id,
-              expandedItem = expandedGroups[groupName][dataItemId];
+              expandedItem = (expandedGroups[groupName])?expandedGroups[groupName][dataItemId]:undefined;
 
             if (nextPlusTop){
               top += nextPlusTop;
@@ -44414,6 +44512,8 @@ Fancy.modules['grouping'] = true;
         rightBody = w.rightBody,
         width = 0;
 
+      me.clearGroupRows();
+
       width += w.getCenterFullWidth();
 
       body.el.select('.' + GRID_ROW_GROUP_CLS).css('width', width + 'px');
@@ -44471,13 +44571,14 @@ Fancy.modules['grouping'] = true;
     getOffsetForRow: function(rowIndex){
       var me = this,
         w = me.widget,
+        s = w.store,
         top = 0,
         rows = 0;
 
       E(me.groups, function(groupName){
         top += w.groupRowHeight;
 
-        if (me._expanded[groupName] === true){
+        if (s.expanded[groupName] === true){
           rows += me.groupsCounts[groupName];
         }
 
@@ -44495,6 +44596,7 @@ Fancy.modules['grouping'] = true;
     getSpecialRowsUnder: function(rowIndex){
       var me = this,
         w = me.widget,
+        s = w.store,
         rows = 0,
         rowsAfter = 0;
 
@@ -44503,7 +44605,7 @@ Fancy.modules['grouping'] = true;
           rowsAfter++;
         }
 
-        if (me._expanded[groupName] === true){
+        if (s.expanded[groupName] === true){
           rows += me.groupsCounts[groupName];
         }
       });
@@ -44523,7 +44625,7 @@ Fancy.modules['grouping'] = true;
 
       Fancy.each(me.groups, function(_group){
         rows++;
-        if(group === _group){
+        if(group == _group){
           return true;
         }
       });
@@ -44539,14 +44641,12 @@ Fancy.modules['grouping'] = true;
         s = w.store,
         dataProperty = 'data';
 
-      me.expanded = {};
-      me._expanded = {};
       w.store.expanded = {};
       w.store.dataView = [];
 
       me.collapsed = true;
 
-      if (w.store.filteredData){
+      if(w.store.filteredData){
         dataProperty = 'filteredData';
       }
 
@@ -44578,11 +44678,12 @@ Fancy.modules['grouping'] = true;
      *
      */
     clearGroup: function(){
-      var me = this;
+      var me = this,
+        w = me.widget,
+        s = w.store;
 
       delete me.collapsed;
-      delete me.expanded;
-      delete me._expanded;
+      delete s.expanded;
       delete me.groups;
       delete me.groupsCounts;
       delete me.by;
@@ -44606,6 +44707,7 @@ Fancy.modules['grouping'] = true;
     updateGroupRowsText: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         groups = me.groups,
         leftBody = w.leftBody,
         body = w.body,
@@ -44629,7 +44731,7 @@ Fancy.modules['grouping'] = true;
           groupEl = leftGroupEls.item(i);
           groupEl.attr('group', groupText);
 
-          if (me.expanded[groupText]){
+          if (s.expanded[groupText]){
             groupEl.removeClass(GRID_ROW_GROUP_COLLAPSED_CLS);
           }
           else {
@@ -44640,7 +44742,7 @@ Fancy.modules['grouping'] = true;
           groupElInners.item(i).update(text);
           groupEl = groupEls.item(i);
 
-          if (me.expanded[groupText]){
+          if (s.expanded[groupText]){
             groupEl.removeClass(GRID_ROW_GROUP_COLLAPSED_CLS);
           }
           else {
@@ -44701,19 +44803,51 @@ Fancy.modules['grouping'] = true;
       return numberFilledGroups * w.groupRowHeight;
     },
     /*
-     * @param {Array} groups
+     *
      */
-    areGroupsNumber: function(groups){
-      var isString = false;
+    reFreshExpanded: function(){
+      var me = this,
+        w = me.widget,
+        groups = me.groups,
+        s = w.store,
+        expanded = s.expanded;
+
+      for(var p in expanded){
+        if(!me.groupsCounts[p]){
+          delete expanded[p];
+        }
+      }
 
       F.each(groups, function(group){
-        if(F.isString(group) && group !== '' && group !== ' '){
-          isString = true;
-          return true;
+        if(expanded[group] === undefined){
+          expanded[group] = !me.collapsed;
         }
       });
 
-      return !isString;
+      s.expanded = expanded;
+    },
+    /*
+     *
+     */
+    reFreshGroupTexts: function(){
+      var me = this,
+        w = me.widget,
+        rows = w.el.select('.' + GRID_ROW_GROUP_CLS);
+
+      rows.each(function(el){
+        var group = el.attr('group'),
+          innerEl = el.firstChild(),
+          text = me.tpl.getHTML({
+            text: group,
+            number: me.groupsCounts[group]
+          });
+
+        if(!innerEl.dom){
+          return ;
+        }
+
+        innerEl.update(text);
+      });
     }
   });
 
@@ -48092,6 +48226,65 @@ Fancy.modules['filter'] = true;
       delete me.intervalAutoEnter;
 
       if (value.length === 0){
+        w.clearFilter(field.filterIndex);
+
+        return;
+      }
+
+      var filters = me.processFilterValue(value, field.column.type);
+
+      w.clearFilter(field.filterIndex, null, false);
+
+      if(filters.length === 1){
+        w.addFilter(field.filterIndex, filters[0].value, filters[0].operator, false);
+      }
+      else {
+        var severalValues = [];
+
+        F.each(filters, function(filter){
+          switch(filter.operator){
+            case '':
+            case '=':
+              severalValues.push(filter.value);
+              break;
+            default:
+              w.addFilter(field.filterIndex, filter.value, filter.operator, false);
+          }
+        });
+
+        if(severalValues.length){
+          w.addFilter(field.filterIndex, severalValues, '=', false);
+        }
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {String|Number} value
+     * @param {Object} options
+     *
+     * It should be removed when stability of filtering will be reached
+     */
+    onEnterOld: function(field, value, options){
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        filterIndex = field.filterIndex,
+        signs = {
+          '<': true,
+          '>': true,
+          '!': true,
+          '=': true
+        };
+
+      options = options || {};
+
+      if (me.intervalAutoEnter){
+        clearInterval(me.intervalAutoEnter);
+        me.intervalAutoEnter = false;
+      }
+      delete me.intervalAutoEnter;
+
+      if (value.length === 0){
         s.filters[field.filterIndex] = {};
         me.clearFilter(field.filterIndex, undefined, false);
         me.updateStoreFilters();
@@ -48265,6 +48458,9 @@ Fancy.modules['filter'] = true;
           case 'combo':
             operator = '=';
             break;
+          case 'date':
+            _value = new Date(Number(_value));
+            break;
         }
 
         filters.push({
@@ -48300,14 +48496,25 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      s.changeDataView();
+      //s.changeDataView();
 
       if(update !== false){
-        //s.changeDataView();
+        if(s.grouping && s.grouping.by){
+          s.changeDataView();
+          me.reGroupAccordingToFilters();
+          s.changeDataView();
+        }
+        else{
+          s.changeDataView();
+        }
+
         w.update();
 
         w.fire('filter', s.filters);
         w.setSidesHeight();
+      }
+      else{
+        s.changeDataView();
       }
 
       if(!containFilters){
@@ -48606,6 +48813,23 @@ Fancy.modules['filter'] = true;
 
       me.destroyFields();
       me.render();
+    },
+    /*
+     *
+     */
+    reGroupAccordingToFilters: function(){
+      var me = this,
+        w = me.widget,
+        grouping = w.grouping;
+
+      grouping.initGroups('filteredData');
+      //Problem place
+      grouping.initOrder();
+      grouping.reFreshExpanded();
+
+      grouping.updateGroupRows();
+      grouping.setCellsPosition();
+      grouping.reFreshGroupTexts();
     }
   });
 
@@ -54990,10 +55214,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
           else {
             if (!groups[column.grouping]){
+              var originalGroup = w.groupheader.groupsMap[column.grouping];
+
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
-                left: passedWidth
+                left: passedWidth,
+                cls: originalGroup.headerCls || ''
               };
             }
 
@@ -55606,7 +55833,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       F.each(groups, function(group, p){
         html += me.cellTpl.getHTML({
-          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
+          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ' ' + group.cls,
           columnName: group.title,
           columnWidth: group.width,
           index: p,
@@ -55675,9 +55902,17 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
-        groupCell.animate({
-          width: groupCellWidth - cellWidth
-        }, ANIMATE_DURATION);
+        if(groupCellWidth - cellWidth === 0){
+          groupCell.css({
+            display: 'none',
+            width: groupCellWidth - cellWidth
+          });
+        }
+        else{
+          groupCell.animate({
+            width: groupCellWidth - cellWidth
+          }, ANIMATE_DURATION);
+        }
       }
 
       cell.hide();
@@ -55772,6 +56007,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
+
+        if(groupCell.css('display') === 'none'){
+          groupCell.show();
+        }
+
         groupCell.animate({
           width: groupCellWidth + cellWidth
         }, ANIMATE_DURATION);

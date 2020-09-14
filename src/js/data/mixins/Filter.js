@@ -88,16 +88,16 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
 
         switch(q){
           case '<':
-            passed = Number(indexValue) < value;
+            passed = Number(indexValue) < Number(value);
             break;
           case '>':
-            passed = Number(indexValue) > value;
+            passed = Number(indexValue) > Number(value);
             break;
           case '<=':
-            passed = Number(indexValue) <= value;
+            passed = Number(indexValue) <= Number(value);
             break;
           case '>=':
-            passed = Number(indexValue) >= value;
+            passed = Number(indexValue) >= Number(value);
             break;
           case '=':
           case '==':

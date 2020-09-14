@@ -589,6 +589,65 @@ Fancy.modules['filter'] = true;
       delete me.intervalAutoEnter;
 
       if (value.length === 0){
+        w.clearFilter(field.filterIndex);
+
+        return;
+      }
+
+      var filters = me.processFilterValue(value, field.column.type);
+
+      w.clearFilter(field.filterIndex, null, false);
+
+      if(filters.length === 1){
+        w.addFilter(field.filterIndex, filters[0].value, filters[0].operator, false);
+      }
+      else {
+        var severalValues = [];
+
+        F.each(filters, function(filter){
+          switch(filter.operator){
+            case '':
+            case '=':
+              severalValues.push(filter.value);
+              break;
+            default:
+              w.addFilter(field.filterIndex, filter.value, filter.operator, false);
+          }
+        });
+
+        if(severalValues.length){
+          w.addFilter(field.filterIndex, severalValues, '=', false);
+        }
+      }
+    },
+    /*
+     * @param {Object} field
+     * @param {String|Number} value
+     * @param {Object} options
+     *
+     * It should be removed when stability of filtering will be reached
+     */
+    onEnterOld: function(field, value, options){
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        filterIndex = field.filterIndex,
+        signs = {
+          '<': true,
+          '>': true,
+          '!': true,
+          '=': true
+        };
+
+      options = options || {};
+
+      if (me.intervalAutoEnter){
+        clearInterval(me.intervalAutoEnter);
+        me.intervalAutoEnter = false;
+      }
+      delete me.intervalAutoEnter;
+
+      if (value.length === 0){
         s.filters[field.filterIndex] = {};
         me.clearFilter(field.filterIndex, undefined, false);
         me.updateStoreFilters();
@@ -762,6 +821,9 @@ Fancy.modules['filter'] = true;
           case 'combo':
             operator = '=';
             break;
+          case 'date':
+            _value = new Date(Number(_value));
+            break;
         }
 
         filters.push({
@@ -797,14 +859,25 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      s.changeDataView();
+      //s.changeDataView();
 
       if(update !== false){
-        //s.changeDataView();
+        if(s.grouping && s.grouping.by){
+          s.changeDataView();
+          me.reGroupAccordingToFilters();
+          s.changeDataView();
+        }
+        else{
+          s.changeDataView();
+        }
+
         w.update();
 
         w.fire('filter', s.filters);
         w.setSidesHeight();
+      }
+      else{
+        s.changeDataView();
       }
 
       if(!containFilters){
@@ -1103,6 +1176,23 @@ Fancy.modules['filter'] = true;
 
       me.destroyFields();
       me.render();
+    },
+    /*
+     *
+     */
+    reGroupAccordingToFilters: function(){
+      var me = this,
+        w = me.widget,
+        grouping = w.grouping;
+
+      grouping.initGroups('filteredData');
+      //Problem place
+      grouping.initOrder();
+      grouping.reFreshExpanded();
+
+      grouping.updateGroupRows();
+      grouping.setCellsPosition();
+      grouping.reFreshGroupTexts();
     }
   });
 

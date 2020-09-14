@@ -25,7 +25,6 @@
      */
     onsNav: function(){
       var me = this,
-        w = me.widget,
         doc = Fancy.get(document);
 
       doc.on('keydown', me.onKeyDown, me);

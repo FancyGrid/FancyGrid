@@ -186,7 +186,12 @@
      * @param {Date} date
      */
     onChangeDate2: function(field, date){
-      date = F.Date.parse(date, field.format.edit, field.format.mode);
+      if(date === undefined){
+        date = '';
+      }
+      else {
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
+      }
 
       this.fire('changedateto', date);
       this.fire('change');

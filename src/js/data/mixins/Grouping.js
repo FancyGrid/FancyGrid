@@ -83,7 +83,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   changeOrderByGroups: function(groups, by){
     var me = this,
       grouped = {},
-      data = [];
+      data = [],
+      notGroupedData = [];
 
     Fancy.each(groups, function(group){
       grouped[group] = [];
@@ -96,12 +97,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
         if(grouped[group]){
           grouped[group].push(item);
         }
+        else{
+          notGroupedData.push(item);
+        }
       });
     }
 
     Fancy.each(groups, function(group){
       data = data.concat(grouped[group]);
     });
+
+    data = data.concat(notGroupedData);
 
     me.grouping = {
       by: by
@@ -173,7 +179,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       grouping = w.grouping;
 
     grouping.by = key;
-    me.orderDataByGroupOnStart();
+    me.orderDataByGroup();
   },
   /*
    * @param {String} [dataProperty]
@@ -190,6 +196,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       throw new Error('[FancyGrid Error] - not set by param in grouping');
     }
 
+    //var values = me.getColumnOriginalValues(by, {
     var values = me.getColumnOriginalValues(by, {
         dataProperty: dataProperty,
         groupMap: true
@@ -197,6 +204,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       _groups = {};
 
     Fancy.each(values, function(value){
+      value = String(value);
+
       if(_groups[value] === undefined){
         _groups[value] = 0;
       }
@@ -210,6 +219,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       groups.push(p);
     }
 
+    groups = me.sortGroupNames(groups);
+
     return {
       groups: groups,
       _groups: _groups
@@ -218,41 +229,11 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    *
    */
-  orderDataByGroupOnStart: function(){
+  orderDataByGroup: function(){
     var me = this,
       grouping = me.widget.grouping,
       o = me.initGroups(),
-      groups = o.groups,
-      groupNameUpperCase = {},
-      upperGroups = [];
-
-    Fancy.each(groups, function(group){
-      var upperGroup = group.toLocaleUpperCase();
-
-      groupNameUpperCase[upperGroup] = group;
-      upperGroups.push(upperGroup);
-    });
-
-    switch(me.widget.grouping.sortGroups){
-      case 'asc':
-      case 'ASC':
-      case true:
-        upperGroups = upperGroups.sort();
-        break;
-      case 'desc':
-      case 'DESC':
-        upperGroups = upperGroups.reverse();
-        break;
-      case false:
-        break;
-    }
-
-    var i = 0,
-      iL = groups.length;
-
-    for(;i<iL;i++){
-      groups[i] = groupNameUpperCase[ upperGroups[i] ];
-    }
+      groups = me.sortGroupNames(o.groups);
 
     me.changeOrderByGroups(groups, grouping.by);
 
@@ -262,7 +243,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
     else{
       Fancy.each(groups, function(group){
-        if( !grouping.expanded || grouping.expanded[group] === undefined ){
+        if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
       });
@@ -271,6 +252,71 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     me.changeDataView({
       doNotFired: true
     });
+  },
+  /*
+   * @param {Array} groups
+   * @return {Array}
+   */
+  sortGroupNames: function(groups){
+    var me = this,
+      grouping = me.widget.grouping,
+      groupNameUpperCase = {},
+      upperGroups = [],
+      sortedGroups = [],
+      sortGroups = grouping.sortGroups || 'asc';
+
+    Fancy.each(groups, function(group){
+      var upperGroup = String(group).toLocaleUpperCase();
+
+      if(!isNaN(Number(group)) && group !== '' && group !== ' '){
+        upperGroup = String(Number(group));
+      }
+      else{
+        upperGroup = group.toLocaleUpperCase();
+      }
+
+      groupNameUpperCase[upperGroup] = group;
+      upperGroups.push(upperGroup);
+    });
+
+    var areGroupsNumber = me.areGroupsNumber(upperGroups);
+
+    switch(sortGroups){
+      case 'asc':
+      case 'ASC':
+      case true:
+        if(areGroupsNumber){
+          upperGroups = upperGroups.sort(function(a, b){
+            return Number(a) - Number(b);
+          });
+        }
+        else{
+          upperGroups = upperGroups.sort();
+        }
+        break;
+      case 'desc':
+      case 'DESC':
+        if(areGroupsNumber){
+          upperGroups = upperGroups.sort(function(a, b){
+            return Number(b) - Number(a);
+          });
+        }
+        else{
+          upperGroups = upperGroups.reverse();
+        }
+        break;
+      case false:
+        break;
+    }
+
+    var i = 0,
+      iL = groups.length;
+
+    for(;i<iL;i++){
+      sortedGroups[i] = groupNameUpperCase[ upperGroups[i] ];
+    }
+
+    return sortedGroups;
   },
   /*
    * @param {String} groupName
@@ -295,5 +341,20 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     delete me.groupMap;
     delete me.grouping;
     delete me.grouping;
+  },
+  /*
+   * @param {Array} groups
+   */
+  areGroupsNumber: function(groups){
+    var isString = false;
+
+    Fancy.each(groups, function(group){
+      if(Fancy.isString(group) && group !== '' && group !== ' '){
+        isString = true;
+        return true;
+      }
+    });
+
+    return !isString;
   }
 });

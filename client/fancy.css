@@ -2233,6 +2233,7 @@
   font-size: 12px;
   font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
   border-bottom: 1px solid #d3dbe1;
+  border-right: 1px solid #d3dbe1;
   position: absolute;
   left: 0;
   z-index: 1;
@@ -3376,19 +3377,26 @@
   background-color: #626262;
   color: #F3F3F3;
 }
+.fancy-theme-gray.fancy-panel {
+  /*
+  .fancy-panel-buttons {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-footer {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+   */
+}
 .fancy-theme-gray.fancy-panel .fancy-panel-sub-tbar {
   border-top-width: 0;
-  border-left-width: 0;
-  border-right-width: 0;
+  /*
+    border-left-width: 0;
+    border-right-width: 0;
+    */
   border-bottom: 1px solid #d3dbe1;
-}
-.fancy-theme-gray.fancy-panel .fancy-panel-buttons {
-  border-left-width: 0;
-  border-right-width: 0;
-}
-.fancy-theme-gray.fancy-panel .fancy-panel-footer {
-  border-left-width: 0;
-  border-right-width: 0;
 }
 .fancy-theme-gray.fancy-combo-result-list .fancy-field-checkbox-input {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20rx%3D%222%22%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%2214%22%20height%3D%2214%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23F2F4F8%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20rx%3D%222%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23C1C9D1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
@@ -5693,30 +5701,37 @@
 .fancy-theme-bootstrap.fancy-panel {
   border-color: #ccc;
   border-bottom-width: 0;
-}
-.fancy-theme-bootstrap.fancy-panel .fancy-panel-header {
-  border-left-width: 0;
-  border-right-width: 0;
-}
-.fancy-theme-bootstrap.fancy-panel .fancy-panel-tbar {
-  border-left-width: 0;
-  border-right-width: 0;
-}
-.fancy-theme-bootstrap.fancy-panel .fancy-panel-sub-tbar {
-  border-left-width: 0;
-  border-right-width: 0;
-}
-.fancy-theme-bootstrap.fancy-panel .fancy-panel-bbar {
-  border-left-width: 0;
-  border-right-width: 0;
-}
-.fancy-theme-bootstrap.fancy-panel .fancy-panel-buttons {
-  border-left-width: 0;
-  border-right-width: 0;
-}
-.fancy-theme-bootstrap.fancy-panel .fancy-panel-footer {
-  border-left-width: 0;
-  border-right-width: 0;
+  /*
+  .fancy-panel-header {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-tbar {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-sub-tbar {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-bbar {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-buttons {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+
+  .fancy-panel-footer {
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+   */
 }
 .fancy-theme-bootstrap.fancy-grid {
   border-color: #ccc;

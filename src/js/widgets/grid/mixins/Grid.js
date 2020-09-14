@@ -2137,7 +2137,14 @@
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          F.error('Column does not exist');
+          var info = me.getColumnOrderById(index);
+
+          if(!info.side){
+            F.error('Column does not exist');
+          }
+
+          column = me.getColumnById(index);
+          side = info.side;
         }
       }
 
@@ -2274,7 +2281,14 @@
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          F.error('Column does not exist');
+          var info = me.getColumnOrderById(index);
+
+          if(!info.side){
+            F.error('Column does not exist');
+          }
+
+          column = me.getColumnById(index);
+          side = info.side;
         }
       }
 
@@ -2870,13 +2884,24 @@
       }
       else if (sign === undefined || sign === null){
         if (s.filters && s.filters[index]){
-          s.filters[index] = {};
+          //s.filters[index] = {};
+          delete s.filters[index];
         }
       }
       else {
         if (me.filter && s.filters && s.filters[index] && s.filters[index][sign] !== undefined){
           delete s.filters[index][sign];
+
+          if(F.Object.isEmpty(s.filters[index])){
+            delete s.filters[index];
+          }
         }
+      }
+
+      if(F.Object.isEmpty(s.filter)){
+        delete s.filteredData;
+        delete s.filterOrder;
+        delete s.filteredDataMap;
       }
 
       if(me.searching && index === undefined && sign === undefined){
@@ -2895,11 +2920,41 @@
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
-          s.changeDataView();
+          if(s.grouping && s.grouping.by){
+            var grouping = me.grouping;
+
+            if(s.isFiltered()){
+              //s.filterData();
+              s.changeDataView();
+              grouping.initGroups('filteredData');
+            }
+            else{
+              grouping.initGroups();
+            }
+
+            grouping.reFreshExpanded();
+            grouping.initOrder();
+            s.changeDataView();
+            /*
+            s.changeDataView({
+              stoppedFilter: true
+            });
+            */
+
+            grouping.updateGroupRows();
+            grouping.setCellsPosition();
+            grouping.setPositions();
+            grouping.reFreshGroupTexts();
+          }
+          else{
+            s.changeDataView();
+          }
+
           me.update();
+          me.setSidesHeight();
 
           delete me.intervalUpdatingFilter;
-        }, 1);
+        }, 100);
       }
 
       if (me.filter && updateHeaderField !== false){
@@ -4373,16 +4428,19 @@
       }
 
       if(s.filterOrder){
-        me.filter.updateStoreFilters(false);
+        //me.filter.updateStoreFilters(false);
       }
 
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
-      me.scroller.update();
+      //me.scroller.update();
 
       if(expand){
         me.expandGroup();
       }
+
+      me.scroller.update();
+      me.scroll(0, 0);
     },
     /*
      * @return {Boolean}
@@ -4418,6 +4476,10 @@
         s.changeDataView({
           doNotFired: true
         });
+      }
+
+      if(s.filterOrder && s.grouping && s.grouping.by){
+        me.filter.reGroupAccordingToFilters();
       }
 
       grouping.update();

@@ -686,8 +686,9 @@
         bodyViewHeight -= knobOffSet;
       }
 
-      me.rightKnob.stop();
-      me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
+      //me.rightKnob.stop();
+      //me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
+      me.rightKnob.css({height: knobHeight});
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
       me.rightScrollScale = (cellsViewHeight - bodyViewHeight) / (bodyViewHeight - knobHeight);
@@ -768,12 +769,14 @@
         knobWidth = me.minBottomKnobWidth;
       }
 
-      me.bottomKnob.stop();
-      me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      //me.bottomKnob.stop();
+      //me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      me.bottomKnob.css({width: knobWidth});
 
       if(w.doubleHorizontalScroll){
-        me.topKnob.stop();
-        me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+        //me.topKnob.stop();
+        //me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+        me.topKnob.css({width: knobWidth}, F.ANIMATE_DURATION);
       }
 
       me.bottomKnobWidth = knobWidth;

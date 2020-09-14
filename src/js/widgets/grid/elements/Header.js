@@ -142,10 +142,13 @@
           }
           else {
             if (!groups[column.grouping]){
+              var originalGroup = w.groupheader.groupsMap[column.grouping];
+
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
-                left: passedWidth
+                left: passedWidth,
+                cls: originalGroup.headerCls || ''
               };
             }
 
@@ -758,7 +761,7 @@
 
       F.each(groups, function(group, p){
         html += me.cellTpl.getHTML({
-          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
+          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ' ' + group.cls,
           columnName: group.title,
           columnWidth: group.width,
           index: p,
@@ -827,9 +830,17 @@
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
-        groupCell.animate({
-          width: groupCellWidth - cellWidth
-        }, ANIMATE_DURATION);
+        if(groupCellWidth - cellWidth === 0){
+          groupCell.css({
+            display: 'none',
+            width: groupCellWidth - cellWidth
+          });
+        }
+        else{
+          groupCell.animate({
+            width: groupCellWidth - cellWidth
+          }, ANIMATE_DURATION);
+        }
       }
 
       cell.hide();
@@ -924,6 +935,11 @@
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
+
+        if(groupCell.css('display') === 'none'){
+          groupCell.show();
+        }
+
         groupCell.animate({
           width: groupCellWidth + cellWidth
         }, ANIMATE_DURATION);

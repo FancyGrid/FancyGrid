@@ -1584,11 +1584,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
       }
 
+      var groupsMap = {};
+
+      Fancy.each(groups, function(group){
+        groupsMap[group.title || group.text || ''] = group;
+      });
+
       config.columns = _columns;
 
       config._plugins.push({
         type: 'grid.groupheader',
-        groups: groups
+        groups: groups,
+        groupsMap: groupsMap
       });
 
       config.isGroupedHeader = true;

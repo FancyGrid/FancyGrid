@@ -924,7 +924,7 @@ Fancy.Date = {
         '{label}',
       '</div>',
       '<div class="' + FIELD_TEXT_CLS + '">',
-        '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
+        '<input autocomplete="off" placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
         '<div class="fancy-field-picker-button"></div>',
         '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
       '</div>',
@@ -1622,7 +1622,12 @@ Fancy.Date = {
      * @param {Date} date
      */
     onChangeDate2: function(field, date){
-      date = F.Date.parse(date, field.format.edit, field.format.mode);
+      if(date === undefined){
+        date = '';
+      }
+      else {
+        date = F.Date.parse(date, field.format.edit, field.format.mode);
+      }
 
       this.fire('changedateto', date);
       this.fire('change');

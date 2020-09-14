@@ -33,7 +33,7 @@
         '{label}',
       '</div>',
       '<div class="' + FIELD_TEXT_CLS + '">',
-        '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
+        '<input autocomplete="off" placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputWidth}" value="{value}">',
         '<div class="fancy-field-picker-button"></div>',
         '<div class="' + FIELD_ERROR_CLS + '" style="{errorTextStyle}"></div>',
       '</div>',

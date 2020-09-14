@@ -1584,11 +1584,18 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
       }
 
+      var groupsMap = {};
+
+      Fancy.each(groups, function(group){
+        groupsMap[group.title || group.text || ''] = group;
+      });
+
       config.columns = _columns;
 
       config._plugins.push({
         type: 'grid.groupheader',
-        groups: groups
+        groups: groups,
+        groupsMap: groupsMap
       });
 
       config.isGroupedHeader = true;
@@ -4611,7 +4618,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          F.error('Column does not exist');
+          var info = me.getColumnOrderById(index);
+
+          if(!info.side){
+            F.error('Column does not exist');
+          }
+
+          column = me.getColumnById(index);
+          side = info.side;
         }
       }
 
@@ -4748,7 +4762,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         side = this.getSideByColumnIndex(index);
 
         if(!side){
-          F.error('Column does not exist');
+          var info = me.getColumnOrderById(index);
+
+          if(!info.side){
+            F.error('Column does not exist');
+          }
+
+          column = me.getColumnById(index);
+          side = info.side;
         }
       }
 
@@ -5344,13 +5365,24 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
       else if (sign === undefined || sign === null){
         if (s.filters && s.filters[index]){
-          s.filters[index] = {};
+          //s.filters[index] = {};
+          delete s.filters[index];
         }
       }
       else {
         if (me.filter && s.filters && s.filters[index] && s.filters[index][sign] !== undefined){
           delete s.filters[index][sign];
+
+          if(F.Object.isEmpty(s.filters[index])){
+            delete s.filters[index];
+          }
         }
+      }
+
+      if(F.Object.isEmpty(s.filter)){
+        delete s.filteredData;
+        delete s.filterOrder;
+        delete s.filteredDataMap;
       }
 
       if(me.searching && index === undefined && sign === undefined){
@@ -5369,11 +5401,41 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
-          s.changeDataView();
+          if(s.grouping && s.grouping.by){
+            var grouping = me.grouping;
+
+            if(s.isFiltered()){
+              //s.filterData();
+              s.changeDataView();
+              grouping.initGroups('filteredData');
+            }
+            else{
+              grouping.initGroups();
+            }
+
+            grouping.reFreshExpanded();
+            grouping.initOrder();
+            s.changeDataView();
+            /*
+            s.changeDataView({
+              stoppedFilter: true
+            });
+            */
+
+            grouping.updateGroupRows();
+            grouping.setCellsPosition();
+            grouping.setPositions();
+            grouping.reFreshGroupTexts();
+          }
+          else{
+            s.changeDataView();
+          }
+
           me.update();
+          me.setSidesHeight();
 
           delete me.intervalUpdatingFilter;
-        }, 1);
+        }, 100);
       }
 
       if (me.filter && updateHeaderField !== false){
@@ -6847,16 +6909,19 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if(s.filterOrder){
-        me.filter.updateStoreFilters(false);
+        //me.filter.updateStoreFilters(false);
       }
 
       me.grouping.addGroup(isBySet);
       me.setSidesHeight();
-      me.scroller.update();
+      //me.scroller.update();
 
       if(expand){
         me.expandGroup();
       }
+
+      me.scroller.update();
+      me.scroll(0, 0);
     },
     /*
      * @return {Boolean}
@@ -6892,6 +6957,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         s.changeDataView({
           doNotFired: true
         });
+      }
+
+      if(s.filterOrder && s.grouping && s.grouping.by){
+        me.filter.reGroupAccordingToFilters();
       }
 
       grouping.update();
@@ -7687,8 +7756,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bodyViewHeight -= knobOffSet;
       }
 
-      me.rightKnob.stop();
-      me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
+      //me.rightKnob.stop();
+      //me.rightKnob.animate({height: knobHeight}, F.ANIMATE_DURATION);
+      me.rightKnob.css({height: knobHeight});
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
       me.rightScrollScale = (cellsViewHeight - bodyViewHeight) / (bodyViewHeight - knobHeight);
@@ -7769,12 +7839,14 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         knobWidth = me.minBottomKnobWidth;
       }
 
-      me.bottomKnob.stop();
-      me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      //me.bottomKnob.stop();
+      //me.bottomKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+      me.bottomKnob.css({width: knobWidth});
 
       if(w.doubleHorizontalScroll){
-        me.topKnob.stop();
-        me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+        //me.topKnob.stop();
+        //me.topKnob.animate({width: knobWidth}, F.ANIMATE_DURATION);
+        me.topKnob.css({width: knobWidth}, F.ANIMATE_DURATION);
       }
 
       me.bottomKnobWidth = knobWidth;
@@ -13464,10 +13536,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
           else {
             if (!groups[column.grouping]){
+              var originalGroup = w.groupheader.groupsMap[column.grouping];
+
               groups[column.grouping] = {
                 width: 0,
                 title: column.grouping,
-                left: passedWidth
+                left: passedWidth,
+                cls: originalGroup.headerCls || ''
               };
             }
 
@@ -14080,7 +14155,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
       F.each(groups, function(group, p){
         html += me.cellTpl.getHTML({
-          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS,
+          cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ' ' + group.cls,
           columnName: group.title,
           columnWidth: group.width,
           index: p,
@@ -14149,9 +14224,17 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
-        groupCell.animate({
-          width: groupCellWidth - cellWidth
-        }, ANIMATE_DURATION);
+        if(groupCellWidth - cellWidth === 0){
+          groupCell.css({
+            display: 'none',
+            width: groupCellWidth - cellWidth
+          });
+        }
+        else{
+          groupCell.animate({
+            width: groupCellWidth - cellWidth
+          }, ANIMATE_DURATION);
+        }
       }
 
       cell.hide();
@@ -14246,6 +14329,11 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
+
+        if(groupCell.css('display') === 'none'){
+          groupCell.show();
+        }
+
         groupCell.animate({
           width: groupCellWidth + cellWidth
         }, ANIMATE_DURATION);
