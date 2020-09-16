@@ -168,7 +168,9 @@ Fancy.modules['filter'] = true;
       me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
     },
     _addValuesInColumnFields: function(columns, header, index, value, sign){
-      var i = 0,
+      var me = this,
+        w = me.widget,
+        i = 0,
         iL = columns.length,
         column;
 
@@ -204,10 +206,37 @@ Fancy.modules['filter'] = true;
               }
               break;
             default:
+              var filters = w.getFilter(index),
+                _value = '';
+
+              for(var p in filters){
+                var filterValue = filters[p];
+                _value += p;
+
+                if(F.isArray(filterValue)){
+                  F.each(filterValue, function(v, i){
+                    _value += v;
+
+                    if(filterValue.length - 1 !== i){
+                      _value += ',';
+                    }
+                  });
+                }
+                else{
+                  _value += filterValue;
+                }
+
+                _value += '&';
+              }
+
+              if(_value[_value.length - 1] === '&'){
+                _value = _value.substring(0, _value.length - 1);
+              }
+
               var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
                 field = F.getWidget(id);
 
-              field.set((sign || '') + value);
+              field.set(_value);
           }
         }
       }

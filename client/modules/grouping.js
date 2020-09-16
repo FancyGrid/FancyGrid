@@ -1385,6 +1385,42 @@ Fancy.modules['grouping'] = true;
       return top;
     },
     /*
+     * @return {Number}
+     */
+    getCollapsedRowsBefore: function(id){
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        item = w.getById(id);
+
+      if(!item){
+        return 0;
+      }
+
+      var groupValue = item.get(me.by),
+        rowsBefore = 0;
+
+      me.collapsedRowsBefore = me.collapsedRowBefore || {};
+
+      if(me.collapsedRowsBefore[groupValue] !== undefined){
+        return me.collapsedRowsBefore[groupValue];
+      }
+
+      F.each(me.groups, function(group){
+        if(group === groupValue){
+          return true;
+        }
+
+        if(s.expanded[group] !== true){
+          rowsBefore += me.groupsCounts[group];
+        }
+      });
+
+      me.collapsedRowsBefore[groupValue] = rowsBefore;
+
+      return rowsBefore;
+    },
+    /*
      * @param {Number} rowIndex
      * @return {Number}
      */

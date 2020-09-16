@@ -42,7 +42,7 @@ Fancy.i18n.ja = {
   columns: 'カラム',
   autoSizeColumn: 'Autosize Column',
   autoSizeColumns: 'Autosize Columns',
-  lock: 'Lock',
-  unlock: 'Unlock',
-  rightLock: 'Right Lock'
+  lock: 'ロック',
+  unlock: 'ロック解除',
+  rightLock: '右のロック'
 };

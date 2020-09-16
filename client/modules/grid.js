@@ -4635,22 +4635,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if(F.isArray(index)){
-        me._tempSumColumnsWidth = 0;
-        me._tempColumnsNumber = index.length;
-
         F.each(index, function(value){
           if(side){
-            me._tempColumnsNumber--;
             me.hideColumn(side, value);
           }
           else{
-            me._tempColumnsNumber--;
             me.hideColumn(value);
           }
         });
 
-        delete me._tempColumnsNumber;
-        delete me._tempSumColumnsWidth;
         return;
       }
 
@@ -4701,10 +4694,6 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
-      if(me._tempSumColumnsWidth !== undefined){
-        me._tempSumColumnsWidth += column.width;
-      }
-
       header.hideCell(orderIndex);
       body.hideColumn(orderIndex);
 
@@ -4712,28 +4701,32 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.rowedit.hideField(orderIndex, side);
       }
 
-      var columnWidth = column.width;
-      if(me._tempSumColumnsWidth){
-        columnWidth = me._tempSumColumnsWidth;
-      }
+      if(me.leftColumns.length || me.rightColumns.length){
+        var leftWidth = me.calcCurrentLeftWidth(),
+          rightWidth = me.calcCurrentRightWidth(),
+          centerWidth = parseInt(me.el.css('width')) - leftWidth - rightWidth;
 
-      if(!me._tempColumnsNumber){
-        switch (side){
-          case 'left':
-            leftEl.animate({width: parseInt(leftEl.css('width')) - columnWidth}, ANIMATE_DURATION);
-            leftHeader.el.animate({width: parseInt(leftHeader.css('width')) - columnWidth}, ANIMATE_DURATION);
-            centerEl.animate({left: parseInt(centerEl.css('left')) - columnWidth}, ANIMATE_DURATION);
-            centerEl.animate({width: parseInt(centerEl.css('width')) + columnWidth}, ANIMATE_DURATION);
-            me.body.el.animate({width: parseInt(me.body.css('width')) + columnWidth}, ANIMATE_DURATION);
-            me.header.el.animate({width: parseInt(me.header.css('width')) + columnWidth}, ANIMATE_DURATION);
-            break;
-          case 'right':
-            rightEl.animate({width: parseInt(rightEl.css('width')) - columnWidth}, ANIMATE_DURATION);
-            rightHeader.el.animate({width: parseInt(rightHeader.css('width')) - columnWidth}, ANIMATE_DURATION);
-            centerEl.animate({width: parseInt(centerEl.css('width')) + columnWidth}, ANIMATE_DURATION);
-            me.body.el.animate({width: parseInt(me.body.css('width')) + columnWidth}, ANIMATE_DURATION);
-            me.header.el.animate({width: parseInt(me.header.css('width')) + columnWidth}, ANIMATE_DURATION);
-            break;
+        if(me.panel){
+          centerWidth -= me.gridBorders[1] + me.gridBorders[3];
+        }
+        else{
+          centerWidth -= me.gridWithoutPanelBorders[1] + me.gridWithoutPanelBorders[3];
+        }
+
+        leftEl.animate({width: leftWidth}, ANIMATE_DURATION);
+        leftHeader.el.animate({width: leftWidth}, ANIMATE_DURATION);
+        centerEl.animate({left: leftWidth}, ANIMATE_DURATION);
+        centerEl.animate({width: centerWidth}, ANIMATE_DURATION);
+        me.body.el.animate({width: centerWidth}, ANIMATE_DURATION);
+        me.header.el.animate({width: centerWidth}, ANIMATE_DURATION);
+
+        rightEl.animate({width: rightWidth}, ANIMATE_DURATION);
+        rightHeader.el.animate({width: rightWidth}, ANIMATE_DURATION);
+
+        if(rightWidth === 0){
+          setTimeout(function(){
+            rightEl.css('display', 'none');
+          }, ANIMATE_DURATION);
         }
       }
 
@@ -4765,7 +4758,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           var info = me.getColumnOrderById(index);
 
           if(!info.side){
-            F.error('Column does not exist');
+            F.error('Column ' + index + ' does not exist');
           }
 
           column = me.getColumnById(index);
@@ -4779,32 +4772,15 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if(F.isArray(index)){
-        me._tempSumColumnsWidth = 0;
-        me._tempColumnsNumber = index.length;
-
-        switch(side){
-          case 'left':
-            me._tempUsedSide = 'left';
-            break;
-          case 'right':
-            me._tempUsedSide = 'right';
-            break;
-        }
-
         F.each(index, function(value){
           if(side){
-            me._tempColumnsNumber--;
             me.showColumn(side, value);
           }
           else{
-            me._tempColumnsNumber--;
             me.showColumn(value);
           }
         });
 
-        delete me._tempColumnsNumber;
-        delete me._tempSumColumnsWidth;
-        delete me._tempUsedSide;
         return;
       }
 
@@ -4853,10 +4829,6 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
       }
 
-      if(me._tempSumColumnsWidth !== undefined){
-        me._tempSumColumnsWidth += column.width;
-      }
-
       header.showCell(orderIndex, column.width);
       body.showColumn(orderIndex, column.width);
 
@@ -4864,29 +4836,31 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.rowedit.showField(orderIndex, side);
       }
 
-      var columnWidth = column.width;
-      if(me._tempSumColumnsWidth){
-        columnWidth = me._tempSumColumnsWidth;
-      }
+      if(me.leftColumns.length || me.rightColumns.length){
+        var leftWidth = me.calcCurrentLeftWidth(),
+          rightWidth = me.calcCurrentRightWidth(),
+          centerWidth = parseInt(me.el.css('width')) - leftWidth - rightWidth;
 
-      if(!me._tempColumnsNumber){
-        switch (side){
-          case 'left':
-            leftEl.animate({width: parseInt(leftEl.css('width')) + columnWidth});
-            leftHeader.el.animate({width: parseInt(leftHeader.css('width')) + columnWidth});
-            centerEl.animate({left: parseInt(centerEl.css('left')) + columnWidth});
-            centerEl.animate({width: parseInt(centerEl.css('width')) - columnWidth});
-            me.body.el.animate({width: parseInt(me.body.css('width')) - columnWidth});
-            me.header.el.animate({width: parseInt(me.header.css('width')) - columnWidth});
-            break;
-          case 'right':
-            rightEl.animate({width: parseInt(rightEl.css('width')) + columnWidth});
-            rightHeader.el.animate({width: parseInt(rightHeader.css('width')) + columnWidth});
-            centerEl.animate({width: parseInt(centerEl.css('width')) - columnWidth});
-            me.body.el.animate({width: parseInt(me.body.css('width')) - columnWidth});
-            me.header.el.animate({width: parseInt(me.header.css('width')) - columnWidth});
-            break;
+        if(me.panel){
+          centerWidth -= me.gridBorders[1] + me.gridBorders[3];
         }
+        else{
+          centerWidth -= me.gridWithoutPanelBorders[1] + me.gridWithoutPanelBorders[3];
+        }
+
+        if(rightEl.css('display') === 'none'){
+          rightEl.show();
+        }
+
+        leftEl.animate({width: leftWidth}, ANIMATE_DURATION);
+        leftHeader.el.animate({width: leftWidth}, ANIMATE_DURATION);
+        centerEl.animate({left: leftWidth}, ANIMATE_DURATION);
+        centerEl.animate({width: centerWidth}, ANIMATE_DURATION);
+        me.body.el.animate({width: centerWidth}, ANIMATE_DURATION);
+        me.header.el.animate({width: centerWidth}, ANIMATE_DURATION);
+
+        rightEl.animate({width: rightWidth}, ANIMATE_DURATION);
+        rightHeader.el.animate({width: rightWidth}, ANIMATE_DURATION);
       }
 
       if(me.isGroupable()){
@@ -6985,6 +6959,36 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       grouping.update();
+    },
+    /*
+     * @return {Number}
+     */
+    calcCurrentLeftWidth: function(){
+      var columns = this.getColumns('left'),
+        width = 0;
+
+      F.each(columns, function(column){
+        if(!column.hidden){
+          width += column.width;
+        }
+      });
+
+      return width;
+    },
+    /*
+     *
+     */
+    calcCurrentRightWidth: function(){
+      var columns = this.getColumns('right'),
+        width = 0;
+
+      F.each(columns, function(column){
+        if(!column.hidden){
+          width += column.width;
+        }
+      });
+
+      return width;
     }
   });
 
@@ -8139,11 +8143,23 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       if (rowIndex === 0 && columnIndex === 0){
-        if(me.scrollLeft !== 0 && (w.selModel === 'row' || w.selModel === 'rows')){
+        if(me.scrollLeft !== 0 && (w.selModel === 'row' || w.selModel === 'rows') && (!w.selection || !w.selection.activeCell)){
           me.scroll(0);
         }
         else {
-          me.scroll(0, 0);
+          if(w.selection && w.selection.activeCell){
+            var info = w.selection.getActiveCellInfo();
+
+            if(info.side !== 'center'){
+              me.scroll(0);
+            }
+            else{
+              me.scroll(0, 0);
+            }
+          }
+          else {
+            me.scroll(0, 0);
+          }
         }
         me.scrollBottomKnob();
         me.scrollRightKnob();
@@ -10674,6 +10690,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           },
           value = j + 1 + plusValue;
 
+        if(w.grouping){
+          value += w.grouping.getCollapsedRowsBefore(id);
+        }
+
         o.value = value;
 
         if (column.render){
@@ -10692,6 +10712,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
         cell.css(o.style);
         cellsDomInner.item(j).update(value);
+      }
+
+      if(w.grouping){
+        delete w.grouping.collapsedRowsBefore;
       }
     },
     /*
@@ -13816,18 +13840,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           top = w.cellHeaderHeight + 'px';
         }
 
-        if(animate && !F.nojQuery){
-          cellEl.animate({
-            top: top,
-            left: cellsWidth + 'px'
-          }, F.ANIMATE_DURATION);
-        }
-        else {
-          cellEl.css({
-            top: top,
-            left: cellsWidth + 'px'
-          });
-        }
+        cellEl.css({
+          top: top,
+          left: cellsWidth + 'px'
+        });
 
         if (!column.hidden){
           cellsWidth += column.width;
@@ -13861,10 +13877,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           });
 
           if(animate && !F.nojQuery){
-            groupCell.animate({
+            groupCell.css({
               left: groupCellLeft,
               width: groupCellWidth
-            }, ANIMATE_DURATION);
+            });
+
+            if(groupCellWidth === 0){
+              groupCell.css({
+                display: 'none'
+              });
+            }
           }
           else{
             groupCell.css({

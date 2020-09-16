@@ -11,7 +11,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     var me = this,
       w = me.widget,
       caseSensitive = w.filterCaseSensitive,
-      filters = me.filters,
+      filters = Fancy.Object.copy(me.filters),
       passed = true,
       wait = false,
       waitPassed = false;
@@ -42,6 +42,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         }
       }
     }
+
+    // It does not suit
+    // It requires to find way to enable OR filtering
+    //filters = me.combineСomparisonSigns(filters);
 
     for(var p in filters){
       var column = w.getColumnByIndex(p),
@@ -98,6 +102,38 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           case '>=':
             passed = Number(indexValue) >= Number(value);
+            break;
+          // Not used at the moment
+          case '<>':
+            var _passed = false;
+
+            for(var pp in value){
+              var _value = value[pp];
+              switch(pp){
+                case '<':
+                  if(Number(indexValue) < Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+                case '>':
+                  if(Number(indexValue) > Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+                case '<=':
+                  if(Number(indexValue) <= Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+                case '>=':
+                  if(Number(indexValue) >= Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+              }
+            }
+
+            passed = _passed;
             break;
           case '=':
           case '==':
@@ -320,6 +356,32 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
 
     return false;
+  },
+  /*
+   * @return {Object}
+   */
+  combineСomparisonSigns: function(filters){
+    for(var p in filters){
+      var filter = Fancy.Object.copy(filters[p]);
+
+      for(var n in filter){
+        switch(n){
+          case '<':
+          case '>':
+          case '<=':
+          case '>=':
+            filter['<>'] = filter['<>'] || {};
+
+            filter['<>'][n] = filter[n];
+            delete filter[n];
+            break;
+        }
+      }
+
+      filters[p] = filter;
+    }
+
+    return filters;
   }
 });/*
  * @class Fancy.grid.plugin.Filter
@@ -491,7 +553,9 @@ Fancy.modules['filter'] = true;
       me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
     },
     _addValuesInColumnFields: function(columns, header, index, value, sign){
-      var i = 0,
+      var me = this,
+        w = me.widget,
+        i = 0,
         iL = columns.length,
         column;
 
@@ -527,10 +591,37 @@ Fancy.modules['filter'] = true;
               }
               break;
             default:
+              var filters = w.getFilter(index),
+                _value = '';
+
+              for(var p in filters){
+                var filterValue = filters[p];
+                _value += p;
+
+                if(F.isArray(filterValue)){
+                  F.each(filterValue, function(v, i){
+                    _value += v;
+
+                    if(filterValue.length - 1 !== i){
+                      _value += ',';
+                    }
+                  });
+                }
+                else{
+                  _value += filterValue;
+                }
+
+                _value += '&';
+              }
+
+              if(_value[_value.length - 1] === '&'){
+                _value = _value.substring(0, _value.length - 1);
+              }
+
               var id = header.getCell(i).select('.' + FIELD_CLS).attr('id'),
                 field = F.getWidget(id);
 
-              field.set((sign || '') + value);
+              field.set(_value);
           }
         }
       }

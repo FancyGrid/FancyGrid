@@ -422,18 +422,10 @@
           top = w.cellHeaderHeight + 'px';
         }
 
-        if(animate && !F.nojQuery){
-          cellEl.animate({
-            top: top,
-            left: cellsWidth + 'px'
-          }, F.ANIMATE_DURATION);
-        }
-        else {
-          cellEl.css({
-            top: top,
-            left: cellsWidth + 'px'
-          });
-        }
+        cellEl.css({
+          top: top,
+          left: cellsWidth + 'px'
+        });
 
         if (!column.hidden){
           cellsWidth += column.width;
@@ -467,10 +459,16 @@
           });
 
           if(animate && !F.nojQuery){
-            groupCell.animate({
+            groupCell.css({
               left: groupCellLeft,
               width: groupCellWidth
-            }, ANIMATE_DURATION);
+            });
+
+            if(groupCellWidth === 0){
+              groupCell.css({
+                display: 'none'
+              });
+            }
           }
           else{
             groupCell.css({

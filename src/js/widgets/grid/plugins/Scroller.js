@@ -1069,11 +1069,23 @@
       }
 
       if (rowIndex === 0 && columnIndex === 0){
-        if(me.scrollLeft !== 0 && (w.selModel === 'row' || w.selModel === 'rows')){
+        if(me.scrollLeft !== 0 && (w.selModel === 'row' || w.selModel === 'rows') && (!w.selection || !w.selection.activeCell)){
           me.scroll(0);
         }
         else {
-          me.scroll(0, 0);
+          if(w.selection && w.selection.activeCell){
+            var info = w.selection.getActiveCellInfo();
+
+            if(info.side !== 'center'){
+              me.scroll(0);
+            }
+            else{
+              me.scroll(0, 0);
+            }
+          }
+          else {
+            me.scroll(0, 0);
+          }
         }
         me.scrollBottomKnob();
         me.scrollRightKnob();

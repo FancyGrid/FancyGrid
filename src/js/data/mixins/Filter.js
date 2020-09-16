@@ -11,7 +11,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     var me = this,
       w = me.widget,
       caseSensitive = w.filterCaseSensitive,
-      filters = me.filters,
+      filters = Fancy.Object.copy(me.filters),
       passed = true,
       wait = false,
       waitPassed = false;
@@ -42,6 +42,10 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
         }
       }
     }
+
+    // It does not suit
+    // It requires to find way to enable OR filtering
+    //filters = me.combineСomparisonSigns(filters);
 
     for(var p in filters){
       var column = w.getColumnByIndex(p),
@@ -98,6 +102,38 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           case '>=':
             passed = Number(indexValue) >= Number(value);
+            break;
+          // Not used at the moment
+          case '<>':
+            var _passed = false;
+
+            for(var pp in value){
+              var _value = value[pp];
+              switch(pp){
+                case '<':
+                  if(Number(indexValue) < Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+                case '>':
+                  if(Number(indexValue) > Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+                case '<=':
+                  if(Number(indexValue) <= Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+                case '>=':
+                  if(Number(indexValue) >= Number(_value)){
+                    _passed = true;
+                  }
+                  break;
+              }
+            }
+
+            passed = _passed;
             break;
           case '=':
           case '==':
@@ -320,5 +356,31 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
 
     return false;
+  },
+  /*
+   * @return {Object}
+   */
+  combineСomparisonSigns: function(filters){
+    for(var p in filters){
+      var filter = Fancy.Object.copy(filters[p]);
+
+      for(var n in filter){
+        switch(n){
+          case '<':
+          case '>':
+          case '<=':
+          case '>=':
+            filter['<>'] = filter['<>'] || {};
+
+            filter['<>'][n] = filter[n];
+            delete filter[n];
+            break;
+        }
+      }
+
+      filters[p] = filter;
+    }
+
+    return filters;
   }
 });

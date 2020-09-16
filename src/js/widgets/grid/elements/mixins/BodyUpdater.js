@@ -657,6 +657,10 @@
           },
           value = j + 1 + plusValue;
 
+        if(w.grouping){
+          value += w.grouping.getCollapsedRowsBefore(id);
+        }
+
         o.value = value;
 
         if (column.render){
@@ -675,6 +679,10 @@
 
         cell.css(o.style);
         cellsDomInner.item(j).update(value);
+      }
+
+      if(w.grouping){
+        delete w.grouping.collapsedRowsBefore;
       }
     },
     /*
