@@ -3201,22 +3201,42 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (me.bbar){
         panelConfig.bbar = me.bbar;
-        me.height -= me.bbarHeight || me.barHeight;
+        if(me.bbarHidden){
+          panelConfig.bbarHidden = true;
+        }
+        else {
+          me.height -= me.bbarHeight || me.barHeight;
+        }
       }
 
       if (me.tbar){
         panelConfig.tbar = me.tbar;
-        me.height -= me.tbarHeight || me.barHeight;
+        if(me.tbarHidden){
+          panelConfig.tbarHidden = true;
+        }
+        else {
+          me.height -= me.tbarHeight || me.barHeight;
+        }
       }
 
       if (me.subTBar){
         panelConfig.subTBar = me.subTBar;
-        me.height -= me.subTBarHeight || me.barHeight;
+        if(me.subTBarHidden){
+          panelConfig.subTBarHidden = true;
+        }
+        else{
+          me.height -= me.subTBarHeight || me.barHeight;
+        }
       }
 
       if (me.buttons){
         panelConfig.buttons = me.buttons;
-        me.height -= me.buttonsHeight || me.barHeight;
+        if(me.buttonsHidden){
+          panelConfig.buttonsHidden = true;
+        }
+        else {
+          me.height -= me.buttonsHeight || me.barHeight;
+        }
       }
 
       if (me.footer){
@@ -5321,7 +5341,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         me.filter.addValuesInColumnFields(index, value, sign);
       }
       else if(me.searching){
-        me.searching.setValueInField(value);
+        //Not needed
+        //Stay code for a while
+        //me.searching.setValueInField(value);
       }
     },
     /*
@@ -5360,6 +5382,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       }
 
       if(me.searching && index === undefined && sign === undefined){
+      //if(me.searching){
         //me.searching.clear();
         me.searching.clearBarField();
         me.search('');
@@ -5375,6 +5398,17 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
+          if (s.remoteFilter){
+            s.once('serversuccess', function(){
+              me.fire('filter', s.filters);
+
+              delete me.intervalUpdatingFilter;
+            });
+            s.serverFilter();
+
+            return;
+          }
+
           if(s.grouping && s.grouping.by){
             var grouping = me.grouping;
 
@@ -6642,8 +6676,9 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
     /*
      * @param {String} index
      * @param {String|Boolean} [side]
+     * @param {Object} [column]
      */
-    autoSizeColumn: function(index, side){
+    autoSizeColumn: function(index, side, column){
       var me = this,
         info;
 
@@ -6669,6 +6704,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       columnEl.css('width', '');
       offsetWidth = columnEl.dom.offsetWidth + 2;
+
+      if(column && column.maxWidth < offsetWidth){
+        offsetWidth = column.maxWidth;
+      }
+
       columnEl.css('width', width);
 
       if(me.header){
@@ -6699,7 +6739,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         }
 
         if(column.id){
-          me.autoSizeColumn(column.id, true);
+          me.autoSizeColumn(column.id, true, column);
         }
       });
     },

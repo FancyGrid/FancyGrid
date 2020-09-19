@@ -803,7 +803,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && column.index){
-        me.autoSizeColumn(column.id, true);
+        me.autoSizeColumn(column.id, true, column);
       }
     });
   }

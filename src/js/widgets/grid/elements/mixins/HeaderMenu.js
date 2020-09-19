@@ -168,7 +168,7 @@
           text: lang.autoSizeColumn,
           cls: cls,
           handler: function(){
-            w.autoSizeColumn(column.index, me.side);
+            w.autoSizeColumn(column.index, me.side, column);
             column.menu.hide();
           }
         },

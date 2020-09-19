@@ -98,6 +98,10 @@
         }
       }
 
+      if(me.hidden){
+        me.el.css('display', 'none');
+      }
+
       var containerEl = F.get(document.createElement('div'));
       containerEl.addCls(me.containerCls);
 

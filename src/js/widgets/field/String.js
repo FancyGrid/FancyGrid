@@ -76,7 +76,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       '{label}',
     '</div>',
     '<div class="fancy-field-text">',
-      '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
+      '<input autocomplete="off" placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
       '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
     '</div>',
     '<div class="fancy-clearfix"></div>'

@@ -720,22 +720,42 @@
 
       if (me.bbar){
         panelConfig.bbar = me.bbar;
-        me.height -= me.bbarHeight || me.barHeight;
+        if(me.bbarHidden){
+          panelConfig.bbarHidden = true;
+        }
+        else {
+          me.height -= me.bbarHeight || me.barHeight;
+        }
       }
 
       if (me.tbar){
         panelConfig.tbar = me.tbar;
-        me.height -= me.tbarHeight || me.barHeight;
+        if(me.tbarHidden){
+          panelConfig.tbarHidden = true;
+        }
+        else {
+          me.height -= me.tbarHeight || me.barHeight;
+        }
       }
 
       if (me.subTBar){
         panelConfig.subTBar = me.subTBar;
-        me.height -= me.subTBarHeight || me.barHeight;
+        if(me.subTBarHidden){
+          panelConfig.subTBarHidden = true;
+        }
+        else{
+          me.height -= me.subTBarHeight || me.barHeight;
+        }
       }
 
       if (me.buttons){
         panelConfig.buttons = me.buttons;
-        me.height -= me.buttonsHeight || me.barHeight;
+        if(me.buttonsHidden){
+          panelConfig.buttonsHidden = true;
+        }
+        else {
+          me.height -= me.buttonsHeight || me.barHeight;
+        }
       }
 
       if (me.footer){
@@ -2840,7 +2860,9 @@
         me.filter.addValuesInColumnFields(index, value, sign);
       }
       else if(me.searching){
-        me.searching.setValueInField(value);
+        //Not needed
+        //Stay code for a while
+        //me.searching.setValueInField(value);
       }
     },
     /*
@@ -2879,6 +2901,7 @@
       }
 
       if(me.searching && index === undefined && sign === undefined){
+      //if(me.searching){
         //me.searching.clear();
         me.searching.clearBarField();
         me.search('');
@@ -2894,6 +2917,17 @@
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
+          if (s.remoteFilter){
+            s.once('serversuccess', function(){
+              me.fire('filter', s.filters);
+
+              delete me.intervalUpdatingFilter;
+            });
+            s.serverFilter();
+
+            return;
+          }
+
           if(s.grouping && s.grouping.by){
             var grouping = me.grouping;
 
@@ -4161,8 +4195,9 @@
     /*
      * @param {String} index
      * @param {String|Boolean} [side]
+     * @param {Object} [column]
      */
-    autoSizeColumn: function(index, side){
+    autoSizeColumn: function(index, side, column){
       var me = this,
         info;
 
@@ -4188,6 +4223,11 @@
 
       columnEl.css('width', '');
       offsetWidth = columnEl.dom.offsetWidth + 2;
+
+      if(column && column.maxWidth < offsetWidth){
+        offsetWidth = column.maxWidth;
+      }
+
       columnEl.css('width', width);
 
       if(me.header){
@@ -4218,7 +4258,7 @@
         }
 
         if(column.id){
-          me.autoSizeColumn(column.id, true);
+          me.autoSizeColumn(column.id, true, column);
         }
       });
     },

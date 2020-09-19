@@ -319,6 +319,7 @@
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.bbarHidden === true,
           scope: scope,
           theme: theme,
           i18n: this.i18n
@@ -334,6 +335,7 @@
           height: me.buttonsHeight || me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.buttonsHidden === true,
           scope: scope,
           theme: theme
         });
@@ -349,6 +351,7 @@
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.tbarHidden === true,
           scope: scope,
           theme: theme
         });
@@ -360,10 +363,11 @@
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
-          height: me.subTBarHeight || me.barHeight,
+          height:  me.subTBarHeight || me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.subTBarHidden === true,
           scope: scope,
           theme: theme
         });

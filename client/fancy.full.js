@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.116',
+  version: '1.7.117',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -13399,6 +13399,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           barContainer: me.barContainer,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.bbarHidden === true,
           scope: scope,
           theme: theme,
           i18n: this.i18n
@@ -13414,6 +13415,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           height: me.buttonsHeight || me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.buttonsHidden === true,
           scope: scope,
           theme: theme
         });
@@ -13429,6 +13431,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           tabEdit: !me.subTBar && containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.tbarHidden === true,
           scope: scope,
           theme: theme
         });
@@ -13440,10 +13443,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me._subTBar = new F.Bar({
           el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
           items: me.subTBar,
-          height: me.subTBarHeight || me.barHeight,
+          height:  me.subTBarHeight || me.barHeight,
           tabEdit: containsGrid,
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
+          hidden: me.subTBarHidden === true,
           scope: scope,
           theme: theme
         });
@@ -14274,6 +14278,10 @@ Fancy.define('Fancy.toolbar.Tab', {
         if (me.style){
           me.el.css(me.style);
         }
+      }
+
+      if(me.hidden){
+        me.el.css('display', 'none');
       }
 
       var containerEl = F.get(document.createElement('div'));
@@ -18463,7 +18471,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
       '{label}',
     '</div>',
     '<div class="fancy-field-text">',
-      '<input placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
+      '<input autocomplete="off" placeholder="{emptyText}" class="fancy-field-text-input" style="{inputWidth}" value="{value}">',
       '<div class="fancy-field-error" style="{errorTextStyle}"></div>',
     '</div>',
     '<div class="fancy-clearfix"></div>'
@@ -18533,10 +18541,10 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         '{label}',
       '</div>',
       '<div class="'+FIELD_TEXT_CLS+'">',
-      '<input placeholder="{emptyText}" class="'+FIELD_TEXT_INPUT_CLS+'" style="{inputWidth}" value="{value}">',
-      '<div class="'+FIELD_SPIN_CLS+'">',
-      '<div class="'+FIELD_SPIN_UP_CLS+'"></div>',
-      '<div class="'+FIELD_SPIN_DOWN_CLS+'"></div>',
+        '<input autocomplete="off" placeholder="{emptyText}" class="'+FIELD_TEXT_INPUT_CLS+'" style="{inputWidth}" value="{value}">',
+        '<div class="'+FIELD_SPIN_CLS+'">',
+        '<div class="'+FIELD_SPIN_UP_CLS+'"></div>',
+        '<div class="'+FIELD_SPIN_DOWN_CLS+'"></div>',
       '</div>',
       '<div class="'+FIELD_ERROR_CLS+'" style="{errorTextStyle}"></div>',
       '</div>',
@@ -20242,7 +20250,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       '<div class="' + FIELD_TEXT_CLS + '">',
         '<div class="' + FIELD_COMBO_INPUT_CONTAINER_CLS + '" style="{inputWidth}{inputHeight}">',
           '<div class="' + FIELD_COMBO_LEFT_EL_CLS + '" style="{inputHeight}cursor:default;">&nbsp;</div>',
-          '<input placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputHeight}cursor:default;" value="{value}">',
+          '<input autocomplete="off" placeholder="{emptyText}" class="' + FIELD_TEXT_INPUT_CLS + '" style="{inputHeight}cursor:default;" value="{value}">',
           '<div class="' + FIELD_COMBO_DROPDOWN_BUTTON_CLS + '">&nbsp;</div>',
         '</div>',
       '</div>',
@@ -26860,22 +26868,42 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       if (me.bbar){
         panelConfig.bbar = me.bbar;
-        me.height -= me.bbarHeight || me.barHeight;
+        if(me.bbarHidden){
+          panelConfig.bbarHidden = true;
+        }
+        else {
+          me.height -= me.bbarHeight || me.barHeight;
+        }
       }
 
       if (me.tbar){
         panelConfig.tbar = me.tbar;
-        me.height -= me.tbarHeight || me.barHeight;
+        if(me.tbarHidden){
+          panelConfig.tbarHidden = true;
+        }
+        else {
+          me.height -= me.tbarHeight || me.barHeight;
+        }
       }
 
       if (me.subTBar){
         panelConfig.subTBar = me.subTBar;
-        me.height -= me.subTBarHeight || me.barHeight;
+        if(me.subTBarHidden){
+          panelConfig.subTBarHidden = true;
+        }
+        else{
+          me.height -= me.subTBarHeight || me.barHeight;
+        }
       }
 
       if (me.buttons){
         panelConfig.buttons = me.buttons;
-        me.height -= me.buttonsHeight || me.barHeight;
+        if(me.buttonsHidden){
+          panelConfig.buttonsHidden = true;
+        }
+        else {
+          me.height -= me.buttonsHeight || me.barHeight;
+        }
       }
 
       if (me.footer){
@@ -28980,7 +29008,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.filter.addValuesInColumnFields(index, value, sign);
       }
       else if(me.searching){
-        me.searching.setValueInField(value);
+        //Not needed
+        //Stay code for a while
+        //me.searching.setValueInField(value);
       }
     },
     /*
@@ -29019,6 +29049,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(me.searching && index === undefined && sign === undefined){
+      //if(me.searching){
         //me.searching.clear();
         me.searching.clearBarField();
         me.search('');
@@ -29034,6 +29065,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
+          if (s.remoteFilter){
+            s.once('serversuccess', function(){
+              me.fire('filter', s.filters);
+
+              delete me.intervalUpdatingFilter;
+            });
+            s.serverFilter();
+
+            return;
+          }
+
           if(s.grouping && s.grouping.by){
             var grouping = me.grouping;
 
@@ -30301,8 +30343,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     /*
      * @param {String} index
      * @param {String|Boolean} [side]
+     * @param {Object} [column]
      */
-    autoSizeColumn: function(index, side){
+    autoSizeColumn: function(index, side, column){
       var me = this,
         info;
 
@@ -30328,6 +30371,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       columnEl.css('width', '');
       offsetWidth = columnEl.dom.offsetWidth + 2;
+
+      if(column && column.maxWidth < offsetWidth){
+        offsetWidth = column.maxWidth;
+      }
+
       columnEl.css('width', width);
 
       if(me.header){
@@ -30358,7 +30406,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
 
         if(column.id){
-          me.autoSizeColumn(column.id, true);
+          me.autoSizeColumn(column.id, true, column);
         }
       });
     },
@@ -31492,7 +31540,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && column.index){
-        me.autoSizeColumn(column.id, true);
+        me.autoSizeColumn(column.id, true, column);
       }
     });
   }
@@ -54930,7 +54978,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           text: lang.autoSizeColumn,
           cls: cls,
           handler: function(){
-            w.autoSizeColumn(column.index, me.side);
+            w.autoSizeColumn(column.index, me.side, column);
             column.menu.hide();
           }
         },
