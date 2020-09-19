@@ -4189,7 +4189,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
       if (!side){
         F.each(leftColumns, function(column, i){
-          if (column.index === id){
+          if (column.id === id){
             side = 'left';
             order = i;
           }
@@ -4197,7 +4197,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
         if (!side){
           F.each(rightColumns, function(column, i){
-            if (column.index === id){
+            if (column.id === id){
               side = 'right';
               order = i;
             }
@@ -4451,19 +4451,19 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         value -= me.barHeight;
       }
 
-      if (me.bbar){
+      if (me.bbar && !me.bbarHidden){
         value -= me.bbarHeight || me.barHeight;
       }
 
-      if (me.tbar){
+      if (me.tbar && !me.tbarHidden){
         value -= me.tbarHeight || me.barHeight;
       }
 
-      if (me.subTBar){
+      if (me.subTBar && !me.subTBarHidden){
         value -= me.subTBarHeight || me.barHeight;
       }
 
-      if (me.buttons){
+      if (me.buttons && !me.buttonsHidden){
         value -= me.buttonsHeight || me.barHeight;
       }
 
@@ -6441,15 +6441,19 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       switch (bar){
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
+          me.tbarHidden = true;
           break;
         case 'subtbar':
           barCls = PANEL_SUB_TBAR_CLS;
+          me.subTBarHidden = true;
           break;
         case 'bbar':
           barCls = PANEL_BBAR_CLS;
+          me.bbarHidden = true;
           break;
         case 'buttons':
           barCls = PANEL_BUTTONS_CLS;
+          me.buttonsHidden = true;
           break;
         default:
           F.error('Bar does not exist');
@@ -6475,15 +6479,19 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       switch (bar){
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
+          delete me.tbarHidden;
           break;
         case 'subtbar':
           barCls = PANEL_SUB_TBAR_CLS;
+          delete me.subTBarHidden;
           break;
         case 'bbar':
           barCls = PANEL_BBAR_CLS;
+          delete me.bbarHidden;
           break;
         case 'buttons':
           barCls = PANEL_BUTTONS_CLS;
+          delete me.buttonsHidden;
           break;
         default:
           F.error('Bar does not exist');
@@ -6705,8 +6713,11 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       columnEl.css('width', '');
       offsetWidth = columnEl.dom.offsetWidth + 2;
 
-      if(column && column.maxWidth < offsetWidth){
+      if(column && (column.maxWidth && column.maxWidth < offsetWidth)){
         offsetWidth = column.maxWidth;
+      }
+      else if(column && (column.maxAutoWidth && column.maxAutoWidth < offsetWidth)){
+        offsetWidth = column.maxAutoWidth;
       }
 
       columnEl.css('width', width);

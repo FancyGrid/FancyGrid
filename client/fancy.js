@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.117',
+  version: '1.7.118',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -8203,6 +8203,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             }));
             continue;
           case 'side':
+          case '->':
             isSide = true;
             continue;
           default:

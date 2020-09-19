@@ -170,6 +170,7 @@
             }));
             continue;
           case 'side':
+          case '->':
             isSide = true;
             continue;
           default:
