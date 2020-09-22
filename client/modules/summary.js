@@ -119,7 +119,8 @@ Fancy.modules['summary'] = true;
         body.el[method](el.dom);
       }
 
-      if (leftWidth){
+      //if (leftWidth){
+      if (w.leftColumns.length){
         if(leftEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length){}
         else if(leftEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length){}
         else {
@@ -140,7 +141,8 @@ Fancy.modules['summary'] = true;
         }
       }
 
-      if (rightWidth){
+      //if (rightWidth){
+      if (w.rightColumns.length){
         if(rightEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length){}
         else if(rightEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length){}
         else {

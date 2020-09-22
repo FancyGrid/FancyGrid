@@ -2184,9 +2184,12 @@
                 else{
                   splitted[1] = String(splitted[1]).substring(0, precision);
                 }
-              }
 
-              return splitted[0] + lang.decimalSeparator + splitted[1];
+                return splitted[0] + lang.decimalSeparator + splitted[1];
+              }
+              else{
+                return splitted[0];
+              }
             }
 
             if(precision > 0 && splitted[0] !== ''){

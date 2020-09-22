@@ -318,9 +318,14 @@
             break;
           case 'center':
             if(w.rightColumns && w.rightColumns.length){
-              info.columnIndex = 0;
-              body = w.getBody('right');
-              info.side = 'right';
+              F.each(w.rightColumns, function(column, i){
+                if(!column.hidden){
+                  info.columnIndex = i;
+                  body = w.getBody('right');
+                  info.side = 'right';
+                  return true;
+                }
+              });
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
             break;
@@ -379,7 +384,6 @@
           }
           break;
         case 'center':
-          //TODO
           var _column = w.columns[info.columnIndex];
 
           if(_column.hidden){
@@ -398,8 +402,23 @@
             }
 
             if(!foundVisibleColumn){
-              info.columnIndex--;
-              //TODO for right side
+              var foundVisibleColumn = false;
+
+              F.each(w.rightColumns, function(_column, i){
+                if(!_column.hidden){
+                  foundVisibleColumn = true;
+                  info.columnIndex = i;
+                  info.side = 'right';
+                  return true;
+                }
+              });
+
+              if(foundVisibleColumn){
+                body = w.getBody(info.side);
+              }
+              else{
+                info.columnIndex--;
+              }
             }
 
             nextCell = body.getCell(info.rowIndex, info.columnIndex);
@@ -510,9 +529,35 @@
             break;
           case 'right':
             if (w.columns && w.columns.length){
-              info.columnIndex = w.columns.length - 1;
-              body = w.getBody('center');
-              info.side = 'center';
+              var i = w.columns.length,
+                foundVisibleColumn = false;
+
+              while(i--){
+                var _column = w.columns[i];
+                if(!_column.hidden){
+                  info.columnIndex = i;
+                  body = w.getBody('center');
+                  info.side = 'center';
+                  foundVisibleColumn = true;
+                  break;
+                }
+              }
+
+              if(!foundVisibleColumn && w.leftColumns.length){
+                var i = w.leftColumns.length;
+
+                while(i--){
+                  var _column = w.leftColumns[i];
+                  if(!_column.hidden){
+                    info.columnIndex = i;
+                    body = w.getBody('left');
+                    info.side = 'left';
+                    foundVisibleColumn = true;
+                    break;
+                  }
+                }
+              }
+
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
             break;

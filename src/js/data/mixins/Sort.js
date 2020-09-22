@@ -61,7 +61,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           key: key,
           dir: action.toLocaleUpperCase(),
           type: sortType,
-          _type: type
+          _type: type,
+          options: options
         });
       }
     }
@@ -264,7 +265,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       sortedColumnValues = me.treeReadSortedId(sortedData);
     }
     else if(me.grouping){
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by);
+      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -300,7 +301,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
     else {
-      columnOriginalValues = me.getColumnOriginalValues(key);
+      columnOriginalValues = me.getColumnOriginalValues(key, options);
 
       switch (action){
         case 'asc':

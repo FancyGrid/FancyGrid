@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.118',
+  version: '1.7.119',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -4936,7 +4936,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           key: key,
           dir: action.toLocaleUpperCase(),
           type: sortType,
-          _type: type
+          _type: type,
+          options: options
         });
       }
     }
@@ -5139,7 +5140,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       sortedColumnValues = me.treeReadSortedId(sortedData);
     }
     else if(me.grouping){
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by);
+      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -5175,7 +5176,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
     else {
-      columnOriginalValues = me.getColumnOriginalValues(key);
+      columnOriginalValues = me.getColumnOriginalValues(key, options);
 
       switch (action){
         case 'asc':
@@ -28145,7 +28146,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.panel){
-        bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
+        bodyHeight -= 2;
+        //bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
+        //bodyHeight -= gridBorders[0] + gridBorders[2];
+      }
+      else{
+        bodyHeight -= gridBorders[0] + gridBorders[2];
       }
 
       if (me.summary){
@@ -28156,8 +28162,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           bodyHeight -= me.cellHeight;
         }
       }
-
-      bodyHeight -= gridBorders[0] + gridBorders[2];
 
       if (me.body){
         me.body.css('height', bodyHeight);
@@ -28338,6 +28342,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if(column){
         var info = me.getColumnOrderById(column.id);
         side = info.side;
+
+        if(column.hidden){
+          return;
+        }
       }
 
       var body = me.getBody(side),
@@ -28422,6 +28430,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         me.grouping.updateGroupRows();
       }
 
+      if(side === 'right' || side === 'left'){
+        if(me.intervalScrollUpdate){
+          clearInterval(me.intervalScrollUpdate);
+        }
+
+        me.intervalScrollUpdate = setTimeout(function(){
+          me.scroller.update();
+          delete me.intervalScrollUpdate;
+        }, ANIMATE_DURATION);
+      }
+
       me.onWindowResize();
 
       me.fire('columnhide', {
@@ -28475,6 +28494,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       if(column){
         var info = me.getColumnOrderById(column.id);
         side = info.side;
+
+        if(!column.hidden){
+          return;
+        }
       }
 
       var body = me.getBody(side),
@@ -28553,6 +28576,17 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       if(me.isGroupable()){
         me.grouping.updateGroupRows();
+      }
+
+      if(side === 'right' || side === 'left'){
+        if(me.intervalScrollUpdate){
+          clearInterval(me.intervalScrollUpdate);
+        }
+
+        me.intervalScrollUpdate = setTimeout(function(){
+          me.scroller.update();
+          delete me.intervalScrollUpdate;
+        }, ANIMATE_DURATION);
       }
 
       me.onWindowResize();
@@ -30104,24 +30138,37 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     hideBar: function(bar){
       var me = this,
         barCls,
-        barEl;
+        barEl,
+        barHeight = me.barHeight;
 
       switch (bar){
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
           me.tbarHidden = true;
+          if(me.tbarHeight){
+            barHeight = me.tbarHeight;
+          }
           break;
         case 'subtbar':
           barCls = PANEL_SUB_TBAR_CLS;
           me.subTBarHidden = true;
+          if(me.subTBarHeight){
+            barHeight = me.subTBarHeight;
+          }
           break;
         case 'bbar':
           barCls = PANEL_BBAR_CLS;
           me.bbarHidden = true;
+          if(me.bbarHeight){
+            barHeight = me.bbarHeight;
+          }
           break;
         case 'buttons':
           barCls = PANEL_BUTTONS_CLS;
           me.buttonsHidden = true;
+          if(me.buttonsHeight){
+            barHeight = me.buttonsHeight;
+          }
           break;
         default:
           F.error('Bar does not exist');
@@ -30133,7 +30180,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         barEl.hide();
 
         var panelHeight = parseInt(me.panel.el.css('height'));
-        me.panel.el.css('height', panelHeight - me.barHeight);
+        //me.panel.el.css('height', panelHeight - barHeight);
+        me.setHeight(panelHeight);
       }
     },
     /*
@@ -30142,24 +30190,37 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     showBar: function(bar){
       var me = this,
         barCls,
-        barEl;
+        barEl,
+        barHeight = me.barHeight;
 
       switch (bar){
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
           delete me.tbarHidden;
+          if(me.tbarHeight){
+            barHeight = me.tbarHeight;
+          }
           break;
         case 'subtbar':
           barCls = PANEL_SUB_TBAR_CLS;
           delete me.subTBarHidden;
+          if(me.subTBarHeight){
+            barHeight = me.subTBarHeight;
+          }
           break;
         case 'bbar':
           barCls = PANEL_BBAR_CLS;
           delete me.bbarHidden;
+          if(me.bbarHeight){
+            barHeight = me.bbarHeight;
+          }
           break;
         case 'buttons':
           barCls = PANEL_BUTTONS_CLS;
           delete me.buttonsHidden;
+          if(me.buttonsHeight){
+            barHeight = me.buttonsHeight;
+          }
           break;
         default:
           F.error('Bar does not exist');
@@ -30171,7 +30232,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         barEl.show();
 
         var panelHeight = parseInt(me.panel.el.css('height'));
-        me.panel.el.css('height', panelHeight + me.barHeight);
+        //me.panel.el.css('height', panelHeight + barHeight);
+        me.setHeight(panelHeight);
       }
     },
     /*
@@ -30364,6 +30426,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
       else{
         info = me.getColumnOrderByKey(index);
+        if(!info || info.order === undefined){
+          info = me.getColumnOrderById(index);
+          side = info.side;
+        }
       }
 
       if(!info || info.order === undefined){
@@ -31551,7 +31617,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
-      if(column.autoWidth && column.index){
+      if(column.autoWidth && !column.hidden && (column.index || column.smartIndexFn || column.render)){
         me.autoSizeColumn(column.id, true, column);
       }
     });
@@ -42256,9 +42322,14 @@ Fancy.modules['selection'] = true;
             break;
           case 'center':
             if(w.rightColumns && w.rightColumns.length){
-              info.columnIndex = 0;
-              body = w.getBody('right');
-              info.side = 'right';
+              F.each(w.rightColumns, function(column, i){
+                if(!column.hidden){
+                  info.columnIndex = i;
+                  body = w.getBody('right');
+                  info.side = 'right';
+                  return true;
+                }
+              });
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
             break;
@@ -42317,7 +42388,6 @@ Fancy.modules['selection'] = true;
           }
           break;
         case 'center':
-          //TODO
           var _column = w.columns[info.columnIndex];
 
           if(_column.hidden){
@@ -42336,8 +42406,23 @@ Fancy.modules['selection'] = true;
             }
 
             if(!foundVisibleColumn){
-              info.columnIndex--;
-              //TODO for right side
+              var foundVisibleColumn = false;
+
+              F.each(w.rightColumns, function(_column, i){
+                if(!_column.hidden){
+                  foundVisibleColumn = true;
+                  info.columnIndex = i;
+                  info.side = 'right';
+                  return true;
+                }
+              });
+
+              if(foundVisibleColumn){
+                body = w.getBody(info.side);
+              }
+              else{
+                info.columnIndex--;
+              }
             }
 
             nextCell = body.getCell(info.rowIndex, info.columnIndex);
@@ -42448,9 +42533,35 @@ Fancy.modules['selection'] = true;
             break;
           case 'right':
             if (w.columns && w.columns.length){
-              info.columnIndex = w.columns.length - 1;
-              body = w.getBody('center');
-              info.side = 'center';
+              var i = w.columns.length,
+                foundVisibleColumn = false;
+
+              while(i--){
+                var _column = w.columns[i];
+                if(!_column.hidden){
+                  info.columnIndex = i;
+                  body = w.getBody('center');
+                  info.side = 'center';
+                  foundVisibleColumn = true;
+                  break;
+                }
+              }
+
+              if(!foundVisibleColumn && w.leftColumns.length){
+                var i = w.leftColumns.length;
+
+                while(i--){
+                  var _column = w.leftColumns[i];
+                  if(!_column.hidden){
+                    info.columnIndex = i;
+                    body = w.getBody('left');
+                    info.side = 'left';
+                    foundVisibleColumn = true;
+                    break;
+                  }
+                }
+              }
+
               nextCell = body.getCell(info.rowIndex, info.columnIndex);
             }
             break;
@@ -45889,7 +46000,8 @@ Fancy.modules['summary'] = true;
         body.el[method](el.dom);
       }
 
-      if (leftWidth){
+      //if (leftWidth){
+      if (w.leftColumns.length){
         if(leftEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length){}
         else if(leftEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length){}
         else {
@@ -45910,7 +46022,8 @@ Fancy.modules['summary'] = true;
         }
       }
 
-      if (rightWidth){
+      //if (rightWidth){
+      if (w.rightColumns.length){
         if(rightEl.select('.' + GRID_ROW_SUMMARY_CONTAINER_CLS).length){}
         else if(rightEl.select('.' + GRID_ROW_SUMMARY_BOTTOM_CLS).length){}
         else {
@@ -53619,9 +53732,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
                 else{
                   splitted[1] = String(splitted[1]).substring(0, precision);
                 }
-              }
 
-              return splitted[0] + lang.decimalSeparator + splitted[1];
+                return splitted[0] + lang.decimalSeparator + splitted[1];
+              }
+              else{
+                return splitted[0];
+              }
             }
 
             if(precision > 0 && splitted[0] !== ''){
