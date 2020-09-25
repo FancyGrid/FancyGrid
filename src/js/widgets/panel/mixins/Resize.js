@@ -52,6 +52,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     if(me.buttons){
       me._buttons.applyScrollChanges();
     }
+
+    var item = me.items[0];
+
+    if(item && item.type === 'grid' && item.infinite){
+      delete item.numOfVisibleCells;
+      item.update();
+    }
   },
   /*
    *

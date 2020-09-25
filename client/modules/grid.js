@@ -7727,6 +7727,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
           me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
           me.scroll( topScroll );
+
+          if(w.infinite && w.selection){
+            w.selection.updateSelection();
+            w.selection.clearActiveCell();
+          }
         }
 
         if (me.bottomKnobDown){
@@ -8047,6 +8052,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     scrollRightKnob: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         bodyScrolled = me.getScroll(),
         newKnobScroll = bodyScrolled / me.rightScrollScale + w.knobOffSet;
 
@@ -8058,9 +8064,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         newKnobScroll += me.cornerSize;
       }
 
-      if(w.infinite){
-        return;
-      }
+      if(w.infinite){}
 
       me.rightKnob.css('margin-top', newKnobScroll + 'px');
     },
@@ -8092,10 +8096,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     getScroll: function(){
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        s = w.store;
 
       if(w.nativeScroller){
         return w.body.el.dom.scrollTop;
+      }
+
+      if(w.infinite){
+        return Math.abs(s.infiniteScrolledToRow * w.cellHeight);
       }
 
       if(w.columns.length === 0){
@@ -8122,11 +8131,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       if(w.columns.length === 0){
-        if(w.leftColumns.length){
+        if (w.leftColumns.length){
           return Math.abs(parseInt(w.leftBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
         }
 
-        if(w.rightColumns.length){
+        if (w.rightColumns.length){
           return Math.abs(parseInt(w.rightBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
         }
       }
@@ -8143,9 +8152,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.setScrollBars(viewHeight);
       me.checkScroll(viewHeight);
 
-      if(!w.infinite){
+      //if(!w.infinite){
         me.scrollRightKnob();
-      }
+      //}
       me.scrollBottomKnob();
     },
     /*
@@ -8239,6 +8248,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       var me = this,
         w = me.widget,
+        s = w.store,
         cellHeight = w.cellHeight,
         cellEl = F.get(cell),
         columnEl = cellEl.parent(),
@@ -8256,6 +8266,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if(w.nativeScroller && !nativeScroll){
         return;
+      }
+
+      if(w.infinite){
+        rowIndex += s.infiniteScrolledToRow;
+        passedHeight += cellHeight * s.infiniteScrolledToRow;
       }
 
       if (rowIndex === 0 && columnIndex === 0){
@@ -10647,7 +10662,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
-        var data = s.get(j),
+        //var data = s.get(j),
+        var data = s.get(j + infiniteScrolledToRow),
           id = s.getId(j + infiniteScrolledToRow),
           inner = cellsDomInner.item(j),
           cell = cellsDom.item(j),
@@ -12681,6 +12697,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     wheelScroll: function(delta){
       var me = this,
         w = me.widget,
+        s = w.store,
         knobOffSet = w.knobOffSet,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
 
@@ -12720,8 +12737,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(topValue > 0){
           topValue = 0;
         }
-
-
 
         columnEl.css('top', topValue + 'px');
       }

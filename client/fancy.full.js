@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.119',
+  version: '1.7.120',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3921,6 +3921,18 @@ Fancy.Mixin('Fancy.store.mixin.Infinite',{
       infiniteDisplayedRows: 50,
       infiniteScrolledToRow: 0
     });
+  },
+  /*
+   *
+   */
+  getNumOfInfiniteRows: function(){
+    var me = this;
+
+    if(me.filteredData){
+      return me.filteredData.length;
+    }
+
+    return me.data.length;
   }
 });
 /*
@@ -7117,6 +7129,10 @@ Fancy.define('Fancy.Store', {
    * @return {String|Number}
    */
   getId: function(rowIndex){
+    if(!this.dataView[rowIndex]){
+      return '';
+    }
+
     return this.dataView[rowIndex].id;
   },
   /*
@@ -7384,8 +7400,15 @@ Fancy.define('Fancy.Store', {
     }
 
     if(options.smartIndexFn){
-      for(;i<iL;i++){
-        values.push(options.smartIndexFn(data[i].data));
+      if(me.infinite){
+        for (; i < iL; i++){
+          values.push(options.smartIndexFn(data[i + me.infiniteScrolledToRow].data));
+        }
+      }
+      else {
+        for (; i < iL; i++){
+          values.push(options.smartIndexFn(data[i].data));
+        }
       }
     }
     else{
@@ -12922,6 +12945,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
     if(me.buttons){
       me._buttons.applyScrollChanges();
+    }
+
+    var item = me.items[0];
+
+    if(item && item.type === 'grid' && item.infinite){
+      delete item.numOfVisibleCells;
+      item.update();
     }
   },
   /*
@@ -32246,6 +32276,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
           me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
           me.scroll( topScroll );
+
+          if(w.infinite && w.selection){
+            w.selection.updateSelection();
+            w.selection.clearActiveCell();
+          }
         }
 
         if (me.bottomKnobDown){
@@ -32566,6 +32601,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     scrollRightKnob: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         bodyScrolled = me.getScroll(),
         newKnobScroll = bodyScrolled / me.rightScrollScale + w.knobOffSet;
 
@@ -32577,9 +32613,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         newKnobScroll += me.cornerSize;
       }
 
-      if(w.infinite){
-        return;
-      }
+      if(w.infinite){}
 
       me.rightKnob.css('margin-top', newKnobScroll + 'px');
     },
@@ -32611,10 +32645,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     getScroll: function(){
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        s = w.store;
 
       if(w.nativeScroller){
         return w.body.el.dom.scrollTop;
+      }
+
+      if(w.infinite){
+        return Math.abs(s.infiniteScrolledToRow * w.cellHeight);
       }
 
       if(w.columns.length === 0){
@@ -32641,11 +32680,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       if(w.columns.length === 0){
-        if(w.leftColumns.length){
+        if (w.leftColumns.length){
           return Math.abs(parseInt(w.leftBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
         }
 
-        if(w.rightColumns.length){
+        if (w.rightColumns.length){
           return Math.abs(parseInt(w.rightBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
         }
       }
@@ -32662,9 +32701,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.setScrollBars(viewHeight);
       me.checkScroll(viewHeight);
 
-      if(!w.infinite){
+      //if(!w.infinite){
         me.scrollRightKnob();
-      }
+      //}
       me.scrollBottomKnob();
     },
     /*
@@ -32758,6 +32797,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       var me = this,
         w = me.widget,
+        s = w.store,
         cellHeight = w.cellHeight,
         cellEl = F.get(cell),
         columnEl = cellEl.parent(),
@@ -32775,6 +32815,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       if(w.nativeScroller && !nativeScroll){
         return;
+      }
+
+      if(w.infinite){
+        rowIndex += s.infiniteScrolledToRow;
+        passedHeight += cellHeight * s.infiniteScrolledToRow;
       }
 
       if (rowIndex === 0 && columnIndex === 0){
@@ -38247,7 +38292,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     changePosition: function(rowIndex, animate){
       var me = this,
         w = me.widget,
-        scrollTop = w.scroller.getScroll(),
+        scrollTop = w.infinite? 0 : w.scroller.getScroll(),
         bottomScroll = w.scroller.getBottomScroll(),
         newTop = w.cellHeight * rowIndex - 1 - scrollTop,
         plusTop = 0;
@@ -41837,9 +41882,24 @@ Fancy.modules['selection'] = true;
     updateSelection: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         body = w.body;
 
       if(!me.memory){
+        if(w.infinite){
+          switch(me.selModel){
+            case 'row':
+            case 'rows':
+              var selectedDomRows = body.el.select('.' + GRID_COLUMN_CLS + '[index="0"] .' + GRID_CELL_SELECTED_CLS);
+
+              selectedDomRows.each(function(el){
+                var rowIndex = el.attr('index');
+
+                me.domDeSelectRow(rowIndex);
+              });
+              break;
+          }
+        }
         return;
       }
 
@@ -41850,6 +41910,15 @@ Fancy.modules['selection'] = true;
           item = w.get(rowIndex),
           id = item.id;
 
+        if(w.infinite){
+          item = w.get(rowIndex + s.infiniteScrolledToRow);
+        }
+        else{
+          item = w.get(rowIndex);
+        }
+
+        id = item.id;
+
         if(!me.memory.has(id)){
           me.domDeSelectRow(rowIndex);
         }
@@ -41858,7 +41927,7 @@ Fancy.modules['selection'] = true;
       for(var id in me.memory.selected){
         var rowIndex = w.getRowById(id);
 
-        if(rowIndex !== undefined){
+        if (rowIndex !== undefined){
           me.domSelectRow(rowIndex);
         }
       }
@@ -42715,9 +42784,27 @@ Fancy.modules['selection'] = true;
     moveUp: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
         nextCell;
+
+      if(w.infinite){
+        if(info.rowIndex === 0){
+          var newInfiniteScrolledToRow = s.infiniteScrolledToRow - 1;
+
+          if(newInfiniteScrolledToRow < 0){
+            newInfiniteScrolledToRow = 0;
+          }
+
+          s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+          w.update();
+
+          if(w.selection){
+            w.selection.updateSelection();
+          }
+        }
+      }
 
       info.rowIndex--;
       if(info.rowIndex < 0){
@@ -42734,20 +42821,26 @@ Fancy.modules['selection'] = true;
         case 'cells':
           me.clearSelection();
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(!w.infinite){
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
           break;
         case 'row':
         case 'rows':
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           else{
             me.clearSelection();
             me.selectRow( info.rowIndex );
             nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-            w.scroller.scrollToCell( nextCell.dom, true );
+            if(!w.infinite){
+              w.scroller.scrollToCell( nextCell.dom, true );
+            }
             if (me.selModel === 'rows'){
               me.updateHeaderCheckBox();
             }
@@ -42758,7 +42851,9 @@ Fancy.modules['selection'] = true;
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           break;
       }
@@ -42771,9 +42866,29 @@ Fancy.modules['selection'] = true;
     moveDown: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
         nextCell;
+
+      if(w.infinite){
+        if(info.rowIndex > w.numOfVisibleCells - 3){
+          var newInfiniteScrolledToRow = s.infiniteScrolledToRow + 1;
+
+          if(newInfiniteScrolledToRow > s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1 ) ){
+            newInfiniteScrolledToRow = s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1);
+          }
+
+          s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+          w.update();
+
+          if(w.selection){
+            w.selection.updateSelection();
+          }
+
+          return;
+        }
+      }
 
       info.rowIndex++;
       nextCell = body.getCell(info.rowIndex, info.columnIndex);
@@ -42787,20 +42902,26 @@ Fancy.modules['selection'] = true;
         case 'cells':
           me.clearSelection();
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(!w.infinite){
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
           break;
         case 'row':
         case 'rows':
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           else{
             me.clearSelection();
             me.selectRow(info.rowIndex);
             nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
             if(me.selModel === 'rows'){
               me.updateHeaderCheckBox();
             }
@@ -52046,7 +52167,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           }
         }
 
-        var data = s.get(j),
+        //var data = s.get(j),
+        var data = s.get(j + infiniteScrolledToRow),
           id = s.getId(j + infiniteScrolledToRow),
           inner = cellsDomInner.item(j),
           cell = cellsDom.item(j),
@@ -54081,6 +54203,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     wheelScroll: function(delta){
       var me = this,
         w = me.widget,
+        s = w.store,
         knobOffSet = w.knobOffSet,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
 
@@ -54120,8 +54243,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         if(topValue > 0){
           topValue = 0;
         }
-
-
 
         columnEl.css('top', topValue + 'px');
       }

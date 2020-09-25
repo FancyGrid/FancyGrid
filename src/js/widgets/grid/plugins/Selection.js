@@ -2961,9 +2961,24 @@ Fancy.modules['selection'] = true;
     updateSelection: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         body = w.body;
 
       if(!me.memory){
+        if(w.infinite){
+          switch(me.selModel){
+            case 'row':
+            case 'rows':
+              var selectedDomRows = body.el.select('.' + GRID_COLUMN_CLS + '[index="0"] .' + GRID_CELL_SELECTED_CLS);
+
+              selectedDomRows.each(function(el){
+                var rowIndex = el.attr('index');
+
+                me.domDeSelectRow(rowIndex);
+              });
+              break;
+          }
+        }
         return;
       }
 
@@ -2974,6 +2989,15 @@ Fancy.modules['selection'] = true;
           item = w.get(rowIndex),
           id = item.id;
 
+        if(w.infinite){
+          item = w.get(rowIndex + s.infiniteScrolledToRow);
+        }
+        else{
+          item = w.get(rowIndex);
+        }
+
+        id = item.id;
+
         if(!me.memory.has(id)){
           me.domDeSelectRow(rowIndex);
         }
@@ -2982,7 +3006,7 @@ Fancy.modules['selection'] = true;
       for(var id in me.memory.selected){
         var rowIndex = w.getRowById(id);
 
-        if(rowIndex !== undefined){
+        if (rowIndex !== undefined){
           me.domSelectRow(rowIndex);
         }
       }

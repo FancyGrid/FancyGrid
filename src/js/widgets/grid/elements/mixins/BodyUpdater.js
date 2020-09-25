@@ -498,7 +498,8 @@
           }
         }
 
-        var data = s.get(j),
+        //var data = s.get(j),
+        var data = s.get(j + infiniteScrolledToRow),
           id = s.getId(j + infiniteScrolledToRow),
           inner = cellsDomInner.item(j),
           cell = cellsDom.item(j),

@@ -275,6 +275,10 @@ Fancy.define('Fancy.Store', {
    * @return {String|Number}
    */
   getId: function(rowIndex){
+    if(!this.dataView[rowIndex]){
+      return '';
+    }
+
     return this.dataView[rowIndex].id;
   },
   /*
@@ -542,8 +546,15 @@ Fancy.define('Fancy.Store', {
     }
 
     if(options.smartIndexFn){
-      for(;i<iL;i++){
-        values.push(options.smartIndexFn(data[i].data));
+      if(me.infinite){
+        for (; i < iL; i++){
+          values.push(options.smartIndexFn(data[i + me.infiniteScrolledToRow].data));
+        }
+      }
+      else {
+        for (; i < iL; i++){
+          values.push(options.smartIndexFn(data[i].data));
+        }
       }
     }
     else{

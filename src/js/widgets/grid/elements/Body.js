@@ -204,6 +204,7 @@
     wheelScroll: function(delta){
       var me = this,
         w = me.widget,
+        s = w.store,
         knobOffSet = w.knobOffSet,
         columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
 
@@ -243,8 +244,6 @@
         if(topValue > 0){
           topValue = 0;
         }
-
-
 
         columnEl.css('top', topValue + 'px');
       }

@@ -2961,9 +2961,24 @@ Fancy.modules['selection'] = true;
     updateSelection: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         body = w.body;
 
       if(!me.memory){
+        if(w.infinite){
+          switch(me.selModel){
+            case 'row':
+            case 'rows':
+              var selectedDomRows = body.el.select('.' + GRID_COLUMN_CLS + '[index="0"] .' + GRID_CELL_SELECTED_CLS);
+
+              selectedDomRows.each(function(el){
+                var rowIndex = el.attr('index');
+
+                me.domDeSelectRow(rowIndex);
+              });
+              break;
+          }
+        }
         return;
       }
 
@@ -2974,6 +2989,15 @@ Fancy.modules['selection'] = true;
           item = w.get(rowIndex),
           id = item.id;
 
+        if(w.infinite){
+          item = w.get(rowIndex + s.infiniteScrolledToRow);
+        }
+        else{
+          item = w.get(rowIndex);
+        }
+
+        id = item.id;
+
         if(!me.memory.has(id)){
           me.domDeSelectRow(rowIndex);
         }
@@ -2982,7 +3006,7 @@ Fancy.modules['selection'] = true;
       for(var id in me.memory.selected){
         var rowIndex = w.getRowById(id);
 
-        if(rowIndex !== undefined){
+        if (rowIndex !== undefined){
           me.domSelectRow(rowIndex);
         }
       }
@@ -3838,9 +3862,27 @@ Fancy.modules['selection'] = true;
     moveUp: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
         nextCell;
+
+      if(w.infinite){
+        if(info.rowIndex === 0){
+          var newInfiniteScrolledToRow = s.infiniteScrolledToRow - 1;
+
+          if(newInfiniteScrolledToRow < 0){
+            newInfiniteScrolledToRow = 0;
+          }
+
+          s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+          w.update();
+
+          if(w.selection){
+            w.selection.updateSelection();
+          }
+        }
+      }
 
       info.rowIndex--;
       if(info.rowIndex < 0){
@@ -3857,20 +3899,26 @@ Fancy.modules['selection'] = true;
         case 'cells':
           me.clearSelection();
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(!w.infinite){
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
           break;
         case 'row':
         case 'rows':
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           else{
             me.clearSelection();
             me.selectRow( info.rowIndex );
             nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-            w.scroller.scrollToCell( nextCell.dom, true );
+            if(!w.infinite){
+              w.scroller.scrollToCell( nextCell.dom, true );
+            }
             if (me.selModel === 'rows'){
               me.updateHeaderCheckBox();
             }
@@ -3881,7 +3929,9 @@ Fancy.modules['selection'] = true;
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           break;
       }
@@ -3894,9 +3944,29 @@ Fancy.modules['selection'] = true;
     moveDown: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
         nextCell;
+
+      if(w.infinite){
+        if(info.rowIndex > w.numOfVisibleCells - 3){
+          var newInfiniteScrolledToRow = s.infiniteScrolledToRow + 1;
+
+          if(newInfiniteScrolledToRow > s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1 ) ){
+            newInfiniteScrolledToRow = s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1);
+          }
+
+          s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+          w.update();
+
+          if(w.selection){
+            w.selection.updateSelection();
+          }
+
+          return;
+        }
+      }
 
       info.rowIndex++;
       nextCell = body.getCell(info.rowIndex, info.columnIndex);
@@ -3910,20 +3980,26 @@ Fancy.modules['selection'] = true;
         case 'cells':
           me.clearSelection();
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(!w.infinite){
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
           break;
         case 'row':
         case 'rows':
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           else{
             me.clearSelection();
             me.selectRow(info.rowIndex);
             nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
             if(me.selModel === 'rows'){
               me.updateHeaderCheckBox();
             }

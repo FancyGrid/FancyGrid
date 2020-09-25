@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.119',
+  version: '1.7.120',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3442,6 +3442,10 @@ Fancy.define('Fancy.Store', {
    * @return {String|Number}
    */
   getId: function(rowIndex){
+    if(!this.dataView[rowIndex]){
+      return '';
+    }
+
     return this.dataView[rowIndex].id;
   },
   /*
@@ -3709,8 +3713,15 @@ Fancy.define('Fancy.Store', {
     }
 
     if(options.smartIndexFn){
-      for(;i<iL;i++){
-        values.push(options.smartIndexFn(data[i].data));
+      if(me.infinite){
+        for (; i < iL; i++){
+          values.push(options.smartIndexFn(data[i + me.infiniteScrolledToRow].data));
+        }
+      }
+      else {
+        for (; i < iL; i++){
+          values.push(options.smartIndexFn(data[i].data));
+        }
       }
     }
     else{
@@ -6799,6 +6810,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
     if(me.buttons){
       me._buttons.applyScrollChanges();
+    }
+
+    var item = me.items[0];
+
+    if(item && item.type === 'grid' && item.infinite){
+      delete item.numOfVisibleCells;
+      item.update();
     }
   },
   /*

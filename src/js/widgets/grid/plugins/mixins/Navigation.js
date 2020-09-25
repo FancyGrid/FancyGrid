@@ -711,9 +711,27 @@
     moveUp: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
         nextCell;
+
+      if(w.infinite){
+        if(info.rowIndex === 0){
+          var newInfiniteScrolledToRow = s.infiniteScrolledToRow - 1;
+
+          if(newInfiniteScrolledToRow < 0){
+            newInfiniteScrolledToRow = 0;
+          }
+
+          s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+          w.update();
+
+          if(w.selection){
+            w.selection.updateSelection();
+          }
+        }
+      }
 
       info.rowIndex--;
       if(info.rowIndex < 0){
@@ -730,20 +748,26 @@
         case 'cells':
           me.clearSelection();
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(!w.infinite){
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
           break;
         case 'row':
         case 'rows':
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           else{
             me.clearSelection();
             me.selectRow( info.rowIndex );
             nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-            w.scroller.scrollToCell( nextCell.dom, true );
+            if(!w.infinite){
+              w.scroller.scrollToCell( nextCell.dom, true );
+            }
             if (me.selModel === 'rows'){
               me.updateHeaderCheckBox();
             }
@@ -754,7 +778,9 @@
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           break;
       }
@@ -767,9 +793,29 @@
     moveDown: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         info = me.getActiveCellInfo(),
         body = w.getBody(info.side),
         nextCell;
+
+      if(w.infinite){
+        if(info.rowIndex > w.numOfVisibleCells - 3){
+          var newInfiniteScrolledToRow = s.infiniteScrolledToRow + 1;
+
+          if(newInfiniteScrolledToRow > s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1 ) ){
+            newInfiniteScrolledToRow = s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1);
+          }
+
+          s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+          w.update();
+
+          if(w.selection){
+            w.selection.updateSelection();
+          }
+
+          return;
+        }
+      }
 
       info.rowIndex++;
       nextCell = body.getCell(info.rowIndex, info.columnIndex);
@@ -783,20 +829,26 @@
         case 'cells':
           me.clearSelection();
           nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-          w.scroller.scrollToCell(nextCell.dom, true);
+          if(!w.infinite){
+            w.scroller.scrollToCell(nextCell.dom, true);
+          }
           break;
         case 'row':
         case 'rows':
           if(w.selection && w.selection.activeCell){
             w.selection.clearActiveCell();
             nextCell.addCls(GRID_CELL_ACTIVE_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
           }
           else{
             me.clearSelection();
             me.selectRow(info.rowIndex);
             nextCell.addCls(GRID_CELL_ACTIVE_CLS, GRID_CELL_SELECTED_CLS);
-            w.scroller.scrollToCell(nextCell.dom, true);
+            if(!w.infinite){
+              w.scroller.scrollToCell(nextCell.dom, true);
+            }
             if(me.selModel === 'rows'){
               me.updateHeaderCheckBox();
             }

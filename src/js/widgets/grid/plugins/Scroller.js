@@ -537,6 +537,11 @@
 
           me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
           me.scroll( topScroll );
+
+          if(w.infinite && w.selection){
+            w.selection.updateSelection();
+            w.selection.clearActiveCell();
+          }
         }
 
         if (me.bottomKnobDown){
@@ -857,6 +862,7 @@
     scrollRightKnob: function(){
       var me = this,
         w = me.widget,
+        s = w.store,
         bodyScrolled = me.getScroll(),
         newKnobScroll = bodyScrolled / me.rightScrollScale + w.knobOffSet;
 
@@ -868,9 +874,7 @@
         newKnobScroll += me.cornerSize;
       }
 
-      if(w.infinite){
-        return;
-      }
+      if(w.infinite){}
 
       me.rightKnob.css('margin-top', newKnobScroll + 'px');
     },
@@ -902,10 +906,15 @@
      */
     getScroll: function(){
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        s = w.store;
 
       if(w.nativeScroller){
         return w.body.el.dom.scrollTop;
+      }
+
+      if(w.infinite){
+        return Math.abs(s.infiniteScrolledToRow * w.cellHeight);
       }
 
       if(w.columns.length === 0){
@@ -932,11 +941,11 @@
       }
 
       if(w.columns.length === 0){
-        if(w.leftColumns.length){
+        if (w.leftColumns.length){
           return Math.abs(parseInt(w.leftBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
         }
 
-        if(w.rightColumns.length){
+        if (w.rightColumns.length){
           return Math.abs(parseInt(w.rightBody.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
         }
       }
@@ -953,9 +962,9 @@
       me.setScrollBars(viewHeight);
       me.checkScroll(viewHeight);
 
-      if(!w.infinite){
+      //if(!w.infinite){
         me.scrollRightKnob();
-      }
+      //}
       me.scrollBottomKnob();
     },
     /*
@@ -1049,6 +1058,7 @@
 
       var me = this,
         w = me.widget,
+        s = w.store,
         cellHeight = w.cellHeight,
         cellEl = F.get(cell),
         columnEl = cellEl.parent(),
@@ -1066,6 +1076,11 @@
 
       if(w.nativeScroller && !nativeScroll){
         return;
+      }
+
+      if(w.infinite){
+        rowIndex += s.infiniteScrolledToRow;
+        passedHeight += cellHeight * s.infiniteScrolledToRow;
       }
 
       if (rowIndex === 0 && columnIndex === 0){

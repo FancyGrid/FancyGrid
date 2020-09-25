@@ -2000,7 +2000,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     changePosition: function(rowIndex, animate){
       var me = this,
         w = me.widget,
-        scrollTop = w.scroller.getScroll(),
+        scrollTop = w.infinite? 0 : w.scroller.getScroll(),
         bottomScroll = w.scroller.getBottomScroll(),
         newTop = w.cellHeight * rowIndex - 1 - scrollTop,
         plusTop = 0;

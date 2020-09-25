@@ -21,5 +21,17 @@ Fancy.Mixin('Fancy.store.mixin.Infinite',{
       infiniteDisplayedRows: 50,
       infiniteScrolledToRow: 0
     });
+  },
+  /*
+   *
+   */
+  getNumOfInfiniteRows: function(){
+    var me = this;
+
+    if(me.filteredData){
+      return me.filteredData.length;
+    }
+
+    return me.data.length;
   }
 });
