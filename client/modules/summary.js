@@ -190,7 +190,7 @@ Fancy.modules['summary'] = true;
 
       el.update(inner);
 
-      el.css('width', columnsWidth + 'columnsWidth');
+      el.css('width', columnsWidth + 'px');
       el.addCls(GRID_ROW_SUMMARY_CONTAINER_CLS);
       if (me.position === 'bottom'){
         el.addCls(GRID_ROW_SUMMARY_BOTTOM_CLS);
@@ -641,7 +641,7 @@ Fancy.modules['summary'] = true;
         docEl = F.get(document.body);
 
       w.addCls('fancy-grid-summary-options');
-      w.el.on('click', me.onOptionClick, me, '.fancy-grid-summary-container .fancy-grid-cell');
+      w.el.on('click', me.onOptionClick, me, '.' + GRID_ROW_SUMMARY_CONTAINER_CLS + ' .' + GRID_CELL_CLS);
 
       docEl.on('click', function(e){
         var el = F.get(e.target);

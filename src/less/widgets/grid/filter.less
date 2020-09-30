@@ -17,3 +17,33 @@
   font-style: italic;
 }
 */
+
+.fancy-grid-sub-header-filter-container {
+  overflow: hidden;
+  border-bottom: 1px solid #d3dbe1;
+}
+
+.fancy-grid-sub-header-filter-container .fancy-grid-header-cell {
+  position: relative;
+  float: left;
+  border-right-width: 0;
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    display: block;
+    width: 1px;
+    height: 60%;
+    top: 20%;
+    right: 0;
+    background-color: rgba(189,195,199,.5);
+  }
+
+  .fancy-field {
+    padding-top: 1px !important;
+  }
+}
+
+.fancy-grid-animation .fancy-grid-sub-header-filter-container {
+  transition: left .4s,width .4s;
+}

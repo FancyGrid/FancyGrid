@@ -8408,6 +8408,14 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         }
       }
 
+      if (w.summary){
+        w.summary.scrollLeft(-scrollLeft);
+      }
+
+      if(w.subHeaderFilter){
+        w.filter.scrollLeft(-scrollLeft);
+      }
+
       w.fire('nativescroll');
     },
     /*
@@ -12814,6 +12822,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           if (w.summary){
             w.summary.scrollLeft(x);
           }
+
+          if(w.subHeaderFilter){
+            w.filter.scrollLeft(x);
+          }
         }
       }
 
@@ -13664,7 +13676,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         numRows = 1,
         groups = {},
         passedWidth = 0,
-        isFilterHeader = w.filter && w.filter.header,
+        isFilterHeader = w.filter && w.filter.header && !w.subHeaderFilter,
         cellFilterGroupType = 'full',
         cellHeight = w.cellHeaderHeight;
 

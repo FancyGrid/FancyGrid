@@ -112,7 +112,7 @@
         numRows = 1,
         groups = {},
         passedWidth = 0,
-        isFilterHeader = w.filter && w.filter.header,
+        isFilterHeader = w.filter && w.filter.header && !w.subHeaderFilter,
         cellFilterGroupType = 'full',
         cellHeight = w.cellHeaderHeight;
 

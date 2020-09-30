@@ -241,6 +241,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         if(fn){
           fn();
         }
+
+        // Fixing chart bars bug.
+        // It does not set right width of bars if loaded data from server.
+        // This bug is complex to replicate. Only in production.
+        me.widget.lightStartUpdate();
       },
       error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);

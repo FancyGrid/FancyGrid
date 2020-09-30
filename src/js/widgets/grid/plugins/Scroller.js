@@ -1218,6 +1218,14 @@
         }
       }
 
+      if (w.summary){
+        w.summary.scrollLeft(-scrollLeft);
+      }
+
+      if(w.subHeaderFilter){
+        w.filter.scrollLeft(-scrollLeft);
+      }
+
       w.fire('nativescroll');
     },
     /*

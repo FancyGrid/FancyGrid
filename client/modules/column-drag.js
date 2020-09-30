@@ -320,8 +320,13 @@ Fancy.modules['column-drag'] = true;
         w = me.widget,
         cell = me.inCell,
         cellWidth = parseInt(cell.css('width')),
-        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS),
-        targetEl = Fancy.get(e.target),
+        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS);
+
+      if(!triggerEl.dom){
+        return ;
+      }
+
+      var targetEl = Fancy.get(e.target),
         inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
@@ -1061,8 +1066,13 @@ Fancy.modules['column-drag'] = true;
         w = me.widget,
         cell = me.inCell,
         cellWidth = parseInt(cell.css('width')),
-        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS),
-        targetEl = Fancy.get(e.target),
+        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS);
+
+      if(!triggerEl.dom){
+        return ;
+      }
+
+      var targetEl = Fancy.get(e.target),
         inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;

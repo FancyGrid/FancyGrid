@@ -321,6 +321,10 @@
           if (w.summary){
             w.summary.scrollLeft(x);
           }
+
+          if(w.subHeaderFilter){
+            w.filter.scrollLeft(x);
+          }
         }
       }
 

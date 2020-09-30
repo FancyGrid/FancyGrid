@@ -1343,6 +1343,9 @@
   border-width: 0 0 1px 0;
   border-style: solid;
 }
+.fancy-grid-sub-header-filter-container {
+  background-color: #e3e9ee;
+}
 .fancy-grid-left .fancy-grid-header {
   border-right-width: 2px;
 }
@@ -2267,6 +2270,32 @@
   font-style: italic;
 }
 */
+.fancy-grid-sub-header-filter-container {
+  overflow: hidden;
+  border-bottom: 1px solid #d3dbe1;
+}
+.fancy-grid-sub-header-filter-container .fancy-grid-header-cell {
+  position: relative;
+  float: left;
+  border-right-width: 0;
+}
+.fancy-grid-sub-header-filter-container .fancy-grid-header-cell::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: 1px;
+  height: 60%;
+  top: 20%;
+  right: 0;
+  background-color: rgba(189, 195, 199, 0.5);
+}
+.fancy-grid-sub-header-filter-container .fancy-grid-header-cell .fancy-field {
+  padding-top: 1px !important;
+}
+.fancy-grid-animation .fancy-grid-sub-header-filter-container {
+  transition: left .4s,width .4s;
+}
 /*
  drag.less
 */
@@ -3063,7 +3092,8 @@
   color: #515151;
   font-size: 11px;
 }
-.fancy-theme-gray .fancy-grid-header {
+.fancy-theme-gray .fancy-grid-header,
+.fancy-theme-gray .fancy-grid-sub-header-filter-container {
   background-color: #F3F3F3;
 }
 .fancy-theme-gray .fancy-grid-cell-even {
@@ -3447,7 +3477,8 @@
   font-size: 12px;
   font-weight: bold;
 }
-.fancy-theme-extra-gray .fancy-grid-header {
+.fancy-theme-extra-gray .fancy-grid-header,
+.fancy-theme-extra-gray .fancy-grid-sub-header-filter-container {
   background: #F5F7F7;
 }
 .fancy-theme-extra-gray .fancy-grid-header-cell {
@@ -3633,19 +3664,24 @@
   font-size: 12px;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
 }
-.fancy-theme-extra-gray .fancy-grid-header .fancy-field {
+.fancy-theme-extra-gray .fancy-grid-header .fancy-field,
+.fancy-theme-extra-gray .fancy-grid-sub-header-filter .fancy-field {
   height: 24px !important;
 }
-.fancy-theme-extra-gray .fancy-grid-header .fancy-field.fancy-field-checkbox {
+.fancy-theme-extra-gray .fancy-grid-header .fancy-field.fancy-field-checkbox,
+.fancy-theme-extra-gray .fancy-grid-sub-header-filter .fancy-field.fancy-field-checkbox {
   height: 18px !important;
 }
-.fancy-theme-extra-gray .fancy-grid-header .fancy-combo-dropdown-button {
+.fancy-theme-extra-gray .fancy-grid-header .fancy-combo-dropdown-button,
+.fancy-theme-extra-gray .fancy-grid-sub-header-filter .fancy-combo-dropdown-button {
   top: -3px;
 }
-.fancy-theme-extra-gray .fancy-grid-header .fancy-combo-input-container {
+.fancy-theme-extra-gray .fancy-grid-header .fancy-combo-input-container,
+.fancy-theme-extra-gray .fancy-grid-sub-header-filter .fancy-combo-input-container {
   height: 24px !important;
 }
-.fancy-theme-extra-gray .fancy-grid-header .fancy-field-text-input {
+.fancy-theme-extra-gray .fancy-grid-header .fancy-field-text-input,
+.fancy-theme-extra-gray .fancy-grid-sub-header-filter .fancy-field-text-input {
   height: 24px !important;
   padding-top: 0;
   padding-bottom: 0;
@@ -4187,7 +4223,8 @@
 .fancy-theme-dark .fancy-grid-header-cell-container {
   border-left-width: 0;
 }
-.fancy-theme-dark .fancy-grid-header {
+.fancy-theme-dark .fancy-grid-header,
+.fancy-theme-dark .fancy-grid-sub-header-filter-container {
   background-color: #2C2C2C;
   border-bottom-color: #000;
   box-shadow: inset 78px 70px 22px 12px rgba(255, 255, 255, 0.1);
@@ -4644,6 +4681,9 @@
 }
 .fancy-theme-dark .fancy-grid-summary-row-bottom {
   border-top: 1px solid #000;
+}
+.fancy-theme-dark .fancy-grid-sub-header-filter-container {
+  border-bottom-color: #000;
 }
 .fancy-theme-dark.fancy-combo-result-list .fancy-field-checkbox-input {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2215%22%20height%3D%2215%22%20viewBox%3D%220%200%2015%2015%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cdefs%3E%3Crect%20id%3D%22a%22%20rx%3D%222%22%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%2214%22%20height%3D%2214%22%2F%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cuse%20fill%3D%22%23cccccc%22%20xlink%3Ahref%3D%22%23a%22%2F%3E%3Crect%20width%3D%2214%22%20rx%3D%222%22%20height%3D%2214%22%20x%3D%22.5%22%20y%3D%22.5%22%20stroke%3D%22%23525252%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
@@ -5393,7 +5433,8 @@
 .fancy-theme-bootstrap .fancy-grid-cell-over {
   background: #ebebeb;
 }
-.fancy-theme-bootstrap .fancy-grid-header {
+.fancy-theme-bootstrap .fancy-grid-header,
+.fancy-theme-bootstrap .fancy-grid-sub-header-filter-container {
   background-color: #f5f5f5;
 }
 .fancy-theme-bootstrap .fancy-grid-header-cell {
@@ -6265,7 +6306,8 @@
 .fancy-theme-material .fancy-bar-text {
   margin-top: 5px;
 }
-.fancy-theme-material .fancy-grid-header {
+.fancy-theme-material .fancy-grid-header,
+.fancy-theme-material .fancy-grid-sub-header-filter-container {
   background-color: #fafafa;
 }
 .fancy-theme-material .fancy-grid-left {
@@ -6280,6 +6322,9 @@
 }
 .fancy-theme-material .fancy-button-disabled:hover {
   background-color: transparent;
+}
+.fancy-theme-material .fancy-grid-sub-header-filter-container .fancy-field {
+  top: 4px;
 }
 .fancy-theme-material.fancy-panel-grid-inside {
   border-bottom-width: 0;
@@ -6376,6 +6421,12 @@
 }
 .fancy-theme-material .fancy-bar-container .fancy-field {
   margin-top: 9px !important;
+}
+.fancy-theme-material .fancy-bar-seg-button {
+  margin-top: 5px;
+}
+.fancy-theme-material .fancy-bar-button {
+  margin-top: 8px;
 }
 .fancy-theme-material .fancy-field-search input.fancy-field-text-input {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%221284%20207%2024%2024%22%3E%3Cpath%20fill%3D%22%23828A99%22%20d%3D%22M1298.5%20222.9C1297.5%20223.6%201296.3%20224%201295%20224%201291.7%20224%201289%20221.3%201289%20218%201289%20214.7%201291.7%20212%201295%20212%201298.3%20212%201301%20214.7%201301%20218%201301%20219.3%201300.6%20220.5%201299.9%20221.5L1302.7%20224.2C1303%20224.6%201303.1%20225.3%201302.7%20225.7%201302.3%20226%201301.6%20226%201301.2%20225.7L1298.5%20222.9ZM1295%20222C1297.2%20222%201299%20220.2%201299%20218%201299%20215.8%201297.2%20214%201295%20214%201292.8%20214%201291%20215.8%201291%20218%201291%20220.2%201292.8%20222%201295%20222Z%22%2F%3E%3C%2Fsvg%3E');
