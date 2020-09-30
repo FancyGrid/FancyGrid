@@ -185,7 +185,9 @@
               cls += ' ' + GRID_HEADER_CELL_FILTER_SMALL_CLS;
               break;
             case 'full':
-              cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              if(!w.subHeaderFilter){
+                cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              }
               break;
           }
         }
@@ -533,7 +535,7 @@
             height = CELL_HEADER_HEIGHT * 2;
           }
 
-          if(column.filter && column.filter.header){
+          if(column.filter && column.filter.header && !w.subHeaderFilter){
             setTimeout(function(){
               cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
             }, 30);

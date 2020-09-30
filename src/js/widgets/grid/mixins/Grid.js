@@ -809,8 +809,12 @@
 
       if (me.filter && me.filter.header){
         if (me.groupheader){
-          if (me.filter.groupHeader){
+          if (me.filter.groupHeader && !me.subHeaderFilter){
             rows++;
+          }
+
+          if(me.subHeaderFilter){
+            height -= me.cellHeight;
           }
         }
         else {

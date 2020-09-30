@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.121',
+  version: '1.7.122',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5742,7 +5742,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       dataViewIndexes = {};
 
     me.expanded = me.expanded || {};
-    delete me.expanded[value];
+    me.expanded[value] = false;
 
     for(;i<iL;i++){
       var item = data[i];
@@ -26996,8 +26996,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       if (me.filter && me.filter.header){
         if (me.groupheader){
-          if (me.filter.groupHeader){
+          if (me.filter.groupHeader && !me.subHeaderFilter){
             rows++;
+          }
+
+          if(me.subHeaderFilter){
+            height -= me.cellHeight;
           }
         }
         else {
@@ -55982,7 +55986,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
               cls += ' ' + GRID_HEADER_CELL_FILTER_SMALL_CLS;
               break;
             case 'full':
-              cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              if(!w.subHeaderFilter){
+                cls += ' ' + GRID_HEADER_CELL_FILTER_FULL_CLS;
+              }
               break;
           }
         }
@@ -56330,7 +56336,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             height = CELL_HEADER_HEIGHT * 2;
           }
 
-          if(column.filter && column.filter.header){
+          if(column.filter && column.filter.header && !w.subHeaderFilter){
             setTimeout(function(){
               cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
             }, 30);

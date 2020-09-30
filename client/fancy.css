@@ -6229,6 +6229,9 @@
 .fancy-theme-material .fancy-grid-header-cell-container {
   padding-top: 14px;
 }
+.fancy-theme-material .fancy-grid-header-grouped .fancy-grid-header-cell-container {
+  padding-top: 34px;
+}
 .fancy-theme-material .fancy-grid-column .fancy-grid-cell-selected {
   background-color: #e0e0e0;
 }

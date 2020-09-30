@@ -60,7 +60,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       dataViewIndexes = {};
 
     me.expanded = me.expanded || {};
-    delete me.expanded[value];
+    me.expanded[value] = false;
 
     for(;i<iL;i++){
       var item = data[i];
