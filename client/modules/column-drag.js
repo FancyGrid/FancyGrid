@@ -444,8 +444,12 @@ Fancy.modules['column-drag'] = true;
       }
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
-          me.ok = true;
-          me.showHint('right');
+          var column = columns[me.inIndex];
+
+          if(!column.disallowAfterDrop){
+            me.ok = true;
+            me.showHint('right');
+          }
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
@@ -1190,8 +1194,12 @@ Fancy.modules['column-drag'] = true;
       }
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
-          me.ok = true;
-          me.showHint('right');
+          var column = columns[me.inIndex];
+
+          if(!column.disallowAfterDrop){
+            me.ok = true;
+            me.showHint('right');
+          }
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){

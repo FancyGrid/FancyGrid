@@ -22,14 +22,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     me.expanded = me.expanded || {};
+    me.memoryCollapsed = me.memoryCollapsed || {};
 
     if(Fancy.isArray(value)){
       Fancy.each(value, function(_value){
         me.expanded[_value] = true;
+        delete me.memoryCollapsed[_value];
       });
     }
     else{
       me.expanded[value] = true;
+      delete me.memoryCollapsed[value];
     }
 
     for (; i < iL; i++){
@@ -61,6 +64,9 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
 
     me.expanded = me.expanded || {};
     me.expanded[value] = false;
+
+    me.memoryCollapsed = me.memoryCollapsed || {};
+    me.memoryCollapsed[value] = true;
 
     for(;i<iL;i++){
       var item = data[i];
@@ -243,7 +249,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
     else{
       Fancy.each(groups, function(group){
-        if( me.expanded[group] === undefined ){
+       if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
       });
@@ -341,6 +347,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     delete me.groupMap;
     delete me.grouping;
     delete me.grouping;
+    delete me.memoryCollapsed;
   },
   /*
    * @param {Array} groups

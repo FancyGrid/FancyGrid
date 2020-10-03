@@ -22,14 +22,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     me.expanded = me.expanded || {};
+    me.memoryCollapsed = me.memoryCollapsed || {};
 
     if(Fancy.isArray(value)){
       Fancy.each(value, function(_value){
         me.expanded[_value] = true;
+        delete me.memoryCollapsed[_value];
       });
     }
     else{
       me.expanded[value] = true;
+      delete me.memoryCollapsed[value];
     }
 
     for (; i < iL; i++){
@@ -61,6 +64,9 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
 
     me.expanded = me.expanded || {};
     me.expanded[value] = false;
+
+    me.memoryCollapsed = me.memoryCollapsed || {};
+    me.memoryCollapsed[value] = true;
 
     for(;i<iL;i++){
       var item = data[i];
@@ -243,7 +249,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
     else{
       Fancy.each(groups, function(group){
-        if( me.expanded[group] === undefined ){
+       if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
       });
@@ -341,6 +347,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     delete me.groupMap;
     delete me.grouping;
     delete me.grouping;
+    delete me.memoryCollapsed;
   },
   /*
    * @param {Array} groups
@@ -819,6 +826,8 @@ Fancy.modules['grouping'] = true;
      */
     generateGroupRow: function(groupText, groupCount, addText, top){
       var me = this,
+        w = me.widget,
+        s = w.store,
         el = F.get(document.createElement('div'));
 
       el.addCls(GRID_ROW_GROUP_CLS);
@@ -841,6 +850,10 @@ Fancy.modules['grouping'] = true;
       }
       else {
         el.css('top', '0px');
+      }
+
+      if(s.expanded && s.expanded[groupText] === false){
+        el.addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
       }
 
       el.css('visibility', 'hidden');
@@ -1641,11 +1654,18 @@ Fancy.modules['grouping'] = true;
         w = me.widget,
         groups = me.groups,
         s = w.store,
-        expanded = s.expanded;
+        expanded = s.expanded,
+        memoryCollapsed = s.memoryCollapsed || {};
 
       for(var p in expanded){
         if(!me.groupsCounts[p]){
           delete expanded[p];
+        }
+      }
+
+      for(var group in  memoryCollapsed){
+        if(memoryCollapsed[group]){
+          expanded[group] = false;
         }
       }
 

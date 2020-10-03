@@ -3299,7 +3299,12 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           }
         }
         else {
-          rows++;
+          if(me.subHeaderFilter){
+            height -= me.cellHeight;
+          }
+          else {
+            rows++;
+          }
         }
       }
 
@@ -4953,6 +4958,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         side = 'center';
       }
 
+      // Column data index
       if (F.isString(indexOrder)){
         var columns = me.getColumns(side);
 
@@ -4990,6 +4996,14 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
             }
           }
         }
+      }
+      // Column object
+      else if(F.isObject(indexOrder)){
+        var info = me.getColumnOrderById(indexOrder.id);
+
+        column = indexOrder;
+        indexOrder = info.order;
+        side = info.side;
       }
 
       switch (side){
@@ -5142,7 +5156,21 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
           column.menu = column._menu;
         }
         else{
-          column.menu = true;
+          var isMenuConfig = true;
+
+          F.each(column.menu, function(item){
+            if(F.isString(item)){
+              return;
+            }
+
+            if(F.isObject(item) && item._isConfigApplied){
+              isMenuConfig = false;
+            }
+          });
+
+          if(!isMenuConfig){
+            column.menu = true;
+          }
         }
       }
 
@@ -5195,6 +5223,19 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
      */
     addColumn: function(column, side, orderIndex){
       var me = this;
+
+      // Delay is used to prevent running sort on column if it was executed inside of headercellclick event.
+      setTimeout(function(){
+        me._addColumn(column, side, orderIndex);
+      }, 1);
+    },
+      /*
+       * @param {Object} column
+       * @param {String} side
+       * @param {Number} orderIndex
+       */
+    _addColumn: function(column, side, orderIndex){
+      var me = this;
       side = side || 'center';
 
       if (!column.type){
@@ -5209,6 +5250,19 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         var columns = me.getColumns(side);
 
         orderIndex = columns.length;
+      }
+
+      if(column.id === undefined){
+        if(column.index){
+          column.id = this.getColumnId(column.index);
+        }
+        else{
+          column.id = Fancy.id(null, 'col-id-');
+        }
+      }
+
+      if(me.defaults){
+        F.applyIf(column, me.defaults);
       }
 
       me.insertColumn(column, orderIndex, side);
@@ -8298,6 +8352,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         }
         me.scrollBottomKnob();
         me.scrollRightKnob();
+        return;
+      }
+
+      if(rowIndex === 0 && me.scrollTop !== 0){
+        me.scroll(0);
         return;
       }
 
@@ -13703,6 +13762,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           height = cellHeight,
           cls = '',
           groupIndex = '';
+
+        if(title === undefined || title === '' || title === ' '){
+          title = '&nbsp;';
+        }
 
         if (numRows !== 1){
           if (!column.grouping){

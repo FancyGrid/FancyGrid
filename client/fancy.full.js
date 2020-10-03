@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.122',
+  version: '1.7.123',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5704,14 +5704,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     me.expanded = me.expanded || {};
+    me.memoryCollapsed = me.memoryCollapsed || {};
 
     if(Fancy.isArray(value)){
       Fancy.each(value, function(_value){
         me.expanded[_value] = true;
+        delete me.memoryCollapsed[_value];
       });
     }
     else{
       me.expanded[value] = true;
+      delete me.memoryCollapsed[value];
     }
 
     for (; i < iL; i++){
@@ -5743,6 +5746,9 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
 
     me.expanded = me.expanded || {};
     me.expanded[value] = false;
+
+    me.memoryCollapsed = me.memoryCollapsed || {};
+    me.memoryCollapsed[value] = true;
 
     for(;i<iL;i++){
       var item = data[i];
@@ -5925,7 +5931,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
     else{
       Fancy.each(groups, function(group){
-        if( me.expanded[group] === undefined ){
+       if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
       });
@@ -6023,6 +6029,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     delete me.groupMap;
     delete me.grouping;
     delete me.grouping;
+    delete me.memoryCollapsed;
   },
   /*
    * @param {Array} groups
@@ -27005,7 +27012,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           }
         }
         else {
-          rows++;
+          if(me.subHeaderFilter){
+            height -= me.cellHeight;
+          }
+          else {
+            rows++;
+          }
         }
       }
 
@@ -28659,6 +28671,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         side = 'center';
       }
 
+      // Column data index
       if (F.isString(indexOrder)){
         var columns = me.getColumns(side);
 
@@ -28696,6 +28709,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             }
           }
         }
+      }
+      // Column object
+      else if(F.isObject(indexOrder)){
+        var info = me.getColumnOrderById(indexOrder.id);
+
+        column = indexOrder;
+        indexOrder = info.order;
+        side = info.side;
       }
 
       switch (side){
@@ -28848,7 +28869,21 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           column.menu = column._menu;
         }
         else{
-          column.menu = true;
+          var isMenuConfig = true;
+
+          F.each(column.menu, function(item){
+            if(F.isString(item)){
+              return;
+            }
+
+            if(F.isObject(item) && item._isConfigApplied){
+              isMenuConfig = false;
+            }
+          });
+
+          if(!isMenuConfig){
+            column.menu = true;
+          }
         }
       }
 
@@ -28901,6 +28936,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      */
     addColumn: function(column, side, orderIndex){
       var me = this;
+
+      // Delay is used to prevent running sort on column if it was executed inside of headercellclick event.
+      setTimeout(function(){
+        me._addColumn(column, side, orderIndex);
+      }, 1);
+    },
+      /*
+       * @param {Object} column
+       * @param {String} side
+       * @param {Number} orderIndex
+       */
+    _addColumn: function(column, side, orderIndex){
+      var me = this;
       side = side || 'center';
 
       if (!column.type){
@@ -28915,6 +28963,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         var columns = me.getColumns(side);
 
         orderIndex = columns.length;
+      }
+
+      if(column.id === undefined){
+        if(column.index){
+          column.id = this.getColumnId(column.index);
+        }
+        else{
+          column.id = Fancy.id(null, 'col-id-');
+        }
+      }
+
+      if(me.defaults){
+        F.applyIf(column, me.defaults);
       }
 
       me.insertColumn(column, orderIndex, side);
@@ -32857,6 +32918,11 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         return;
       }
 
+      if(rowIndex === 0 && me.scrollTop !== 0){
+        me.scroll(0);
+        return;
+      }
+
       if(w.isGroupable()){
         passedHeight += w.grouping.getSpecialRowsAbove(rowIndex) * w.groupRowHeight;
       }
@@ -35395,8 +35461,12 @@ Fancy.modules['column-drag'] = true;
       }
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
-          me.ok = true;
-          me.showHint('right');
+          var column = columns[me.inIndex];
+
+          if(!column.disallowAfterDrop){
+            me.ok = true;
+            me.showHint('right');
+          }
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
@@ -44418,6 +44488,8 @@ Fancy.modules['grouping'] = true;
      */
     generateGroupRow: function(groupText, groupCount, addText, top){
       var me = this,
+        w = me.widget,
+        s = w.store,
         el = F.get(document.createElement('div'));
 
       el.addCls(GRID_ROW_GROUP_CLS);
@@ -44440,6 +44512,10 @@ Fancy.modules['grouping'] = true;
       }
       else {
         el.css('top', '0px');
+      }
+
+      if(s.expanded && s.expanded[groupText] === false){
+        el.addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
       }
 
       el.css('visibility', 'hidden');
@@ -45240,11 +45316,18 @@ Fancy.modules['grouping'] = true;
         w = me.widget,
         groups = me.groups,
         s = w.store,
-        expanded = s.expanded;
+        expanded = s.expanded,
+        memoryCollapsed = s.memoryCollapsed || {};
 
       for(var p in expanded){
         if(!me.groupsCounts[p]){
           delete expanded[p];
+        }
+      }
+
+      for(var group in  memoryCollapsed){
+        if(memoryCollapsed[group]){
+          expanded[group] = false;
         }
       }
 
@@ -45728,8 +45811,12 @@ Fancy.modules['column-drag'] = true;
       }
       else if(me.activeIndex < me.inIndex){
         if(e.offsetX > cellWidth/2 || inTriggerEl){
-          me.ok = true;
-          me.showHint('right');
+          var column = columns[me.inIndex];
+
+          if(!column.disallowAfterDrop){
+            me.ok = true;
+            me.showHint('right');
+          }
         }
         else{
           if(e.offsetX < cellWidth/2 && (me.activeIndex + 1) !== me.inIndex){
@@ -49123,7 +49210,11 @@ Fancy.modules['filter'] = true;
 
       if(update !== false){
         if(s.grouping && s.grouping.by){
-          s.changeDataView();
+          //s.changeDataView();
+          if(s.isFiltered()){
+            s.filterData();
+          }
+
           me.reGroupAccordingToFilters();
           s.changeDataView();
         }
@@ -55936,6 +56027,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
           height = cellHeight,
           cls = '',
           groupIndex = '';
+
+        if(title === undefined || title === '' || title === ' '){
+          title = '&nbsp;';
+        }
 
         if (numRows !== 1){
           if (!column.grouping){

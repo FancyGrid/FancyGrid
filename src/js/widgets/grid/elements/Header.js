@@ -136,6 +136,10 @@
           cls = '',
           groupIndex = '';
 
+        if(title === undefined || title === '' || title === ' '){
+          title = '&nbsp;';
+        }
+
         if (numRows !== 1){
           if (!column.grouping){
             height = (numRows * cellHeight) + 'px';

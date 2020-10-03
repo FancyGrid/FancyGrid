@@ -1107,6 +1107,11 @@
         return;
       }
 
+      if(rowIndex === 0 && me.scrollTop !== 0){
+        me.scroll(0);
+        return;
+      }
+
       if(w.isGroupable()){
         passedHeight += w.grouping.getSpecialRowsAbove(rowIndex) * w.groupRowHeight;
       }

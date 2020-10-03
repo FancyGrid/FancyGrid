@@ -818,7 +818,12 @@
           }
         }
         else {
-          rows++;
+          if(me.subHeaderFilter){
+            height -= me.cellHeight;
+          }
+          else {
+            rows++;
+          }
         }
       }
 
@@ -2472,6 +2477,7 @@
         side = 'center';
       }
 
+      // Column data index
       if (F.isString(indexOrder)){
         var columns = me.getColumns(side);
 
@@ -2509,6 +2515,14 @@
             }
           }
         }
+      }
+      // Column object
+      else if(F.isObject(indexOrder)){
+        var info = me.getColumnOrderById(indexOrder.id);
+
+        column = indexOrder;
+        indexOrder = info.order;
+        side = info.side;
       }
 
       switch (side){
@@ -2661,7 +2675,21 @@
           column.menu = column._menu;
         }
         else{
-          column.menu = true;
+          var isMenuConfig = true;
+
+          F.each(column.menu, function(item){
+            if(F.isString(item)){
+              return;
+            }
+
+            if(F.isObject(item) && item._isConfigApplied){
+              isMenuConfig = false;
+            }
+          });
+
+          if(!isMenuConfig){
+            column.menu = true;
+          }
         }
       }
 
@@ -2714,6 +2742,19 @@
      */
     addColumn: function(column, side, orderIndex){
       var me = this;
+
+      // Delay is used to prevent running sort on column if it was executed inside of headercellclick event.
+      setTimeout(function(){
+        me._addColumn(column, side, orderIndex);
+      }, 1);
+    },
+      /*
+       * @param {Object} column
+       * @param {String} side
+       * @param {Number} orderIndex
+       */
+    _addColumn: function(column, side, orderIndex){
+      var me = this;
       side = side || 'center';
 
       if (!column.type){
@@ -2728,6 +2769,19 @@
         var columns = me.getColumns(side);
 
         orderIndex = columns.length;
+      }
+
+      if(column.id === undefined){
+        if(column.index){
+          column.id = this.getColumnId(column.index);
+        }
+        else{
+          column.id = Fancy.id(null, 'col-id-');
+        }
+      }
+
+      if(me.defaults){
+        F.applyIf(column, me.defaults);
       }
 
       me.insertColumn(column, orderIndex, side);

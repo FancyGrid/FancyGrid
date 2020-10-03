@@ -1049,7 +1049,11 @@ Fancy.modules['filter'] = true;
 
       if(update !== false){
         if(s.grouping && s.grouping.by){
-          s.changeDataView();
+          //s.changeDataView();
+          if(s.isFiltered()){
+            s.filterData();
+          }
+
           me.reGroupAccordingToFilters();
           s.changeDataView();
         }

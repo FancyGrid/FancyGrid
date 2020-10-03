@@ -460,6 +460,8 @@ Fancy.modules['grouping'] = true;
      */
     generateGroupRow: function(groupText, groupCount, addText, top){
       var me = this,
+        w = me.widget,
+        s = w.store,
         el = F.get(document.createElement('div'));
 
       el.addCls(GRID_ROW_GROUP_CLS);
@@ -482,6 +484,10 @@ Fancy.modules['grouping'] = true;
       }
       else {
         el.css('top', '0px');
+      }
+
+      if(s.expanded && s.expanded[groupText] === false){
+        el.addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
       }
 
       el.css('visibility', 'hidden');
@@ -1282,11 +1288,18 @@ Fancy.modules['grouping'] = true;
         w = me.widget,
         groups = me.groups,
         s = w.store,
-        expanded = s.expanded;
+        expanded = s.expanded,
+        memoryCollapsed = s.memoryCollapsed || {};
 
       for(var p in expanded){
         if(!me.groupsCounts[p]){
           delete expanded[p];
+        }
+      }
+
+      for(var group in  memoryCollapsed){
+        if(memoryCollapsed[group]){
+          expanded[group] = false;
         }
       }
 
