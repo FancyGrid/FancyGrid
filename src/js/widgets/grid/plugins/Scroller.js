@@ -211,7 +211,38 @@
     onMouseWheel: function(e){
       var me = this,
         w = me.widget,
+        s = w.store,
         delta = F.getWheelDelta(e.originalEvent || e);
+
+      if(w.infinite){
+        e.preventDefault();
+
+        var newInfiniteScrolledToRow;
+
+        if(delta < 0){
+          newInfiniteScrolledToRow = s.infiniteScrolledToRow + 1;
+        }
+        else{
+          newInfiniteScrolledToRow = s.infiniteScrolledToRow - 1;
+        }
+
+        if(newInfiniteScrolledToRow > s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1 ) ){
+          newInfiniteScrolledToRow = s.getNumOfInfiniteRows() - (w.numOfVisibleCells - 1);
+        }
+
+        if(newInfiniteScrolledToRow < 0){
+          newInfiniteScrolledToRow = 0;
+        }
+
+        s.infiniteScrolledToRow = newInfiniteScrolledToRow;
+        w.update();
+
+        if(w.selection){
+          w.selection.updateSelection();
+        }
+
+        return;
+      }
 
       if (me.isRightScrollable() == false){
         return;

@@ -524,7 +524,12 @@
           value = column.smartIndexFn(data);
         }
         else {
-          value = s.get(j + infiniteScrolledToRow, key);
+          if(key === undefined){
+            value = '';
+          }
+          else {
+            value = s.get(j + infiniteScrolledToRow, key);
+          }
         }
 
         o.value = value;

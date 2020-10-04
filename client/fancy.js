@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.123',
+  version: '1.7.124',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3871,7 +3871,7 @@ Fancy.define('Fancy.Store', {
         groupBy = me.grouping.by;
 
         for(;i<iL;i++){
-          if( me.expanded[ me.data[me.order[i]].data[groupBy] ] ){
+          //if( me.expanded[ me.data[me.order[i]].data[groupBy] ] ){
             if(isFiltered === true){
               me.dataViewIndexes[dataView.length] = me.filterOrder[i];
               item = data[ i ];
@@ -3881,10 +3881,11 @@ Fancy.define('Fancy.Store', {
               item = data[me.order[i]];
             }
 
-            dataView.push( item );
-
-            dataViewMap[item.id] = dataView.length - 1;
-          }
+            if( me.expanded[ item.data[groupBy] ]){
+              dataView.push(item);
+              dataViewMap[item.id] = dataView.length - 1;
+            }
+          //}
         }
       }
       else {
@@ -3908,7 +3909,7 @@ Fancy.define('Fancy.Store', {
         groupBy = me.grouping.by;
 
         for(;i<iL;i++){
-          if( me.expanded[ me.data[i].data[groupBy] ] ){
+          if( me.expanded[ data[i].data[groupBy] ] ){
             me.dataViewIndexes[dataView.length] = i;
             item = data[i];
             dataView.push(item);
