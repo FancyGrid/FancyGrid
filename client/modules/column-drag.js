@@ -714,7 +714,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    clearColumnMenus: function (){
+    clearColumnMenus: function(){
       var me = this,
         w = me.widget;
 
@@ -728,7 +728,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    updateColumnHeaderLImages: function (){
+    updateColumnHeaderLImages: function(){
       var me = this,
         w = me.widget;
 
@@ -1464,7 +1464,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    clearColumnMenus: function (){
+    clearColumnMenus: function(){
       var me = this,
         w = me.widget;
 
@@ -1478,7 +1478,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    updateColumnHeaderLImages: function (){
+    updateColumnHeaderLImages: function(){
       var me = this,
         w = me.widget;
 

@@ -340,6 +340,8 @@
         return;
       }
 
+      e.preventDefault();
+
       me.rightKnobDown = true;
       me.bottomKnobDown = true;
 
@@ -383,6 +385,8 @@
         });
 
         changed = scrollLeft !== me.scrollLeft || scrollTop !== me.scrollTop;
+
+        e.preventDefault();
       }
       else{
         me.onMouseMoveDoc({

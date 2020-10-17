@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.124',
+  version: '1.7.125',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -9031,6 +9031,12 @@ Fancy.Ajax = function(o){
 };
 if( Fancy.nojQuery ){
 
+  if(!Array.prototype.forEach){
+    Array.prototype.forEach = function(fn){
+      Fancy.each(this, fn);
+    };
+  }
+
   Fancy.modules['dom'] = true;
 
   Fancy.$ = (function(){
@@ -9256,7 +9262,9 @@ if( Fancy.nojQuery ){
       if (!selector) return zepto.Z()
       // Optimize for string selectors
       else if (typeof selector == 'string'){
-        selector = selector.trim()
+        if(selector.trim){
+          selector = selector.trim();
+        }
         // If it's a html fragment, create nodes from it
         // Note: In both Chrome 21 and Firefox 15, DOM error 12
         // is thrown if the fragment doesn't begin with <
@@ -9316,12 +9324,12 @@ if( Fancy.nojQuery ){
     $.extend = function(target){
       var deep, args = slice.call(arguments, 1)
       if (typeof target == 'boolean'){
-        deep = target
-        target = args.shift()
+        deep = target;
+        target = args.shift();
       }
       args.forEach(function(arg){
-        extend(target, arg, deep)
-      })
+        extend(target, arg, deep);
+      });
       return target
     };
 
@@ -9943,8 +9951,12 @@ if( Fancy.nojQuery ){
     ['width', 'height'].forEach(function(dimension){
       var dimensionProperty =
         dimension.replace(/./, function(m){
-          return m[0].toUpperCase()
-        })
+          if(m[0] === undefined){
+            return m.charAt(0).toUpperCase();
+          }
+
+          return m[0].toUpperCase();
+        });
 
       $.fn[dimension] = function(value){
         var offset, el = this[0]
@@ -11287,7 +11299,7 @@ Fancy.define('Fancy.Widget', {
    *
    */
   destroy: function(){
-    if(this.el){
+    if(this.el && this.el.dom){
       this.el.destroy();
     }
   },
@@ -27568,20 +27580,22 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       docEl.un('click', me.onDocClick, me);
       docEl.un('mousemove', me.onDocMove, me);
 
-      me.body.destroy();
-      me.leftBody.destroy();
-      me.rightBody.destroy();
+      if(me.el && me.el.dom){
+        me.body.destroy();
+        me.leftBody.destroy();
+        me.rightBody.destroy();
 
-      me.header.destroy();
-      me.leftHeader.destroy();
-      me.rightHeader.destroy();
+        me.header.destroy();
+        me.leftHeader.destroy();
+        me.rightHeader.destroy();
 
-      me.scroller.destroy();
+        me.scroller.destroy();
 
-      me.el.destroy();
+        me.el.destroy();
 
-      if (me.panel){
-        me.panel.el.destroy();
+        if (me.panel){
+          me.panel.el.destroy();
+        }
       }
 
       s.destroy();
@@ -32161,6 +32175,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         return;
       }
 
+      e.preventDefault();
+
       me.rightKnobDown = true;
       me.bottomKnobDown = true;
 
@@ -32204,6 +32220,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         });
 
         changed = scrollLeft !== me.scrollLeft || scrollTop !== me.scrollTop;
+
+        e.preventDefault();
       }
       else{
         me.onMouseMoveDoc({
@@ -35772,7 +35790,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    clearColumnMenus: function (){
+    clearColumnMenus: function(){
       var me = this,
         w = me.widget;
 
@@ -35786,7 +35804,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    updateColumnHeaderLImages: function (){
+    updateColumnHeaderLImages: function(){
       var me = this,
         w = me.widget;
 
@@ -46122,7 +46140,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    clearColumnMenus: function (){
+    clearColumnMenus: function(){
       var me = this,
         w = me.widget;
 
@@ -46136,7 +46154,7 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    updateColumnHeaderLImages: function (){
+    updateColumnHeaderLImages: function(){
       var me = this,
         w = me.widget;
 
@@ -49676,7 +49694,7 @@ Fancy.modules['filter'] = true;
       if (w.rightColumns.length){
         me.updateSubHeaderFilterSizes('right');
       }
-    },
+    }
   });
 
 })();

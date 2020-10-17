@@ -1,5 +1,11 @@
 if( Fancy.nojQuery ){
 
+  if(!Array.prototype.forEach){
+    Array.prototype.forEach = function(fn){
+      Fancy.each(this, fn);
+    };
+  }
+
   Fancy.modules['dom'] = true;
 
   Fancy.$ = (function(){
@@ -225,7 +231,9 @@ if( Fancy.nojQuery ){
       if (!selector) return zepto.Z()
       // Optimize for string selectors
       else if (typeof selector == 'string'){
-        selector = selector.trim()
+        if(selector.trim){
+          selector = selector.trim();
+        }
         // If it's a html fragment, create nodes from it
         // Note: In both Chrome 21 and Firefox 15, DOM error 12
         // is thrown if the fragment doesn't begin with <
@@ -285,12 +293,12 @@ if( Fancy.nojQuery ){
     $.extend = function(target){
       var deep, args = slice.call(arguments, 1)
       if (typeof target == 'boolean'){
-        deep = target
-        target = args.shift()
+        deep = target;
+        target = args.shift();
       }
       args.forEach(function(arg){
-        extend(target, arg, deep)
-      })
+        extend(target, arg, deep);
+      });
       return target
     };
 
@@ -912,8 +920,12 @@ if( Fancy.nojQuery ){
     ['width', 'height'].forEach(function(dimension){
       var dimensionProperty =
         dimension.replace(/./, function(m){
-          return m[0].toUpperCase()
-        })
+          if(m[0] === undefined){
+            return m.charAt(0).toUpperCase();
+          }
+
+          return m[0].toUpperCase();
+        });
 
       $.fn[dimension] = function(value){
         var offset, el = this[0]

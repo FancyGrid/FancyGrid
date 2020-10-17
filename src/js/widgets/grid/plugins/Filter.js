@@ -1474,7 +1474,7 @@ Fancy.modules['filter'] = true;
       if (w.rightColumns.length){
         me.updateSubHeaderFilterSizes('right');
       }
-    },
+    }
   });
 
 })();

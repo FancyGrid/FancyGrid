@@ -1373,20 +1373,22 @@
       docEl.un('click', me.onDocClick, me);
       docEl.un('mousemove', me.onDocMove, me);
 
-      me.body.destroy();
-      me.leftBody.destroy();
-      me.rightBody.destroy();
+      if(me.el && me.el.dom){
+        me.body.destroy();
+        me.leftBody.destroy();
+        me.rightBody.destroy();
 
-      me.header.destroy();
-      me.leftHeader.destroy();
-      me.rightHeader.destroy();
+        me.header.destroy();
+        me.leftHeader.destroy();
+        me.rightHeader.destroy();
 
-      me.scroller.destroy();
+        me.scroller.destroy();
 
-      me.el.destroy();
+        me.el.destroy();
 
-      if (me.panel){
-        me.panel.el.destroy();
+        if (me.panel){
+          me.panel.el.destroy();
+        }
       }
 
       s.destroy();

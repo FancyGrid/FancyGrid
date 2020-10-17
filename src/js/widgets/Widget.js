@@ -219,7 +219,7 @@ Fancy.define('Fancy.Widget', {
    *
    */
   destroy: function(){
-    if(this.el){
+    if(this.el && this.el.dom){
       this.el.destroy();
     }
   },
