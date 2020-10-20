@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.125',
+  version: '1.7.126',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -8003,6 +8003,18 @@ Fancy.Element.prototype = {
    */
   firstChild: function(){
     return Fancy.get(this.$dom.children()[0]);
+  },
+  /*
+   * @return {Array}
+   */
+  child: function (){
+    var childs = this.$dom.children();
+
+    Fancy.each(childs, function(child, index){
+      childs[index] = Fancy.get(child);
+    });
+
+    return childs;
   },
   /*
    * @param {String} eventName
@@ -27569,9 +27581,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       selection.clearSelection();
     },
     /*
-     *
+     * @param {Boolean} container
      */
-    destroy: function(){
+    destroy: function(container){
       var me = this,
         s = me.store,
         docEl = F.get(document);
@@ -27591,10 +27603,24 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
         me.scroller.destroy();
 
-        me.el.destroy();
+        if(container === false){
+          if (me.panel){
+            Fancy.each(me.panel.el.child(), function(child){
+              child.destroy();
+            });
+          }
+          else{
+            Fancy.each(me.el.child(), function(child){
+              child.destroy();
+            });
+          }
+        }
+        else{
+          me.el.destroy();
 
-        if (me.panel){
-          me.panel.el.destroy();
+          if (me.panel){
+            me.panel.el.destroy();
+          }
         }
       }
 

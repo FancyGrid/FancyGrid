@@ -1362,9 +1362,9 @@
       selection.clearSelection();
     },
     /*
-     *
+     * @param {Boolean} container
      */
-    destroy: function(){
+    destroy: function(container){
       var me = this,
         s = me.store,
         docEl = F.get(document);
@@ -1384,10 +1384,24 @@
 
         me.scroller.destroy();
 
-        me.el.destroy();
+        if(container === false){
+          if (me.panel){
+            Fancy.each(me.panel.el.child(), function(child){
+              child.destroy();
+            });
+          }
+          else{
+            Fancy.each(me.el.child(), function(child){
+              child.destroy();
+            });
+          }
+        }
+        else{
+          me.el.destroy();
 
-        if (me.panel){
-          me.panel.el.destroy();
+          if (me.panel){
+            me.panel.el.destroy();
+          }
         }
       }
 

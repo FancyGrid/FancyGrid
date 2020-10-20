@@ -83,6 +83,18 @@ Fancy.Element.prototype = {
     return Fancy.get(this.$dom.children()[0]);
   },
   /*
+   * @return {Array}
+   */
+  child: function (){
+    var childs = this.$dom.children();
+
+    Fancy.each(childs, function(child, index){
+      childs[index] = Fancy.get(child);
+    });
+
+    return childs;
+  },
+  /*
    * @param {String} eventName
    * @param {Function} fn
    * @param {Object} scope

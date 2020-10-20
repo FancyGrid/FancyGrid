@@ -132,6 +132,18 @@ El.prototype = {
   firstChild: function(){
     return Fancy.get(this[0].firstChild);
   },
+  /*
+   * @return {Array}
+   */
+  child: function (){
+    var childs = this.dom.children;
+
+    Fancy.each(childs, function(child, index){
+      childs[index] = Fancy.get(child);
+    });
+
+    return childs;
+  },
   getByTag: function(tag){
     return Fancy.get(this[0].getElementsByTagName(tag));
   },

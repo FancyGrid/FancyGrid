@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.125',
+  version: '1.7.126',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -4304,6 +4304,18 @@ Fancy.Element.prototype = {
    */
   firstChild: function(){
     return Fancy.get(this.$dom.children()[0]);
+  },
+  /*
+   * @return {Array}
+   */
+  child: function (){
+    var childs = this.$dom.children();
+
+    Fancy.each(childs, function(child, index){
+      childs[index] = Fancy.get(child);
+    });
+
+    return childs;
   },
   /*
    * @param {String} eventName
