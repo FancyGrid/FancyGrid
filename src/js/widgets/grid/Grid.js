@@ -169,6 +169,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     }
 
+    if(!Fancy.stylesLoaded){
+      me.intWaitForStyle = setInterval(function (){
+        if(Fancy.stylesLoaded){
+          clearInterval(me.intWaitForStyle);
+          me.init();
+        }
+      }, 100);
+
+      return;
+    }
+
     me.initStore();
 
     me.initPlugins();

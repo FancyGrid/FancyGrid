@@ -265,6 +265,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       s = me.store,
       action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
 
+    if(!action){
+      return;
+    }
+
     switch(action.type){
       case 'edit':
         me.setById(action.id, action.key, action.oldValue);

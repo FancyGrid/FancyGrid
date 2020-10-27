@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.126',
+  version: '1.7.127',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1014,6 +1014,7 @@ var FancyForm = function(){
 
       _link.onload = function(){
         Fancy.loadingStyle = false;
+        Fancy.stylesLoaded = true;
       };
 
       head.appendChild(_link);
@@ -14559,6 +14560,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       s = me.store,
       action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
 
+    if(!action){
+      return;
+    }
+
     switch(action.type){
       case 'edit':
         me.setById(action.id, action.key, action.oldValue);
@@ -14889,6 +14894,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.loadModules();
         return;
       }
+    }
+
+    if(!Fancy.stylesLoaded){
+      me.intWaitForStyle = setInterval(function (){
+        if(Fancy.stylesLoaded){
+          clearInterval(me.intWaitForStyle);
+          me.init();
+        }
+      }, 100);
+
+      return;
     }
 
     me.initStore();

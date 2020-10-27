@@ -1512,7 +1512,7 @@ Fancy.Date = {
         value: value1,
         style: {
           position: 'absolute',
-          bottom: '2px',
+          bottom: '3px',
           left: '3px'
         },
         format: me.format,
@@ -1550,7 +1550,7 @@ Fancy.Date = {
         value: value2,
         style: {
           position: 'absolute',
-          bottom: '2px',
+          bottom: '3px',
           right: '2px'
         },
         format: me.format,

@@ -3378,10 +3378,12 @@
                 data = data.data;
               }
 
-              rowData.push(column.render({
+              value = column.render({
                 value: value,
                 data: data
-              }).value);
+              }).value.replace(/<\/?[^>]+(>|$)/g, '');
+
+              rowData.push(value);
             }
             else {
               rowData.push(me.get(i, column.index));

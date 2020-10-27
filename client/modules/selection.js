@@ -2592,9 +2592,9 @@ Fancy.modules['selection'] = true;
       return cell;
     },
     /*
-     *
+     * @param {Fancy.Element} [cell]
      */
-    getActiveCellInfo: function(){
+    getActiveCellInfo: function(cell){
       var me = this,
         w = me.widget,
         cell = cell || me.getActiveCell(),
@@ -2618,6 +2618,9 @@ Fancy.modules['selection'] = true;
 
       cell.removeCls(GRID_CELL_ACTIVE_CLS);
     },
+    /*
+     *
+     */
     initCopyEl: function(){
       var me = this,
         w = me.widget,
@@ -2784,9 +2787,147 @@ Fancy.modules['selection'] = true;
           break;
         case key.V:
           //TODO
+          me.copyEl.dom.value = '';
+          me.copyEl.dom.focus();
+          setTimeout(function(){
+            me.insertDataFromBuffer();
+          }, 1);
           break;
       }
     },
+    /*
+     *
+     */
+    insertDataFromBuffer: function(){
+      var me = this,
+        w = me.widget,
+        data = me.getDataFromCopyEl(),
+        columnIds = me.getColumnIdToInsert(data),
+        rowIds = me.getRowIdToInsert(data);
+
+      F.each(rowIds, function(id, i){
+        F.each(columnIds, function(columnId, j){
+          var column = w.getColumnById(columnId),
+            dataIndex = column.index,
+            value = data[i][j];
+
+          if(dataIndex === undefined || column.smartIndexFn || !column.editable){
+            return;
+          }
+
+          w.setById(id, dataIndex, value);
+        });
+      });
+    },
+    /*
+     * @return {Array}
+     */
+    getRowIdToInsert: function(data){
+      var me = this,
+        w = me.widget,
+        ids = [];
+
+      if(data.length === 0){
+        return [];
+      }
+
+      var info;
+
+      if(me.activeCell){
+        info = me.getActiveCellInfo();
+      }
+      else{
+        var firstSelectedCell = w.el.select('.' + Fancy.GRID_CELL_SELECTED_CLS).item(0);
+        info = me.getActiveCellInfo(firstSelectedCell);
+      }
+
+      var i = info.rowIndex,
+        iL = i + data.length;
+
+      for(;i<iL;i++){
+        var row = w.get(i);
+
+        if(!row){
+          break;
+        }
+
+        ids.push(row.id);
+      }
+
+      return ids;
+    },
+    /*
+     * @return {Array}
+     */
+    getColumnIdToInsert: function(data){
+      var me = this,
+        w = me.widget,
+        ids = [];
+
+      if(data.length === 0){
+        return [];
+      }
+
+      var info;
+
+      if(me.activeCell){
+        info = me.getActiveCellInfo();
+      }
+      else{
+        var firstSelectedCell = w.el.select('.' + Fancy.GRID_CELL_SELECTED_CLS).item(0);
+        info = me.getActiveCellInfo(firstSelectedCell);
+      }
+
+      var columns = w.getColumns(info.side),
+        i = info.columnIndex,
+        iL = i + data[0].length;
+
+      for(;i<iL;i++){
+        var column = columns[i];
+
+        if(column === undefined){
+          break;
+        }
+
+        if(column.hidden){
+          iL++;
+          continue;
+        }
+
+        ids.push(column.id);
+      }
+
+      return ids;
+    },
+    /*
+     * @return {Array}
+     */
+    getDataFromCopyEl: function(){
+      var me = this,
+        data = [],
+        rawData = me.copyEl.dom.value,
+        rows = rawData.split('\n');
+
+      F.each(rows, function(row){
+        var dataRow = [],
+          cells = row.split('\t');
+
+        if(cells.length === 1){
+          cells = row.split('    ');
+        }
+
+        F.each(cells, function(cell){
+          dataRow.push(cell);
+        });
+
+        data.push(dataRow);
+      });
+
+      return data;
+    },
+    /*
+     *
+     */
     onColumnDrag: function(){
       var me = this;
 

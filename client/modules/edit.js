@@ -82,12 +82,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} e
    */
   onKeyDown: function(e){
-    var keyCode = e.keyCode,
+    var me = this,
+      w = me.widget,
+      keyCode = e.keyCode,
       key = Fancy.key;
 
     switch(keyCode){
       case key.TAB:
         this.fire('tab', e);
+        break;
+      case key.Z:
+        w.undo();
         break;
     }
   },
