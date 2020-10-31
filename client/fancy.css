@@ -4153,6 +4153,9 @@
   border-left-width: 0;
   border-right-width: 0;
 }
+.fancy-theme-extra-gray.fancy-panel .fancy-panel-footer .fancy-footer-status {
+  line-height: 8px;
+}
 .fancy-theme-extra-gray.fancy-combo-result-list li {
   padding: 6px 0 6px 8px;
 }

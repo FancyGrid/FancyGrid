@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.127',
+  version: '1.7.128',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1134,7 +1134,7 @@ Fancy.defineTheme('gray', {
   config: {
     panelBorderWidth: 0,
     //borders: [0,0,1,0],
-    gridBorders: [1,0,1,0],
+    gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -1146,7 +1146,7 @@ Fancy.defineTheme('gray', {
 Fancy.defineTheme('extra-gray', {
   config: {
     panelBorderWidth: 0,
-    gridBorders: [1,0,1,0],
+    gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -15838,6 +15838,10 @@ if(!Fancy.nojQuery && Fancy.$){
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
+
+      if(!o){
+        return;
+      }
 
       if (column.cellTip){
         if (F.isString(column.cellTip)){

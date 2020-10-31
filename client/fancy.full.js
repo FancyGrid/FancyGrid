@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.127',
+  version: '1.7.128',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1135,7 +1135,7 @@ Fancy.defineTheme('gray', {
   config: {
     panelBorderWidth: 0,
     //borders: [0,0,1,0],
-    gridBorders: [1,0,1,0],
+    gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
 
@@ -1147,7 +1147,7 @@ Fancy.defineTheme('gray', {
 Fancy.defineTheme('extra-gray', {
   config: {
     panelBorderWidth: 0,
-    gridBorders: [1,0,1,0],
+    gridBorders: [0,0,1,0],
     gridWithoutPanelBorders: [1,1,1,1],
     panelBodyBorders: [0,0,0,0],
     charWidth: 7,
@@ -25286,10 +25286,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var columns = [].concat(config.columns).concat(config.leftColumns).concat(config.rightColumns);
 
     Fancy.each(columns, function(column){
-      if(column.resizable){
+      if(column.resizable || column.autoWidth){
         config._plugins.push({
           type: 'grid.columnresizer'
         });
+        return true;
       }
     });
 
@@ -30524,6 +30525,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
       else{
         var columns = me.getColumns(side);
+
         if(F.isNumber(index)){
           columns[index].width = width;
         }
@@ -47896,6 +47898,10 @@ Fancy.modules['summary'] = true;
         cellTip = me.cellTip,
         e = o.e;
 
+      if(!o){
+        return;
+      }
+
       if (column.cellTip){
         if (F.isString(column.cellTip)){
           cellTip = column.cellTip;
@@ -51154,7 +51160,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);
     wb.Sheets[ws_name] = ws;
-    var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    var wbout = window.XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
 
     function s2ab(s){
       var buf = new ArrayBuffer(s.length);
@@ -51163,7 +51169,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       return buf;
     }
 
-    saveAs(new Blob([s2ab(wbout)],{type: 'application/octet-stream'}), ws_name + '.xlsx');
+    window.saveAs(new Blob([s2ab(wbout)],{type: 'application/octet-stream'}), ws_name + '.xlsx');
   },
   /*
    * @return {Array}
@@ -51284,7 +51290,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
           continue;
         }
 
-        var cell_ref = XLSX.utils.encode_cell({
+        var cell_ref = window.XLSX.utils.encode_cell({
           c:C,
           r:R
         });
@@ -51296,7 +51302,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
           cell.t = 'b';
         }
         else if(cell.v instanceof Date){
-          cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+          cell.t = 'n'; cell.z = window.XLSX.SSF._table[14];
           cell.v = datenum(cell.v);
         }
         else {
@@ -51308,7 +51314,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     }
 
     if(range.s.c < 10000000){
-      ws['!ref'] = XLSX.utils.encode_range(range);
+      ws['!ref'] = window.XLSX.utils.encode_range(range);
     }
 
     return ws;

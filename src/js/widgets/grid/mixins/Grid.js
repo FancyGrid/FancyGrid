@@ -4300,6 +4300,7 @@
       }
       else{
         var columns = me.getColumns(side);
+
         if(F.isNumber(index)){
           columns[index].width = width;
         }

@@ -1977,10 +1977,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var columns = [].concat(config.columns).concat(config.leftColumns).concat(config.rightColumns);
 
     Fancy.each(columns, function(column){
-      if(column.resizable){
+      if(column.resizable || column.autoWidth){
         config._plugins.push({
           type: 'grid.columnresizer'
         });
+        return true;
       }
     });
 

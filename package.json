@@ -1,6 +1,6 @@
 {
   "name": "fancygrid",
-  "version": "1.7.127",
+  "version": "1.7.128",
   "description": "JavaScript grid library with charts integration and server communication",
   "main": "index.js",
   "repository": {
@@ -35,5 +35,6 @@
     "maxErrors": null,
     "disallowTrailingWhitespace": false,
     "requireTrailingComma": false
-  }
+  },
+  "types": "./types/fancygrid.d.ts"
 }

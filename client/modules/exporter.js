@@ -66,7 +66,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);
     wb.Sheets[ws_name] = ws;
-    var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    var wbout = window.XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
 
     function s2ab(s){
       var buf = new ArrayBuffer(s.length);
@@ -75,7 +75,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       return buf;
     }
 
-    saveAs(new Blob([s2ab(wbout)],{type: 'application/octet-stream'}), ws_name + '.xlsx');
+    window.saveAs(new Blob([s2ab(wbout)],{type: 'application/octet-stream'}), ws_name + '.xlsx');
   },
   /*
    * @return {Array}
@@ -196,7 +196,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
           continue;
         }
 
-        var cell_ref = XLSX.utils.encode_cell({
+        var cell_ref = window.XLSX.utils.encode_cell({
           c:C,
           r:R
         });
@@ -208,7 +208,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
           cell.t = 'b';
         }
         else if(cell.v instanceof Date){
-          cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+          cell.t = 'n'; cell.z = window.XLSX.SSF._table[14];
           cell.v = datenum(cell.v);
         }
         else {
@@ -220,7 +220,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     }
 
     if(range.s.c < 10000000){
-      ws['!ref'] = XLSX.utils.encode_range(range);
+      ws['!ref'] = window.XLSX.utils.encode_range(range);
     }
 
     return ws;

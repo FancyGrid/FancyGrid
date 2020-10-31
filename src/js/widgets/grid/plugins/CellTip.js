@@ -52,6 +52,10 @@
         cellTip = me.cellTip,
         e = o.e;
 
+      if(!o){
+        return;
+      }
+
       if (column.cellTip){
         if (F.isString(column.cellTip)){
           cellTip = column.cellTip;
