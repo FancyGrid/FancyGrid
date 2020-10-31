@@ -2,7 +2,7 @@ import {Title} from "./Title";
 import FormOptions from "../form/FormOptions";
 import GridOptions from "../grid/GridOptions";
 
-interface TabOptions {
+export default interface TabOptions {
   renderTo?: any;
   title?: string|Title;
   theme?: any;

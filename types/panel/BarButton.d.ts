@@ -1,5 +1,5 @@
 export interface BarButton {
-  allowtoggle?: boolean;
+  allowToggle?: boolean;
   cls?: string;
   data?: any[];
   disabled?: boolean;

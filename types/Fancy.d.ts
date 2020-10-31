@@ -1,4 +1,4 @@
-import {GridApi} from "fancygrid";
+import GridApi from "./grid/GridApi";
 
 declare const Fancy : {
   getWidget(id: string): GridApi;

@@ -26,7 +26,6 @@ export default interface Proxy {
   wrapper?: boolean;
   words?: {
     direction?: string;
-    direction?: string;
     filter?: string;
     key?: string;
     limit?: string;

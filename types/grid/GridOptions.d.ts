@@ -1,16 +1,12 @@
-import {BarButton, SubTBarButton, TBarButton} from "../panel/BarButton";
-import Footer from "../panel/Footer";
-import {Title, SubTitle} from "../panel/Title";
-import Column from "./Column";
+import {Column, Defaults} from "./Column";
 import Data from "./Data";
-import Defaults from "./Defaults";
 import Expander from "./Expander";
 import GridToGrid from "./GridToGrid";
 import Grouping from "./Grouping";
 import Paging from "./Paging";
 import SelModel from "./SelModel";
 import Summary from "./Summary";
-import Panel from "fancygrid/types/panel/Panel";
+import Panel from "../panel/Panel";
 
 export default interface GridOptions extends Panel {
   cellHeaderHeight?: number;

@@ -1,4 +1,4 @@
-import {Proxy} from "./Proxy";
+import Proxy from "./Proxy";
 
 export default interface Data {
   chart?: any[];
