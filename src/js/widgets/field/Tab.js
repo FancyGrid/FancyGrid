@@ -2,7 +2,7 @@
  * @class Fancy.Tab
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
+Fancy.define(['Fancy.form.field.Tab'], {
   mixins: [
     Fancy.form.field.Mixin
   ],

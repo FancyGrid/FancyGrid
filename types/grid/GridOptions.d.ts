@@ -7,6 +7,7 @@ import Paging from "./Paging";
 import SelModel from "./SelModel";
 import Summary from "./Summary";
 import Panel from "../panel/Panel";
+import GridEvent from "./GridEvent";
 
 export default interface GridOptions extends Panel {
   cellHeaderHeight?: number;
@@ -27,7 +28,7 @@ export default interface GridOptions extends Panel {
   draggable?: boolean;
   doubleHorizontalScroll?: boolean;
   emptyText?: string;
-  events?: any[];
+  events?: GridEvent[];
   expander?: Expander;
   exporter?: boolean;
   filter?: boolean|{

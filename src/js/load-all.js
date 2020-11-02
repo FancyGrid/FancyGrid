@@ -61,7 +61,6 @@
       pathToSrc + 'widgets/Plugin.js',
       pathToSrc + 'widgets/button/Button.js',
       pathToSrc + 'widgets/button/SegButton.js',
-      //pathToSrc + 'widgets/tab/Tab.js',
       pathToSrc + 'widgets/panel/mixins/prepareConfig.js',
       pathToSrc + 'widgets/panel/mixins/methods.js',
       pathToSrc + 'widgets/panel/mixins/DD.js',
@@ -94,14 +93,12 @@
       pathToSrc + 'widgets/field/CheckBox.js',
       pathToSrc + 'widgets/field/Switcher.js',
       pathToSrc + 'widgets/field/Combo.js',
-      //pathToSrc + 'widgets/field/Tag.js',
       pathToSrc + 'widgets/field/Button.js',
       pathToSrc + 'widgets/field/SegButton.js',
       pathToSrc + 'widgets/field/Line.js', // form module
       pathToSrc + 'widgets/field/Set.js', // form module
       pathToSrc + 'widgets/field/HTML.js', // form module
       pathToSrc + 'widgets/field/ReCaptcha.js', // form module
-      pathToSrc + 'widgets/field/Tab.js', // form module
       pathToSrc + 'widgets/field/Radio.js',
 
       pathToSrc + 'util/valid/VType.js', // edit module

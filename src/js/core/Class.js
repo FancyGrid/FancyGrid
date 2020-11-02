@@ -99,6 +99,25 @@ ClassManager.prototype = {
     }
 
     return namespace;
+  },
+  /*
+   * @param {String|String} name
+   * @return {Boolean}
+   */
+  has: function(name){
+    if(Fancy.isString(name)){
+      return !!$classes[name];
+    }
+    else if(Fancy.isArray(name)){
+      var exist = false;
+      Fancy.each(name, function(_name){
+        if(Fancy.ClassManager.get(_name)){
+          exist = true;
+        }
+      });
+
+      return exist;
+    }
   }
 };
 
@@ -118,6 +137,10 @@ Fancy.ClassManager = new ClassManager();
 Fancy.define = function(name, config){
   config = config || {};
   var names = [];
+
+  if(Fancy.ClassManager.has(name)){
+    Fancy.error('Overwritting class name ' + name );
+  }
   
   if( Fancy.isArray(name) ){
     names = name;

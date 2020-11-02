@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.128',
+  version: '1.7.129',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1985,6 +1985,25 @@ ClassManager.prototype = {
     }
 
     return namespace;
+  },
+  /*
+   * @param {String|String} name
+   * @return {Boolean}
+   */
+  has: function(name){
+    if(Fancy.isString(name)){
+      return !!$classes[name];
+    }
+    else if(Fancy.isArray(name)){
+      var exist = false;
+      Fancy.each(name, function(_name){
+        if(Fancy.ClassManager.get(_name)){
+          exist = true;
+        }
+      });
+
+      return exist;
+    }
   }
 };
 
@@ -2004,6 +2023,10 @@ Fancy.ClassManager = new ClassManager();
 Fancy.define = function(name, config){
   config = config || {};
   var names = [];
+
+  if(Fancy.ClassManager.has(name)){
+    Fancy.error('Overwritting class name ' + name );
+  }
   
   if( Fancy.isArray(name) ){
     names = name;
@@ -6548,7 +6571,7 @@ Fancy.define('Fancy.toolbar.Tab', {
    * @constructor
    * @param config
    */
-  constructor: function(config){
+  constructor: function(){
     this.Super('const', arguments);
   },
   /*
@@ -13862,7 +13885,7 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
  * @class Fancy.Tab
  * @extends Fancy.Widget
  */
-Fancy.define(['Fancy.form.field.Tab', 'Fancy.Tab'], {
+Fancy.define(['Fancy.form.field.Tab'], {
   mixins: [
     Fancy.form.field.Mixin
   ],
