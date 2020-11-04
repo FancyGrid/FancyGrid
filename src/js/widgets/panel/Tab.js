@@ -18,10 +18,10 @@
   F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     extend: F.Panel,
     /*
-   * @constructor
-   * @param {String|HtmlElement} renderTo
-   * @param {Object} config
-   */
+     * @constructor
+     * @param {String|HtmlElement} renderTo
+     * @param {Object} config
+     */
     constructor: function(renderTo, config){
       var me = this;
 
@@ -36,6 +36,10 @@
 
         config = config || {};
 
+        if(config.renderOuter){
+          config.renderTo = config.renderOuter;
+        }
+
         Fancy.loadStyle();
 
         me.prepareConfigTheme(config);
@@ -44,8 +48,8 @@
         me.Super('const', arguments);
       };
 
-      if(!Fancy.fullBuilt && Fancy.MODULELOAD !== false && Fancy.MODULESLOAD !== false){
-        if(Fancy.nojQuery){
+      if(!Fancy.fullBuilt && Fancy.MODULELOAD !== false){
+        if(Fancy.nojQuery && !Fancy.modules['dom'] && !Fancy.modules['grid']){
           Fancy.loadModule('dom', function(){
             Fancy.loadModule('grid', function(){
               fn();
@@ -398,10 +402,18 @@
     setActiveItemWidth: function(){
       var me = this;
 
+      if(me.items.length === 0){
+        return;
+      }
+
       me.items[me.activeTab].setWidth(me.panelBodyWidth);
     },
     setActiveItemHeight: function(){
       var me = this;
+
+      if(me.items.length === 0){
+        return;
+      }
 
       me.items[me.activeTab].setHeight(me.panelBodyHeight, false);
     }

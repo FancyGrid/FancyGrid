@@ -6,7 +6,10 @@ declare const Fancy : {
   defineTheme(themeName: string, params: object): void;
   defineControl(controlName, params: object): void;
   defineController(controlName, params: object): void;
-  getWidget(id: string): GridApi | FormApi;
+  getForm(id: string): FormApi;
+  getGrid(id: string): GridApi;
+  getWidget(id: string): any;
+  getModulesList(): string[];
   currency: {
     AUD: string;
     BRL: string;
@@ -27,6 +30,8 @@ declare const Fancy : {
     USD: string;
   };
   COLORS: string[];
+  Grid: any;
+  Form: any;
   key: {
     A: number;
     ALT: number;
@@ -118,6 +123,9 @@ declare const Fancy : {
     Z: number;
     ZERO: number;
   },
+  MODULESDIR: string;
+  stylesLoaded: boolean;
+  Tab: any;
   version: string;
 }
 

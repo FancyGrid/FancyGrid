@@ -161,6 +161,7 @@ export default interface GridApi {
   selectRow(rowIndex: Number, value: Boolean, multi: Boolean): void;
   set(rowIndex: number, dataIndex: string, value: any): void;
   setById(id: number|string, dataIndex: string, value: any): void;
+  setById(id: number|string, itemData: object): void;
   setColumnComboData(dataIndex: string, data: ([]|object)[]): void;
   setColumnComboData(orderIndex: string, data: ([]|object)[]): void;
   setColumnTitle(dataIndex: string, value: string, side?: 'left'|'center'|'right'): void;

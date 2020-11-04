@@ -4,5 +4,5 @@ export default interface FormEvent {
   delay?: number;
   init?(form: FormApi): void;
   scope?: object;
-  set?(form: FormApi, params: object): void;
+  set?(form: FormApi, params: any): void;
 }

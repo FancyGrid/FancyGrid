@@ -80,4 +80,22 @@
     return W.getWidget(id);
   };
 
+  /*
+   * @param {String} id
+   * @return {Object} widget
+   * F.getWidget was duplicated over F.getGrid and F.getForm for TypeScript typization.
+   */
+  F.getGrid = function(id){
+    return W.getWidget(id);
+  };
+
+  /*
+   * @param {String} id
+   * @return {Object} widget
+   * F.getWidget was duplicated over F.getGrid and F.getForm for TypeScript typization.
+   */
+  F.getForm = function(id){
+    return W.getWidget(id);
+  };
+
 })();

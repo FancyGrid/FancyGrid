@@ -9,5 +9,6 @@ export default interface FormOptions extends Panel {
   method?: string;
   params?: object;
   scrollable?: boolean;
+  type?: string;
   url?: string;
 }

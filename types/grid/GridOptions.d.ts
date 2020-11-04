@@ -61,4 +61,5 @@ export default interface GridOptions extends Panel {
   summary?: string|Summary;
   textSelection?: boolean;
   trackOver?: boolean;
+  type?: string;
 }
