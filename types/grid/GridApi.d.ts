@@ -164,6 +164,7 @@ export default interface GridApi {
   setById(id: number|string, itemData: object): void;
   setColumnComboData(dataIndex: string, data: ([]|object)[]): void;
   setColumnComboData(orderIndex: string, data: ([]|object)[]): void;
+  setColumns(columns: Column[]): void;
   setColumnTitle(dataIndex: string, value: string, side?: 'left'|'center'|'right'): void;
   setColumnTitle(orderIndex: number, value: string, side?: 'left'|'center'|'right'): void;
   setColumnWidth(orderIndex: number, width: number): void;

@@ -26,6 +26,11 @@ Fancy.Element = function(dom){
 
   me.dom = dom;
   me.$dom = Fancy.$(dom);
+
+  if(dom && dom.id){
+    me.id = dom.id;
+  }
+
   me.length = 1;
 };
 

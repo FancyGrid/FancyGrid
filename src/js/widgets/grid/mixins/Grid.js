@@ -1124,7 +1124,7 @@
      * @param {Array} columns
      * @param {String} side
      */
-    setColumns: function(columns, side){
+    setColumnsLinksToSide: function(columns, side){
       var me = this;
 
       switch (side){
@@ -2512,22 +2512,22 @@
             }
           });
 
-          if (F.isString(indexOrder) && side === 'center') {
+          if (F.isString(indexOrder) && side === 'center'){
             columns = me.getColumns('left');
 
-            F.each(columns, function (column, i) {
-              if (column.index === indexOrder) {
+            F.each(columns, function(column, i){
+              if (column.index === indexOrder){
                 indexOrder = i;
                 side = 'left';
                 return true;
               }
             });
 
-            if (F.isString(indexOrder)) {
+            if (F.isString(indexOrder)){
               columns = me.getColumns('right');
 
-              F.each(columns, function (column, i) {
-                if (column.index === indexOrder) {
+              F.each(columns, function(column, i){
+                if (column.index === indexOrder){
                   indexOrder = i;
                   side = 'right';
                   return true;
@@ -2592,6 +2592,27 @@
       }
 
       me.fire('columnremove');
+
+      if(me.removeColumnScrollInt){
+        clearInterval(me.removeColumnScrollInt);
+      }
+
+      me.removeColumnScrollInt = setTimeout(function(){
+        delete me.removeColumnScrollInt;
+        me.scroller.update();
+      }, Fancy.ANIMATE_DURATION);
+
+      if(column.index === column.id){
+        delete me.columnsIdsSeed[column.index];
+      }
+      else if(new RegExp(column.index).test(column.id)){
+        if(me.columnsIdsSeed[column.index] === 1){
+          delete me.columnsIdsSeed[column.index];
+        }
+        else{
+          me.columnsIdsSeed[column.index]--;
+        }
+      }
 
       return column;
     },
@@ -2764,9 +2785,15 @@
      * @param {Object} column
      * @param {String} side
      * @param {Number} orderIndex
+     * @param {Boolean} [timeout]
      */
-    addColumn: function(column, side, orderIndex){
+    addColumn: function(column, side, orderIndex, timeout){
       var me = this;
+
+      if(timeout === false){
+        me._addColumn(column, side, orderIndex);
+        return;
+      }
 
       // Delay is used to prevent running sort on column if it was executed inside of headercellclick event.
       setTimeout(function(){
@@ -2796,9 +2823,15 @@
         orderIndex = columns.length;
       }
 
+      var specialIndexes = {
+        $selected: true,
+        $order: true,
+        $rowdrag: true
+      };
+
       if(column.id === undefined){
-        if(column.index){
-          column.id = this.getColumnId(column.index);
+        if(column.index && !specialIndexes[column.index]){
+          column.id = me.getColumnId(column.index);
         }
         else{
           column.id = Fancy.id(null, 'col-id-');
@@ -4627,7 +4660,7 @@
       return me.grouping && me.grouping.by;
     },
     /*
-     * @param {key} [group]
+     * @param {String} [group]
      */
     expandGroup: function(group){
       var me = this,
@@ -4710,6 +4743,40 @@
       });
 
       return width;
+    },
+    /*
+     * @param {Array} columns
+     */
+    setColumns: function(columns){
+      var me = this;
+
+      columns = Fancy.Array.copy(columns, true);
+
+      columns = me.prepareConfigColumnMinMaxWidth({
+        columns: columns
+      }).columns;
+
+      if(me.defaults){
+        columns = me.prepareConfigDefaults({
+          defaults: me.defaults,
+          columns: columns
+        }).columns;
+      }
+
+      me.refreshcolumns.setColumns(columns);
+      me._setColumnsAutoWidth();
+
+      setTimeout(function() {
+        Fancy.each(['left', 'center', 'right'], function (side) {
+          var header = me.getHeader(side),
+            body = me.getBody(side);
+
+          header.reSetColumnsAlign();
+          header.reSetColumnsCls();
+          body.reSetColumnsAlign();
+          body.reSetColumnsCls();
+        });
+      }, 1);
     }
   });
 

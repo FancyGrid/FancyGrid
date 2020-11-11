@@ -16,8 +16,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     type: 'grid.updater'
   },{
     type: 'grid.scroller'
-  },{
+  }, {
     type: 'grid.licence'
+  },{
+    type: 'grid.refreshcolumns'
   }],
   type: 'grid',
   theme: 'default',
@@ -149,6 +151,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'beforeedit', 'startedit', 'beforeendedit', 'endedit',
       'changepage', 'changepagesize',
       'dropitems',
+      'dragstart',
       'dragrows',
       'collapse', 'expand',
       'treecollapse', 'treeexpand',

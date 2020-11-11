@@ -111,6 +111,7 @@
       pathToSrc + 'widgets/grid/Grid.js',
       pathToSrc + 'widgets/grid/plugins/Updater.js',
       pathToSrc + 'widgets/grid/plugins/Scroller.js',
+      pathToSrc + 'widgets/grid/plugins/RefreshColumns.js',
       pathToSrc + 'widgets/grid/plugins/Sorter.js', // sort module
       pathToSrc + 'widgets/grid/plugins/Paging.js', // paging module
       pathToSrc + 'widgets/grid/plugins/LoadMask.js',

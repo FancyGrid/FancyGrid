@@ -408,9 +408,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   },
   /*
    * @param {Object} config
+   * @param {Boolean} initial
    * @return {Object}
    */
-  prepareConfigColumns: function(config){
+  prepareConfigColumns: function(config, initial){
     var columns = config.columns,
       leftColumns = [],
       rightColumns = [],
@@ -452,13 +453,19 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         $selected++;
       }
 
-      if(column.id === undefined){
-        if(column.index){
-          column.id = this.getColumnId(column.index);
+      if(initial !== false){
+        if(column.id === undefined){
+          if(column.index){
+            column.id = this.getColumnId(column.index);
+          }
+          else{
+            column.id = Fancy.id(null, 'col-id-');
+          }
         }
-        else{
-          column.id = Fancy.id(null, 'col-id-');
-        }
+      }
+
+      if(!column.title && column.index && !Fancy.isArray(column.index)){
+        column.title = Fancy.String.upFirstChar(column.index);
       }
 
       switch(column.type){
@@ -530,6 +537,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           break;
       }
 
+      if(initial === false){
+        continue;
+      }
+
       if(column.locked){
         leftColumns.push(column);
         columns.splice(i, 1);
@@ -545,6 +556,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         iL--;
         continue;
       }
+    }
+
+    if(initial === false){
+      return config;
     }
 
     if(autoHeight){

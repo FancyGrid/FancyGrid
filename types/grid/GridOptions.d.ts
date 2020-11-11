@@ -26,6 +26,7 @@ export default interface GridOptions extends Panel {
   defaults?: Defaults;
   dirtyEnabled?: boolean;
   draggable?: boolean;
+  droppable?: boolean|Function;
   doubleHorizontalScroll?: boolean;
   emptyText?: string;
   events?: GridEvent[];

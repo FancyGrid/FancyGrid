@@ -119,6 +119,7 @@ Fancy.defineTheme('extra-gray', {
     charWidth: 7,
     menuItemHeight: 27,
     titleHeight: 32,
+    subTitleHeight: 32,
     cellHeight: 28,
     cellHeaderHeight: 28,
     barHeight: 32,

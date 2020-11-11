@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.134',
+  version: '1.7.136',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1152,6 +1152,7 @@ Fancy.defineTheme('extra-gray', {
     charWidth: 7,
     menuItemHeight: 27,
     titleHeight: 32,
+    subTitleHeight: 32,
     cellHeight: 28,
     cellHeaderHeight: 28,
     barHeight: 32,
@@ -2320,6 +2321,20 @@ Fancy.define('Fancy.Model', {
           row[p] = data[p];
         }
       }
+
+      // Watch for behavior of this
+      // Causes bug in tree
+      /*
+      for(var p in data){
+        if(p[0] === '$'){
+          continue;
+        }
+
+        if(row[p] === undefined){
+          row[p] = data[p];
+        }
+      }
+      */
 
       if(!row.id){
         me.fields.push('id');
@@ -4291,6 +4306,11 @@ Fancy.Element = function(dom){
 
   me.dom = dom;
   me.$dom = Fancy.$(dom);
+
+  if(dom && dom.id){
+    me.id = dom.id;
+  }
+
   me.length = 1;
 };
 
@@ -14796,8 +14816,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     type: 'grid.updater'
   },{
     type: 'grid.scroller'
-  },{
+  }, {
     type: 'grid.licence'
+  },{
+    type: 'grid.refreshcolumns'
   }],
   type: 'grid',
   theme: 'default',
@@ -14929,6 +14951,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'beforeedit', 'startedit', 'beforeendedit', 'endedit',
       'changepage', 'changepagesize',
       'dropitems',
+      'dragstart',
       'dragrows',
       'collapse', 'expand',
       'treecollapse', 'treeexpand',

@@ -59,6 +59,20 @@ Fancy.define('Fancy.Model', {
         }
       }
 
+      // Watch for behavior of this
+      // Causes bug in tree
+      /*
+      for(var p in data){
+        if(p[0] === '$'){
+          continue;
+        }
+
+        if(row[p] === undefined){
+          row[p] = data[p];
+        }
+      }
+      */
+
       if(!row.id){
         me.fields.push('id');
         if(!data.id){

@@ -962,7 +962,13 @@
         }
       }
 
-      return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('top')));
+      var columnEls = w.body.el.select('.' + GRID_COLUMN_CLS);
+
+      if(columnEls.length === 0){
+        return 0;
+      }
+
+      return Math.abs(parseInt(columnEls.item(0).css('top')));
     },
     /*
      * @return {Number}
@@ -985,14 +991,19 @@
         }
       }
 
-      return Math.abs(parseInt(w.body.el.select('.' + GRID_COLUMN_CLS).item(0).css('left')));
+      var columnEls = w.body.el.select('.' + GRID_COLUMN_CLS);
+
+      if(columnEls.length === 0){
+        return 0;
+      }
+
+      return Math.abs(parseInt(columnEls.item(0).css('left')));
     },
     /*
      * @param {Number} [viewHeight]
      */
     update: function(viewHeight){
-      var me = this,
-        w = me.widget;
+      var me = this;
 
       me.setScrollBars(viewHeight);
       me.checkScroll(viewHeight);

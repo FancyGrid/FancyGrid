@@ -1,10 +1,109 @@
 /*
+ * @class Fancy.DragRowsManager
+ * @singleton
+ */
+(function(){
+  //SHORTCUTS
+  var F = Fancy;
+
+  F.define('Fancy.DragRowsManager', {
+    singleton: true,
+    /*
+     * @constructor
+     */
+    constructor: function(){
+      var me = this;
+
+      me.draggingRows = [];
+    },
+    /*
+     * @params {Object} grid
+     * @params {Array} rows
+     */
+    add: function(grid, rows){
+      var me = this,
+        docEl = Fancy.get(document);
+
+      me.activeGrid = grid;
+      me.draggingRows = rows;
+
+      docEl.on('mouseenter', me.onMouserEnterGrid, me, '.' + Fancy.GRID_CLS);
+    },
+    /*
+     *
+     */
+    remove: function(){
+      var me = this,
+        docEl = Fancy.get(document);
+
+      delete me.activeGrid;
+      delete me.draggingRows;
+      delete me.toGrid;
+      delete me.droppable;
+      delete me.dropOutSideRowIndex;
+
+      docEl.un('mouseenter', me.onMouserEnterGrid);
+    },
+    onMouserEnterGrid: function(e){
+      var me = this,
+        targetEl = Fancy.get(e.currentTarget);
+
+      if(targetEl.id === me.activeGrid.el.id){
+        return;
+      }
+
+      if(!me.toGrid){
+        me.toGrid = Fancy.getWidget(targetEl.id);
+      }
+      else if(me.toGrid.id !== targetEl.id){
+        me.toGrid = Fancy.getWidget(targetEl.id);
+      }
+
+      if(!me.toGrid){
+        return true;
+      }
+
+      if(me.toGrid.droppable === true ||
+        (F.isFunction(me.toGrid.droppable) &&
+          me.toGrid.droppable(me.activeGrid, me.draggingRows) === true)){
+        me.droppable = true;
+
+        var docEl = Fancy.get(document);
+
+        docEl.once('mouseleave', me.onMouseLeaveGrid, me, '#' + me.toGrid.id);
+
+        setTimeout(function(){
+          if(me.dropOutSideRowIndex === undefined && me.toGrid){
+            var rowIndex = me.toGrid.getDisplayedData().length - 1;
+
+            me.toGrid.rowdragdrop.activeRowIndex = rowIndex + 1;
+
+            me.toGrid.rowdragdrop.insertItem = me.toGrid.get(rowIndex + 1);
+            me.dropOutSideRowIndex = rowIndex + 1;
+
+            me.toGrid.rowdragdrop.showCellsDropMask();
+          }
+        }, 100);
+      }
+    },
+    onMouseLeaveGrid: function(){
+      var me = this;
+
+      delete me.droppable;
+      delete me.toGrid;
+      delete me.dropOutSideRowIndex;
+    }
+  });
+})();
+
+/*
  * @class Fancy.grid.plugin.RowDragDrop
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
   var F = Fancy;
+  var DRM = F.DragRowsManager;
 
   //CONSTANTS
   var GRID_BODY_CLS = F.GRID_BODY_CLS;
@@ -37,7 +136,7 @@
       var me = this;
 
       me.Super('init', arguments);
-      me.addEvents('drop');
+      me.addEvents('drop', 'start', 'dropoutside');
       me.ons();
       me.initDropCls();
       me.initEnterLeave();
@@ -54,8 +153,10 @@
       w.on('beforecellmousedown', me.onBeforeCellMouseDown, me);
       w.on('cellmousedown', me.onCellMouseDown, me);
       w.on('rowenter', me.onRowEnter, me);
-      w.on('cellleave', me.onCellLeave, me);
+      w.on('rowleave', me.onRowLeave, me, null, 100);
       me.on('drop', me.onDrop, me);
+      me.on('dropoutside', me.onDropOutSide, me);
+      me.on('start', me.onStart, me);
     },
     disableSelectionMove: function(){
       var me = this,
@@ -122,6 +223,9 @@
         if(me.dropOK){
           me.fire('drop');
         }
+        else if(DRM.droppable){
+          me.fire('dropoutside');
+        }
         me.tipShown = false;
       }
 
@@ -131,6 +235,8 @@
         }, 1);
         w.enableSelection();
       }
+
+      DRM.remove();
     },
     /*
      * @param {Fancy.Grid} grid
@@ -141,7 +247,10 @@
         w = me.widget,
         selected = w.getSelection();
 
-      if (!me.cellMouseDown || selected.length === 0 || !me.tipShown){
+      if(DRM.droppable && DRM.toGrid.id === w.id){
+        DRM.dropOutSideRowIndex = o.rowIndex;
+      }
+      else if (!me.cellMouseDown || selected.length === 0 || !me.tipShown){
         return;
       }
 
@@ -252,33 +361,6 @@
       me.activeRowIndex = o.rowIndex;
       me.showCellsDropMask();
     },
-    onCellLeave: function(grid, params){
-      var me = this,
-        docEl = F.get(document),
-        cell = F.get(params.cell);
-
-      if(!me.cellMouseDown){
-        return;
-      }
-
-      if(me.tipShown){
-        return;
-      }
-
-      if(!cell.hasClass(GRID_CELL_SELECTED_CLS)){
-        return;
-      }
-
-      if(!me.tip){
-        me.initTip();
-      }
-
-      me.updateTipText();
-      me.showTip(params.e);
-
-      docEl.on('mousemove', me.onDocMouseMove, me);
-      //docEl.on('mouseup', me.onDocMouseUp, me);
-    },
     /*
      * @param {String} text
      * @param {Object} e
@@ -310,13 +392,21 @@
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
       else{
-        me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
+        if(DRM.droppable){
+          me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
+        }
+        else {
+          me.tip.el.replaceClass(me.dropOkCls, me.dropNotOkCls);
+        }
       }
     },
     onDocMouseMove: function(e){
       var me = this;
 
       if(me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS)){
+        if(!DRM.activeGrid){
+          me.fire('start');
+        }
         me.showTip(e);
       }
       else{
@@ -342,6 +432,16 @@
 
       w.el.select('.' + me.cellMaskCls).removeCls(me.cellMaskCls);
       w.el.select('.' + me.cellFirstRowMaskCls).removeCls(me.cellFirstRowMaskCls);
+    },
+    onStart: function(){
+      var me = this,
+        w = me.widget,
+        selection = w.getSelection();
+
+      w.fire('dragstart', selection);
+      if(selection.length){
+        DRM.add(w, selection);
+      }
     },
     onDrop: function(){
       var me = this,
@@ -388,6 +488,26 @@
       w.fire('dragrows', selection);
       delete w.draggingRows;
       w.enableSelection();
+    },
+    onDropOutSide: function(){
+      var me = this,
+        w = me.widget,
+        selection = w.getSelection(),
+        rowIndex = DRM.dropOutSideRowIndex || 0;
+
+      w.clearSelection();
+
+      w.remove(selection, null, false);
+      w.store.changeDataView();
+      w.update();
+
+      DRM.toGrid.insert(rowIndex, selection, false);
+      DRM.toGrid.store.changeDataView();
+      DRM.toGrid.update();
+      DRM.toGrid.rowdragdrop.clearCellsMask();
+      DRM.toGrid.fire('dragrows', selection);
+
+      DRM.remove();
     },
     onBeforeCellMouseDown: function(el, o){
       var me = this,
@@ -455,6 +575,35 @@
 
       me.dropOK = false;
       me.clearCellsMask();
+    },
+    onRowLeave: function(grid, params){
+      var me = this,
+        w = me.widget,
+        rowIndex = params.rowIndex,
+        activeRowIndex = me.activeRowIndex;
+
+      if(!me.cellMouseDown){
+        if(DRM.droppable){
+          activeRowIndex = DRM.toGrid.rowdragdrop.activeRowIndex;
+
+          if(rowIndex === activeRowIndex && DRM.toGrid.getDisplayedData().length - 1 === rowIndex){
+            DRM.toGrid.rowdragdrop.activeRowIndex = rowIndex + 1;
+            DRM.toGrid.rowdragdrop.showCellsDropMask();
+
+            DRM.toGrid.rowdragdrop.insertItem = DRM.toGrid.get(rowIndex + 1);
+            DRM.dropOutSideRowIndex = rowIndex + 1;
+          }
+        }
+
+        return;
+      }
+
+      if(rowIndex === activeRowIndex && w.getDisplayedData().length - 1 === rowIndex){
+        me.activeRowIndex = me.activeRowIndex + 1;
+        me.showCellsDropMask();
+
+        me.insertItem = w.get(rowIndex);
+      }
     }
   });
 

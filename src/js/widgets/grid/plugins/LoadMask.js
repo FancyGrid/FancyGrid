@@ -94,10 +94,32 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     me.textEl = me.el.select('.'+me.textCls);
 
     var innerWidth = me.innerEl.width(),
-      innerHeight = me.innerEl.height();
+      innerHeight = me.innerEl.height(),
+      left = width/2 - innerWidth/2;
+
+    if(left < 10){
+      me.intLeft = setInterval(function(){
+        if(me.el.css('display') === 'none'){
+          clearInterval(me.intLeft);
+        }
+
+        innerWidth = me.innerEl.width();
+        innerHeight = me.innerEl.height();
+        left = width/2 - innerWidth/2;
+
+        if(left < 10){
+          return;
+        }
+
+        me.innerCls.css({
+          left: left
+        });
+        clearInterval(me.intLeft);
+      }, 100);
+    }
 
     me.innerEl.css({
-      left: width/2 - innerWidth/2,
+      left: left,
       top: height/2 - innerHeight/2
     });
 

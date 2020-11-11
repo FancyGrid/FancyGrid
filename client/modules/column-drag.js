@@ -612,7 +612,7 @@ Fancy.modules['column-drag'] = true;
           columns = Fancy.Array.insert(columns, inIndex - _columns.length, _columns);
         }
 
-        w.setColumns(columns, side);
+        w.setColumnsLinksToSide(columns, side);
       }
       else if(me.inUpGroupCell){
         var o = me.getGroupStartEnd();
