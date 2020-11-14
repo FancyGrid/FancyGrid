@@ -28,6 +28,10 @@
       me.draggingRows = rows;
 
       docEl.on('mouseenter', me.onMouserEnterGrid, me, '.' + Fancy.GRID_CLS);
+
+      if(me.activeGrid.dropZone){
+        me.activeGrid.el.on('mouseleave', me.onMouseLeaveActiveGrid, me);
+      }
     },
     /*
      *
@@ -35,6 +39,10 @@
     remove: function(){
       var me = this,
         docEl = Fancy.get(document);
+
+      if(me.activeGrid && me.activeGrid.dropZone){
+        docEl.un('mousemove', me.onMouseMoveOutSideActiveGrid);
+      }
 
       delete me.activeGrid;
       delete me.draggingRows;
@@ -92,6 +100,58 @@
       delete me.droppable;
       delete me.toGrid;
       delete me.dropOutSideRowIndex;
+    },
+    onMouseLeaveActiveGrid: function(){
+      var me = this,
+        docEl = Fancy.get(document);
+
+      if(me.activeGrid && me.activeGrid.el){
+        docEl.on('mousemove', me.onMouseMoveOutSideActiveGrid, me);
+
+        me.activeGrid.el.on('mouseenter', function(){
+          docEl.un('mousemove', me.onMouseMoveOutSideActiveGrid);
+        });
+      }
+    },
+    onMouseMoveOutSideActiveGrid: function(e){
+      var me = this,
+        target = e.target,
+        tagName = target.tagName.toLocaleLowerCase();
+
+      if(me.dropEl){
+        return;
+      }
+
+      switch(tagName){
+        case 'html':
+        case 'document':
+        case 'body':
+          return;
+      }
+
+      if(me.hoverEl === target){
+        return;
+      }
+
+      me.hoverEl = target;
+
+      if(me.activeGrid.dropZone(me.hoverEl)){
+        me.dropEl = F.get(me.hoverEl);
+
+        me.dropEl.once('mouseleave', function(){
+          delete me.dropEl;
+          delete me.hoverEl;
+
+          if(me.activeGrid){
+            me.activeGrid.rowdragdrop.dropOK = false;
+          }
+        });
+
+        me.activeGrid.rowdragdrop.dropOK = true;
+      }
+      else{
+        me.activeGrid.rowdragdrop.dropOK = false;
+      }
     }
   });
 })();
@@ -167,7 +227,14 @@
     showTip: function(e){
       var me = this,
         w = me.widget,
+        selection;
+
+      if(me.singleRowToDrag){
+        selection = [me.singleRowToDrag.data];
+      }
+      else{
         selection = w.getSelection();
+      }
 
       if(selection.length === 0){
         return;
@@ -237,6 +304,7 @@
       }
 
       DRM.remove();
+      delete me.singleRowToDrag;
     },
     /*
      * @param {Fancy.Grid} grid
@@ -245,19 +313,22 @@
     onRowEnter: function(grid, o){
       var me = this,
         w = me.widget,
-        selected = w.getSelection();
+        selected = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection();
 
       if(DRM.droppable && DRM.toGrid.id === w.id){
         DRM.dropOutSideRowIndex = o.rowIndex;
       }
       else if (!me.cellMouseDown || selected.length === 0 || !me.tipShown){
-        return;
+        if(!me.singleRowToDrag){
+          return;
+        }
       }
 
       if(o.rowIndex !== 0){
         var prevRowIndex = o.rowIndex - 1;
 
-        if(w.body.getCell(prevRowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+        if( (me.singleRowToDrag && (me.singleRowToDrag.rowIndex === prevRowIndex || me.singleRowToDrag.rowIndex === o.rowIndex)) ||
+          (w.body.getCell(prevRowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS) && !me.singleRowToDrag)){
           me.dropOK = false;
 
           me.clearCellsMask();
@@ -265,7 +336,8 @@
           return;
         }
         else{
-          if(w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS) && selected.length === 1){
+          if( (me.singleRowToDrag && (o.rowIndex === me.singleRowToDrag.rowIndex || prevRowIndex === me.singleRowToDrag.rowIndex ) ) ||
+            (!me.singleRowToDrag && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS) && selected.length === 1)){
             me.dropOK = false;
 
             me.clearCellsMask();
@@ -380,7 +452,7 @@
       var me = this,
         w = me.widget,
         lang = w.lang,
-        selection = w.getSelection(),
+        selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
         text = F.String.format(lang.dragText, [selection.length, selection.length > 1 ? 's' : '']);
 
       if(me.tipValue && selection.length === 1){
@@ -403,7 +475,7 @@
     onDocMouseMove: function(e){
       var me = this;
 
-      if(me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS)){
+      if(me.singleRowToDrag || (me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS))){
         if(!DRM.activeGrid){
           me.fire('start');
         }
@@ -436,7 +508,14 @@
     onStart: function(){
       var me = this,
         w = me.widget,
+        selection;
+
+      if(me.singleRowToDrag){
+        selection = [me.singleRowToDrag.data];
+      }
+      else{
         selection = w.getSelection();
+      }
 
       w.fire('dragstart', selection);
       if(selection.length){
@@ -446,8 +525,16 @@
     onDrop: function(){
       var me = this,
         w = me.widget,
-        selection = w.getSelection(),
+        selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
         rowIndex;
+
+      if(DRM.dropEl){
+        if(DRM.activeGrid.dropZoneFn){
+          DRM.activeGrid.dropZoneFn(selection);
+        }
+
+        return;
+      }
 
       w.draggingRows = true;
 
@@ -492,10 +579,12 @@
     onDropOutSide: function(){
       var me = this,
         w = me.widget,
-        selection = w.getSelection(),
+        selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
         rowIndex = DRM.dropOutSideRowIndex || 0;
 
-      w.clearSelection();
+      if(!me.singleRowToDrag){
+        w.clearSelection();
+      }
 
       w.remove(selection, null, false);
       w.store.changeDataView();
@@ -527,11 +616,13 @@
         if(targetEl.dom.tagName.toLocaleLowerCase() === 'svg' || targetEl.parent().dom.tagName.toLocaleLowerCase() === 'svg'){
           if(!Fancy.get(o.cell).hasClass(GRID_CELL_SELECTED_CLS)){
             if(w.selection.row){
-              w.selectRow(o.rowIndex);
+              //w.selectRow(o.rowIndex);
             }
             else if(w.selection.rows){
-              w.selectRow(o.rowIndex, true, true);
+              //w.selectRow(o.rowIndex, true, true);
             }
+
+            me.singleRowToDrag = o;
           }
 
           me.mouseDownDragEl = true;

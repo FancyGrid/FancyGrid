@@ -7060,7 +7060,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
         columns = me.getColumns();
 
       F.each(columns, function(column){
-        if(column.index === index){
+        if(column.index === index || column.id === index){
           column.data = data;
 
           if(column.editor){
