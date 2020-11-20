@@ -111,9 +111,12 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           return;
         }
 
-        me.innerCls.css({
-          left: left
-        });
+        if(me.innerCls){
+          me.innerCls.css({
+            left: left
+          });
+        }
+
         clearInterval(me.intLeft);
       }, 100);
     }

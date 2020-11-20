@@ -9047,6 +9047,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
               break;
             }
 
+            switch(p){
+              case 'width':
+              case 'hidden':
+                break;
+            }
+
             if(newColumn[p] !== column[p]){
               isColumnEqualToCurrent = false;
               break;
@@ -9177,9 +9183,12 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           return;
         }
 
-        me.innerCls.css({
-          left: left
-        });
+        if(me.innerCls){
+          me.innerCls.css({
+            left: left
+          });
+        }
+
         clearInterval(me.intLeft);
       }, 100);
     }

@@ -194,7 +194,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.loadedTimes++;
         me.loading = false;
 
-        if(proxy.wrapper === false){
+        if(proxy.wrapper === false || o[me.readerRootProperty] === undefined){
           me.defineModel(o);
         }
         else {
@@ -202,7 +202,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
 
         if(me.widget.isTreeData){
-          if(proxy.wrapper === false){
+          if(proxy.wrapper === false || o[me.readerRootProperty] === undefined){
             me.data = o;
           }
           else {
@@ -226,7 +226,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           me.processPagingData(o);
         }
         else {
-          if(proxy.wrapper === false){
+          if(proxy.wrapper === false || o[me.readerRootProperty] === undefined){
             me.setData(o);
           }
           else {
@@ -246,6 +246,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         // It does not set right width of bars if loaded data from server.
         // This bug is complex to replicate. Only in production.
         me.widget.lightStartUpdate();
+
+        me.widget._setColumnsAutoWidth();
       },
       error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);

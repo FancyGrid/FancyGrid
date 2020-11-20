@@ -201,7 +201,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     }
 
     me.checkPagingType(o);
-    if(me.proxy.wrapper === false){
+    if(me.proxy.wrapper === false || o[me.readerRootProperty] === undefined){
       me.setData(o);
     }
     else {

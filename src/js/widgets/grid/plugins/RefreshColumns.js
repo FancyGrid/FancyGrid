@@ -264,6 +264,12 @@
               break;
             }
 
+            switch(p){
+              case 'width':
+              case 'hidden':
+                break;
+            }
+
             if(newColumn[p] !== column[p]){
               isColumnEqualToCurrent = false;
               break;

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.137',
+  version: '1.7.138',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -3897,7 +3897,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     }
 
     me.checkPagingType(o);
-    if(me.proxy.wrapper === false){
+    if(me.proxy.wrapper === false || o[me.readerRootProperty] === undefined){
       me.setData(o);
     }
     else {
@@ -4190,7 +4190,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.loadedTimes++;
         me.loading = false;
 
-        if(proxy.wrapper === false){
+        if(proxy.wrapper === false || o[me.readerRootProperty] === undefined){
           me.defineModel(o);
         }
         else {
@@ -4198,7 +4198,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         }
 
         if(me.widget.isTreeData){
-          if(proxy.wrapper === false){
+          if(proxy.wrapper === false || o[me.readerRootProperty] === undefined){
             me.data = o;
           }
           else {
@@ -4222,7 +4222,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           me.processPagingData(o);
         }
         else {
-          if(proxy.wrapper === false){
+          if(proxy.wrapper === false || o[me.readerRootProperty] === undefined){
             me.setData(o);
           }
           else {
@@ -4242,6 +4242,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         // It does not set right width of bars if loaded data from server.
         // This bug is complex to replicate. Only in production.
         me.widget.lightStartUpdate();
+
+        me.widget._setColumnsAutoWidth();
       },
       error: function(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
@@ -33701,6 +33703,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
               break;
             }
 
+            switch(p){
+              case 'width':
+              case 'hidden':
+                break;
+            }
+
             if(newColumn[p] !== column[p]){
               isColumnEqualToCurrent = false;
               break;
@@ -34481,9 +34489,12 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
           return;
         }
 
-        me.innerCls.css({
-          left: left
-        });
+        if(me.innerCls){
+          me.innerCls.css({
+            left: left
+          });
+        }
+
         clearInterval(me.intLeft);
       }, 100);
     }
