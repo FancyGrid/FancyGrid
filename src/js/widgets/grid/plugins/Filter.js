@@ -191,6 +191,10 @@ Fancy.modules['filter'] = true;
         cell,
         column;
 
+      if(cells.length === 0){
+        return;
+      }
+
       for (; i < iL; i++){
         column = columns[i];
         cell = cells.item(i);
@@ -1126,17 +1130,19 @@ Fancy.modules['filter'] = true;
       else {
         field = F.getWidget(fieldEl.dom.id);
 
-        if (field.wtype === 'field.combo'){
-          field.size({
-            width: width - 8
-          });
+        if(field){
+          if (field.wtype === 'field.combo'){
+            field.size({
+              width: width - 8
+            });
 
-          field.el.css('width', width - 8 + 5);
-        }
-        else {
-          field.setInputSize({
-            width: width - 8
-          });
+            field.el.css('width', width - 8 + 5);
+          }
+          else {
+            field.setInputSize({
+              width: width - 8
+            });
+          }
         }
       }
 
@@ -1388,19 +1394,19 @@ Fancy.modules['filter'] = true;
      *
      */
     onLockColumn: function(){
-      this.render();
+      //this.render();
     },
     /*
      *
      */
     onUnLockColumn: function(){
-      this.render();
+      //this.render();
     },
     /*
      *
      */
     onRightLockColumn: function(){
-      this.render();
+      //this.render();
     },
     /*
      *

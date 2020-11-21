@@ -1389,7 +1389,7 @@
       setTimeout(function(){
         me.update();
         me.widget.setColumnsPosition();
-      }, F.ANIMATE_DURATION);
+      }, F.ANIMATE_DURATION + 100);
     },
     /*
      *

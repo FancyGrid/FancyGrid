@@ -387,8 +387,10 @@
       me.css('width', width);
 
       if(column.filter && column.filter.header){
-
+        // Study this case
       }
+
+      me.reSetColumnsAlign();
     },
     /*
      *

@@ -436,6 +436,8 @@
       else {
         me.scroller.update();
       }
+
+      me._setColumnsAutoWidth();
     },
     /*
      *
@@ -2473,7 +2475,7 @@
       });
     },
     /*
-     * @param {Number} indexOrder
+     * @param {Number|String} indexOrder
      * @param {String} side
      * @return {Object}
      */
@@ -2562,6 +2564,10 @@
           centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
           body.css('width', parseInt(body.css('width')) + column.width);
           header.css('width', parseInt(header.css('width')) + column.width);
+
+          if(me.leftColumns.length === 0){
+            me.leftEl.addCls(Fancy.GRID_LEFT_EMPTY_CLS);
+          }
           break;
         case 'center':
           column = me.columns[indexOrder];
@@ -2580,6 +2586,10 @@
           centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
           header.css('width', parseInt(header.css('width')) + column.width);
           body.css('width', parseInt(body.css('width')) + column.width);
+
+          if(me.rightColumns.length === 0){
+            me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
+          }
           break;
       }
 
@@ -2634,7 +2644,7 @@
         rightEl = me.rightEl,
         rightBody = me.rightBody,
         rightHeader = me.rightHeader,
-        extraLeft;
+        extraLeft = 0;
 
       if(column.index){
         s.addField(column.index);

@@ -4063,6 +4063,9 @@
 .fancy-theme-extra-gray .fancy-grid-row-edit .fancy-field-field-text {
   line-height: 7px;
 }
+.fancy-theme-extra-gray .fancy-grid-row-edit .fancy-field-text-value {
+  color: #8E8E8E;
+}
 .fancy-theme-extra-gray .fancy-grid-row-edit .fancy-field-checkbox {
   margin-top: -2px !important;
 }

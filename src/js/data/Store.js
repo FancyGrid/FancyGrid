@@ -300,6 +300,10 @@ Fancy.define('Fancy.Store', {
       oldValue,
       infiniteScrolledToRow = 0;
 
+    if(Number.isNaN(value)){
+      return;
+    }
+
     if(me.infiniteScrolledToRow){
       infiniteScrolledToRow = me.infiniteScrolledToRow;
     }

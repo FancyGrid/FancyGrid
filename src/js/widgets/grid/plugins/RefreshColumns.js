@@ -62,6 +62,14 @@
       }, false).columns;
 
       me.setColumnsByOrder(newColumns);
+
+      if(w.filter){
+        clearInterval(me.intFilter);
+        me.intFilter = setTimeout(function(){
+          delete me.intFilter;
+          w.filter.updateFields();
+        }, F.ANIMATE_DURATION);
+      }
     },
     applyChanges: function(newColumns){
       var me = this,
@@ -267,7 +275,7 @@
             switch(p){
               case 'width':
               case 'hidden':
-                break;
+                continue;
             }
 
             if(newColumn[p] !== column[p]){
@@ -281,7 +289,19 @@
         }
 
         if(!isColumnEqualToCurrent){
-          w.addColumn(newColumn, side, i, false);
+          if(column && column.index === newColumn.index){
+            w.removeColumn(column.id);
+            w.addColumn(newColumn, side, i, false);
+          }
+          else if(!newColumn.id){
+            var _column = w.getColumnByIndex(newColumn.index);
+
+            if(_column){
+              w.removeColumn(_column.id);
+            }
+
+            w.addColumn(newColumn, side, i, false);
+          }
         }
       });
     }

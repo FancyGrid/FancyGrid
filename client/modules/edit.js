@@ -1883,7 +1883,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         rowHeight;
 
       if (centerWidth < centerFullWidth){
-        me.el.css('width', centerFullWidth);
+        me.el.css('width', centerFullWidth + 2);
       }
 
       if(o && o.cell){
