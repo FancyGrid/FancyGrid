@@ -1,6 +1,6 @@
 # FancyGrid
 
-Build v1.7.139
+Build v1.7.140
 
 FancyGrid - JavaScript grid library with charts integration and server communication.
   
@@ -122,34 +122,6 @@ new Fancy.Form({
 new Fancy.Tab({
   //config
 });
-```
-
-## Component version
-Include a reference to the FancyGrid library
-```html
-<script>
-Fancy.enableCompo();
-</script>
-<fancy-grid id="myGrid" data-title="New Grid" data-width="400" data-height="300">
-  <fancy-columns>
-   [{
-     index: 'name',
-     title: 'Name',    
-     type: 'string'
-   },{
-     type: 'number',
-     index: 'age',
-     title: 'Age'
-   }]
-  </fancy-columns>
-  <fancy-data>
-    [
-      {name: 'Nick', age: 30},
-      {name: 'Fred', age: 25},
-      {name: 'Mike', age: 35}
-    ]
-  </fancy-data>
-</fancy-grid>
 ```
 
 ## Package Directory

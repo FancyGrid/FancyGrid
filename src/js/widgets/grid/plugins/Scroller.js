@@ -340,6 +340,15 @@
         return;
       }
 
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }
+
       e.preventDefault();
 
       me.rightKnobDown = true;
@@ -359,6 +368,8 @@
       if(w.doubleHorizontalScroll){
         me.scrollTopEl.addCls(TOP_SCROLL_ACTIVE_CLS);
       }
+
+
     },
     /*
      *
@@ -371,11 +382,12 @@
      */
     onBodyTouchMove: function(e){
       var me = this,
+        w = me.widget,
         e = e.originalEvent || e,
         touchXY = e.changedTouches[0],
         changed = true;
 
-      if(!me.nativeScroller){
+      if(!w.nativeScroller){
         var scrollLeft = me.scrollLeft,
           scrollTop = me.scrollTop;
 
@@ -389,6 +401,10 @@
         e.preventDefault();
       }
       else{
+        if(F.isTouch){
+          return;
+        }
+
         me.onMouseMoveDoc({
           pageX: touchXY.pageX,
           pageY: touchXY.pageY

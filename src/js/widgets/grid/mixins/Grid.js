@@ -2577,19 +2577,28 @@
           body.removeColumn(indexOrder);
           break;
         case 'right':
+          var extraWidth = 0;
+
           column = me.rightColumns[indexOrder];
           me.rightColumns.splice(indexOrder, 1);
           rightHeader.removeCell(indexOrder);
           rightHeader.reSetIndexes();
           rightBody.removeColumn(indexOrder);
-          rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
+          rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
+          //rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
           centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
           header.css('width', parseInt(header.css('width')) + column.width);
-          body.css('width', parseInt(body.css('width')) + column.width);
 
           if(me.rightColumns.length === 0){
             me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
+
+            if(F.nojQuery){
+              extraWidth = 2;
+            }
           }
+
+          body.css('width', parseInt(body.css('width')) + column.width - extraWidth);
+
           break;
       }
 
@@ -4422,6 +4431,13 @@
         columnEl = F.get(body.getDomColumn(info.order)),
         width = columnEl.css('width'),
         offsetWidth;
+
+      // Bug case
+      // When modules are in progress of loading, width can be calculated wrong.
+      // It requires to do another way of calculation column width
+      if(width > 300 && !Fancy.stylesLoaded){
+        width = 100;
+      }
 
       columnEl.css('width', '');
       offsetWidth = columnEl.dom.offsetWidth + 2;

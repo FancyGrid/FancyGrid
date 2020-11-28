@@ -3805,10 +3805,8 @@
   border-color: #ddd;
   background: unset !important;
   border-left-width: 0;
-  width: 12px;
-  margin-top: 9px;
-  height: 12px;
-  margin-right: 8px;
+  width: 21px;
+  height: 27px;
 }
 .fancy-theme-extra-gray .fancy-scroll-right-inner {
   background-color: #B5B9C4;
@@ -3821,8 +3819,8 @@
 .fancy-theme-extra-gray .fancy-grid-header-cell-trigger-image {
   background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%20418%20512%22%3E%3Cpath%20fill%3D%22%238a8a8a%22%20d%3D%22M436%20124H12c-6.627%200-12-5.373-12-12V80c0-6.627%205.373-12%2012-12h424c6.627%200%2012%205.373%2012%2012v32c0%206.627-5.373%2012-12%2012zm0%20160H12c-6.627%200-12-5.373-12-12v-32c0-6.627%205.373-12%2012-12h424c6.627%200%2012%205.373%2012%2012v32c0%206.627-5.373%2012-12%2012zm0%20160H12c-6.627%200-12-5.373-12-12v-32c0-6.627%205.373-12%2012-12h424c6.627%200%2012%205.373%2012%2012v32c0%206.627-5.373%2012-12%2012z%22%2F%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
-  margin-top: 0px;
-  height: 13px;
+  margin-top: 9px;
+  height: 19px;
 }
 .fancy-theme-extra-gray .fancy-date-picker-cell-out-range .fancy-grid-cell-inner {
   color: #d0d0d0;
@@ -3981,7 +3979,7 @@
   padding-bottom: 20px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-cell-double .fancy-grid-header-cell-trigger {
-  margin-top: 21px;
+  margin-top: 14px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-grouped .fancy-grid-header-cell-container {
   padding-top: 20px;
@@ -3990,10 +3988,10 @@
   padding-top: 10px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-grouped .fancy-grid-header-filter-cell-small .fancy-grid-header-cell-trigger {
-  margin-top: 12px;
+  margin-top: 4px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-grouped .fancy-grid-header-cell-trigger {
-  margin-top: 21px;
+  margin-top: 14px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-grouped .fancy-grid-header-cell-group-level-1 .fancy-grid-header-cell-container {
   padding-top: 7px;
@@ -4017,7 +4015,7 @@
   padding-top: 36px;
 }
 .fancy-theme-extra-gray .fancy-grid-header-cell-triple .fancy-grid-header-cell-trigger {
-  margin-top: 37px;
+  margin-top: 30px;
 }
 .fancy-theme-extra-gray .fancy-grid {
   border-color: #d3dbe1;

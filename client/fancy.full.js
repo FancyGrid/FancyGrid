@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.139',
+  version: '1.7.140',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -28869,19 +28869,28 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           body.removeColumn(indexOrder);
           break;
         case 'right':
+          var extraWidth = 0;
+
           column = me.rightColumns[indexOrder];
           me.rightColumns.splice(indexOrder, 1);
           rightHeader.removeCell(indexOrder);
           rightHeader.reSetIndexes();
           rightBody.removeColumn(indexOrder);
-          rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
+          rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
+          //rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
           centerEl.css('width', parseInt(centerEl.css('width')) + column.width);
           header.css('width', parseInt(header.css('width')) + column.width);
-          body.css('width', parseInt(body.css('width')) + column.width);
 
           if(me.rightColumns.length === 0){
             me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
+
+            if(F.nojQuery){
+              extraWidth = 2;
+            }
           }
+
+          body.css('width', parseInt(body.css('width')) + column.width - extraWidth);
+
           break;
       }
 
@@ -30715,6 +30724,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         width = columnEl.css('width'),
         offsetWidth;
 
+      // Bug case
+      // When modules are in progress of loading, width can be calculated wrong.
+      // It requires to do another way of calculation column width
+      if(width > 300 && !Fancy.stylesLoaded){
+        width = 100;
+      }
+
       columnEl.css('width', '');
       offsetWidth = columnEl.dom.offsetWidth + 2;
 
@@ -32368,6 +32384,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         return;
       }
 
+      if(Fancy.nojQuery){
+        if(w.panel){
+          w.panel.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+        else {
+          w.el.removeCls(Fancy.GRID_ANIMATION_CLS);
+        }
+      }
+
       e.preventDefault();
 
       me.rightKnobDown = true;
@@ -32387,6 +32412,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       if(w.doubleHorizontalScroll){
         me.scrollTopEl.addCls(TOP_SCROLL_ACTIVE_CLS);
       }
+
+
     },
     /*
      *
@@ -32399,11 +32426,12 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     onBodyTouchMove: function(e){
       var me = this,
+        w = me.widget,
         e = e.originalEvent || e,
         touchXY = e.changedTouches[0],
         changed = true;
 
-      if(!me.nativeScroller){
+      if(!w.nativeScroller){
         var scrollLeft = me.scrollLeft,
           scrollTop = me.scrollTop;
 
@@ -32417,6 +32445,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         e.preventDefault();
       }
       else{
+        if(F.isTouch){
+          return;
+        }
+
         me.onMouseMoveDoc({
           pageX: touchXY.pageX,
           pageY: touchXY.pageY
