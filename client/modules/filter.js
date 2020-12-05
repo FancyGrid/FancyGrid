@@ -433,6 +433,9 @@ Fancy.modules['filter'] = true;
 
       w.once('render', function(){
         me.render();
+        if(me.waitForComboData){
+          w.on('load', me.onLoadData, me);
+        }
       });
 
       w.on('columnresize', me.onColumnResize, me);
@@ -511,8 +514,14 @@ Fancy.modules['filter'] = true;
         cells = '';
 
       F.each(w.getColumns(side), function(column, i){
+        var hiddenStyle = '';
+
+        if(column.hidden){
+          hiddenStyle = 'display: none';
+        }
+
         cells += [
-          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_HEADER_CELL_CLS + '">',
+          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') + hiddenStyle +'" class="' + GRID_HEADER_CELL_CLS + '">',
           '</div>'
         ].join('');
       });
@@ -978,11 +987,14 @@ Fancy.modules['filter'] = true;
               valueKey = displayKey;
             }
 
-            if (F.isObject(column.data) || F.isObject(column.data[0])){
+            if(F.isObject(column.data) || F.isObject(column.data[0])){
               data = column.data;
             }
             else {
               data = me.configComboData(column.data);
+              if(data.length === 0){
+                column.waitForComboData = true;
+              }
             }
 
             var selectAllText;
@@ -1726,7 +1738,8 @@ Fancy.modules['filter'] = true;
      * @return {Array}
      */
     configComboData: function(data){
-      var i = 0,
+      var me = this,
+        i = 0,
         iL = data.length,
         _data = [];
 
@@ -1739,6 +1752,10 @@ Fancy.modules['filter'] = true;
           value: i,
           text: data[i]
         });
+      }
+
+      if(_data.length === 0){
+        me.waitForComboData = true;
       }
 
       return _data;
@@ -1865,6 +1882,29 @@ Fancy.modules['filter'] = true;
       if (w.rightColumns.length){
         me.updateSubHeaderFilterSizes('right');
       }
+    },
+    /*
+     *
+     */
+    onLoadData: function(){
+      this.updateFilterComboData();
+    },
+    /*
+     *
+     */
+    updateFilterComboData: function(){
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = w.getColumns();
+
+      F.each(columns, function(column){
+        if(column.type === 'combo' && column.index && column.waitForComboData){
+          var data = s.getColumnUniqueData(column.index);
+
+          w.setColumnComboData(column.index, data);
+        }
+      });
     }
   });
 

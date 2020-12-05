@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.140',
+  version: '1.7.141',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -29811,8 +29811,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var me = this,
         s = me.store;
 
-      //s.setData(data);
-
       if (s.isTree){
         s.initTreeData(data);
       }
@@ -29839,6 +29837,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       //Not sure that it is needed.
       //Without method update, grid won't be updated.
       me.setSidesHeight();
+
+      if(me.filter && me.filter.waitForComboData){
+        me.filter.updateFilterComboData();
+      }
     },
     /*
      * @params {Object} [o]
@@ -30727,7 +30729,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       // Bug case
       // When modules are in progress of loading, width can be calculated wrong.
       // It requires to do another way of calculation column width
-      if(width > 300 && !Fancy.stylesLoaded){
+      //if(width > 300 && !Fancy.stylesLoaded){
+      if(width > 500){
         width = 100;
       }
 
@@ -31950,12 +31953,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
+    if(me._firstTimeAutoColumnWidth){
+      return;
+    }
+
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && !column.hidden && (column.index || column.smartIndexFn || column.render)){
         me.autoSizeColumn(column.id, true, column);
       }
     });
+
+    setTimeout(function(){
+      me._firstTimeAutoColumnWidth = true;
+    }, 1000);
   }
 });
 
@@ -42785,6 +42796,10 @@ Fancy.modules['selection'] = true;
           item = w.get(rowIndex);
         }
 
+        if(!item){
+          me.domDeSelectRow(0);
+          return;
+        }
         id = item.id;
 
         if(!me.memory.has(id)){
@@ -48236,6 +48251,9 @@ Fancy.modules['filter'] = true;
 
       w.once('render', function(){
         me.render();
+        if(me.waitForComboData){
+          w.on('load', me.onLoadData, me);
+        }
       });
 
       w.on('columnresize', me.onColumnResize, me);
@@ -48314,8 +48332,14 @@ Fancy.modules['filter'] = true;
         cells = '';
 
       F.each(w.getColumns(side), function(column, i){
+        var hiddenStyle = '';
+
+        if(column.hidden){
+          hiddenStyle = 'display: none';
+        }
+
         cells += [
-          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_HEADER_CELL_CLS + '">',
+          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') + hiddenStyle +'" class="' + GRID_HEADER_CELL_CLS + '">',
           '</div>'
         ].join('');
       });
@@ -48781,11 +48805,14 @@ Fancy.modules['filter'] = true;
               valueKey = displayKey;
             }
 
-            if (F.isObject(column.data) || F.isObject(column.data[0])){
+            if(F.isObject(column.data) || F.isObject(column.data[0])){
               data = column.data;
             }
             else {
               data = me.configComboData(column.data);
+              if(data.length === 0){
+                column.waitForComboData = true;
+              }
             }
 
             var selectAllText;
@@ -49529,7 +49556,8 @@ Fancy.modules['filter'] = true;
      * @return {Array}
      */
     configComboData: function(data){
-      var i = 0,
+      var me = this,
+        i = 0,
         iL = data.length,
         _data = [];
 
@@ -49542,6 +49570,10 @@ Fancy.modules['filter'] = true;
           value: i,
           text: data[i]
         });
+      }
+
+      if(_data.length === 0){
+        me.waitForComboData = true;
       }
 
       return _data;
@@ -49668,6 +49700,29 @@ Fancy.modules['filter'] = true;
       if (w.rightColumns.length){
         me.updateSubHeaderFilterSizes('right');
       }
+    },
+    /*
+     *
+     */
+    onLoadData: function(){
+      this.updateFilterComboData();
+    },
+    /*
+     *
+     */
+    updateFilterComboData: function(){
+      var me = this,
+        w = me.widget,
+        s = w.store,
+        columns = w.getColumns();
+
+      F.each(columns, function(column){
+        if(column.type === 'combo' && column.index && column.waitForComboData){
+          var data = s.getColumnUniqueData(column.index);
+
+          w.setColumnComboData(column.index, data);
+        }
+      });
     }
   });
 

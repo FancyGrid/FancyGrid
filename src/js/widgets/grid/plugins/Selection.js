@@ -3137,6 +3137,10 @@ Fancy.modules['selection'] = true;
           item = w.get(rowIndex);
         }
 
+        if(!item){
+          me.domDeSelectRow(0);
+          return;
+        }
         id = item.id;
 
         if(!me.memory.has(id)){

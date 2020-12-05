@@ -6016,8 +6016,6 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this,
         s = me.store;
 
-      //s.setData(data);
-
       if (s.isTree){
         s.initTreeData(data);
       }
@@ -6044,6 +6042,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       //Not sure that it is needed.
       //Without method update, grid won't be updated.
       me.setSidesHeight();
+
+      if(me.filter && me.filter.waitForComboData){
+        me.filter.updateFilterComboData();
+      }
     },
     /*
      * @params {Object} [o]
@@ -6932,7 +6934,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       // Bug case
       // When modules are in progress of loading, width can be calculated wrong.
       // It requires to do another way of calculation column width
-      if(width > 300 && !Fancy.stylesLoaded){
+      //if(width > 300 && !Fancy.stylesLoaded){
+      if(width > 500){
         width = 100;
       }
 

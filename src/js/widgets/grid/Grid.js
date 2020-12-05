@@ -814,12 +814,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
+    if(me._firstTimeAutoColumnWidth){
+      return;
+    }
+
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && !column.hidden && (column.index || column.smartIndexFn || column.render)){
         me.autoSizeColumn(column.id, true, column);
       }
     });
+
+    setTimeout(function(){
+      me._firstTimeAutoColumnWidth = true;
+    }, 1000);
   }
 });
 

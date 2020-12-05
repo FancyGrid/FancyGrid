@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.140',
+  version: '1.7.141',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -15618,12 +15618,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
+    if(me._firstTimeAutoColumnWidth){
+      return;
+    }
+
     var columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && !column.hidden && (column.index || column.smartIndexFn || column.render)){
         me.autoSizeColumn(column.id, true, column);
       }
     });
+
+    setTimeout(function(){
+      me._firstTimeAutoColumnWidth = true;
+    }, 1000);
   }
 });
 
