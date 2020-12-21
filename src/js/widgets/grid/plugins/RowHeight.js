@@ -20,6 +20,8 @@
       this.Super('const', arguments);
 
       this.rows = {};
+      this.rowIndexes = [];
+      this.rowIndexesSum = [];
     },
     /*
      *
@@ -87,12 +89,32 @@
     /*
      *
      */
-    add: function(id, height){
-      if(this.rows[id] && this.rows[id] > height){
+    add: function(id, height, rowIndex){
+      var me = this;
+
+      if(me.rows[id] && me.rows[id] > height){
         return;
       }
 
-      this.rows[id] = height;
+      me.rows[id] = height;
+      me.rowIndexes[rowIndex] = height;
+
+      if(me.intIndexesSum){
+        clearInterval(me.intIndexesSum);
+      }
+
+      me.intIndexesSum = setTimeout(function(){
+        me.rowIndexesSum = [];
+
+        F.each(me.rowIndexes, function(value, index){
+          if(index === 0){
+            me.rowIndexesSum[index] = value;
+          }
+          else {
+            me.rowIndexesSum[index] = me.rowIndexesSum[index - 1] + value;
+          }
+        });
+      }, 1);
     },
     /*
      *

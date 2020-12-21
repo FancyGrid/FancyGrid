@@ -248,6 +248,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    */
   filterData: function(fire){
     var me = this,
+      w = me.widget,
       data = me.data,
       filteredData = [],
       i = 0,
@@ -256,7 +257,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       item = [];
 
     if(me.remoteFilter){
-      me.serverFilter();
+      if(!w.UPDATING_AFTER_LOAD){
+        me.serverFilter(w.stateIsWaiting !== true);
+      }
       return;
     }
 
@@ -290,9 +293,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
   },
   /*
-   *
+   * @param {Boolean} [load]
    */
-  serverFilter: function(){
+  serverFilter: function(load){
     var me = this,
       value = '[',
       filters = me.filters || {};
@@ -339,7 +342,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       me.params[me.filterParam] = value;
     }
 
-    me.loadData();
+    if(load !== false){
+      me.loadData();
+    }
   },
   /*
    * @return {Boolean}
@@ -1446,11 +1451,8 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      //s.changeDataView();
-
       if(update !== false){
         if(s.grouping && s.grouping.by){
-          //s.changeDataView();
           if(s.isFiltered()){
             s.filterData();
           }
@@ -1462,10 +1464,12 @@ Fancy.modules['filter'] = true;
           s.changeDataView();
         }
 
-        w.update();
+        if(!(w.waitingForFilters === true) && !(!w.inited && w.state && w.state.startState && w.state.startState.filters)){
+          w.update();
 
-        w.fire('filter', s.filters);
-        w.setSidesHeight();
+          w.fire('filter', s.filters);
+          w.setSidesHeight();
+        }
       }
       else{
         s.changeDataView();

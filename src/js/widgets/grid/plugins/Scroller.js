@@ -128,7 +128,7 @@
         rightBody.el.un('touchstart', me.onBodyTouchStart, me);
         rightBody.el.un('touchmove', me.onBodyTouchMove, me);
 
-        docEl.un('touchend', me.onMouseUpDoc, me);
+        docEl.un('touchend', me.onBodyTouchEnd, me);
       }
     },
     /*
@@ -324,7 +324,8 @@
       rightBody.el.on('touchstart', me.onBodyTouchStart, me);
       rightBody.el.on('touchmove', me.onBodyTouchMove, me);
 
-      docEl.on('touchend', me.onMouseUpDoc, me);
+      //docEl.on('touchend', me.onMouseUpDoc, me);
+      docEl.on('touchend', me.onBodyTouchEnd, me);
     },
     /*
      * @param {Object} e
@@ -368,14 +369,19 @@
       if(w.doubleHorizontalScroll){
         me.scrollTopEl.addCls(TOP_SCROLL_ACTIVE_CLS);
       }
-
-
     },
     /*
      *
      */
     onBodyTouchEnd: function(){
-      this.onMouseUpDoc();
+      var me = this;
+
+      me.onMouseUpDoc();
+
+      // It requires to do swipe.
+      // me.spyOnSwipe
+
+      delete me.spyOnSwipe;
     },
     /*
      * @param {Object} e
@@ -554,39 +560,72 @@
         clearInterval(me.scrollInterval);
       }
 
+      if(me.spyOnSwipe){
+        if(Math.abs(me.spyOnSwipe.x - x) > 1){
+          me.spyOnSwipe.swipedX = me.spyOnSwipe.x - x;
+        }
+        else{
+          delete me.spyOnSwipe.swipedX;
+        }
+
+        if(Math.abs(me.spyOnSwipe.y - y) > 1){
+          me.spyOnSwipe.swipedX = me.spyOnSwipe.y - y;
+        }
+        else{
+          delete me.spyOnSwipe.swipedY;
+        }
+
+        me.spyOnSwipe.x = x;
+        me.spyOnSwipe.y = y;
+      }
+      else{
+        me.spyOnSwipe = {
+          x: x,
+          y: y
+        };
+      }
+
       me.scrollInterval = setTimeout(function(){
         if(me.rightKnobDown){
-          if (F.isTouch){
+          if(F.isTouch){
             deltaY = me.mouseDownXY.y - y;
-            marginTop = deltaY + me.rightKnobTop;
+            marginTop = deltaY + Math.ceil(me.rightKnobTop * me.rightScrollScale);
           }
           else{
             deltaY = y - me.mouseDownXY.y;
             marginTop = deltaY + me.rightKnobTop;
           }
 
-          if (marginTop < me.knobOffSet){
-            marginTop = me.knobOffSet;
+          if(F.isTouch){
+            if (me.bodyViewHeight < marginTop/me.rightScrollScale + me.rightKnobHeight){
+              marginTop = me.bodyFullViewHeight - me.bodyViewHeight;
+            }
+          }
+          else{
+            if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
+              marginTop = me.bodyViewHeight - me.rightKnobHeight;
+            }
           }
 
-          if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
-            marginTop = me.bodyViewHeight - me.rightKnobHeight;
-          }
-
-          //if (marginTop < me.rightScrollScale){
-          if (marginTop < 0){
+          if(marginTop < 0){
             marginTop = 0;
           }
 
-          topScroll = me.rightScrollScale * marginTop;
+          if (F.isTouch){
+            topScroll = marginTop;
+            me.rightKnob.css('margin-top', (marginTop/me.rightScrollScale + knobOffSet) + 'px');
+          }
+          else{
+            topScroll = me.rightScrollScale * marginTop;
+            me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
+          }
 
-          if (w.doubleHorizontalScroll && me.scrollBottomEl.css( 'display' ) !== 'none'){
+          if (w.doubleHorizontalScroll && me.scrollBottomEl.css('display') !== 'none'){
             if (marginTop < me.cornerSize){
               marginTop = me.cornerSize;
             }
           }
 
-          me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
           me.scroll( topScroll );
 
           if(w.infinite && w.selection){
@@ -599,7 +638,8 @@
           if (F.isTouch){
             deltaX = me.mouseDownXY.x - x;
             deltaY = me.mouseDownXY.y - y;
-            marginLeft = deltaX + me.bottomKnobLeft;
+
+            marginLeft = deltaX + Math.ceil(me.bottomKnobLeft * Math.abs(me.bottomScrollScale));
           }
           else{
             deltaX = x - me.mouseDownXY.x;
@@ -611,8 +651,15 @@
             marginLeft = 1;
           }
 
-          if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
-            marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
+          if(F.isTouch){
+            if (me.bodyViewWidth - 2 < Math.abs(marginLeft/me.bottomScrollScale) + me.bottomKnobWidth){
+              marginLeft = me.bodyFullViewWidth - me.bodyViewWidth - 2;
+            }
+          }
+          else {
+            if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
+              marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
+            }
           }
 
           if (me.bottomScrollScale < 0 && marginLeft < 0){
@@ -620,8 +667,14 @@
             me.bottomScrollScale = 0;
           }
 
-          me.bottomKnob.css( 'margin-left', marginLeft + 'px' );
-          bottomScroll = Math.ceil( me.bottomScrollScale * (marginLeft - 1) );
+          if(F.isTouch){
+            bottomScroll = -marginLeft - 1;
+            me.bottomKnob.css('margin-left', Math.abs(marginLeft/me.bottomScrollScale) + 'px' );
+          }
+          else{
+            bottomScroll = Math.ceil( me.bottomScrollScale * (marginLeft - 1) );
+            me.bottomKnob.css('margin-left', marginLeft + 'px' );
+          }
 
           if (w.doubleHorizontalScroll){
             me.topKnob.css( 'margin-left', marginLeft + 'px' );
@@ -747,6 +800,7 @@
       me.rightKnob.css({height: knobHeight});
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
+      me.bodyFullViewHeight = cellsViewHeight;
       me.rightScrollScale = (cellsViewHeight - bodyViewHeight) / (bodyViewHeight - knobHeight);
     },
     /*
@@ -838,6 +892,7 @@
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
       me.bottomScrollScale = (centerViewWidth - centerFullWidth) / (centerViewWidth - knobWidth - 2 - 1);
+      me.bodyFullViewWidth = centerFullWidth;
     },
     /*
      * @param {Number} y
@@ -1135,6 +1190,10 @@
         bodyViewWidth = parseInt(w.body.el.css('width')),
         passedWidth = 0,
         isCenterBody = columnEl.parent().parent().hasCls(GRID_CENTER_CLS);
+
+      if(w.rowheight){
+        passedHeight = w.rowheight.rowIndexesSum[rowIndex];
+      }
 
       if(w.nativeScroller && !nativeScroll){
         return;

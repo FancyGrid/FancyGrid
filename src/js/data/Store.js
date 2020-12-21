@@ -650,7 +650,14 @@ Fancy.define('Fancy.Store', {
       i = 0,
       iL = me.data.length,
       isFiltered = me.isFiltered(),
+      isSorted = me.isSorted(),
       data = me.data;
+
+    if(isSorted && o.reSort){
+      if(!me.remoteSort){
+        me.reSort();
+      }
+    }
 
     if(isFiltered){
       if (!o.stoppedFilter && !o.doNotFired){
@@ -1054,5 +1061,14 @@ Fancy.define('Fancy.Store', {
     }
 
     return false;
+  },
+  /*
+   * @return {Boolean}
+   */
+  isSorted: function(){
+    var me = this,
+      sorters = me.sorters || {};
+
+    return !Fancy.Object.isEmpty(sorters);
   }
 });

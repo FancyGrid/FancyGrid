@@ -152,7 +152,12 @@
       }
 
       if(!w.grouping || (w.grouping && !w.grouping.by)){
-        me.update();
+        if(w.state && w.state.startState && (w.state.startState.sorters || w.state.startState.filters || w.state.startState.page !== undefined)){
+          me.update('waitstate');
+        }
+        else{
+          me.update();
+        }
       }
       else if(w.grouping && s.proxyType === 'server'){
         me.update();
@@ -334,9 +339,10 @@
      *
      */
     setHeight: function(){
-      var height = this.widget.getBodyHeight();
+      var me = this,
+        height = me.widget.getBodyHeight();
 
-      this.css('height', height + 'px');
+      me.css('height', height + 'px');
     },
     /*
      * @param {Object} e

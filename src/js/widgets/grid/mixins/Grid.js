@@ -119,11 +119,13 @@
       me.model = modelName;
       me.fields = fields;
 
+      /*
       if (me.store.filters && !F.Object.isEmpty(me.store.filters)){
         setTimeout(function(){
           me.filter.updateStoreFilters();
         }, 1);
       }
+      */
     },
     initDebug: function(){
       var me = this;
@@ -855,7 +857,6 @@
         store = me.store,
         docEl = F.get(document);
 
-      store.on('change', me.onChangeStore, me);
       store.on('set', me.onSetStore, me);
       store.on('insert', me.onInsertStore, me);
       store.on('remove', me.onRemoveStore, me);
@@ -896,14 +897,6 @@
       this.fire('serversuccess', data, request);
     },
     /*
-     *
-     */
-    onChangeStore: function(){
-      if (this.$onChangeUpdate !== false){
-        this.update();
-      }
-    },
-    /*
      * @param {Object} store
      */
     onBeforeLoadStore: function(){
@@ -936,6 +929,15 @@
 
       setTimeout(function(){
         me.fire('load');
+        if(!me.stateIsWaiting){
+          me.UPDATING_AFTER_LOAD = true;
+          me.store.changeDataView({
+            reSort: true
+          });
+          me.update();
+          me.setSidesHeight();
+          delete me.UPDATING_AFTER_LOAD;
+        }
       }, 1);
     },
     /*
@@ -1361,7 +1363,9 @@
       var me = this,
         selection = me.selection;
 
-      selection.clearSelection();
+      if(selection){
+        selection.clearSelection();
+      }
     },
     /*
      * @param {Boolean} container
@@ -3013,7 +3017,7 @@
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
-          if (me.WAIT_FOR_APPLYING_ALL_FILTERS){
+          if (me.WAIT_FOR_STATE_TO_LOAD){
             me.filter.updateStoreFilters(false);
           }
           else {
@@ -3192,14 +3196,15 @@
     },
     /*
      * @param {Number} value
+     * @param {Boolean} [update]
      */
-    setPage: function(value){
+    setPage: function(value, update){
       value--;
       if (value < 0){
         value = 0;
       }
 
-      this.paging.setPage(value);
+      this.paging.setPage(value, update);
     },
     /*
      *
@@ -3518,6 +3523,8 @@
     setData: function(data){
       var me = this,
         s = me.store;
+
+      me.clearSelection();
 
       if (s.isTree){
         s.initTreeData(data);
@@ -3864,13 +3871,18 @@
     /*
      * @param {String} key
      * @param {'ASC'|'DESC'} direction
+     * @param {Boolean} [update]
      */
-    sort: function(key, direction){
+    sort: function(key, direction, update){
       var me = this,
         column = me.getColumnByIndex(key),
         o = me.getColumnOrderByKey(key),
         header,
         cell;
+
+      if(update === undefined){
+        update = true;
+      }
 
       if (!o.side){
         return;
@@ -3905,7 +3917,7 @@
             F.error('sorting type is not right - ' + direction);
         }
 
-        me.sorter.sort(direction, key, o.side, column, cell);
+        me.sorter.sort(direction, key, o.side, column, cell, update);
       }
     },
     /*

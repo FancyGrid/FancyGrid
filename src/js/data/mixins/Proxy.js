@@ -70,13 +70,15 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(me.autoLoad){
-      if(w.stateful && me.remoteFilter && me.filters){
+      //if(w.stateful && (me.remoteFilter && me.filters){
+      if((w.stateful || w.state ) && (me.remoteFilter || me.remoteSort)){
         /*
           When there is server filtering with state and on start it loads data
           that it requires to wait until store will get all filter params that avoid
           many not needed requests to server.
          */
-        w.WAIT_FOR_APPLYING_ALL_FILTERS = true;
+        w.WAIT_FOR_STATE_TO_LOAD = true;
+        w.SERVER_FILTER_SORT = true;
       }
       else{
         me.loadData();

@@ -1061,11 +1061,8 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      //s.changeDataView();
-
       if(update !== false){
         if(s.grouping && s.grouping.by){
-          //s.changeDataView();
           if(s.isFiltered()){
             s.filterData();
           }
@@ -1077,10 +1074,12 @@ Fancy.modules['filter'] = true;
           s.changeDataView();
         }
 
-        w.update();
+        if(!(w.waitingForFilters === true) && !(!w.inited && w.state && w.state.startState && w.state.startState.filters)){
+          w.update();
 
-        w.fire('filter', s.filters);
-        w.setSidesHeight();
+          w.fire('filter', s.filters);
+          w.setSidesHeight();
+        }
       }
       else{
         s.changeDataView();

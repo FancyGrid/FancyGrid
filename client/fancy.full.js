@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.141',
+  version: '1.7.142',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1013,8 +1013,10 @@ var FancyForm = function(){
       Fancy.loadingStyle = true;
 
       _link.onload = function(){
-        Fancy.loadingStyle = false;
-        Fancy.stylesLoaded = true;
+        setTimeout(function(){
+          Fancy.loadingStyle = false;
+          Fancy.stylesLoaded = true;
+        }, 100);
       };
 
       head.appendChild(_link);
@@ -3714,7 +3716,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     }
 
     me.calcPages();
-    me.changeDataView();
+    //me.changeDataView();
   },
   /*
    *
@@ -3730,7 +3732,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -3750,7 +3754,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -3774,7 +3780,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -3794,7 +3802,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -3855,8 +3865,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   },
   /*
    * @param {Number} value
+   * @param {Boolean} [update]
    */
-  setPage: function(value){
+  setPage: function(value, update){
     var me = this;
 
     me.showPage = value;
@@ -3872,8 +3883,10 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     if(me.pageType === 'server'){
       me.loadPage();
     }
-    else{
-      me.changeDataView();
+    else if(update !== false){
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   refresh: function(){
@@ -3883,14 +3896,17 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else{
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
    * @param {Object} o
    */
   processPagingData: function(o){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
     if(o.totalCount !== undefined){
       me.totalCount = o.totalCount;
@@ -3903,12 +3919,18 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     else {
       me.setData(o[me.readerRootProperty]);
     }
+
+    me.calcPages();
+
     //TODO: check samples with filter, paging and server and static
-    me.changeDataView({
-      stoppedFilter: true
-    });
-    if( me.calcPages() === 'needs reload' ){
-      me.loadPage();
+    if(!w.stateIsWaiting){
+      me.changeDataView({
+        stoppedFilter: true
+      });
+
+      if( me.calcPages() === 'needs reload' ){
+        me.loadPage();
+      }
     }
   },
   /*
@@ -3951,7 +3973,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
 
     w.fire('changepagesize', value);
@@ -4066,13 +4090,15 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(me.autoLoad){
-      if(w.stateful && me.remoteFilter && me.filters){
+      //if(w.stateful && (me.remoteFilter && me.filters){
+      if((w.stateful || w.state ) && (me.remoteFilter || me.remoteSort)){
         /*
           When there is server filtering with state and on start it loads data
           that it requires to wait until store will get all filter params that avoid
           many not needed requests to server.
          */
-        w.WAIT_FOR_APPLYING_ALL_FILTERS = true;
+        w.WAIT_FOR_STATE_TO_LOAD = true;
+        w.SERVER_FILTER_SORT = true;
       }
       else{
         me.loadData();
@@ -4965,6 +4991,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    */
   sort: function(action, type, key, options){
     var me = this,
+      w = me.widget,
       fn,
       sortType;
 
@@ -5021,7 +5048,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     if(me.remoteSort){
-      me.serverSort(action, type, key);
+      me.serverSort(action, type, key, w.stateIsWaiting !== true);
       return;
     }
 
@@ -5056,8 +5083,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String} type
    * @param {String|Number} key
+   * @param {Boolean} load
    */
-  serverSort: function(action, type, key){
+  serverSort: function(action, type, key, load){
     var me = this;
 
     me.params = me.params || {};
@@ -5081,7 +5109,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         action: action
       });
     });
-    me.loadData();
+
+    if(load !== false){
+      me.loadData();
+    }
   },
   /*
    * @param {'ASC'|'DESC'} action
@@ -5475,7 +5506,6 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         newSubOrder.push(originSubOrder[_newSubOrder[k]]);
       }
 
-      //order = order.concat(newOrder[j]);
       order = order.concat(newSubOrder);
     }
 
@@ -6356,6 +6386,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    */
   filterData: function(fire){
     var me = this,
+      w = me.widget,
       data = me.data,
       filteredData = [],
       i = 0,
@@ -6364,7 +6395,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       item = [];
 
     if(me.remoteFilter){
-      me.serverFilter();
+      if(!w.UPDATING_AFTER_LOAD){
+        me.serverFilter(w.stateIsWaiting !== true);
+      }
       return;
     }
 
@@ -6398,9 +6431,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
   },
   /*
-   *
+   * @param {Boolean} [load]
    */
-  serverFilter: function(){
+  serverFilter: function(load){
     var me = this,
       value = '[',
       filters = me.filters || {};
@@ -6447,7 +6480,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       me.params[me.filterParam] = value;
     }
 
-    me.loadData();
+    if(load !== false){
+      me.loadData();
+    }
   },
   /*
    * @return {Boolean}
@@ -7577,7 +7612,14 @@ Fancy.define('Fancy.Store', {
       i = 0,
       iL = me.data.length,
       isFiltered = me.isFiltered(),
+      isSorted = me.isSorted(),
       data = me.data;
+
+    if(isSorted && o.reSort){
+      if(!me.remoteSort){
+        me.reSort();
+      }
+    }
 
     if(isFiltered){
       if (!o.stoppedFilter && !o.doNotFired){
@@ -7981,6 +8023,15 @@ Fancy.define('Fancy.Store', {
     }
 
     return false;
+  },
+  /*
+   * @return {Boolean}
+   */
+  isSorted: function(){
+    var me = this,
+      sorters = me.sorters || {};
+
+    return !Fancy.Object.isEmpty(sorters);
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -23826,7 +23877,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(!column.title && column.index && !Fancy.isArray(column.index)){
-        column.title = Fancy.String.upFirstChar(column.index);
+        switch(column.type){
+          case 'string':
+          case 'number':
+          case 'currency':
+          case 'date':
+          case 'combo':
+          case 'checkbox':
+          case 'text':
+            column.title = Fancy.String.upFirstChar(column.index);
+            break;
+        }
       }
 
       switch(column.type){
@@ -25272,14 +25333,19 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(!state){
         me.memoryInitialColumns(name, config.columns);
+        if(config.defaults){
+          me.memoryInitialDefaults(name, config.defaults);
+        }
       }
 
-      //if(state && me.wasColumnsCodeChanged(config.columns, JSON.parse(state).columns)){
-      if(state && me.wasColumnsCodeChanged(name, config.columns)){
+      if(state && (me.wasColumnsCodeChanged(name, config.columns) || me.wasDefaultChanged(name, config.defaults))){
         localStorage.clear(name);
         localStorage.clear(name + 'memory-columns');
         state = null;
         me.memoryInitialColumns(name, config.columns);
+        if(config.defaults){
+          me.memoryInitialDefaults(name, config.defaults);
+        }
       }
 
       if(state){
@@ -25315,7 +25381,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           if(p === 'columns'){
             continue;
           }
-          startState[p] = state[p];
+
+          if(startState[p] === undefined){
+            startState[p] = state[p];
+          }
         }
       }
 
@@ -25735,7 +25804,52 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     return config;
   },
   /*
-   * @param {Array} name
+   * @param {String} name
+   * @param {Object} defaults
+   * @return {Boolean}
+   */
+  wasDefaultChanged: function(name, defaults){
+    name = name + '-memory-defaults';
+    var memoryDefaults = JSON.parse(localStorage.getItem(name));
+
+    if(!memoryDefaults || !defaults){
+      return false;
+    }
+
+    for(var p in memoryDefaults){
+      switch(Fancy.typeOf(memoryDefaults[p])){
+        case 'number':
+        case 'string':
+        case 'boolean':
+          break;
+        default:
+          continue;
+      }
+
+      if(defaults[p] !== memoryDefaults[p]){
+        return true;
+      }
+    }
+
+    for(var p in defaults){
+      switch(Fancy.typeOf(defaults[p])){
+        case 'number':
+        case 'string':
+        case 'boolean':
+          break;
+        default:
+          continue;
+      }
+
+      if(memoryDefaults[p] === undefined){
+        return true;
+      }
+    }
+
+    return false;
+  },
+  /*
+   * @param {String} name
    * @param {Array} columns
    * @return {Boolean}
    */
@@ -25756,6 +25870,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     Fancy.each(memoryColumns, function(column, i){
       for(var p in column){
         if(column[p] !== columns[i][p]){
+          if(p === 'width' && column.autoWidth){
+            continue;
+          }
           wasChanges = true;
           return true;
         }
@@ -25767,6 +25884,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         switch(Fancy.typeOf(column[p])){
           case 'number':
           case 'string':
+          case 'boolean':
             if(memoryColumns[i][p] === undefined){
               wasChanges = true;
               return true;
@@ -25777,6 +25895,25 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     });
 
     return wasChanges;
+  },
+  /*
+   *
+   */
+  memoryInitialDefaults: function(name, defaults){
+    name = name + '-memory-defaults';
+    var memoryDefaults = {};
+
+    for(var p in defaults){
+      switch(Fancy.typeOf(defaults[p])){
+        case 'string':
+        case 'number':
+        case 'boolean':
+          memoryDefaults[p] = defaults[p];
+          break;
+      }
+    }
+
+    localStorage.setItem(name, JSON.stringify(memoryDefaults));
   },
   /*
    * @param {String} name
@@ -25793,6 +25930,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         switch (Fancy.typeOf(column[p])){
           case 'string':
           case 'number':
+          case 'boolean':
             memoryColumn[p] = column[p];
             break;
         }
@@ -25898,6 +26036,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(fire !== false){
       me.setSidesHeight();
     }
+
+    if(me.removeInt){
+      clearInterval(me.removeInt);
+    }
+
+    me.removeInt = setTimeout(function(){
+      me.update();
+      delete me.removeInt;
+    }, 1);
   },
   /*
    * @param {*} o
@@ -25967,6 +26114,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     me.store.add(o);
     me.setSidesHeight();
+
+    if(me.addInt){
+      clearInterval(me.addInt);
+    }
+
+    me.addInt = setTimeout(function(){
+      me.update();
+      delete me.addInt;
+    }, 1);
   },
   /*
    * @param {Number} index
@@ -26028,6 +26184,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(fire !== false){
       me.setSidesHeight();
     }
+
+    if(me.addInt){
+      clearInterval(me.addInt);
+    }
+
+    me.addInt = setTimeout(function(){
+      me.update();
+      delete me.addInt;
+    }, 1);
   },
   /*
    * @param {Number} rowIndex
@@ -26411,11 +26576,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.model = modelName;
       me.fields = fields;
 
+      /*
       if (me.store.filters && !F.Object.isEmpty(me.store.filters)){
         setTimeout(function(){
           me.filter.updateStoreFilters();
         }, 1);
       }
+      */
     },
     initDebug: function(){
       var me = this;
@@ -27147,7 +27314,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         store = me.store,
         docEl = F.get(document);
 
-      store.on('change', me.onChangeStore, me);
       store.on('set', me.onSetStore, me);
       store.on('insert', me.onInsertStore, me);
       store.on('remove', me.onRemoveStore, me);
@@ -27188,14 +27354,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       this.fire('serversuccess', data, request);
     },
     /*
-     *
-     */
-    onChangeStore: function(){
-      if (this.$onChangeUpdate !== false){
-        this.update();
-      }
-    },
-    /*
      * @param {Object} store
      */
     onBeforeLoadStore: function(){
@@ -27228,6 +27386,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       setTimeout(function(){
         me.fire('load');
+        if(!me.stateIsWaiting){
+          me.UPDATING_AFTER_LOAD = true;
+          me.store.changeDataView({
+            reSort: true
+          });
+          me.update();
+          me.setSidesHeight();
+          delete me.UPDATING_AFTER_LOAD;
+        }
       }, 1);
     },
     /*
@@ -27653,7 +27820,9 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var me = this,
         selection = me.selection;
 
-      selection.clearSelection();
+      if(selection){
+        selection.clearSelection();
+      }
     },
     /*
      * @param {Boolean} container
@@ -29305,7 +29474,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
 
         me.intervalUpdatingFilter = setTimeout(function(){
-          if (me.WAIT_FOR_APPLYING_ALL_FILTERS){
+          if (me.WAIT_FOR_STATE_TO_LOAD){
             me.filter.updateStoreFilters(false);
           }
           else {
@@ -29484,14 +29653,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     },
     /*
      * @param {Number} value
+     * @param {Boolean} [update]
      */
-    setPage: function(value){
+    setPage: function(value, update){
       value--;
       if (value < 0){
         value = 0;
       }
 
-      this.paging.setPage(value);
+      this.paging.setPage(value, update);
     },
     /*
      *
@@ -29810,6 +29980,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     setData: function(data){
       var me = this,
         s = me.store;
+
+      me.clearSelection();
 
       if (s.isTree){
         s.initTreeData(data);
@@ -30156,13 +30328,18 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     /*
      * @param {String} key
      * @param {'ASC'|'DESC'} direction
+     * @param {Boolean} [update]
      */
-    sort: function(key, direction){
+    sort: function(key, direction, update){
       var me = this,
         column = me.getColumnByIndex(key),
         o = me.getColumnOrderByKey(key),
         header,
         cell;
+
+      if(update === undefined){
+        update = true;
+      }
 
       if (!o.side){
         return;
@@ -30197,7 +30374,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
             F.error('sorting type is not right - ' + direction);
         }
 
-        me.sorter.sort(direction, key, o.side, column, cell);
+        me.sorter.sort(direction, key, o.side, column, cell, update);
       }
     },
     /*
@@ -31354,7 +31531,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.inited = true;
       me.fire('init');
       me.setBodysHeight();
-      me._setColumnsAutoWidth();
+      if(!me.state){
+        me._setColumnsAutoWidth();
+      }
     }, 1);
 
   },
@@ -31949,7 +32128,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    if(me.state && !Fancy.Object.isEmpty(JSON.parse(me.state.getState()))){
+    if(me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty){
       return;
     }
 
@@ -31966,6 +32145,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     setTimeout(function(){
       me._firstTimeAutoColumnWidth = true;
+      delete me.allowAutoWidthStateIsEmpty;
     }, 1000);
   }
 });
@@ -32183,7 +32363,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         rightBody.el.un('touchstart', me.onBodyTouchStart, me);
         rightBody.el.un('touchmove', me.onBodyTouchMove, me);
 
-        docEl.un('touchend', me.onMouseUpDoc, me);
+        docEl.un('touchend', me.onBodyTouchEnd, me);
       }
     },
     /*
@@ -32379,7 +32559,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       rightBody.el.on('touchstart', me.onBodyTouchStart, me);
       rightBody.el.on('touchmove', me.onBodyTouchMove, me);
 
-      docEl.on('touchend', me.onMouseUpDoc, me);
+      //docEl.on('touchend', me.onMouseUpDoc, me);
+      docEl.on('touchend', me.onBodyTouchEnd, me);
     },
     /*
      * @param {Object} e
@@ -32423,14 +32604,19 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       if(w.doubleHorizontalScroll){
         me.scrollTopEl.addCls(TOP_SCROLL_ACTIVE_CLS);
       }
-
-
     },
     /*
      *
      */
     onBodyTouchEnd: function(){
-      this.onMouseUpDoc();
+      var me = this;
+
+      me.onMouseUpDoc();
+
+      // It requires to do swipe.
+      // me.spyOnSwipe
+
+      delete me.spyOnSwipe;
     },
     /*
      * @param {Object} e
@@ -32609,39 +32795,72 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         clearInterval(me.scrollInterval);
       }
 
+      if(me.spyOnSwipe){
+        if(Math.abs(me.spyOnSwipe.x - x) > 1){
+          me.spyOnSwipe.swipedX = me.spyOnSwipe.x - x;
+        }
+        else{
+          delete me.spyOnSwipe.swipedX;
+        }
+
+        if(Math.abs(me.spyOnSwipe.y - y) > 1){
+          me.spyOnSwipe.swipedX = me.spyOnSwipe.y - y;
+        }
+        else{
+          delete me.spyOnSwipe.swipedY;
+        }
+
+        me.spyOnSwipe.x = x;
+        me.spyOnSwipe.y = y;
+      }
+      else{
+        me.spyOnSwipe = {
+          x: x,
+          y: y
+        };
+      }
+
       me.scrollInterval = setTimeout(function(){
         if(me.rightKnobDown){
-          if (F.isTouch){
+          if(F.isTouch){
             deltaY = me.mouseDownXY.y - y;
-            marginTop = deltaY + me.rightKnobTop;
+            marginTop = deltaY + Math.ceil(me.rightKnobTop * me.rightScrollScale);
           }
           else{
             deltaY = y - me.mouseDownXY.y;
             marginTop = deltaY + me.rightKnobTop;
           }
 
-          if (marginTop < me.knobOffSet){
-            marginTop = me.knobOffSet;
+          if(F.isTouch){
+            if (me.bodyViewHeight < marginTop/me.rightScrollScale + me.rightKnobHeight){
+              marginTop = me.bodyFullViewHeight - me.bodyViewHeight;
+            }
+          }
+          else{
+            if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
+              marginTop = me.bodyViewHeight - me.rightKnobHeight;
+            }
           }
 
-          if (me.bodyViewHeight < marginTop + me.rightKnobHeight){
-            marginTop = me.bodyViewHeight - me.rightKnobHeight;
-          }
-
-          //if (marginTop < me.rightScrollScale){
-          if (marginTop < 0){
+          if(marginTop < 0){
             marginTop = 0;
           }
 
-          topScroll = me.rightScrollScale * marginTop;
+          if (F.isTouch){
+            topScroll = marginTop;
+            me.rightKnob.css('margin-top', (marginTop/me.rightScrollScale + knobOffSet) + 'px');
+          }
+          else{
+            topScroll = me.rightScrollScale * marginTop;
+            me.rightKnob.css('margin-top', (marginTop + knobOffSet) + 'px');
+          }
 
-          if (w.doubleHorizontalScroll && me.scrollBottomEl.css( 'display' ) !== 'none'){
+          if (w.doubleHorizontalScroll && me.scrollBottomEl.css('display') !== 'none'){
             if (marginTop < me.cornerSize){
               marginTop = me.cornerSize;
             }
           }
 
-          me.rightKnob.css( 'margin-top', (marginTop + knobOffSet) + 'px' );
           me.scroll( topScroll );
 
           if(w.infinite && w.selection){
@@ -32654,7 +32873,8 @@ Fancy.define('Fancy.grid.plugin.Updater', {
           if (F.isTouch){
             deltaX = me.mouseDownXY.x - x;
             deltaY = me.mouseDownXY.y - y;
-            marginLeft = deltaX + me.bottomKnobLeft;
+
+            marginLeft = deltaX + Math.ceil(me.bottomKnobLeft * Math.abs(me.bottomScrollScale));
           }
           else{
             deltaX = x - me.mouseDownXY.x;
@@ -32666,8 +32886,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
             marginLeft = 1;
           }
 
-          if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
-            marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
+          if(F.isTouch){
+            if (me.bodyViewWidth - 2 < Math.abs(marginLeft/me.bottomScrollScale) + me.bottomKnobWidth){
+              marginLeft = me.bodyFullViewWidth - me.bodyViewWidth - 2;
+            }
+          }
+          else {
+            if (me.bodyViewWidth - 2 < marginLeft + me.bottomKnobWidth){
+              marginLeft = me.bodyViewWidth - me.bottomKnobWidth - 2;
+            }
           }
 
           if (me.bottomScrollScale < 0 && marginLeft < 0){
@@ -32675,8 +32902,14 @@ Fancy.define('Fancy.grid.plugin.Updater', {
             me.bottomScrollScale = 0;
           }
 
-          me.bottomKnob.css( 'margin-left', marginLeft + 'px' );
-          bottomScroll = Math.ceil( me.bottomScrollScale * (marginLeft - 1) );
+          if(F.isTouch){
+            bottomScroll = -marginLeft - 1;
+            me.bottomKnob.css('margin-left', Math.abs(marginLeft/me.bottomScrollScale) + 'px' );
+          }
+          else{
+            bottomScroll = Math.ceil( me.bottomScrollScale * (marginLeft - 1) );
+            me.bottomKnob.css('margin-left', marginLeft + 'px' );
+          }
 
           if (w.doubleHorizontalScroll){
             me.topKnob.css( 'margin-left', marginLeft + 'px' );
@@ -32802,6 +33035,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.rightKnob.css({height: knobHeight});
       me.rightKnobHeight = knobHeight;
       me.bodyViewHeight = bodyViewHeight;
+      me.bodyFullViewHeight = cellsViewHeight;
       me.rightScrollScale = (cellsViewHeight - bodyViewHeight) / (bodyViewHeight - knobHeight);
     },
     /*
@@ -32893,6 +33127,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.bottomKnobWidth = knobWidth;
       me.bodyViewWidth = centerViewWidth;
       me.bottomScrollScale = (centerViewWidth - centerFullWidth) / (centerViewWidth - knobWidth - 2 - 1);
+      me.bodyFullViewWidth = centerFullWidth;
     },
     /*
      * @param {Number} y
@@ -33190,6 +33425,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bodyViewWidth = parseInt(w.body.el.css('width')),
         passedWidth = 0,
         isCenterBody = columnEl.parent().parent().hasCls(GRID_CENTER_CLS);
+
+      if(w.rowheight){
+        passedHeight = w.rowheight.rowIndexesSum[rowIndex];
+      }
 
       if(w.nativeScroller && !nativeScroll){
         return;
@@ -33926,8 +34165,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      * @param {String} side
      * @param {Object} column
      * @param {Object} cell
+     * @param {Object} [update]
      */
-    sort: function(dir, index, side, column, cell){
+    sort: function(dir, index, side, column, cell, update){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -34007,11 +34247,16 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       s.sort(dir, type, index, {
-         smartIndexFn: column.smartIndexFn,
-         format: format,
-         mode: mode,
-         sorter: column.sorter
+        smartIndexFn: column.smartIndexFn,
+        format: format,
+        mode: mode,
+        sorter: column.sorter,
+        update: update !== false
       });
+
+      if(update !== false){
+        w.update();
+      }
 
       delete w.sorting;
     },
@@ -34216,30 +34461,35 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      */
     setPageSize: function(value){
       this.widget.store.setPageSize(value);
+      this.widget.update();
     },
     /*
      *
      */
     nextPage: function(){
       this.widget.store.nextPage();
+      this.widget.update();
     },
     /*
      *
      */
     lastPage: function(){
       this.widget.store.lastPage();
+      this.widget.update();
     },
     /*
      *
      */
     prevPage: function(){
       this.widget.store.prevPage();
+      this.widget.update();
     },
     /*
      *
      */
     firstPage: function(){
       this.widget.store.firstPage();
+      this.widget.update();
     },
     /*
      * @param {Fancy.Store} store
@@ -34284,8 +34534,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     },
     /*
      * @param {Number} value
+     * @param {Boolean} [update]
      */
-    setPage: function(value){
+    setPage: function(value, update){
       var me = this,
         w = me.widget,
         s = w.store;
@@ -34297,7 +34548,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         value = s.pages;
       }
 
-      s.setPage(value);
+      s.setPage(value, update);
 
       return value;
     },
@@ -34606,8 +34857,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onLoad: function(){
-    if(this.showOnWaitingServer){
-      this.hide();
+    var me = this,
+      w = me.widget;
+
+    if(me.showOnWaitingServer){
+      w.once('update', function(){
+        me.hide();
+      });
     }
   },
   /*
@@ -38104,9 +38360,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         return;
       }
 
-      //if(o.column.autoHeight){
       if(w.rowheight){
-        //It could slow
+        //It could be slow
         setTimeout(function(){
           w.update();
         },1);
@@ -47452,6 +47707,8 @@ Fancy.modules['summary'] = true;
       this.Super('const', arguments);
 
       this.rows = {};
+      this.rowIndexes = [];
+      this.rowIndexesSum = [];
     },
     /*
      *
@@ -47519,12 +47776,32 @@ Fancy.modules['summary'] = true;
     /*
      *
      */
-    add: function(id, height){
-      if(this.rows[id] && this.rows[id] > height){
+    add: function(id, height, rowIndex){
+      var me = this;
+
+      if(me.rows[id] && me.rows[id] > height){
         return;
       }
 
-      this.rows[id] = height;
+      me.rows[id] = height;
+      me.rowIndexes[rowIndex] = height;
+
+      if(me.intIndexesSum){
+        clearInterval(me.intIndexesSum);
+      }
+
+      me.intIndexesSum = setTimeout(function(){
+        me.rowIndexesSum = [];
+
+        F.each(me.rowIndexes, function(value, index){
+          if(index === 0){
+            me.rowIndexesSum[index] = value;
+          }
+          else {
+            me.rowIndexesSum[index] = me.rowIndexesSum[index - 1] + value;
+          }
+        });
+      }, 1);
     },
     /*
      *
@@ -49264,11 +49541,8 @@ Fancy.modules['filter'] = true;
         delete s.filteredData;
       }
 
-      //s.changeDataView();
-
       if(update !== false){
         if(s.grouping && s.grouping.by){
-          //s.changeDataView();
           if(s.isFiltered()){
             s.filterData();
           }
@@ -49280,10 +49554,12 @@ Fancy.modules['filter'] = true;
           s.changeDataView();
         }
 
-        w.update();
+        if(!(w.waitingForFilters === true) && !(!w.inited && w.state && w.state.startState && w.state.startState.filters)){
+          w.update();
 
-        w.fire('filter', s.filters);
-        w.setSidesHeight();
+          w.fire('filter', s.filters);
+          w.setSidesHeight();
+        }
       }
       else{
         s.changeDataView();
@@ -51609,7 +51885,7 @@ Fancy.modules['state'] = true;
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'sorters', o.sorters);
     },
     onFilter: function(){
       var me = this,
@@ -51625,61 +51901,61 @@ Fancy.modules['state'] = true;
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'filters', o.filters);
     },
     onColumnResize: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnDrag: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnLock: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnRightLock: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnUnLock: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnHide: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnShow: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnRemove: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnAdd: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     copyColumns: function(){
       var me = this,
@@ -51734,87 +52010,79 @@ Fancy.modules['state'] = true;
         state = localStorage.getItem(name) || '{}',
         startState = me.startState;
 
-      if(startState){
-        if(w.store.loading){
-          w.once('load', me.onBeforeInit, me);
-          return;
-        }
-
-        var applyFilters = function(){
-          for (var p in startState.filters){
-            var filter = startState.filters[p];
-
-            for (var q in filter){
-              if(q === '*' && w.searching){
-                w.addFilter(p, filter[q], q, false);
-              }
-              else{
-                w.addFilter(p, filter[q], q);
-              }
-            }
-          }
-        };
-
-        if(startState.filters){
-          setTimeout(function(){
-            applyFilters();
-          }, 100);
-        }
-
-        var applySorters = function(){
-          F.each(startState.sorters, function(sorter){
-            w.sort(sorter.key, sorter.dir);
-          });
-        };
-
-        if(startState.sorters){
-          setTimeout(function(){
-            applySorters();
-          }, 100);
-        }
-
-        if(startState.page !== undefined){
-          setTimeout(function(){
-            w.setPage(Number(startState.page) + 1);
-          }, 100);
-        }
+      if(state === '{}' && w.autoColumnWidth){
+        w.allowAutoWidthStateIsEmpty = true;
       }
 
-      state = JSON.parse(state);
-      if(state.sorters){
-        state.sorters = JSON.parse(state.sorters);
+      var applyFilters = function(){
+        for (var p in startState.filters){
+          var filter = startState.filters[p];
 
-        F.each(state.sorters, function(sorter){
-          w.sort(sorter.key, sorter.dir);
-        });
-      }
-
-      if(state.filters){
-        state.filters = JSON.parse(state.filters);
-
-        for(var p in state.filters){
-          var filter = state.filters[p];
-
-          for(var q in filter){
-            if(q === '*' && w.searching){
+          for (var q in filter){
+            if (q === '*' && w.searching){
               w.addFilter(p, filter[q], q, false);
             }
-            else{
+            else {
               w.addFilter(p, filter[q], q);
             }
           }
         }
+      };
 
-        if(w.WAIT_FOR_APPLYING_ALL_FILTERS){
-          w.filter.forceUpdateStoreFilters();
-          w.once('load', function(){
-            delete w.WAIT_FOR_APPLYING_ALL_FILTERS;
-          });
+      var applySorters = function(){
+        F.each(startState.sorters, function(sorter){
+          w.sort(sorter.key, sorter.dir, false);
+        });
+      };
+
+      if(startState){
+        w.waitingForFilters = true;
+        w.stateIsWaiting = true;
+
+        if(w.WAIT_FOR_STATE_TO_LOAD){
+          if (startState.filters){
+            applyFilters();
+            if(w.store.remoteFilter){
+              w.store.serverFilter(false);
+            }
+          }
+
+          if (startState.sorters){
+            applySorters();
+          }
+
+          delete w.WAIT_FOR_STATE_TO_LOAD;
+          w.store.loadData();
         }
-      }
 
-      if(state.page){
-        w.setPage(Number(state.page) + 1);
+        if (w.store.loading){
+          w.once('load', function(){
+            me.onBeforeInit();
+          }, me);
+          return;
+        }
+
+        setTimeout(function(){
+          if(!w.SERVER_FILTER_SORT){
+            if (startState.filters){
+              applyFilters();
+            }
+
+            if (startState.sorters){
+              applySorters();
+            }
+          }
+
+          if (startState.page !== undefined){
+            w.setPage(Number(startState.page), false);
+          }
+
+          delete w.waitingForFilters;
+          w.store.changeDataView();
+          delete w.stateIsWaiting;
+          w.update();
+          w.setSidesHeight();
+        }, 100);
       }
 
       if(state.width){
@@ -51844,11 +52112,11 @@ Fancy.modules['state'] = true;
       }
 
       state = JSON.parse(state);
-      state.page = page;
+      state.page = page + 1;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'page', state.page);
     },
     onResize: function(panel, o){
       var me = this,
@@ -51868,7 +52136,7 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'size', [state.width, state.height]);
     },
     /*
      *
@@ -51887,7 +52155,7 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'width', state.width);
     },
     /*
      *
@@ -51906,7 +52174,7 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'height', state.height);
     },
     /*
      *
@@ -51924,6 +52192,14 @@ Fancy.modules['state'] = true;
         w = me.widget,
         name = w.getStateName(),
         state = localStorage.getItem(name) || '{}';
+
+      if(state === '{}'){
+        state = me.startState;
+      }
+
+      if(F.isString(state)){
+        return JSON.parse(state);
+      }
 
       return state;
     }
@@ -52417,6 +52693,9 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         case 'cell':
         case 'cells':
           break;
+        case 'waitstate':
+          me.checkDomColumns();
+          return;
         default:
           me.checkDomColumns();
       }
@@ -52980,7 +53259,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
             cellHeight = w.cellHeight;
           }
 
-          w.rowheight.add(id, cellHeight);
+          w.rowheight.add(id, cellHeight, o.rowIndex);
         }
       }
     },
@@ -54852,7 +55131,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       if(!w.grouping || (w.grouping && !w.grouping.by)){
-        me.update();
+        if(w.state && w.state.startState && (w.state.startState.sorters || w.state.startState.filters || w.state.startState.page !== undefined)){
+          me.update('waitstate');
+        }
+        else{
+          me.update();
+        }
       }
       else if(w.grouping && s.proxyType === 'server'){
         me.update();
@@ -55034,9 +55318,10 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      *
      */
     setHeight: function(){
-      var height = this.widget.getBodyHeight();
+      var me = this,
+        height = me.widget.getBodyHeight();
 
-      this.css('height', height + 'px');
+      me.css('height', height + 'px');
     },
     /*
      * @param {Object} e

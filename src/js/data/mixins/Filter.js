@@ -248,6 +248,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    */
   filterData: function(fire){
     var me = this,
+      w = me.widget,
       data = me.data,
       filteredData = [],
       i = 0,
@@ -256,7 +257,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       item = [];
 
     if(me.remoteFilter){
-      me.serverFilter();
+      if(!w.UPDATING_AFTER_LOAD){
+        me.serverFilter(w.stateIsWaiting !== true);
+      }
       return;
     }
 
@@ -290,9 +293,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
   },
   /*
-   *
+   * @param {Boolean} [load]
    */
-  serverFilter: function(){
+  serverFilter: function(load){
     var me = this,
       value = '[',
       filters = me.filters || {};
@@ -339,7 +342,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       me.params[me.filterParam] = value;
     }
 
-    me.loadData();
+    if(load !== false){
+      me.loadData();
+    }
   },
   /*
    * @return {Boolean}

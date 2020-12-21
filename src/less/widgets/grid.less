@@ -21,6 +21,12 @@
   border-style: solid
 }
 
+.fancy-grid-header-cell-sortable {
+  .fancy-grid-header-cell-text {
+    cursor: pointer;
+  }
+}
+
 .fancy-grid-sub-header-filter-container {
   background-color: #e3e9ee;
 }
@@ -109,7 +115,7 @@
 
 .fancy-grid-column {
   float: left;
-  height: 100%;
+  height: auto;
   box-sizing: border-box;
   position: absolute;
   background-color: white;
@@ -389,6 +395,7 @@
 
 .fancy-grid-column-row-drag.fancy-grid-column-ellipsis .fancy-grid-cell {
   text-overflow: initial;
+  height: auto;
   .fancy-grid-cell-inner-text {
     overflow: hidden;
     text-overflow: ellipsis;

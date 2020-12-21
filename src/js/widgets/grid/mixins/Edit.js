@@ -38,6 +38,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(fire !== false){
       me.setSidesHeight();
     }
+
+    if(me.removeInt){
+      clearInterval(me.removeInt);
+    }
+
+    me.removeInt = setTimeout(function(){
+      me.update();
+      delete me.removeInt;
+    }, 1);
   },
   /*
    * @param {*} o
@@ -107,6 +116,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     me.store.add(o);
     me.setSidesHeight();
+
+    if(me.addInt){
+      clearInterval(me.addInt);
+    }
+
+    me.addInt = setTimeout(function(){
+      me.update();
+      delete me.addInt;
+    }, 1);
   },
   /*
    * @param {Number} index
@@ -168,6 +186,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(fire !== false){
       me.setSidesHeight();
     }
+
+    if(me.addInt){
+      clearInterval(me.addInt);
+    }
+
+    me.addInt = setTimeout(function(){
+      me.update();
+      delete me.addInt;
+    }, 1);
   },
   /*
    * @param {Number} rowIndex

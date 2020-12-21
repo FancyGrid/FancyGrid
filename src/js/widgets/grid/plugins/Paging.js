@@ -53,30 +53,35 @@
      */
     setPageSize: function(value){
       this.widget.store.setPageSize(value);
+      this.widget.update();
     },
     /*
      *
      */
     nextPage: function(){
       this.widget.store.nextPage();
+      this.widget.update();
     },
     /*
      *
      */
     lastPage: function(){
       this.widget.store.lastPage();
+      this.widget.update();
     },
     /*
      *
      */
     prevPage: function(){
       this.widget.store.prevPage();
+      this.widget.update();
     },
     /*
      *
      */
     firstPage: function(){
       this.widget.store.firstPage();
+      this.widget.update();
     },
     /*
      * @param {Fancy.Store} store
@@ -121,8 +126,9 @@
     },
     /*
      * @param {Number} value
+     * @param {Boolean} [update]
      */
-    setPage: function(value){
+    setPage: function(value, update){
       var me = this,
         w = me.widget,
         s = w.store;
@@ -134,7 +140,7 @@
         value = s.pages;
       }
 
-      s.setPage(value);
+      s.setPage(value, update);
 
       return value;
     },

@@ -52,6 +52,9 @@
         case 'cell':
         case 'cells':
           break;
+        case 'waitstate':
+          me.checkDomColumns();
+          return;
         default:
           me.checkDomColumns();
       }
@@ -615,7 +618,7 @@
             cellHeight = w.cellHeight;
           }
 
-          w.rowheight.add(id, cellHeight);
+          w.rowheight.add(id, cellHeight, o.rowIndex);
         }
       }
     },

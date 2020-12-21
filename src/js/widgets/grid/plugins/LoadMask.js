@@ -151,8 +151,13 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
    *
    */
   onLoad: function(){
-    if(this.showOnWaitingServer){
-      this.hide();
+    var me = this,
+      w = me.widget;
+
+    if(me.showOnWaitingServer){
+      w.once('update', function(){
+        me.hide();
+      });
     }
   },
   /*

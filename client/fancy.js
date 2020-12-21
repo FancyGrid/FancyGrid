@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.141',
+  version: '1.7.142',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1013,8 +1013,10 @@ var FancyForm = function(){
       Fancy.loadingStyle = true;
 
       _link.onload = function(){
-        Fancy.loadingStyle = false;
-        Fancy.stylesLoaded = true;
+        setTimeout(function(){
+          Fancy.loadingStyle = false;
+          Fancy.stylesLoaded = true;
+        }, 100);
       };
 
       head.appendChild(_link);
@@ -3876,7 +3878,14 @@ Fancy.define('Fancy.Store', {
       i = 0,
       iL = me.data.length,
       isFiltered = me.isFiltered(),
+      isSorted = me.isSorted(),
       data = me.data;
+
+    if(isSorted && o.reSort){
+      if(!me.remoteSort){
+        me.reSort();
+      }
+    }
 
     if(isFiltered){
       if (!o.stoppedFilter && !o.doNotFired){
@@ -4280,6 +4289,15 @@ Fancy.define('Fancy.Store', {
     }
 
     return false;
+  },
+  /*
+   * @return {Boolean}
+   */
+  isSorted: function(){
+    var me = this,
+      sorters = me.sorters || {};
+
+    return !Fancy.Object.isEmpty(sorters);
   }
 });
 Fancy.$ = window.$ || window.jQuery;
@@ -14410,6 +14428,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(fire !== false){
       me.setSidesHeight();
     }
+
+    if(me.removeInt){
+      clearInterval(me.removeInt);
+    }
+
+    me.removeInt = setTimeout(function(){
+      me.update();
+      delete me.removeInt;
+    }, 1);
   },
   /*
    * @param {*} o
@@ -14479,6 +14506,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     me.store.add(o);
     me.setSidesHeight();
+
+    if(me.addInt){
+      clearInterval(me.addInt);
+    }
+
+    me.addInt = setTimeout(function(){
+      me.update();
+      delete me.addInt;
+    }, 1);
   },
   /*
    * @param {Number} index
@@ -14540,6 +14576,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     if(fire !== false){
       me.setSidesHeight();
     }
+
+    if(me.addInt){
+      clearInterval(me.addInt);
+    }
+
+    me.addInt = setTimeout(function(){
+      me.update();
+      delete me.addInt;
+    }, 1);
   },
   /*
    * @param {Number} rowIndex
@@ -15019,7 +15064,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.inited = true;
       me.fire('init');
       me.setBodysHeight();
-      me._setColumnsAutoWidth();
+      if(!me.state){
+        me._setColumnsAutoWidth();
+      }
     }, 1);
 
   },
@@ -15614,7 +15661,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    if(me.state && !Fancy.Object.isEmpty(JSON.parse(me.state.getState()))){
+    if(me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty){
       return;
     }
 
@@ -15631,6 +15678,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     setTimeout(function(){
       me._firstTimeAutoColumnWidth = true;
+      delete me.allowAutoWidthStateIsEmpty;
     }, 1000);
   }
 });
@@ -15694,6 +15742,8 @@ if(!Fancy.nojQuery && Fancy.$){
       this.Super('const', arguments);
 
       this.rows = {};
+      this.rowIndexes = [];
+      this.rowIndexesSum = [];
     },
     /*
      *
@@ -15761,12 +15811,32 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    add: function(id, height){
-      if(this.rows[id] && this.rows[id] > height){
+    add: function(id, height, rowIndex){
+      var me = this;
+
+      if(me.rows[id] && me.rows[id] > height){
         return;
       }
 
-      this.rows[id] = height;
+      me.rows[id] = height;
+      me.rowIndexes[rowIndex] = height;
+
+      if(me.intIndexesSum){
+        clearInterval(me.intIndexesSum);
+      }
+
+      me.intIndexesSum = setTimeout(function(){
+        me.rowIndexesSum = [];
+
+        F.each(me.rowIndexes, function(value, index){
+          if(index === 0){
+            me.rowIndexesSum[index] = value;
+          }
+          else {
+            me.rowIndexesSum[index] = me.rowIndexesSum[index - 1] + value;
+          }
+        });
+      }, 1);
     },
     /*
      *

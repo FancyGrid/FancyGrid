@@ -215,7 +215,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.inited = true;
       me.fire('init');
       me.setBodysHeight();
-      me._setColumnsAutoWidth();
+      if(!me.state){
+        me._setColumnsAutoWidth();
+      }
     }, 1);
 
   },
@@ -810,7 +812,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    if(me.state && !Fancy.Object.isEmpty(JSON.parse(me.state.getState()))){
+    if(me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty){
       return;
     }
 
@@ -827,6 +829,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     setTimeout(function(){
       me._firstTimeAutoColumnWidth = true;
+      delete me.allowAutoWidthStateIsEmpty;
     }, 1000);
   }
 });

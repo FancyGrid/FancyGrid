@@ -101,7 +101,7 @@ Fancy.modules['state'] = true;
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'sorters', o.sorters);
     },
     onFilter: function(){
       var me = this,
@@ -117,61 +117,61 @@ Fancy.modules['state'] = true;
       localStorage.setItem(name, JSON.stringify(o));
       me.copyColumns();
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'filters', o.filters);
     },
     onColumnResize: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnDrag: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnLock: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnRightLock: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnUnLock: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnHide: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnShow: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnRemove: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     onColumnAdd: function(){
       var me = this;
 
       me.copyColumns();
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'columns');
     },
     copyColumns: function(){
       var me = this,
@@ -226,87 +226,79 @@ Fancy.modules['state'] = true;
         state = localStorage.getItem(name) || '{}',
         startState = me.startState;
 
-      if(startState){
-        if(w.store.loading){
-          w.once('load', me.onBeforeInit, me);
-          return;
-        }
-
-        var applyFilters = function(){
-          for (var p in startState.filters){
-            var filter = startState.filters[p];
-
-            for (var q in filter){
-              if(q === '*' && w.searching){
-                w.addFilter(p, filter[q], q, false);
-              }
-              else{
-                w.addFilter(p, filter[q], q);
-              }
-            }
-          }
-        };
-
-        if(startState.filters){
-          setTimeout(function(){
-            applyFilters();
-          }, 100);
-        }
-
-        var applySorters = function(){
-          F.each(startState.sorters, function(sorter){
-            w.sort(sorter.key, sorter.dir);
-          });
-        };
-
-        if(startState.sorters){
-          setTimeout(function(){
-            applySorters();
-          }, 100);
-        }
-
-        if(startState.page !== undefined){
-          setTimeout(function(){
-            w.setPage(Number(startState.page) + 1);
-          }, 100);
-        }
+      if(state === '{}' && w.autoColumnWidth){
+        w.allowAutoWidthStateIsEmpty = true;
       }
 
-      state = JSON.parse(state);
-      if(state.sorters){
-        state.sorters = JSON.parse(state.sorters);
+      var applyFilters = function(){
+        for (var p in startState.filters){
+          var filter = startState.filters[p];
 
-        F.each(state.sorters, function(sorter){
-          w.sort(sorter.key, sorter.dir);
-        });
-      }
-
-      if(state.filters){
-        state.filters = JSON.parse(state.filters);
-
-        for(var p in state.filters){
-          var filter = state.filters[p];
-
-          for(var q in filter){
-            if(q === '*' && w.searching){
+          for (var q in filter){
+            if (q === '*' && w.searching){
               w.addFilter(p, filter[q], q, false);
             }
-            else{
+            else {
               w.addFilter(p, filter[q], q);
             }
           }
         }
+      };
 
-        if(w.WAIT_FOR_APPLYING_ALL_FILTERS){
-          w.filter.forceUpdateStoreFilters();
-          w.once('load', function(){
-            delete w.WAIT_FOR_APPLYING_ALL_FILTERS;
-          });
+      var applySorters = function(){
+        F.each(startState.sorters, function(sorter){
+          w.sort(sorter.key, sorter.dir, false);
+        });
+      };
+
+      if(startState){
+        w.waitingForFilters = true;
+        w.stateIsWaiting = true;
+
+        if(w.WAIT_FOR_STATE_TO_LOAD){
+          if (startState.filters){
+            applyFilters();
+            if(w.store.remoteFilter){
+              w.store.serverFilter(false);
+            }
+          }
+
+          if (startState.sorters){
+            applySorters();
+          }
+
+          delete w.WAIT_FOR_STATE_TO_LOAD;
+          w.store.loadData();
         }
-      }
 
-      if(state.page){
-        w.setPage(Number(state.page) + 1);
+        if (w.store.loading){
+          w.once('load', function(){
+            me.onBeforeInit();
+          }, me);
+          return;
+        }
+
+        setTimeout(function(){
+          if(!w.SERVER_FILTER_SORT){
+            if (startState.filters){
+              applyFilters();
+            }
+
+            if (startState.sorters){
+              applySorters();
+            }
+          }
+
+          if (startState.page !== undefined){
+            w.setPage(Number(startState.page), false);
+          }
+
+          delete w.waitingForFilters;
+          w.store.changeDataView();
+          delete w.stateIsWaiting;
+          w.update();
+          w.setSidesHeight();
+        }, 100);
       }
 
       if(state.width){
@@ -336,11 +328,11 @@ Fancy.modules['state'] = true;
       }
 
       state = JSON.parse(state);
-      state.page = page;
+      state.page = page + 1;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'page', state.page);
     },
     onResize: function(panel, o){
       var me = this,
@@ -360,7 +352,7 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'size', [state.width, state.height]);
     },
     /*
      *
@@ -379,7 +371,7 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'width', state.width);
     },
     /*
      *
@@ -398,7 +390,7 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(state));
 
-      me.widget.fire('statechange', me.getState());
+      me.widget.fire('statechange', me.getState(), 'height', state.height);
     },
     /*
      *
@@ -416,6 +408,14 @@ Fancy.modules['state'] = true;
         w = me.widget,
         name = w.getStateName(),
         state = localStorage.getItem(name) || '{}';
+
+      if(state === '{}'){
+        state = me.startState;
+      }
+
+      if(F.isString(state)){
+        return JSON.parse(state);
+      }
 
       return state;
     }

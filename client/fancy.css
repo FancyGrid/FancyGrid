@@ -1343,6 +1343,9 @@
   border-width: 0 0 1px 0;
   border-style: solid;
 }
+.fancy-grid-header-cell-sortable .fancy-grid-header-cell-text {
+  cursor: pointer;
+}
 .fancy-grid-sub-header-filter-container {
   background-color: #e3e9ee;
 }
@@ -1419,7 +1422,7 @@
 }
 .fancy-grid-column {
   float: left;
-  height: 100%;
+  height: auto;
   box-sizing: border-box;
   position: absolute;
   background-color: white;
@@ -1621,6 +1624,7 @@
 }
 .fancy-grid-column-row-drag.fancy-grid-column-ellipsis .fancy-grid-cell {
   text-overflow: initial;
+  height: auto;
 }
 .fancy-grid-column-row-drag.fancy-grid-column-ellipsis .fancy-grid-cell .fancy-grid-cell-inner-text {
   overflow: hidden;
@@ -1676,6 +1680,22 @@
 .fancy-scroll-right-active .fancy-scroll-right-inner {
   width: 12px;
   opacity: 1;
+}
+.fancy-touch .fancy-scroll-right-hover,
+.fancy-touch .fancy-scroll-right-active {
+  width: 12px;
+}
+.fancy-touch .fancy-scroll-right-hover .fancy-scroll-right-inner,
+.fancy-touch .fancy-scroll-right-active .fancy-scroll-right-inner {
+  width: 8px;
+}
+.fancy-touch .fancy-scroll-bottom-hover,
+.fancy-touch .fancy-scroll-bottom-active {
+  height: 12px;
+}
+.fancy-touch .fancy-scroll-bottom-hover .fancy-scroll-bottom-inner,
+.fancy-touch .fancy-scroll-bottom-active .fancy-scroll-bottom-inner {
+  height: 8px;
 }
 .fancy-scroll-right-inner {
   margin-left: 2px;
@@ -3969,7 +3989,7 @@
 }
 .fancy-theme-extra-gray .fancy-grid-cell-inner {
   margin-top: 7px;
-  height: 16px;
+  /*height: 16px;*/
 }
 .fancy-theme-extra-gray .fancy-grid-column-h-bar .fancy-grid-cell-inner {
   margin-top: 2px;

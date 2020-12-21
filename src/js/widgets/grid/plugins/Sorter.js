@@ -120,8 +120,9 @@
      * @param {String} side
      * @param {Object} column
      * @param {Object} cell
+     * @param {Object} [update]
      */
-    sort: function(dir, index, side, column, cell){
+    sort: function(dir, index, side, column, cell, update){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -201,11 +202,16 @@
       }
 
       s.sort(dir, type, index, {
-         smartIndexFn: column.smartIndexFn,
-         format: format,
-         mode: mode,
-         sorter: column.sorter
+        smartIndexFn: column.smartIndexFn,
+        format: format,
+        mode: mode,
+        sorter: column.sorter,
+        update: update !== false
       });
+
+      if(update !== false){
+        w.update();
+      }
 
       delete w.sorting;
     },

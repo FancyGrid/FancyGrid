@@ -465,7 +465,17 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
 
       if(!column.title && column.index && !Fancy.isArray(column.index)){
-        column.title = Fancy.String.upFirstChar(column.index);
+        switch(column.type){
+          case 'string':
+          case 'number':
+          case 'currency':
+          case 'date':
+          case 'combo':
+          case 'checkbox':
+          case 'text':
+            column.title = Fancy.String.upFirstChar(column.index);
+            break;
+        }
       }
 
       switch(column.type){
@@ -1911,14 +1921,19 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       if(!state){
         me.memoryInitialColumns(name, config.columns);
+        if(config.defaults){
+          me.memoryInitialDefaults(name, config.defaults);
+        }
       }
 
-      //if(state && me.wasColumnsCodeChanged(config.columns, JSON.parse(state).columns)){
-      if(state && me.wasColumnsCodeChanged(name, config.columns)){
+      if(state && (me.wasColumnsCodeChanged(name, config.columns) || me.wasDefaultChanged(name, config.defaults))){
         localStorage.clear(name);
         localStorage.clear(name + 'memory-columns');
         state = null;
         me.memoryInitialColumns(name, config.columns);
+        if(config.defaults){
+          me.memoryInitialDefaults(name, config.defaults);
+        }
       }
 
       if(state){
@@ -1954,7 +1969,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           if(p === 'columns'){
             continue;
           }
-          startState[p] = state[p];
+
+          if(startState[p] === undefined){
+            startState[p] = state[p];
+          }
         }
       }
 
@@ -2374,7 +2392,52 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     return config;
   },
   /*
-   * @param {Array} name
+   * @param {String} name
+   * @param {Object} defaults
+   * @return {Boolean}
+   */
+  wasDefaultChanged: function(name, defaults){
+    name = name + '-memory-defaults';
+    var memoryDefaults = JSON.parse(localStorage.getItem(name));
+
+    if(!memoryDefaults || !defaults){
+      return false;
+    }
+
+    for(var p in memoryDefaults){
+      switch(Fancy.typeOf(memoryDefaults[p])){
+        case 'number':
+        case 'string':
+        case 'boolean':
+          break;
+        default:
+          continue;
+      }
+
+      if(defaults[p] !== memoryDefaults[p]){
+        return true;
+      }
+    }
+
+    for(var p in defaults){
+      switch(Fancy.typeOf(defaults[p])){
+        case 'number':
+        case 'string':
+        case 'boolean':
+          break;
+        default:
+          continue;
+      }
+
+      if(memoryDefaults[p] === undefined){
+        return true;
+      }
+    }
+
+    return false;
+  },
+  /*
+   * @param {String} name
    * @param {Array} columns
    * @return {Boolean}
    */
@@ -2395,6 +2458,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     Fancy.each(memoryColumns, function(column, i){
       for(var p in column){
         if(column[p] !== columns[i][p]){
+          if(p === 'width' && column.autoWidth){
+            continue;
+          }
           wasChanges = true;
           return true;
         }
@@ -2406,6 +2472,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         switch(Fancy.typeOf(column[p])){
           case 'number':
           case 'string':
+          case 'boolean':
             if(memoryColumns[i][p] === undefined){
               wasChanges = true;
               return true;
@@ -2416,6 +2483,25 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     });
 
     return wasChanges;
+  },
+  /*
+   *
+   */
+  memoryInitialDefaults: function(name, defaults){
+    name = name + '-memory-defaults';
+    var memoryDefaults = {};
+
+    for(var p in defaults){
+      switch(Fancy.typeOf(defaults[p])){
+        case 'string':
+        case 'number':
+        case 'boolean':
+          memoryDefaults[p] = defaults[p];
+          break;
+      }
+    }
+
+    localStorage.setItem(name, JSON.stringify(memoryDefaults));
   },
   /*
    * @param {String} name
@@ -2432,6 +2518,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         switch (Fancy.typeOf(column[p])){
           case 'string':
           case 'number':
+          case 'boolean':
             memoryColumn[p] = column[p];
             break;
         }

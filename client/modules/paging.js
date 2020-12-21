@@ -18,7 +18,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     }
 
     me.calcPages();
-    me.changeDataView();
+    //me.changeDataView();
   },
   /*
    *
@@ -34,7 +34,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -54,7 +56,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -78,7 +82,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -98,7 +104,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
@@ -159,8 +167,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   },
   /*
    * @param {Number} value
+   * @param {Boolean} [update]
    */
-  setPage: function(value){
+  setPage: function(value, update){
     var me = this;
 
     me.showPage = value;
@@ -176,8 +185,10 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     if(me.pageType === 'server'){
       me.loadPage();
     }
-    else{
-      me.changeDataView();
+    else if(update !== false){
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   refresh: function(){
@@ -187,14 +198,17 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else{
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
   },
   /*
    * @param {Object} o
    */
   processPagingData: function(o){
-    var me = this;
+    var me = this,
+      w = me.widget;
 
     if(o.totalCount !== undefined){
       me.totalCount = o.totalCount;
@@ -207,12 +221,18 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     else {
       me.setData(o[me.readerRootProperty]);
     }
+
+    me.calcPages();
+
     //TODO: check samples with filter, paging and server and static
-    me.changeDataView({
-      stoppedFilter: true
-    });
-    if( me.calcPages() === 'needs reload' ){
-      me.loadPage();
+    if(!w.stateIsWaiting){
+      me.changeDataView({
+        stoppedFilter: true
+      });
+
+      if( me.calcPages() === 'needs reload' ){
+        me.loadPage();
+      }
     }
   },
   /*
@@ -255,7 +275,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.loadPage();
     }
     else {
-      me.changeDataView();
+      me.changeDataView({
+        stoppedFilter: true
+      });
     }
 
     w.fire('changepagesize', value);
@@ -315,30 +337,35 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
      */
     setPageSize: function(value){
       this.widget.store.setPageSize(value);
+      this.widget.update();
     },
     /*
      *
      */
     nextPage: function(){
       this.widget.store.nextPage();
+      this.widget.update();
     },
     /*
      *
      */
     lastPage: function(){
       this.widget.store.lastPage();
+      this.widget.update();
     },
     /*
      *
      */
     prevPage: function(){
       this.widget.store.prevPage();
+      this.widget.update();
     },
     /*
      *
      */
     firstPage: function(){
       this.widget.store.firstPage();
+      this.widget.update();
     },
     /*
      * @param {Fancy.Store} store
@@ -383,8 +410,9 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     },
     /*
      * @param {Number} value
+     * @param {Boolean} [update]
      */
-    setPage: function(value){
+    setPage: function(value, update){
       var me = this,
         w = me.widget,
         s = w.store;
@@ -396,7 +424,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
         value = s.pages;
       }
 
-      s.setPage(value);
+      s.setPage(value, update);
 
       return value;
     },

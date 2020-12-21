@@ -12,6 +12,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    */
   sort: function(action, type, key, options){
     var me = this,
+      w = me.widget,
       fn,
       sortType;
 
@@ -68,7 +69,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     if(me.remoteSort){
-      me.serverSort(action, type, key);
+      me.serverSort(action, type, key, w.stateIsWaiting !== true);
       return;
     }
 
@@ -103,8 +104,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String} type
    * @param {String|Number} key
+   * @param {Boolean} load
    */
-  serverSort: function(action, type, key){
+  serverSort: function(action, type, key, load){
     var me = this;
 
     me.params = me.params || {};
@@ -128,7 +130,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         action: action
       });
     });
-    me.loadData();
+
+    if(load !== false){
+      me.loadData();
+    }
   },
   /*
    * @param {'ASC'|'DESC'} action
@@ -522,7 +527,6 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         newSubOrder.push(originSubOrder[_newSubOrder[k]]);
       }
 
-      //order = order.concat(newOrder[j]);
       order = order.concat(newSubOrder);
     }
 
@@ -662,8 +666,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
      * @param {String} side
      * @param {Object} column
      * @param {Object} cell
+     * @param {Object} [update]
      */
-    sort: function(dir, index, side, column, cell){
+    sort: function(dir, index, side, column, cell, update){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -743,11 +748,16 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
 
       s.sort(dir, type, index, {
-         smartIndexFn: column.smartIndexFn,
-         format: format,
-         mode: mode,
-         sorter: column.sorter
+        smartIndexFn: column.smartIndexFn,
+        format: format,
+        mode: mode,
+        sorter: column.sorter,
+        update: update !== false
       });
+
+      if(update !== false){
+        w.update();
+      }
 
       delete w.sorting;
     },
