@@ -218,7 +218,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       if(!me.state){
         me._setColumnsAutoWidth();
       }
-    }, 1);
+    }, 100);
 
   },
   /*

@@ -8,7 +8,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.142',
+  version: '1.7.144',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -983,7 +983,7 @@ var FancyForm = function(){
       var head = document.getElementsByTagName('head')[0],
         _link = document.createElement('link'),
         name = 'fancy',
-        endUrl = Fancy.DEBUG ? '.css' : '.min.css',
+        endUrl = Fancy.DEBUG ? '.css': '.min.css',
         _v = Fancy.version.replace(/\./g, ''),
         MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
 

@@ -1111,8 +1111,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 });
                 break;
             }
-
-
           }
 
           return o;

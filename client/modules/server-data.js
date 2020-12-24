@@ -150,6 +150,10 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params = {},
       headers = proxy.headers || {};
 
+    if(document.activeElement){
+      document.activeElement.blur();
+    }
+
     Fancy.apply(params, me.params);
     Fancy.applyIf(params, proxy.params);
 

@@ -823,6 +823,8 @@ Fancy.define('Fancy.Store', {
       _data.push(value);
     }
 
+    _data = _data.sort();
+
     return _data;
   },
   /*

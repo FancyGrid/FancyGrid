@@ -1111,8 +1111,6 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 });
                 break;
             }
-
-
           }
 
           return o;
@@ -6108,7 +6106,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
       var me = this,
         s = me.store;
 
-      me.clearSelection();
+      //me.clearSelection();
 
       if (s.isTree){
         s.initTreeData(data);
@@ -8424,6 +8422,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       w.fire('scroll');
+
+      if(F.isTouch){
+        w._preventTouchDown = true;
+      }
     },
     /*
      * @param {Number} value
@@ -8840,6 +8842,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       w.fire('nativescroll');
+
+      if(F.isTouch){
+        w._preventTouchDown = true;
+      }
     },
     /*
      *

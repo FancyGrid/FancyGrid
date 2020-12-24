@@ -128,12 +128,10 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     }
 
     if(me.pageType === 'server'){
-      var oldPages = me.pages;
       me.pages = Math.ceil(me.getTotal() / me.pageSize);
-      if(!isNaN(oldPages) && oldPages > me.pages){
-        //me.showPage--;
+      if(!isNaN(me.showPage) && me.showPage > me.pages){
         if(pageOverFlowType === 'last'){
-          me.showPage = Math.floor((me.getTotal()/me.pageSize));
+          me.showPage = Math.floor((me.getTotal()/me.pageSize)) - 1;
           if(me.showPage < 0){
             me.showPage = 0;
           }
@@ -222,7 +220,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       me.setData(o[me.readerRootProperty]);
     }
 
-    me.calcPages();
+    //me.calcPages();
 
     //TODO: check samples with filter, paging and server and static
     if(!w.stateIsWaiting){
@@ -230,9 +228,12 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
         stoppedFilter: true
       });
 
-      if( me.calcPages() === 'needs reload' ){
+      if( me.calcPages() === 'needs reload'){
         me.loadPage();
       }
+    }
+    else{
+      me.calcPages();
     }
   },
   /*

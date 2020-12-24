@@ -3524,7 +3524,7 @@
       var me = this,
         s = me.store;
 
-      me.clearSelection();
+      //me.clearSelection();
 
       if (s.isTree){
         s.initTreeData(data);

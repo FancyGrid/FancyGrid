@@ -593,6 +593,11 @@ Fancy.modules['selection'] = true;
         treeMemory = s.isTree && me.memory,
         docEl = F.get(document.body);
 
+      if(w._preventTouchDown){
+        delete w._preventTouchDown;
+        return;
+      }
+
       if(me.stopOneTick){
         delete me.stopOneTick;
       }

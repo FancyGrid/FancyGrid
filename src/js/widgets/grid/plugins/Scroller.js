@@ -937,6 +937,10 @@
       }
 
       w.fire('scroll');
+
+      if(F.isTouch){
+        w._preventTouchDown = true;
+      }
     },
     /*
      * @param {Number} value
@@ -1353,6 +1357,10 @@
       }
 
       w.fire('nativescroll');
+
+      if(F.isTouch){
+        w._preventTouchDown = true;
+      }
     },
     /*
      *
