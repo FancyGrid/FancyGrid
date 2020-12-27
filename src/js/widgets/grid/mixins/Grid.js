@@ -2313,9 +2313,7 @@
       }
 
       if(side === 'right' || side === 'left'){
-        if(me.intervalScrollUpdate){
-          clearInterval(me.intervalScrollUpdate);
-        }
+        clearInterval(me.intervalScrollUpdate);
 
         me.intervalScrollUpdate = setTimeout(function(){
           me.scroller.update();
@@ -2461,9 +2459,7 @@
       }
 
       if(side === 'right' || side === 'left'){
-        if(me.intervalScrollUpdate){
-          clearInterval(me.intervalScrollUpdate);
-        }
+        clearInterval(me.intervalScrollUpdate);
 
         me.intervalScrollUpdate = setTimeout(function(){
           me.scroller.update();
@@ -2561,7 +2557,6 @@
           column = me.leftColumns[indexOrder];
           me.leftColumns.splice(indexOrder, 1);
           leftHeader.removeCell(indexOrder);
-          leftHeader.reSetIndexes();
           leftBody.removeColumn(indexOrder);
           leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
           centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
@@ -2577,7 +2572,6 @@
           column = me.columns[indexOrder];
           me.columns.splice(indexOrder, 1);
           header.removeCell(indexOrder);
-          header.reSetIndexes();
           body.removeColumn(indexOrder);
           break;
         case 'right':
@@ -2586,7 +2580,6 @@
           column = me.rightColumns[indexOrder];
           me.rightColumns.splice(indexOrder, 1);
           rightHeader.removeCell(indexOrder);
-          rightHeader.reSetIndexes();
           rightBody.removeColumn(indexOrder);
           rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
           //rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
@@ -2616,9 +2609,7 @@
 
       me.fire('columnremove');
 
-      if(me.removeColumnScrollInt){
-        clearInterval(me.removeColumnScrollInt);
-      }
+      clearInterval(me.removeColumnScrollInt);
 
       me.removeColumnScrollInt = setTimeout(function(){
         delete me.removeColumnScrollInt;
@@ -2671,7 +2662,6 @@
           delete column.locked;
           me.columns.splice(index, 0, column);
           header.insertCell(index, column);
-          header.reSetIndexes();
           body.insertColumn(index, column);
           break;
         case 'left':
@@ -2703,7 +2693,6 @@
 
           me.leftColumns.splice(index, 0, column);
           leftHeader.insertCell(index, column);
-          leftHeader.reSetIndexes();
           leftHeader.css('width', parseInt(leftHeader.css('width')) + extraHeaderWidth);
           leftBody.insertColumn(index, column);
           //leftEl.css('width', leftEl.dom.clientWidth + column.width + extraWidth);
@@ -2730,7 +2719,6 @@
 
           me.rightColumns.splice(index, 0, column);
           rightHeader.insertCell(index, column);
-          rightHeader.reSetIndexes();
           rightBody.insertColumn(index, column);
           rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
           centerEl.css('width', parseInt(centerEl.css('width')) - column.width - extraLeft);
@@ -2801,7 +2789,12 @@
       }
 
       if (me.filter){
-        me.filter.updateFields();
+        clearInterval(me.intFilterFieldsUpdate);
+
+        me.intFilterFieldsUpdate = setTimeout(function(){
+          me.filter.updateFields();
+          delete me.intFilterFieldsUpdate;
+        }, F.ANIMATE_DURATION);
       }
     },
     /*
@@ -3012,9 +3005,7 @@
       me.store.filters[index] = filter;
 
       if(update){
-        if(me.intervalUpdatingFilter){
-          clearInterval(me.intervalUpdatingFilter);
-        }
+        clearInterval(me.intervalUpdatingFilter);
 
         me.intervalUpdatingFilter = setTimeout(function(){
           if (me.WAIT_FOR_STATE_TO_LOAD){
@@ -3084,9 +3075,7 @@
       }
 
       if(update){
-        if(me.intervalUpdatingFilter){
-          clearInterval(me.intervalUpdatingFilter);
-        }
+        clearInterval(me.intervalUpdatingFilter);
 
         me.intervalUpdatingFilter = setTimeout(function(){
           if (s.remoteFilter){
@@ -3662,6 +3651,22 @@
       }
 
       return side;
+    },
+    /*
+     * @param {String} side
+     * @return {String}
+     */
+    getSideEl: function(side){
+      var me = this;
+
+      switch(side){
+        case 'left':
+          return me.leftEl;
+        case 'center':
+          return me.centerEl;
+        case 'right':
+          return me.rightEl;
+      }
     },
     /*
      * @param {Fancy.Model|id|Object} item
@@ -4246,9 +4251,7 @@
       var onWindowResize = function(){
         me.onWindowResize();
 
-        if (me.intWindowResize){
-          clearInterval(me.intWindowResize);
-        }
+        clearInterval(me.intWindowResize);
 
         me.intWindowResize = setTimeout(function(){
           me.onWindowResize();
@@ -4375,10 +4378,7 @@
         }
       }
 
-      if(me.intervalUpdateColumnsWidth){
-        clearInterval(me.intervalUpdateColumnsWidth);
-        delete me.intervalUpdateColumnsWidth;
-      }
+      clearInterval(me.intervalUpdateColumnsWidth);
 
       me.intervalUpdateColumnsWidth = setTimeout(function(){
         if(me.columnresizer){
@@ -4808,7 +4808,7 @@
       me._setColumnsAutoWidth();
 
       setTimeout(function() {
-        Fancy.each(['left', 'center', 'right'], function (side) {
+        Fancy.each(['left', 'center', 'right'], function(side){
           var header = me.getHeader(side),
             body = me.getBody(side);
 
@@ -4816,6 +4816,7 @@
           header.reSetColumnsCls();
           body.reSetColumnsAlign();
           body.reSetColumnsCls();
+          body.reSetIndexes();
         });
       }, 1);
     }

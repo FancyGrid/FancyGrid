@@ -547,9 +547,7 @@ Fancy.modules['form'] = true;
         F.$(window).bind('resize', function(){
           me.onWindowResize();
 
-          if(me.intWindowResize){
-            clearInterval(me.intWindowResize);
-          }
+          clearInterval(me.intWindowResize);
 
           me.intWindowResize = setTimeout(function(){
             me.onWindowResize();

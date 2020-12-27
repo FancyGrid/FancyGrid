@@ -121,9 +121,17 @@ Fancy.modules['column-drag'] = true;
       w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
       w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
     },
+    /*
+     *
+     */
     onMouseLeave: function(){
-      this.hideHint();
+      var me = this;
+
+      me.hideHint();
     },
+    /*
+     *
+     */
     onMouseUp: function(){
       var me = this,
         w = me.widget,
@@ -172,6 +180,9 @@ Fancy.modules['column-drag'] = true;
       delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
+      delete me.inSide;
+      delete me.inCell;
+      delete me.inIndex;
       delete me.activeCell;
       delete me.activeIndex;
       delete me.activeColumn;

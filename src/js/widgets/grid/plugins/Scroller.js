@@ -374,14 +374,63 @@
      *
      */
     onBodyTouchEnd: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.onMouseUpDoc();
 
-      // It requires to do swipe.
-      // me.spyOnSwipe
+      if(w.nativeScroller !== true && me.spyOnSwipe){
+        var swipedX = me.spyOnSwipe.swipedX,
+          swipedY = me.spyOnSwipe.swipedY;
+
+        if(swipedY && swipedX){
+          if(me.touchScrollDirection === 'top'){
+            me.swipeTop();
+          }
+          else if(me.touchScrollDirection === 'left'){
+            me.swipeLeft();
+          }
+        }
+        else if(swipedY){
+          me.swipeTop();
+        }
+        else if(swipedX){
+          me.swipeLeft();
+        }
+      }
 
       delete me.spyOnSwipe;
+      delete me.touchScrollDirection;
+    },
+    swipeTop: function(){
+      var me = this,
+        w = me.widget,
+        scrollTop = me.scrollTop + me.spyOnSwipe.swipedY * 10;
+
+      if(!me.isRightScrollable()){
+        return;
+      }
+
+      if(scrollTop < 0){
+        scrollTop = 0;
+      }
+
+      w.scroll(scrollTop, false, true);
+    },
+    swipeLeft: function(){
+      var me = this,
+        w = me.widget,
+        scrollLeft = me.scrollLeft + me.spyOnSwipe.swipedX * 10;
+
+      if(!me.isBottomScrollable()){
+        return;
+      }
+
+      if(scrollLeft < 0){
+        scrollLeft = 0;
+      }
+
+      w.scroll(false, scrollLeft, true);
     },
     /*
      * @param {Object} e
@@ -519,6 +568,9 @@
       var me = this,
         w = me.widget;
 
+      me.mouseDownXY = {};
+      delete me.mouseMoveInitXY;
+
       if (me.rightKnobDown === false && me.bottomKnobDown === false){
         if(w.nativeScroller && Fancy.nojQuery){
           w.addCls(Fancy.GRID_ANIMATION_CLS);
@@ -556,9 +608,32 @@
         marginTop,
         marginLeft;
 
-      if(me.scrollInterval){
-        clearInterval(me.scrollInterval);
+      if(F.isTouch && !me.mouseMoveInitXY){
+        me.mouseMoveInitXY = {
+          x: x,
+          y: y
+        };
+        return;
       }
+
+      if(F.isTouch && !me.touchScrollDirection){
+        deltaX = me.mouseMoveInitXY.x - x;
+        deltaY = me.mouseMoveInitXY.y - y;
+
+        if(!me.touchScrollDirection && Math.abs(deltaY) < 5 && Math.abs(deltaX) < 5){
+          return;
+        }
+        else {
+          if (Math.abs(deltaY) > Math.abs(deltaX)){
+            me.touchScrollDirection = 'top';
+          }
+          else {
+            me.touchScrollDirection = 'left';
+          }
+        }
+      }
+
+      clearInterval(me.scrollInterval);
 
       if(me.spyOnSwipe){
         if(Math.abs(me.spyOnSwipe.x - x) > 1){
@@ -569,7 +644,7 @@
         }
 
         if(Math.abs(me.spyOnSwipe.y - y) > 1){
-          me.spyOnSwipe.swipedX = me.spyOnSwipe.y - y;
+          me.spyOnSwipe.swipedY = me.spyOnSwipe.y - y;
         }
         else{
           delete me.spyOnSwipe.swipedY;
@@ -586,7 +661,7 @@
       }
 
       me.scrollInterval = setTimeout(function(){
-        if(me.rightKnobDown){
+        if(me.rightKnobDown && me.touchScrollDirection !== 'left'){
           if(F.isTouch){
             deltaY = me.mouseDownXY.y - y;
             marginTop = deltaY + Math.ceil(me.rightKnobTop * me.rightScrollScale);
@@ -626,15 +701,13 @@
             }
           }
 
-          me.scroll( topScroll );
-
           if(w.infinite && w.selection){
             w.selection.updateSelection();
             w.selection.clearActiveCell();
           }
         }
 
-        if (me.bottomKnobDown){
+        if (me.bottomKnobDown && me.touchScrollDirection !== 'top'){
           if (F.isTouch){
             deltaX = me.mouseDownXY.x - x;
             deltaY = me.mouseDownXY.y - y;
@@ -680,7 +753,29 @@
             me.topKnob.css( 'margin-left', marginLeft + 'px' );
           }
 
-          me.scroll( false, bottomScroll );
+          //me.scroll(false, bottomScroll);
+        }
+
+        if(F.isTouch){
+          switch(me.touchScrollDirection){
+            case 'top':
+              me.scroll(topScroll);
+              break;
+            case 'left':
+              me.scroll(false, bottomScroll);
+              break;
+          }
+        }
+        else {
+          if (topScroll !== false && bottomScroll !== false){
+            me.scroll(topScroll, bottomScroll);
+          }
+          else if (topScroll !== false){
+            me.scroll(topScroll);
+          }
+          else if (bottomScroll !== false){
+            me.scroll(false, bottomScroll);
+          }
         }
       }, 1);
     },
@@ -922,6 +1017,13 @@
 
         w.fire('scroll');
         return;
+      }
+
+      if(animate){
+        w.el.addCls('fancy-grid-columns-animation');
+        setTimeout(function(){
+          w.el.removeCls('fancy-grid-columns-animation');
+        }, F.ANIMATE_DURATION + 150);
       }
 
       w.leftBody.scroll(y);

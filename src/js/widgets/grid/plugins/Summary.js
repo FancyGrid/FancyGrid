@@ -579,11 +579,15 @@ Fancy.modules['summary'] = true;
         column = columns[index],
         el = me.getEl(side),
         cells = el.select('.' + GRID_CELL_CLS),
-        cell = cells.item(index - 1),
+        cell,
         newCell = F.get(document.createElement('div'));
 
-      if (index === 0){
+      if(cells.length === 0 && index === 0){}
+      else if (index === 0){
         cell = cells.item(0);
+      }
+      else {
+        cell = cells.item(index - 1);
       }
 
       newCell.css({
@@ -594,7 +598,10 @@ Fancy.modules['summary'] = true;
       newCell.addCls(GRID_CELL_CLS);
       newCell.update('<div class="' + GRID_CELL_INNER_CLS + '"></div>');
 
-      if (index === 0){
+      if(cells.length === 0 && index === 0){
+        el.append(newCell.dom);
+      }
+      else if (index === 0){
         cell.before(newCell.dom);
       }
       else {

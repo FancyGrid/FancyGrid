@@ -434,9 +434,7 @@
                 me.autoEnterTime = new Date();
               }
 
-              if (me.intervalAutoEnter){
-                clearInterval(me.intervalAutoEnter);
-              }
+              clearInterval(me.intervalAutoEnter);
               delete me.intervalAutoEnter;
 
               me.intervalAutoEnter = setInterval(function(){

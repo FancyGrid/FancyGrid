@@ -116,6 +116,19 @@ Fancy.modules['filter'] = true;
 
       me._renderSubHeaderFields(side);
     },
+    addSubHeaderFilterCellContainer: function(side){
+      var me = this,
+        w = me.widget,
+        cellHeight = w.cellHeight,
+        sideEl = w.getSideEl(side),
+        container = sideEl.select('.' + GRID_SUB_HEADER_FILTER_CLS),
+        cell = document.createElement('div');
+
+      cell.className = GRID_HEADER_CELL_CLS;
+      cell.style.height = cellHeight + 'px';
+
+      container.append(cell);
+    },
     /*
      * @param {String} side
      * @return {Fancy.Element}
@@ -136,7 +149,7 @@ Fancy.modules['filter'] = true;
         }
 
         cells += [
-          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') + hiddenStyle +'" class="' + GRID_HEADER_CELL_CLS + '">',
+          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;' + hiddenStyle +'" class="' + GRID_HEADER_CELL_CLS + '">',
           '</div>'
         ].join('');
       });
@@ -209,6 +222,12 @@ Fancy.modules['filter'] = true;
         cell = cells.item(i);
 
         if (column.filter && column.filter.header){
+          cell.select('.' + FIELD_CLS).each(function(el){
+            var field = F.getWidget(el.id);
+            field.destroy();
+          });
+          cell.update('');
+
           me.renderFilter(column.type, column, cell);
 
           cell.addCls(GRID_HEADER_CELL_FILTER_CLS);
@@ -768,26 +787,12 @@ Fancy.modules['filter'] = true;
     /*
      * @param {Object} field
      * @param {String|Number} value
-     * @param {Object} options
      */
-    onEnter: function(field, value, options){
+    onEnter: function(field, value){
       var me = this,
-        w = me.widget,
-        s = w.store,
-        filterIndex = field.filterIndex,
-        signs = {
-          '<': true,
-          '>': true,
-          '!': true,
-          '=': true
-        };
+        w = me.widget;
 
-      options = options || {};
-
-      if (me.intervalAutoEnter){
-        clearInterval(me.intervalAutoEnter);
-        me.intervalAutoEnter = false;
-      }
+      clearInterval(me.intervalAutoEnter);
       delete me.intervalAutoEnter;
 
       if (value.length === 0){
@@ -833,20 +838,11 @@ Fancy.modules['filter'] = true;
       var me = this,
         w = me.widget,
         s = w.store,
-        filterIndex = field.filterIndex,
-        signs = {
-          '<': true,
-          '>': true,
-          '!': true,
-          '=': true
-        };
+        filterIndex = field.filterIndex;
 
       options = options || {};
 
-      if (me.intervalAutoEnter){
-        clearInterval(me.intervalAutoEnter);
-        me.intervalAutoEnter = false;
-      }
+      clearInterval(me.intervalAutoEnter);
       delete me.intervalAutoEnter;
 
       if (value.length === 0){
@@ -1162,12 +1158,27 @@ Fancy.modules['filter'] = true;
       }
     },
     /*
-     * @param {side}
+     * @param {'left'|'center'|'right'|undefined} [side]
      */
     updateSubHeaderFilterSizes: function(side){
       var me = this,
-        w = me.widget,
-        el = me.getSubHeaderFilterEl(side),
+        w = me.widget;
+
+      if(!side){
+        me.updateSubHeaderFilterSizes('center');
+
+        if (w.leftColumns.length){
+          me.updateSubHeaderFilterSizes('left');
+        }
+
+        if (w.rightColumns.length){
+          me.updateSubHeaderFilterSizes('right');
+        }
+
+        return;
+      }
+
+      var el = me.getSubHeaderFilterEl(side),
         cells = el.select('.' + GRID_HEADER_CELL_CLS),
         totalWidth = 0,
         columns = w.getColumns(side),
@@ -1189,6 +1200,18 @@ Fancy.modules['filter'] = true;
       });
 
       el.firstChild().css({width: totalWidth});
+    },
+    /*
+     * @param {String} side
+     * @param {Number} orderIndex
+     */
+    removeSubHeaderCell: function(side, orderIndex){
+      var me = this,
+        el = me.getSubHeaderFilterEl(side),
+        cells = el.select('.' + GRID_HEADER_CELL_CLS),
+        cell = cells.item(orderIndex);
+
+      cell.destroy();
     },
     getSubHeaderFilterEl: function(side){
       switch(side){
@@ -1428,9 +1451,14 @@ Fancy.modules['filter'] = true;
      *
      */
     onColumnDrag: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.updateFields();
+
+      if(w.subHeaderFilter){
+        me.updateSubHeaderFilterSizes();
+      }
     },
     /*
      *
@@ -1470,32 +1498,10 @@ Fancy.modules['filter'] = true;
       this.filterElCenter.firstChild().css('left', value);
     },
     onColumnHide: function(){
-      var me = this,
-        w = me.widget;
-
-      me.updateSubHeaderFilterSizes('center');
-
-      if (w.leftColumns.length){
-        me.updateSubHeaderFilterSizes('left');
-      }
-
-      if (w.rightColumns.length){
-        me.updateSubHeaderFilterSizes('right');
-      }
+      this.updateSubHeaderFilterSizes();
     },
     onColumnShow: function(){
-      var me = this,
-        w = me.widget;
-
-      me.updateSubHeaderFilterSizes('center');
-
-      if (w.leftColumns.length){
-        me.updateSubHeaderFilterSizes('left');
-      }
-
-      if (w.rightColumns.length){
-        me.updateSubHeaderFilterSizes('right');
-      }
+      this.updateSubHeaderFilterSizes();
     },
     /*
      *

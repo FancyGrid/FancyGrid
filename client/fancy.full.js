@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.144',
+  version: '1.7.145',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5438,7 +5438,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       prevKey = me.sorters[i + 1].key,
       key = sorter.key,
       j = 0,
-      jL = me.getTotal(),
+      //jL = me.getTotal(),
+      jL = s.data.length,
       value,
       prevValue,
       keyValues = [],
@@ -14041,9 +14042,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         F.$(window).bind('resize', function(){
           me.onWindowResize();
 
-          if(me.intWindowResize){
-            clearInterval(me.intWindowResize);
-          }
+          clearInterval(me.intWindowResize);
 
           me.intWindowResize = setTimeout(function(){
             me.onWindowResize();
@@ -14797,9 +14796,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                 me.autoEnterTime = new Date();
               }
 
-              if (me.intervalAutoEnter){
-                clearInterval(me.intervalAutoEnter);
-              }
+              clearInterval(me.intervalAutoEnter);
               delete me.intervalAutoEnter;
 
               me.intervalAutoEnter = setInterval(function(){
@@ -16098,9 +16095,7 @@ Fancy.modules['form'] = true;
         F.$(window).bind('resize', function(){
           me.onWindowResize();
 
-          if(me.intWindowResize){
-            clearInterval(me.intWindowResize);
-          }
+          clearInterval(me.intWindowResize);
 
           me.intWindowResize = setTimeout(function(){
             me.onWindowResize();
@@ -26042,9 +26037,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.setSidesHeight();
     }
 
-    if(me.removeInt){
-      clearInterval(me.removeInt);
-    }
+    clearInterval(me.removeInt);
 
     me.removeInt = setTimeout(function(){
       me.update();
@@ -26120,9 +26113,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     me.store.add(o);
     me.setSidesHeight();
 
-    if(me.addInt){
-      clearInterval(me.addInt);
-    }
+    clearInterval(me.addInt);
 
     me.addInt = setTimeout(function(){
       me.update();
@@ -26190,9 +26181,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.setSidesHeight();
     }
 
-    if(me.addInt){
-      clearInterval(me.addInt);
-    }
+    clearInterval(me.addInt);
 
     me.addInt = setTimeout(function(){
       me.update();
@@ -28775,9 +28764,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(side === 'right' || side === 'left'){
-        if(me.intervalScrollUpdate){
-          clearInterval(me.intervalScrollUpdate);
-        }
+        clearInterval(me.intervalScrollUpdate);
 
         me.intervalScrollUpdate = setTimeout(function(){
           me.scroller.update();
@@ -28923,9 +28910,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(side === 'right' || side === 'left'){
-        if(me.intervalScrollUpdate){
-          clearInterval(me.intervalScrollUpdate);
-        }
+        clearInterval(me.intervalScrollUpdate);
 
         me.intervalScrollUpdate = setTimeout(function(){
           me.scroller.update();
@@ -29023,7 +29008,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           column = me.leftColumns[indexOrder];
           me.leftColumns.splice(indexOrder, 1);
           leftHeader.removeCell(indexOrder);
-          leftHeader.reSetIndexes();
           leftBody.removeColumn(indexOrder);
           leftEl.css('width', parseInt(leftEl.css('width')) - column.width);
           centerEl.css('left', parseInt(centerEl.css('left')) - column.width);
@@ -29039,7 +29023,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           column = me.columns[indexOrder];
           me.columns.splice(indexOrder, 1);
           header.removeCell(indexOrder);
-          header.reSetIndexes();
           body.removeColumn(indexOrder);
           break;
         case 'right':
@@ -29048,7 +29031,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           column = me.rightColumns[indexOrder];
           me.rightColumns.splice(indexOrder, 1);
           rightHeader.removeCell(indexOrder);
-          rightHeader.reSetIndexes();
           rightBody.removeColumn(indexOrder);
           rightEl.css('width', parseInt(rightEl.css('width')) - column.width);
           //rightEl.css('right', parseInt(rightEl.css('right')) - column.width);
@@ -29078,9 +29060,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
       me.fire('columnremove');
 
-      if(me.removeColumnScrollInt){
-        clearInterval(me.removeColumnScrollInt);
-      }
+      clearInterval(me.removeColumnScrollInt);
 
       me.removeColumnScrollInt = setTimeout(function(){
         delete me.removeColumnScrollInt;
@@ -29133,7 +29113,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           delete column.locked;
           me.columns.splice(index, 0, column);
           header.insertCell(index, column);
-          header.reSetIndexes();
           body.insertColumn(index, column);
           break;
         case 'left':
@@ -29165,7 +29144,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
           me.leftColumns.splice(index, 0, column);
           leftHeader.insertCell(index, column);
-          leftHeader.reSetIndexes();
           leftHeader.css('width', parseInt(leftHeader.css('width')) + extraHeaderWidth);
           leftBody.insertColumn(index, column);
           //leftEl.css('width', leftEl.dom.clientWidth + column.width + extraWidth);
@@ -29192,7 +29170,6 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
           me.rightColumns.splice(index, 0, column);
           rightHeader.insertCell(index, column);
-          rightHeader.reSetIndexes();
           rightBody.insertColumn(index, column);
           rightEl.css('width', parseInt(rightEl.css('width')) + column.width);
           centerEl.css('width', parseInt(centerEl.css('width')) - column.width - extraLeft);
@@ -29263,7 +29240,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if (me.filter){
-        me.filter.updateFields();
+        clearInterval(me.intFilterFieldsUpdate);
+
+        me.intFilterFieldsUpdate = setTimeout(function(){
+          me.filter.updateFields();
+          delete me.intFilterFieldsUpdate;
+        }, F.ANIMATE_DURATION);
       }
     },
     /*
@@ -29474,9 +29456,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.store.filters[index] = filter;
 
       if(update){
-        if(me.intervalUpdatingFilter){
-          clearInterval(me.intervalUpdatingFilter);
-        }
+        clearInterval(me.intervalUpdatingFilter);
 
         me.intervalUpdatingFilter = setTimeout(function(){
           if (me.WAIT_FOR_STATE_TO_LOAD){
@@ -29546,9 +29526,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       if(update){
-        if(me.intervalUpdatingFilter){
-          clearInterval(me.intervalUpdatingFilter);
-        }
+        clearInterval(me.intervalUpdatingFilter);
 
         me.intervalUpdatingFilter = setTimeout(function(){
           if (s.remoteFilter){
@@ -30124,6 +30102,22 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       }
 
       return side;
+    },
+    /*
+     * @param {String} side
+     * @return {String}
+     */
+    getSideEl: function(side){
+      var me = this;
+
+      switch(side){
+        case 'left':
+          return me.leftEl;
+        case 'center':
+          return me.centerEl;
+        case 'right':
+          return me.rightEl;
+      }
     },
     /*
      * @param {Fancy.Model|id|Object} item
@@ -30708,9 +30702,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       var onWindowResize = function(){
         me.onWindowResize();
 
-        if (me.intWindowResize){
-          clearInterval(me.intWindowResize);
-        }
+        clearInterval(me.intWindowResize);
 
         me.intWindowResize = setTimeout(function(){
           me.onWindowResize();
@@ -30837,10 +30829,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
         }
       }
 
-      if(me.intervalUpdateColumnsWidth){
-        clearInterval(me.intervalUpdateColumnsWidth);
-        delete me.intervalUpdateColumnsWidth;
-      }
+      clearInterval(me.intervalUpdateColumnsWidth);
 
       me.intervalUpdateColumnsWidth = setTimeout(function(){
         if(me.columnresizer){
@@ -31270,7 +31259,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me._setColumnsAutoWidth();
 
       setTimeout(function() {
-        Fancy.each(['left', 'center', 'right'], function (side) {
+        Fancy.each(['left', 'center', 'right'], function(side){
           var header = me.getHeader(side),
             body = me.getBody(side);
 
@@ -31278,6 +31267,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
           header.reSetColumnsCls();
           body.reSetColumnsAlign();
           body.reSetColumnsCls();
+          body.reSetIndexes();
         });
       }, 1);
     }
@@ -32614,14 +32604,63 @@ Fancy.define('Fancy.grid.plugin.Updater', {
      *
      */
     onBodyTouchEnd: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.onMouseUpDoc();
 
-      // It requires to do swipe.
-      // me.spyOnSwipe
+      if(w.nativeScroller !== true && me.spyOnSwipe){
+        var swipedX = me.spyOnSwipe.swipedX,
+          swipedY = me.spyOnSwipe.swipedY;
+
+        if(swipedY && swipedX){
+          if(me.touchScrollDirection === 'top'){
+            me.swipeTop();
+          }
+          else if(me.touchScrollDirection === 'left'){
+            me.swipeLeft();
+          }
+        }
+        else if(swipedY){
+          me.swipeTop();
+        }
+        else if(swipedX){
+          me.swipeLeft();
+        }
+      }
 
       delete me.spyOnSwipe;
+      delete me.touchScrollDirection;
+    },
+    swipeTop: function(){
+      var me = this,
+        w = me.widget,
+        scrollTop = me.scrollTop + me.spyOnSwipe.swipedY * 10;
+
+      if(!me.isRightScrollable()){
+        return;
+      }
+
+      if(scrollTop < 0){
+        scrollTop = 0;
+      }
+
+      w.scroll(scrollTop, false, true);
+    },
+    swipeLeft: function(){
+      var me = this,
+        w = me.widget,
+        scrollLeft = me.scrollLeft + me.spyOnSwipe.swipedX * 10;
+
+      if(!me.isBottomScrollable()){
+        return;
+      }
+
+      if(scrollLeft < 0){
+        scrollLeft = 0;
+      }
+
+      w.scroll(false, scrollLeft, true);
     },
     /*
      * @param {Object} e
@@ -32759,6 +32798,9 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       var me = this,
         w = me.widget;
 
+      me.mouseDownXY = {};
+      delete me.mouseMoveInitXY;
+
       if (me.rightKnobDown === false && me.bottomKnobDown === false){
         if(w.nativeScroller && Fancy.nojQuery){
           w.addCls(Fancy.GRID_ANIMATION_CLS);
@@ -32796,9 +32838,32 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         marginTop,
         marginLeft;
 
-      if(me.scrollInterval){
-        clearInterval(me.scrollInterval);
+      if(F.isTouch && !me.mouseMoveInitXY){
+        me.mouseMoveInitXY = {
+          x: x,
+          y: y
+        };
+        return;
       }
+
+      if(F.isTouch && !me.touchScrollDirection){
+        deltaX = me.mouseMoveInitXY.x - x;
+        deltaY = me.mouseMoveInitXY.y - y;
+
+        if(!me.touchScrollDirection && Math.abs(deltaY) < 5 && Math.abs(deltaX) < 5){
+          return;
+        }
+        else {
+          if (Math.abs(deltaY) > Math.abs(deltaX)){
+            me.touchScrollDirection = 'top';
+          }
+          else {
+            me.touchScrollDirection = 'left';
+          }
+        }
+      }
+
+      clearInterval(me.scrollInterval);
 
       if(me.spyOnSwipe){
         if(Math.abs(me.spyOnSwipe.x - x) > 1){
@@ -32809,7 +32874,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         }
 
         if(Math.abs(me.spyOnSwipe.y - y) > 1){
-          me.spyOnSwipe.swipedX = me.spyOnSwipe.y - y;
+          me.spyOnSwipe.swipedY = me.spyOnSwipe.y - y;
         }
         else{
           delete me.spyOnSwipe.swipedY;
@@ -32826,7 +32891,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       }
 
       me.scrollInterval = setTimeout(function(){
-        if(me.rightKnobDown){
+        if(me.rightKnobDown && me.touchScrollDirection !== 'left'){
           if(F.isTouch){
             deltaY = me.mouseDownXY.y - y;
             marginTop = deltaY + Math.ceil(me.rightKnobTop * me.rightScrollScale);
@@ -32866,15 +32931,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
             }
           }
 
-          me.scroll( topScroll );
-
           if(w.infinite && w.selection){
             w.selection.updateSelection();
             w.selection.clearActiveCell();
           }
         }
 
-        if (me.bottomKnobDown){
+        if (me.bottomKnobDown && me.touchScrollDirection !== 'top'){
           if (F.isTouch){
             deltaX = me.mouseDownXY.x - x;
             deltaY = me.mouseDownXY.y - y;
@@ -32920,7 +32983,29 @@ Fancy.define('Fancy.grid.plugin.Updater', {
             me.topKnob.css( 'margin-left', marginLeft + 'px' );
           }
 
-          me.scroll( false, bottomScroll );
+          //me.scroll(false, bottomScroll);
+        }
+
+        if(F.isTouch){
+          switch(me.touchScrollDirection){
+            case 'top':
+              me.scroll(topScroll);
+              break;
+            case 'left':
+              me.scroll(false, bottomScroll);
+              break;
+          }
+        }
+        else {
+          if (topScroll !== false && bottomScroll !== false){
+            me.scroll(topScroll, bottomScroll);
+          }
+          else if (topScroll !== false){
+            me.scroll(topScroll);
+          }
+          else if (bottomScroll !== false){
+            me.scroll(false, bottomScroll);
+          }
         }
       }, 1);
     },
@@ -33162,6 +33247,13 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
         w.fire('scroll');
         return;
+      }
+
+      if(animate){
+        w.el.addCls('fancy-grid-columns-animation');
+        setTimeout(function(){
+          w.el.removeCls('fancy-grid-columns-animation');
+        }, F.ANIMATE_DURATION + 150);
       }
 
       w.leftBody.scroll(y);
@@ -33768,6 +33860,7 @@ Fancy.define('Fancy.grid.plugin.Updater', {
     },
     render: function(grid, value, order, side, id){
       clearInterval(renderInt);
+
       var column = grid.getColumnById(id);
       column.render = value;
 
@@ -33812,9 +33905,10 @@ Fancy.define('Fancy.grid.plugin.Updater', {
       me.setColumnsByOrder(newColumns);
 
       if(w.filter){
-        clearInterval(me.intFilter);
-        me.intFilter = setTimeout(function(){
-          delete me.intFilter;
+        clearInterval(w.intFilterFieldsUpdate);
+
+        w.intFilterFieldsUpdate = setTimeout(function(){
+          delete w.intFilterFieldsUpdate;
           w.filter.updateFields();
         }, F.ANIMATE_DURATION);
       }
@@ -36046,9 +36140,17 @@ Fancy.modules['column-drag'] = true;
       w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
       w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
     },
+    /*
+     *
+     */
     onMouseLeave: function(){
-      this.hideHint();
+      var me = this;
+
+      me.hideHint();
     },
+    /*
+     *
+     */
     onMouseUp: function(){
       var me = this,
         w = me.widget,
@@ -36097,6 +36199,9 @@ Fancy.modules['column-drag'] = true;
       delete me.activeCellTopGroup;
       delete me.activeUnderGroup;
       delete me.activeSide;
+      delete me.inSide;
+      delete me.inCell;
+      delete me.inIndex;
       delete me.activeCell;
       delete me.activeIndex;
       delete me.activeColumn;
@@ -42282,10 +42387,9 @@ Fancy.modules['selection'] = true;
 
       if(w.trackOver){
         delete body.prevCellOver;
-        if(me.rowTrackFixInterval){
-          clearInterval(me.rowTrackFixInterval);
-          delete me.rowTrackFixInterval;
-        }
+
+        clearInterval(me.rowTrackFixInterval);
+        delete me.rowTrackFixInterval;
 
         me.rowTrackFixInterval = setTimeout(function(){
           if(!me.rowTrackFixInBody){
@@ -42988,9 +43092,7 @@ Fancy.modules['selection'] = true;
       var me = this;
 
       if(me.rows){
-        if(me._interval){
-          clearInterval(me._interval);
-        }
+        clearInterval(me._interval);
 
         me._interval = setTimeout(function(){
           me.updateHeaderCheckBox();
@@ -43293,9 +43395,7 @@ Fancy.modules['selection'] = true;
         case key.UP:
           me.keyNavigating = true;
           e.preventDefault();
-          if(me.intervalUp){
-            clearInterval(me.intervalUp);
-          }
+          clearInterval(me.intervalUp);
 
           me.intervalUp = setTimeout(function(){
             me.moveUp();
@@ -43305,9 +43405,7 @@ Fancy.modules['selection'] = true;
         case key.DOWN:
           me.keyNavigating = true;
           e.preventDefault();
-          if(me.intervalDown){
-            clearInterval(me.intervalDown);
-          }
+          clearInterval(me.intervalDown);
 
           me.intervalDown = setTimeout(function(){
             me.moveDown();
@@ -47008,11 +47106,15 @@ Fancy.modules['summary'] = true;
         column = columns[index],
         el = me.getEl(side),
         cells = el.select('.' + GRID_CELL_CLS),
-        cell = cells.item(index - 1),
+        cell,
         newCell = F.get(document.createElement('div'));
 
-      if (index === 0){
+      if(cells.length === 0 && index === 0){}
+      else if (index === 0){
         cell = cells.item(0);
+      }
+      else {
+        cell = cells.item(index - 1);
       }
 
       newCell.css({
@@ -47023,7 +47125,10 @@ Fancy.modules['summary'] = true;
       newCell.addCls(GRID_CELL_CLS);
       newCell.update('<div class="' + GRID_CELL_INNER_CLS + '"></div>');
 
-      if (index === 0){
+      if(cells.length === 0 && index === 0){
+        el.append(newCell.dom);
+      }
+      else if (index === 0){
         cell.before(newCell.dom);
       }
       else {
@@ -47804,9 +47909,7 @@ Fancy.modules['summary'] = true;
       me.rows[id] = height;
       me.rowIndexes[rowIndex] = height;
 
-      if(me.intIndexesSum){
-        clearInterval(me.intIndexesSum);
-      }
+      clearInterval(me.intIndexesSum);
 
       me.intIndexesSum = setTimeout(function(){
         me.rowIndexesSum = [];
@@ -48614,6 +48717,19 @@ Fancy.modules['filter'] = true;
 
       me._renderSubHeaderFields(side);
     },
+    addSubHeaderFilterCellContainer: function(side){
+      var me = this,
+        w = me.widget,
+        cellHeight = w.cellHeight,
+        sideEl = w.getSideEl(side),
+        container = sideEl.select('.' + GRID_SUB_HEADER_FILTER_CLS),
+        cell = document.createElement('div');
+
+      cell.className = GRID_HEADER_CELL_CLS;
+      cell.style.height = cellHeight + 'px';
+
+      container.append(cell);
+    },
     /*
      * @param {String} side
      * @return {Fancy.Element}
@@ -48634,7 +48750,7 @@ Fancy.modules['filter'] = true;
         }
 
         cells += [
-          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') + hiddenStyle +'" class="' + GRID_HEADER_CELL_CLS + '">',
+          '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;' + hiddenStyle +'" class="' + GRID_HEADER_CELL_CLS + '">',
           '</div>'
         ].join('');
       });
@@ -48707,6 +48823,12 @@ Fancy.modules['filter'] = true;
         cell = cells.item(i);
 
         if (column.filter && column.filter.header){
+          cell.select('.' + FIELD_CLS).each(function(el){
+            var field = F.getWidget(el.id);
+            field.destroy();
+          });
+          cell.update('');
+
           me.renderFilter(column.type, column, cell);
 
           cell.addCls(GRID_HEADER_CELL_FILTER_CLS);
@@ -49266,26 +49388,12 @@ Fancy.modules['filter'] = true;
     /*
      * @param {Object} field
      * @param {String|Number} value
-     * @param {Object} options
      */
-    onEnter: function(field, value, options){
+    onEnter: function(field, value){
       var me = this,
-        w = me.widget,
-        s = w.store,
-        filterIndex = field.filterIndex,
-        signs = {
-          '<': true,
-          '>': true,
-          '!': true,
-          '=': true
-        };
+        w = me.widget;
 
-      options = options || {};
-
-      if (me.intervalAutoEnter){
-        clearInterval(me.intervalAutoEnter);
-        me.intervalAutoEnter = false;
-      }
+      clearInterval(me.intervalAutoEnter);
       delete me.intervalAutoEnter;
 
       if (value.length === 0){
@@ -49331,20 +49439,11 @@ Fancy.modules['filter'] = true;
       var me = this,
         w = me.widget,
         s = w.store,
-        filterIndex = field.filterIndex,
-        signs = {
-          '<': true,
-          '>': true,
-          '!': true,
-          '=': true
-        };
+        filterIndex = field.filterIndex;
 
       options = options || {};
 
-      if (me.intervalAutoEnter){
-        clearInterval(me.intervalAutoEnter);
-        me.intervalAutoEnter = false;
-      }
+      clearInterval(me.intervalAutoEnter);
       delete me.intervalAutoEnter;
 
       if (value.length === 0){
@@ -49660,12 +49759,27 @@ Fancy.modules['filter'] = true;
       }
     },
     /*
-     * @param {side}
+     * @param {'left'|'center'|'right'|undefined} [side]
      */
     updateSubHeaderFilterSizes: function(side){
       var me = this,
-        w = me.widget,
-        el = me.getSubHeaderFilterEl(side),
+        w = me.widget;
+
+      if(!side){
+        me.updateSubHeaderFilterSizes('center');
+
+        if (w.leftColumns.length){
+          me.updateSubHeaderFilterSizes('left');
+        }
+
+        if (w.rightColumns.length){
+          me.updateSubHeaderFilterSizes('right');
+        }
+
+        return;
+      }
+
+      var el = me.getSubHeaderFilterEl(side),
         cells = el.select('.' + GRID_HEADER_CELL_CLS),
         totalWidth = 0,
         columns = w.getColumns(side),
@@ -49687,6 +49801,18 @@ Fancy.modules['filter'] = true;
       });
 
       el.firstChild().css({width: totalWidth});
+    },
+    /*
+     * @param {String} side
+     * @param {Number} orderIndex
+     */
+    removeSubHeaderCell: function(side, orderIndex){
+      var me = this,
+        el = me.getSubHeaderFilterEl(side),
+        cells = el.select('.' + GRID_HEADER_CELL_CLS),
+        cell = cells.item(orderIndex);
+
+      cell.destroy();
     },
     getSubHeaderFilterEl: function(side){
       switch(side){
@@ -49926,9 +50052,14 @@ Fancy.modules['filter'] = true;
      *
      */
     onColumnDrag: function(){
-      var me = this;
+      var me = this,
+        w = me.widget;
 
       me.updateFields();
+
+      if(w.subHeaderFilter){
+        me.updateSubHeaderFilterSizes();
+      }
     },
     /*
      *
@@ -49968,32 +50099,10 @@ Fancy.modules['filter'] = true;
       this.filterElCenter.firstChild().css('left', value);
     },
     onColumnHide: function(){
-      var me = this,
-        w = me.widget;
-
-      me.updateSubHeaderFilterSizes('center');
-
-      if (w.leftColumns.length){
-        me.updateSubHeaderFilterSizes('left');
-      }
-
-      if (w.rightColumns.length){
-        me.updateSubHeaderFilterSizes('right');
-      }
+      this.updateSubHeaderFilterSizes();
     },
     onColumnShow: function(){
-      var me = this,
-        w = me.widget;
-
-      me.updateSubHeaderFilterSizes('center');
-
-      if (w.leftColumns.length){
-        me.updateSubHeaderFilterSizes('left');
-      }
-
-      if (w.rightColumns.length){
-        me.updateSubHeaderFilterSizes('right');
-      }
+      this.updateSubHeaderFilterSizes();
     },
     /*
      *
@@ -56795,10 +56904,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       if(cells.length){
         cellHeight = parseInt(cells.item(0).css('height'));
       }
-      else{
-        //cellHeight = parseInt(cells.item(0).css('height'));
-        //cellHeight = parseInt(w.header.el.css('height'));
-      }
 
       cellHeight = parseInt(w.header.el.css('height'));
 
@@ -56807,7 +56912,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       }
 
       if (w.groupheader){
-        //cellHeight = w.cellHeight * 2;
         var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
         //BUG: possible bug for dragging column
@@ -56878,7 +56982,6 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         me.el.append(cellHTML);
       }
 
-      //var i = index,
       var i = 0,
         iL = columns.length,
         width = 0;
@@ -56911,14 +57014,19 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         width = oldWidth;
       }
 
-      //me.css('width', parseInt(me.css('width')) + column.width);
       me.css('width', width);
 
-      if(column.filter && column.filter.header){
-        // Study this case
+      if(w.subHeaderFilter){
+        w.filter.addSubHeaderFilterCellContainer(me.side);
       }
 
       me.reSetColumnsAlign();
+
+      me.reSetIndexes();
+
+      if(w.subHeaderFilter){
+        w.filter.updateSubHeaderFilterSizes();
+      }
     },
     /*
      *
@@ -57545,6 +57653,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      */
     removeCell: function(orderIndex){
       var me = this,
+        w = me.widget,
         cells = me.getCells(),
         cell = cells.item(orderIndex),
         cellWidth = parseInt(cell.css('width')),
@@ -57601,6 +57710,12 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       if (me.side !== 'center'){
         me.css('width', parseInt(me.css('width')) - cellWidth);
       }
+
+      if(w.subHeaderFilter){
+        w.filter.removeSubHeaderCell(me.side, orderIndex);
+      }
+
+      me.reSetIndexes();
     },
     /*
      *
@@ -57681,7 +57796,8 @@ Fancy.define('Fancy.grid.plugin.Licence', {
      */
     reSetIndexes: function(){
       var me = this,
-        cells = this.getCells(),
+        w = me.widget,
+        cells = me.getCells(),
         columns = me.getColumns();
 
       cells.each(function(cell, i){
@@ -57690,6 +57806,14 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         var column = columns[i];
         cell.attr('col-id', column.id);
       });
+
+      if(w.subHeaderFilter){
+        var subHeaderFilterCells = w.filter.getSubHeaderFilterEl(me.side).select('.' + GRID_HEADER_CELL_CLS);
+
+        subHeaderFilterCells.each(function(cell, i){
+          cell.attr('index', i);
+        });
+      }
     },
     /*
      *
@@ -60402,10 +60526,8 @@ Fancy.define('Fancy.spark.HBar', {
     show: function(x, y){
       var me = this;
 
-      if (me.timeout){
-        clearInterval(me.timeout);
-        delete me.timeout;
-      }
+      clearInterval(me.timeout);
+      delete me.timeout;
 
       if (me.css('display') === 'none'){
         me.css({
@@ -60424,14 +60546,12 @@ Fancy.define('Fancy.spark.HBar', {
     hide: function(delay){
       var me = this;
 
-      if (me.timeout){
-        clearInterval(me.timeout);
-        delete me.timeout;
-      }
+      clearInterval(me.timeout);
 
       if (delay){
         me.timeout = setTimeout(function(){
           me.el.hide();
+          delete me.timeout;
         }, delay);
       }
       else {

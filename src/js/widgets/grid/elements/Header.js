@@ -267,10 +267,6 @@
       if(cells.length){
         cellHeight = parseInt(cells.item(0).css('height'));
       }
-      else{
-        //cellHeight = parseInt(cells.item(0).css('height'));
-        //cellHeight = parseInt(w.header.el.css('height'));
-      }
 
       cellHeight = parseInt(w.header.el.css('height'));
 
@@ -279,7 +275,6 @@
       }
 
       if (w.groupheader){
-        //cellHeight = w.cellHeight * 2;
         var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
 
         //BUG: possible bug for dragging column
@@ -350,7 +345,6 @@
         me.el.append(cellHTML);
       }
 
-      //var i = index,
       var i = 0,
         iL = columns.length,
         width = 0;
@@ -383,14 +377,19 @@
         width = oldWidth;
       }
 
-      //me.css('width', parseInt(me.css('width')) + column.width);
       me.css('width', width);
 
-      if(column.filter && column.filter.header){
-        // Study this case
+      if(w.subHeaderFilter){
+        w.filter.addSubHeaderFilterCellContainer(me.side);
       }
 
       me.reSetColumnsAlign();
+
+      me.reSetIndexes();
+
+      if(w.subHeaderFilter){
+        w.filter.updateSubHeaderFilterSizes();
+      }
     },
     /*
      *
@@ -1017,6 +1016,7 @@
      */
     removeCell: function(orderIndex){
       var me = this,
+        w = me.widget,
         cells = me.getCells(),
         cell = cells.item(orderIndex),
         cellWidth = parseInt(cell.css('width')),
@@ -1073,6 +1073,12 @@
       if (me.side !== 'center'){
         me.css('width', parseInt(me.css('width')) - cellWidth);
       }
+
+      if(w.subHeaderFilter){
+        w.filter.removeSubHeaderCell(me.side, orderIndex);
+      }
+
+      me.reSetIndexes();
     },
     /*
      *
@@ -1153,7 +1159,8 @@
      */
     reSetIndexes: function(){
       var me = this,
-        cells = this.getCells(),
+        w = me.widget,
+        cells = me.getCells(),
         columns = me.getColumns();
 
       cells.each(function(cell, i){
@@ -1162,6 +1169,14 @@
         var column = columns[i];
         cell.attr('col-id', column.id);
       });
+
+      if(w.subHeaderFilter){
+        var subHeaderFilterCells = w.filter.getSubHeaderFilterEl(me.side).select('.' + GRID_HEADER_CELL_CLS);
+
+        subHeaderFilterCells.each(function(cell, i){
+          cell.attr('index', i);
+        });
+      }
     },
     /*
      *

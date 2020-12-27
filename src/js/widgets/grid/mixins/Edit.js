@@ -39,9 +39,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.setSidesHeight();
     }
 
-    if(me.removeInt){
-      clearInterval(me.removeInt);
-    }
+    clearInterval(me.removeInt);
 
     me.removeInt = setTimeout(function(){
       me.update();
@@ -117,9 +115,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     me.store.add(o);
     me.setSidesHeight();
 
-    if(me.addInt){
-      clearInterval(me.addInt);
-    }
+    clearInterval(me.addInt);
 
     me.addInt = setTimeout(function(){
       me.update();
@@ -187,9 +183,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.setSidesHeight();
     }
 
-    if(me.addInt){
-      clearInterval(me.addInt);
-    }
+    clearInterval(me.addInt);
 
     me.addInt = setTimeout(function(){
       me.update();

@@ -20,6 +20,7 @@
     },
     render: function(grid, value, order, side, id){
       clearInterval(renderInt);
+
       var column = grid.getColumnById(id);
       column.render = value;
 
@@ -64,9 +65,10 @@
       me.setColumnsByOrder(newColumns);
 
       if(w.filter){
-        clearInterval(me.intFilter);
-        me.intFilter = setTimeout(function(){
-          delete me.intFilter;
+        clearInterval(w.intFilterFieldsUpdate);
+
+        w.intFilterFieldsUpdate = setTimeout(function(){
+          delete w.intFilterFieldsUpdate;
           w.filter.updateFields();
         }, F.ANIMATE_DURATION);
       }

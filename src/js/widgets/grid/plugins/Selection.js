@@ -2355,10 +2355,9 @@ Fancy.modules['selection'] = true;
 
       if(w.trackOver){
         delete body.prevCellOver;
-        if(me.rowTrackFixInterval){
-          clearInterval(me.rowTrackFixInterval);
-          delete me.rowTrackFixInterval;
-        }
+
+        clearInterval(me.rowTrackFixInterval);
+        delete me.rowTrackFixInterval;
 
         me.rowTrackFixInterval = setTimeout(function(){
           if(!me.rowTrackFixInBody){
@@ -3061,9 +3060,7 @@ Fancy.modules['selection'] = true;
       var me = this;
 
       if(me.rows){
-        if(me._interval){
-          clearInterval(me._interval);
-        }
+        clearInterval(me._interval);
 
         me._interval = setTimeout(function(){
           me.updateHeaderCheckBox();

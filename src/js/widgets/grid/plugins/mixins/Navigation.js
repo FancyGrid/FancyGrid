@@ -64,9 +64,7 @@
         case key.UP:
           me.keyNavigating = true;
           e.preventDefault();
-          if(me.intervalUp){
-            clearInterval(me.intervalUp);
-          }
+          clearInterval(me.intervalUp);
 
           me.intervalUp = setTimeout(function(){
             me.moveUp();
@@ -76,9 +74,7 @@
         case key.DOWN:
           me.keyNavigating = true;
           e.preventDefault();
-          if(me.intervalDown){
-            clearInterval(me.intervalDown);
-          }
+          clearInterval(me.intervalDown);
 
           me.intervalDown = setTimeout(function(){
             me.moveDown();

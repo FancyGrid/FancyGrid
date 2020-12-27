@@ -2355,10 +2355,9 @@ Fancy.modules['selection'] = true;
 
       if(w.trackOver){
         delete body.prevCellOver;
-        if(me.rowTrackFixInterval){
-          clearInterval(me.rowTrackFixInterval);
-          delete me.rowTrackFixInterval;
-        }
+
+        clearInterval(me.rowTrackFixInterval);
+        delete me.rowTrackFixInterval;
 
         me.rowTrackFixInterval = setTimeout(function(){
           if(!me.rowTrackFixInBody){
@@ -3061,9 +3060,7 @@ Fancy.modules['selection'] = true;
       var me = this;
 
       if(me.rows){
-        if(me._interval){
-          clearInterval(me._interval);
-        }
+        clearInterval(me._interval);
 
         me._interval = setTimeout(function(){
           me.updateHeaderCheckBox();
@@ -3365,9 +3362,7 @@ Fancy.modules['selection'] = true;
         case key.UP:
           me.keyNavigating = true;
           e.preventDefault();
-          if(me.intervalUp){
-            clearInterval(me.intervalUp);
-          }
+          clearInterval(me.intervalUp);
 
           me.intervalUp = setTimeout(function(){
             me.moveUp();
@@ -3377,9 +3372,7 @@ Fancy.modules['selection'] = true;
         case key.DOWN:
           me.keyNavigating = true;
           e.preventDefault();
-          if(me.intervalDown){
-            clearInterval(me.intervalDown);
-          }
+          clearInterval(me.intervalDown);
 
           me.intervalDown = setTimeout(function(){
             me.moveDown();

@@ -99,9 +99,7 @@
       me.rows[id] = height;
       me.rowIndexes[rowIndex] = height;
 
-      if(me.intIndexesSum){
-        clearInterval(me.intIndexesSum);
-      }
+      clearInterval(me.intIndexesSum);
 
       me.intIndexesSum = setTimeout(function(){
         me.rowIndexesSum = [];

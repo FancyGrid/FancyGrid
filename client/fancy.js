@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.144',
+  version: '1.7.145',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -7842,9 +7842,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         F.$(window).bind('resize', function(){
           me.onWindowResize();
 
-          if(me.intWindowResize){
-            clearInterval(me.intWindowResize);
-          }
+          clearInterval(me.intWindowResize);
 
           me.intWindowResize = setTimeout(function(){
             me.onWindowResize();
@@ -8598,9 +8596,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
                 me.autoEnterTime = new Date();
               }
 
-              if (me.intervalAutoEnter){
-                clearInterval(me.intervalAutoEnter);
-              }
+              clearInterval(me.intervalAutoEnter);
               delete me.intervalAutoEnter;
 
               me.intervalAutoEnter = setInterval(function(){
@@ -14431,9 +14427,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.setSidesHeight();
     }
 
-    if(me.removeInt){
-      clearInterval(me.removeInt);
-    }
+    clearInterval(me.removeInt);
 
     me.removeInt = setTimeout(function(){
       me.update();
@@ -14509,9 +14503,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     me.store.add(o);
     me.setSidesHeight();
 
-    if(me.addInt){
-      clearInterval(me.addInt);
-    }
+    clearInterval(me.addInt);
 
     me.addInt = setTimeout(function(){
       me.update();
@@ -14579,9 +14571,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       me.setSidesHeight();
     }
 
-    if(me.addInt){
-      clearInterval(me.addInt);
-    }
+    clearInterval(me.addInt);
 
     me.addInt = setTimeout(function(){
       me.update();
@@ -15823,9 +15813,7 @@ if(!Fancy.nojQuery && Fancy.$){
       me.rows[id] = height;
       me.rowIndexes[rowIndex] = height;
 
-      if(me.intIndexesSum){
-        clearInterval(me.intIndexesSum);
-      }
+      clearInterval(me.intIndexesSum);
 
       me.intIndexesSum = setTimeout(function(){
         me.rowIndexesSum = [];
@@ -16280,10 +16268,8 @@ if(!Fancy.nojQuery && Fancy.$){
     show: function(x, y){
       var me = this;
 
-      if (me.timeout){
-        clearInterval(me.timeout);
-        delete me.timeout;
-      }
+      clearInterval(me.timeout);
+      delete me.timeout;
 
       if (me.css('display') === 'none'){
         me.css({
@@ -16302,14 +16288,12 @@ if(!Fancy.nojQuery && Fancy.$){
     hide: function(delay){
       var me = this;
 
-      if (me.timeout){
-        clearInterval(me.timeout);
-        delete me.timeout;
-      }
+      clearInterval(me.timeout);
 
       if (delay){
         me.timeout = setTimeout(function(){
           me.el.hide();
+          delete me.timeout;
         }, delay);
       }
       else {

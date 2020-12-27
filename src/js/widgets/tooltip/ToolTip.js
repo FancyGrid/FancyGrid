@@ -61,10 +61,8 @@
     show: function(x, y){
       var me = this;
 
-      if (me.timeout){
-        clearInterval(me.timeout);
-        delete me.timeout;
-      }
+      clearInterval(me.timeout);
+      delete me.timeout;
 
       if (me.css('display') === 'none'){
         me.css({
@@ -83,14 +81,12 @@
     hide: function(delay){
       var me = this;
 
-      if (me.timeout){
-        clearInterval(me.timeout);
-        delete me.timeout;
-      }
+      clearInterval(me.timeout);
 
       if (delay){
         me.timeout = setTimeout(function(){
           me.el.hide();
+          delete me.timeout;
         }, delay);
       }
       else {
