@@ -2912,6 +2912,10 @@ Fancy.modules['selection'] = true;
         rawData = me.copyEl.dom.value,
         rows = rawData.split('\n');
 
+      if(rows[rows.length - 1] === ''){
+        rows.pop();
+      }
+
       F.each(rows, function(row){
         var dataRow = [],
           cells = row.split('\t');

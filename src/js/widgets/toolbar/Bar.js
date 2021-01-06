@@ -171,7 +171,9 @@
             continue;
           case 'side':
           case '->':
-            isSide = true;
+            if(!me.isFooter){
+              isSide = true;
+            }
             continue;
           default:
             if (isSide){
@@ -305,11 +307,13 @@
           field = new F.toolbar.Tab(item);
           break;
         case 'text':
-          F.applyIf(item.style, {
-            'margin-right': '10px',
-            'padding-left': '0px',
-            'padding-top': '11px'
-          });
+          if(!me.isFooter){
+            F.applyIf(item.style, {
+              'margin-right': '10px',
+              'padding-left': '0px',
+              'padding-top': '11px'
+            });
+          }
 
           F.apply(item, {
             renderTo: containerEl.dom,

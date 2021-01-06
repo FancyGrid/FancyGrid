@@ -1440,6 +1440,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       w.on('beforecolumndrag', me.onBeforeColumnDrag, me);
       w.on('columndrag', me.onColumnDrag, me);
+      w.on('columnhide', me.onColumnHide, me);
+      w.on('columnshow', me.onColumnShow, me);
 
       if(w.grouping && w.grouping.by){
         w.on('collapse', me.onCollapse, me);
@@ -2483,6 +2485,18 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       me.hide();
     },
     onColumnDrag: function(){
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
+    onColumnHide: function(){
+      var me = this;
+
+      me.destroyEls();
+      me.hide();
+    },
+    onColumnShow: function(){
       var me = this;
 
       me.destroyEls();

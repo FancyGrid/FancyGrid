@@ -4460,6 +4460,9 @@
       if(column && (column.maxWidth && column.maxWidth < offsetWidth)){
         offsetWidth = column.maxWidth;
       }
+      else if(column && (column.minWidth && column.minWidth > offsetWidth)){
+        offsetWidth = column.minWidth;
+      }
       else if(column && (column.maxAutoWidth && column.maxAutoWidth < offsetWidth)){
         offsetWidth = column.maxAutoWidth;
       }

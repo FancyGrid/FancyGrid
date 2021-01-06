@@ -384,7 +384,8 @@
           barScrollEnabled: me.barScrollEnabled,
           tabScrollStep: me.tabScrollStep,
           scope: scope,
-          theme: theme
+          theme: theme,
+          isFooter: true
         });
 
         me.footer = me._footer.items;
