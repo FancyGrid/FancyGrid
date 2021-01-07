@@ -141,6 +141,7 @@
       }
 
       s.setPage(value, update);
+      w.update();
 
       return value;
     },

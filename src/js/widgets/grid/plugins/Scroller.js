@@ -1248,17 +1248,22 @@
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
         cellsViewHeight = (viewHeight || w.getCellsViewHeight()) - (me.corner ? me.cornerSize : 0),
         centerColumnsWidth = w.getCenterFullWidth(),
-        viewWidth = w.getCenterViewWidth();
+        viewWidth = w.getCenterViewWidth(),
+        scrollTop = me.getScrollTop(),
+        scrollLeft = me.getScrollLeft();
 
-      if(centerColumnsWidth < me.scrollLeft + viewWidth){
+      if(centerColumnsWidth < scrollLeft + viewWidth){
         setTimeout(function(){
-          var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
+          scrollTop = me.getScrollTop();
+          scrollLeft = me.getScrollLeft();
 
-          if(me.scrollLeft + delta < 0){
-            w.scroll(me.scrollTop, 0, true);
+          var delta = centerColumnsWidth - (scrollLeft + viewWidth);
+
+          if(scrollLeft + delta < 0){
+            w.scroll(scrollTop, 0);
           }
           else {
-            w.scroll(me.scrollTop, (me.scrollLeft + delta), true);
+            w.scroll(scrollTop, (scrollLeft + delta));
           }
         }, F.nojQuery? 10: F.ANIMATE_DURATION);
         return;
@@ -1604,6 +1609,32 @@
 
       body.el.dom.scrollLeft = me.scrollLeft;
       w.scroll(me.scrollTop, -me.scrollLeft - scrollLeft);
+    },
+    /*
+     *
+     */
+    getScrollTop: function(){
+      var me = this,
+        w = me.widget;
+
+      if(w.nativeScroller){
+        return w.body.el.dom.scrollTop;
+      }
+
+      return me.scrollTop;
+    },
+    /*
+     *
+     */
+    getScrollLeft: function(){
+      var me = this,
+        w = me.widget;
+
+      if(w.nativeScroller){
+        return w.body.el.dom.scrollLeft;
+      }
+
+      return me.scrollLeft;
     }
   });
 

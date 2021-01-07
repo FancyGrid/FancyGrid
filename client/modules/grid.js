@@ -1776,11 +1776,25 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
       },{
         up: function(field, value){
-          var pages = me.store.pages;
+          var pages = me.store.pages,
+            value = Number(value) + 1;
 
-          if(Number(value) > pages ){
-            field.set(pages);
+          if(value > pages ){
+            value = pages;
           }
+
+          field.set(value);
+        }
+      },{
+        down: function(field, value){
+          var pages = me.store.pages,
+            value = Number(value) - 1;
+
+          if(value < 1 ){
+            value = 1;
+          }
+
+          field.set(value);
         }
       }]
     });
@@ -2615,6 +2629,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
+
+  var GRID_ANIMATION_CLS = F.GRID_ANIMATION_CLS;
 
   var activeGrid;
 
@@ -8737,17 +8753,22 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
         cellsViewHeight = (viewHeight || w.getCellsViewHeight()) - (me.corner ? me.cornerSize : 0),
         centerColumnsWidth = w.getCenterFullWidth(),
-        viewWidth = w.getCenterViewWidth();
+        viewWidth = w.getCenterViewWidth(),
+        scrollTop = me.getScrollTop(),
+        scrollLeft = me.getScrollLeft();
 
-      if(centerColumnsWidth < me.scrollLeft + viewWidth){
+      if(centerColumnsWidth < scrollLeft + viewWidth){
         setTimeout(function(){
-          var delta = centerColumnsWidth - (me.scrollLeft + viewWidth);
+          scrollTop = me.getScrollTop();
+          scrollLeft = me.getScrollLeft();
 
-          if(me.scrollLeft + delta < 0){
-            w.scroll(me.scrollTop, 0, true);
+          var delta = centerColumnsWidth - (scrollLeft + viewWidth);
+
+          if(scrollLeft + delta < 0){
+            w.scroll(scrollTop, 0);
           }
           else {
-            w.scroll(me.scrollTop, (me.scrollLeft + delta), true);
+            w.scroll(scrollTop, (scrollLeft + delta));
           }
         }, F.nojQuery? 10: F.ANIMATE_DURATION);
         return;
@@ -9093,6 +9114,32 @@ Fancy.define('Fancy.grid.plugin.Updater', {
 
       body.el.dom.scrollLeft = me.scrollLeft;
       w.scroll(me.scrollTop, -me.scrollLeft - scrollLeft);
+    },
+    /*
+     *
+     */
+    getScrollTop: function(){
+      var me = this,
+        w = me.widget;
+
+      if(w.nativeScroller){
+        return w.body.el.dom.scrollTop;
+      }
+
+      return me.scrollTop;
+    },
+    /*
+     *
+     */
+    getScrollLeft: function(){
+      var me = this,
+        w = me.widget;
+
+      if(w.nativeScroller){
+        return w.body.el.dom.scrollLeft;
+      }
+
+      return me.scrollLeft;
     }
   });
 

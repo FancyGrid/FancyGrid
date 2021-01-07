@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.146',
+  version: '1.7.147',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -2815,6 +2815,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    */
   remove: function(o, fire){
     var me = this,
+      w = me.widget,
       id = o.id,
       index,
       orderIndex,
@@ -2854,6 +2855,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
       if(fire !== false){
+        if(w.loadMask !== false){
+          w.showLoadMask();
+        }
+
         me.proxyCRUD('DESTROY', id);
       }
       return;

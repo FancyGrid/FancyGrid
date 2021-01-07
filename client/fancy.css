@@ -3547,7 +3547,7 @@
   color: #888;
 }
 .fancy-theme-extra-gray .fancy-grid-cell .fancy-field-checkbox {
-  margin-top: -1px;
+  /*margin-top: -1px;*/
 }
 .fancy-theme-extra-gray .fancy-grid-column .fancy-grid-cell-over {
   background: #e5e5e7;

@@ -10,6 +10,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    */
   remove: function(o, fire){
     var me = this,
+      w = me.widget,
       id = o.id,
       index,
       orderIndex,
@@ -49,6 +50,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if (me.proxyType === 'server' && me.autoSave && me.proxy.api.destroy){
       if(fire !== false){
+        if(w.loadMask !== false){
+          w.showLoadMask();
+        }
+
         me.proxyCRUD('DESTROY', id);
       }
       return;

@@ -426,6 +426,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       }
 
       s.setPage(value, update);
+      w.update();
 
       return value;
     },

@@ -347,8 +347,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    *
    */
   onStoreCRUDDestroy: function(){
-    this.widget.store.loadData();
-    this.clearDirty();
+    var me = this;
+
+    clearInterval(me.intCrudDestroy);
+
+    me.intCrudDestroy = setTimeout(function(){
+      me.widget.store.loadData();
+      me.clearDirty();
+    }, 100);
   },
   /*
    *

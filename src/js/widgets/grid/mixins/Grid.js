@@ -34,6 +34,8 @@
 
   var ANIMATE_DURATION = F.ANIMATE_DURATION;
 
+  var GRID_ANIMATION_CLS = F.GRID_ANIMATION_CLS;
+
   var activeGrid;
 
   F.Mixin('Fancy.grid.mixin.Grid', {

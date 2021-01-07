@@ -2604,12 +2604,23 @@ Fancy.modules['selection'] = true;
         cell = cell || me.getActiveCell(),
         side = w.getSideByCell(cell),
         rowIndex = Number(cell.attr('index')),
-        columnIndex = Number(cell.parent().attr('index'));
+        columnIndex = Number(cell.parent().attr('index')),
+        value = '';
+
+      if(cell.dom){
+        value = cell.dom.innerHTML;
+      }
+      else{
+        value = cell.innerHTML;
+      }
+
+      value = value.replace( /(<([^>]+)>)/ig, '');
 
       return {
         side: side,
         rowIndex: rowIndex,
-        columnIndex: columnIndex
+        columnIndex: columnIndex,
+        value: value
       };
     },
     /*
@@ -2674,6 +2685,9 @@ Fancy.modules['selection'] = true;
               itemData.push(column.index || '');
             });
             dataStr += itemData.join('\t') + '\n';
+          }
+          else if(selection.length === 0 && me.activeCell){
+            dataStr = me.getActiveCellInfo().value;
           }
 
           F.each(selection, function(item){

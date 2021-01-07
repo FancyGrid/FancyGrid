@@ -1776,11 +1776,25 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
       },{
         up: function(field, value){
-          var pages = me.store.pages;
+          var pages = me.store.pages,
+            value = Number(value) + 1;
 
-          if(Number(value) > pages ){
-            field.set(pages);
+          if(value > pages ){
+            value = pages;
           }
+
+          field.set(value);
+        }
+      },{
+        down: function(field, value){
+          var pages = me.store.pages,
+            value = Number(value) - 1;
+
+          if(value < 1 ){
+            value = 1;
+          }
+
+          field.set(value);
         }
       }]
     });
