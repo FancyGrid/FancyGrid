@@ -201,7 +201,7 @@
     "path": "./src/js/widgets/menu/Menu.js",
     "module": "menu"
   },{
-    "path": "./src/js/widgets/panel/mixins/prepareConfig.js"
+    "path": "./src/js/widgets/panel/mixins/PrepareConfig.js"
   },{
     "path": "./src/js/widgets/panel/mixins/methods.js"
   },{

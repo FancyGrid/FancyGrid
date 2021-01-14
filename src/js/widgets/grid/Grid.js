@@ -70,6 +70,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     config = config || {};
 
+    config.columns.forEach(column => {
+      column.index = me.sanitize(column.index)
+      column.title = me.sanitize(column.title)
+    });
+    config.data.forEach(data => {
+      Object.keys(data).forEach(key => {
+        if (typeof data[key] == 'string')
+          data[key] = me.sanitize(data[key])
+      })
+    });
+
     var fn = function(params){
       if(params){
         var lang = config.lang;
@@ -820,6 +831,13 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.autoSizeColumn(column.id, true, column);
       }
     });
+  },
+  sanitize: function(string) {
+    return string
+      .replace(/\&/g, '&amp;')
+      .replace(/\</g, '&lt;')
+      .replace(/\>/g, '&gt;')
+      .replace(/\"/g, '&quot;')
   }
 });
 
