@@ -424,6 +424,10 @@
         }
 
         column.rowEditor = editor;
+
+        if(column.hidden){
+          editor.hide();
+        }
       }
 
       return el;

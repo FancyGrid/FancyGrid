@@ -500,7 +500,7 @@
         groupsWidth = {},
         groupsLeft = {},
         rows = me.calcRows(),
-        isFilterHeader = w.filter && w.filter.header,
+        isFilterHeader = w.filter && w.filter.header && !w.subHeaderFilter,
         isFilterGroupHeader = false;
 
       if(me.side === 'center'){
@@ -508,7 +508,7 @@
       }
 
       if(isFilterHeader){
-        F.each( columns, function(column, i){
+        F.each( columns, function(column){
           if (column.grouping && column.filter && column.filter.header){
             isFilterGroupHeader = true;
           }
@@ -540,7 +540,7 @@
             height = CELL_HEADER_HEIGHT * 2;
           }
 
-          if(column.filter && column.filter.header && !w.subHeaderFilter){
+          if(column.filter && column.filter.header && isFilterHeader){
             setTimeout(function(){
               cell.addCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
             }, 30);
@@ -548,7 +548,7 @@
         }
         else{
           cell.removeCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS);
-          if(column.filter && column.filter.header){
+          if(column.filter && column.filter.header && isFilterHeader){
             setTimeout(function(){
               cell.addCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
             }, 30);
@@ -556,7 +556,7 @@
           }
         }
 
-        if(w.groupheader && height === CELL_HEADER_HEIGHT && !grouping && !column.filter){
+        if(w.groupheader && height === CELL_HEADER_HEIGHT && !grouping && !column.filter && !isFilterHeader){
           height = CELL_HEADER_HEIGHT * 2;
         }
 
@@ -564,6 +564,10 @@
 
         cell.css({
           top: top,
+          height: height
+        });
+
+        cell.select('.' + GRID_HEADER_CELL_CONTAINER_CLS).css({
           height: height
         });
 
@@ -1280,14 +1284,14 @@
              rows = 2;
           }
 
-          if(column.filter && column.filter.header){
+          if(column.filter && column.filter.header && !w.subHeaderFilter){
             if(rows < 3){
               rows = 3;
             }
           }
         }
 
-        if(column.filter && column.filter.header){
+        if(column.filter && column.filter.header && !w.subHeaderFilter){
           if(rows < 2){
             rows = 2;
           }

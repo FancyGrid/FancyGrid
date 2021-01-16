@@ -2173,6 +2173,10 @@
       switch (format){
         case 'number':
           return function(value, precision){
+            if(value === undefined){
+              return '';
+            }
+
             var splitted = value.toString().split(lang.decimalSeparator);
             precision = precision || 0;
 

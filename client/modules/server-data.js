@@ -519,6 +519,17 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       i = 0,
       iL = me.saveOrder.length;
 
+    for(var p in inserted){
+      if(p === 'length'){
+        continue;
+      }
+
+      if(changed[p] !== undefined){
+        delete changed[p];
+        changed.length--;
+      }
+    }
+
     for(;i<iL;i++){
       switch(me.saveOrder[i]){
         case 'create':
@@ -637,7 +648,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
           itemData = {id: p};
 
         if(me.writeAllFields){
-          itemData = me.getById(p).data;
+          itemData = actions[p];
         }
         else {
           for (var q in action){

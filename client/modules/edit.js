@@ -1818,6 +1818,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         }
 
         column.rowEditor = editor;
+
+        if(column.hidden){
+          editor.hide();
+        }
       }
 
       return el;

@@ -3112,16 +3112,22 @@
             });
             */
 
+
             grouping.updateGroupRows();
             grouping.setCellsPosition();
             grouping.setPositions();
             grouping.reFreshGroupTexts();
+
+            grouping.update();
           }
           else{
             s.changeDataView();
           }
 
-          me.update();
+          if(s.grouping && s.grouping.by){}
+          else {
+            me.update();
+          }
           me.setSidesHeight();
 
           delete me.intervalUpdatingFilter;

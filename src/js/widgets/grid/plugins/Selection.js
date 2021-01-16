@@ -2789,7 +2789,7 @@ Fancy.modules['selection'] = true;
         return;
       }
 
-      if(!e.ctrlKey){
+      if(!e.ctrlKey && !e.metaKey){
         return;
       }
 
@@ -2804,7 +2804,6 @@ Fancy.modules['selection'] = true;
           me.copy();
           break;
         case key.V:
-          //TODO
           me.copyEl.dom.value = '';
           me.copyEl.dom.focus();
           setTimeout(function(){
