@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.148',
+  version: '1.7.149',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -4169,9 +4169,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
-      headers = proxy.headers || {};
+      headers = proxy.headers || {},
+      activeElement;
 
     if(document.activeElement){
+      activeElement = document.activeElement;
       document.activeElement.blur();
     }
 
@@ -4209,6 +4211,10 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       getJSON: true,
       headers: headers,
       success: function(o, status, request){
+        if(activeElement){
+          activeElement.focus();
+        }
+
         if(proxy.afterRequest){
           var proccessed = proxy.afterRequest({
             type: 'read',
@@ -47067,7 +47073,7 @@ Fancy.modules['summary'] = true;
             break;
           default:
             if (column.format){
-              value = body.format(value, column.format);
+              value = body.format(value, column.format, column.precision);
             }
 
             cellInners.item(i).update(value);

@@ -421,7 +421,7 @@ Fancy.modules['summary'] = true;
             break;
           default:
             if (column.format){
-              value = body.format(value, column.format);
+              value = body.format(value, column.format, column.precision);
             }
 
             cellInners.item(i).update(value);

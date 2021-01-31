@@ -148,9 +148,11 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     var me = this,
       proxy = me.proxy,
       params = {},
-      headers = proxy.headers || {};
+      headers = proxy.headers || {},
+      activeElement;
 
     if(document.activeElement){
+      activeElement = document.activeElement;
       document.activeElement.blur();
     }
 
@@ -188,6 +190,10 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       getJSON: true,
       headers: headers,
       success: function(o, status, request){
+        if(activeElement){
+          activeElement.focus();
+        }
+
         if(proxy.afterRequest){
           var proccessed = proxy.afterRequest({
             type: 'read',
