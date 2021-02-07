@@ -1698,7 +1698,7 @@ Fancy.modules['filter'] = true;
           value = '<=' + Number(dateTo);
         }
         else {
-          value = '<=' + F.Date.format(dateFrom, format.edit, format.mode);
+          value = '<=' + F.Date.format(dateTo, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '>=', false);

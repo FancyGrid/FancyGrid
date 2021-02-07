@@ -2670,7 +2670,7 @@ Fancy.modules['selection'] = true;
         case 'rows':
         case 'row':
           selection = me.getSelection();
-          var columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns);
+          var columns = w.getColumns();
           var dataStr = '';
 
           if(copyHeader){
@@ -2679,6 +2679,25 @@ Fancy.modules['selection'] = true;
               switch(column.index){
                 case '$selected':
                 case '$rowdrag':
+                  return;
+              }
+
+              switch(column.type){
+                case 'action':
+                case 'color':
+                case 'image':
+                case 'rowdrag':
+                case 'grossloss':
+                case 'progressbar':
+                case 'progressdonut':
+                case 'hbar':
+                case 'sparklineline':
+                case 'sparklinebar':
+                case 'sparklinetristate':
+                case 'sparklinediscrete':
+                case 'sparklinebullet':
+                case 'sparklinepie':
+                case 'sparklinebox':
                   return;
               }
 
@@ -2699,9 +2718,35 @@ Fancy.modules['selection'] = true;
                   return;
               }
 
-              if(column.index){
-                itemData.push(item[column.index]);
+              switch(column.type){
+                case 'action':
+                case 'color':
+                case 'image':
+                case 'rowdrag':
+                case 'grossloss':
+                case 'progressbar':
+                case 'progressdonut':
+                case 'hbar':
+                case 'sparklineline':
+                case 'sparklinebar':
+                case 'sparklinetristate':
+                case 'sparklinediscrete':
+                case 'sparklinebullet':
+                case 'sparklinepie':
+                case 'sparklinebox':
+                  return;
               }
+
+              var value = '';
+
+              if(column.smartIndexFn){
+                value = column.smartIndexFn(item);
+              }
+              else if(column.index){
+                value = item[column.index];
+              }
+
+              itemData.push(value);
             });
 
             dataStr += itemData.join('\t') + '\n';

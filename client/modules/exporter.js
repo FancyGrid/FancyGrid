@@ -83,7 +83,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   getColumnsData: function(o){
     var me = this,
       w = me.widget,
-      columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns),
+      columns = w.getColumns(),
       data = [],
       indexes;
 

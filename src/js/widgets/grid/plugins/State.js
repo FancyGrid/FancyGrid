@@ -181,7 +181,7 @@ Fancy.modules['state'] = true;
 
       o = JSON.parse(o);
 
-      var columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns),
+      var columns = w.getColumns(),
         _columns = [];
 
       F.each(columns, function(column){

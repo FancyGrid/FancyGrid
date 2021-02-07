@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.149',
+  version: '1.7.150',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -42810,7 +42810,7 @@ Fancy.modules['selection'] = true;
         case 'rows':
         case 'row':
           selection = me.getSelection();
-          var columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns);
+          var columns = w.getColumns();
           var dataStr = '';
 
           if(copyHeader){
@@ -42819,6 +42819,25 @@ Fancy.modules['selection'] = true;
               switch(column.index){
                 case '$selected':
                 case '$rowdrag':
+                  return;
+              }
+
+              switch(column.type){
+                case 'action':
+                case 'color':
+                case 'image':
+                case 'rowdrag':
+                case 'grossloss':
+                case 'progressbar':
+                case 'progressdonut':
+                case 'hbar':
+                case 'sparklineline':
+                case 'sparklinebar':
+                case 'sparklinetristate':
+                case 'sparklinediscrete':
+                case 'sparklinebullet':
+                case 'sparklinepie':
+                case 'sparklinebox':
                   return;
               }
 
@@ -42839,9 +42858,35 @@ Fancy.modules['selection'] = true;
                   return;
               }
 
-              if(column.index){
-                itemData.push(item[column.index]);
+              switch(column.type){
+                case 'action':
+                case 'color':
+                case 'image':
+                case 'rowdrag':
+                case 'grossloss':
+                case 'progressbar':
+                case 'progressdonut':
+                case 'hbar':
+                case 'sparklineline':
+                case 'sparklinebar':
+                case 'sparklinetristate':
+                case 'sparklinediscrete':
+                case 'sparklinebullet':
+                case 'sparklinepie':
+                case 'sparklinebox':
+                  return;
               }
+
+              var value = '';
+
+              if(column.smartIndexFn){
+                value = column.smartIndexFn(item);
+              }
+              else if(column.index){
+                value = item[column.index];
+              }
+
+              itemData.push(value);
             });
 
             dataStr += itemData.join('\t') + '\n';
@@ -50066,7 +50111,7 @@ Fancy.modules['filter'] = true;
           value = '<=' + Number(dateTo);
         }
         else {
-          value = '<=' + F.Date.format(dateFrom, format.edit, format.mode);
+          value = '<=' + F.Date.format(dateTo, format.edit, format.mode);
         }
 
         me.clearFilter(field.filterIndex, '>=', false);
@@ -51810,7 +51855,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   getColumnsData: function(o){
     var me = this,
       w = me.widget,
-      columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns),
+      columns = w.getColumns(),
       data = [],
       indexes;
 
@@ -52249,7 +52294,7 @@ Fancy.modules['state'] = true;
 
       o = JSON.parse(o);
 
-      var columns = [].concat(w.leftColumns).concat(w.columns).concat(w.rightColumns),
+      var columns = w.getColumns(),
         _columns = [];
 
       F.each(columns, function(column){
