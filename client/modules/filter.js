@@ -1410,7 +1410,9 @@ Fancy.modules['filter'] = true;
             operator = '=';
             break;
           case 'date':
-            _value = new Date(Number(_value));
+            if(!isNaN(Number(_value))){
+              _value = new Date(Number(_value));
+            }
             break;
         }
 
