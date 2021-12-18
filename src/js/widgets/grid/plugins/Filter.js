@@ -795,6 +795,13 @@ Fancy.modules['filter'] = true;
       clearInterval(me.intervalAutoEnter);
       delete me.intervalAutoEnter;
 
+      if(w.isRequiredChangeAllMemorySelection()){
+        w.selection.memory.selectAllFiltered();
+        setTimeout(function() {
+          w.selection.updateHeaderCheckBox();
+        }, 1);
+      }
+
       if (value.length === 0){
         w.clearFilter(field.filterIndex);
 
@@ -927,6 +934,13 @@ Fancy.modules['filter'] = true;
         w = me.widget,
         selected = w.getSelection(),
         ids = [];
+
+      if(me.isRequiredChangeAllMemorySelection()){
+        w.selection.memory.selectAllFiltered();
+        setTimeout(function() {
+          w.selection.updateHeaderCheckBox();
+        }, 1);
+      }
 
       Fancy.each(selected, function(item){
         ids.push(item.id);

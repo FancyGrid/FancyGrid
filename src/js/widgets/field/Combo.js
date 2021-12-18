@@ -340,9 +340,9 @@
             else {
               if(me.multiSelect){
                 if(me.input.dom.value.split(',').length !== me.valuesIndex.length){
-                  var newValues = me.getFromInput();
+                  //var newValues = me.getFromInput();
 
-                  me.set(newValues);
+                  //me.set(newValues);
                 }
               }
 
@@ -643,7 +643,7 @@
     onsAheadList: function(){
       var me = this;
 
-      me.aheadList.on('click', me.onListItemClick, me, 'li');
+      me.aheadList.on('click', me.onAHeadListItemClick, me, 'li');
     },
     /*
      * @param {Object} e
@@ -720,6 +720,47 @@
             me.list.select('.fancy-combo-list-select-all').removeCls('fancy-combo-item-selected');
           }
         }
+
+        me.updateInput();
+      }
+      else {
+        me.set(value);
+        me.hideList();
+      }
+
+      if (me.editable){
+        me.input.focus();
+      }
+      else {
+        me.onBlur();
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onAHeadListItemClick: function(e){
+      var me = this,
+        li = F.get(e.currentTarget),
+        value = li.attr('value'),
+        focusedItemCls = me.focusedItemCls;
+
+      if(me.disabled){
+        return;
+      }
+
+      if (F.nojQuery && value === 0){
+        value = '';
+      }
+
+      if (me.multiSelect){
+        if (me.values.length === 0){
+          me.clearListActive();
+        }
+
+        me.clearFocused();
+
+        me.addValue(value);
+        li.addCls(focusedItemCls);
 
         me.updateInput();
       }

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.151',
+  version: '1.7.159',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -2976,6 +2976,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   insert: function(index, o, fire){
     var me = this;
 
+    Fancy.each(me.fields, function(field){
+      if(o[field] === undefined){
+        o[field] = '';
+      }
+    });
+
     //Bug fix for empty data on start with grouping
     if(me.grouping && !me.bugFixGrouping){
       me.defineModel(o, true);
@@ -2997,6 +3003,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if(me.getById(o.id)){
       me.remove(o.id, fire);
+    }
+
+    if(me.widget.isGroupable()){
+      clearTimeout(this.timeOutGroupDataOrder);
+
+      this.timeOutGroupDataOrder = setTimeout(function(){
+        me.orderDataByGroup();
+      });
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
@@ -9986,8 +10000,14 @@ if(!Fancy.nojQuery && Fancy.$){
           me.fire('esc', e);
           break;
         case key.ENTER:
+          var isTextArea = me.type === 'textarea' || me.type === 'field.textarea';
+
+          if (isTextArea && e.shiftKey){
+            break;
+          }
+
           me.fire('enter', me.getValue());
-          if (me.type !== 'textarea'){
+          if (!isTextArea){
             e.preventDefault();
             e.stopPropagation();
           }
@@ -12084,9 +12104,9 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
             else {
               if(me.multiSelect){
                 if(me.input.dom.value.split(',').length !== me.valuesIndex.length){
-                  var newValues = me.getFromInput();
+                  //var newValues = me.getFromInput();
 
-                  me.set(newValues);
+                  //me.set(newValues);
                 }
               }
 
@@ -12387,7 +12407,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     onsAheadList: function(){
       var me = this;
 
-      me.aheadList.on('click', me.onListItemClick, me, 'li');
+      me.aheadList.on('click', me.onAHeadListItemClick, me, 'li');
     },
     /*
      * @param {Object} e
@@ -12464,6 +12484,47 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
             me.list.select('.fancy-combo-list-select-all').removeCls('fancy-combo-item-selected');
           }
         }
+
+        me.updateInput();
+      }
+      else {
+        me.set(value);
+        me.hideList();
+      }
+
+      if (me.editable){
+        me.input.focus();
+      }
+      else {
+        me.onBlur();
+      }
+    },
+    /*
+     * @param {Object} e
+     */
+    onAHeadListItemClick: function(e){
+      var me = this,
+        li = F.get(e.currentTarget),
+        value = li.attr('value'),
+        focusedItemCls = me.focusedItemCls;
+
+      if(me.disabled){
+        return;
+      }
+
+      if (F.nojQuery && value === 0){
+        value = '';
+      }
+
+      if (me.multiSelect){
+        if (me.values.length === 0){
+          me.clearListActive();
+        }
+
+        me.clearFocused();
+
+        me.addValue(value);
+        li.addCls(focusedItemCls);
 
         me.updateInput();
       }

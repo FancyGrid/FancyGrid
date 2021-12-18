@@ -523,14 +523,17 @@
 		var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
 
 		if (!this.trackingClick){
-			return true;
+      return true;
 		}
 
 		// Prevent phantom clicks on fast double-tap (issue #36)
-		if ((event.timeStamp - this.lastClickTime) < this.tapDelay){
+		// This over catch does not allow to enable double tap for grid cell editing over usual click
+    /*
+    if ((event.timeStamp - this.lastClickTime) < this.tapDelay){
 			this.cancelNextClick = true;
 			return true;
 		}
+		 */
 
 		if ((event.timeStamp - this.trackingClickStart) > this.tapTimeout){
 			return true;
@@ -603,7 +606,7 @@
 		// Prevent the actual click from going though - unless the target node is marked as requiring
 		// real clicks or if it is in the whitelist in which case only non-programmatic clicks are permitted.
 		if (!this.needsClick(targetElement)){
-			event.preventDefault();
+      event.preventDefault();
 			this.sendClick(targetElement, event);
 		}
 

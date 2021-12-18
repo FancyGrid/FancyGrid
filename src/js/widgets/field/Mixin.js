@@ -407,8 +407,14 @@
           me.fire('esc', e);
           break;
         case key.ENTER:
+          var isTextArea = me.type === 'textarea' || me.type === 'field.textarea';
+
+          if (isTextArea && e.shiftKey){
+            break;
+          }
+
           me.fire('enter', me.getValue());
-          if (me.type !== 'textarea'){
+          if (!isTextArea){
             e.preventDefault();
             e.stopPropagation();
           }

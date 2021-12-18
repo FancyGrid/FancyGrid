@@ -171,6 +171,12 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   insert: function(index, o, fire){
     var me = this;
 
+    Fancy.each(me.fields, function(field){
+      if(o[field] === undefined){
+        o[field] = '';
+      }
+    });
+
     //Bug fix for empty data on start with grouping
     if(me.grouping && !me.bugFixGrouping){
       me.defineModel(o, true);
@@ -192,6 +198,14 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     if(me.getById(o.id)){
       me.remove(o.id, fire);
+    }
+
+    if(me.widget.isGroupable()){
+      clearTimeout(this.timeOutGroupDataOrder);
+
+      this.timeOutGroupDataOrder = setTimeout(function(){
+        me.orderDataByGroup();
+      });
     }
 
     if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){

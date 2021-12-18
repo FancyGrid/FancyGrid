@@ -1,7 +1,6 @@
 /*
  * file is not used, but could be used in future
  */
-
 (function(){
 
 var opacityRe = /alpha\(opacity=(.*)\)/gi,

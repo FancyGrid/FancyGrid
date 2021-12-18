@@ -247,6 +247,11 @@
         left = e.pageX;
       }
 
+      if(F.isTouch){
+        top = e.targetTouches[0].clientY + 20;
+        left = e.targetTouches[0].clientX;
+      }
+
       listEl.css({
         position: 'absolute',
         top: top,

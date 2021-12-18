@@ -3040,6 +3040,13 @@
         s = me.store,
         update = me.waitingForFilters === false;
 
+      if(me.isRequiredChangeAllMemorySelection()){
+        me.selection.memory.selectAllFiltered();
+        setTimeout(function() {
+          me.selection.updateHeaderCheckBox();
+        }, 1);
+      }
+
       if (index === undefined || index === null){
         s.filters = {};
       }
@@ -3143,6 +3150,16 @@
 
         me.setSidesHeight();
       }
+    },
+    /*
+    *
+    */
+    isRequiredChangeAllMemorySelection: function(){
+      var me = this,
+        s = me.store,
+        selection = me.selection;
+
+      return s.hasFilters() &&selection && selection.memory && selection.memory.all;
     },
     /*
      *
@@ -3367,9 +3384,10 @@
      * @param {Boolean} [ignoreRender]
      * @param {Array} [rowIds]
      * @param {Boolean} [exporting]
+     * @param {Boolean} [selection]
      * @return {Array}
      */
-    getDisplayedData: function(all, ignoreRender, rowIds, exporting){
+    getDisplayedData: function(all, ignoreRender, rowIds, exporting, selection){
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
@@ -3378,6 +3396,10 @@
         columns = me.columns,
         rightColumns = me.rightColumns,
         allowedIdsMap = {};
+
+      if(selection){
+        selection = this.getSelection();
+      }
 
       if(rowIds){
         F.each(rowIds, function(value){
@@ -3414,8 +3436,14 @@
             rowData.push(i + 1);
             break;
           default:
-            var data = me.get(i),
-              value = me.get(i, column.index);
+            if(selection){
+              var data = selection[i],
+                value = data[column.index];
+            }
+            else {
+              var data = me.get(i),
+                value = me.get(i, column.index);
+            }
 
             if(column.exportFn && exporting){
               if(data && data.data){
@@ -3440,10 +3468,20 @@
               rowData.push(value);
             }
             else {
-              rowData.push(me.get(i, column.index));
+              if(selection){
+                rowData.push(value);
+              }
+              else {
+                rowData.push(me.get(i, column.index));
+              }
             }
         }
       };
+
+      if(selection){
+        i = 0;
+        viewTotal = selection.length;
+      }
 
       for (; i < viewTotal; i++){
         var rowData = [];
@@ -3530,6 +3568,10 @@
         s.setData(data);
       }
 
+      if(me.isGroupable()){
+        s.orderDataByGroup();
+      }
+
       if(s.sorters){
         s.reSort();
       }
@@ -3552,6 +3594,11 @@
 
       if(me.filter && me.filter.waitForComboData){
         me.filter.updateFilterComboData();
+      }
+
+      if(me.isGroupable()){
+        me.grouping.reGroup();
+        me.update();
       }
     },
     /*
@@ -4818,7 +4865,7 @@
       me.refreshcolumns.setColumns(columns);
       me._setColumnsAutoWidth();
 
-      setTimeout(function() {
+      setTimeout(function(){
         Fancy.each(['left', 'center', 'right'], function(side){
           var header = me.getHeader(side),
             body = me.getBody(side);

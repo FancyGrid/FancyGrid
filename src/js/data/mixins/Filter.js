@@ -179,14 +179,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
               value = String(value).toLocaleLowerCase();
               indexValue = String(indexValue).toLocaleLowerCase();
 
-              value = value.replace(/\(/g, 'bracketleft');
-              value = value.replace(/\)/g, 'bracketright');
-              value = value.replace(/\+/g, 'plus');
-              value = value.replace(/\-/g, 'minus');
-              indexValue = indexValue.replace(/\(/g, 'bracketleft');
-              indexValue = indexValue.replace(/\)/g, 'bracketright');
-              indexValue = indexValue.replace(/\+/g, 'plus');
-              indexValue = indexValue.replace(/\-/g, 'minus');
+              value = me.replaceSpecialSigns(value);
 
               return new RegExp(value).test(indexValue);
             };
@@ -208,6 +201,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
             break;
           case '*':
             value = String(value).toLocaleLowerCase();
+            value = me.replaceSpecialSigns(value);
 
             passed = new RegExp(value).test(String(indexValue).toLocaleLowerCase());
             if(passed){
@@ -387,5 +381,21 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     }
 
     return filters;
+  },
+  /*
+   * @param value {String}
+   *
+   * @return {String}
+   */
+  replaceSpecialSigns: function(value){
+    value = value.replace(/\\/g, '\\\\');
+    value = value.replace(/\(/g, '\\(');
+    value = value.replace(/\)/g, '\\)');
+    value = value.replace(/\[/g, '\\[');
+    value = value.replace(/\]/g, '\\]');
+    value = value.replace(/\+/g, '\\+');
+    value = value.replace(/\-/g, '\\-');
+
+    return value;
   }
 });

@@ -124,7 +124,8 @@ Fancy.modules['selection'] = true;
      */
     initMemory: function(){
       var me = this,
-        w = me.widget;
+        w = me.widget,
+        s = w.store;
 
       me.memory = {
         all: false,
@@ -286,13 +287,13 @@ Fancy.modules['selection'] = true;
           var filteredDataMap = w.store.filteredDataMap;
 
           if(filteredDataMap){
-            me.memory.selectedLength = 0;
+            //me.memory.selectedLength = 0;
             for(var p in filteredDataMap){
               me.memory.add(p);
             }
-            me.memory.excepted = {};
+            //me.memory.excepted = {};
             me.memory.all = true;
-            me.memory.exceptedLength = 0;
+            //me.memory.exceptedLength = 0;
           }
           else {
             F.apply(me.memory, {
@@ -305,12 +306,28 @@ Fancy.modules['selection'] = true;
           }
         },
         clearAll: function(){
-          F.apply(me.memory, {
-            all: false,
-            exceptedLength: 0,
-            selectedLength: 0,
-            excepted: {},
-            selected: {}
+          if(s.hasFilters && s.hasFilters()){
+            me.memory.all = false;
+          }
+          else {
+            F.apply(me.memory, {
+              all: false,
+              exceptedLength: 0,
+              selectedLength: 0,
+              excepted: {},
+              selected: {}
+            });
+          }
+        },
+        // Used for switching from tag all to exact data items.
+        // It requires for cases when there are memory selection and filtering.
+        selectAllFiltered: function(){
+          //me.memory.all = false;
+          me.memory.clearAll();
+
+          var filteredData = w.getDataFiltered();
+          F.each(filteredData, function(item){
+            me.memory.add(item.id);
           });
         },
         add: function(id){

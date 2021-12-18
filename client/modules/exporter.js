@@ -127,7 +127,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       w = me.widget,
       data = [],
       //displayedData = o.all? w.getData() : w.getDisplayedData();
-      displayedData = o.all? w.getDisplayedData(true, o.ignoreRender, o.rowIds, true) : w.getDisplayedData(null, o.ingoreRender, o.rowIds, true);
+      displayedData = o.all? w.getDisplayedData(true, o.ignoreRender, o.rowIds, true, o.selection) : w.getDisplayedData(null, o.ingoreRender, o.rowIds, true, o.selection);
 
     Fancy.each(displayedData, function(rowData){
       var _rowData = [];

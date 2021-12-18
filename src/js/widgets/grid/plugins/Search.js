@@ -41,7 +41,16 @@ Fancy.define('Fancy.grid.plugin.Search', {
   search: function(keys, values){
     var me = this,
       w = me.widget,
-      s = w.store;
+      s = w.store,
+      selection = w.selection;
+
+    if(w.isRequiredChangeAllMemorySelection()){
+      selection.memory.clearAll();
+      selection.memory.selectAllFiltered();
+      setTimeout(function() {
+        selection.updateHeaderCheckBox();
+      }, 1);
+    }
 
     me.searches = {};
 

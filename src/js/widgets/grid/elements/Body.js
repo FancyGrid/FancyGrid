@@ -104,7 +104,9 @@
         cellSelector = columnSelector + ' div.' + GRID_CELL_CLS;
 
       me.el.on('click', me.onCellClick, me, cellSelector);
-      me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
+      if(!Fancy.isTouch){
+        me.el.on('dblclick', me.onCellDblClick, me, cellSelector);
+      }
       me.el.on('mouseenter', me.onCellMouseEnter, me, cellSelector);
       me.el.on('mouseleave', me.onCellMouseLeave, me, cellSelector);
       if(F.isTouch){
@@ -117,7 +119,12 @@
       me.el.on('mouseenter', me.onColumnMouseEnter, me, columnSelector);
       me.el.on('mouseleave', me.onColumnMouseLeave, me, columnSelector);
 
-      me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
+      if(F.isTouch){
+        me.initTouchContextMenu(cellSelector);
+      }
+      else{
+        me.el.on('contextmenu', me.onContextMenu, me, cellSelector);
+      }
 
       me.el.on('mouseleave', me.onBodyLeave, me);
     },
@@ -350,6 +357,31 @@
     onCellClick: function(e){
       var me = this,
         w = me.widget;
+
+      if(F.isTouch){
+        if(me.waitForDblClickInt){
+          var now = new Date();
+
+          if(now - me.waitForDblClickDate < 500){
+            w.fire('celldblclick', me.getEventParams(e));
+            w.fire('rowdblclick', me.getEventParams(e));
+            w.fire('columndblclick', me.getColumnEventParams(e));
+
+            return;
+          }
+          else{
+            delete me.waitForDblClickInt;
+            delete me.waitForDblClickDate;
+          }
+        }
+        else{
+          me.waitForDblClickDate = new Date();
+          me.waitForDblClickInt = setTimeout(function(){
+            delete me.waitForDblClickInt;
+            delete me.waitForDblClickDate;
+          }, 500);
+        }
+      }
 
       w.fire('cellclick', me.getEventParams(e));
       w.fire('rowclick', me.getEventParams(e));
@@ -643,7 +675,9 @@
         columnSelector = 'div.' + GRID_COLUMN_CLS;
 
       el.un('click', me.onCellClick, me, cellSelector);
-      el.un('dblclick', me.onCellDblClick, me, cellSelector);
+      if(!Fancy.isTouch){
+        el.un('dblclick', me.onCellDblClick, me, cellSelector);
+      }
       el.un('mouseenter', me.onCellMouseEnter, me, cellSelector);
       el.un('mouseleave', me.onCellMouseLeave, me, cellSelector);
       if(F.isTouch){
@@ -1029,6 +1063,53 @@
           columnEl.addCls(GRID_COLUMN_ROW_DRAG_CLS);
         }
       });
+    },
+    /*
+     * @param {String] cellSelector
+     */
+    initTouchContextMenu: function(cellSelector){
+      var me = this;
+
+      me.el.on('touchstart', me.onTouchStart, me, cellSelector);
+    },
+    /*
+     *
+     */
+    onTouchStart: function(e){
+      var me = this;
+
+      me.touchEvent = e;
+      me.intTouchStart = setTimeout(function(){
+        me.touchLongPress = true;
+      }, 1000);
+
+      me.el.once('touchend', me.onTouchEnd, me);
+      me.el.once('touchmove', me.onTouchMove, me);
+    },
+    /*
+     *
+     */
+    onTouchEnd: function(){
+      var me = this,
+        w = me.widget;
+
+      if(me.touchLongPress){
+        w.fire('contextmenu', me.getEventParams(me.touchEvent));
+      }
+
+      clearInterval(me.intTouchStart);
+      me.el.un('touchmove', me.onTouchMove);
+      delete me.touchLongPress;
+    },
+    /*
+     *
+     */
+    onTouchMove: function(){
+      var me = this;
+
+      clearInterval(me.intTouchStart);
+      delete me.touchLongPress;
+      me.un('touchend', me.onTouchEnd);
     },
     /*
      *
