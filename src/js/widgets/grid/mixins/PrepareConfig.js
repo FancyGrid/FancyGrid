@@ -394,7 +394,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config._plugins.push(pluginConfig);
     }
 
-    if(config.rowDragDrop){
+    if(config.rowDragDrop || config.droppable){
       var pluginConfig = {
         type: 'grid.rowdragdrop'
       };

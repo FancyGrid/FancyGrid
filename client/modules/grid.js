@@ -394,7 +394,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       config._plugins.push(pluginConfig);
     }
 
-    if(config.rowDragDrop){
+    if(config.rowDragDrop || config.droppable){
       var pluginConfig = {
         type: 'grid.rowdragdrop'
       };
@@ -14077,6 +14077,18 @@ Fancy.define('Fancy.grid.plugin.Licence', {
         prevCellOver = me.prevCellOver;
 
       if (F.nojQuery){
+        if(params.rowIndex + 1 === w.getDataView().length){
+          var cellParams = params.cell.getBoundingClientRect();
+
+          if(e.clientY > cellParams.top + cellParams.height - 2){
+            w.fire('rowleave', prevCellOver);
+            w.fire('cellleave', prevCellOver);
+            delete me.prevCellOver;
+
+            return;
+          }
+        }
+
         if (prevCellOver === undefined){
           return;
         }

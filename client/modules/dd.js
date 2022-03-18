@@ -480,7 +480,7 @@ Fancy.modules['dd'] = true;
       me.activeGrid = grid;
       me.draggingRows = rows;
 
-      docEl.on('mouseenter', me.onMouserEnterGrid, me, '.' + Fancy.GRID_CLS);
+      docEl.on('mouseenter', me.onMouseEnterGrid, me, '.' + Fancy.GRID_CLS);
 
       if(me.activeGrid.dropZone){
         me.activeGrid.el.on('mouseleave', me.onMouseLeaveActiveGrid, me);
@@ -503,9 +503,9 @@ Fancy.modules['dd'] = true;
       delete me.droppable;
       delete me.dropOutSideRowIndex;
 
-      docEl.un('mouseenter', me.onMouserEnterGrid);
+      docEl.un('mouseenter', me.onMouseEnterGrid);
     },
-    onMouserEnterGrid: function(e){
+    onMouseEnterGrid: function(e){
       var me = this,
         targetEl = Fancy.get(e.currentTarget);
 
@@ -527,15 +527,24 @@ Fancy.modules['dd'] = true;
       if(me.toGrid.droppable === true ||
         (F.isFunction(me.toGrid.droppable) &&
           me.toGrid.droppable(me.activeGrid, me.draggingRows) === true)){
+
         me.droppable = true;
 
         var docEl = Fancy.get(document);
 
-        docEl.once('mouseleave', me.onMouseLeaveGrid, me, '#' + me.toGrid.id);
+        if(F.nojQuery){
+          me.toGrid.el.on('mouseleave', me.onMouseLeaveGrid, me);
+        }
+        else {
+          docEl.once('mouseleave', me.onMouseLeaveGrid, me, '#' + me.toGrid.id);
+        }
 
         setTimeout(function(){
           if(me.dropOutSideRowIndex === undefined && me.toGrid){
-            var rowIndex = me.toGrid.getDisplayedData().length - 1;
+            var s = me.toGrid.store,
+              data = s.getDataView();
+
+            var rowIndex = data.length - 1;
 
             me.toGrid.rowdragdrop.activeRowIndex = rowIndex + 1;
 
@@ -549,6 +558,10 @@ Fancy.modules['dd'] = true;
     },
     onMouseLeaveGrid: function(){
       var me = this;
+
+      if(F.nojQuery && me.toGrid){
+        me.toGrid.el.un('mouseleave', me.onMouseLeaveGrid, me);
+      }
 
       delete me.droppable;
       delete me.toGrid;
@@ -740,6 +753,7 @@ Fancy.modules['dd'] = true;
         docEl.un('mousemove', me.onDocMouseMove);
         me.hideTip();
         me.clearCellsMask();
+
         if(me.dropOK){
           me.fire('drop');
         }
@@ -908,7 +922,7 @@ Fancy.modules['dd'] = true;
         selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
         text = F.String.format(lang.dragText, [selection.length, selection.length > 1 ? 's' : '']);
 
-      if(me.tipValue && selection.length === 1){
+      if(me.tipValue && selection.length === 1 && F.typeOf(me.tipValue) === 'string'){
         text = me.tipValue;
       }
 
@@ -1025,7 +1039,7 @@ Fancy.modules['dd'] = true;
           w.flashRow(rowIndex);
         });
       }
-      w.fire('dragrows', selection);
+      w.fire('dragrows', selection, rowIndex);
       delete w.draggingRows;
       w.enableSelection();
     },
@@ -1035,21 +1049,26 @@ Fancy.modules['dd'] = true;
         selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
         rowIndex = DRM.dropOutSideRowIndex || 0;
 
-      if(!me.singleRowToDrag){
+      if(!me.singleRowToDrag && w.dropOutSideActions){
         w.clearSelection();
       }
 
-      w.remove(selection, null, false);
-      w.store.changeDataView();
-      w.update();
+      if(w.dropOutSideActions){
+        w.remove(selection, null, false);
+        w.store.changeDataView();
+        w.update();
 
-      DRM.toGrid.insert(rowIndex, selection, false);
-      DRM.toGrid.store.changeDataView();
-      DRM.toGrid.update();
+        DRM.toGrid.insert(rowIndex, selection, false);
+        DRM.toGrid.store.changeDataView();
+        DRM.toGrid.update();
+      }
+
       DRM.toGrid.rowdragdrop.clearCellsMask();
-      DRM.toGrid.fire('dragrows', selection);
+      DRM.toGrid.fire('dragrows', selection, rowIndex);
 
-      DRM.remove();
+      if(w.dropOutSideActions){
+        DRM.remove();
+      }
     },
     onBeforeCellMouseDown: function(el, o){
       var me = this,
@@ -1123,6 +1142,8 @@ Fancy.modules['dd'] = true;
     onRowLeave: function(grid, params){
       var me = this,
         w = me.widget,
+        s = w.store,
+        data = s.getDataView();
         rowIndex = params.rowIndex,
         activeRowIndex = me.activeRowIndex;
 
@@ -1142,7 +1163,7 @@ Fancy.modules['dd'] = true;
         return;
       }
 
-      if(rowIndex === activeRowIndex && w.getDisplayedData().length - 1 === rowIndex){
+      if(rowIndex === activeRowIndex && data.length - 1 === rowIndex){
         me.activeRowIndex = me.activeRowIndex + 1;
         me.showCellsDropMask();
 
