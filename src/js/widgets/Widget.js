@@ -238,6 +238,12 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
+  isVisible: function(){
+    return this.el.css('display') !== 'none';
+  },
+  /*
+   *
+   */
   initTpl: function(){
     var me = this;
 

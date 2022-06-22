@@ -184,7 +184,7 @@
 
           if (column.displayKey !== undefined){
             displayKey = column.displayKey;
-            valueKey = displayKey;
+            valueKey = column.valueKey || displayKey;
           }
 
           if (theme === 'default'){
@@ -485,6 +485,10 @@
         column;
 
       if(!editor){
+        return;
+      }
+
+      if(!editor.isVisible()){
         return;
       }
 
@@ -852,7 +856,6 @@
 
       me.activeCellEditParams = o;
       w.edit.activeCellEditParams = o;
-
       s.set(o.rowIndex, key, value);
     },
     /*
@@ -864,10 +867,11 @@
         w = me.widget,
         s = w.store,
         o = me.activeCellEditParams,
-        key = me.getActiveColumnKey(),
-        newValue = combo.getDisplayValue(value);
+        key = me.getActiveColumnKey();//,
+        //newValue = combo.getDisplayValue(value);
 
-      s.set(o.rowIndex, key, newValue);
+      //s.set(o.rowIndex, key, newValue);
+      s.set(o.rowIndex, key, value);
       me.hideEditor();
     },
     /*

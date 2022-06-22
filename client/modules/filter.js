@@ -1018,7 +1018,7 @@ Fancy.modules['filter'] = true;
 
             if (column.displayKey !== undefined){
               displayKey = column.displayKey;
-              valueKey = displayKey;
+              valueKey = column.valueKey || displayKey;
             }
 
             if(F.isObject(column.data) || F.isObject(column.data[0])){

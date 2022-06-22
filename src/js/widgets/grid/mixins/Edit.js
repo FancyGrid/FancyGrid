@@ -124,7 +124,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   },
   /*
    * @param {Number} index
-   * @param {Object} o
+   * @param {Object|Array} o
    * @param {Boolean} fire
    */
   insert: function(index, o, fire){
@@ -140,6 +140,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(Fancy.isArray(o)){
+      if(o.length){
+        var item = o[0],
+          keys = Fancy.Object.keys(item);
+
+        s.addField(keys);
+      }
+
       i = o.length - 1;
 
       for(;i !== -1;i--){
@@ -152,6 +159,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return;
     }
     else if(Fancy.isArray(index)){
+      if(index.length){
+        var item = index[0],
+          keys = Fancy.Object.keys(item);
+
+        s.addField(keys);
+      }
+
       i = index.length - 1;
 
       for(;i !== -1;i--){
@@ -164,10 +178,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return;
     }
     else if(Fancy.isObject(index) && o === undefined){
+      s.addField(Fancy.Object.keys(index));
+
       o = index;
       index = 0;
     }
     else if(Fancy.isObject(index) && Fancy.isNumber(o)){
+      s.addField(Fancy.Object.keys(index));
+
       var _index = o;
       o = index;
       index = _index;

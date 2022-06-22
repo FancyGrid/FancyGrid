@@ -296,13 +296,61 @@ Fancy.define('Fancy.Store', {
    */
   set: function(rowIndex, key, value, id){
     var me = this,
+      w = me.widget,
       item,
-      oldValue,
       infiniteScrolledToRow = 0;
 
     if(Number.isNaN(value)){
       return;
     }
+
+    if(me.infiniteScrolledToRow){
+      infiniteScrolledToRow = me.infiniteScrolledToRow;
+    }
+
+    if(rowIndex + infiniteScrolledToRow === -1){
+      item = me.getById(id);
+    }
+    else{
+      item = me.dataView[rowIndex + infiniteScrolledToRow];
+      id = item.data.id || item.id;
+    }
+
+    if(!me._stopSaving){
+      w.fire('beforesaving', {
+        rowIndex: rowIndex,
+        key: key,
+        value: value,
+        id: id,
+        saving: function(){
+          me._set(rowIndex, key, value, id);
+        }
+      });
+    }
+
+    if(me.stopSaving){
+      me._stopSaving = true;
+      setTimeout(function(){
+        delete me.stopSaving;
+        delete me._stopSaving;
+      });
+
+      return;
+    }
+
+    this._set(rowIndex, key, value, id);
+  },
+  /*
+   * @param {Number} rowIndex
+   * @param {String|Number} key
+   * @param {String|Number} value
+   * @param {String|Number} [id]
+   */
+  _set: function(rowIndex, key, value, id){
+    var me = this,
+      item,
+      oldValue,
+      infiniteScrolledToRow = 0;
 
     if(me.infiniteScrolledToRow){
       infiniteScrolledToRow = me.infiniteScrolledToRow;
@@ -1035,6 +1083,14 @@ Fancy.define('Fancy.Store', {
     var me = this,
       fields = me.fields,
       presented = false;
+
+    if(Fancy.isArray(index)){
+      Fancy.Array.each(index, function(_index){
+        me.addField(_index);
+      });
+
+      return;
+    }
 
     Fancy.each(fields, function(field){
       if(field === index){

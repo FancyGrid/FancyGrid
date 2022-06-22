@@ -633,6 +633,7 @@ Fancy.modules['dd'] = true;
 
   //CONSTANTS
   var GRID_BODY_CLS = F.GRID_BODY_CLS;
+  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
   var GRID_CELL_CLS = F.GRID_CELL_CLS;
   var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
 
@@ -959,10 +960,10 @@ Fancy.modules['dd'] = true;
 
       me.clearCellsMask();
       if(rowIndex === -1){
-        w.el.select('.' + GRID_CELL_CLS + '[index="' + 0 + '"]').addCls(me.cellFirstRowMaskCls);
+        w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + 0 + '"]').addCls(me.cellFirstRowMaskCls);
       }
       else {
-        w.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').addCls(me.cellMaskCls);
+        w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').addCls(me.cellMaskCls);
       }
     },
     clearCellsMask: function(){
@@ -1143,7 +1144,7 @@ Fancy.modules['dd'] = true;
       var me = this,
         w = me.widget,
         s = w.store,
-        data = s.getDataView();
+        data = s.getDataView(),
         rowIndex = params.rowIndex,
         activeRowIndex = me.activeRowIndex;
 

@@ -566,7 +566,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
           if (column.displayKey !== undefined){
             displayKey = column.displayKey;
-            valueKey = displayKey;
+            valueKey = column.valueKey || displayKey;
           }
 
           if (theme === 'default'){
@@ -867,6 +867,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         column;
 
       if(!editor){
+        return;
+      }
+
+      if(!editor.isVisible()){
         return;
       }
 
@@ -1234,7 +1238,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       me.activeCellEditParams = o;
       w.edit.activeCellEditParams = o;
-
       s.set(o.rowIndex, key, value);
     },
     /*
@@ -1246,10 +1249,11 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         w = me.widget,
         s = w.store,
         o = me.activeCellEditParams,
-        key = me.getActiveColumnKey(),
-        newValue = combo.getDisplayValue(value);
+        key = me.getActiveColumnKey();//,
+        //newValue = combo.getDisplayValue(value);
 
-      s.set(o.rowIndex, key, newValue);
+      //s.set(o.rowIndex, key, newValue);
+      s.set(o.rowIndex, key, value);
       me.hideEditor();
     },
     /*
@@ -1734,7 +1738,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
               if (column.displayKey){
                 itemConfig.displayKey = column.displayKey;
-                itemConfig.valueKey = column.displayKey;
+                itemConfig.valueKey = column.valueKey || column.displayKey;
               }
               else {
                 itemConfig.displayKey = 'text';

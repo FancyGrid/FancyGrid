@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.167',
+  version: '1.7.172',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -1439,6 +1439,23 @@ Fancy.Object = {
     }
 
     return true;
+  },
+  /**
+   * @param {Object} o
+   * @return {Array}
+   */
+  keys: function(o){
+    if(Object.keys){
+      return Object.keys(o);
+    }
+
+    var keys = [];
+
+    for(var p in o){
+      keys.push(p);
+    }
+
+    return keys;
   }
 };
 /**
@@ -3543,13 +3560,61 @@ Fancy.define('Fancy.Store', {
    */
   set: function(rowIndex, key, value, id){
     var me = this,
+      w = me.widget,
       item,
-      oldValue,
       infiniteScrolledToRow = 0;
 
     if(Number.isNaN(value)){
       return;
     }
+
+    if(me.infiniteScrolledToRow){
+      infiniteScrolledToRow = me.infiniteScrolledToRow;
+    }
+
+    if(rowIndex + infiniteScrolledToRow === -1){
+      item = me.getById(id);
+    }
+    else{
+      item = me.dataView[rowIndex + infiniteScrolledToRow];
+      id = item.data.id || item.id;
+    }
+
+    if(!me._stopSaving){
+      w.fire('beforesaving', {
+        rowIndex: rowIndex,
+        key: key,
+        value: value,
+        id: id,
+        saving: function(){
+          me._set(rowIndex, key, value, id);
+        }
+      });
+    }
+
+    if(me.stopSaving){
+      me._stopSaving = true;
+      setTimeout(function(){
+        delete me.stopSaving;
+        delete me._stopSaving;
+      });
+
+      return;
+    }
+
+    this._set(rowIndex, key, value, id);
+  },
+  /*
+   * @param {Number} rowIndex
+   * @param {String|Number} key
+   * @param {String|Number} value
+   * @param {String|Number} [id]
+   */
+  _set: function(rowIndex, key, value, id){
+    var me = this,
+      item,
+      oldValue,
+      infiniteScrolledToRow = 0;
 
     if(me.infiniteScrolledToRow){
       infiniteScrolledToRow = me.infiniteScrolledToRow;
@@ -4282,6 +4347,14 @@ Fancy.define('Fancy.Store', {
     var me = this,
       fields = me.fields,
       presented = false;
+
+    if(Fancy.isArray(index)){
+      Fancy.Array.each(index, function(_index){
+        me.addField(_index);
+      });
+
+      return;
+    }
 
     Fancy.each(fields, function(field){
       if(field === index){
@@ -5849,6 +5922,12 @@ Fancy.define('Fancy.Widget', {
    */
   hide: function(){
     this.el.hide();
+  },
+  /*
+   *
+   */
+  isVisible: function(){
+    return this.el.css('display') !== 'none';
   },
   /*
    *
@@ -14583,7 +14662,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   },
   /*
    * @param {Number} index
-   * @param {Object} o
+   * @param {Object|Array} o
    * @param {Boolean} fire
    */
   insert: function(index, o, fire){
@@ -14599,6 +14678,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(Fancy.isArray(o)){
+      if(o.length){
+        var item = o[0],
+          keys = Fancy.Object.keys(item);
+
+        s.addField(keys);
+      }
+
       i = o.length - 1;
 
       for(;i !== -1;i--){
@@ -14611,6 +14697,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return;
     }
     else if(Fancy.isArray(index)){
+      if(index.length){
+        var item = index[0],
+          keys = Fancy.Object.keys(item);
+
+        s.addField(keys);
+      }
+
       i = index.length - 1;
 
       for(;i !== -1;i--){
@@ -14623,10 +14716,14 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
       return;
     }
     else if(Fancy.isObject(index) && o === undefined){
+      s.addField(Fancy.Object.keys(index));
+
       o = index;
       index = 0;
     }
     else if(Fancy.isObject(index) && Fancy.isNumber(o)){
+      s.addField(Fancy.Object.keys(index));
+
       var _index = o;
       o = index;
       index = _index;
@@ -15053,15 +15150,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       'scroll', 'nativescroll',
       'remove',
       'insert',
-      'set',
-      'change',
+      'set', 'change', 'edit',
       'update',
       'beforesort', 'sort',
       'beforeload', 'load', 'servererror', 'serversuccess',
       'select', 'selectrow', 'deselectrow',
       'clearselect',
       'activate', 'deactivate',
-      'beforeedit', 'startedit', 'beforeendedit', 'endedit',
+      'beforeedit', 'startedit', 'beforeendedit', 'endedit', 'beforesaving',
       'changepage', 'changepagesize',
       'dropitems',
       'dragstart',

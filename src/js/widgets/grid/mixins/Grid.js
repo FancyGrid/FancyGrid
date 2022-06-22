@@ -951,6 +951,7 @@
 
       me.fire('set', o);
       me.fire('change', o);
+      me.fire('edit', o);
     },
     /*
      * @param {Object} store
@@ -1374,12 +1375,19 @@
      */
     destroy: function(container){
       var me = this,
-        s = me.store,
-        docEl = F.get(document);
+        s = me.store;
+        // docEl = F.get(document);
 
-      docEl.un('mouseup', me.onDocMouseUp, me);
-      docEl.un('click', me.onDocClick, me);
-      docEl.un('mousemove', me.onDocMove, me);
+      if (me.panel){
+        me.panel.hide();
+      }
+      else {
+        me.el.hide();
+      }
+
+      //docEl.un('mouseup', me.onDocMouseUp, me);
+      //docEl.un('click', me.onDocClick, me);
+      //docEl.un('mousemove', me.onDocMove, me);
 
       if(me.el && me.el.dom){
         me.body.destroy();
@@ -1513,6 +1521,14 @@
       var me = this;
 
       me.edit.stopEditor();
+    },
+    /*
+     *
+     */
+    stopSaving: function(){
+      var me = this;
+
+      me.store.stopSaving = true;
     },
     /*
      * @param {String} id

@@ -27,5 +27,22 @@ Fancy.Object = {
     }
 
     return true;
+  },
+  /**
+   * @param {Object} o
+   * @return {Array}
+   */
+  keys: function(o){
+    if(Object.keys){
+      return Object.keys(o);
+    }
+
+    var keys = [];
+
+    for(var p in o){
+      keys.push(p);
+    }
+
+    return keys;
   }
 };

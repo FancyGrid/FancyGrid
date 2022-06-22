@@ -103,11 +103,11 @@
         leftBody = w.leftBody,
         body = w.body,
         rightBody = w.rightBody,
-        docEl = F.get(document),
+        // docEl = F.get(document),
         mouseWheelEventName = F.getMouseWheelEventName();
 
-      docEl.un('mouseup', me.onMouseUpDoc, me);
-      docEl.un('mousemove', me.onMouseMoveDoc, me);
+      // docEl.un('mouseup', me.onMouseUpDoc, me);
+      // docEl.un('mousemove', me.onMouseMoveDoc, me);
 
       leftBody.el.un(mouseWheelEventName, me.onMouseWheel, me);
       body.el.un(mouseWheelEventName, me.onMouseWheel, me);
@@ -128,7 +128,7 @@
         rightBody.el.un('touchstart', me.onBodyTouchStart, me);
         rightBody.el.un('touchmove', me.onBodyTouchMove, me);
 
-        docEl.un('touchend', me.onBodyTouchEnd, me);
+        // docEl.un('touchend', me.onBodyTouchEnd, me);
       }
     },
     /*

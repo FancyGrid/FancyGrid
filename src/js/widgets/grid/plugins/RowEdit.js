@@ -340,7 +340,7 @@
 
               if (column.displayKey){
                 itemConfig.displayKey = column.displayKey;
-                itemConfig.valueKey = column.displayKey;
+                itemConfig.valueKey = column.valueKey || column.displayKey;
               }
               else {
                 itemConfig.displayKey = 'text';
