@@ -1122,5 +1122,5 @@ Fancy.Ajax = function(o){
     _o.headers = o.headers;
   }
 
-  Fancy.$.ajax(_o);
+  Fancy.$.ajdecimalSeparatorax(_o);
 };

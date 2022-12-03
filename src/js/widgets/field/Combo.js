@@ -1832,6 +1832,8 @@
         me.clearListActive();
       }
 
+      me.clear();
+
       me.renderList();
       me.onsList();
     },

@@ -1267,8 +1267,9 @@ Fancy.modules['selection'] = true;
      * @param {Number} rowIndex
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
+     * @param {Boolean} [fire]
      */
-    selectRow: function(rowIndex, value, multi){
+    selectRow: function(rowIndex, value, multi, fire){
       var me = this,
         w = me.widget,
         leftBody = w.leftBody,
@@ -1333,7 +1334,9 @@ Fancy.modules['selection'] = true;
         }
       });
 
-      w.fire('select', me.getSelection());
+      if(fire !== false){
+        w.fire('select', me.getSelection());
+      }
     },
     /*
      * @param {Number|String} id

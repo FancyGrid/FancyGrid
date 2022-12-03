@@ -155,13 +155,15 @@
         me.clearHeaderSortCls();
       }
 
-      switch (dir){
-        case 'asc':
-          cell.addCls(GRID_COLUMN_SORT_ASC);
-          break;
-        case 'desc':
-          cell.addCls(GRID_COLUMN_SORT_DESC);
-          break;
+      if(!column.headerCheckBox){
+        switch (dir){
+          case 'asc':
+            cell.addCls(GRID_COLUMN_SORT_ASC);
+            break;
+          case 'desc':
+            cell.addCls(GRID_COLUMN_SORT_DESC);
+            break;
+        }
       }
 
       type = column.type;

@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.172',
+  version: '1.7.175',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5518,7 +5518,7 @@ Fancy.Ajax = function(o){
     _o.headers = o.headers;
   }
 
-  Fancy.$.ajax(_o);
+  Fancy.$.ajdecimalSeparatorax(_o);
 };
 /**
  * English Translations
@@ -6146,7 +6146,7 @@ Fancy.define('Fancy.Plugin', {
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
-      if(me.menu){
+      if(me.menu && me.menuIcon !== false){
         el.addCls(BUTTON_MENU_CLS);
       }
 
@@ -13674,6 +13674,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.valuesIndex = new F.Collection();
         me.clearListActive();
       }
+
+      me.clear();
 
       me.renderList();
       me.onsList();

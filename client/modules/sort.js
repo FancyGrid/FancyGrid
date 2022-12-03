@@ -30,6 +30,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     switch(type){
       case 'number':
       case 'checkbox':
+      case 'select':
       case 'switcher':
       case 'progressdonut':
       case 'progressbar':
@@ -201,6 +202,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
     else {
       columnOriginalValues = me.getColumnOriginalValues(key, options);
+
+      if(key === '$selected'){
+        columnOriginalValues = columnOriginalValues.map(function(value){
+          return !!value;
+        });
+      }
 
       var notNumber = [],
         toSortValues = Fancy.Array.copy(columnOriginalValues),
@@ -702,13 +709,15 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         me.clearHeaderSortCls();
       }
 
-      switch (dir){
-        case 'asc':
-          cell.addCls(GRID_COLUMN_SORT_ASC);
-          break;
-        case 'desc':
-          cell.addCls(GRID_COLUMN_SORT_DESC);
-          break;
+      if(!column.headerCheckBox){
+        switch (dir){
+          case 'asc':
+            cell.addCls(GRID_COLUMN_SORT_ASC);
+            break;
+          case 'desc':
+            cell.addCls(GRID_COLUMN_SORT_DESC);
+            break;
+        }
       }
 
       type = column.type;

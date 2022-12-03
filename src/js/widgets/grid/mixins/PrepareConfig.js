@@ -439,7 +439,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         config.rowDragDrop = true;
       }
 
-      if(column.headerCheckBox){
+      if(column.headerCheckBox && column.sortable !== true){
         column.sortable = false;
       }
 
@@ -2078,6 +2078,53 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       for(;i<iL;i++){
         switch (tbar[i].type){
+          case 'columns':
+            tbar[i].text = tbar[i].text || 'Columns';
+            tbar[i].type = 'button';
+            tbar[i].menuIcon = false;
+
+            var menu = [];
+
+            Fancy.each(config.columns, function(column){
+              if(!column.title){
+                return;
+              }
+
+              menu.push({
+                text: column.title,
+                index: column.index,
+                column: column,
+                checked: !column.hidden,
+                handler: function(menu, item){
+                  if (item.checked === true && !item.checkbox.get()){
+                    item.checkbox.set(true);
+                  }
+
+                  if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
+                    item.checkbox.set(true);
+                    return;
+                  }
+
+                  item.checked = !item.checked;
+                  item.checkbox.set(item.checked);
+
+                  if (item.checked){
+                    me.showColumn(me.side, item.index, column);
+                  }
+                  else {
+                    me.hideColumn(me.side, item.index, column);
+                  }
+
+                  if(me.responsive){
+                    me.onWindowResize();
+                  }
+                }
+              });
+            });
+
+            tbar[i].menu = menu;
+
+            break;
           case 'search':
             config.searching = config.searching || {};
             config.filter = config.filter || true;

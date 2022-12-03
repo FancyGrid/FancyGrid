@@ -169,7 +169,7 @@
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
-      if(me.menu){
+      if(me.menu && me.menuIcon !== false){
         el.addCls(BUTTON_MENU_CLS);
       }
 

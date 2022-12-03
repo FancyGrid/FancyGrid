@@ -361,6 +361,10 @@ Fancy.modules['menu'] = true;
       me.el.show();
 
       if(checkPostion !== false){
+        if(!me.parentMenu && Fancy.MenuManager.activeMenu && Fancy.MenuManager.activeMenu.id !== me.id){
+          Fancy.MenuManager.remove();
+        }
+
         me.checkPosition();
       }
 
@@ -543,6 +547,16 @@ Fancy.modules['menu'] = true;
 
       me.activeMenu = menu;
     },
+    remove: function(){
+      var me = this;
+
+      if(!me.activeMenu){
+        return;
+      }
+
+      me.activeMenu.hide();
+      delete me.activeMenu;
+    },
     /*
      * @param {Object} e
      */
@@ -569,8 +583,7 @@ Fancy.modules['menu'] = true;
         maxDepth--;
       }
 
-      me.activeMenu.hide();
-      delete me.activeMenu;
+      me.remove();
     }
   });
 

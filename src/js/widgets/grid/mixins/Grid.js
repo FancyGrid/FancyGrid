@@ -1592,9 +1592,10 @@
      * @param {Number} rowIndex
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
+     * @param {Boolean} [fire]
      */
-    selectRow: function(rowIndex, value, multi){
-      this.selection.selectRow(rowIndex, value, multi);
+    selectRow: function(rowIndex, value, multi, fire){
+      this.selection.selectRow(rowIndex, value, multi, fire);
       //this.activated = true;
     },
     /*

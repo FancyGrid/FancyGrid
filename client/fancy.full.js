@@ -18,7 +18,7 @@ var Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.172',
+  version: '1.7.175',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -5048,6 +5048,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     switch(type){
       case 'number':
       case 'checkbox':
+      case 'select':
       case 'switcher':
       case 'progressdonut':
       case 'progressbar':
@@ -5219,6 +5220,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
     else {
       columnOriginalValues = me.getColumnOriginalValues(key, options);
+
+      if(key === '$selected'){
+        columnOriginalValues = columnOriginalValues.map(function(value){
+          return !!value;
+        });
+      }
 
       var notNumber = [],
         toSortValues = Fancy.Array.copy(columnOriginalValues),
@@ -9285,7 +9292,7 @@ Fancy.Ajax = function(o){
     _o.headers = o.headers;
   }
 
-  Fancy.$.ajax(_o);
+  Fancy.$.ajdecimalSeparatorax(_o);
 };
 if( Fancy.nojQuery ){
 
@@ -11796,7 +11803,7 @@ Fancy.define('Fancy.Plugin', {
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
-      if(me.menu){
+      if(me.menu && me.menuIcon !== false){
         el.addCls(BUTTON_MENU_CLS);
       }
 
@@ -12761,6 +12768,10 @@ Fancy.modules['menu'] = true;
       me.el.show();
 
       if(checkPostion !== false){
+        if(!me.parentMenu && Fancy.MenuManager.activeMenu && Fancy.MenuManager.activeMenu.id !== me.id){
+          Fancy.MenuManager.remove();
+        }
+
         me.checkPosition();
       }
 
@@ -12943,6 +12954,16 @@ Fancy.modules['menu'] = true;
 
       me.activeMenu = menu;
     },
+    remove: function(){
+      var me = this;
+
+      if(!me.activeMenu){
+        return;
+      }
+
+      me.activeMenu.hide();
+      delete me.activeMenu;
+    },
     /*
      * @param {Object} e
      */
@@ -12969,8 +12990,7 @@ Fancy.modules['menu'] = true;
         maxDepth--;
       }
 
-      me.activeMenu.hide();
-      delete me.activeMenu;
+      me.remove();
     }
   });
 
@@ -22317,6 +22337,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.clearListActive();
       }
 
+      me.clear();
+
       me.renderList();
       me.onsList();
     },
@@ -24030,7 +24052,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         config.rowDragDrop = true;
       }
 
-      if(column.headerCheckBox){
+      if(column.headerCheckBox && column.sortable !== true){
         column.sortable = false;
       }
 
@@ -25669,6 +25691,53 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       for(;i<iL;i++){
         switch (tbar[i].type){
+          case 'columns':
+            tbar[i].text = tbar[i].text || 'Columns';
+            tbar[i].type = 'button';
+            tbar[i].menuIcon = false;
+
+            var menu = [];
+
+            Fancy.each(config.columns, function(column){
+              if(!column.title){
+                return;
+              }
+
+              menu.push({
+                text: column.title,
+                index: column.index,
+                column: column,
+                checked: !column.hidden,
+                handler: function(menu, item){
+                  if (item.checked === true && !item.checkbox.get()){
+                    item.checkbox.set(true);
+                  }
+
+                  if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
+                    item.checkbox.set(true);
+                    return;
+                  }
+
+                  item.checked = !item.checked;
+                  item.checkbox.set(item.checked);
+
+                  if (item.checked){
+                    me.showColumn(me.side, item.index, column);
+                  }
+                  else {
+                    me.hideColumn(me.side, item.index, column);
+                  }
+
+                  if(me.responsive){
+                    me.onWindowResize();
+                  }
+                }
+              });
+            });
+
+            tbar[i].menu = menu;
+
+            break;
           case 'search':
             config.searching = config.searching || {};
             config.filter = config.filter || true;
@@ -28252,9 +28321,10 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
      * @param {Number} rowIndex
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
+     * @param {Boolean} [fire]
      */
-    selectRow: function(rowIndex, value, multi){
-      this.selection.selectRow(rowIndex, value, multi);
+    selectRow: function(rowIndex, value, multi, fire){
+      this.selection.selectRow(rowIndex, value, multi, fire);
       //this.activated = true;
     },
     /*
@@ -34621,13 +34691,15 @@ Fancy.define('Fancy.grid.plugin.Updater', {
         me.clearHeaderSortCls();
       }
 
-      switch (dir){
-        case 'asc':
-          cell.addCls(GRID_COLUMN_SORT_ASC);
-          break;
-        case 'desc':
-          cell.addCls(GRID_COLUMN_SORT_DESC);
-          break;
+      if(!column.headerCheckBox){
+        switch (dir){
+          case 'asc':
+            cell.addCls(GRID_COLUMN_SORT_ASC);
+            break;
+          case 'desc':
+            cell.addCls(GRID_COLUMN_SORT_DESC);
+            break;
+        }
       }
 
       type = column.type;
@@ -41642,8 +41714,9 @@ Fancy.modules['selection'] = true;
      * @param {Number} rowIndex
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
+     * @param {Boolean} [fire]
      */
-    selectRow: function(rowIndex, value, multi){
+    selectRow: function(rowIndex, value, multi, fire){
       var me = this,
         w = me.widget,
         leftBody = w.leftBody,
@@ -41708,7 +41781,9 @@ Fancy.modules['selection'] = true;
         }
       });
 
-      w.fire('select', me.getSelection());
+      if(fire !== false){
+        w.fire('select', me.getSelection());
+      }
     },
     /*
      * @param {Number|String} id

@@ -30,6 +30,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     switch(type){
       case 'number':
       case 'checkbox':
+      case 'select':
       case 'switcher':
       case 'progressdonut':
       case 'progressbar':
@@ -201,6 +202,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
     else {
       columnOriginalValues = me.getColumnOriginalValues(key, options);
+
+      if(key === '$selected'){
+        columnOriginalValues = columnOriginalValues.map(function(value){
+          return !!value;
+        });
+      }
 
       var notNumber = [],
         toSortValues = Fancy.Array.copy(columnOriginalValues),
