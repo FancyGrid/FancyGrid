@@ -892,7 +892,7 @@ var FancyForm = function(){
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       _v = Fancy.version.replace(/\./g, ''),
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (https://cdn.jsdelivr.net/npm/fancygrid@1.7.176/client/modules/);
 
     fn = fn || function(){};
 
@@ -949,7 +949,7 @@ var FancyForm = function(){
     var  body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       endUrl = '.js',
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (https://cdn.jsdelivr.net/npm/fancygrid@1.7.176/client/modules/);
 
     _script.src = MODULESDIR + 'i18n/' + i18n + endUrl;
     _script.charset = 'utf-8';
@@ -995,7 +995,7 @@ var FancyForm = function(){
         name = 'fancy',
         endUrl = Fancy.DEBUG ? '.css': '.min.css',
         _v = Fancy.version.replace(/\./g, ''),
-        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (https://cdn.jsdelivr.net/npm/fancygrid@1.7.176/client/modules/);
 
       MODULESDIR = MODULESDIR.replace('modules/', '');
       MODULESDIR = MODULESDIR.replace('modules', '');
