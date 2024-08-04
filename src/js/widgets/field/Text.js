@@ -19,8 +19,8 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
 
@@ -29,11 +29,11 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
 
     //me.ons();
 
-    if( me.hidden ){
+    if (me.hidden) {
       me.css('display', 'none');
     }
 
-    if( me.style ){
+    if (me.style) {
       me.css(me.style);
     }
   },
@@ -54,7 +54,7 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
   /*
    * @param {*} value
    */
-  set: function(value){
+  set(value){
     this.el.select('.fancy-field-text-value').item(0).update(value);
   }
 });

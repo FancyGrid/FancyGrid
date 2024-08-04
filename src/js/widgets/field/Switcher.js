@@ -15,11 +15,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
   },
   checkedCls: 'fancy-switcher-on',
-  fieldCls: Fancy.FIELD_CLS + ' fancy-field-switcher',
+  fieldCls: `${Fancy.FIELD_CLS} fancy-field-switcher`,
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',

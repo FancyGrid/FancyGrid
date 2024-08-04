@@ -33,34 +33,34 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    *
    */
-  initProxy: function(){
-    var me = this,
+  initProxy(){
+    const me = this,
       w = me.widget;
 
     me.proxy = me.data.proxy || {};
-    var proxy = me.proxy;
+    const proxy = me.proxy;
 
-    if(proxy.words){
-      for(var p in proxy.words){
+    if (proxy.words) {
+      for(const p in proxy.words){
         this[p + 'Param'] = proxy.words[p];
       }
     }
 
-    if(proxy.autoLoad !== undefined){
+    if (proxy.autoLoad !== undefined) {
       me.autoLoad = proxy.autoLoad;
     }
 
-    if(proxy.autoSave !== undefined){
+    if (proxy.autoSave !== undefined) {
       me.autoSave = proxy.autoSave;
     }
 
-    if(proxy.batch !== undefined){
+    if (proxy.batch !== undefined) {
       me.batch = proxy.batch;
     }
 
     me.initReader();
     me.initWriter();
-    if(me.proxy.type === 'rest'){
+    if (me.proxy.type === 'rest') {
       me.initRest();
     }
     else {
@@ -69,7 +69,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       me.checkProxy();
     }
 
-    if(me.autoLoad){
+    if (me.autoLoad) {
       //if(w.stateful && (me.remoteFilter && me.filters){
       if((w.stateful || w.state ) && (me.remoteFilter || me.remoteSort)){
         /*
@@ -88,8 +88,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    *
    */
-  checkProxy: function(){
-    var me = this,
+  checkProxy(){
+    const me = this,
       proxy = me.proxy;
 
     if(proxy.api.read === undefined){
@@ -99,24 +99,24 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    * used only in Fancy.store.mixin.Rest
    */
-  checkUrl: function(){
-    var me = this,
+  checkUrl(){
+    const me = this,
       proxy = me.proxy;
 
-    if(proxy.url === undefined){
+    if (proxy.url === undefined) {
       throw new Error('[FancyGrid Error] - in data proxy there is not url');
     }
   },
   /*
    *
    */
-  initServerAPI: function(){
-    var me = this,
+  initServerAPI(){
+    const me = this,
       proxy = me.proxy;
 
     proxy.api = proxy.api || {};
 
-    if(proxy.url){
+    if (proxy.url) {
       proxy.api.read = proxy.url;
     }
 
@@ -128,8 +128,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    *
    */
-  initActionMethods: function(){
-    var me = this,
+  initActionMethods(){
+    const me = this,
       proxy = me.proxy,
       methods = proxy.methods || {},
       method = proxy.method || 'GET';
@@ -144,7 +144,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    * @param {Function} [fn]
    */
-  loadData: function(fn){
+  loadData(fn){
     var me = this,
       proxy = me.proxy,
       params = {},
@@ -171,7 +171,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(proxy.beforeRequest){
-      var proccessed = proxy.beforeRequest({
+      const proccessed = proxy.beforeRequest({
         type: 'read',
         params: params,
         headers: headers
@@ -189,13 +189,13 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params: params,
       getJSON: true,
       headers: headers,
-      success: function(o, status, request){
-        if(activeElement){
+      success(o, status, request){
+        if (activeElement) {
           activeElement.focus();
         }
 
         if(proxy.afterRequest){
-          var proccessed = proxy.afterRequest({
+          const proccessed = proxy.afterRequest({
             type: 'read',
             response: o
           });
@@ -261,7 +261,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
 
         me.widget._setColumnsAutoWidth();
       },
-      error: function(request, errorTitle, errorMessage){
+      error(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -272,8 +272,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    * @param {String} key
    * @param {*} value
    */
-  proxyCRUD: function(type, id, key, value){
-    var me = this;
+  proxyCRUD(type, id, key, value){
+    const me = this;
 
     switch(type){
       case 'UPDATE':
@@ -292,7 +292,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    * @param {String} key
    * @param {*} value
    */
-  proxyServerUpdate: function(id, key, value){
+  proxyServerUpdate(id, key, value){
     var me = this,
       proxy = me.proxy,
       params = {},
@@ -322,7 +322,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
     }
 
     if(proxy.beforeRequest){
-      var proccessed = proxy.beforeRequest({
+      const proccessed = proxy.beforeRequest({
         type: 'update',
         params: params,
         headers: headers
@@ -342,9 +342,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params: params,
       sendJSON: sendJSON,
       headers: headers,
-      success: function(o, status, request){
+      success(o, status, request){
         if(proxy.afterRequest){
-          var proccessed = proxy.afterRequest({
+          const proccessed = proxy.afterRequest({
             type: 'update',
             response: o
           });
@@ -357,7 +357,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('update', id, key, value);
         me.fire('serversuccess', o, request);
       },
-      error: function(request, errorTitle, errorMessage){
+      error(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -366,7 +366,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    * @param {String} id
    * @param {*} data
    */
-  proxyServerDestroy: function(id, data){
+  proxyServerDestroy(id, data){
     var me = this,
       proxy = me.proxy,
       params = {},
@@ -407,9 +407,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params: params,
       sendJSON: sendJSON,
       headers: headers,
-      success: function(o, status, request){
+      success(o, status, request){
         if(proxy.afterRequest){
-          var proccessed = proxy.afterRequest({
+          const proccessed = proxy.afterRequest({
             type: 'destroy',
             response: o
           });
@@ -422,7 +422,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('destroy', id, o);
         me.fire('serversuccess', o, request);
       },
-      error: function(request, errorTitle, errorMessage){
+      error(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -431,7 +431,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
    * @param {String} id
    * @param {*} data
    */
-  proxyServerCreate: function(id, data){
+  proxyServerCreate(id, data){
     var me = this,
       proxy = me.proxy,
       params = {},
@@ -480,9 +480,9 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       params: params,
       sendJSON: sendJSON,
       headers: headers,
-      success: function(o, status, request){
+      success(o, status, request){
         if(proxy.afterRequest){
-          var proccessed = proxy.afterRequest({
+          const proccessed = proxy.afterRequest({
             type: 'create',
             response: o
           });
@@ -509,7 +509,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
         me.fire('create', o.data);
         me.fire('serversuccess', o, request);
       },
-      error: function(request, errorTitle, errorMessage){
+      error(request, errorTitle, errorMessage){
         me.fire('servererror', errorTitle, errorMessage, request);
       }
     });
@@ -517,7 +517,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    *
    */
-  save: function(){
+  save(){
     var me = this,
       removed = me.removed,
       changed = me.changed,
@@ -525,7 +525,7 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
       i = 0,
       iL = me.saveOrder.length;
 
-    for(var p in inserted){
+    for(const p in inserted){
       if(p === 'length'){
         continue;
       }
@@ -565,8 +565,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    * @param {Array} actions
    */
-  saveChangeActions: function(actions){
-    var me = this;
+  saveChangeActions(actions){
+    const me = this;
 
     if(!actions.length){
       return;
@@ -635,8 +635,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    * @param {Array} actions
    */
-  saveRemoveActions: function(actions){
-    var me = this;
+  saveRemoveActions(actions){
+    const me = this;
 
     if(actions.length === 0){
       return;
@@ -708,8 +708,8 @@ Fancy.Mixin('Fancy.store.mixin.Proxy', {
   /*
    * @param {Array} actions
    */
-  saveInsertActions: function(actions){
-    var me = this;
+  saveInsertActions(actions){
+    const me = this;
 
     if(actions.length === 0){
       return;

@@ -4,30 +4,30 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_CLS = F.GRID_CLS;
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_CLS = F.GRID_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-  var BAR_CLS = F.BAR_CLS;
-  var BAR_CONTAINER_CLS = F.BAR_CONTAINER_CLS;
-  var BAR_BUTTON_CLS = F.BAR_BUTTON_CLS;
-  var BAR_SEG_BUTTON_CLS = F.BAR_SEG_BUTTON_CLS;
-  var BAR_LEFT_SCROLLER_CLS = F.BAR_LEFT_SCROLLER_CLS;
-  var BAR_RIGHT_SCROLLER_CLS = F.BAR_RIGHT_SCROLLER_CLS;
+  const BAR_CLS = F.BAR_CLS;
+  const BAR_CONTAINER_CLS = F.BAR_CONTAINER_CLS;
+  const BAR_BUTTON_CLS = F.BAR_BUTTON_CLS;
+  const BAR_SEG_BUTTON_CLS = F.BAR_SEG_BUTTON_CLS;
+  const BAR_LEFT_SCROLLER_CLS = F.BAR_LEFT_SCROLLER_CLS;
+  const BAR_RIGHT_SCROLLER_CLS = F.BAR_RIGHT_SCROLLER_CLS;
 
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
-  var FIELD_SEARCH_CLS = F.FIELD_SEARCH_CLS;
-  var FIELD_SEARCH_LIST_CLS = F.FIELD_SEARCH_LIST_CLS;
-  var FIELD_SEARCH_PARAMS_LINK_CLS = F.FIELD_SEARCH_PARAMS_LINK_CLS;
-  var FIELD_SEARCH_PARAMED_CLS = F.FIELD_SEARCH_PARAMED_CLS;
-  var FIELD_SEARCH_PARAMED_EMPTY_CLS = F.FIELD_SEARCH_PARAMED_EMPTY_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  const FIELD_SEARCH_CLS = F.FIELD_SEARCH_CLS;
+  const FIELD_SEARCH_LIST_CLS = F.FIELD_SEARCH_LIST_CLS;
+  const FIELD_SEARCH_PARAMS_LINK_CLS = F.FIELD_SEARCH_PARAMS_LINK_CLS;
+  const FIELD_SEARCH_PARAMED_CLS = F.FIELD_SEARCH_PARAMED_CLS;
+  const FIELD_SEARCH_PARAMED_EMPTY_CLS = F.FIELD_SEARCH_PARAMED_EMPTY_CLS;
 
-  var PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
 
   F.define('Fancy.Bar', {
     extend: F.Widget,
@@ -52,13 +52,13 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.roles = {};
       me.render();
 
-      if (me.barScrollEnabled){
+      if (me.barScrollEnabled) {
         me.initScroll();
         setTimeout(function(){
           me.checkScroll();
@@ -68,8 +68,8 @@
     /*
      *
      */
-    render: function(){
-      var me = this;
+    render(){
+      const me = this;
 
       me.renderEl();
       me.renderItems();
@@ -78,11 +78,11 @@
     /*
      *
      */
-    renderEl: function(){
-      var me = this;
+    renderEl(){
+      const me = this;
 
-      if (!me.el){
-        var el = F.get(document.createElement('div'));
+      if (!me.el) {
+        const el = F.get(document.createElement('div'));
 
         el.addCls(
           me.widgetCls,
@@ -98,11 +98,11 @@
         }
       }
 
-      if(me.hidden){
+      if (me.hidden) {
         me.el.css('display', 'none');
       }
 
-      var containerEl = F.get(document.createElement('div'));
+      const containerEl = F.get(document.createElement('div'));
       containerEl.addCls(me.containerCls);
 
       me.containerEl = F.get(me.el.dom.appendChild(containerEl.dom));
@@ -110,7 +110,7 @@
     /*
      *
      */
-    renderItems: function(){
+    renderItems(){
       var me = this,
         containerEl = me.containerEl,
         items = me.items || [],
@@ -121,7 +121,7 @@
         sidePassed = iL - 1,
         passedRight = 0;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         var item = items[i];
 
         if (isSide){
@@ -129,34 +129,34 @@
           sidePassed--;
         }
 
-        if (item.toggleGroup){
+        if (item.toggleGroup) {
           item.enableToggle = true;
         }
 
-        if (F.isObject(item)){
+        if (F.isObject(item)) {
           item.type = item.type || 'button';
         }
 
-        if (isSide){
+        if (isSide) {
           me.floating = 'right';
           item.style = item.style || {};
           item.style['right'] = passedRight;
         }
 
-        if (F.isObject(item)){
+        if (F.isObject(item)) {
           item.renderTo = containerEl.dom;
         }
 
-        switch (item){
+        switch (item) {
           case '|':
-            var style = {
+            const style = {
               'float': me.floating,
               'margin-right': '5px',
               'margin-top': '6px',
               'padding-left': '0px'
             };
 
-            if (me.floating === 'right'){
+            if (me.floating === 'right') {
               F.applyIf(style, {
                 right: '1px',
                 position: 'absolute'
@@ -184,19 +184,19 @@
             }
         }
 
-        if(isSide){
+        if (isSide) {
           //TODO: redo with variable
           //Needs variable charWidth from theme
           //Possible place of bug: wrong right value.
-          if(item.text){
+          if (item.text) {
             passedRight += item.text.length * 7 + 5 + 5 + 5;
           }
-          else if(item.width){
+          else if (item.width) {
             passedRight += item.width + 5;
           }
 
-          if(item.imageCls){
-            if(item.imageWidth){
+          if (item.imageCls) {
+            if (item.imageWidth) {
               passedRight += item.imageWidth;
             }
             else{
@@ -214,7 +214,7 @@
      * @param {Object} item
      * @return {Object}
      */
-    renderItem: function(item){
+    renderItem(item){
       var me = this,
         field,
         containerEl = me.containerEl,
@@ -229,20 +229,20 @@
         'float': me.floating
       });
 
-      if (me.floating === 'right'){
+      if (me.floating === 'right') {
         F.applyIf(item.style, {
           right: me.sideRight,
           position: 'absolute'
         });
       }
 
-      if (!item.scope && me.scope){
+      if (!item.scope && me.scope) {
         item.scope = me.scope;
       }
 
-      switch (item.type){
+      switch (item.type) {
         case 'wrapper':
-          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS){
+          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS) {
             containerEl.destroy();
             containerEl = me.el;
           }
@@ -262,16 +262,16 @@
 
             _item.renderTo = renderTo.dom;
             field = me.renderItem(_item);
-            var fieldEl = field.el;
+            const fieldEl = field.el;
 
-            if (i === iL - 1){
+            if (i === iL - 1) {
               fieldEl.css('margin-right', '0px');
             }
             else {
               width += parseInt(fieldEl.css('margin-right'));
             }
 
-            if (F.nojQuery){
+            if (F.nojQuery) {
               width += parseInt(fieldEl.width());
             }
             else {
@@ -415,22 +415,22 @@
 
           item.events = item.events.concat([{
             enter: function(field, value){
-              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+              const grid = F.getWidget(field.el.parent().parent().parent().parent().select(`.${GRID_CLS}`).item(0).attr('id'));
 
               //this.search(['name', 'surname', 'position'], value);
               //this.search(value);
               //this.search(['a', 'b', 'c']);
               grid.search(value);
-              if(grid.expander){
+              if (grid.expander) {
                 grid.expander.reSet();
               }
             }
           }, {
             key: function(field, value){
-              var me = this,
-                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+              const me = this,
+                grid = F.getWidget(field.el.parent().parent().parent().parent().select(`.${GRID_CLS}`).item(0).attr('id'));
 
-              if(grid.filter && grid.filter.autoEnterDelay === false){
+              if (grid.filter && grid.filter.autoEnterDelay === false) {
                 return;
               }
 
@@ -442,9 +442,9 @@
               delete me.intervalAutoEnter;
 
               me.intervalAutoEnter = setInterval(function(){
-                var now = new Date();
+                const now = new Date();
 
-                if (now - me.autoEnterTime > 500){
+                if (now - me.autoEnterTime > 500) {
                   clearInterval(me.intervalAutoEnter);
                   delete me.intervalAutoEnter;
                   value = field.getValue();
@@ -655,7 +655,7 @@
 
           var cls = FIELD_SEARCH_CLS;
 
-          if (item.paramsMenu){
+          if (item.paramsMenu) {
             item.tpl = [
               '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
               '{label}',
@@ -685,12 +685,12 @@
         default:
       }
 
-      if (me.floating === 'right'){
+      if (me.floating === 'right') {
         me.sideRight += field.width;
         me.sideRight += 7;
       }
 
-      if (item.role){
+      if (item.role) {
         me.roles[item.role] = field;
       }
 
@@ -700,7 +700,7 @@
      *
      */
     initScroll: function(){
-      var me = this;
+      const me = this;
 
       me.leftScroller = new F.Button({
         imageCls: true,
@@ -749,14 +749,14 @@
     /*
      * @return {Number}
      */
-    getBarWidth: function(){
+    getBarWidth(){
       return parseInt(this.el.css('width'));
     },
     /*
      * @return {Number}
      */
-    getItemsWidth: function(){
-      var width = 0;
+    getItemsWidth(){
+      let width = 0;
 
       F.each(this.items, function(item){
         if(item.el.css('display') === 'none' ){
@@ -780,8 +780,8 @@
     /*
      *
      */
-    onPrevScrollClick: function(){
-      var me = this;
+    onPrevScrollClick(){
+      const me = this;
 
       me.scrolled += me.tabScrollStep;
 
@@ -794,8 +794,8 @@
     /*
      *
      */
-    onNextScrollClick: function(){
-      var me = this;
+    onNextScrollClick(){
+      const me = this;
 
       me.scrolled -= me.tabScrollStep;
       me.applyScrollChanges();
@@ -803,8 +803,8 @@
     /*
      *
      */
-    applyScrollChanges: function(){
-      var me = this,
+    applyScrollChanges(){
+      const me = this,
         itemsWidth = me.getItemsWidth() + me.tabOffSet,
         //itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')) - me.tabOffSet * 2,
@@ -853,10 +853,10 @@
     /*
      *
      */
-    onDocMouseUp: function(){
-      var me = this;
+    onDocMouseUp(){
+      const me = this;
 
-      if (me.scrollInterval){
+      if (me.scrollInterval) {
         clearTimeout(me.scrollInterval);
         delete me.scrollInterval;
       }
@@ -864,16 +864,16 @@
     /*
      *
      */
-    checkScroll: function(){
-      var me = this,
+    checkScroll(){
+      const me = this,
         itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth();
 
-      if (me.disableScroll){
+      if (me.disableScroll) {
         return;
       }
 
-      if(me.isParentHidden()){
+      if (me.isParentHidden()) {
         me.checkVisInt = setInterval(function(){
           if(!me.isParentHidden()){
             me.checkScroll();
@@ -887,10 +887,10 @@
         delete me.checkVisInt;
       }
 
-      if (itemsWidth > barWidth){
+      if (itemsWidth > barWidth) {
         me.enableScroll();
       }
-      else if(me.barScrollEnabled){
+      else if(me.barScrollEnabled) {
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
       }
@@ -898,35 +898,35 @@
     /*
      *
      */
-    enableScroll: function(){
-      var me = this;
+    enableScroll(){
+      const me = this;
 
-      if(!me.barScrollEnabled){
+      if (!me.barScrollEnabled) {
         return;
       }
 
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      if (me.scrolled === 0){
+      if (me.scrolled === 0) {
         me.leftScroller.disable();
-        me.containerEl.css('margin-left', 20 + 'px');
+        me.containerEl.css('margin-left', '20px');
       }
     },
     /*
      *
      */
-    initTabEdit: function(){
-      var me = this;
+    initTabEdit(){
+      const me = this;
 
       if (!me.tabEdit){
         return;
       }
 
-      var i = me.items.length - 1;
+      let i = me.items.length - 1;
 
       for (; i > -1; i--){
-        var item = me.items[i];
+        const item = me.items[i];
 
         switch (item.type){
           case 'number':
@@ -941,38 +941,37 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onTabLastInput: function(field, e){
-      var me = this,
-        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id'));
+    onTabLastInput(field, e){
+      const me = this,
+        grid = F.getWidget(me.el.parent().select(`.${GRID_CLS}`).attr('id'));
 
-      //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
+      //NOTE: setTimeout to fix strange bug. It runs second cell without it.
       e.preventDefault();
 
-      if (grid.leftColumns.length){
-        setTimeout(function(){
-          grid.leftBody.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+      if (grid.leftColumns.length) {
+        setTimeout(() => {
+          grid.leftBody.el.select(`.${GRID_CELL_CLS}`).item(0).dom.click();
         }, 100);
       }
       else {
-        setTimeout(function(){
-          grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+        setTimeout(() => {
+          grid.body.el.select(`.${GRID_CELL_CLS}`).item(0).dom.click();
         }, 100);
       }
     },
-    isParentHidden: function(parent, deep){
-      var me = this,
-        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id')),
-        deep = deep || 1;
+    isParentHidden(parent, deep = 1){
+      const me = this,
+        grid = F.getWidget(me.el.parent().select(`.${GRID_CLS}`).attr('id'));
 
-      if(!grid){
+      if (!grid) {
         return false;
       }
 
-      if(!parent){
+      if (!parent) {
         parent = grid.el;
       }
 
-      if(parent.css('display') === 'none'){
+      if (parent.css('display') === 'none') {
         return true;
       }
 

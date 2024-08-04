@@ -1,10 +1,10 @@
 Fancy.Array = {
-  copy: function(a, deep){
+  copy(a, deep){
     if(!deep){
       return a.slice();
     }
 
-    var newArray = [],
+    let newArray = [],
       i = 0,
       iL = a.length;
 
@@ -24,8 +24,8 @@ Fancy.Array = {
 
     return newArray;
   },
-  each: function(arr, fn){
-    var i = 0,
+  each(arr, fn){
+    let i = 0,
       iL = arr.length;
 
     for(;i<iL;i++){
@@ -36,14 +36,14 @@ Fancy.Array = {
    * @param {Array} values
    * @return {Number}
    */
-  count: function(values){
+  count(values){
     return values.length;
   },
   /*
    * @param {Array} values
    * @return {Number}
    */
-  sum: function(values){
+  sum(values){
     var i = 0,
       iL = values.length,
       value = 0;
@@ -78,21 +78,21 @@ Fancy.Array = {
    * @param {Array} values
    * @return {Number}
    */
-  min: function(values){
+  min(values){
     return Math.min.apply(this, values);
   },
   /*
    * @param {Array} values
    * @return {Number}
    */
-  max: function(values){
+  max(values){
     return Math.max.apply(this, values);
   },
   /*
    * @param {Array} values
    * @return {Number}
    */
-  average: function(values){
+  average(values){
     var sum = 0,
       i = 0,
       iL = values.length;
@@ -112,17 +112,11 @@ Fancy.Array = {
    * @param {Array} insert
    * @return {Array}
    */
-  insert: function(arr, index, insert){
-    var arr2 = arr.splice(index, arr.length - index);
+  insert(arr, index, insert){
+    const arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
 
     return arr;
-  },
-  /*
-   *
-   */
-  none: function(){
-    return '';
   }
 };

@@ -13,17 +13,17 @@ Fancy.define('Fancy.Plugin', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.initId();
     this.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
   },
   /*
    *
    */
-  initTpl: function(){
-    var tpl = this.tpl;
+  initTpl(){
+    const tpl = this.tpl;
 
-    if(!tpl){
+    if (!tpl) {
       return;
     }
 

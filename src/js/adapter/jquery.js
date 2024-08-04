@@ -5,8 +5,8 @@ Fancy.nojQuery = Fancy.$ === undefined;
  * @param {String|Number} id
  * @return {Fancy.Element}
  */
-Fancy.get = function(id){
-  var type = Fancy.typeOf(id);
+Fancy.get = (id) => {
+  const type = Fancy.typeOf(id);
 
   switch(type){
     case 'string':
@@ -22,12 +22,12 @@ Fancy.get = function(id){
  * @class Fancy.Element
  */
 Fancy.Element = function(dom){
-  var me = this;
+  const me = this;
 
   me.dom = dom;
   me.$dom = Fancy.$(dom);
 
-  if(dom && dom.id){
+  if (dom && dom.id) {
     me.id = dom.id;
   }
 
@@ -38,66 +38,60 @@ Fancy.Element.prototype = {
   /*
    * @return {Fancy.Element}
    */
-  last: function(){
+  last() {
     return Fancy.get(this.$dom);
   },
   /*
    * @param {String} selector
    * @return {Fancy.Element}
    */
-  closest: function(selector){
+  closest(selector) {
     return Fancy.get(this.$dom.closest(selector)[0]);
   },
   /*
    *
    */
-  destroy: function(){
+  destroy(){
     this.$dom.remove();
   },
   /*
    *
    */
-  remove: function(){
+  remove(){
     this.$dom.remove();
   },
   /*
    *
    */
-  finish: function(){
+  finish(){
     this.$dom.finish();
   },
   //Not Used
   /*
    *
    */
-  prev: function(){
+  prev() {
     return Fancy.get(this.$dom.prev()[0]);
   },
   /*
    * @return {Fancy.Element}
    */
-  lastChild: function(){
-    var childs = this.$dom.children();
+  lastChild() {
+    const children = this.$dom.children();
 
-    return Fancy.get(childs[childs.length - 1]);
+    return Fancy.get(children[children.length - 1]);
   },
   /*
    * @return {Fancy.Element}
    */
-  firstChild: function(){
+  firstChild() {
     return Fancy.get(this.$dom.children()[0]);
   },
   /*
    * @return {Array}
    */
-  child: function (){
-    var childs = this.$dom.children();
-
-    Fancy.each(childs, function(child, index){
-      childs[index] = Fancy.get(child);
-    });
-
-    return childs;
+  child() {
+    return this.$dom.children().map(child => Fancy.get(child));
   },
   /*
    * @param {String} eventName
@@ -105,10 +99,10 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  on: function(eventName, fn, scope, delegate){
-    var me = this;
+  on(eventName, fn, scope, delegate){
+    const me = this;
 
-    if(scope){
+    if (scope) {
       fn = Fancy.$.proxy(fn, scope);
     }
 
@@ -144,17 +138,17 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  once: function(eventName, fn, scope, delegate){
-    var me = this;
+  once(eventName, fn, scope, delegate){
+    const me = this;
 
-    if (scope){
+    if (scope) {
       fn = Fancy.$.proxy(fn, scope);
     }
 
-    if(delegate){
+    if (delegate) {
       me.$dom.one(eventName, delegate, fn);
     }
-    else{
+    else {
       me.$dom.one(eventName, fn);
     }
   },
@@ -162,7 +156,7 @@ Fancy.Element.prototype = {
    * @param {String} name
    * @return {String}
    */
-  prop: function(name){
+  prop: function(name) {
     return this.$dom.prop(name);
   },
   /*
@@ -171,14 +165,14 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  un: function(eventName, fn, scope, delegate){
-    var me = this;
+  un(eventName, fn, scope, delegate){
+    const me = this;
 
-    if (scope){
+    if (scope) {
       fn = Fancy.$.proxy(fn, scope);
     }
 
-    if(delegate){
+    if (delegate) {
       me.$dom.off(eventName, delegate, fn);
     }
     else{
@@ -188,20 +182,20 @@ Fancy.Element.prototype = {
   /*
    *
    */
-  show: function(){
+  show(){
     this.$dom.show();
   },
   /*
    *
    */
-  hide: function(){
+  hide(){
     this.$dom.hide();
   },
   /*
    * @param {String} oldCls
    * @param {String} newCls
    */
-  replaceClass: function(oldCls, newCls){
+  replaceClass(oldCls, newCls){
     this.$dom.removeClass(oldCls);
     this.$dom.addClass(newCls);
   },
@@ -209,79 +203,74 @@ Fancy.Element.prototype = {
    * @param {String} tag
    * @return {Fancy.Element}
    */
-  getByTag: function(tag){
+  getByTag(tag) {
     return Fancy.get(this.$dom.find(tag)[0]);
   },
-  getByClass: function(cls){
-    return this.$dom.find('.'+cls)[0];
+  getByClass(cls) {
+    return this.$dom.find(`.${cls}`)[0];
   },
   /*
    * @param {String} cls
    */
-  addClass: function(cls){
+  addClass(cls){
     this.addCls.apply(this, arguments);
   },
   /*
    * @param {String} cls
    */
-  addCls: function(cls){
+  addCls(cls, ...args){
     this.$dom.addClass(cls);
 
-    if(arguments.length > 1){
-      var i = 1,
-        iL = arguments.length;
-
-      for (;i<iL;i++){
-        this.addClass(arguments[i]);
-      }
-    }
+    args.forEach(arg => {
+      this.$dom.addClass(arg);
+    });
   },
   /*
    * @param {String} cls
    */
-  removeClass: function(cls){
+  removeClass(cls){
     this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    */
-  removeCls: function(cls){
+  removeCls(cls){
     this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
-  hasClass: function(cls){
+  hasClass(cls) {
     return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
-  hasCls: function(cls){
+  hasCls(cls) {
     return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    */
-  toggleClass: function(cls){
+  toggleClass(cls){
     this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} cls
    */
-  toggleCls: function(cls){
+  toggleCls(cls){
     this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} selector
    * @return {Array}
    */
-  select: function(selector){
-    var me = this,
+  select(selector){
+    const me = this,
       founded = me.$dom.find(selector);
-      //founded = me.dom.querySelectorAll(selector);
+    //founded = me.dom.querySelectorAll(selector);
 
     if(founded.length === 1){
       return Fancy.get(founded[0]);
@@ -293,16 +282,16 @@ Fancy.Element.prototype = {
       return {
         length: 0,
         dom: undefined,
-        addClass: function(){},
-        addCls: function(){},
-        removeClass: function(){},
-        removeCls: function(){},
-        destroy: function(){},
-        remove: function(){},
-        css: function(){},
-        each: function(){},
-        last: function(){},
-        attr: function(){}
+        addClass: () => {},
+        addCls: () => {},
+        removeClass: () => {},
+        removeCls: () => {},
+        destroy: () => {},
+        remove: () => {},
+        css: () => {},
+        each: () => {},
+        last: () => {},
+        attr: () => {}
       };
     }
 
@@ -313,8 +302,8 @@ Fancy.Element.prototype = {
    * @param {String|Number} o2
    * @return {String|Number}
    */
-  css: function(o1, o2){
-    if( o2 === undefined){
+  css(o1, o2){
+    if (o2 === undefined) {
       return this.$dom.css(o1);
     }
     return this.$dom.css(o1, o2);
@@ -324,8 +313,8 @@ Fancy.Element.prototype = {
    * @param {String|Number} o2
    * @return {String|Number}
    */
-  attr: function(o1, o2){
-    if( o2 === undefined ){
+  attr(o1, o2){
+    if (o2 === undefined){
       return this.$dom.attr(o1);
     }
     return this.$dom.attr(o1, o2);
@@ -334,34 +323,34 @@ Fancy.Element.prototype = {
    * @param {String} html
    * @return {Fancy.Element}
    */
-  append: function(html){
+  append(html) {
     return Fancy.get(this.$dom.append(html)[0]);
   },
-  after: function(html){
+  after(html) {
     return Fancy.get(this.$dom.after(html)[0]);
   },
-  next: function(){
+  next() {
     return Fancy.get(this.$dom.next()[0]);
   },
   /*
    *
    */
-  insertAfter: function(html){
+  insertAfter(html) {
     return Fancy.get(this.$dom.insertAfter(html)[0]);
   },
   /*
    * @param {String} html
    .* @return {Fancy.Element}
    */
-  before: function(html){
+  before(html) {
     return Fancy.get(this.$dom.before(html)[0]);
   },
   /*
    * @param {String|Number} value
    * @return {Number}
    */
-  height: function(value){
-    if(value){
+  height(value){
+    if (value) {
       this.$dom.height(value);
       return this;
     }
@@ -372,8 +361,8 @@ Fancy.Element.prototype = {
    * @param {String|Number} value
    * @return {Number}
    */
-  width: function(value){
-    if(value){
+  width(value){
+    if (value) {
       this.$dom.width(value);
       return this;
     }
@@ -384,57 +373,57 @@ Fancy.Element.prototype = {
    * @param {String} selector
    * @return {Fancy.Element}
    */
-  parent: function(selector){
+  parent(selector) {
     return Fancy.get(this.$dom.parent(selector)[0]);
   },
   /*
    * @param {String} html
    */
-  update: function(html){
+  update(html){
     this.dom.innerHTML = html;
   },
   /*
    * @param {Function} overFn
    * @param {Function} outFn
    */
-  hover: function(overFn, outFn){
-    if(overFn){
+  hover(overFn, outFn){
+    if (overFn) {
       this.$dom.on('mouseenter', overFn);
     }
 
-    if(overFn){
+    if (overFn) {
       this.$dom.on('mouseleave', outFn);
     }
   },
   /*
    * @return {Object}
    */
-  position: function(){
+  position() {
     return this.$dom.position();
   },
   /*
    * @return {Object}
    */
-  offset: function(){
+  offset() {
     return this.$dom.offset();
   },
   /*
    *
    */
-  focus: function(){
+  focus(){
     this.$dom.focus();
   },
   /*
    *
    */
-  blur: function(){
+  blur(){
     this.$dom.blur();
   },
   /*
    * @param {HTMLElement} child
    * @return {Boolean}
    */
-  within: function(child){
+  within(child){
     var me = this,
       childId,
       isWithin = true,
@@ -443,22 +432,22 @@ Fancy.Element.prototype = {
     child = Fancy.get(child);
     childId = child.attr('id');
 
-    if(childId === undefined || childId === ''){
+    if (childId === undefined || childId === '') {
       childId = Fancy.id();
       removeId = true;
     }
 
     child.attr('id', childId);
 
-    if( me.select('#' + childId).length === 0 ){
+    if (me.select(`#${childId}`).length === 0) {
       isWithin = false;
     }
 
-    if(me.dom.id === child.dom.id){
+    if (me.dom.id === child.dom.id) {
       isWithin = true;
     }
 
-    if(removeId){
+    if (removeId) {
       me.removeAttr(childId);
     }
 
@@ -467,20 +456,20 @@ Fancy.Element.prototype = {
   /*
    * @param {String} attr
    */
-  removeAttr: function(attr){
+  removeAttr(attr){
     this.$dom.removeAttr(attr);
   },
   /*
    * @return {Fancy.Element}
    */
-  item: function(){
+  item(){
     return this;
   },
   /*
    *
    */
-  stop: function(){
-    if(this.$dom.stop){
+  stop(){
+    if (this.$dom.stop) {
       this.$dom.stop();
     }
   },
@@ -490,30 +479,30 @@ Fancy.Element.prototype = {
    * @param {String} easing
    * @param {Function} callback
    */
-  animate: function(style, speed, easing, callback){
+  animate(style, speed, easing, callback){
     var _style = {},
       doAnimating = false,
       force = style.force;
 
-    if(!Fancy.nojQuery){
+    if (!Fancy.nojQuery) {
       doAnimating = true;
       force = true;
     }
 
-    if(Fancy.isObject(style)){
+    if (Fancy.isObject(style)) {
       delete style.force;
     }
 
-    for(var p in style){
-      var newValue = style[p];
+    for(const p in style){
+      let newValue = style[p];
 
-      if(Fancy.isString(newValue)){
+      if (Fancy.isString(newValue)) {
         newValue = Number(newValue.replace('px', ''));
       }
 
-      var oldValue = this.css(p);
+      let oldValue = this.css(p);
 
-      if(Fancy.isString(oldValue)){
+      if (Fancy.isString(oldValue)) {
         oldValue = Number(oldValue.replace('px', ''));
       }
 
@@ -523,11 +512,11 @@ Fancy.Element.prototype = {
       }
     }
 
-    if(doAnimating === false){
+    if (doAnimating === false) {
       return;
     }
 
-    if(force){
+    if (force) {
       this.$dom.animate(_style,speed,easing,callback);
     }
     else {
@@ -537,11 +526,11 @@ Fancy.Element.prototype = {
   /*
    * @return {Number}
    */
-  index: function(){
+  index() {
     return this.$dom.index();
   },
-  onTouchEnterEvent: function(eventName, fn, scope, delegate){
-    var me = this,
+  onTouchEnterEvent(eventName, fn, scope, delegate){
+    const me = this,
       docEl = Fancy.get(document.body);
 
     if(!Fancy.isTouch){
@@ -549,7 +538,7 @@ Fancy.Element.prototype = {
     }
 
     var wrappedFn = function(e, target){
-      var tempId = Fancy.id(),
+      const tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr';
 
       e = e.originalEvent || e;
@@ -639,7 +628,7 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
-  onTouchLeaveEvent: function(eventName, fn, scope, delegate){
+  onTouchLeaveEvent(eventName, fn, scope, delegate){
     var me = this,
       docEl = Fancy.get(document.body),
       arr = [];
@@ -750,7 +739,7 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
-  getDelegateTarget: function(delegate, delegates, arr, _i){
+  getDelegateTarget(delegate, delegates, arr, _i){
     var fastGetDelegate = arr[_i - delegate.match(/\./g).length],
       i = 0,
       iL = delegates.length;
@@ -768,11 +757,11 @@ Fancy.Element.prototype = {
    * @param {Function} fn
    * @param {Object} [scope]
    */
-  onTouchMove: function(eventName, fn, scope){
-    var me = this,
+  onTouchMove(eventName, fn, scope){
+    const me = this,
       docEl = Fancy.get(document.body);
 
-    if(!Fancy.isTouch){
+    if (!Fancy.isTouch) {
       return;
     }
 
@@ -821,16 +810,14 @@ Fancy.Element.prototype = {
   /*
    * @param {Function} fn
    */
-  each: function(fn){
+  each(fn){
     fn(this, 0);
   },
   /*
    *
    */
-  getCls: function(){
-    var classList = this.dom.className.split(/\s+/);
-
-    return classList;
+  getCls() {
+    return this.dom.className.split(/\s+/);
   }
 };
 
@@ -840,7 +827,7 @@ Fancy.Element.prototype = {
  * @param {HTMLElement|HTMLElements} dom
  */
 Fancy.Elements = function(dom){
-  var me = this;
+  const me = this;
 
   me.dom = dom;
   me.$dom = dom;
@@ -848,7 +835,7 @@ Fancy.Elements = function(dom){
 };
 
 Fancy.Elements.prototype = {
-  attr: function(o1, o2){
+  attr(o1, o2){
     var me = this,
       dom = me.$dom;
 
@@ -865,13 +852,13 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  addClass: function(cls){
+  addClass(cls){
     this.addCls.apply(this, arguments);
   },
   /*
    *
    */
-  finish: function(){
+  finish(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -883,7 +870,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  addCls: function(cls){
+  addCls(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -904,13 +891,13 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  removeClass: function(cls){
+  removeClass(cls){
     this.removeCls.apply(this, arguments);
   },
   /*
    * @param {String} cls
    */
-  removeCls: function(cls){
+  removeCls(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -922,7 +909,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {Function} fn
    */
-  hover: function(fn){
+  hover(fn){
     this.$dom.on('mouseenter', fn);
   },
   /*
@@ -937,7 +924,7 @@ Fancy.Elements.prototype = {
    * @param {Number} index
    * @return {Fancy.Element}
    */
-  item: function(index){
+  item(index) {
     return Fancy.get(this.$dom[index]);
   },
   /*
@@ -945,7 +932,7 @@ Fancy.Elements.prototype = {
    * @param {String|Number} o2
    * @return {String|Number}
    */
-  css: function(o1, o2){
+  css(o1, o2){
     var me = this,
       i = 0,
       iL = me.length;
@@ -957,7 +944,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  toggleClass: function(cls){
+  toggleClass(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -969,7 +956,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  toggleCls: function(cls){
+  toggleCls(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -981,7 +968,7 @@ Fancy.Elements.prototype = {
   /*
    *
    */
-  destroy: function(){
+  destroy(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -993,13 +980,13 @@ Fancy.Elements.prototype = {
   /*
    *
    */
-  remove: function(){
+  remove(){
     this.destroy();
   },
   /*
    *
    */
-  hide: function(){
+  hide(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -1011,7 +998,7 @@ Fancy.Elements.prototype = {
   /*
    *
    */
-  show: function(){
+  show(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -1023,13 +1010,13 @@ Fancy.Elements.prototype = {
   /*
    * @return {Number}
    */
-  index: function(){
+  index(){
     return this.$dom[0].index();
   },
   /*
    * @param {Function} fn
    */
-  each: function(fn){
+  each(fn){
     var me = this,
       i = 0,
       iL = me.length,
@@ -1041,8 +1028,8 @@ Fancy.Elements.prototype = {
       fn(el, i);
     }
   },
-  last: function(){
-    var me = this;
+  last(){
+    const me = this;
 
     return new Fancy.Element(me.$dom[me.length - 1]);
   }
@@ -1051,7 +1038,7 @@ Fancy.Elements.prototype = {
 /*
  * @param {String} selector
  */
-Fancy.select = function(selector){
+Fancy.select = (selector) => {
   return Fancy.get(document.body).select(selector);
 };
 
@@ -1062,7 +1049,7 @@ Fancy.select = function(selector){
 /*
  * @param {Function} fn
  */
-Fancy.onReady = function(fn){
+Fancy.onReady = (fn) => {
   Fancy.$(document).ready(fn);
 };
 
@@ -1079,8 +1066,8 @@ Fancy.onReady = function(fn){
 /*
  * @param {Object} o
  */
-Fancy.Ajax = function(o){
-  var _o = {};
+Fancy.Ajax = (o) => {
+  const _o = {};
 
   if( o.url ){
     _o.url = o.url;

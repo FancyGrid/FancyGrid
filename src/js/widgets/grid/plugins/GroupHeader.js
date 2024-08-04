@@ -5,7 +5,7 @@
 Fancy.modules['grouped-header'] = true;
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.grid.plugin.GroupHeader', {
     extend: F.Plugin,
@@ -21,7 +21,7 @@ Fancy.modules['grouped-header'] = true;
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
 
       this.ons();
@@ -29,7 +29,7 @@ Fancy.modules['grouped-header'] = true;
     /*
      *
      */
-    ons: function(){}
+    ons(){}
   });
 
 })();

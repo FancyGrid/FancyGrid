@@ -4,11 +4,11 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var TOOLTIP_CLS = F.TOOLTIP_CLS;
-  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
+  const TOOLTIP_CLS = F.TOOLTIP_CLS;
+  const TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
   F.define('Fancy.ToolTip', {
     extend: F.Widget,
@@ -22,13 +22,13 @@
     /*
      *
      */
-    init: function(){
+    init(){
       this.initTpl();
       this.render();
       this.ons();
     },
     tpl: [
-      '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
+      `<div class="${TOOLTIP_INNER_CLS}">{text}</div>`
     ],
     widgetCls: TOOLTIP_CLS,
     cls: '',
@@ -36,8 +36,8 @@
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div'));
 
@@ -58,13 +58,13 @@
      * @param {Number} x
      * @param {Number} y
      */
-    show: function(x, y){
-      var me = this;
+    show(x, y){
+      const me = this;
 
       clearInterval(me.timeout);
       delete me.timeout;
 
-      if (me.css('display') === 'none'){
+      if (me.css('display') === 'none') {
         me.css({
           display: 'block'
         });
@@ -78,13 +78,13 @@
     /*
      * @param {Number} [delay]
      */
-    hide: function(delay){
-      var me = this;
+    hide(delay){
+      const me = this;
 
       clearInterval(me.timeout);
 
-      if (delay){
-        me.timeout = setTimeout(function(){
+      if (delay) {
+        me.timeout = setTimeout(() => {
           me.el.hide();
           delete me.timeout;
         }, delay);
@@ -96,22 +96,22 @@
     /*
      *
      */
-    destroy: function(){
+    destroy(){
       this.el.destroy();
     },
     /*
      * @param {String} html
      */
-    update: function(html){
-      this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    update(html){
+      this.el.select(`.${TOOLTIP_INNER_CLS}`).update(html);
     },
-    ons: function(){
-      var me = this;
+    ons(){
+      const me = this;
 
       me.el.on('mouseenter', me.onMouseEnter, me);
     },
-    onMouseEnter: function(){
-      var me = this;
+    onMouseEnter(){
+      const me = this;
 
       //me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
       me.hide(500);
@@ -119,18 +119,18 @@
   });
 
   F.tip = {
-    update: function(text){
+    update(text){
       F.tip = new F.ToolTip({
         text: text
       });
     },
-    show: function(x, y){
+    show(x, y){
       F.tip = new F.ToolTip({
         text: ' '
       });
       F.tip.show(x, y);
     },
-    hide: function(){
+    hide(){
       F.tip = new F.ToolTip({
         text: ' '
       });

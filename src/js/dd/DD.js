@@ -17,15 +17,15 @@ Fancy.define('Fancy.DD', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.addEvents();
     this.els = {};
   },
   /*
    * @param {Object} o
    */
-  add: function(o){
-    var me = this,
+  add(o){
+    const me = this,
       id = Fancy.id(o.overEl);
 
     /*
@@ -42,8 +42,8 @@ Fancy.define('Fancy.DD', {
   /*
    * @param {Object} e
    */
-  onMouseDown: function(e){
-    var me = this,
+  onMouseDown(e){
+    const me = this,
       doc = Fancy.get(document),
       overEl = Fancy.get(e.currentTarget),
       dragEl = me.els[overEl.attr('id')].dragEl;
@@ -64,15 +64,15 @@ Fancy.define('Fancy.DD', {
   /*
    *
    */
-  onMouseUp: function(){
-    var doc = Fancy.get(document);
+  onMouseUp(){
+    const doc = Fancy.get(document);
 
     doc.un('mousemove', this.onMouseMove, this);
   },
   /*
    * @param {Object} e
    */
-  onMouseMove: function(e){
+  onMouseMove(e){
     var me = this,
       activeO = me.els[me.activeId],
       dragEl = activeO.dragEl,
@@ -83,13 +83,13 @@ Fancy.define('Fancy.DD', {
       left = me.startX - deltaX,
       top = me.startY - deltaY;
 
-    if(top < 0){
+    if (top < 0) {
       top = 0;
     }
 
     dragEl.css({
-      left: left,
-      top: top
+      left,
+      top
     });
   }
 });

@@ -7,10 +7,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfig: function(config, originalConfig){
-    var me = this;
+  prepareConfig(config, originalConfig){
+    const me = this;
 
-    if(config.renderOuter){
+    if (config.renderOuter) {
       config.renderTo = config.renderOuter;
     }
 
@@ -29,8 +29,8 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSize: function(config){
-    var el,
+  prepareConfigSize(config) {
+    let el,
       me = this,
       renderTo = config.renderTo;
 
@@ -47,7 +47,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
 
     }
     else if(config.height === 'fit'){
-      setTimeout(function(){
+      setTimeout(() => {
         me.setHeightFit();
         me.on('changetab', me.onChangeTab, me);
       });
@@ -59,10 +59,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigDefaults: function(config){
+  prepareConfigDefaults(config){
     if( config.defaults ){
-      for(var p in config.defaults){
-        Fancy.each(config.items, function(item){
+      for(const p in config.defaults){
+        Fancy.each(config.items, item => {
           if( item[p] === undefined ){
             item[p] = config.defaults[p];
           }
@@ -76,15 +76,15 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigBars: function(config){
-    var fn = function(bar){
+  prepareConfigBars(config){
+    const fn = function (bar) {
       var i = 0,
         iL = bar.length;
 
-      for(;i<iL;i++){
-        switch (bar[i].type){
+      for (; i < iL; i++) {
+        switch (bar[i].type) {
           case 'date':
-            if (!bar[i].format){
+            if (!bar[i].format) {
               var date = config.lang.date;
               bar[i].format = {
                 read: date.read,
@@ -93,7 +93,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
               };
             }
 
-            if(config.i18n){
+            if (config.i18n) {
               bar[i].i18n = config.i18n;
             }
             break;
@@ -112,25 +112,25 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigItems: function(config){
-    var me = this,
-      fn = function(item){
+  prepareConfigItems(config){
+    const me = this,
+      fn = function (item) {
         item.theme = me.theme || '';
 
-        if( item.labelWidth === undefined ){
+        if (item.labelWidth === undefined) {
           item.labelWidth = me.labelWidth;
         }
 
-        if( item.inputWidth === undefined ){
+        if (item.inputWidth === undefined) {
           item.inputWidth = me.inputWidth;
         }
 
-        if( item.type === 'pass' || item.type === 'password' ){
+        if (item.type === 'pass' || item.type === 'password') {
           item.type = 'string';
           item.isPassword = true;
         }
 
-        if(item.items){
+        if (item.items) {
           Fancy.each(item.items, fn);
         }
       };
@@ -142,17 +142,17 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   /*
    *
    */
-  setHeightFit: function(){
-    var me = this,
-      isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
+  setHeightFit(){
+    const me = this,
+      isPanel = !!(me.title || me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
       panelBodyBorders = me.panelBodyBorders,
       gridWithoutPanelBorders = me.gridWithoutPanelBorders,
       gridBorders = me.gridBorders;
 
     me.heightFit = true;
 
-    var height = me.fieldHeight;
-    var items = me.items;
+    let height = me.fieldHeight;
+    let items = me.items;
 
     if(me.$tabs){
       var activeTab = me.activeTab || 0;
@@ -160,18 +160,18 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
       items = me.$tabs[activeTab];
     }
 
-    Fancy.each(items, function(field){
-      if(field.hidden){}
+    Fancy.each(items, field => {
+      if (field.hidden) {}
       else{
         height += parseInt(field.css('height'));
       }
     });
 
-    if(me.title){
+    if (me.title) {
       height += me.titleHeight;
     }
 
-    if(me.tbar || me.tabs){
+    if (me.tbar || me.tabs) {
       height += me.tbarHeight || me.barHeight;
     }
 
@@ -207,9 +207,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   /*
    *
    */
-  onChangeTab: function(){
-    var me = this;
-
-    me.setHeightFit();
+  onChangeTab(){
+    this.setHeightFit();
   }
 });

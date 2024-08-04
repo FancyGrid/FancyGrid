@@ -7,7 +7,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} groupBy
    * @param {*} value
    */
-  expand: function(groupBy, value){
+  expand(groupBy, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -53,7 +53,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} group
    * @param {*} value
    */
-  collapse: function(group, value){
+  collapse(group, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -86,19 +86,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {Array} groups
    * @param {String} by
    */
-  changeOrderByGroups: function(groups, by){
+  changeOrderByGroups(groups, by){
     var me = this,
       grouped = {},
       data = [],
       notGroupedData = [];
 
-    Fancy.each(groups, function(group){
-      grouped[group] = [];
-    });
+    Fancy.each(groups, group => grouped[group] = []);
 
     if(Fancy.isArray(me.data)){
-      Fancy.each(me.data, function(item){
-        var group = item.data[by];
+      Fancy.each(me.data, item => {
+        const group = item.data[by];
 
         if(grouped[group]){
           grouped[group].push(item);
@@ -109,7 +107,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       });
     }
 
-    Fancy.each(groups, function(group){
+    Fancy.each(groups, group => {
       data = data.concat(grouped[group]);
     });
 
@@ -125,7 +123,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} key
    * @param {String} group
    */
-  getColumnOriginalValuesByGroup: function(key, group, options){
+  getColumnOriginalValuesByGroup(key, group, options){
     var me = this,
       data = me.data,
       i = 0,
@@ -179,8 +177,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {String} key
    */
-  addGroup: function(key){
-    var me = this,
+  addGroup(key){
+    const me = this,
       w = me.widget,
       grouping = w.grouping;
 
@@ -191,8 +189,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} [dataProperty]
    * @return {Object}
    */
-  initGroups: function(dataProperty){
-    var me = this,
+  initGroups(dataProperty){
+    const me = this,
       w = me.widget,
       grouping = w.grouping,
       by = grouping.by;
@@ -203,13 +201,13 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     //var values = me.getColumnOriginalValues(by, {
-    var values = me.getColumnOriginalValues(by, {
+    const values = me.getColumnOriginalValues(by, {
         dataProperty: dataProperty,
         groupMap: true
       }),
       _groups = {};
 
-    Fancy.each(values, function(value){
+    Fancy.each(values, value  => {
       value = String(value);
 
       if(_groups[value] === undefined){
@@ -219,24 +217,24 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       _groups[value]++;
     });
 
-    var groups = [];
+    let groups = [];
 
-    for(var p in _groups){
+    for(const p in _groups){
       groups.push(p);
     }
 
     groups = me.sortGroupNames(groups);
 
     return {
-      groups: groups,
-      _groups: _groups
+      groups,
+      _groups
     };
   },
   /*
    *
    */
-  orderDataByGroup: function(){
-    var me = this,
+  orderDataByGroup(){
+    const me = this,
       grouping = me.widget.grouping,
       o = me.initGroups(),
       groups = me.sortGroupNames(o.groups);
@@ -248,7 +246,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       me.collapsed = true;
     }
     else{
-      Fancy.each(groups, function(group){
+      Fancy.each(groups, group => {
        if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
@@ -263,7 +261,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {Array} groups
    * @return {Array}
    */
-  sortGroupNames: function(groups){
+  sortGroupNames(groups){
     var me = this,
       grouping = me.widget.grouping,
       groupNameUpperCase = {},
@@ -271,8 +269,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       sortedGroups = [],
       sortGroups = grouping.sortGroups || 'asc';
 
-    Fancy.each(groups, function(group){
-      var upperGroup = String(group).toLocaleUpperCase();
+    Fancy.each(groups, group => {
+      let upperGroup = String(group).toLocaleUpperCase();
 
       if(!isNaN(Number(group)) && group !== '' && group !== ' '){
         upperGroup = String(Number(group));
@@ -285,7 +283,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       upperGroups.push(upperGroup);
     });
 
-    var areGroupsNumber = me.areGroupsNumber(upperGroups);
+    const areGroupsNumber = me.areGroupsNumber(upperGroups);
 
     switch(sortGroups){
       case 'asc':
@@ -330,8 +328,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * TODO: needs some map of elements for fast getting elements.
    */
-  getItemsByGroup: function(groupName){
-    var me = this,
+  getItemsByGroup(groupName){
+    const me = this,
       items = me.findItem(me.grouping.by, groupName);
 
     return items;
@@ -339,8 +337,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    *
    */
-  clearGroup: function(){
-    var me = this;
+  clearGroup(){
+    const me = this;
 
     delete me.expanded;
     delete me.collapsed;
@@ -352,10 +350,10 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {Array} groups
    */
-  areGroupsNumber: function(groups){
-    var isString = false;
+  areGroupsNumber(groups){
+    let isString = false;
 
-    Fancy.each(groups, function(group){
+    Fancy.each(groups, group => {
       if(Fancy.isString(group) && group !== '' && group !== ' '){
         isString = true;
         return true;

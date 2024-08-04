@@ -4,7 +4,7 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.grid.plugin.RowHeight', {
     extend: F.Plugin,
@@ -26,15 +26,15 @@
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('init', me.onInit, me);
@@ -43,31 +43,31 @@
       w.on('changepage', me.onChangePage, me);
       w.on('sort', me.onSort, me);
     },
-    onInit: function(){
-      var me = this,
+    onInit(){
+      const me = this,
         w = me.widget;
 
-      setTimeout(function(){
+      setTimeout(() => {
         w.scroller.update(me.totalHeight);
       }, 50);
     },
     /*
      *
      */
-    onUpdate: function(){
+    onUpdate(){
       var me = this,
         w = me.widget,
         viewData = w.getDataView(),
         totalHeight = 0;
 
-      F.each(viewData, function(item){
-        var id = item.id,
+      F.each(viewData, (item) => {
+        const id = item.id,
           height = me.rows[id],
           rowIndex = w.getRowById(id),
           cells = w.getDomRow(rowIndex);
 
-        F.each(cells, function(cellDom){
-          var cell = F.get(cellDom);
+        F.each(cells, (cellDom) => {
+          const cell = F.get(cellDom);
 
           cell.css('height', height);
         });
@@ -81,7 +81,7 @@
         me.totalHeight += w.grouping.getGroupRowsHeight();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         w.setSidesHeight(me.totalHeight);
         w.scroller.update(me.totalHeight);
       }, 50);
@@ -89,8 +89,8 @@
     /*
      *
      */
-    add: function(id, height, rowIndex){
-      var me = this;
+    add(id, height, rowIndex){
+      const me = this;
 
       if(me.rows[id] && me.rows[id] > height){
         return;
@@ -101,10 +101,10 @@
 
       clearInterval(me.intIndexesSum);
 
-      me.intIndexesSum = setTimeout(function(){
+      me.intIndexesSum = setTimeout(() => {
         me.rowIndexesSum = [];
 
-        F.each(me.rowIndexes, function(value, index){
+        F.each(me.rowIndexes, (value, index) => {
           if(index === 0){
             me.rowIndexesSum[index] = value;
           }
@@ -117,12 +117,12 @@
     /*
      *
      */
-    getRowsHeight: function(items){
+    getRowsHeight(items){
       var me = this,
         height = 0;
 
-      F.each(items, function(item){
-        var id = item.get('id');
+      F.each(items, (item) => {
+        const id = item.get('id');
 
         height += me.rows[id];
       });
@@ -132,14 +132,14 @@
     /*
      *
      */
-    onColumnResize: function(grid, o){
-      var me = this;
+    onColumnResize(grid, o){
+      const me = this;
 
       me.rows = {};
 
       if(o.column.type === 'text' && o.column.autoHeight){
 
-        setTimeout(function(){
+        setTimeout(() => {
           me.widget.update();
           me.onUpdate();
         }, 400);
@@ -148,24 +148,20 @@
     /*
      *
      */
-    onChangePage:  function(){
-      var me = this;
-
-      me.rows = {};
+    onChangePage(){
+      this.rows = {};
     },
     /*
      *
      */
-    onSort:  function(){
-      var me = this;
-
-      me.rows = {};
+    onSort(){
+      this.rows = {};
     },
     /*
      *
      */
-    waitToShow: function(){
-      var me = this;
+    waitToShow(){
+      const me = this;
 
       if(me.waitingForParentVisibility){
         return;
@@ -173,14 +169,14 @@
 
       me.waitingForParentVisibility = true;
 
-      var w = me.widget,
+      const w = me.widget,
         parentEl = me.getHiddenParent(w.el);
 
       if(!parentEl){
         return;
       }
 
-      me.intWaitToShow = setInterval(function(){
+      me.intWaitToShow = setInterval(() => {
         if(parentEl.css('display') === 'none'){
           return;
         }
@@ -194,9 +190,8 @@
     /*
      *
      */
-    getHiddenParent: function(el, deep){
-      var deep = deep || 0,
-        maxDeep = 10;
+    getHiddenParent: function(el, deep = 0){
+      const maxDeep = 10;
 
       deep++;
 

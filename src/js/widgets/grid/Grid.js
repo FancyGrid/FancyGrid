@@ -59,9 +59,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Object} [config]
    */
   constructor: function(renderTo, config){
-    var me = this;
+    const me = this;
 
-    if(Fancy.isDom(renderTo)){
+    if (Fancy.isDom(renderTo)) {
       config = config || {};
       config.renderTo = renderTo;
     }
@@ -71,17 +71,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     config = config || {};
 
-    var fn = function(params){
-      if(params){
-        var lang = config.lang;
+    const fn = function (params) {
+      if (params) {
+        const lang = config.lang;
         Fancy.apply(config, params);
 
-        if(lang){
+        if (lang) {
           Fancy.apply(config.lang, lang);
         }
       }
 
-      if(config.id){
+      if (config.id) {
         me.id = config.id;
       }
       me.initId();
@@ -92,10 +92,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.Super('const', arguments);
     };
 
-    var preInit = function(){
-      var i18n = config.i18n || me.i18n;
+    const preInit = function () {
+      const i18n = config.i18n || me.i18n;
 
-      if( Fancy.loadLang(i18n, fn) === true ){
+      if (Fancy.loadLang(i18n, fn) === true) {
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -123,8 +123,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     //me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
@@ -211,11 +211,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.initDebug();
     me.fire('beforeinit');
 
-    setTimeout(function(){
+    setTimeout(() =>{
       me.inited = true;
       me.fire('init');
       me.setBodysHeight();
-      if(!me.state){
+      if (!me.state) {
         me._setColumnsAutoWidth();
       }
     }, 100);
@@ -224,7 +224,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   /*
    *
    */
-  loadModules: function(){
+  loadModules(){
     var me = this,
       requiredModules = {},
       columns = me.columns || [],
@@ -323,36 +323,36 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.infinite = true;
     }
 
-    var containsMenu = function(item){
-      if(item.menu){
+    const containsMenu = (item) => {
+      if (item.menu) {
         requiredModules['menu'] = true;
         return true;
       }
     };
 
-    Fancy.each(me.events, function(e){
-      for(var p in e){
+    Fancy.each(me.events, e =>{
+      for (const p in e) {
         if(p === 'contextmenu'){
           requiredModules.menu = true;
         }
       }
     });
 
-    Fancy.each(me.controls, function(c){
-      if(c.event === 'contextmenu'){
+    Fancy.each(me.controls, (c) => {
+      if (c.event === 'contextmenu') {
         requiredModules.menu = true;
       }
     });
-    
+
     Fancy.each(me.tbar, containsMenu);
     Fancy.each(me.bbar, containsMenu);
     Fancy.each(me.buttons, containsMenu);
     Fancy.each(me.subTBar, containsMenu);
 
-    var _columns = columns.concat(leftColumns).concat(rightColumns);
+    const _columns = columns.concat(leftColumns).concat(rightColumns);
 
-    Fancy.each(_columns, function(column){
-      if(column.draggable === true){
+    Fancy.each(_columns, (column) => {
+      if (column.draggable === true) {
         requiredModules['column-drag'] = true;
       }
 
@@ -399,7 +399,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     });
 
     if(Fancy.isArray(me.tbar)){
-      Fancy.each(me.tbar, function(item){
+      Fancy.each(me.tbar, (item) => {
         switch(item.action){
           case 'add':
           case 'remove':
@@ -421,7 +421,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       length: 0
     };
 
-    for(var p in requiredModules){
+    for (var p in requiredModules) {
       if(Fancy.modules[p] === undefined){
         me.neededModules[p] = true;
         me.neededModules.length++;
@@ -434,11 +434,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    var onLoad = function(name){
+    const onLoad = function (name) {
       delete me.neededModules[name];
       me.neededModules.length--;
 
-      if(me.neededModules.length === 0){
+      if (me.neededModules.length === 0) {
         me.neededModules = true;
         me.init();
       }
@@ -478,23 +478,23 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number|String} indexOrder
    * @param {String} side
    */
-  lockColumn: function(indexOrder, side){
-    var me = this;
+  lockColumn(indexOrder, side){
+    const me = this;
 
-    if(me.columns.length === 1){
+    if (me.columns.length === 1) {
       return false;
     }
 
-    if(Fancy.isString(indexOrder)){
-      Fancy.each(me.columns, function(column, i){
-        if(column.index === indexOrder){
+    if (Fancy.isString(indexOrder)) {
+      Fancy.each(me.columns, (column, i) => {
+        if (column.index === indexOrder) {
           indexOrder = i;
           return true;
         }
       });
     }
 
-    var removedColumn = me.removeColumn(indexOrder, side);
+    const removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
     if(me.header){
@@ -518,14 +518,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number|String} indexOrder
    * @param {String} side
    */
-  rightLockColumn: function(indexOrder, side){
-    var me = this;
+  rightLockColumn(indexOrder, side){
+    const me = this;
 
-    if(me.columns.length === 1){
+    if (me.columns.length === 1) {
       return false;
     }
 
-    if(Fancy.isString(indexOrder)){
+    if (Fancy.isString(indexOrder)) {
       Fancy.each(me.columns, function(column, i){
         if(column.index === indexOrder){
           indexOrder = i;
@@ -534,14 +534,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       });
     }
 
-    var removedColumn = me.removeColumn(indexOrder, side);
+    const removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    if(me.header){
+    if (me.header) {
       me.rightHeader.reSetCheckBoxes();
 
-      if(me.groupheader){
+      if (me.groupheader) {
         me.header.fixGroupHeaderSizing();
         me.rightHeader.fixGroupHeaderSizing();
       }
@@ -559,11 +559,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number|String} indexOrder
    * @param {String} side
    */
-  unLockColumn: function(indexOrder, side){
-    var me = this,
-      removedColumn;
+  unLockColumn(indexOrder, side){
+    const me = this;
+    let removedColumn;
 
-    if(side === undefined){
+    if (side === undefined) {
       if(Fancy.isString(indexOrder)){
         Fancy.each(me.leftColumns, function(column, i){
           if (column.index === indexOrder){
@@ -620,9 +620,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         removedColumn = me.removeColumn(indexOrder, side);
         me.insertColumn(removedColumn, me.columns.length, 'center', 'right');
 
-        if(me.rightColumns.length === 0){
+        if (me.rightColumns.length === 0) {
           me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
-          var bodyWidth = parseInt(me.body.el.css('width'));
+          const bodyWidth = parseInt(me.body.el.css('width'));
 
           me.body.el.css('width', bodyWidth + 2);
         }
@@ -633,7 +633,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.grouping.insertGroupEls();
     }
 
-    if(me.header){
+    if (me.header) {
       if(me.groupheader){
         me.header.fixGroupHeaderSizing();
 
@@ -662,11 +662,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number} toIndex
    * @param {Object} [grouping]
    */
-  moveColumn: function(fromSide, toSide, fromIndex, toIndex, grouping){
-    var me = this,
-      removedColumn;
+  moveColumn(fromSide, toSide, fromIndex, toIndex, grouping){
+    const me = this;
+    let removedColumn;
 
-    if(grouping){
+    if (grouping) {
       var i = 0,
         iL = grouping.end - grouping.start + 1,
         groupIndex = grouping.cell.attr('index'),
@@ -677,15 +677,15 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.moveColumn(fromSide, toSide, grouping.end - i, toIndex);
       }
 
-      var toColumns = me.getColumns(toSide);
-      var cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
+      const toColumns = me.getColumns(toSide);
+      const cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
 
       i = toIndex;
       iL = i + (grouping.end - grouping.start + 1);
 
-      for(;i<iL;i++){
-        var column = toColumns[i],
-          cell =  cells.item(i);
+      for (;i<iL;i++) {
+        const column = toColumns[i],
+          cell = cells.item(i);
 
         column.grouping = groupIndex;
         cell.attr('group-index', groupIndex);
@@ -698,7 +698,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    if(fromSide === 'center'){
+    if (fromSide === 'center') {
       removedColumn = me.removeColumn(fromIndex, 'center');
       switch(toSide){
         case 'left':
@@ -709,7 +709,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           break;
       }
     }
-    else if(fromSide === 'left'){
+    else if (fromSide === 'left') {
       removedColumn = me.removeColumn(fromIndex, 'left');
       switch(toSide){
         case 'center':
@@ -720,7 +720,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           break;
       }
     }
-    else if(fromSide === 'right'){
+    else if (fromSide === 'right') {
       removedColumn = me.removeColumn(fromIndex, 'right');
       switch(toSide){
         case 'center':
@@ -732,7 +732,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     }
 
-    if(me.groupheader){
+    if (me.groupheader) {
       me.header.fixGroupHeaderSizing();
 
       if(me.leftColumns){
@@ -749,37 +749,36 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.update();
   },
-  updateColumnsVisibility: function(){
-    var me = this;
+  updateColumnsVisibility(){
+    const me = this;
 
-    if(me.columns){
-      if(me.header){
+    if (me.columns) {
+      if (me.header) {
         me.header.updateCellsVisibility();
       }
       me.body.updateColumnsVisibility();
     }
 
-    if(me.leftColumns){
-      if(me.leftHeader){
+    if (me.leftColumns) {
+      if (me.leftHeader) {
         me.leftHeader.updateCellsVisibility();
       }
+
       me.leftBody.updateColumnsVisibility();
     }
 
-    if(me.rightColumns){
-      if(me.rightHeader){
+    if (me.rightColumns) {
+      if (me.rightHeader) {
         me.rightHeader.updateCellsVisibility();
       }
       me.rightBody.updateColumnsVisibility();
     }
   },
-  initColumnsIdSeedByIndex: function(){
-    var me = this;
-
-    me.columnsIdsSeed = {};
+  initColumnsIdSeedByIndex(){
+    this.columnsIdsSeed = {};
   },
-  getColumnId: function(index){
-    var me = this;
+  getColumnId(index){
+    const me = this;
 
     if(me.columnsIdsSeed[index] === undefined){
       me.columnsIdsSeed[index] = 0;
@@ -797,37 +796,37 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   /*
    * @return {Boolean}
    */
-  isGroupable: function(){
-    var me = this;
+  isGroupable(){
+    const me = this;
 
     return me.grouping && me.grouping.by;
   },
   /*
    *
    */
-  _setColumnsAutoWidth: function(){
-    var me = this;
+  _setColumnsAutoWidth(){
+    const me = this;
 
-    if(!me.autoColumnWidth){
+    if (!me.autoColumnWidth) {
       return;
     }
 
-    if(me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty){
+    if (me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty) {
       return;
     }
 
-    if(me._firstTimeAutoColumnWidth){
+    if (me._firstTimeAutoColumnWidth) {
       return;
     }
 
-    var columns = me.getColumns();
+    const columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && !column.hidden && (column.index || column.smartIndexFn || column.render)){
         me.autoSizeColumn(column.id, true, column);
       }
     });
 
-    setTimeout(function(){
+    setTimeout(() => {
       me._firstTimeAutoColumnWidth = true;
       delete me.allowAutoWidthStateIsEmpty;
     }, 1000);
@@ -837,20 +836,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 /*
  * @param {String} id
  */
-FancyGrid.get = function(id){
-  var el = Fancy.get(id);
+FancyGrid.get = (id) => {
+  const el = Fancy.get(id);
 
-  if(!el.dom){
+  if (!el.dom) {
     return;
   }
 
-  var gridEl = el.select('.' + Fancy.GRID_CLS).item(0);
+  const gridEl = el.select(`.${Fancy.GRID_CLS}`).item(0);
 
-  if(!gridEl.dom){
+  if (!gridEl.dom) {
     return;
   }
 
-  var gridId = gridEl.dom.id;
+  const gridId = gridEl.dom.id;
 
   return Fancy.getWidget(gridId);
 };
@@ -859,7 +858,7 @@ FancyGrid.defineTheme = Fancy.defineTheme;
 FancyGrid.defineController = Fancy.defineController;
 FancyGrid.addValid = Fancy.addValid;
 
-if(!Fancy.nojQuery && Fancy.$){
+if (!Fancy.nojQuery && Fancy.$) {
   Fancy.$.fn.FancyGrid = function(o){
     if(this.selector){
       o.renderTo = Fancy.$(this.selector)[0].id;

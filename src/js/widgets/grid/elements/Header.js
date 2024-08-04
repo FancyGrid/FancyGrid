@@ -4,30 +4,30 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
-  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
-  var GRID_HEADER_CELL_CONTAINER_CLS = F.GRID_HEADER_CELL_CONTAINER_CLS;
-  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
-  var GRID_HEADER_CELL_LEFT_IMAGE_CLS = F.GRID_HEADER_CELL_LEFT_IMAGE_CLS;
-  var GRID_HEADER_CELL_CONTAINS_LI = F.GRID_HEADER_CELL_CONTAINS_LI;
-  var GRID_HEADER_CELL_TRIGGER_CLS  = F.GRID_HEADER_CELL_TRIGGER_CLS;
-  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS  = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
-  var GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
-  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
-  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
-  var GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
-  var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
-  var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
-  var GRID_HEADER_CELL_TRIPLE_CLS =  F.GRID_HEADER_CELL_TRIPLE_CLS;
-  var GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
-  var GRID_HEADER_CELL_SORTABLE_CLS = F.GRID_HEADER_CELL_SORTABLE_CLS;
-  var GRID_HEADER_CELL_NOT_SORTABLE_CLS = F.GRID_HEADER_CELL_NOT_SORTABLE_CLS;
-  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
+  const GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  const GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  const GRID_HEADER_CELL_CONTAINER_CLS = F.GRID_HEADER_CELL_CONTAINER_CLS;
+  const GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
+  const GRID_HEADER_CELL_LEFT_IMAGE_CLS = F.GRID_HEADER_CELL_LEFT_IMAGE_CLS;
+  const GRID_HEADER_CELL_CONTAINS_LI = F.GRID_HEADER_CELL_CONTAINS_LI;
+  const GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  const GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  const GRID_HEADER_CELL_TRIGGER_DISABLED_CLS = F.GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
+  const GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  const GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  const GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
+  const GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
+  const GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+  const GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
+  const GRID_HEADER_CELL_CHECKBOX_CLS = F.GRID_HEADER_CELL_CHECKBOX_CLS;
+  const GRID_HEADER_CELL_SORTABLE_CLS = F.GRID_HEADER_CELL_SORTABLE_CLS;
+  const GRID_HEADER_CELL_NOT_SORTABLE_CLS = F.GRID_HEADER_CELL_NOT_SORTABLE_CLS;
+  const FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
 
-  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+  const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.Header', {
     extend: F.Widget,
@@ -56,8 +56,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
 
@@ -73,34 +73,34 @@
     /*
      *
      */
-    initTpl: function(){
+    initTpl(){
       this.cellTpl = new F.Template(this.cellTpl);
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         el = me.el,
-        headerCellSelector = 'div.' + GRID_HEADER_CELL_CLS;
+        headerCellSelector = `div.${GRID_HEADER_CELL_CLS}`;
 
       w.on('render', me.onAfterRender, me);
       w.on('docmove', me.onDocMove, me);
       w.on('columndrag', me.onColumnDrag, me);
-      el.on('click', me.onTriggerClick, me, 'span.' + GRID_HEADER_CELL_TRIGGER_CLS);
+      el.on('click', me.onTriggerClick, me, `span.${GRID_HEADER_CELL_TRIGGER_CLS}`);
       el.on('click', me.onCellClick, me, headerCellSelector);
       el.on('mousemove', me.onCellMouseMove, me, headerCellSelector);
       el.on('mousedown', me.onCellMouseDown, me, headerCellSelector);
       el.on('mousedown', me.onMouseDown, me);
-      el.on('dblclick', me.onCellTextDBLClick, me, '.' + GRID_HEADER_CELL_TEXT_CLS);
+      el.on('dblclick', me.onCellTextDBLClick, me, `.${GRID_HEADER_CELL_TEXT_CLS}`);
       el.on('mouseenter', me.onCellMouseEnter, me, headerCellSelector);
       el.on('mouseleave', me.onCellMouseLeave, me, headerCellSelector);
     },
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -116,8 +116,8 @@
         cellFilterGroupType = 'full',
         cellHeight = w.cellHeaderHeight;
 
-      if (w.groupheader){
-        if (isFilterHeader && !w.filter.groupHeader){
+      if (w.groupheader) {
+        if (isFilterHeader && !w.filter.groupHeader) {
           cellFilterGroupType = 'small';
         }
         else {
@@ -125,11 +125,11 @@
         }
       }
 
-      if (isFilterHeader){
+      if (isFilterHeader) {
         numRows++;
       }
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         var column = columns[i],
           title = column.title || column.header,
           height = cellHeight,
@@ -145,8 +145,8 @@
             height = (numRows * cellHeight) + 'px';
           }
           else {
-            if (!groups[column.grouping]){
-              var originalGroup = w.groupheader.groupsMap[column.grouping];
+            if (!groups[column.grouping]) {
+              const originalGroup = w.groupheader.groupsMap[column.grouping];
 
               groups[column.grouping] = {
                 width: 0,
@@ -163,11 +163,11 @@
               height = cellHeight + 'px';
             }
 
-            if (!column.hidden){
+            if (!column.hidden) {
               groups[column.grouping].width += column.width;
             }
 
-            groupIndex = 'group-index="' + column.grouping + '"';
+            groupIndex = `group-index="{column.grouping}"`;
 
             cls = GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
           }
@@ -179,7 +179,7 @@
           cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
         }
 
-        if (!column.menu){
+        if (!column.menu) {
           cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
         }
 
@@ -215,14 +215,14 @@
           height += 'px';
         }
 
-        var cellConfig = {
-          cls: cls,
+        const cellConfig = {
+          cls,
           columnName: title,
           columnWidth: column.width,
           index: i,
-          height: height,
+          height,
           left: 'initial',
-          groupIndex: groupIndex,
+          groupIndex,
           display: column.hidden ? 'none' : '',
           id: column.id || '',
           headerLImageCls: column.headerLImageCls || ''
@@ -239,7 +239,7 @@
       el.attr('role', 'presentation');
       el.addCls(me.cls);
 
-      if (w.groupheader){
+      if (w.groupheader) {
         el.addCls('fancy-grid-header-grouped');
         html += me.getGroupingCellsHTML(groups);
       }
@@ -253,7 +253,7 @@
      * @param {Number} index
      * @param {Object} column
      */
-    insertCell: function(index, column){
+    insertCell(index, column){
       var me = this,
         w = me.widget,
         cells = me.getCells(),
@@ -264,23 +264,23 @@
         groupIndex = '',
         left = 0;
 
-      if(cells.length){
+      if (cells.length) {
         cellHeight = parseInt(cells.item(0).css('height'));
       }
 
       cellHeight = parseInt(w.header.el.css('height'));
 
-      if(me.side === 'center'){
+      if (me.side === 'center') {
         left = -w.scroller.scrollLeft;
       }
 
-      if (w.groupheader){
-        var groupUpCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+      if (w.groupheader) {
+        const groupUpCells = me.el.select(`.${GRID_HEADER_CELL_GROUP_LEVEL_2_CLS}`);
 
         //BUG: possible bug for dragging column
-        if (index !== w.columns.length - 1){
-          groupUpCells.each(function(cell){
-            var left = parseInt(cell.css('left') || 0) + column.width;
+        if (index !== w.columns.length - 1) {
+          groupUpCells.each((cell) => {
+            const left = parseInt(cell.css('left') || 0) + column.width;
 
             cell.css('left', left);
           });
@@ -291,7 +291,7 @@
         cls += ' ' + GRID_HEADER_CELL_SELECT_CLS;
       }
 
-      if (!column.menu){
+      if (!column.menu) {
         cls += ' ' + GRID_HEADER_CELL_TRIGGER_DISABLED_CLS;
       }
 
@@ -320,20 +320,20 @@
       }
 
       var cellHTML = me.cellTpl.getHTML({
-        cls: cls,
+        cls,
         columnName: title,
         columnWidth: column.width,
-        index: index,
+        index,
         height: String(cellHeight) + 'px',
         left: String(left) + 'px',
-        groupIndex: groupIndex,
+        groupIndex,
         id: column.id || ''
       });
 
-      if (index === 0 && cells.length){
+      if (index === 0 && cells.length) {
         F.get(cells.item(0).before(cellHTML));
       }
-      else if (index !== 0 && cells.length){
+      else if (index !== 0 && cells.length) {
         if(index === cells.length){
           me.el.append(cellHTML);
         }
@@ -364,14 +364,14 @@
           continue;
         }
 
-        var cell = cells.item(i);
+        const cell = cells.item(i);
 
         cell.css('left', left);
         left += column.width;
         width += column.width;
       }
 
-      var oldWidth = parseInt(me.css('width'));
+      const oldWidth = parseInt(me.css('width'));
 
       if(oldWidth > width){
         width = oldWidth;
@@ -394,25 +394,25 @@
     /*
      *
      */
-    setAlign: function(){
+    setAlign(){
       var me = this,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length;
 
       for (; i < iL; i++){
-        var column = columns[i];
+        const column = columns[i];
 
-        if (column.align){
+        if (column.align) {
           me.getDomCell(i).css('text-align', column.align);
         }
       }
     },
-    onAfterRender: function(){},
+    onAfterRender(){},
     /*
      * @param {Boolean} [animate]
      */
-    setCellsPosition: function(animate){
+    setCellsPosition(animate){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -421,16 +421,16 @@
 
       cellsWidth += me.scrollLeft || 0;
 
-      F.each(columns, function(column, i){
-        var cellEl = cellsDom.item(i),
+      F.each(columns, (column, i) => {
+        let cellEl = cellsDom.item(i),
           top = '0px';
 
-        if (column.grouping){
+        if (column.grouping) {
           top = w.cellHeaderHeight + 'px';
         }
 
         cellEl.css({
-          top: top,
+          top,
           left: cellsWidth + 'px'
         });
 
@@ -439,17 +439,17 @@
         }
       });
 
-      if (w.groupheader){
-        var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+      if (w.groupheader) {
+        const groupCells = me.el.select(`.${GRID_HEADER_CELL_GROUP_LEVEL_2_CLS}`);
 
         groupCells.each(function(groupCell){
-          var groupName = groupCell.attr('index');
+          const groupName = groupCell.attr('index');
 
           var underGroupCells = me.el.select('[group-index="' + groupName + '"]'),
             groupCellLeft = me.scrollLeft || 0,
             groupCellWidth = 0;
 
-          F.each(columns, function(column){
+          F.each(columns, (column) => {
             if (column.grouping === groupName){
               return true;
             }
@@ -459,13 +459,13 @@
             }
           });
 
-          F.each(columns, function(column){
+          F.each(columns, (column) => {
             if (column.grouping === groupName && !column.hidden){
               groupCellWidth += column.width;
             }
           });
 
-          if(animate && !F.nojQuery){
+          if (animate && !F.nojQuery) {
             groupCell.css({
               left: groupCellLeft,
               width: groupCellWidth
@@ -489,7 +489,7 @@
     /*
      *
      */
-    fixGroupHeaderSizing: function(){
+    fixGroupHeaderSizing(){
       var me = this,
         w = me.widget,
         CELL_HEADER_HEIGHT = w.cellHeaderHeight,
@@ -508,14 +508,14 @@
       }
 
       if(isFilterHeader){
-        F.each( columns, function(column){
+        F.each( columns, (column) => {
           if (column.grouping && column.filter && column.filter.header){
             isFilterGroupHeader = true;
           }
         } );
       }
 
-      F.each(columns, function(column, i){
+      F.each(columns, (column, i) =>{
         var cell = cellsDom.item(i),
           grouping = column.grouping,
           top = '0px',
@@ -567,15 +567,15 @@
           height: height
         });
 
-        cell.select('.' + GRID_HEADER_CELL_CONTAINER_CLS).css({
-          height: height
+        cell.select(`.${GRID_HEADER_CELL_CONTAINER_CLS}`).css({
+          height
         });
 
         left += column.width;
       });
 
-      for(var p in groupsWidth){
-        var groupCell = me.el.select('[index="'+p+'"]');
+      for(const p in groupsWidth){
+        const groupCell = me.el.select(`[index="${p}"]`);
 
         groupCell.css({
           left: groupsLeft[p],
@@ -583,12 +583,12 @@
         });
       }
 
-      var groupCells = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS);
+      const groupCells = me.el.select(`.${GRID_HEADER_CELL_GROUP_LEVEL_2_CLS}`);
 
-      groupCells.each(function(cell){
-        var groupName = cell.attr('index');
+      groupCells.each((cell) => {
+        const groupName = cell.attr('index');
 
-        if(!groups[groupName]){
+        if (!groups[groupName]) {
           cell.destroy();
         }
       });
@@ -596,15 +596,15 @@
     /*
      * @return {Number}
      */
-    getColumnsWidth: function(){
+    getColumnsWidth(){
       var me = this,
         columns = me.getColumns(),
         cellsWidth = 0,
         i = 0,
         iL = columns.length;
 
-      for (; i < iL; i++){
-        var column = columns[i];
+      for (; i < iL; i++) {
+        const column = columns[i];
 
         cellsWidth += column.width;
       }
@@ -614,8 +614,8 @@
     /*
      * @return {Array}
      */
-    getColumns: function(){
-      var me = this,
+    getColumns(){
+      let me = this,
         w = me.widget,
         columns;
 
@@ -637,15 +637,15 @@
      * @param {Number} index
      * @return {Fancy.Element}
      */
-    getDomCell: function(index){
+    getDomCell(index){
       //return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
       return this.getCells().item(index);
     },
     /*
      * @param {Event} e
      */
-    onCellClick: function(e){
-      var me = this,
+    onCellClick(e){
+      const me = this,
         w = me.widget,
         columndrag = w.columndrag,
         cell = e.currentTarget,
@@ -675,19 +675,19 @@
       }
 
       if(column.titleEditable){
-        setTimeout(function(){
+        setTimeout(() => {
           if(me.textDBLClick){
-            setTimeout(function(){
+            setTimeout(() => {
               delete me.textDBLClick;
             }, 400);
           }
           else{
             w.fire('headercellclick', {
-              e: e,
+              e,
               side: me.side,
-              cell: cell,
-              index: index,
-              column: column
+              cell,
+              index,
+              column
             });
           }
 
@@ -695,41 +695,41 @@
       }
       else {
         w.fire('headercellclick', {
-          e: e,
+          e,
           side: me.side,
-          cell: cell,
-          index: index,
-          column: column
+          cell,
+          index,
+          column
         });
       }
     },
     /*
      * @param {Event} e
      */
-    onCellMouseMove: function(e){
-      var me = this,
+    onCellMouseMove(e){
+      const me = this,
         w = me.widget,
         cell = e.currentTarget,
         cellEl = F.get(cell),
         isGroupCell = cellEl.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS),
         index = parseInt(F.get(cell).attr('index'));
 
-      if (isGroupCell){
+      if (isGroupCell) {
         return;
       }
 
       w.fire('headercellmousemove', {
-        e: e,
+        e,
         side: me.side,
-        cell: cell,
-        index: index
+        cell,
+        index
       });
     },
     /*
      * @param {Event} e
      */
-    onMouseDown: function(e){
-      var targetEl = F.get(e.target);
+    onMouseDown(e){
+      const targetEl = F.get(e.target);
 
       if (targetEl.prop('tagName') === 'INPUT'){}
       else {
@@ -739,23 +739,23 @@
     /*
      * @param {Event} e
      */
-    onCellMouseDown: function(e){
-      var w = this.widget,
+    onCellMouseDown(e){
+      const w = this.widget,
         cell = e.currentTarget,
         index = parseInt(F.get(cell).attr('index'));
 
       w.fire('headercellmousedown', {
-        e: e,
+        e,
         side: this.side,
-        cell: cell,
-        index: index
+        cell,
+        index
       });
     },
     /*
      * @param {Number} value
      * @param {Boolean} [animate]
      */
-    scroll: function(value, animate){
+    scroll(value, animate){
       this.scrollLeft = value;
       this.setCellsPosition(animate);
     },
@@ -763,12 +763,12 @@
      * @param {Array} groups
      * @return {String}
      */
-    getGroupingCellsHTML: function(groups){
+    getGroupingCellsHTML(groups){
       var me = this,
         w = me.widget,
         html = '';
 
-      F.each(groups, function(group, p){
+      F.each(groups, (group, p) => {
         html += me.cellTpl.getHTML({
           cls: GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ' ' + group.cls,
           columnName: group.title,
@@ -786,10 +786,10 @@
     /*
      *
      */
-    destroy: function(){
-      var me = this,
+    destroy(){
+      const me = this,
         el = me.el,
-        cellSelector = 'div.' + GRID_HEADER_CELL_CLS;
+        cellSelector = `div.${GRID_HEADER_CELL_CLS}`;
 
       el.un('click', me.onCellClick, me, cellSelector);
       el.un('mousemove', me.onCellMouseMove, me, cellSelector);
@@ -802,14 +802,14 @@
      * @param {Number} index
      * @return {Fancy.Element}
      */
-    getCell: function(index){
-      return this.el.select('.' + GRID_HEADER_CELL_CLS + '[index="' + index + '"]');
+    getCell(index) {
+      return this.el.select(`.${GRID_HEADER_CELL_CLS}[index="${index}"]`);
     },
     /*
      * @param {Event} e
      */
-    onTriggerClick: function(e){
-      var me = this,
+    onTriggerClick(e){
+      const me = this,
         target = F.get(e.currentTarget),
         cell = target.parent().parent(),
         index = parseInt(cell.attr('index')),
@@ -823,7 +823,7 @@
     /*
      * @param {Number} orderIndex
      */
-    hideCell: function(orderIndex){
+    hideCell(orderIndex){
       var me = this,
         w = me.widget,
         cells = me.getCells(),
@@ -833,9 +833,9 @@
         iL = cells.length,
         columns = me.getColumns();
 
-      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
-        var groupIndex = cell.attr('group-index'),
-          groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)) {
+        const groupIndex = cell.attr('group-index'),
+          groupCell = me.el.select(`.${GRID_HEADER_CELL_GROUP_LEVEL_2_CLS}[index="${groupIndex}"]`).item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
@@ -858,21 +858,21 @@
         left = 0,
         scrollLeft = 0;
 
-      if(me.side === 'center'){
+      if (me.side === 'center') {
         scrollLeft = w.scroller.scrollLeft;
         left -= scrollLeft;
       }
 
       for (; i < iL; i++){
-        var _cell = cells.item(i),
+        const _cell = cells.item(i),
           cellLeft = parseInt(_cell.css('left')),
           column = columns[i];
 
-        if(column.hidden){
+        if (column.hidden) {
           continue;
         }
 
-        if (column.grouping){
+        if (column.grouping) {
           if (columns[orderIndex].grouping !== column.grouping){
             groups[column.grouping] = true;
           }
@@ -888,7 +888,7 @@
         left += column.width;
       }
 
-      F.each(groups, function(value, group){
+      F.each(groups, (value, group) => {
         var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
           left = 0;
 
@@ -897,12 +897,12 @@
           left -= scrollLeft;
         }
 
-        F.each(columns, function(column){
-          if(column.hidden){
+        F.each(columns, (column) => {
+          if (column.hidden) {
             return;
           }
 
-          if(column.grouping === group){
+          if (column.grouping === group) {
             return true;
           }
 
@@ -919,7 +919,7 @@
      * @param {Number} orderIndex
      * @param {Number} [columnWidth]
      */
-    showCell: function(orderIndex, columnWidth){
+    showCell(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
         cells = me.getCells(),
@@ -931,7 +931,7 @@
         columns = me.getColumns();
 
       if(F.isNumber(columnWidth)){
-        cell.css('width', columnWidth + 'px');
+        cell.css('width', `${columnWidth}px`);
       }
 
       cell.show();
@@ -939,13 +939,13 @@
       cellWidth = parseInt(cell.css('width'));
 
       if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_1_CLS)){
-        var groupIndex = cell.attr('group-index'),
+        const groupIndex = cell.attr('group-index'),
           groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + groupIndex + '"]').item(0),
           groupCellWidth = parseInt(groupCell.css('width'));
 
         groupCell.stop();
 
-        if(groupCell.css('display') === 'none'){
+        if (groupCell.css('display') === 'none') {
           groupCell.show();
         }
 
@@ -954,26 +954,26 @@
         }, ANIMATE_DURATION);
       }
 
-      var scrollLeft = 0;
+      let scrollLeft = 0;
 
       if(me.side === 'center'){
         scrollLeft = w.scroller.scrollLeft;
         left -= scrollLeft;
       }
 
-      var groups = {};
+      const groups = {};
 
       for (; i < iL; i++){
-        var _cell = cells.item(i),
+        const _cell = cells.item(i),
           cellLeft = parseInt(_cell.css('left')),
           column = columns[i];
 
-        if(column.hidden){
+        if (column.hidden) {
           continue;
         }
 
-        if (column.grouping){
-          if (columns[orderIndex].grouping !== column.grouping){
+        if (column.grouping) {
+          if (columns[orderIndex].grouping !== column.grouping) {
             groups[column.grouping] = true;
           }
         }
@@ -988,16 +988,16 @@
         left += column.width;
       }
 
-      F.each(groups, function(value, group){
+      F.each(groups, (value, group) => {
         var groupCell = me.el.select('.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + '[index="' + group + '"]').item(0),
           left = 0;
 
-        if(me.side === 'center'){
+        if (me.side === 'center') {
           scrollLeft = w.scroller.scrollLeft;
           left -= scrollLeft;
         }
 
-        F.each(columns, function(column){
+        F.each(columns, (column) => {
           if(column.hidden){
             return;
           }
@@ -1011,14 +1011,14 @@
 
         groupCell.stop();
         groupCell.animate({
-          left: left
+          left
         }, ANIMATE_DURATION);
       });
     },
     /*
      * @param {Number} orderIndex
      */
-    removeCell: function(orderIndex){
+    removeCell(orderIndex){
       var me = this,
         w = me.widget,
         cells = me.getCells(),
@@ -1029,15 +1029,15 @@
         groupCells = {},
         isGroupCell = false;
 
-      if (cell.attr('group-index')){
+      if (cell.attr('group-index')) {
         isGroupCell = cell.attr('group-index');
         groupCells[isGroupCell] = true;
       }
 
       cell.destroy();
 
-      for (; i < iL; i++){
-        var _cell = cells.item(i),
+      for (; i < iL; i++) {
+        const _cell = cells.item(i),
           left = parseInt(_cell.css('left')) - cellWidth;
 
         if (_cell.attr('group-index')){
@@ -1049,12 +1049,12 @@
         _cell.css('left', left);
       }
 
-      for (var p in groupCells){
-        var groupCell = me.el.select('[index="' + p + '"]'),
+      for (const p in groupCells){
+        var groupCell = me.el.select(`[index="${p}"]`),
           newCellWidth = parseInt(groupCell.css('width')) - cellWidth,
           newCellLeft = parseInt(groupCell.css('left')) - cellWidth;
 
-        if (isGroupCell && groupCell){
+        if (isGroupCell && groupCell) {
           groupCell.css('width', newCellWidth);
 
           if (groupCell.attr('index') !== isGroupCell){
@@ -1066,9 +1066,9 @@
         }
       }
 
-      if (isGroupCell){
-        if (me.el.select('[group-index="' + isGroupCell + '"]').length === 0){
-          groupCell = me.el.select('[index="' + isGroupCell + '"]');
+      if (isGroupCell) {
+        if (me.el.select(`[group-index="${isGroupCell}"]`).length === 0){
+          groupCell = me.el.select(`[index="${isGroupCell}"]`);
 
           groupCell.destroy();
         }
@@ -1087,7 +1087,7 @@
     /*
      *
      */
-    renderHeaderCheckBox: function(){
+    renderHeaderCheckBox(){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -1095,8 +1095,8 @@
         iL = columns.length,
         cells = me.getCells();
 
-      for (; i < iL; i++){
-        var column = columns[i];
+      for (; i < iL; i++) {
+        const column = columns[i];
 
         if(F.isObject(column.headerCheckBox)){
           var el = column.headerCheckBox.el,
@@ -1104,7 +1104,7 @@
 
           el = F.get(elId);
 
-          if(!el.dom){
+          if (!el.dom) {
             column.headerCheckBox = true;
           }
         }
@@ -1112,11 +1112,11 @@
         if (column.headerCheckBox === true && column.type !== 'select'){
           var cell = cells.item(i),
             headerCellContainer = cell.firstChild(),
-            textEl = cell.select('.' + GRID_HEADER_CELL_TEXT_CLS),
+            textEl = cell.select(`.${GRID_HEADER_CELL_TEXT_CLS}`),
             label = column.title ? column.title : false,
             labelWidth = 0;
 
-          switch(column.type){
+          switch (column.type) {
             case 'checkbox':
             case 'switcher':
               cell.addCls(GRID_HEADER_CELL_CHECKBOX_CLS);
@@ -1128,14 +1128,14 @@
 
           textEl.update('');
 
-          if (label.length){
+          if (label.length) {
             labelWidth = label.width * 15;
           }
 
           column.headerCheckBox = new F.CheckBox({
             renderTo: headerCellContainer.dom,
             renderId: true,
-            labelWidth: labelWidth,
+            labelWidth,
             value: false,
             //label: label,
             label: false,
@@ -1145,11 +1145,11 @@
               display: 'inline-block'
             },
             events: [{
-              change: function(checkbox, value){
+              change: (checkbox, value) => {
                 var i = 0,
                   iL = w.getViewTotal();
 
-                for (; i < iL; i++){
+                for (; i < iL; i++) {
                   w.set(i, column.index, value);
                 }
               }
@@ -1161,23 +1161,23 @@
     /*
      *
      */
-    reSetIndexes: function(){
-      var me = this,
+    reSetIndexes(){
+      const me = this,
         w = me.widget,
         cells = me.getCells(),
         columns = me.getColumns();
 
-      cells.each(function(cell, i){
+      cells.each((cell, i) => {
         cell.attr('index', i);
         //reset id-s
-        var column = columns[i];
+        const column = columns[i];
         cell.attr('col-id', column.id);
       });
 
-      if(w.subHeaderFilter){
-        var subHeaderFilterCells = w.filter.getSubHeaderFilterEl(me.side).select('.' + GRID_HEADER_CELL_CLS);
+      if (w.subHeaderFilter) {
+        const subHeaderFilterCells = w.filter.getSubHeaderFilterEl(me.side).select(`.${GRID_HEADER_CELL_CLS}`);
 
-        subHeaderFilterCells.each(function(cell, i){
+        subHeaderFilterCells.each((cell, i) => {
           cell.attr('index', i);
         });
       }
@@ -1185,13 +1185,13 @@
     /*
      *
      */
-    reSetGroupIndexes: function(){
-      var me = this,
+    reSetGroupIndexes(){
+      const me = this,
         columns = me.getColumns(),
         cells = me.getCells();
 
-      cells.each(function(cell, i){
-        var column = columns[i],
+      cells.each((cell, i) => {
+        const column = columns[i],
           grouping = column.grouping;
 
         if(cell.attr('group-index') && !grouping){
@@ -1205,12 +1205,12 @@
     /*
      *
      */
-    updateTitles: function(){
-      var me = this,
+    updateTitles(){
+      const me = this,
         columns = me.getColumns();
 
-      F.each(columns, function(column, i){
-        if(column.headerCheckBox){
+      F.each(columns, (column, i) => {
+        if (column.headerCheckBox) {
           return;
         }
 
@@ -1220,13 +1220,13 @@
     /*
      *
      */
-    updateCellsSizes: function(){
+    updateCellsSizes(){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
         left = 0;
 
-      if(me.side === 'center'){
+      if (me.side === 'center') {
         if(w.nativeScroller){
           left = -w.body.el.dom.scrollLeft;
         }
@@ -1235,16 +1235,16 @@
         }
       }
 
-      F.each(columns, function(column, i){
-        if(column.hidden){
+      F.each(columns, (column, i) => {
+        if (column.hidden) {
           return;
         }
 
-        var cell = me.el.select('div.' + GRID_HEADER_CELL_CLS + '[index="'+i+'"]'),
+        const cell = me.el.select(`div.${GRID_HEADER_CELL_CLS}[index="${i}"]`),
           currentLeft = parseInt(cell.css('left')),
           currentWidth = parseInt(cell.css('width'));
 
-        if(currentLeft === left && currentWidth === column.width){
+        if (currentLeft === left && currentWidth === column.width) {
           left += column.width;
           return;
         }
@@ -1256,13 +1256,13 @@
           //cell.animate({left: left}, ANIMATE_DURATION);
           cell.css({
             width: column.width,
-            left: left
+            left
           });
         }
         else {
           cell.animate({
             width: column.width,
-            left: left
+            left
           }, ANIMATE_DURATION);
         }
 
@@ -1272,13 +1272,13 @@
     /*
      * @return {Number}
      */
-    calcRows: function(){
+    calcRows(){
       var me = this,
         w = me.widget,
         columns = w.columns.concat(w.leftColumns).concat(w.rightColumns),
         rows = 1;
 
-      Fancy.each(columns, function(column){
+      Fancy.each(columns, (column) => {
         if(column.grouping){
           if(rows < 2){
              rows = 2;
@@ -1298,8 +1298,8 @@
         }
       });
 
-      if(w.groupheader && rows === 2){
-        var tripleCells = w.el.select('.' + GRID_HEADER_CELL_TRIPLE_CLS);
+      if (w.groupheader && rows === 2) {
+        const tripleCells = w.el.select(`.${GRID_HEADER_CELL_TRIPLE_CLS}`);
         if(tripleCells.length){
           //TODO: redo this case to decrease header height
           //Also needs to work with case of 1 row
@@ -1312,13 +1312,13 @@
     /*
      *
      */
-    reSetColumnsAlign: function(){
-      var me = this,
+    reSetColumnsAlign(){
+      const me = this,
         columns = me.getColumns(),
         cells = me.getCells();
 
-      cells.each(function(cell, i){
-        var column = columns[i];
+      cells.each((cell, i)=> {
+        const column = columns[i];
 
         cell.css('text-align', column.align || '');
       });
@@ -1326,9 +1326,9 @@
     /*
      * Bug Fix: Empty method that is rewritten in HeaderMenu mixin
      */
-    destroyMenus: function(){},
-    onDocMove: function(){
-      var me = this,
+    destroyMenus(){},
+    onDocMove(){
+      const me = this,
         w = me.widget;
 
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none') && me.hideMenu){
@@ -1338,13 +1338,13 @@
     /*
      *
      */
-    reSetColumnsCls: function(){
-      var me = this,
+    reSetColumnsCls(){
+      const me = this,
         columns = me.getColumns(),
         cells = me.getCells(),
         columnsCls = [];
 
-      F.each(columns, function(column){
+      F.each(columns, (column) =>{
         if(column.headerCls){
           columnsCls.push(column.headerCls);
         }
@@ -1357,9 +1357,9 @@
         }
       });
 
-      cells.each(function(cell, i){
-        var column = columns[i];
-        F.each(columnsCls, function(cls){
+      cells.each((cell, i) => {
+        const column = columns[i];
+        F.each(columnsCls, (cls) => {
           cell.removeCls(cls);
         });
 
@@ -1382,13 +1382,13 @@
         }
       });
     },
-    updateCellsVisibility: function(){
-      var me = this,
+    updateCellsVisibility(){
+      const me = this,
         columns = me.getColumns(),
         cells = me.getCells();
 
-      cells.each(function(cell, i){
-        var column = columns[i];
+      cells.each((cell, i) => {
+        const column = columns[i];
 
         if(column.hidden){
           cell.hide();
@@ -1398,21 +1398,21 @@
         }
       });
     },
-    reSetCheckBoxes: function(){
-      var me = this,
+    reSetCheckBoxes(){
+      const me = this,
         columns = me.getColumns(),
         cells = me.getCells();
 
-      F.each(columns, function(column, i){
-        var cell = cells.item(i),
-          checkBoxEl = cell.select('.' + FIELD_CHECKBOX_CLS);
+      F.each(columns, (column, i) => {
+        const cell = cells.item(i),
+          checkBoxEl = cell.select(`.${FIELD_CHECKBOX_CLS}`);
 
-        if(checkBoxEl.length){
+        if (checkBoxEl.length) {
           if(column.type === 'select' || column.select){
             return;
           }
 
-          var checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
+          const checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
           cell.removeCls(GRID_HEADER_CELL_CHECKBOX_CLS);
           cell.removeCls(GRID_HEADER_CELL_SELECT_CLS);
           switch(column.type){
@@ -1432,8 +1432,8 @@
 
       me.renderHeaderCheckBox();
     },
-    onCellTextDBLClick: function(e){
-      var me = this,
+    onCellTextDBLClick(e){
+      const me = this,
         w = me.widget,
         targetEl = Fancy.get(e.target),
         cell = targetEl.parent().parent(),
@@ -1462,22 +1462,22 @@
         value: column.title || '',
         inputHeight: w.cellHeaderHeight + 1,
         events: [{
-          enter: function(field){
+          enter(field){
             field.destroy();
           }
         }, {
-          esc: function(field){
+          esc(field){
             w.setColumnTitle(column.index, oldValue, me.side);
             field.destroy();
             delete me.activeEditColumnField;
           }
         }, {
-          input: function(field, value){
+          input(field, value){
             w.setColumnTitle(column.index, value, me.side);
             delete me.activeEditColumnField;
           }
         },{
-          render: function(field){
+          render(field){
             field.focus();
             delete me.activeEditColumnField;
           }
@@ -1489,20 +1489,20 @@
         }
       });
 
-      w.once('scroll', function(){
+      w.once('scroll', () =>{
         if(me.activeEditColumnField){
           me.activeEditColumnField.destroy();
           delete me.activeEditColumnField;
         }
       });
     },
-    onCellMouseEnter: function(e){
-      var me = this,
+    onCellMouseEnter(e){
+      const me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
 
-      if (F.nojQuery && prevCellOver){
+      if (F.nojQuery && prevCellOver) {
         if (me.fixZeptoBug){
           if (params.columnIndex !== prevCellOver.columnIndex || params.side !== prevCellOver.side){
             w.fire('headercellleave', prevCellOver);
@@ -1521,8 +1521,8 @@
     /*
     * @param {Object} e
     */
-    onCellMouseLeave: function(e){
-      var me = this,
+    onCellMouseLeave(e){
+      const me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
@@ -1548,15 +1548,15 @@
      * @param {Object} e
      * @return {false|Object}
      */
-    getEventParams: function(e){
-      var me = this,
+    getEventParams(e){
+      const me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         cell = e.currentTarget,
         cellEl = F.get(e.currentTarget);
 
-      if (cellEl.parent().dom === undefined){
+      if (cellEl.parent().dom === undefined) {
         return false;
       }
 
@@ -1569,30 +1569,30 @@
         return false;
       }
 
-      var columnIndex = parseInt(cellEl.attr('index')),
+      const columnIndex = parseInt(cellEl.attr('index')),
         column = columns[columnIndex];
 
       return {
-        e: e,
+        e,
         side: me.side,
-        cell: cell,
-        column: column,
-        columnIndex: columnIndex
+        cell,
+        column,
+        columnIndex
       };
     },
-    updateLImages: function(){
-      var me = this,
+    updateLImages(){
+      const me = this,
         cells = me.getCells(),
         columns = me.getColumns();
 
-      cells.each(function(cell){
-        var index = cell.attr('index'),
+      cells.each((cell) => {
+        const index = cell.attr('index'),
           column = columns[index],
           headerLImageCls = column.headerLImageCls,
-          LIel = cell.select('.' + GRID_HEADER_CELL_LEFT_IMAGE_CLS),
+          LIel = cell.select(`.${GRID_HEADER_CELL_LEFT_IMAGE_CLS}`),
           classList = LIel.getCls();
 
-        F.each(classList, function(cls){
+        F.each(classList, (cls) => {
           if(cls === GRID_HEADER_CELL_LEFT_IMAGE_CLS){
             return;
           }
@@ -1602,7 +1602,7 @@
           }
         });
 
-        if(headerLImageCls){
+        if (headerLImageCls) {
           LIel.addCls(headerLImageCls);
           cell.addCls(GRID_HEADER_CELL_CONTAINS_LI);
         }
@@ -1614,13 +1614,13 @@
     /*
      *
      */
-    getCells: function(){
-      return this.el.select('.' + GRID_HEADER_CELL_CLS + ':not(.' + GRID_HEADER_CELL_GROUP_LEVEL_2_CLS + ')');
+    getCells(){
+      return this.el.select(`.${GRID_HEADER_CELL_CLS}:not(.${GRID_HEADER_CELL_GROUP_LEVEL_2_CLS})`);
     },
     /*
      *
      */
-    onColumnDrag: function(){
+    onColumnDrag(){
       this.reSetIndexes();
     }
   });

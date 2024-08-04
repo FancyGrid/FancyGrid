@@ -14,14 +14,14 @@ Fancy.define('Fancy.Separator', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.render();
   },
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       el = Fancy.get(document.createElement('div'));
 
     el.addCls(me.cls);
@@ -29,7 +29,7 @@ Fancy.define('Fancy.Separator', {
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
 
-    if(me.style){
+    if (me.style) {
       me.el.css(me.style);
     }
   }

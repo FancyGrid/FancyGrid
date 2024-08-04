@@ -19,8 +19,8 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
 
@@ -69,7 +69,7 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
         }
       }
 
-      if( i === 0 ){
+      if (i === 0) {
         item.style['padding-left'] = '0px';
       }
     }

@@ -4,27 +4,27 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   /*
    * CONSTANTS
    */
-  var RIGHT_SCROLL_CLS = 'fancy-scroll-right';
-  var BOTTOM_SCROLL_CLS = 'fancy-scroll-bottom';
-  var TOP_SCROLL_CLS = 'fancy-scroll-top';
-  var RIGHT_SCROLL_INNER_CLS = 'fancy-scroll-right-inner';
-  var BOTTOM_SCROLL_INNER_CLS = 'fancy-scroll-bottom-inner';
-  var TOP_SCROLL_INNER_CLS = 'fancy-scroll-top-inner';
-  var NATIVE_SCROLLER_CLS = 'fancy-grid-native-scroller';
-  var RIGHT_SCROLL_HOVER_CLS = 'fancy-scroll-right-hover';
-  var BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
-  var TOP_SCROLL_HOVER_CLS = 'fancy-scroll-top-hover';
-  var RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
-  var BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
-  var TOP_SCROLL_ACTIVE_CLS = 'fancy-scroll-top-active';
-  var HIDDEN_CLS = F.HIDDEN_CLS;
-  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
-  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
+  const RIGHT_SCROLL_CLS = 'fancy-scroll-right';
+  const BOTTOM_SCROLL_CLS = 'fancy-scroll-bottom';
+  const TOP_SCROLL_CLS = 'fancy-scroll-top';
+  const RIGHT_SCROLL_INNER_CLS = 'fancy-scroll-right-inner';
+  const BOTTOM_SCROLL_INNER_CLS = 'fancy-scroll-bottom-inner';
+  const TOP_SCROLL_INNER_CLS = 'fancy-scroll-top-inner';
+  const NATIVE_SCROLLER_CLS = 'fancy-grid-native-scroller';
+  const RIGHT_SCROLL_HOVER_CLS = 'fancy-scroll-right-hover';
+  const BOTTOM_SCROLL_HOVER_CLS = 'fancy-scroll-bottom-hover';
+  const TOP_SCROLL_HOVER_CLS = 'fancy-scroll-top-hover';
+  const RIGHT_SCROLL_ACTIVE_CLS = 'fancy-scroll-right-active';
+  const BOTTOM_SCROLL_ACTIVE_CLS = 'fancy-scroll-bottom-active';
+  const TOP_SCROLL_ACTIVE_CLS = 'fancy-scroll-top-active';
+  const HIDDEN_CLS = F.HIDDEN_CLS;
+  const GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  const GRID_CENTER_CLS = F.GRID_CENTER_CLS;
 
   F.define('Fancy.grid.plugin.Scroller', {
     extend: F.Plugin,
@@ -53,19 +53,19 @@
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         mouseWheelEventName = F.getMouseWheelEventName();
 
-      w.once('render', function(){
+      w.once('render', () => {
         me.render();
         w.leftBody.el.on(mouseWheelEventName, me.onMouseWheel, me);
         if (w.nativeScroller){
@@ -97,8 +97,8 @@
     /*
      *
      */
-    destroy: function(){
-      var me = this,
+    destroy(){
+      const me = this,
         w = me.widget,
         leftBody = w.leftBody,
         body = w.body,
@@ -134,8 +134,8 @@
     /*
      *
      */
-    onGridInit: function(){
-      var me = this,
+    onGridInit(){
+      const me = this,
         w = me.widget,
         s = w.store,
         docEl = F.get(document);
@@ -153,15 +153,15 @@
 
       w.on('columndrag', me.onColumnDrag, me);
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.update();
       }, 1);
     },
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         w = me.widget,
         body = w.body,
         rightScrollEl = F.get(document.createElement('div')),
@@ -208,8 +208,8 @@
     /*
      *
      */
-    onMouseWheel: function(e){
-      var me = this,
+    onMouseWheel(e){
+      const me = this,
         w = me.widget,
         s = w.store,
         delta = F.getWheelDelta(e.originalEvent || e);
@@ -217,7 +217,7 @@
       if(w.infinite){
         e.preventDefault();
 
-        var newInfiniteScrolledToRow;
+        let newInfiniteScrolledToRow;
 
         if(delta < 0){
           newInfiniteScrolledToRow = s.infiniteScrolledToRow + 1;
@@ -263,8 +263,8 @@
     /*
      *
      */
-    onRender: function(){
-      var me = this,
+    onRender(){
+      const me = this,
         w = me.widget;
 
       if (w.nativeScroller !== true){
@@ -307,8 +307,8 @@
     /*
      *
      */
-    initTouch: function(){
-      var me = this,
+    initTouch(){
+      const me = this,
         w = me.widget,
         leftBody = w.leftBody,
         body = w.body,
@@ -330,10 +330,10 @@
     /*
      * @param {Object} e
      */
-    onBodyTouchStart: function(e){
+    onBodyTouchStart(e){
       e = e.originalEvent || e;
 
-      var me = this,
+      const me = this,
         w = me.widget,
         touchXY = e.changedTouches[0];
 
@@ -373,14 +373,14 @@
     /*
      *
      */
-    onBodyTouchEnd: function(){
-      var me = this,
+    onBodyTouchEnd(){
+      const me = this,
         w = me.widget;
 
       me.onMouseUpDoc();
 
       if(w.nativeScroller !== true && me.spyOnSwipe){
-        var swipedX = me.spyOnSwipe.swipedX,
+        const swipedX = me.spyOnSwipe.swipedX,
           swipedY = me.spyOnSwipe.swipedY;
 
         if(swipedY && swipedX){
@@ -402,8 +402,8 @@
       delete me.spyOnSwipe;
       delete me.touchScrollDirection;
     },
-    swipeTop: function(){
-      var me = this,
+    swipeTop(){
+      let me = this,
         w = me.widget,
         scrollTop = me.scrollTop + me.spyOnSwipe.swipedY * 10;
 
@@ -417,8 +417,8 @@
 
       w.scroll(scrollTop, false, true);
     },
-    swipeLeft: function(){
-      var me = this,
+    swipeLeft(){
+      let me = this,
         w = me.widget,
         scrollLeft = me.scrollLeft + me.spyOnSwipe.swipedX * 10;
 
@@ -435,7 +435,7 @@
     /*
      * @param {Object} e
      */
-    onBodyTouchMove: function(e){
+    onBodyTouchMove(e){
       var me = this,
         w = me.widget,
         e = e.originalEvent || e,
@@ -477,8 +477,8 @@
     /*
      *
      */
-    initRightScroll: function(){
-      var me = this;
+    initRightScroll(){
+      const me = this;
 
       me.rightKnob = me.scrollRightEl.select('.' + RIGHT_SCROLL_INNER_CLS);
       me.scrollRightEl.on('mousedown', me.onMouseDownRightSpin, me);
@@ -486,8 +486,8 @@
     /*
      *
      */
-    initBottomScroll: function(){
-      var me = this,
+    initBottomScroll(){
+      const me = this,
         w = me.widget;
 
       me.bottomKnob = me.scrollBottomEl.select('.' + BOTTOM_SCROLL_INNER_CLS);
@@ -501,8 +501,8 @@
     /*
      * @param {Object} e
      */
-    onMouseDownRightSpin: function(e){
-      var me = this,
+    onMouseDownRightSpin(e){
+      const me = this,
         w = me.widget;
 
       if (F.isTouch){
@@ -532,8 +532,8 @@
     /*
      * @param {Object} e
      */
-    onMouseDownBottomSpin: function(e){
-      var me = this,
+    onMouseDownBottomSpin(e){
+      const me = this,
         w = me.widget,
         targetEl = F.get(e.target);
 
@@ -564,8 +564,8 @@
     /*
      *
      */
-    onMouseUpDoc: function(){
-      var me = this,
+    onMouseUpDoc(){
+      const me = this,
         w = me.widget;
 
       me.mouseDownXY = {};
@@ -595,7 +595,7 @@
     /*
      * @param {Object} e
      */
-    onMouseMoveDoc: function(e){
+    onMouseMoveDoc(e){
       var me = this,
         w = me.widget,
         topScroll = false,
@@ -610,8 +610,8 @@
 
       if(F.isTouch && !me.mouseMoveInitXY){
         me.mouseMoveInitXY = {
-          x: x,
-          y: y
+          x,
+          y
         };
         return;
       }
@@ -655,12 +655,12 @@
       }
       else{
         me.spyOnSwipe = {
-          x: x,
-          y: y
+          x,
+          y
         };
       }
 
-      me.scrollInterval = setTimeout(function(){
+      me.scrollInterval = setTimeout(() => {
         if(me.rightKnobDown && me.touchScrollDirection !== 'left'){
           if(F.isTouch){
             deltaY = me.mouseDownXY.y - y;
@@ -782,15 +782,15 @@
     /*
      * @param {Number} [viewHeight]
      */
-    setScrollBars: function(viewHeight){
-      var me = this,
+    setScrollBars(viewHeight){
+      const me = this,
         w = me.widget;
 
       if(w.rowheight && viewHeight === undefined){
         return;
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.checkRightScroll(viewHeight);
       }, 1);
 
@@ -801,7 +801,7 @@
       }
 
       if (!w.nativeScroller){
-        setTimeout(function(){
+        setTimeout(() => {
           me.checkCorner();
           me.setRightKnobSize(viewHeight);
           me.setBottomKnobSize();
@@ -811,8 +811,8 @@
     /*
      * @param {Number} [viewHeight]
      */
-    checkRightScroll: function(viewHeight){
-      var me = this,
+    checkRightScroll(viewHeight){
+      const me = this,
         w = me.widget,
         body = w.body,
         gridBorders = w.gridBorders,
@@ -839,8 +839,8 @@
     /*
      *
      */
-    isRightScrollable: function(){
-      var w = this.widget;
+    isRightScrollable(){
+      const w = this.widget;
 
       if (w.nativeScroller){
         return w.body.el.css('overflow-y') === 'scroll';
@@ -851,8 +851,8 @@
     /*
      *
      */
-    isBottomScrollable: function(){
-      var w = this.widget;
+    isBottomScrollable(){
+      const w = this.widget;
 
       if (w.nativeScroller){
         return w.body.el.css('overflow-x') === 'scroll';
@@ -863,8 +863,8 @@
     /*
      * @param {Number} [viewHeight]
      */
-    setRightKnobSize: function(viewHeight){
-      var me = this,
+    setRightKnobSize(viewHeight){
+      const me = this,
         w = me.widget;
 
       if (w.nativeScroller){
@@ -901,7 +901,7 @@
     /*
      *
      */
-    checkBottomScroll: function(){
+    checkBottomScroll(){
       var me = this,
         w = me.widget,
         body = w.body,
@@ -943,8 +943,8 @@
     /*
      *
      */
-    checkCorner: function(){
-      var me = this,
+    checkCorner(){
+      const me = this,
         w = me.widget;
 
       if (w.nativeScroller){
@@ -956,8 +956,8 @@
     /*
      *
      */
-    setBottomKnobSize: function(){
-      var me = this,
+    setBottomKnobSize(){
+      const me = this,
         w = me.widget;
 
       if (w.nativeScroller){
@@ -994,7 +994,7 @@
      * @param {Number} x
      * @param {Boolean} [animate]
      */
-    scroll: function(y, x, animate){
+    scroll(y, x, animate){
       var me = this,
         w = me.widget,
         scrollInfo;
@@ -1021,7 +1021,7 @@
 
       if(animate){
         w.el.addCls('fancy-grid-columns-animation');
-        setTimeout(function(){
+        setTimeout(() => {
           w.el.removeCls('fancy-grid-columns-animation');
         }, F.ANIMATE_DURATION + 150);
       }
@@ -1048,7 +1048,7 @@
      * @param {Number} value
      * @return {Boolean}
      */
-    scrollDelta: function(value){
+    scrollDelta(value){
       var me = this,
         w = me.widget,
         scrollInfo;
@@ -1071,7 +1071,7 @@
     /*
      *
      */
-    scrollRightKnob: function(){
+    scrollRightKnob(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1093,7 +1093,7 @@
     /*
      *
      */
-    scrollBottomKnob: function(){
+    scrollBottomKnob(){
       var me = this,
         w = me.widget,
         scrolled = me.getBottomScroll(),
@@ -1116,8 +1116,8 @@
     /*
      * @return {Number}
      */
-    getScroll: function(){
-      var me = this,
+    getScroll(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -1139,7 +1139,7 @@
         }
       }
 
-      var columnEls = w.body.el.select('.' + GRID_COLUMN_CLS);
+      const columnEls = w.body.el.select('.' + GRID_COLUMN_CLS);
 
       if(columnEls.length === 0){
         return 0;
@@ -1150,8 +1150,8 @@
     /*
      * @return {Number}
      */
-    getBottomScroll: function(){
-      var me = this,
+    getBottomScroll(){
+      const me = this,
         w = me.widget;
 
       if(w.nativeScroller){
@@ -1168,7 +1168,7 @@
         }
       }
 
-      var columnEls = w.body.el.select('.' + GRID_COLUMN_CLS);
+      const columnEls = w.body.el.select('.' + GRID_COLUMN_CLS);
 
       if(columnEls.length === 0){
         return 0;
@@ -1179,8 +1179,8 @@
     /*
      * @param {Number} [viewHeight]
      */
-    update: function(viewHeight){
-      var me = this;
+    update(viewHeight){
+      const me = this;
 
       me.setScrollBars(viewHeight);
       me.checkScroll(viewHeight);
@@ -1193,26 +1193,26 @@
     /*
      *
      */
-    onChangeStore: function(){
+    onChangeStore(){
       this.update();
     },
     /*
      *
      */
-    onColumnResize: function(){
-      var me = this;
+    onColumnResize(){
+      const me = this;
 
       me.setScrollBars();
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.setScrollBars();
       }, Fancy.ANIMATE_DURATION + 20);
     },
     /*
      * @return {Number}
      */
-    getScrollHeight: function(){
-      var me = this,
+    getScrollHeight(){
+      const me = this,
         w = me.widget,
         bodyViewHeight = w.getBodyHeight() - (me.corner ? me.cornerSize : 0),
         cellsViewHeight = w.getCellsViewHeight() - (me.corner ? me.cornerSize : 0);
@@ -1226,8 +1226,8 @@
     /*
      * @return {Number}
      */
-    getScrollWidth: function(){
-      var me = this,
+    getScrollWidth(){
+      const me = this,
         w = me.widget,
         centerViewWidth = w.getCenterViewWidth() - (me.corner ? me.cornerSize : 0),
         centerFullWidth = w.getCenterFullWidth() - (me.corner ? me.cornerSize : 0);
@@ -1241,7 +1241,7 @@
     /*
      * @param {Number} [viewHeight]
      */
-    checkScroll: function(viewHeight){
+    checkScroll(viewHeight){
       var me = this,
         w = me.widget,
         rightScrolled = me.getScroll(),
@@ -1257,7 +1257,7 @@
           scrollTop = me.getScrollTop();
           scrollLeft = me.getScrollLeft();
 
-          var delta = centerColumnsWidth - (scrollLeft + viewWidth);
+          const delta = centerColumnsWidth - (scrollLeft + viewWidth);
 
           if(scrollLeft + delta < 0){
             w.scroll(scrollTop, 0);
@@ -1279,7 +1279,7 @@
     /*
      * @param {Fancy.Element} cell
      */
-    scrollToCell: function(cell, nativeScroll, firstRowIsVisible){
+    scrollToCell(cell, nativeScroll, firstRowIsVisible){
       if(cell === undefined){
         return;
       }
@@ -1321,7 +1321,7 @@
         }
         else {
           if(w.selection && w.selection.activeCell){
-            var info = w.selection.getActiveCellInfo();
+            const info = w.selection.getActiveCellInfo();
 
             if(info.side !== 'center'){
               me.scroll(0);
@@ -1353,7 +1353,7 @@
       }
 
       if (firstRowIsVisible){
-        var cellViewsHeight = w.getCellsViewHeight();
+        const cellViewsHeight = w.getCellsViewHeight();
 
         rightScroll = passedHeight - cellHeight;
 
@@ -1421,8 +1421,8 @@
     /*
      *
      */
-    onNativeScrollBody: function(){
-      var me = this,
+    onNativeScrollBody(){
+      const me = this,
         w = me.widget,
         scrollTop = w.body.el.dom.scrollTop,
         scrollLeft = w.body.el.dom.scrollLeft;
@@ -1472,8 +1472,8 @@
     /*
      *
      */
-    onNativeScrollLeftBody: function(){
-      var w = this.widget;
+    onNativeScrollLeftBody(){
+      const w = this.widget;
 
       if(w.leftBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
         this.onNativeScrollBody();
@@ -1482,8 +1482,8 @@
     /*
      *
      */
-    onNativeScrollRightBody: function(){
-      var w = this.widget;
+    onNativeScrollRightBody(){
+      const w = this.widget;
 
       if(w.rightBody.el.dom.scrollTop !== w.body.el.dom.scrollTop){
         this.onNativeScrollBody();
@@ -1492,8 +1492,8 @@
     /*
      * @param {Object} e
      */
-    onMouseWheelLeft: function(e){
-      var w = this.widget,
+    onMouseWheelLeft(e){
+      const w = this.widget,
         delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
@@ -1504,8 +1504,8 @@
     /*
      * @param {Object} e
      */
-    onMouseWheelRight: function(e){
-      var w = this.widget,
+    onMouseWheelRight(e){
+      const w = this.widget,
         delta = F.getWheelDelta(e.originalEvent || e),
         scrollTop = delta * w.cellHeight;
 
@@ -1516,13 +1516,13 @@
     /*
      *
      */
-    onLockColumn: function(){
-      var me = this;
+    onLockColumn(){
+      const me = this;
 
       me.update();
       me.widget.setColumnsPosition();
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.update();
         me.widget.setColumnsPosition();
       }, F.ANIMATE_DURATION);
@@ -1530,11 +1530,11 @@
     /*
      *
      */
-    onColumnDrag: function(){
-      var me = this;
+    onColumnDrag(){
+      const me = this;
 
       if(F.nojQuery){
-        setTimeout(function(){
+        setTimeout(()=>{
           me.update();
         }, F.ANIMATE_DURATION);
       }
@@ -1556,13 +1556,13 @@
     /*
      *
      */
-    onRightLockColumn: function(){
-      var me = this;
+    onRightLockColumn(){
+      const me = this;
 
       me.update();
       me.widget.setColumnsPosition();
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.update();
         me.widget.setColumnsPosition();
       }, F.ANIMATE_DURATION);
@@ -1570,13 +1570,13 @@
     /*
      *
      */
-    onUnLockColumn: function(){
-      var me = this;
+    onUnLockColumn(){
+      const me = this;
 
       me.update();
       me.widget.setColumnsPosition();
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.update();
         me.widget.setColumnsPosition();
       }, F.ANIMATE_DURATION + 100);
@@ -1584,25 +1584,22 @@
     /*
      *
      */
-    onPanelResize: function(){
-      var me = this,
-        w = me.widget;
-
-      w.scroll(0, 0);
+    onPanelResize(){
+      this.widget.scroll(0, 0);
     },
-    onChangePages: function(){
+    onChangePages(){
       var me = this,
         w = me.widget;
 
       if(!w.nativeScroller && me.scrollTop){
-        setTimeout(function(){
+        setTimeout(() => {
           me.scrollDelta(0);
         }, 1);
 
       }
     },
-    onScrollBodyBugFix: function(){
-      var me = this,
+    onScrollBodyBugFix(){
+      const me = this,
         w = me.widget,
         body = w.body,
         scrollLeft = body.el.dom.scrollLeft;
@@ -1613,8 +1610,8 @@
     /*
      *
      */
-    getScrollTop: function(){
-      var me = this,
+    getScrollTop(){
+      const me = this,
         w = me.widget;
 
       if(w.nativeScroller){
@@ -1626,8 +1623,8 @@
     /*
      *
      */
-    getScrollLeft: function(){
-      var me = this,
+    getScrollLeft(){
+      const me = this,
         w = me.widget;
 
       if(w.nativeScroller){

@@ -4,35 +4,35 @@
 Fancy.modules['form'] = true;
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var MODAL_CLS = F.MODAL_CLS;
-  var FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
-  var FORM_CLS = F.FORM_CLS;
-  var FORM_BODY_CLS = F.FORM_BODY_CLS;
-  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
-  var FORM_PANEL_CLS = F.FORM_PANEL_CLS;
-  var PANEL_SHADOW_CLS =  F.PANEL_SHADOW_CLS;
-  var FIELD_BLANK_ERR_CLS = F.FIELD_BLANK_ERR_CLS;
-  var FIELD_TAB_CLS = F.FIELD_TAB_CLS;
-  var FIELD_TAB_ACTIVE_CLS = F.FIELD_TAB_ACTIVE_CLS;
-  var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
-  var PANEL_CLS = F.PANEL_CLS;
-  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
-  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
-  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
-  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
-  var TAB_TBAR_CLS = F.TAB_TBAR_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const MODAL_CLS = F.MODAL_CLS;
+  const FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
+  const FORM_CLS = F.FORM_CLS;
+  const FORM_BODY_CLS = F.FORM_BODY_CLS;
+  const PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  const FORM_PANEL_CLS = F.FORM_PANEL_CLS;
+  const PANEL_SHADOW_CLS = F.PANEL_SHADOW_CLS;
+  const FIELD_BLANK_ERR_CLS = F.FIELD_BLANK_ERR_CLS;
+  const FIELD_TAB_CLS = F.FIELD_TAB_CLS;
+  const FIELD_TAB_ACTIVE_CLS = F.FIELD_TAB_ACTIVE_CLS;
+  const TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
+  const PANEL_CLS = F.PANEL_CLS;
+  const PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  const PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  const PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  const PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  const TAB_TBAR_CLS = F.TAB_TBAR_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
 
   F.Mixin('Fancy.form.mixin.Form', {
     tabScrollStep: 80,
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.calcFieldSize();
       me.Super('init', arguments);
@@ -65,8 +65,8 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    preRender: function(){
-      var me = this;
+    preRender(){
+      const me = this;
 
       me.initRenderTo();
 
@@ -77,8 +77,8 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    renderPanel: function(){
-      var me = this,
+    renderPanel(){
+      const me = this,
         panelConfig = {
           renderTo: me.renderTo,
           renderOuter: me.renderOuter,
@@ -109,62 +109,62 @@ Fancy.modules['form'] = true;
           tabScrollStep: me.tabScrollStep
         };
 
-      F.each(me.buttons, function(item){
-        if(F.isObject(item)){
+      F.each(me.buttons, item => {
+        if (F.isObject(item)) {
          item.scope = item.scope || me;
         }
       });
 
-      F.each(me.bbar, function(item){
+      F.each(me.bbar, item => {
         if(F.isObject(item)){
           item.scope = item.scope || me;
         }
       });
 
-      F.each(me.tbar, function(item){
+      F.each(me.tbar, item => {
         if(F.isObject(item)){
           item.scope = item.scope || me;
         }
       });
 
-      F.each(me.subTBar, function(item){
-        if(F.isObject(item)){
+      F.each(me.subTBar, item => {
+        if (F.isObject(item)) {
           item.scope = item.scope || me;
         }
       });
 
-      if(me.cls){
+      if (me.cls) {
         panelConfig.cls = me.cls;
         delete me.cls;
       }
 
-      if (me.tabs){
+      if (me.tabs) {
         panelConfig.tbar = me.generateTabs();
         me.height -= me.barHeight;
       }
 
-      if (me.bbar){
+      if (me.bbar) {
         panelConfig.bbar = me.bbar;
         me.height -= me.bbarHeight || me.barHeight;
       }
 
-      if (me.tbar){
+      if (me.tbar) {
         panelConfig.tbar = me.tbar;
         me.height -= me.tbarHeight || me.barHeight;
       }
 
-      if (me.subTBar){
+      if (me.subTBar) {
         panelConfig.subTBar = me.subTBar;
         me.height -= me.subTBarHeight || me.barHeight;
       }
 
-      if (me.buttons){
+      if (me.buttons) {
         panelConfig.buttons = me.buttons;
         me.height -= me.buttonsHeight || me.barHeight;
         panelConfig.buttons = me.buttons;
       }
 
-      if (me.footer){
+      if (me.footer) {
         panelConfig.footer = me.footer;
         me.height -= me.barHeight;
       }
@@ -200,8 +200,8 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    initRenderTo: function(){
-      var me = this,
+    initRenderTo(){
+      let me = this,
         renderTo = me.renderTo || document.body;
 
       if (F.isString(renderTo)){
@@ -216,17 +216,17 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      let me = this,
         renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div'));
 
-      if (me.renderOuter && !me.panel){
+      if (me.renderOuter && !me.panel) {
         el = renderTo;
       }
 
-      if (!renderTo.dom){
-        throw new Error('[FancyGrid Error 1] - Could not find renderTo element: ' + me.renderTo);
+      if (!renderTo.dom) {
+        throw new Error(`[FancyGrid Error 1] - Could not find renderTo element: ${me.renderTo}`);
       }
 
       el.addCls(
@@ -238,8 +238,8 @@ Fancy.modules['form'] = true;
       if( Fancy.loadingStyle ){
         if(me.panel){
           me.panel.el.css('opacity', 0);
-          me.intervalStyleLoad = setInterval(function(){
-            if(!Fancy.loadingStyle){
+          me.intervalStyleLoad = setInterval(() => {
+            if (!Fancy.loadingStyle) {
               clearInterval(me.intervalStyleLoad);
               me.panel.el.animate({
                 'opacity': 1,
@@ -250,7 +250,7 @@ Fancy.modules['form'] = true;
         }
         else {
           el.css('opacity', 0);
-          me.intervalStyleLoad = setInterval(function(){
+          me.intervalStyleLoad = setInterval(() => {
             if(!Fancy.loadingStyle){
               clearInterval(me.intervalStyleLoad);
               me.el.animate({
@@ -315,16 +315,16 @@ Fancy.modules['form'] = true;
     /*
      * @param {Array} tbar
      */
-    generateTabs: function(){
-      var me = this,
+    generateTabs(){
+      const me = this,
         tbar = [];
 
-      if (me.tabs){
-        var i = 0,
+      if (me.tabs) {
+        let i = 0,
           iL = me.tabs.length;
 
         for (; i < iL; i++){
-          var tabConfig = {
+          let tabConfig = {
             type: 'tab'
           };
 
@@ -354,12 +354,12 @@ Fancy.modules['form'] = true;
     /*
      * @param {Number} newActiveTab
      */
-    setActiveTab: function(newActiveTab){
-      var me = this,
-        tabs = me.el.select('.' + FIELD_TAB_CLS),
-        oldActiveTab = me.el.select('.' + FIELD_TAB_ACTIVE_CLS);
+    setActiveTab(newActiveTab){
+      const me = this,
+        tabs = me.el.select(`.${FIELD_TAB_CLS}`),
+        oldActiveTab = me.el.select(`.${FIELD_TAB_ACTIVE_CLS}`);
 
-      if (newActiveTab !== undefined){
+      if (newActiveTab !== undefined) {
         me.activeTab = newActiveTab;
       }
 
@@ -370,8 +370,8 @@ Fancy.modules['form'] = true;
       oldActiveTab.removeCls(FIELD_TAB_ACTIVE_CLS);
       tabs.item(me.activeTab).addCls(FIELD_TAB_ACTIVE_CLS);
 
-      if (me.tabs){
-        var toolbarTabs = me.panel.el.select('.' + PANEL_TBAR_CLS + ' .' + TAB_TBAR_CLS);
+      if (me.tabs) {
+        const toolbarTabs = me.panel.el.select(`.${PANEL_TBAR_CLS} .${TAB_TBAR_CLS}`);
         toolbarTabs.removeCls(TAB_TBAR_ACTIVE_CLS);
         toolbarTabs.item(me.activeTab).addCls(TAB_TBAR_ACTIVE_CLS);
       }
@@ -382,8 +382,8 @@ Fancy.modules['form'] = true;
      * @param {HTMLElement} renderTo
      * @param {Array} [items]
      */
-    renderItems: function(renderTo, items){
-      var me = this,
+    renderItems(renderTo, items){
+      let me = this,
         i = 0,
         iL;
 
@@ -392,7 +392,7 @@ Fancy.modules['form'] = true;
       renderTo = renderTo || me.el.getByClass(FORM_BODY_CLS);
 
       for (; i < iL; i++){
-        var item = items[i],
+        let item = items[i],
           field;
 
         item.theme = me.theme;
@@ -464,19 +464,19 @@ Fancy.modules['form'] = true;
             field = F.form.field.SegButton;
             break;
           default:
-            throw new Error('type ' + item.type + ' is not set');
+            throw new Error(`type ${item.type} is not set`);
         }
 
         item.renderTo = item.renderTo || renderTo;
 
-        var _item = new field(item);
+        const _item = new field(item);
 
         switch (item.type){
           case 'line':
           case 'row':
           case 'set':
           case 'fieldset':
-            me.renderItems(_item.el.select('.' + FIELD_TEXT_CLS).dom, _item.items);
+            me.renderItems(_item.el.select(`.${FIELD_TEXT_CLS}`).dom, _item.items);
             break;
           case 'tab':
             me.renderItems(_item.el.select('.fancy-field-tab-items').dom, _item.items);
@@ -490,10 +490,10 @@ Fancy.modules['form'] = true;
      * @param {Object} item
      * @return {Object}
      */
-    applyDefaults: function(item){
-      var me = this;
+    applyDefaults(item){
+      const me = this;
 
-      if (item === undefined){
+      if (item === undefined) {
         var items = me.items,
           i = 0,
           iL = items.length,
@@ -509,7 +509,7 @@ Fancy.modules['form'] = true;
       var j,
         jL;
 
-      if (item.defaults){
+      if (item.defaults) {
         j = 0;
         jL = item.items.length;
 
@@ -523,10 +523,10 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    ons: function(){
-      var me = this;
+    ons(){
+      const me = this;
 
-      F.each(me.items, function(item){
+      F.each(me.items, (item) => {
         switch (item.type){
           case 'line':
           case 'row':
@@ -543,18 +543,18 @@ Fancy.modules['form'] = true;
         }
       });
 
-      if (me.responsive){
+      if (me.responsive) {
         F.$(window).bind('resize', function(){
           me.onWindowResize();
 
           clearInterval(me.intWindowResize);
 
-          me.intWindowResize = setTimeout(function(){
+          me.intWindowResize = setTimeout(() => {
             me.onWindowResize();
             delete me.intWindowResize;
 
             //Bug fix for Mac
-            setTimeout(function(){
+            setTimeout(() => {
               me.onWindowResize();
             }, 300);
           }, 30);
@@ -566,30 +566,30 @@ Fancy.modules['form'] = true;
      * @param {*} value
      * @param {*} oldValue
      */
-    onChange: function(field, value, oldValue){
+    onChange(field, value, oldValue){
       this.fire('set', {
         name: field.name,
-        value: value,
-        oldValue: oldValue
+        value,
+        oldValue
       });
     },
     /*
      * @return {Object}
      */
-    getValues: function(){
+    getValues(){
       return this.get();
     },
     /*
      * @param {String} name
      * @return {Array|String|Number|Object}
      */
-    get: function(name){
-      var me = this;
+    get(name){
+      const me = this;
 
-      if (name){
-        var value;
-        F.each(me.items, function(item){
-          switch (item.type){
+      if (name) {
+        let value;
+        F.each(me.items, (item) => {
+          switch (item.type) {
             case 'html':
             case 'button':
               return;
@@ -607,10 +607,10 @@ Fancy.modules['form'] = true;
         return value;
       }
       else {
-        var values = {};
+        const values = {};
 
-        F.each(me.items, function(item){
-          switch (item.type){
+        F.each(me.items, (item) => {
+          switch (item.type) {
             case 'html':
             case 'button':
               return;
@@ -630,18 +630,18 @@ Fancy.modules['form'] = true;
      * @param {String} name
      * @param {*} value
      */
-    set: function(name, value){
-      var me = this;
+    set(name, value){
+      const me = this;
 
-      if (F.isObject(name)){
-        for (var p in name){
+      if (F.isObject(name)) {
+        for (const p in name){
           me.set(p, name[p]);
         }
         return;
       }
 
       if (name){
-        F.each(me.items, function(item){
+        F.each(me.items, (item) => {
           if (item.name !== name){
             return;
           }
@@ -654,11 +654,11 @@ Fancy.modules['form'] = true;
     /*
      * @param {Boolean} clear
      */
-    clear: function(clear){
-      var me = this;
+    clear(clear){
+      const me = this;
 
-      F.each(me.items, function(item){
-        switch (item.type){
+      F.each(me.items, (item) => {
+        switch (item.type) {
           case 'html':
           case 'recaptcha':
           case 'button':
@@ -688,10 +688,8 @@ Fancy.modules['form'] = true;
     /*
      * @param {Object} o
      */
-    submit: function(o){
-      o = o || {};
-
-      var me = this,
+    submit(o = {}){
+      const me = this,
         params = o.params || {},
         values = me.get();
 
@@ -751,10 +749,10 @@ Fancy.modules['form'] = true;
     /*
      * @return {Boolean}
      */
-    valid: function(){
-      var valid = true;
+    valid(){
+      let valid = true;
 
-      F.each(this.items, function(item){
+      F.each(this.items, (item) => {
         switch(item.type){
           case 'field.string':
           case 'string':
@@ -767,7 +765,7 @@ Fancy.modules['form'] = true;
             return;
         }
 
-        if (valid === true){
+        if (valid === true) {
           valid = item.onBlur();
         }
         else {
@@ -781,12 +779,12 @@ Fancy.modules['form'] = true;
      * @param {String} name
      * @return {Object}
      */
-    getItem: function(name, returnOrder){
-      var item = false,
+    getItem(name, returnOrder){
+      let item = false,
         order;
 
-      F.each(this.items, function(_item, i){
-        if (_item.name === name){
+      F.each(this.items, (_item, i) => {
+        if (_item.name === name) {
           item = _item;
           order = i;
           return true;
@@ -795,8 +793,8 @@ Fancy.modules['form'] = true;
 
       if(returnOrder){
         return {
-          item: item,
-          order: order
+          item,
+          order
         };
       }
 
@@ -805,22 +803,22 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    showAt: function(){
-      var panel = this.panel;
+    showAt(){
+      const panel = this.panel;
 
-      if (panel){
+      if (panel) {
         panel.showAt.apply(panel, arguments);
       }
     },
     /*
      *
      */
-    show: function(){
-      var me = this,
+    show(){
+      const me = this,
         panel = me.panel;
 
-      setTimeout(function(){
-        if (panel){
+      setTimeout(() => {
+        if (panel) {
           panel.show.apply(panel, arguments);
         }
         else {
@@ -831,10 +829,10 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
-      if (me.panel){
+      if (me.panel) {
         me.panel.css({
           display: 'none'
         });
@@ -845,13 +843,13 @@ Fancy.modules['form'] = true;
         });
       }
 
-      var modal = F.select('.' + MODAL_CLS);
+      const modal = F.select(`.${MODAL_CLS}`);
 
-      if (modal.dom){
+      if (modal.dom) {
         modal.css('display', 'none');
       }
 
-      var i = 0,
+      let i = 0,
         iL = me.items.length;
 
       for (; i < iL; i++){
@@ -863,25 +861,25 @@ Fancy.modules['form'] = true;
     /*
      * @param {Number} height
      */
-    setHeight: function(height){
-      var me = this;
+    setHeight(height){
+      const me = this;
 
-      if (me.panel){
+      if (me.panel) {
         me.panel.css('height', height);
 
-        if (me.buttons){
+        if (me.buttons) {
           height -= me.buttonsHeight || me.barHeight;
         }
 
-        if (me.bbar){
+        if (me.bbar) {
           height -= me.bbarHeight || me.barHeight;
         }
 
-        if (me.tbar || me.tabs){
+        if (me.tbar || me.tabs) {
           height -= me.tbarHeight || me.barHeight;
         }
 
-        if (me.title){
+        if (me.title) {
           height -= me.titleHeight;
         }
 
@@ -894,10 +892,10 @@ Fancy.modules['form'] = true;
     /*
      * @param {Number} value
      */
-    setWidth: function(value){
-      var me = this;
+    setWidth(value){
+      const me = this;
 
-      if (me.panel){
+      if (me.panel) {
         me.panel.css('width', value);
 
         value -= me.panelBodyBorders[1];
@@ -906,26 +904,26 @@ Fancy.modules['form'] = true;
 
       me.css('width', value);
 
-      var inLineFields = {};
+      const inLineFields = {};
 
-      F.each(me.items, function(item){
-        if(item.lineName){
+      F.each(me.items, (item) => {
+        if (item.lineName) {
           inLineFields[item.lineName] = inLineFields[item.lineName] || [];
           inLineFields[item.lineName].push(item);
           return;
         }
 
-        switch(item.type){
+        let _value;switch(item.type){
           case 'line':
-            var _value = value,
-              lineFieldNumber = 0,
+            _value = value;
+            var lineFieldNumber = 0,
               _itemsWidth = 0;
 
             _value -= parseInt(item.css('margin-left'));
             _value -= parseInt(item.css('margin-right'));
 
-            F.each(item.items, function(_item){
-              switch(_item.type){
+            F.each(item.items, (_item) => {
+              switch (_item.type) {
                 case 'button':
                   _value -= _item.css('width');
 
@@ -940,7 +938,7 @@ Fancy.modules['form'] = true;
             });
             break;
           default:
-            var _value = value;
+            _value = value;
 
             _value -= parseInt(item.css('margin-left'));
             _value -= parseInt(item.css('margin-right'));
@@ -949,13 +947,13 @@ Fancy.modules['form'] = true;
         }
       });
 
-      F.each(inLineFields, function(lineFields){
+      F.each(inLineFields, (lineFields) => {
         var widths = [],
           _value = value,
           totalWidth = 0;
 
-        F.each(lineFields, function(item, i){
-          var width = parseInt(item.el.css('width'));
+        F.each(lineFields, (item, i) => {
+          const width = parseInt(item.el.css('width'));
 
           _value -= parseInt(item.css('padding-left'));
 
@@ -963,7 +961,7 @@ Fancy.modules['form'] = true;
             _value -= parseInt(item.css('padding-right'));
           }
 
-          switch(item.type){
+          switch (item.type) {
             case 'button':
               _value -= width;
               return;
@@ -979,7 +977,7 @@ Fancy.modules['form'] = true;
 
         var _lineFields = [];
 
-        F.each(lineFields, function(item){
+        F.each(lineFields, (item) => {
           switch(item.type){
             case 'button':
               break;
@@ -988,11 +986,11 @@ Fancy.modules['form'] = true;
           }
         });
 
-        var percent = totalWidth/100,
-          newPercent = _value/100;
+        const percent = totalWidth / 100,
+          newPercent = _value / 100;
 
-        F.each(widths, function(value, i){
-          var percents = value/percent,
+        F.each(widths, (value, i) => {
+          const percents = value / percent,
             newValue = percents * newPercent,
             item = _lineFields[i];
 
@@ -1003,8 +1001,8 @@ Fancy.modules['form'] = true;
     /*
      * @return {Number}
      */
-    getHeight: function(){
-      var panel = this.panel;
+    getHeight(){
+      const panel = this.panel;
 
       if (panel){
         return panel.getHeight();
@@ -1015,8 +1013,8 @@ Fancy.modules['form'] = true;
     /*
      * @return {Number}
      */
-    getWidth: function(){
-      var me = this,
+    getWidth(){
+      let me = this,
         value;
 
       if (me.panel){
@@ -1031,7 +1029,7 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    calcFieldSize: function(){
+    calcFieldSize(){
       var me = this,
         width = me.width,
         defaults = me.defaults || {},
@@ -1040,7 +1038,7 @@ Fancy.modules['form'] = true;
 
       defaults.width = width - me.panelBorderWidth * 2;
 
-      F.each(me.items, function(item){
+      F.each(me.items, (item) => {
         switch (item.type){
           case 'set':
           case 'tab':
@@ -1050,7 +1048,7 @@ Fancy.modules['form'] = true;
 
             var minusWidth = item.type === 'set' ? 62 : 20;
 
-            F.each(item.items, function(_item){
+            F.each(item.items, (_item) => {
               if (_item.width === undefined){
                 _item.width = width - minusWidth;
               }
@@ -1070,7 +1068,7 @@ Fancy.modules['form'] = true;
               avaliableWidth = width,
               averageWidth;
 
-            F.each(item.items, function(_item){
+            F.each(item.items, (_item) => {
               if(_item.label === undefined && _item.labelAlign !== 'top'){
                 _item.label = false;
               }
@@ -1083,7 +1081,7 @@ Fancy.modules['form'] = true;
 
             averageWidth = (avaliableWidth - 8 - 8 - 8) / numOfFields;
 
-            F.each(item.items, function(_item){
+            F.each(item.items, (_item) => {
               if(!_item.width){
                 _item.width = averageWidth;
               }
@@ -1097,7 +1095,7 @@ Fancy.modules['form'] = true;
             });
 
             if (isWidthInit === false){
-              F.each(item.items, function(_item){
+              F.each(item.items, (_item) => {
                 if (_item.labelAlign === 'top'){
                   _item.labelWidth = averageWidth;
                 }
@@ -1129,7 +1127,7 @@ Fancy.modules['form'] = true;
 
       defaults.labelWidth = labelWidth;
 
-      if (me.inputWidth){
+      if (me.inputWidth) {
         defaults.inputWidth = me.inputWidth;
       }
 
@@ -1138,12 +1136,12 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    destroy: function(){
-      var me = this;
+    destroy(){
+      const me = this;
 
       me.el.destroy();
 
-      if (me.panel){
+      if (me.panel) {
         me.panel.el.destroy();
       }
     },
@@ -1151,13 +1149,13 @@ Fancy.modules['form'] = true;
      * @param {Function} fn
      * @param {Object} scope
      */
-    each: function(fn, scope){
-      var me = this,
+    each(fn, scope){
+      let me = this,
         items = me.items,
         i = 0,
         iL = items.length;
 
-      if (scope){
+      if (scope) {
         for (; i < iL; i++){
           fn.apply(this, [items[i]]);
         }
@@ -1171,8 +1169,8 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    loadModules: function(){
-      var me = this,
+    loadModules(){
+      const me = this,
         existedModules = F.modules || {},
         requiredModules = {},
         fields = me.items || [];
@@ -1187,11 +1185,11 @@ Fancy.modules['form'] = true;
         requiredModules.touch = true;
       }
 
-      var i = 0,
+      let i = 0,
         iL = fields.length;
 
-      for (; i < iL; i++){
-        var field = fields[i];
+      for (; i < iL; i++) {
+        const field = fields[i];
         if (field.type === 'date'){
           requiredModules.grid = true;
           requiredModules.selection = true;
@@ -1199,11 +1197,11 @@ Fancy.modules['form'] = true;
         }
 
         if (field.items){
-          var j = 0,
+          let j = 0,
             jL = field.items.length;
 
           for (; j < jL; j++){
-            var _field = field.items[j];
+            const _field = field.items[j];
 
             if (_field.type === 'date'){
               requiredModules.grid = true;
@@ -1231,11 +1229,11 @@ Fancy.modules['form'] = true;
         return;
       }
 
-      var onLoad = function(name){
+      const onLoad = function (name) {
         delete me.neededModules[name];
         me.neededModules.length--;
 
-        if (me.neededModules.length === 0){
+        if (me.neededModules.length === 0) {
           me.neededModules = true;
           me.init();
         }
@@ -1252,11 +1250,11 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    prevTab: function(){
-      var me = this;
+    prevTab(){
+      const me = this;
 
       me.activeTab--;
-      if (me.activeTab < 0){
+      if (me.activeTab < 0) {
         me.activeTab = 0;
       }
 
@@ -1265,31 +1263,31 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    nextTab: function(){
-      var me = this,
-        tabNumber = me.el.select('.' + FIELD_TAB_CLS).length;
+    nextTab(){
+      const me = this,
+        tabNumber = me.el.select(`.${FIELD_TAB_CLS}`).length;
 
       me.activeTab++;
 
-      if (me.activeTab >= tabNumber){
+      if (me.activeTab >= tabNumber) {
         me.activeTab = tabNumber - 1;
       }
 
       me.setActiveTab();
     },
-    onWindowResize: function(){
-      var me = this,
+    onWindowResize(){
+      let me = this,
         renderTo = me.renderTo,
         el;
 
-      if (me.panel){
+      if (me.panel) {
         renderTo = me.panel.renderTo;
       }
 
-      if(me.responsive){
+      if (me.responsive) {
         el = F.get(renderTo);
       }
-      else if(me.panel){
+      else if(me.panel) {
         el = me.panel.el;
       }
       else{
@@ -1300,13 +1298,13 @@ Fancy.modules['form'] = true;
         el = el.parent();
       }
 
-      var newWidth = el.width();
+      let newWidth = el.width();
 
-      if(el.dom === undefined){
+      if (el.dom === undefined) {
         return;
       }
 
-      if(newWidth === 0){
+      if (newWidth === 0) {
         newWidth = el.parent().width();
       }
 
@@ -1317,12 +1315,12 @@ Fancy.modules['form'] = true;
     /*
      * @param {String} bar
      */
-    hideBar: function(bar){
-      var me = this,
+    hideBar(bar){
+      let me = this,
         barCls,
         barEl;
 
-      switch(bar){
+      switch (bar) {
         case 'tbar':
           barCls = PANEL_TBAR_CLS;
           break;
@@ -1341,17 +1339,17 @@ Fancy.modules['form'] = true;
 
       barEl = me.panel.el.select('.' + barCls);
 
-      if(barEl.css('display') !== 'none'){
+      if (barEl.css('display') !== 'none') {
         barEl.hide();
 
-        var panelHeight = parseInt(me.panel.el.css('height'));
+        const panelHeight = parseInt(me.panel.el.css('height'));
         me.panel.el.css('height', panelHeight - me.barHeight);
       }
     },
     /*
      * @param {String} bar
      */
-    showBar: function(bar){
+    showBar(bar){
       var me = this,
         barCls,
         barEl;
@@ -1373,24 +1371,24 @@ Fancy.modules['form'] = true;
           throw new Error('[FancyGrid Error]: bar does not exist');
       }
 
-      barEl = me.panel.el.select('.' + barCls);
+      barEl = me.panel.el.select(`.${barCls}`);
 
       if(barEl.css('display') == 'none'){
         barEl.show();
 
-        var panelHeight = parseInt(me.panel.el.css('height'));
+        const panelHeight = parseInt(me.panel.el.css('height'));
         me.panel.el.css('height', panelHeight + me.barHeight);
       }
     },
     /*
      *
      */
-    $prepareTabs: function(){
-      var me = this,
+    $prepareTabs(){
+      let me = this,
         i = 0,
         tabIndex = 0;
 
-      F.each(me.items, function(item){
+      F.each(me.items, (item) => {
         me.$tabs[tabIndex][i] = item;
         i++;
 
@@ -1403,10 +1401,10 @@ Fancy.modules['form'] = true;
     /*
      * @param {String|Number} name
      */
-    remove: function(name){
-      var me = this,
+    remove(name){
+      let me = this,
         itemInfo;
-        //itemInfo = me.getItem(name, true);
+      //itemInfo = me.getItem(name, true);
 
       if(F.isString(name)){
         itemInfo = me.getItem(name, true);
@@ -1424,9 +1422,9 @@ Fancy.modules['form'] = true;
     /*
      *
      */
-    checkScroll: function(){
-      var me = this,
-        bodyEl = me.el.select('.' + FORM_BODY_CLS).item(0),
+    checkScroll(){
+      let me = this,
+        bodyEl = me.el.select(`.${FORM_BODY_CLS}`).item(0),
         availableHeight = parseInt(bodyEl.css('height')),
         fieldsHeight = 0;
 
@@ -1443,7 +1441,8 @@ Fancy.modules['form'] = true;
     }
   });
 
-})();/*
+})();
+/*
  * @mixin Fancy.form.mixin.PrepareConfig
  */
 Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
@@ -1452,10 +1451,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfig: function(config, originalConfig){
-    var me = this;
+  prepareConfig(config, originalConfig){
+    const me = this;
 
-    if(config.renderOuter){
+    if (config.renderOuter) {
       config.renderTo = config.renderOuter;
     }
 
@@ -1474,8 +1473,8 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSize: function(config){
-    var el,
+  prepareConfigSize(config) {
+    let el,
       me = this,
       renderTo = config.renderTo;
 
@@ -1492,7 +1491,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
 
     }
     else if(config.height === 'fit'){
-      setTimeout(function(){
+      setTimeout(() => {
         me.setHeightFit();
         me.on('changetab', me.onChangeTab, me);
       });
@@ -1504,10 +1503,10 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigDefaults: function(config){
+  prepareConfigDefaults(config){
     if( config.defaults ){
-      for(var p in config.defaults){
-        Fancy.each(config.items, function(item){
+      for(const p in config.defaults){
+        Fancy.each(config.items, item => {
           if( item[p] === undefined ){
             item[p] = config.defaults[p];
           }
@@ -1521,15 +1520,15 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigBars: function(config){
-    var fn = function(bar){
+  prepareConfigBars(config){
+    const fn = function (bar) {
       var i = 0,
         iL = bar.length;
 
-      for(;i<iL;i++){
-        switch (bar[i].type){
+      for (; i < iL; i++) {
+        switch (bar[i].type) {
           case 'date':
-            if (!bar[i].format){
+            if (!bar[i].format) {
               var date = config.lang.date;
               bar[i].format = {
                 read: date.read,
@@ -1538,7 +1537,7 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
               };
             }
 
-            if(config.i18n){
+            if (config.i18n) {
               bar[i].i18n = config.i18n;
             }
             break;
@@ -1557,25 +1556,25 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigItems: function(config){
-    var me = this,
-      fn = function(item){
+  prepareConfigItems(config){
+    const me = this,
+      fn = function (item) {
         item.theme = me.theme || '';
 
-        if( item.labelWidth === undefined ){
+        if (item.labelWidth === undefined) {
           item.labelWidth = me.labelWidth;
         }
 
-        if( item.inputWidth === undefined ){
+        if (item.inputWidth === undefined) {
           item.inputWidth = me.inputWidth;
         }
 
-        if( item.type === 'pass' || item.type === 'password' ){
+        if (item.type === 'pass' || item.type === 'password') {
           item.type = 'string';
           item.isPassword = true;
         }
 
-        if(item.items){
+        if (item.items) {
           Fancy.each(item.items, fn);
         }
       };
@@ -1587,17 +1586,17 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   /*
    *
    */
-  setHeightFit: function(){
-    var me = this,
-      isPanel = !!( me.title ||  me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
+  setHeightFit(){
+    const me = this,
+      isPanel = !!(me.title || me.subTitle || me.tbar || me.bbar || me.buttons || me.panel),
       panelBodyBorders = me.panelBodyBorders,
       gridWithoutPanelBorders = me.gridWithoutPanelBorders,
       gridBorders = me.gridBorders;
 
     me.heightFit = true;
 
-    var height = me.fieldHeight;
-    var items = me.items;
+    let height = me.fieldHeight;
+    let items = me.items;
 
     if(me.$tabs){
       var activeTab = me.activeTab || 0;
@@ -1605,18 +1604,18 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
       items = me.$tabs[activeTab];
     }
 
-    Fancy.each(items, function(field){
-      if(field.hidden){}
+    Fancy.each(items, field => {
+      if (field.hidden) {}
       else{
         height += parseInt(field.css('height'));
       }
     });
 
-    if(me.title){
+    if (me.title) {
       height += me.titleHeight;
     }
 
-    if(me.tbar || me.tabs){
+    if (me.tbar || me.tabs) {
       height += me.tbarHeight || me.barHeight;
     }
 
@@ -1652,12 +1651,11 @@ Fancy.Mixin('Fancy.form.mixin.PrepareConfig', {
   /*
    *
    */
-  onChangeTab: function(){
-    var me = this;
-
-    me.setHeightFit();
+  onChangeTab(){
+    this.setHeightFit();
   }
-});/*
+});
+/*
  * @class Fancy.FieldLine
  * @extend Fancy.Widget
  */
@@ -1678,8 +1676,8 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
 
@@ -1728,7 +1726,7 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
         }
       }
 
-      if( i === 0 ){
+      if (i === 0) {
         item.style['padding-left'] = '0px';
       }
     }
@@ -1748,7 +1746,8 @@ Fancy.define(['Fancy.form.field.Line', 'Fancy.FieldLine'], {
     '<div class="fancy-field-text fancy-field-line-items">',
     '</div>'
   ]
-});/*
+});
+/*
  * @class Fancy.SetField
  * @extends Fancy.Widget
  */
@@ -1770,14 +1769,14 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('beforecollapse', 'collapse', 'expanded', 'expand', 'beforeexpand', 'beforeexpanded');
 
     me.Super('init', arguments);
 
-    Fancy.each(me.items, function(item, i){
+    Fancy.each(me.items, (item, i) => {
       if( item.labelAlign === 'top' ){
         if( i === 0 ){
           item.style = {
@@ -1820,8 +1819,8 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  initCheckBox: function(){
-    var me = this,
+  initCheckBox() {
+    const me = this,
       checkbox = me.el.select('.fancy-field-checkbox-input');
 
     checkbox.css('display', '');
@@ -1830,9 +1829,9 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
       me.addCls('fancy-checkbox-on');
     }
 
-    var itemsEl = me.el.select('.fancy-field-set-items');
+    const itemsEl = me.el.select('.fancy-field-set-items');
 
-    setTimeout(function(){
+    setTimeout(() => {
       if( me.checkbox === true ){}
       else{
         me.fire('collapse');
@@ -1851,10 +1850,10 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     checkbox.on('click', function(){
       me.toggleCls('fancy-checkbox-on');
 
-      var isChecked = me.el.hasCls('fancy-checkbox-on'),
+      const isChecked = me.el.hasCls('fancy-checkbox-on'),
         itemsEl = me.el.select('.fancy-field-set-items');
 
-      if( isChecked ){
+      if (isChecked) {
         me.fire('beforeexpanded');
         me.fire('beforeexpand');
         itemsEl.css('display', '');
@@ -1873,8 +1872,8 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  onBeforeCollapsed: function(){
-    var me = this,
+  onBeforeCollapsed(){
+    const me = this,
       form = me.form,
       itemsEl = me.el.select('.fancy-field-set-items'),
       itemsHeight = parseInt(itemsEl.css('height'));
@@ -1884,15 +1883,16 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  onExpanded: function(){
-    var me = this,
+  onExpanded(){
+    const me = this,
       form = me.form,
       itemsEl = me.el.select('.fancy-field-set-items'),
       itemsHeight = parseInt(itemsEl.css('height'));
 
     form.setHeight(form.getHeight() + itemsHeight);
   }
-});/*
+});
+/*
  * @class Fancy.HTMLField
  * @extends Fancy.Widget
  */
@@ -1913,8 +1913,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'change', 'key');
 
@@ -1945,8 +1945,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       renderTo = me.renderTo || document.body,
       el = document.createElement('div');
 
@@ -1970,8 +1970,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
    * @param {*} value
    * @param {Boolean} onInput
    */
-  set: function(value, onInput){
-    var me = this;
+  set(value, onInput){
+    const me = this;
 
     me.el.firstChild().update(value);
     if(onInput !== false){
@@ -1981,10 +1981,11 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   /*
    * @return {String}
    */
-  get: function(){
+  get() {
     return this.el.firstChild().dom.innerHTML;
   }
-});/**
+});
+/**
  * @class Fancy.ReCaptcha
  * @extends Fancy.Widget
  */
@@ -2005,8 +2006,8 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'change', 'key');
 
@@ -2027,7 +2028,7 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
       me.css(me.style);
     }
 
-    var s = document.createElement('script');
+    const s = document.createElement('script');
 
     s.type = 'text/javascript';
     s.src = 'https://www.google.com/recaptcha/api.js';
@@ -2037,11 +2038,11 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
   /*
    * @return {'wait'|*}
    */
-  get: function(){
-    var me = this,
+  get(){
+    const me = this,
       formReCaptchaEl = me.el.select('form');
 
-    if( me.value ){
+    if (me.value) {
       return me.value;
     }
 

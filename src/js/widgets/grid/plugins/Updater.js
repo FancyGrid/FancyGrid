@@ -17,27 +17,28 @@ Fancy.define('Fancy.grid.plugin.Updater', {
   /*
    *
    */
-  init: function(){},
+  init(){},
   /*
    * @param {String} [type]
    */
-  update: function(type){
-    var w = this.widget;
-    type = type || '';
+  update(type = ''){
+    const w = this.widget;
 
-    if(w.leftColumns && w.leftColumns.length){
+    if (w.leftColumns && w.leftColumns.length) {
       w.leftBody.update(type);
     }
+
     w.body.update(type);
-    if(w.rightColumns && w.rightColumns.length){
+
+    if (w.rightColumns && w.rightColumns.length) {
       w.rightBody.update( type );
     }
   },
   /*
    * @param {Number} rowIndex
    */
-  updateRow: function(rowIndex){
-    var w = this.widget;
+  updateRow(rowIndex){
+    const w = this.widget;
 
     w.leftBody.updateRows(rowIndex);
     w.body.updateRows(rowIndex);

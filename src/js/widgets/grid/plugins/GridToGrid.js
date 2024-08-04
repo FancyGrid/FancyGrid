@@ -5,12 +5,12 @@
 Fancy.modules['dd'] = true;
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_BODY_CLS = F.GRID_BODY_CLS;
-  var GRID_CLS = F.GRID_CLS;
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_BODY_CLS = F.GRID_BODY_CLS;
+  const GRID_CLS = F.GRID_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
 
   F.define('Fancy.grid.plugin.GridToGrid', {
     extend: F.Plugin,
@@ -33,8 +33,8 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('drop');
       me.Super('init', arguments);
@@ -46,32 +46,32 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    initDropCls: function(){
-      var me = this,
-        dropCls = '.' + me.dropGroup;
+    initDropCls(){
+      let me = this,
+        dropCls = `.${me.dropGroup}`;
 
-      dropCls += ' .' + me.dropZoneOverClass;
+      dropCls += ` .${me.dropZoneOverClass}`;
 
       me.dropCls = dropCls;
     },
     /*
      *
      */
-    addDragDropCls: function(){
+    addDragDropCls(){
       this.widget.el.addCls(this.dragGroup);
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('render', function(){
         me.addDragDropCls();
       });
 
-      if (me.dropGroup){
+      if (me.dropGroup) {
         w.on('beforecellmousedown', me.onBeforeCellMouseDown, me);
         w.on('cellmousedown', me.onCellMouseDown, me);
         w.on('cellleave', me.onCellLeave, me);
@@ -84,14 +84,14 @@ Fancy.modules['dd'] = true;
      * @param {Object} dd
      * @param {*} items
      */
-    onDropItems: function(dd, items){
-      var me = this,
+    onDropItems(dd, items){
+      const me = this,
         w = me.widget,
         dropGrid = me.dropGrid,
         rowIndex = dropGrid.activeRowEnterIndex === undefined ? dropGrid.getViewTotal() : dropGrid.activeRowEnterIndex;
 
       w.fire('dropitems', items, rowIndex);
-      if (me.onDrop){
+      if (me.onDrop) {
         me.onDrop.apply(w, [items, rowIndex]);
       }
     },
@@ -99,7 +99,7 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onBeforeCellMouseDown: function(grid, o){
+    onBeforeCellMouseDown(grid, o){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -115,7 +115,7 @@ Fancy.modules['dd'] = true;
       if (selected.length > 1){
         var passed = false;
 
-        F.each(selected, function(item){
+        F.each(selected, (item) => {
           if (item.id === o.id){
             passed = true;
             return true;
@@ -131,12 +131,12 @@ Fancy.modules['dd'] = true;
         docEl.once('mouseup', me.onDocMouseUp, me);
         docEl.on('mousemove', me.onDocMouseMove, me);
 
-        docEl.once('mouseup', function(){
+        docEl.once('mouseup', () => {
           w.enableSelection();
         }, me);
 
         selected = w.getSelection();
-        var text = F.String.format(lang.dragText, [selected.length, selected.length > 1 ? 's' : '']);
+        const text = F.String.format(lang.dragText, [selected.length, selected.length > 1 ? 's' : '']);
 
         me.initTip(text);
 
@@ -150,16 +150,16 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellMouseDown: function(grid, o){
-      var me = this,
+    onCellMouseDown(grid, o){
+      const me = this,
         w = me.widget,
         docEl = F.get(document);
 
-      if (w.selection.enabled === false){
+      if (w.selection.enabled === false) {
         return;
       }
 
-      var e = o.e,
+      const e = o.e,
         isCTRL = e.ctrlKey;
 
       if (isCTRL && w.multiSelect === true){
@@ -180,12 +180,12 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    initEnterLeave: function(){
-      var me = this,
+    initEnterLeave(){
+      const me = this,
         dropEl = F.select(me.dropCls);
 
-      if (dropEl.length === 0){
-        setTimeout(function(){
+      if (dropEl.length === 0) {
+        setTimeout(() => {
           me.initEnterLeave();
         }, 500);
         return;
@@ -197,16 +197,16 @@ Fancy.modules['dd'] = true;
     /*
      * @param {Object} e
      */
-    onMouseEnterDropGroup: function(e){
-      var me = this;
+    onMouseEnterDropGroup(e){
+      const me = this;
 
-      if (!me.cellMouseDown){
+      if (!me.cellMouseDown) {
         return;
       }
 
-      var targetEl = F.get(e.currentTarget);
+      const targetEl = F.get(e.currentTarget);
 
-      me.dropGrid = F.getWidget(targetEl.closest('.' + GRID_CLS).attr('id'));
+      me.dropGrid = F.getWidget(targetEl.closest(`.${GRID_CLS}`).attr('id'));
 
       if (me.dropGrid && me.dropGrid.dragdrop && me.dropGrid.dragdrop.droppable === false){
         me.dropOK = false;
@@ -225,17 +225,17 @@ Fancy.modules['dd'] = true;
 
       me.dropOK = true;
 
-      if (me.tip){
+      if (me.tip) {
         me.tip.el.replaceClass(me.dropNotOkCls, me.dropOkCls);
       }
     },
     /*
      * @param {Object} e
      */
-    onMouseLeaveDropGroup: function(e){
-      var me = this;
+    onMouseLeaveDropGroup(e){
+      const me = this;
 
-      if (!me.cellMouseDown){
+      if (!me.cellMouseDown) {
         return;
       }
 
@@ -248,7 +248,7 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    setDropGridCellsMask: function(){
+    setDropGridCellsMask(){
       var me = this,
         dropGrid = me.dropGrid,
         total;
@@ -269,8 +269,8 @@ Fancy.modules['dd'] = true;
     /*
      *
      */
-    onsDropGrid: function(){
-      var me = this;
+    onsDropGrid(){
+      const me = this;
 
       me.dropGrid.on('rowenter', me.onDropGridRowEnter, me);
       me.dropGrid.on('rowleave', me.onDropGridRowLeave, me);
@@ -281,8 +281,8 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onDropGridRowEnter: function(grid, o){
-      var me = this;
+    onDropGridRowEnter(grid, o){
+      const me = this;
 
       if (me.cellMouseDown === false){
         //Fix core bug. In future needs to find out what it is.
@@ -312,8 +312,8 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onDropGridRowLeave: function(){
-      var me = this;
+    onDropGridRowLeave(){
+      const me = this;
 
       me.clearCellsMask();
       me.setDropGridCellsMask();
@@ -322,8 +322,8 @@ Fancy.modules['dd'] = true;
         delete me.dropGrid.activeRowEnterIndex;
       }
     },
-    clearCellsMask: function(){
-      var me = this,
+    clearCellsMask(){
+      const me = this,
         cellMaskCls = me.cellMaskCls;
 
       if (!me.dropGrid){
@@ -331,18 +331,18 @@ Fancy.modules['dd'] = true;
       }
 
       me.dropGrid.el.removeCls(me.dropHeaderMaskCls);
-      me.dropGrid.el.select('.' + cellMaskCls).removeCls(cellMaskCls);
+      me.dropGrid.el.select(`.${cellMaskCls}`).removeCls(cellMaskCls);
     },
     /*
      * @param {Object} e
      */
-    onDocMouseUp: function(){
-      var me = this,
+    onDocMouseUp(){
+      const me = this,
         w = me.widget,
         docEl = F.get(document);
 
       me.cellMouseDown = false;
-      if (me.tip){
+      if (me.tip) {
         me.tip.hide();
       }
       w.enableSelection();
@@ -358,7 +358,7 @@ Fancy.modules['dd'] = true;
       delete me.dragItems;
       me.dropOK = false;
 
-      F.select('.' + me.dropZoneCls).removeCls(me.dropZoneCls);
+      F.select(`.${me.dropZoneCls}`).removeCls(me.dropZoneCls);
 
       me.clearCellsMask();
 
@@ -373,7 +373,7 @@ Fancy.modules['dd'] = true;
     /*
      * @param {Object} e
      */
-    onDocMouseMove: function(e){
+    onDocMouseMove(e){
       if (!this.dragItems){
         return;
       }
@@ -384,12 +384,12 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function(grid, o){
-      var me = this,
+    onCellLeave(grid, o){
+      const me = this,
         w = me.widget,
         lang = w.lang;
 
-      setTimeout(function(){
+      setTimeout(() => {
         if (me.onceStopDrag){
           me.onceStopDrag = false;
           return;
@@ -399,7 +399,7 @@ Fancy.modules['dd'] = true;
           return;
         }
 
-        var selected = w.getSelection(),
+        const selected = w.getSelection(),
           text = F.String.format(lang.dragText, [selected.length, selected.length > 1 ? 's' : '']);
 
         w.stopSelection();
@@ -415,8 +415,8 @@ Fancy.modules['dd'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function(grid, o){
-      var me = this;
+    onCellEnter(grid, o){
+      const me = this;
 
       if (me.cellMouseDown !== true || me.dragItems){
         return;
@@ -431,18 +431,18 @@ Fancy.modules['dd'] = true;
      * @param {String} text
      * @param {Object} e
      */
-    initTip: function(text, e){
-      var me = this,
+    initTip(text, e){
+      const me = this,
         dropNotOkCls = me.dropNotOkCls;
 
-      if (!me.tip){
+      if (!me.tip) {
         me.tip = new F.ToolTip({
           cls: dropNotOkCls,
-          text: text
+          text
         });
       }
 
-      if (e){
+      if (e) {
         me.tip.show(e.pageX + 20, e.pageY + 20);
       }
 

@@ -16,26 +16,24 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
     this.ons();
   },
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget;
 
-    w.once('render', function(){
-      me.render();
-    });
+    w.once('render', () => me.render());
   },
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       w = me.widget,
       body = w.body,
       licenceEl = Fancy.get(document.createElement('div'));
@@ -80,7 +78,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
 
     me.showConsoleText();
   },
-  showConsoleText: function(){
+  showConsoleText(){
     if(!window.console || !console.log){
       return;
     }
@@ -102,13 +100,13 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   /*
    *
    */
-  configWatermark: function(){
-    var me = this,
+  configWatermark(){
+    const me = this,
       w = me.widget,
       watermark = w.watermark;
 
     if(watermark.text){
-      var link = me.licenceEl.firstChild();
+      const link = me.licenceEl.firstChild();
 
       link.css('background-image', 'none');
       link.css('font-size', '11px');
@@ -123,7 +121,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
   /*
    * @return {Boolean}
    */
-  checkLicence: function(){
+  checkLicence(){
     var me = this,
       keyWord = 'FancyGrid';
 
@@ -167,7 +165,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
    * @param {String} raw
    * @return {String}
    */
-  md5: function(string, key, raw){
+  md5(string, key, raw){
       /*
        * Add integers, wrapping at 2^32. This uses 16-bit operations internally
        * to work around bugs in some JS interpreters.

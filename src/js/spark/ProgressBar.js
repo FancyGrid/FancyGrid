@@ -9,17 +9,17 @@ Fancy.define('Fancy.spark.ProgressBar', {
    * @param {Object} o
    */
   constructor: function(o){
-    var me = this;
+    const me = this;
 
     Fancy.apply(me, o);
-    
+
     me.init();
   },
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.initId();
     me.render();
@@ -31,8 +31,8 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -42,9 +42,9 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
-    
+  ons(){
+    const me = this;
+
     if(me.tip !== false){
       me.el.on('mouseenter', me.onMouseEnter, me);
       me.el.on('mouseleave', me.onMouseLeave, me);
@@ -54,7 +54,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(){
+  onMouseEnter(){
     var me = this,
       value = me.el.attr('value'),
       suffix = '%',
@@ -87,7 +87,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(){
+  onMouseLeave(){
     if(!this.tip || !this.tipTpl){
       return;
     }
@@ -97,7 +97,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
+  onMouseMove(e){
     if(!this.tip || !this.tipTpl){
       return;
     }
@@ -107,7 +107,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -189,7 +189,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  update: function(){
+  update(){
     var me = this,
       column = me.column,
       width = column.width - 18,

@@ -8,7 +8,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} o
    * @param {Boolean} [fire]
    */
-  remove: function(o, fire){
+  remove(o, fire){
     var me = this,
       w = me.widget,
       id = o.id,
@@ -16,7 +16,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       orderIndex,
       itemData;
 
-    switch (Fancy.typeOf(o)){
+    switch (Fancy.typeOf(o)) {
       case 'string':
       case 'number':
         id = o;
@@ -89,7 +89,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
 
-    if (me.paging){
+    if (me.paging) {
       orderIndex += me.showPage * me.pageSize;
     }
 
@@ -123,9 +123,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    * @param {Number} index
    */
-  removeAt: function(index){
+  removeAt(index){
     //NOT FINISHED!!!
-    var me = this;
+    const me = this;
 
     me.remove({
       rowIndex: index,
@@ -135,8 +135,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    *
    */
-  removeAll: function(){
-    var me = this;
+  removeAll(){
+    const me = this;
 
     me.data = [];
     me.dataView = [];
@@ -147,7 +147,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       me.calcPages();
     }
 
-    if(me.filters){
+    if (me.filters) {
       delete me.filters;
       delete me.filteredData;
       delete me.filterOrder;
@@ -157,8 +157,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} o
    * @return {Fancy.Model}
    */
-  add: function(o){
-    var me = this;
+  add(o) {
+    const me = this;
 
     return me.insert(me.getTotal(), o);
   },
@@ -168,10 +168,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Boolean} [fire]
    * @return {Fancy.Model}
    */
-  insert: function(index, o, fire){
-    var me = this;
+  insert(index, o, fire){
+    const me = this;
 
-    Fancy.each(me.fields, function(field){
+    Fancy.each(me.fields, field => {
       if(o[field] === undefined){
         o[field] = '';
       }
@@ -185,22 +185,22 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     me.addIndex = index;
 
-    if(o.id === undefined){
+    if (o.id === undefined) {
       Fancy.idSeed++;
-      var id = Fancy.idSeed + 1000;
-      if(me.proxyType === 'server'){
-        o.id = 'Temp-' + id;
+      const id = Fancy.idSeed + 1000;
+      if (me.proxyType === 'server') {
+        o.id = `Temp-${id}`;
       }
       else {
         o.id = id;
       }
     }
 
-    if(me.getById(o.id)){
+    if (me.getById(o.id)) {
       me.remove(o.id, fire);
     }
 
-    if(me.widget.isGroupable()){
+    if (me.widget.isGroupable()) {
       clearTimeout(this.timeOutGroupDataOrder);
 
       this.timeOutGroupDataOrder = setTimeout(function(){
@@ -208,13 +208,13 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       });
     }
 
-    if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
-      if(fire !== false){
+    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.create) {
+      if (fire !== false) {
         me.once('create', me.onCreate, me);
         me.proxyCRUD('CREATE', o);
       }
     }
-    else{
+    else {
       return me.insertItem(o, index, fire);
     }
   },
@@ -224,8 +224,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Boolean} fire
    * @return {Fancy.Model}
    */
-  insertItem: function(o, index, fire){
-    var me = this,
+  insertItem(o, index, fire){
+    const me = this,
       model = me.model,
       item = new model(o);
 
@@ -258,7 +258,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} store
    * @param {Object} o
    */
-  onCreate: function(store, o){
+  onCreate(store, o) {
     return this.insertItem(o);
   }
 });

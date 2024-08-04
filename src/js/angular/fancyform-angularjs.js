@@ -9,7 +9,7 @@
       },
       link : function($scope, $element, $attrs){
         if($scope.fgConfig){
-          var config = $scope.fgConfig;
+          const config = $scope.fgConfig;
 
           config.renderTo = $scope.id;
 

@@ -4,13 +4,13 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
-  var MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
-  var MENU_ITEM_IMG_DUPLICATE_CLS = F.MENU_ITEM_IMG_DUPLICATE_CLS;
-  var MENU_ITEM_IMG_EDIT_CLS =  F.MENU_ITEM_IMG_EDIT_CLS;
+  const MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
+  const MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
+  const MENU_ITEM_IMG_DUPLICATE_CLS = F.MENU_ITEM_IMG_DUPLICATE_CLS;
+  const MENU_ITEM_IMG_EDIT_CLS = F.MENU_ITEM_IMG_EDIT_CLS;
 
   F.define('Fancy.grid.plugin.ContextMenu', {
     extend: F.Plugin,
@@ -33,15 +33,15 @@
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('contextmenu', me.onContextMenu, me);
@@ -50,8 +50,8 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onContextMenu: function(grid, o){
-      var me = this,
+    onContextMenu(grid, o){
+      const me = this,
         e = o.e;
 
       me.activeItem = o;
@@ -62,18 +62,18 @@
         me.initMenu();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.showMenu(e, true);
       }, 50);
 
     },
-    initMenu: function(){
-      var me = this,
+    initMenu(){
+      const me = this,
         w = me.widget,
         items = [],
-        _items =  me.items || F.Array.copy(me.defaultItems);
+        _items = me.items || F.Array.copy(me.defaultItems);
 
-      F.each(_items, function(item, i){
+      F.each(_items, (item, i) => {
         var type = item,
           _item = {};
 
@@ -88,7 +88,7 @@
               text: 'Copy',
               sideText: 'CTRL+C',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
-              handler: function(){
+              handler(){
                 w.copy();
               }
             });
@@ -100,7 +100,7 @@
             F.applyIf(_item, {
               text: 'Copy with Headers',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
-              handler: function(){
+              handler(){
                 w.copy(true);
               }
             });
@@ -111,7 +111,7 @@
             F.applyIf(_item, {
               text: 'Delete',
               imageCls: MENU_ITEM_IMG_DELETE_CLS,
-              handler: function(){
+              handler(){
                 switch(w.selection.selModel){
                   case 'rows':
                   case 'row':
@@ -136,9 +136,9 @@
               text: 'Edit',
               imageCls: MENU_ITEM_IMG_EDIT_CLS,
               disabled: true,
-              handler: function(){
+              handler(){
                 if(w.rowEdit){
-                  var activeCell = w.selection.getActiveCell(),
+                  const activeCell = w.selection.getActiveCell(),
                     side = w.getSideByCell(activeCell),
                     body = w.getBody(side),
                     o = body.getEventParams({
@@ -164,7 +164,7 @@
                 }
               },{
                 text: 'Excel Export',
-                handler: function(){
+                handler(){
                   w.exportToExcel({
                     header: true
                   });
@@ -178,7 +178,7 @@
             F.applyIf(_item, {
               text: 'Duplicate',
               imageCls: MENU_ITEM_IMG_DUPLICATE_CLS,
-              handler: function(){
+              handler(){
                 switch(w.selection.selModel){
                   case 'rows':
                   case 'row':
@@ -200,8 +200,8 @@
                     else{
                       rowIndex = w.getRowById( selection[selection.length - 1].id ) + 1;
 
-                      F.each( selection, function(item){
-                        var _item = F.Object.copy( item );
+                      F.each( selection, (item)=>{
+                        const _item = F.Object.copy(item);
                         _item.id = F.id(null, 'TEMP-');
                         data.push( _item );
                       } );
@@ -209,8 +209,8 @@
 
                     w.insert(rowIndex, data);
 
-                    F.each(data, function(item){
-                      var rowIndex = w.getRowById(item.id);
+                    F.each(data, (item)=> {
+                      const rowIndex = w.getRowById(item.id);
 
                       w.flashRow(rowIndex);
                     });
@@ -232,7 +232,7 @@
         items: items
       });
     },
-    showMenu: function(e, eventPosition){
+    showMenu(e, eventPosition){
       var me = this,
         w = me.widget,
         selection = w.selection,
@@ -254,8 +254,8 @@
 
       listEl.css({
         position: 'absolute',
-        top: top,
-        left: left
+        top,
+        left
       });
 
       me.menu.css('z-index', 1000 + F.zIndex++);
@@ -283,18 +283,14 @@
         }
       }
 
-      setTimeout(function(){
-        Fancy.get(document).once('click', function(){
-          me.hideMenu();
-        });
+      setTimeout(()=>{
+        Fancy.get(document).once('click', () => me.hideMenu());
       }, 50);
     },
-    hideMenu: function(){
-      var me = this;
+    hideMenu(){
+      const me = this;
 
-      setTimeout(function(){
-        me.menu.hide();
-      }, 50);
+      setTimeout(() => me.menu.hide(), 50);
 
       delete me.activeItem;
     }

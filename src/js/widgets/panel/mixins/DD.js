@@ -6,23 +6,23 @@ Fancy.Mixin('Fancy.panel.mixin.DD', {
   /*
    *
    */
-  initDD: function(){
+  initDD(){
     this.addDDCls();
     this.addDD();
   },
   /*
    *
    */
-  addDDCls: function(){
+  addDDCls(){
     this.el.addCls(this.ddCls);
   },
   /*
    *
    */
-  addDD: function(){
+  addDD(){
     Fancy.DD.add({
       dragEl: this.el,
-      overEl: this.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
+      overEl: this.el.select(`.${Fancy.PANEL_HEADER_CLS}`).item(0)
     });
   }
 });

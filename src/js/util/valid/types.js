@@ -1,6 +1,6 @@
 Fancy.addValid('notempty', {
   text: 'Must be present',
-  fn: function(value){
+  fn(value){
     if(value === null || value === undefined){
       return false;
     }
@@ -11,7 +11,7 @@ Fancy.addValid('notempty', {
 
 Fancy.addValid('notnan', {
   text: 'Must be numeric',
-  fn: function(value){
+  fn(value){
     return !isNaN(value);
   }
 });
@@ -19,7 +19,7 @@ Fancy.addValid('notnan', {
 Fancy.addValid('min', {
   before: ['notempty', 'notnan'],
   text: 'Must be must be at least {param}',
-  fn: function(value){
+  fn(value){
     return value >= this.param;
   }
 });
@@ -27,7 +27,7 @@ Fancy.addValid('min', {
 Fancy.addValid('max', {
   before: ['notempty', 'notnan'],
   text: 'Must be no more than {param}',
-  fn: function(value){
+  fn(value){
     return value <= this.param;
   }
 });
@@ -35,7 +35,7 @@ Fancy.addValid('max', {
 Fancy.addValid('range', {
   before: ['notempty', 'notnan'],
   text: 'Must be between {min} and {max}',
-  fn: function(value){
+  fn(value){
     return value >= this.min && value <= this.max;
   }
 });

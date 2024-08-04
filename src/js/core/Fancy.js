@@ -2,13 +2,13 @@
  * @class Fancy utilities and functions.
  * @singleton
  */
-var Fancy = {
+const Fancy = {
   global: window,
   /**
    * The version of the framework
    * @type String
    */
-  version: '1.7.176',
+  version: '1.7.178',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -17,28 +17,28 @@ window.Fancy = Fancy;
 
 /**
  * Copies all the properties of `from` to the specified `to`.
- * 
+ *
  * @param {Object} to The receiver of the properties.
  * @param {Object} from The primary source of the properties.
  */
-Fancy.apply = function(to, from){
+Fancy.apply = (to, from) => {
   if(from === undefined){
     return;
   }
 
-  for(var p in from){
+  for(const p in from){
     to[p] = from[p];
   }
 };
 
 /**
  * Copies all the properties of `from` to the specified `to`.
- * 
+ *
  * @param {Object} to The receiver of the properties.
  * @param {Object} from The primary source of the properties.
  */
-Fancy.applyIf = function(to, from){
-  for(var p in from){
+Fancy.applyIf = (to, from) => {
+  for (const p in from) {
     if( to[p] === undefined ){
       to[p] = from[p];
     }
@@ -52,29 +52,25 @@ Fancy.applyIf = function(to, from){
  * @param {String} namespace2
  * @param {String} etc
  */
-Fancy.namespace = function(){
-  var i = 0,
-    iL = arguments.length;
-  
-  for(;i<iL;i++){
-    var value = arguments[i],
-      parts = value.split('.'),
+Fancy.namespace = (...args) => {
+  args.forEach(arg => {
+    let parts = arg.split('.'),
       j = 1,
       jL = parts.length;
-    
+
     Fancy.global[parts[0]] = Fancy.global[parts[0]] || {};
-    var namespace = Fancy.global[parts[0]];
-    
+    let namespace = Fancy.global[parts[0]];
+
     for(;j<jL;j++){
       namespace[parts[j]] = namespace[parts[j]] || {};
       namespace = namespace[parts[j]];
     }
-  }
+  });
 };
 
 /**
  * Creates namespaces to be used for scoping variables and classes so that they are not global.
- * Specifying the last node of a namespace implicitly creates all other nodes. 
+ * Specifying the last node of a namespace implicitly creates all other nodes.
  * @param {String} namespace1
  * @param {String} namespace2
  * @param {String} etc
@@ -97,20 +93,20 @@ Fancy.ns = Fancy.namespace;
  * @param {*} value
  * @return {String}
  */
-Fancy.typeOf = function(value){
-  if(value === null){
+Fancy.typeOf = (value) => {
+  if (value === null) {
     return 'null';
   }
 
-  var type = typeof value;
+  const type = typeof value;
   if(type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean'){
     return type;
   }
 
-  var toString = Object.prototype.toString,
+  const toString = Object.prototype.toString,
     typeToString = toString.call(value);
 
-  if(value.length !== undefined && typeof value !== 'function'){
+  if (value.length !== undefined && typeof value !== 'function') {
     return 'array';
   }
 
@@ -141,9 +137,9 @@ Fancy.typeOf = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isArray = ('isArray' in Array) ? Array.isArray : function(value){
-  var toString = Object.prototype.toString;
-  
+Fancy.isArray = ('isArray' in Array) ? Array.isArray : (value) => {
+  const toString = Object.prototype.toString;
+
   return toString.call(value) === '[object Array]';
 };
 
@@ -152,9 +148,9 @@ Fancy.isArray = ('isArray' in Array) ? Array.isArray : function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isObject = function(value){
-  var toString = Object.prototype.toString;
-  
+Fancy.isObject = (value) => {
+  const toString = Object.prototype.toString;
+
   return toString.call(value) === '[object Object]';
 };
 
@@ -163,9 +159,9 @@ Fancy.isObject = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isFunction = function(value){
-  var toString = Object.prototype.toString;
-  
+Fancy.isFunction = (value) => {
+  const toString = Object.prototype.toString;
+
   return toString.apply(value) === '[object Function]';
 };
 
@@ -174,7 +170,7 @@ Fancy.isFunction = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isString = function(value){
+Fancy.isString = (value) => {
   return typeof value === 'string';
 };
 
@@ -183,7 +179,7 @@ Fancy.isString = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isNumber = function(value){
+Fancy.isNumber = (value) => {
   return typeof value === 'number' && isFinite(value);
 };
 
@@ -192,7 +188,7 @@ Fancy.isNumber = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isDom = function(value){
+Fancy.isDom = (value) => {
   try {
     //Using W3 DOM2 (works for FF, Opera and Chrome)
     return value instanceof HTMLElement;
@@ -212,7 +208,7 @@ Fancy.isDom = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isBoolean = function(value){
+Fancy.isBoolean = (value) => {
   return typeof value === 'boolean';
 };
 
@@ -221,7 +217,7 @@ Fancy.isBoolean = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isDate = function(value){
+Fancy.isDate = (value) => {
   return Fancy.typeOf(value) === 'date';
 };
 
@@ -232,13 +228,13 @@ Fancy.isDate = function(value){
  * @param {Function} fn The function to be called with each item.
  * @return See description for the fn parameter.
  */
-Fancy.each = function(arrayObject, fn){
-  var type = Fancy.typeOf(arrayObject);
+Fancy.each = (arrayObject, fn) => {
+  const type = Fancy.typeOf(arrayObject);
 
   switch(type){
     case 'array':
     case 'string':
-      var i = 0,
+      let i = 0,
         iL = arrayObject.length;
 
       for(;i<iL;i++){
@@ -248,7 +244,7 @@ Fancy.each = function(arrayObject, fn){
       }
       break;
     case 'object':
-      for(var p in arrayObject){
+      for(const p in arrayObject){
         if(fn(arrayObject[p], p, arrayObject) === true){
           break;
         }
@@ -267,12 +263,12 @@ Fancy.each = function(arrayObject, fn){
  * @param {Function} classes The function to be called with each item.
  * @return See description for the fn parameter.
  */
-Fancy.mixin = function(proto, classes){
-   var i = 0,
+Fancy.mixin = (proto, classes) => {
+  let i = 0,
     iL = classes.length,
-     item;
+    item;
 
-  if( Fancy.typeOf( classes[0] ) === 'object' ){
+  if ( Fancy.typeOf( classes[0] ) === 'object' ) {
     for(;i<iL;i++){
       item = classes[i];
 
@@ -282,7 +278,7 @@ Fancy.mixin = function(proto, classes){
         jL = methods.length;
 
       for(;j<jL;j++){
-        var methodName = methods[j];
+        const methodName = methods[j];
         proto[methodName] = _class['prototype'][methodName];
       }
     }
@@ -291,10 +287,10 @@ Fancy.mixin = function(proto, classes){
     for(;i<iL;i++){
       item = classes[i];
 
-      if(Fancy.isString(item)){
-        var _item = Fancy.ClassManager.getMixin(item);
+      if (Fancy.isString(item)) {
+        const _item = Fancy.ClassManager.getMixin(item);
 
-        if(_item){
+        if (_item) {
           Fancy.apply(proto, _item['prototype']);
         }
         else{
@@ -308,20 +304,21 @@ Fancy.mixin = function(proto, classes){
   }
 };
 
-Fancy.Mixin = function(name, config){
-  var parts = name.split('.'),
-    i = 1,
+Fancy.Mixin = (name, config) => {
+  const parts = name.split('.');
+
+  let i = 1,
     iL = parts.length - 1;
 
   Fancy.ns(name);
 
-  var ref = Fancy.global[parts[0]];
+  let ref = Fancy.global[parts[0]];
 
-  for(;i<iL;i++){
+  for(;i<iL;i++) {
     ref = ref[parts[i]];
   }
 
-  if(parts.length > 1){
+  if (parts.length > 1) {
     ref[parts[parts.length - 1]] = function(){};
     ref[parts[parts.length - 1]].prototype = config;
   }
@@ -330,9 +327,9 @@ Fancy.Mixin = function(name, config){
     Fancy.global[parts[0]].prototype = config;
   }
 
-  var waiters = Fancy.ClassManager.waitMixins[name];
+  let waiters = Fancy.ClassManager.waitMixins[name];
 
-  if(waiters){
+  if (waiters) {
     waiters = waiters.waiters;
 
     i = 0;
@@ -352,24 +349,21 @@ Fancy.Mixin = function(name, config){
  * @param {Object} config The primary source of the properties.
  * @return {Object}
  */
-Fancy.applyConfig = function(object, config){
-  var property;
-  config = config || {};
-
-  if(object.plugins && config.plugins){
+Fancy.applyConfig = (object, config= {}) => {
+  if (object.plugins && config.plugins) {
     object.plugins = object.plugins.concat(config.plugins);
     delete config.plugins;
   }
 
-  if(object._isConfigApplied === true){
+  if (object._isConfigApplied === true) {
     return object;
   }
-  
-  for(property in config){
+
+  for(const property in config){
     object[property] = config[property];
   }
   object._isConfigApplied = true;
-  
+
   return object;
 };
 
@@ -377,13 +371,11 @@ Fancy.applyConfig = function(object, config){
  * @param {Object} o
  * @return {Object}
  */
-Fancy.styleToString = function(o){
-  var str = '';
+Fancy.styleToString = (o= {}) => {
+  let str = '';
 
-  o = o || {};
-
-  for(var p in o){
-    str += p + ': ' + o[p] + ';';
+  for (const p in o) {
+    str += `${p}: ${o[p]};`;
   }
 
   return str;
@@ -393,7 +385,7 @@ Fancy.apply(Fancy, {
   prefix: 'fancy-gen-',
   idSeed: 0,
   zIndex: 1,
-  id: function(el, prefix){
+  id(el, prefix) {
     if(!el){
       return (prefix || Fancy.prefix) + (++Fancy.idSeed);
     }
@@ -680,170 +672,170 @@ Fancy.ANIMATE_DURATION = 400;
 
 (function(){
 
-var userAgent = navigator.userAgent.toLowerCase(),
-  check = function(regex){
-    return regex.test(userAgent);
-  },
-  isOpera = check(/opera/),
-  isIE = !isOpera && check(/msie/),
-  isChromium = window.chrome,
-  winNav = window.navigator,
-  vendorName = winNav.vendor,
-  isIEedge = winNav.userAgent.indexOf('Edge') > -1,
-  isIOSChrome = winNav.userAgent.match('CriOS'),
-  isChrome = function(){
-    var isOpera = winNav.userAgent.indexOf('OPR') > -1;
+  var userAgent = navigator.userAgent.toLowerCase(),
+    check = function(regex){
+      return regex.test(userAgent);
+    },
+    isOpera = check(/opera/),
+    isIE = !isOpera && check(/msie/),
+    isChromium = window.chrome,
+    winNav = window.navigator,
+    vendorName = winNav.vendor,
+    isIEedge = winNav.userAgent.indexOf('Edge') > -1,
+    isIOSChrome = winNav.userAgent.match('CriOS'),
+    isChrome = function(){
+      const isOpera = winNav.userAgent.indexOf('OPR') > -1;
 
-    if (isIOSChrome){
-      return true;
-    }
-    else if (
-      isChromium !== null &&
-      typeof isChromium !== 'undefined' &&
-      vendorName === 'Google Inc.' &&
-      isOpera === false &&
-      isIEedge === false
-    ){
-      return true;
-    } else {
-      return false;
-    }
-  }(),
-  getInternetExplorerVersion = function(){
-    var rv = -1,
-      ua,
-      re;
-
-    if (navigator.appName == 'Microsoft Internet Explorer'){
-      ua = navigator.userAgent;
-      re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
-
-      if (re.exec(ua) != null){
-        rv = parseFloat(RegExp.$1);
+      if (isIOSChrome){
+        return true;
       }
-    }
-    else if (navigator.appName == 'Netscape'){
-      ua = navigator.userAgent;
-      re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
-
-      if (re.exec(ua) != null){
-        rv = parseFloat(RegExp.$1);
+      else if (
+        isChromium !== null &&
+        typeof isChromium !== 'undefined' &&
+        vendorName === 'Google Inc.' &&
+        isOpera === false &&
+        isIEedge === false
+      ){
+        return true;
+      } else {
+        return false;
       }
+    }(),
+    getInternetExplorerVersion = function(){
+      var rv = -1,
+        ua,
+        re;
+
+      if (navigator.appName == 'Microsoft Internet Explorer'){
+        ua = navigator.userAgent;
+        re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
+
+        if (re.exec(ua) != null){
+          rv = parseFloat(RegExp.$1);
+        }
+      }
+      else if (navigator.appName == 'Netscape'){
+        ua = navigator.userAgent;
+        re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
+
+        if (re.exec(ua) != null){
+          rv = parseFloat(RegExp.$1);
+        }
+      }
+      return rv;
+    };
+
+  if (getInternetExplorerVersion() === 11) {
+    isIE = true;
+  }
+
+  if (isIE === false && isIEedge) {
+    isIE = true;
+  }
+
+  Fancy.apply(Fancy, {
+    isOpera: isOpera,
+    isIE: isIE,
+    isChrome: isChrome
+  });
+
+  /**
+   *
+   * @return {Array}
+   */
+  Fancy.getViewSize = () => {
+    const xy = [];
+
+    if(Fancy.isIE){
+      xy[0] = document.documentElement.clientHeight;
+      xy[1] = document.documentElement.clientWidth;
     }
-    return rv;
+    else{
+      xy[0] = window.innerHeight;
+      xy[1] = window.innerWidth;
+    }
+
+    return xy;
   };
 
-  if(getInternetExplorerVersion() === 11){
-    isIE = true;
-  }
+  /**
+   * @return {Object}
+   */
+  Fancy.getScroll = () => {
+    const dd = document.documentElement,
+      db = document.body;
 
-  if(isIE === false && isIEedge){
-    isIE = true;
-  }
+    if (dd && (dd.scrollTop || dd.scrollLeft)){
+      return [dd.scrollTop, dd.scrollLeft];
+    }
+    else if (db){
+      return [db.scrollTop, db.scrollLeft];
+    }
+    else {
+      return [0, 0];
+    }
+  };
 
-Fancy.apply(Fancy, {
-  isOpera: isOpera,
-  isIE: isIE,
-  isChrome: isChrome
-});
+  /**
+   * @return {String}
+   */
+  Fancy.getMouseWheelEventName = () => {
+    if('onmousewheel' in document.body){
+      return 'mousewheel';
+    }
+    else{
+      return 'DOMMouseScroll';
+    }
+  };
 
-/**
- *
- * @return {Array}
- */
-Fancy.getViewSize = function(){
-  var xy = [];
-  
-  if(Fancy.isIE){
-    xy[0] = document.documentElement.clientHeight;
-    xy[1] = document.documentElement.clientWidth;
-  }
-  else{
-    xy[0] = window.innerHeight;
-    xy[1] = window.innerWidth;
-  }
-  
-  return xy;
-};
+  /**
+   * @param {Object} e
+   * @return {Number}
+   */
+  Fancy.getWheelDelta = (e) =>{
+    let delta = 0;
 
-/**
- * @return {Object}
- */
-Fancy.getScroll = function(){
-  var dd = document.documentElement,
-    db = document.body;
+    if (e.wheelDelta) { // IE/Opera way
+      delta = e.wheelDelta / 120;
+    }
+    else if (e.detail) { // Mozilla way
+      delta = -e.detail / 3;
+    }
 
-  if (dd && (dd.scrollTop || dd.scrollLeft)){
-    return [dd.scrollTop, dd.scrollLeft];
-  }
-  else if (db){
-    return [db.scrollTop, db.scrollLeft];
-  }
-  else {
-    return [0, 0];
-  }
-};
+    return delta;
+  };
 
-/**
- * @return {String}
- */
-Fancy.getMouseWheelEventName = function(){
-  if('onmousewheel' in document.body){
-    return 'mousewheel';
-  }
-  else{
-    return 'DOMMouseScroll';
-  }
-};
+  Fancy.isTouch = (document.ontouchstart !== undefined);
 
-/**
- * @param {Object} e
- * @return {Number}
- */
-Fancy.getWheelDelta = function(e){
-  var delta = 0;
+  Fancy.i18n = {};
 
-  if (e.wheelDelta){ // IE/Opera way
-    delta = e.wheelDelta / 120;
-  }
-  else if (e.detail){ // Mozilla way
-    delta = -e.detail / 3;
-  }
-
-  return delta;
-};
-
-Fancy.isTouch = (document.ontouchstart !== undefined);
-
-Fancy.i18n = {};
-
-Fancy.currency = {
-  EUR: '€',
-  USD: '$',
-  GBP: '£',
-  RUB: '₽',
-  CZK: 'Kč',
-  AUD: '$',
-  JPY: '¥',
-  PLN: 'zł',
-  TRY: '₺',
-  DKK: 'kr',
-  KRW: '₩',
-  BRL: 'R$',
-  CNY: '¥',
-  SEK: 'kr',
-  CAD: '$',
-  NOK: 'kr',
-  IDR: 'Rp'
-};
+  Fancy.currency = {
+    EUR: '€',
+    USD: '$',
+    GBP: '£',
+    RUB: '₽',
+    CZK: 'Kč',
+    AUD: '$',
+    JPY: '¥',
+    PLN: 'zł',
+    TRY: '₺',
+    DKK: 'kr',
+    KRW: '₩',
+    BRL: 'R$',
+    CNY: '¥',
+    SEK: 'kr',
+    CAD: '$',
+    NOK: 'kr',
+    IDR: 'Rp'
+  };
 
 })();
 
 Fancy.modules = {};
-Fancy.getModulesList = function(){
-  var list = [];
+Fancy.getModulesList = () => {
+  const list = [];
 
-  Fancy.each(Fancy.modules, function(value, p){
+  Fancy.each(Fancy.modules, (value, p) => {
     list.push(p);
   });
 
@@ -870,7 +862,7 @@ var FancyForm = function(){
 };
 */
 (function(){
-  var moduleNames = {};
+  const moduleNames = {};
 
   /**
    * @param {String} name
@@ -882,31 +874,31 @@ var FancyForm = function(){
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       _v = Fancy.version.replace(/\./g, ''),
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (`https://cdn.jsdelivr.net/npm/fancygrid@${Fancy.version}/client/modules/`);
 
     fn = fn || function(){};
 
-    if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
+    if (Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false) {
       return;
     }
 
     name = name.replace(/ /g, '-');
 
-    if(Fancy.DEBUG){
+    if (Fancy.DEBUG) {
       endUrl += '?_dc='+(+new Date());
     }
     else{
-      endUrl += '?_v=' + _v;
+      endUrl += `?_v=${_v}`;
     }
 
-    Fancy.Modules.on('loaded', function(modules, $name){
-      if($name === name){
+    Fancy.Modules.on('loaded', (modules, $name) => {
+      if ($name === name) {
         Fancy.modules[_name] = true;
         fn(name);
       }
     });
 
-    if(moduleNames[name]){
+    if (moduleNames[name]) {
       return;
     }
 
@@ -916,12 +908,12 @@ var FancyForm = function(){
 
     _script.charset = 'utf-8';
 
-    _script.onload = function(){
+    _script.onload = () =>{
       Fancy.Modules.fire('loaded', name);
     };
 
-    _script.onerror = function(){
-      throw new Error('[FancyGrid Error] - module ' + name + ' was not loaded');
+    _script.onerror = () =>{
+      throw new Error(`[FancyGrid Error] - module ${name} was not loaded`);
     };
 
     body.appendChild(_script);
@@ -931,21 +923,21 @@ var FancyForm = function(){
    * @param {String} i18n
    * @param {Function} fn
    */
-  Fancy.loadLang = function(i18n, fn){
-    if(Fancy.i18n[i18n] !== undefined){
+  Fancy.loadLang = (i18n, fn) => {
+    if (Fancy.i18n[i18n] !== undefined) {
       return true;
     }
 
-    var  body = document.getElementsByTagName('body')[0],
+    const body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       endUrl = '.js',
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (`https://cdn.jsdelivr.net/npm/fancygrid@${Fancy.version}/client/modules/`);
 
-    _script.src = MODULESDIR + 'i18n/' + i18n + endUrl;
+    _script.src = `${MODULESDIR}i18n/${i18n}${endUrl}`;
     _script.charset = 'utf-8';
     _script.async = 'true';
 
-    _script.onload = function(){
+    _script.onload = () => {
       fn({
         lang: Fancy.i18n[i18n]
       });
@@ -954,27 +946,27 @@ var FancyForm = function(){
     body.appendChild(_script);
   };
 
-  Fancy.loadStyle = function(){
-    var links = document.querySelectorAll('link');
+  Fancy.loadStyle = () => {
+    let links = document.querySelectorAll('link');
 
-    if(Fancy.stylesLoaded){
+    if (Fancy.stylesLoaded) {
       return;
     }
 
-    Fancy.each(links, function(link){
+    links.forEach(link => {
       if(/fancy\./.test(link.href)){
         Fancy.stylesLoaded = true;
       }
-    });
+    })
 
     links = document.querySelectorAll('link');
 
-    if(Fancy.stylesLoaded){
+    if (Fancy.stylesLoaded) {
       return;
     }
 
-    Fancy.each(links, function(link){
-      if(/fancy\./.test(link.href)){
+    links.forEach(link => {
+      if (/fancy\./.test(link.href)) {
         Fancy.stylesLoaded = true;
       }
     });
@@ -985,16 +977,16 @@ var FancyForm = function(){
         name = 'fancy',
         endUrl = Fancy.DEBUG ? '.css': '.min.css',
         _v = Fancy.version.replace(/\./g, ''),
-        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (`https://cdn.jsdelivr.net/npm/fancygrid@${Fancy.version}/client/modules/`);
 
       MODULESDIR = MODULESDIR.replace('modules/', '');
       MODULESDIR = MODULESDIR.replace('modules', '');
 
-      if(Fancy.DEBUG){
+      if (Fancy.DEBUG) {
         endUrl += '?_dc='+(+new Date());
       }
       else{
-        endUrl += '?_v=' + _v;
+        endUrl += `?_v=${_v}`;
       }
 
       _link.href = MODULESDIR + name + endUrl;
@@ -1002,8 +994,8 @@ var FancyForm = function(){
 
       Fancy.loadingStyle = true;
 
-      _link.onload = function(){
-        setTimeout(function(){
+      _link.onload = () => {
+        setTimeout(() =>{
           Fancy.loadingStyle = false;
           Fancy.stylesLoaded = true;
         }, 100);
@@ -1013,13 +1005,9 @@ var FancyForm = function(){
     }
   };
 
-  Fancy.error = function(message, code){
-    var errorNumber = '';
+  Fancy.error = (message, code) => {
+    const errorNumber = code ? ` {code}` : '';
 
-    if(code){
-      errorNumber = ' ' + code;
-    }
-
-    throw new Error('[FancyGrid Error' + errorNumber + ']: ' + message);
+    throw new Error(`[FancyGrid Error${errorNumber}]: ${message}`);
   };
 })();

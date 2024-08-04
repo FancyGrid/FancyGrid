@@ -4,7 +4,7 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.WidgetManager', {
     singleton: true,
@@ -19,7 +19,7 @@
      * @param {String} wtype
      * @param {Object} widget
      */
-    addWidgetType: function(wtype, widget){
+    addWidgetType(wtype, widget){
       widget.prototype.wtype = wtype;
       this.wtypes.add(wtype, widget);
     },
@@ -27,32 +27,32 @@
      * @param {String} wtype
      * @return {Object}
      */
-    getWidgetClassByType: function(wtype){
+    getWidgetClassByType(wtype){
       return this.wtypes.get(wtype);
     },
     /*
      * @param {String} id
      * @param {Object} widget
      */
-    addWidget: function(id, widget){
+    addWidget(id, widget){
       this.widgets.add(id, widget);
     },
     /*
      * @param {String} id
      * @return {Object}
      */
-    getWidget: function(id){
+    getWidget(id){
       return this.widgets.get(id);
     }
   });
 
-  var W = F.WidgetManager;
+  const W = F.WidgetManager;
 
   /*
    * @param {String} wtype
    * @param {Object} widget
    */
-  F.addWidgetType = function(wtype, widget){
+  F.addWidgetType = (wtype, widget) => {
     W.addWidgetType(wtype, widget);
   };
 
@@ -60,7 +60,7 @@
    * @param {String} wtype
    * @return {Object}
    */
-  F.getWidgetClassByType = function(wtype){
+  F.getWidgetClassByType = (wtype) => {
     return W.getWidgetClassByType(wtype);
   };
 
@@ -68,7 +68,7 @@
    * @param {String} id
    * @param {Object} widget
    */
-  F.addWidget = function(id, widget){
+  F.addWidget = (id, widget) => {
     W.addWidget(id, widget);
   };
 
@@ -76,7 +76,7 @@
    * @param {String} id
    * @return {Object} widget
    */
-  F.getWidget = function(id){
+  F.getWidget = (id) => {
     return W.getWidget(id);
   };
 
@@ -85,7 +85,7 @@
    * @return {Object} widget
    * F.getWidget was duplicated over F.getGrid and F.getForm for TypeScript typization.
    */
-  F.getGrid = function(id){
+  F.getGrid = (id) => {
     return W.getWidget(id);
   };
 
@@ -94,7 +94,7 @@
    * @return {Object} widget
    * F.getWidget was duplicated over F.getGrid and F.getForm for TypeScript typization.
    */
-  F.getForm = function(id){
+  F.getForm = (id) => {
     return W.getWidget(id);
   };
 

@@ -3,16 +3,16 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
-  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
-  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
-  var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
+  const FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
+  const FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  const FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
+  const FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
 
   F.ns('Fancy.form.field');
 
@@ -29,8 +29,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el,
         input = me.el.getByTag('input');
 
@@ -43,11 +43,11 @@
       el.on('mouseleave', me.onMouseOut, me);
       me.on('key', me.onKey, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
 
-      if (me.format && me.format.inputFn){
+      if (me.format && me.format.inputFn) {
         switch (me.value){
           case '':
           case undefined:
@@ -76,8 +76,8 @@
      * @param {*} value
      * @param {Object} e
      */
-    onKeyInputFn: function(field, value, e){
-      var me = this,
+    onKeyInputFn(field, value, e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
@@ -99,11 +99,11 @@
     /*
      * @param {*} value
      */
-    formatValue: function(value){
-      var me = this;
+    formatValue(value){
+      const me = this;
       value = this.format.inputFn(value);
-      var position = this.input.dom.selectionStart;
-      var oldValue = this.input.dom.value;
+      let position = this.input.dom.selectionStart;
+      const oldValue = this.input.dom.value;
 
       this.input.dom.value = value;
 
@@ -115,8 +115,8 @@
     /*
      *
      */
-    setCaretPosition: function(position){
-      var input = this.input.dom;
+    setCaretPosition(position){
+      const input = this.input.dom;
 
       if(input.createTextRange){
         var range = input.createTextRange();
@@ -137,8 +137,8 @@
     /*
      * @param {Object} e
      */
-    onMouseOver: function(e){
-      var me = this;
+    onMouseOver(e){
+      const me = this;
 
       if(me.disabled){
         return;
@@ -153,8 +153,8 @@
     /*
      * @param {Object} e
      */
-    onMouseOut: function(){
-      var me = this;
+    onMouseOut(){
+      const me = this;
 
       if(me.disabled){
         return;
@@ -169,7 +169,7 @@
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo = me.renderTo || document.body,
         renderAfter = me.renderAfter,
@@ -212,7 +212,7 @@
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
-      var label = me.label;
+      let label = me.label;
 
       if (me.label === ''){
         label = '&nbsp;';
@@ -246,7 +246,7 @@
         );
       }
       else {
-        var itemConfig = {
+        const itemConfig = {
           labelWidth: labelWidth,
           label: label,
           labelDisplay: labelDisplay,
@@ -363,8 +363,8 @@
     /*
      * @param {Object} e
      */
-    onKeyDown: function(e){
-      var me = this,
+    onKeyDown(e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
@@ -407,7 +407,7 @@
           me.fire('esc', e);
           break;
         case key.ENTER:
-          var isTextArea = me.type === 'textarea' || me.type === 'field.textarea';
+          const isTextArea = me.type === 'textarea' || me.type === 'field.textarea';
 
           if (isTextArea && e.shiftKey){
             break;
@@ -481,7 +481,7 @@
           }, 1);
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
@@ -489,7 +489,7 @@
      * @param {Object} me
      * @param {*} value
      */
-    onKey: function(me, value){
+    onKey(me, value){
       if(me.disabled){
         return;
       }
@@ -502,18 +502,18 @@
      * It used also for validation.
      * @return {Boolean} - returns true/false if validation passed successful.
      */
-    onBlur: function(){
-      var me = this;
+    onBlur(){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         return true;
       }
 
       me.fire('blur');
 
-      if (me.input){
-        if(me.type === 'combo'){
-          setTimeout(function(){
+      if (me.input) {
+        if (me.type === 'combo') {
+          setTimeout(() => {
             if(me.listItemClicked){}
             else{
               me.validate(me.input.dom.value);
@@ -530,16 +530,16 @@
     /*
      * @param {*} value
      */
-    validate: function(value){
-      var me = this,
+    validate(value) {
+      const me = this,
         vtype = me.vtype;
 
-      if (vtype === undefined){
+      if (vtype === undefined) {
         return true;
       }
       else {
-        var valid = F.isValid(vtype, value);
-        if (valid !== true){
+        const valid = F.isValid(vtype, value);
+        if (valid !== true) {
           me.errorText = new F.Template(valid.text).getHTML(valid);
           me.failedValid();
 
@@ -554,14 +554,14 @@
     /*
      *
      */
-    isValid: function(){
+    isValid() {
       return !this.hasCls(this.failedValidCls);
     },
     /*
      *
      */
-    onFocus: function(){
-      var me = this;
+    onFocus(){
+      const me = this;
 
       if(me.disabled || me.editable === false){
         this.input.blur();
@@ -573,18 +573,18 @@
     /*
      *
      */
-    blur: function(){
+    blur(){
       this.input.blur();
     },
     /*
      *
      */
-    onInput: function(){
-      var me = this,
+    onInput(){
+      const me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
@@ -595,10 +595,10 @@
     /*
      *
      */
-    get: function(){
-      var me = this;
+    get(){
+      const me = this;
 
-      if (me.format){
+      if (me.format) {
         //Place of bugs
         if (F.isString(me.format)){}
         else if (F.isObject(me.format)){
@@ -632,68 +632,66 @@
     /*
      *
      */
-    getValue: function(){
+    getValue() {
       return this.get();
     },
     /*
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function(value, onInput){
-      var me = this;
+    set(value, onInput){
+      const me = this;
 
       me.value = value;
 
-      if (me.format && me.format.inputFn){
+      if (me.format && me.format.inputFn) {
         me.formatValue(value);
       }
       else {
         me.input.dom.value = value;
       }
 
-      if (onInput !== false){
+      if (onInput !== false) {
         me.onInput();
       }
 
       me.validate(value);
     },
-    setLabel: function(value){
-      var me = this;
-
-      me.el.select('.' + FIELD_LABEL_CLS).update(value);
+    setLabel(value){
+      this.el.select(`.${FIELD_LABEL_CLS}`).update(value);
     },
     /*
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function(value, onInput){
+    setValue(value, onInput){
       this.set(value, onInput);
     },
     /*
      *
      */
-    clear: function(){
+    clear(){
       this.set('');
       this.clearValid();
     },
     /*
      *
      */
-    failedValid: function(){
-      var me = this;
+    failedValid(){
+      const me = this;
 
-      if (me.hasCls(me.failedValidCls)){
-        if (me.tooltip && me.errorText){
+      if (me.hasCls(me.failedValidCls)) {
+        if (me.tooltip && me.errorText) {
           F.tip.update(me.errorText);
         }
       }
       else {
-        if (!me.tooltip && me.errorText){
+        if (!me.tooltip && me.errorText) {
           me.showErrorTip();
 
           me.el.on('mousemove', me.onMouseMove, me);
           me.input.hover(function(e){
-            if (me.errorText){
+            if (me.errorText) {
               me.showErrorTip();
               F.tip.show(e.pageX + 15, e.pageY - 25);
             }
@@ -705,14 +703,14 @@
         me.addCls(me.failedValidCls);
       }
     },
-    clearValid: function(){
+    clearValid(){
       this.removeCls(this.failedValidCls);
     },
     /*
      *
      */
-    successValid: function(){
-      var me = this;
+    successValid(){
+      const me = this;
 
       me.removeCls(me.failedValidCls);
       me.hideErrorTip();
@@ -721,51 +719,49 @@
     /*
      *
      */
-    showErrorTip: function(){
-      var me = this;
-
-      F.tip.update(me.errorText);
+    showErrorTip(){
+      F.tip.update(this.errorText);
     },
     /*
      *
      */
-    hideErrorTip: function(){
+    hideErrorTip(){
       F.tip.hide();
     },
     /*
      * @param {Object} o
      */
-    setInputSize: function(o){
-      var me = this;
+    setInputSize(o){
+      const me = this;
 
-      if(me.type === 'combo'){
+      if (me.type === 'combo') {
         me.inputContainer.css('width', o.width);
       }
 
-      if (o.width){
+      if (o.width) {
         me.input.css('width', o.width);
       }
 
-      if (o.height && me.type !== 'set'){
+      if (o.height && me.type !== 'set') {
         me.input.css('height', o.height);
       }
     },
     /*
      *
      */
-    focus: function(){
-      var me = this;
+    focus(){
+      const me = this;
 
       me.input.focus();
-      setTimeout(function(){
+      setTimeout(() => {
         me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
       }, 0);
     },
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       me.fire('beforehide');
       me.css('display', 'none');
@@ -774,30 +770,28 @@
     /*
      *
      */
-    show: function(){
-      var me = this;
-
-      me.css('display', 'block');
+    show(){
+      this.css('display', 'block');
     },
     /*
      * @param {Number|Object} width
      * @param {Number} height
      */
-    setSize: function(width, height){
-      var me = this;
+    setSize(width, height){
+      const me = this;
 
       switch (me.type){
         case 'set':
         case 'line':
       }
 
-      if (width === undefined && height === undefined){
+      if (width === undefined && height === undefined) {
         width = me.width;
         height = me.height;
       }
-      else if (height === undefined){
-        var o = width;
-        if (o.width){
+      else if (height === undefined) {
+        const o = width;
+        if (o.width) {
           width = o.width;
         }
         else {
@@ -812,7 +806,7 @@
         }
       }
 
-      if (me.size){
+      if (me.size) {
         me.size({
           width: width,
           height: height
@@ -821,19 +815,19 @@
         return;
       }
 
-      if (width !== undefined){
+      if (width !== undefined) {
         me.css('width', width);
       }
 
-      if (me.labelAlign === 'top'){
+      if (me.labelAlign === 'top') {
         me.css('height', height * 1.5);
       }
       else {
-        if(me.type !== 'set'){
+        if(me.type !== 'set') {
           me.css('height', height);
         }
 
-        if (me.label){
+        if (me.label) {
           me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);
         }
       }
@@ -846,18 +840,18 @@
     /*
      *
      */
-    setStyle: function(){
-      var me = this,
+    setStyle(){
+      let me = this,
         style = me.style || {},
         padding = me.padding;
 
-      if (padding){
-        if (F.isNumber(padding)){
+      if (padding) {
+        if (F.isNumber(padding)) {
           padding = padding + 'px';
         }
         else if (F.isString(padding)){}
 
-        if (style.padding === undefined){
+        if (style.padding === undefined) {
           style.padding = padding;
         }
       }
@@ -865,7 +859,7 @@
         style.padding = '0px';
       }
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
@@ -874,10 +868,10 @@
     /*
      *
      */
-    preRender: function(){
-      var me = this;
+    preRender(){
+      const me = this;
 
-      if (me.tpl && F.isObject(me.tpl) === false){
+      if (me.tpl && F.isObject(me.tpl) === false) {
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -886,7 +880,7 @@
     /*
      *
      */
-    calcSize: function(){
+    calcSize(){
       var me = this,
         inputWidth,
         inputHeight = me.inputHeight,
@@ -896,7 +890,7 @@
         value2,
         value3;
 
-      if (F.isString(padding)){
+      if (F.isString(padding)) {
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
         switch (padding.length){
@@ -925,25 +919,25 @@
       else if (F.isNumber(padding)){
         padding = [padding, padding, padding, padding];
       }
-      else if (padding === false){
+      else if (padding === false) {
         padding = [0, 0, 0, 0];
       }
 
-      if (me.labelAlign === 'top'){
+      if (me.labelAlign === 'top') {
         me.height *= 1.5;
       }
 
       inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label){
+      if (me.labelAlign !== 'top' && me.label) {
         inputWidth -= me.labelWidth;
       }
 
-      if (me.height === me.inputHeight && me.padding !== false){
+      if (me.height === me.inputHeight && me.padding !== false) {
         inputHeight -= padding[0] + padding[2];
       }
 
-      if (me.type === 'radio' && !me.column){
+      if (me.type === 'radio' && !me.column) {
         me.calcColumns();
         if (me.rows !== 1){
           inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
@@ -957,8 +951,8 @@
     /*
      * @param {Number} value
      */
-    setWidth: function(value){
-      var me = this;
+    setWidth(value){
+      const me = this;
 
       me.width = value;
       me.calcSize();
@@ -971,17 +965,17 @@
     /*
      * @param {Object} e
      */
-    onMouseMove: function(e){
-      var me = this,
+    onMouseMove(e){
+      const me = this,
         //Link on grid if presented
         w = me.widget;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if(w){
-        if(w.startResizing && me.tooltip){
+      if (w) {
+        if (w.startResizing && me.tooltip) {
           F.tip.hide();
           return;
         }
@@ -1002,14 +996,14 @@
     /*
      * @param {Object} e
      */
-    renderTip: function(e){
+    renderTip(e){
       var me = this,
         value = '',
         tip = me.tip,
         tpl,
         text;
 
-      if (me.getValue){
+      if (me.getValue) {
         switch(me.type){
           case 'button':
           case 'field.button':
@@ -1020,7 +1014,7 @@
         }
       }
 
-      switch (Fancy.typeOf(tip)){
+      switch (Fancy.typeOf(tip)) {
         case 'function':
           text = tip(this, value, me.label || '');
           break;
@@ -1038,7 +1032,7 @@
     /*
      * @return {Object}
      */
-    getInputSelection: function(){
+    getInputSelection(){
       var me = this,
         start = 0,
         end = 0,
@@ -1049,14 +1043,14 @@
         endRange,
         el = me.input.dom;
 
-      if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number'){
+      if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number') {
         start = el.selectionStart;
         end = el.selectionEnd;
       }
       else {
         range = document.selection.createRange();
 
-        if (range && range.parentElement() == el){
+        if (range && range.parentElement() == el) {
           len = el.value.length;
           normalizedValue = el.value.replace(/\r\n/g, '\n');
 
@@ -1087,57 +1081,55 @@
       }
 
       return {
-        start: start,
-        end: end
+        start,
+        end
       };
     },
     /*
      *
      */
-    enable: function(){
-      var me = this;
+    enable(){
+      const me = this;
 
       me.disabled = false;
       me.removeCls(FIELD_DISABLED_CLS);
 
-      if(me.button){
+      if (me.button) {
         me.button.enable();
       }
 
-      if(me.input){
+      if (me.input) {
         me.input.attr('tabIndex', me.tabIndex || 0);
       }
     },
     /*
      *
      */
-    disable: function(){
-      var me = this;
+    disable(){
+      const me = this;
 
       me.disabled = true;
       me.addCls(FIELD_DISABLED_CLS);
 
-      if(me.button){
+      if (me.button) {
         me.button.disable();
       }
 
-      if(me.input){
+      if (me.input) {
         me.input.attr('tabIndex', -1);
       }
     },
     /*
      *
      */
-    getInputValue: function(){
-      var me = this;
-
-      return me.input.dom.value;
+    getInputValue(){
+      return this.input.dom.value;
     },
     /*
      *
      */
-    clearInput: function(){
-      var me = this;
+    clearInput(){
+      const me = this;
 
       if(me.input){
         me.input.dom.value = '';

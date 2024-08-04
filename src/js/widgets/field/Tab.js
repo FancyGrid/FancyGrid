@@ -19,18 +19,18 @@ Fancy.define('Fancy.form.field.Tab', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('collapsed', 'expanded');
 
     me.Super('init', arguments);
 
-    var i = 0,
+    let i = 0,
       iL = me.items.length;
 
     for(;i<iL;i++){
-      var item = me.items[i];
+      const item = me.items[i];
 
       if( item.labelAlign === 'top' ){
         if( i === 0 ){

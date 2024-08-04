@@ -10,17 +10,15 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {String|Number} key
    * @param {Object} [options]
    */
-  sort: function(action, type, key, options){
-    var me = this,
+  sort(action, type, key, options = {}){
+    let me = this,
       w = me.widget,
       fn,
       sortType;
 
-    options = options || {};
-
     me.fire('beforesort', {
       key: 'key',
-      action: action
+      action
     });
 
     if(me.multiSort && me.multiSortInited !== true){
@@ -97,8 +95,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     me.fire( 'sort', {
-      key: key,
-      action: action
+      key,
+      action
     });
   },
   /*
@@ -107,8 +105,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {String|Number} key
    * @param {Boolean} load
    */
-  serverSort: function(action, type, key, load){
-    var me = this;
+  serverSort(action, type, key, load){
+    const me = this;
 
     me.params = me.params || {};
 
@@ -125,10 +123,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.once('serversuccess', function(){
+    me.once('serversuccess', () => {
       me.fire('sort', {
-        key: key,
-        action: action
+        key,
+        action
       });
     });
 
@@ -141,7 +139,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {String} type
    * @param {String|Number} key
    */
-  sortNumber: function(action, key, options){
+  sortNumber(action, key, options){
     var me = this,
       columnOriginalValues = [],
       sortedColumnValues,
@@ -149,10 +147,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       iL,
       customSort = options.sorter;
 
-    if(me.isTree){
+    if (me.isTree) {
       columnOriginalValues = me.getColumnOriginalValues('id');
 
-      var treeData = me.treeGetDataAsTree(),
+      const treeData = me.treeGetDataAsTree(),
         sortedData = me.treeSort(treeData, action, key, 'number', customSort);
 
       sortedColumnValues = me.treeReadSortedId(sortedData);
@@ -160,7 +158,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else if(me.grouping){
       //BUG: It does not work for date
 
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
+      const _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -225,12 +223,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       switch (action){
         case 'asc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return customSort('asc', a, b);
             });
           }
           else {
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return a - b;
             });
           }
@@ -239,12 +237,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           break;
         case 'desc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return customSort('desc', a, b);
             });
           }
           else {
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return b - a;
             });
           }
@@ -260,7 +258,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String|Number} key
    */
-  sortString: function(action, key, options){
+  sortString(action, key, options){
     var me = this,
       columnOriginalValues = [],
       sortedColumnValues,
@@ -271,13 +269,13 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     if(me.isTree){
       columnOriginalValues = me.getColumnOriginalValues('id');
 
-      var treeData = me.treeGetDataAsTree(),
+      const treeData = me.treeGetDataAsTree(),
         sortedData = me.treeSort(treeData, action, key, 'string', customSort);
 
       sortedColumnValues = me.treeReadSortedId(sortedData);
     }
     else if(me.grouping){
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
+      const _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -347,7 +345,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {Array} sorted
    * @return {Array}
    */
-  getOrder: function(original, sorted){
+  getOrder(original, sorted){
     var mapValues = {},
       i = 0,
       iL = original.length,
@@ -380,8 +378,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {Number} value
    * @param {String} action
    */
-  changeOrderIndexes: function(value, action){
-    var me = this;
+  changeOrderIndexes(value, action){
+    const me = this;
 
     if(action === undefined){
       action = '-';
@@ -391,7 +389,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       return;
     }
 
-    var i = 0,
+    let i = 0,
       iL = me.order.length;
 
     if(action === '-'){
@@ -412,8 +410,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    *
    */
-  initMultiSort: function(){
-    var me = this;
+  initMultiSort(){
+    const me = this;
 
     me.multiSortInited = true;
 
@@ -426,7 +424,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} dir
    * @param {String} type
    */
-  addSorter: function(key, dir, type){
+  addSorter(key, dir, type){
     var me = this,
       i = 0,
       iL = me.sorters.length;
@@ -453,7 +451,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    * @param {Number} i
    */
-  multiSortOrder: function(i){
+  multiSortOrder(i){
     var me = this,
       w = me.widget,
       s = w.store,
@@ -495,7 +493,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         continue;
       }
 
-      var sortedSubValues;
+      let sortedSubValues;
 
       if(sorter.type === 'number'){
         switch(sorter.dir){
@@ -543,31 +541,32 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    *
    */
-  reSort: function(){
-    var me = this;
-    
-    Fancy.each(me.sorters, function(sorter){
+  reSort(){
+    const me = this;
+
+    Fancy.each(me.sorters, sorter => {
       me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {
         update: false
       });
     });
   }
-});/*
+});
+/*
  * @class Fancy.grid.plugin.Sorter
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_COLUMN_SORT_ASC = F.GRID_COLUMN_SORT_ASC;
-  var GRID_COLUMN_SORT_DESC = F.GRID_COLUMN_SORT_DESC;
-  var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
-  var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
-  var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
+  const GRID_COLUMN_SORT_ASC = F.GRID_COLUMN_SORT_ASC;
+  const GRID_COLUMN_SORT_DESC = F.GRID_COLUMN_SORT_DESC;
+  const GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const GRID_CENTER_CLS = F.GRID_CENTER_CLS;
+  const GRID_LEFT_CLS = F.GRID_LEFT_CLS;
+  const GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
 
   F.define('Fancy.grid.plugin.Sorter', {
     extend: F.Plugin,
@@ -583,26 +582,24 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.once('render', function(){
-        me.onsHeaders();
-      });
+      w.once('render', () => me.onsHeaders());
     },
     /*
      *
      */
-    onsHeaders: function(){
-      var me = this,
+    onsHeaders(){
+      const me = this,
         w = me.widget;
 
       w.on('headercellclick', me.onHeaderCellClick, me);
@@ -611,7 +608,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onHeaderCellClick: function(grid, o){
+    onHeaderCellClick(grid, o){
       var me = this,
         w = me.widget,
         columndrag = w.columndrag,
@@ -625,29 +622,29 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         e = o.e,
         target = e.target;
 
-      if(columndrag && columndrag.status === 'dragging'){
+      if (columndrag && columndrag.status === 'dragging') {
         return;
       }
 
-      if (target.tagName.toLocaleLowerCase() === 'input'){
+      if (target.tagName.toLocaleLowerCase() === 'input') {
         return;
       }
 
-      var field = cellEl.select('.' + FIELD_CLS);
-      if (field.length > 0 && field.item(0).within(target) === true){
+      const field = cellEl.select(`.${FIELD_CLS}`);
+      if (field.length > 0 && field.item(0).within(target) === true) {
         return;
       }
 
-      if (cellEl.hasCls(GRID_COLUMN_RESIZER_CLS) || w.startResizing){
+      if (cellEl.hasCls(GRID_COLUMN_RESIZER_CLS) || w.startResizing) {
         return;
       }
 
       columns = w.getColumns(side);
 
-      if (cellEl.hasCls(GRID_COLUMN_SORT_ASC)){
+      if (cellEl.hasCls(GRID_COLUMN_SORT_ASC)) {
         action = 'desc';
       }
-      else if (cellEl.hasCls(GRID_COLUMN_SORT_DESC)){
+      else if (cellEl.hasCls(GRID_COLUMN_SORT_DESC)) {
         if(!w.multiSort){
           action = 'drop';
         }
@@ -662,7 +659,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       column = columns[index];
       key = column.index;
 
-      if(column.headerClickSort === false){
+      if (column.headerClickSort === false) {
         return;
       }
 
@@ -676,7 +673,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
      * @param {Object} cell
      * @param {Object} [update]
      */
-    sort: function(dir, index, side, column, cell, update){
+    sort(dir, index, side, column, cell, update){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -688,9 +685,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
       w.sorting = true;
 
-      if (!column || !cell){
-        for (; i < iL; i++){
-          if (columns[i].index === index){
+      if (!column || !cell) {
+        for (; i < iL; i++) {
+          if (columns[i].index === index) {
             column = columns[i];
             cell = header.getCell(i);
             break;
@@ -698,18 +695,18 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         }
       }
 
-      if (column.sortable !== true){
+      if (column.sortable !== true) {
         return;
       }
 
-      if (w.multiSort){
+      if (w.multiSort) {
         me.clearHeaderMultiSortCls(dir, cell);
       }
       else {
         me.clearHeaderSortCls();
       }
 
-      if(!column.headerCheckBox){
+      if (!column.headerCheckBox) {
         switch (dir){
           case 'asc':
             cell.addCls(GRID_COLUMN_SORT_ASC);
@@ -722,11 +719,11 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
       type = column.type;
 
-      var format,
+      let format,
         mode;
 
-      if (column.format){
-        if (F.isString(column.format)){
+      if (column.format) {
+        if (F.isString(column.format)) {
           switch (column.format){
             case 'date':
               format = w.lang.date.read;
@@ -748,9 +745,9 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         }
       }
 
-      if(w.grouping && w.grouping.by){
+      if (w.grouping && w.grouping.by) {
         if (s.remoteSort){
-          s.once('load', function(){
+          s.once('load', () => {
             w.grouping.reGroup();
             //Write code instead of reGroup
           });
@@ -765,7 +762,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         update: update !== false
       });
 
-      if(update !== false){
+      if (update !== false) {
         w.update();
       }
 
@@ -774,8 +771,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     /*
      *
      */
-    clearSort: function(){
-      var me = this,
+    clearSort(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -792,7 +789,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
      * @param {String} dir
      * @param {Fancy.Element} cellEl
      */
-    clearHeaderMultiSortCls: function(dir, cellEl){
+    clearHeaderMultiSortCls(dir, cellEl){
+      let firstSorter;
       var me = this,
         w = me.widget,
         s = w.store,
@@ -808,19 +806,19 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           break;
       }
 
-      itemsASC = w.el.select('.' + GRID_COLUMN_SORT_ASC);
-      itemsDESC = w.el.select('.' + GRID_COLUMN_SORT_DESC);
+      itemsASC = w.el.select(`.${GRID_COLUMN_SORT_ASC}`);
+      itemsDESC = w.el.select(`.${GRID_COLUMN_SORT_DESC}`);
 
-      if (itemsASC.length + itemsDESC.length < s.multiSortLimit){
+      if (itemsASC.length + itemsDESC.length < s.multiSortLimit) {
         return;
       }
 
       //TODO: Small refactoring that decrease size
-      var i = 0,
-        iL = itemsASC.length,
-        cellToRemoveCls;
+      let i = 0;
+      let iL = itemsASC.length;
+      var cellToRemoveCls;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         var cell = itemsASC.item(i),
           sideEl = cell.parent().parent(),
           side,
@@ -828,30 +826,30 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           key,
           index = cell.attr('index');
 
-        if (sideEl.hasCls(GRID_CENTER_CLS)){
+        if (sideEl.hasCls(GRID_CENTER_CLS)) {
           side = 'center';
         }
-        else if (sideEl.hasCls(GRID_LEFT_CLS)){
+        else if (sideEl.hasCls(GRID_LEFT_CLS)) {
           side = 'left';
         }
-        else if (sideEl.hasCls(GRID_RIGHT_CLS)){
+        else if (sideEl.hasCls(GRID_RIGHT_CLS)) {
           side = 'right';
         }
 
         columns = w.getColumns(side);
         key = columns[index].index;
 
-        var firstSorter = s.sorters[0];
+        firstSorter = s.sorters[0];
 
-        if (firstSorter.key === key){
+        if (firstSorter.key === key) {
           cellToRemoveCls = cell;
         }
       }
 
-      var i = 0,
-        iL = itemsDESC.length;
+      i = 0;
+      iL = itemsDESC.length;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         var cell = itemsDESC.item(i),
           sideEl = cell.parent().parent(),
           side,
@@ -859,22 +857,22 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           key,
           index = cell.attr('index');
 
-        if (sideEl.hasCls(GRID_CENTER_CLS)){
+        if (sideEl.hasCls(GRID_CENTER_CLS)) {
           side = 'center';
         }
-        else if (sideEl.hasCls(GRID_LEFT_CLS)){
+        else if (sideEl.hasCls(GRID_LEFT_CLS)) {
           side = 'left';
         }
-        else if (sideEl.hasCls(GRID_RIGHT_CLS)){
+        else if (sideEl.hasCls(GRID_RIGHT_CLS)) {
           side = 'right';
         }
 
         columns = w.getColumns(side);
         key = columns[index].index;
 
-        var firstSorter = s.sorters[0];
+        firstSorter = s.sorters[0];
 
-        if (firstSorter.key === key){
+        if (firstSorter.key === key) {
           cellToRemoveCls = cell;
         }
       }
@@ -885,13 +883,13 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     /*
      *
      */
-    clearHeaderSortCls: function(){
-      var el = this.widget.el;
+    clearHeaderSortCls(){
+      const el = this.widget.el;
 
-      el.select('.' + GRID_COLUMN_SORT_ASC).removeCls(GRID_COLUMN_SORT_ASC);
-      el.select('.' + GRID_COLUMN_SORT_DESC).removeCls(GRID_COLUMN_SORT_DESC);
+      el.select(`.${GRID_COLUMN_SORT_ASC}`).removeCls(GRID_COLUMN_SORT_ASC);
+      el.select(`.${GRID_COLUMN_SORT_DESC}`).removeCls(GRID_COLUMN_SORT_DESC);
     },
-    updateSortedHeader: function(){
+    updateSortedHeader(){
       var me = this,
         w = me.widget,
         header,
@@ -899,18 +897,18 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
 
       me.clearHeaderSortCls();
 
-      F.each(s.sorters, function(sorter){
-        var info = w.getColumnOrderByKey(sorter.key),
-          cls = sorter.dir === 'ASC'? GRID_COLUMN_SORT_ASC : GRID_COLUMN_SORT_DESC;
+      F.each(s.sorters, (sorter) => {
+        const info = w.getColumnOrderByKey(sorter.key),
+          cls = sorter.dir === 'ASC' ? GRID_COLUMN_SORT_ASC : GRID_COLUMN_SORT_DESC;
 
-        if(!info.side){
+        if (!info.side) {
           return;
         }
 
         header = w.getHeader(info.side);
-        var cell = header.getCell(info.order);
+        const cell = header.getCell(info.order);
 
-        if(cell){
+        if (cell) {
           cell.addCls(cls);
         }
       });

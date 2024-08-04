@@ -20,21 +20,21 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
     this.ons();
   },
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget,
       s = w.store;
 
-    w.once('render', function(){
+    w.once('render', () => {
       me.render();
-      if(s.loading){
+      if (s.loading) {
         me.onBeforeLoad();
       }
       w.on('beforeload', me.onBeforeLoad, me);
@@ -44,7 +44,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       w = me.widget,
       wEl = w.el,
@@ -68,8 +68,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     }
 
     el.css({
-      width: width,
-      height: height,
+      width,
+      height,
       opacity: 0
     });
 
@@ -112,7 +112,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
         }
 
         me.innerEl.css({
-          left: left
+          left
         });
 
         clearInterval(me.intLeft);
@@ -120,7 +120,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
     }
 
     me.innerEl.css({
-      left: left,
+      left,
       top: height/2 - innerHeight/2
     });
 
@@ -142,7 +142,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  onBeforeLoad: function(){
+  onBeforeLoad(){
     if(this.showOnWaitingServer){
       this.show();
     }
@@ -150,21 +150,19 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  onLoad: function(){
-    var me = this,
+  onLoad(){
+    const me = this,
       w = me.widget;
 
-    if(me.showOnWaitingServer){
-      w.once('update', function(){
-        me.hide();
-      });
+    if (me.showOnWaitingServer) {
+      w.once('update', () => me.hide());
     }
   },
   /*
    * @param {String} text
    */
-  show: function(text){
-    var me = this,
+  show(text){
+    const me = this,
       el = me.el,
       w = me.widget,
       lang = w.lang;
@@ -176,7 +174,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
     me.updateSize();
 
-    if(text){
+    if (text) {
       me.textEl.update(text);
       me.el.css('display', 'block');
       return;
@@ -184,7 +182,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
     me.loaded = false;
 
-    setTimeout(function(){
+    setTimeout(() => {
       if(me.loaded !== true){
         me.textEl.update(me.loadText || lang.loadingText);
 
@@ -195,8 +193,8 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  hide: function(){
-    var me = this,
+  hide(){
+    const me = this,
       el = me.el;
 
     el.stop();
@@ -205,7 +203,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       opacity: 0,
       force: true
     }, {
-      complete: function(){
+      complete(){
         me.loaded = true;
         el.css('display', 'none');
       }
@@ -214,26 +212,26 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
   /*
    *
    */
-  updateSize: function(){
-    var me = this,
+  updateSize(){
+    const me = this,
       w = me.widget,
       width = w.getWidth(),
       height = w.getHeight();
 
     me.el.css({
-      height: height,
-      width: width
+      height,
+      width
     });
 
-    var innerWidth = Math.abs(me.innerEl.width()),
+    const innerWidth = Math.abs(me.innerEl.width()),
       innerHeight = Math.abs(me.innerEl.height());
 
-    var left = width/2 - innerWidth/2,
-      top = height/2 - innerHeight/2;
+    const left = width / 2 - innerWidth / 2,
+      top = height / 2 - innerHeight / 2;
 
     me.innerEl.css({
-      left: left,
-      top: top
+      left,
+      top
     });
   }
 });

@@ -9,7 +9,7 @@ Fancy.define('Fancy.Widget', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
+    const me = this;
 
     Fancy.applyConfig(me, config);
 
@@ -22,10 +22,10 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  init: function(){
+  init(){
     //not runned in grid
     //maybe to redo that run
-    var me = this;
+    const me = this;
 
     me.initId();
     me.addEvents(
@@ -36,11 +36,11 @@ Fancy.define('Fancy.Widget', {
   /*
    * @param {String|HTMLElement}
    */
-  renderItems: function(renderTo){
-    var me = this;
+  renderItems(renderTo){
+    const me = this;
 
     Fancy.each(me.items, function(item, i){
-      var w = Fancy.getClassByType(item.type);
+      const w = Fancy.getClassByType(item.type);
 
       item.renderTo = renderTo;
       me.items[i] = new w(item);
@@ -49,11 +49,11 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  preInitControls: function(){
-    var me = this,
-      controller = me.controller || me.controllers;
+  preInitControls(){
+    const me = this;
+    let controller = me.controller || me.controllers;
 
-    if(controller){
+    if (controller) {
       switch(Fancy.typeOf(controller)){
         case 'string':
           controller = Fancy.getController(controller);
@@ -93,10 +93,10 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  initControls: function(){
-    var me = this;
+  initControls(){
+    const me = this;
 
-    if(me.controls === undefined){
+    if (me.controls === undefined) {
       return;
     }
 
@@ -127,8 +127,8 @@ Fancy.define('Fancy.Widget', {
       if(selector){
         (function(event, handler, scope, selector){
           if(me.$events[event]){
-            me.on(event, function(grid, o){
-              var target = o.e.target,
+            me.on(event, (grid, o) => {
+              const target = o.e.target,
                 el = Fancy.get(target),
                 parentEl = el.parent(),
                 selectored = parentEl.select(selector);
@@ -149,9 +149,7 @@ Fancy.define('Fancy.Widget', {
             }, scope);
           }
           else {
-            me.on('render', function(){
-              me.el.on(event, handler, scope, selector);
-            });
+            me.on('render', () => me.el.on(event, handler, scope, selector));
           }
         })(event, handler, scope, selector);
       }
@@ -164,61 +162,61 @@ Fancy.define('Fancy.Widget', {
    * @param {String|Object} o1
    * @param {Number|String} [o2]
    */
-  css: function(o1, o2){
+  css(o1, o2) {
     return this.el.css(o1, o2);
   },
   /*
    * @param {String} value
    */
-  addClass: function(value){
+  addClass(value){
     this.el.addCls(value);
   },
   /*
    * @param {String} value
    */
-  addCls: function(value){
+  addCls(value){
     this.el.addCls(value);
   },
   /*
    * @param {String} value
    */
-  removeClass: function(value){
+  removeClass(value){
     this.el.removeCls(value);
   },
   /*
  * @param {String} value
  */
-  removeCls: function(value){
+  removeCls(value){
     this.el.removeCls(value);
   },
   /*
    * @param {String} value
    */
-  hasClass: function(value){
+  hasClass(value){
     return this.el.hasCls(value);
   },
   /*
    * @param {String} value
    */
-  hasCls: function(value){
+  hasCls(value){
     return this.el.hasCls(value);
   },
   /*
    * @param {String} value
    */
-  toggleClass: function(value){
+  toggleClass(value){
     this.el.toggleCls(value);
   },
   /*
    * @param {String} value
    */
-  toggleCls: function(value){
+  toggleCls(value){
     this.el.toggleCls(value);
   },
   /*
    *
    */
-  destroy: function(){
+  destroy(){
     if(this.el && this.el.dom){
       this.el.destroy();
     }
@@ -226,28 +224,28 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  show: function(){
+  show(){
     this.el.show();
   },
   /*
    *
    */
-  hide: function(){
+  hide(){
     this.el.hide();
   },
   /*
    *
    */
-  isVisible: function(){
+  isVisible(){
     return this.el.css('display') !== 'none';
   },
   /*
    *
    */
-  initTpl: function(){
-    var me = this;
+  initTpl(){
+    const me = this;
 
-    if(!me.tpl){
+    if (!me.tpl) {
       return;
     }
 

@@ -14,14 +14,14 @@ Fancy.define('Fancy.PluginManager', {
    * @param {String} ptype
    * @param {Object} plugin
    */
-  addPlugin: function(ptype, plugin){
+  addPlugin(ptype, plugin){
     this.ptypes.add(ptype, plugin);
   },
   /*
    * @param {String} ptype
    * @return {Object}
    */
-  getPlugin: function(ptype){
+  getPlugin(ptype){
     return this.ptypes.get(ptype);
   }
 });
@@ -30,7 +30,7 @@ Fancy.define('Fancy.PluginManager', {
  * @param {String} ptype
  * @param {Object} plugin
  */
-Fancy.addPluginByType = function(ptype, plugin){
+Fancy.addPluginByType = (ptype, plugin) => {
   Fancy.PluginManager.addPlugin(ptype, plugin);
 };
 
@@ -38,6 +38,6 @@ Fancy.addPluginByType = function(ptype, plugin){
  * @param {String} ptype
  * @return {Object}
  */
-Fancy.getPluginByType = function(ptype){
+Fancy.getPluginByType = (ptype) => {
   return Fancy.PluginManager.getPlugin(ptype);
 };

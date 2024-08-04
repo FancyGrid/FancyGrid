@@ -3,33 +3,33 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   // CONSTANTS
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var GRID_CELL_EVEN_CLS = F.GRID_CELL_EVEN_CLS;
-  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
-  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
-  var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
-  var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
-  var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
-  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
-  var GRID_COLUMN_TREE_CLS = F.GRID_COLUMN_TREE_CLS;
-  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
-  var GRID_CELL_DIRTY_CLS = F.GRID_CELL_DIRTY_CLS;
-  var GRID_CELL_DIRTY_EL_CLS = F.GRID_CELL_DIRTY_EL_CLS;
-  var GRID_PSEUDO_CELL_CLS = F.GRID_PSEUDO_CELL_CLS;
-  var GRID_EMPTY_CLS =  F.GRID_EMPTY_CLS;
-  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
-  var GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
-  var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
-  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS =  F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
-  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
-  var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
-  var GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
-  var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
-  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
-  var GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_CELL_EVEN_CLS = F.GRID_CELL_EVEN_CLS;
+  const GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+  const GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  const GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
+  const GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
+  const GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
+  const GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  const GRID_COLUMN_TREE_CLS = F.GRID_COLUMN_TREE_CLS;
+  const GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  const GRID_CELL_DIRTY_CLS = F.GRID_CELL_DIRTY_CLS;
+  const GRID_CELL_DIRTY_EL_CLS = F.GRID_CELL_DIRTY_EL_CLS;
+  const GRID_PSEUDO_CELL_CLS = F.GRID_PSEUDO_CELL_CLS;
+  const GRID_EMPTY_CLS = F.GRID_EMPTY_CLS;
+  const GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  const GRID_COLUMN_SPARKLINE_BULLET_CLS = F.GRID_COLUMN_SPARKLINE_BULLET_CLS;
+  const GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
+  const GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS = F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  const GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
+  const GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
+  const GRID_COLUMN_PROGRESS_BAR_CLS = F.GRID_COLUMN_PROGRESS_BAR_CLS;
+  const GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  const GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
+  const GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
 
   F.ns('Fancy.grid.body.mixin');
 
@@ -42,8 +42,8 @@
     /*
      * @param {String} type
      */
-    update: function(type){
-      var me = this,
+    update(type){
+      let me = this,
         w = me.widget,
         s = w.store,
         changes;
@@ -113,7 +113,7 @@
     /*
      *
      */
-    checkDomColumns: function(){
+    checkDomColumns(){
       var me = this,
         w = me.widget,
         numExistedColumn = me.el.select('.' + GRID_COLUMN_CLS).length,
@@ -126,11 +126,11 @@
       }
 
       for (; i < iL; i++){
-        var column = columns[i],
+        const column = columns[i],
           width = column.width,
           el = F.get(document.createElement('div'));
 
-        if (column.hidden){
+        if (column.hidden) {
           el.css('display', 'none');
         }
 
@@ -138,11 +138,11 @@
         el.attr('grid', w.id);
         el.attr('role', 'presentation');
 
-        if (column.index === '$selected' || column.select){
+        if (column.index === '$selected' || column.select) {
           el.addCls(GRID_COLUMN_SELECT_CLS);
         }
         else {
-          switch (column.type){
+          switch (column.type) {
             case 'order':
               el.addCls(GRID_COLUMN_ORDER_CLS);
               break;
@@ -202,7 +202,7 @@
     /*
      * @param {number} indexOrder
      */
-    checkDomCells: function(indexOrder){
+    checkDomCells(indexOrder){
       var me = this,
         w = me.widget,
         body = w.body,
@@ -277,7 +277,7 @@
         }
 
         if (w.nativeScroller && (me.side === 'left' || me.side === 'right')){
-          columnDom.select('.' + GRID_PSEUDO_CELL_CLS).destroy();
+          columnDom.select(`.${GRID_PSEUDO_CELL_CLS}`).destroy();
 
           var cellHTML = cellTpl.getHTML({
             cellValue: '&nbsp;'
@@ -299,21 +299,21 @@
      * @param {Number} rowIndex
      * @param {Number} columnIndex
      */
-    updateRows: function(rowIndex, columnIndex){
+    updateRows(rowIndex, columnIndex){
       var me = this,
         w = me.widget,
         i = 0,
         columns,
         iL;
 
-      if (rowIndex === undefined){
+      if (rowIndex === undefined) {
         me.clearDirty();
       }
       else {
         me.clearDirty(rowIndex);
       }
 
-      switch (me.side){
+      switch (me.side) {
         case 'left':
           columns = w.leftColumns;
           break;
@@ -327,18 +327,18 @@
 
       iL = columns.length;
 
-      if (columnIndex !== undefined){
+      if (columnIndex !== undefined) {
         i = columnIndex;
         iL = columnIndex + 1;
 
         //if(iL >= columns.length){
-        if(iL > columns.length){
+        if (iL > columns.length) {
           return;
         }
       }
 
-      for (; i < iL; i++){
-        var column = columns[i];
+      for (; i < iL; i++) {
+        const column = columns[i];
 
         switch (column.type){
           case 'string':
@@ -432,7 +432,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderUniversal: function(i, rowIndex){
+    renderUniversal(i, rowIndex){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -441,10 +441,10 @@
         columns = me.getColumns(),
         column = columns[i],
         key,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         currencySign = column.currency || lang.currencySign,
@@ -477,7 +477,7 @@
       var infiniteScrolledToRow = 0;
       if(w.infinite){
         infiniteScrolledToRow = s.infiniteScrolledToRow;
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if(jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -580,7 +580,7 @@
         cell.css(o.style);
 
         if(isComplexInner){
-          var complexInner = [];
+          const complexInner = [];
           if(column.rowdrag){
             complexInner.push('<div class="fancy-grid-cell-inner-rowdrag"></div>');
           }
@@ -594,7 +594,7 @@
             }
           }
 
-          var innerText = inner.select('.fancy-grid-cell-inner-text');
+          const innerText = inner.select('.fancy-grid-cell-inner-text');
           if(innerText.length){
             innerText.update(value);
           }
@@ -610,7 +610,7 @@
 
         if(o.column.autoHeight){
           cell.css('height', '');
-          var cellHeight = parseInt(cell.css('height')) + 4;
+          let cellHeight = parseInt(cell.css('height')) + 4;
 
           w.rowheight.waitToShow();
 
@@ -625,16 +625,16 @@
     /*
      * @param {Number} i
      */
-    renderOrder: function(i){
+    renderOrder(i){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j = 0,
         jL = s.getLength(),
         plusValue = 0;
@@ -644,7 +644,7 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -677,7 +677,7 @@
           value = o.value;
         }
 
-        var cell = cellsDom.item(j);
+        const cell = cellsDom.item(j);
         if (w.cellStylingCls){
           me.clearCls(cell);
         }
@@ -699,21 +699,21 @@
      * @param {Number} rowIndex
      * @param {Boolean} [complex]
      */
-    renderRowDrag: function(i, rowIndex, complex){
+    renderRowDrag(i, rowIndex, complex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j = 0,
         jL = s.getLength();
 
-      if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+      if (w.infinite) {
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -721,7 +721,7 @@
       }
 
       for (; j < jL; j++){
-        var data = s.get(j),
+        const data = s.get(j),
           id = s.getId(j),
           o = {
             rowIndex: j,
@@ -731,12 +731,12 @@
             id: id,
             item: s.getItem(j)
           },
-          value = '<svg class="'+GRID_ROW_DRAG_EL_CLS+'" style="opacity: 0;" viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
+          value = '<svg class="' + GRID_ROW_DRAG_EL_CLS + '" style="opacity: 0;" viewBox="0 0 6 14"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2h2V0H0v2zm0 4h2V4H0v2zm0 3.999h2V8H0v1.999zM0 14h2v-2H0v2zM4 0v2h2V0H4zm0 6h2V4H4v2zm0 3.999h2V8H4v1.999zM4 14h2v-2H4v2z"></path></svg>';
 
         o.value = value;
 
-        var cell = cellsDom.item(j);
-        if (w.cellStylingCls){
+        const cell = cellsDom.item(j);
+        if (w.cellStylingCls) {
           me.clearCls(cell);
         }
 
@@ -745,8 +745,8 @@
         }
 
         cell.css(o.style);
-        if(complex){
-          var renderTo = cellsDomInner.item(j).select('.fancy-grid-cell-inner-rowdrag').item(0);
+        if (complex) {
+          const renderTo = cellsDomInner.item(j).select('.fancy-grid-cell-inner-rowdrag').item(0);
           renderTo.update(value);
         }
         else {
@@ -758,20 +758,20 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderTree: function(i, rowIndex){
+    renderTree(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         key = column.index;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -781,7 +781,7 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -803,11 +803,11 @@
           expanderCls += ' fancy-grid-tree-expander-expanded';
         }
 
-        var marginLeft = deep * 15;
-        var nodeImg = '';
+        let marginLeft = deep * 15;
+        let nodeImg = '';
 
-        if(column.render){
-          var o = column.render({
+        if (column.render) {
+          const o = column.render({
             item: dataItem,
             data: dataItem.data,
             deep: deep,
@@ -827,11 +827,11 @@
         }
 
 
-        if(column.folder){
-          var leaf = dataItem.get('leaf'),
+        if (column.folder) {
+          const leaf = dataItem.get('leaf'),
             expanded = dataItem.get('expanded');
 
-          if(leaf){
+          if (leaf) {
             nodeImg = '<span class="fancy-grid-tree-folder-file"></span>';
           }
           else{
@@ -848,7 +848,7 @@
           marginLeft -= 8;
         }
 
-        var cellInner = [];
+        const cellInner = [];
 
         cellInner.push('<span class="' + expanderCls + '" style="margin-left: ' + marginLeft + 'px;"></span>');
         if(column.select){
@@ -864,19 +864,19 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderExpand: function(i, rowIndex){
+    renderExpand(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -886,7 +886,7 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -901,7 +901,7 @@
           dataItem = w.get(j),
           dataItemId = dataItem.id;
 
-        if (isCheckBoxInside === false){
+        if (isCheckBoxInside === false) {
           cellsDomInner.item(j).update('');
 
           checkBox = new F.CheckBox({
@@ -940,7 +940,7 @@
           }
         }
 
-        var data = s.get(j),
+        const data = s.get(j),
           id = s.getId(j),
           o = {
             rowIndex: j,
@@ -951,7 +951,7 @@
             item: s.getItem(j)
           };
 
-        if(column.render){
+        if (column.render) {
           if(column.render(o).hidden === true){
             checkBox.hide();
           }
@@ -964,10 +964,10 @@
     /*
      * @param {Fancy.Element} cell
      */
-    clearCls: function(cell){
-      var w = this.widget;
+    clearCls(cell){
+      const w = this.widget;
 
-      F.each(w.cellStylingCls, function(cls){
+      F.each(w.cellStylingCls, (cls) => {
         cell.removeCls(cls);
       });
     },
@@ -975,7 +975,7 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderColor: function(i, rowIndex){
+    renderColor(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -997,8 +997,8 @@
         jL = s.getLength();
       }
 
-      if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+      if (w.infinite) {
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -1015,7 +1015,7 @@
           },
           value;
 
-        if (column.smartIndexFn){
+        if (column.smartIndexFn) {
           value = column.smartIndexFn(data);
         }
         else {
@@ -1029,10 +1029,10 @@
 
         o.value = value;
 
-        var cell = cellsDom.item(j);
+        const cell = cellsDom.item(j);
         cell.css(o.style);
 
-        var cellInner = cell.select('.' + GRID_CELL_INNER_CLS);
+        const cellInner = cell.select(`.${GRID_CELL_INNER_CLS}`);
         cellInner.update('<div class="fancy-grid-color-cell" style="background: ' + value + ';"></div>');
       }
     },
@@ -1040,21 +1040,21 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCombo: function(i, rowIndex){
+    renderCombo(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1071,7 +1071,7 @@
             style: {}
           };
 
-        if (column.render){
+        if (column.render) {
           o = column.render(o);
           value = o.value;
         }
@@ -1084,26 +1084,26 @@
      * @param {Number} columnIndex
      * @param {Number} rowIndex
      */
-    renderCheckbox: function(columnIndex, rowIndex, isSwitcher){
+    renderCheckbox(columnIndex, rowIndex, isSwitcher){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[columnIndex],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(columnIndex),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(columnIndex),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         widgetName = 'CheckBox';
 
-      if(isSwitcher){
+      if (isSwitcher) {
         widgetName = 'Switcher';
       }
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1113,14 +1113,14 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++){
+      for (; j < jL; j++) {
         var data = s.get(j),
           value = s.get(j, key),
           cellInnerEl = cellsDomInner.item(j),
@@ -1140,20 +1140,20 @@
             value: value
           };
 
-        if (s.changed[o.id] && s.changed[o.id][column.index]){
+        if (s.changed[o.id] && s.changed[o.id][column.index]) {
           dirty = true;
         }
 
-        if (column.render){
+        if (column.render) {
           o = column.render(o);
           value = o.value;
         }
 
         if (isCheckBoxInside === false){
           if (!o.stopped){
-            var editable = true;
+            let editable = true;
 
-            if (w.rowEdit){
+            if (w.rowEdit) {
               editable = false;
             }
 
@@ -1170,7 +1170,7 @@
                 display: 'inline-block'
               },
               events: [{
-                beforechange: function(checkbox){
+                beforechange(checkbox){
                   if (column.index === '$selected' || column.select){
                     return;
                   }
@@ -1180,7 +1180,7 @@
                   }
                 }
               }, {
-                change: function(checkbox, value){
+                change(checkbox, value){
                   if (column.index === '$selected' || column.select){
                     return;
                   }
@@ -1227,19 +1227,20 @@
      * @param {Number} rowIndex
      * @param {Boolean} [complex]
      */
-    renderSelect: function(i, rowIndex, complex){
+    renderSelect(i, rowIndex, complex){
+      let checkBox;
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1249,7 +1250,7 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -1260,9 +1261,9 @@
         var item,
           value = false,
           id = s.get(j, 'id'),
-          cellInnerEl = cellsDomInner.item(j),
-          checkBox = cellInnerEl.select('.fancy-field-checkbox'),
-          checkBoxId,
+          cellInnerEl = cellsDomInner.item(j);
+        checkBox = cellInnerEl.select('.fancy-field-checkbox');
+        var checkBoxId,
           isCheckBoxInside = checkBox.length !== 0,
           editable = true;
 
@@ -1285,13 +1286,13 @@
             var $selected = item.get('$selected');
 
             if($selected){
-              var recurseSelect = function(childs){
-                F.each(childs, function(child){
-                  if(!child.fields){
+              const recurseSelect = function (childs) {
+                F.each(childs, function (child) {
+                  if (!child.fields) {
                     return;
                   }
 
-                  if(child.get('$selected') === false){
+                  if (child.get('$selected') === false) {
                     w.selection.memory.remove(child.id);
                     return;
                   }
@@ -1300,7 +1301,7 @@
                   child.set('$selected', true);
                   w.selection.memory.add(child.id);
 
-                  if(child.data.child && child.data.child[0] && child.data.child[0].fields){
+                  if (child.data.child && child.data.child[0] && child.data.child[0].fields) {
                     recurseSelect(child.data.child);
                   }
                 });
@@ -1337,9 +1338,9 @@
         }
 
         if (isCheckBoxInside === false){
-          var renderTo = cellsDomInner.item(j);
+          let renderTo = cellsDomInner.item(j);
 
-          if(complex){
+          if (complex) {
             renderTo = renderTo.select('.fancy-grid-cell-inner-select').item(0).dom;
             if(!Fancy.isBoolean(value)){
               value = false;
@@ -1350,7 +1351,7 @@
             renderTo = renderTo.dom;
           }
 
-          var checkBoxConfig = {
+          const checkBoxConfig = {
             renderTo: renderTo,
             renderId: true,
             value: value,
@@ -1363,19 +1364,19 @@
               display: 'inline-block'
             },
             events: [{
-              beforechange: function(field){
-                if(w.selection.stopOneTick){
+              beforechange: function (field) {
+                if (w.selection.stopOneTick) {
                   field.canceledChange = true;
                 }
               }
             }]
           };
 
-          var checkBox = new F.CheckBox(checkBoxConfig);
+          checkBox = new F.CheckBox(checkBoxConfig);
 
           if(s.isTree && w.selection.memory){
             if(w.selection.memory.tree.selected[id] && !w.selection.memory.tree.allSelected[id] && item){
-              var child = item.get('child');
+              const child = item.get('child');
               if(child && child.length){
                 checkBox.setMiddle(true);
               }
@@ -1393,21 +1394,21 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderImage: function(i, rowIndex){
+    renderImage(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1416,8 +1417,8 @@
         jL = s.getLength();
       }
 
-      if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+      if (w.infinite) {
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -1457,7 +1458,7 @@
      * @param {Number} rowIndex
      * @param {String} type
      */
-    renderSparkLine: function(i, rowIndex, type){
+    renderSparkLine(i, rowIndex, type){
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -1466,10 +1467,10 @@
         column = columns[i],
         columnWidth = column.width,
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         _sparkConfig = column.sparkConfig || {};
@@ -1512,7 +1513,7 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -1546,7 +1547,7 @@
         }
 
         cellsDom.item(j).css(o.style);
-        var innerDom = cellsDomInner.item(j).dom,
+        const innerDom = cellsDomInner.item(j).dom,
           sparkConfig = {
             type: type,
             fillColor: 'transparent',
@@ -1569,17 +1570,17 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderProgressDonut: function(i, rowIndex){
+    renderProgressDonut(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL;
 
@@ -1595,7 +1596,7 @@
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -1632,7 +1633,7 @@
         }
 
         cellsDom.item(j).css(o.style);
-        var sparkConfig = column.sparkConfig || {},
+        const sparkConfig = column.sparkConfig || {},
           renderTo = cellsDomInner.item(j).dom;
 
         F.apply(sparkConfig, {
@@ -1653,23 +1654,23 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderGrossLoss: function(i, rowIndex){
+    renderGrossLoss(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL;
 
       columnDom.addCls(GRID_COLUMN_GROSSLOSS_CLS);
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1678,21 +1679,21 @@
         jL = s.getLength();
       }
 
-      var sparkConfig = column.sparkConfig || {};
+      const sparkConfig = column.sparkConfig || {};
 
-      if (sparkConfig.showOnMax){
+      if (sparkConfig.showOnMax) {
         sparkConfig.maxValue = Math.max.apply(Math, s.getColumnData(key, column.smartIndexFn));
       }
 
       if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++){
+      for (; j < jL; j++) {
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -1702,7 +1703,7 @@
           },
           value;
 
-        if (column.smartIndexFn){
+        if (column.smartIndexFn) {
           value = column.smartIndexFn(data);
         }
         else {
@@ -1736,24 +1737,24 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderProgressBar: function(i, rowIndex){
+    renderProgressBar(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         maxValue = 100;
 
       columnDom.addCls(GRID_COLUMN_PROGRESS_CLS);
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1762,20 +1763,20 @@
         jL = s.getLength();
       }
 
-      var sparkConfig = column.sparkConfig || {};
+      const sparkConfig = column.sparkConfig || {};
       if (sparkConfig.percents === false){
         maxValue = Math.max.apply(Math, s.getColumnData(key));
       }
 
-      if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+      if (w.infinite) {
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
         }
       }
 
-      for (; j < jL; j++){
+      for (; j < jL; j++) {
         var data = s.get(j),
           o = {
             rowIndex: j,
@@ -1786,7 +1787,7 @@
           cell = cellsDom.item(j),
           value;
 
-        if (column.smartIndexFn){
+        if (column.smartIndexFn) {
           value = column.smartIndexFn(data);
         }
         else {
@@ -1795,30 +1796,30 @@
 
         o.value = value;
 
-        if (column.format){
+        if (column.format) {
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        if (column.render){
+        if (column.render) {
           o = column.render(o);
           value = o.value;
         }
 
         cell.css(o.style);
 
-        if (w.cellStylingCls){
+        if (w.cellStylingCls) {
           me.clearCls(cell);
         }
 
-        if (o.cls){
+        if (o.cls) {
           cell.addCls(o.cls);
         }
 
-        var _renderTo = F.get(cellsDomInner.item(j).dom);
+        const _renderTo = F.get(cellsDomInner.item(j).dom);
 
-        if (_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).length){
-          var spark = F.getWidget(_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).item(0).attr('id'));
+        if (_renderTo.select('.' + GRID_COLUMN_PROGRESS_BAR_CLS).length) {
+          const spark = F.getWidget(_renderTo.select(`.${GRID_COLUMN_PROGRESS_BAR_CLS}`).item(0).attr('id'));
           spark.value = value;
           spark.maxValue = maxValue;
           spark.update();
@@ -1839,17 +1840,19 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderHBar: function(i, rowIndex){
+    renderHBar(i, rowIndex){
+      let data;
+      let _maxItemValue;
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         sparkConfig = column.sparkConfig || {},
@@ -1863,10 +1866,10 @@
         kL,
         maxItemValue = Number.MIN_VALUE;
 
-      if (F.isArray(column.index)){
+      if (F.isArray(column.index)) {
         iL = column.index.length;
         for (; i < iL; i++){
-          var _key = column.index[i];
+          const _key = column.index[i];
 
           if (disabled[_key]){
             continue;
@@ -1874,7 +1877,7 @@
 
           values[_key] = s.getColumnData(_key);
 
-          var _maxItemValue = Math.max.apply(Math, values[_key]);
+          _maxItemValue = Math.max.apply(Math, values[_key]);
           if (_maxItemValue > maxItemValue){
             maxItemValue = _maxItemValue;
           }
@@ -1883,13 +1886,13 @@
         }
       }
       else {
-        var data = s.getColumnData(column.index),
-          fields = [];
+        data = s.getColumnData(column.index);
+        let fields = [];
 
         iL = data.length;
 
         for (; i < iL; i++){
-          var n = 0,
+          let n = 0,
             nL = data[i].length;
 
           for (; n < nL; n++){
@@ -1903,7 +1906,7 @@
         }
 
         for (var p in values){
-          var _maxItemValue = Math.max.apply(Math, values[p]);
+          _maxItemValue = Math.max.apply(Math, values[p]);
           fields.push(p);
 
           if (_maxItemValue > maxItemValue){
@@ -1921,7 +1924,7 @@
       var sum = [],
         k = 0;
 
-      for (; k < kL; k++){
+      for (; k < kL; k++) {
         sum[k] = 0;
         for (var p in values){
           if (column.fields && disabled[column.index + '.' + p]){
@@ -1935,11 +1938,11 @@
         }
       }
 
-      var maxValue = Math.max.apply(Math, sum);
+      const maxValue = Math.max.apply(Math, sum);
 
       sparkConfig.maxItemValue = maxItemValue;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         j = rowIndex;
         jL = rowIndex + 1;
       }
@@ -1948,8 +1951,8 @@
         jL = s.getLength();
       }
 
-      if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+      if (w.infinite) {
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -1957,16 +1960,16 @@
       }
 
       for (; j < jL; j++){
-        var data = s.get(j),
-          o = {
-            rowIndex: j,
-            data: data,
-            style: {},
-            column: column
-          },
+        data = s.get(j);
+        var o = {
+          rowIndex: j,
+          data: data,
+          style: {},
+          column: column
+        },
           value;
 
-        if (column.smartIndexFn){
+        if (column.smartIndexFn) {
           value = column.smartIndexFn(data);
         }
         else {
@@ -1975,22 +1978,22 @@
 
         o.value = value;
 
-        if (column.format){
+        if (column.format) {
           o.value = me.format(o.value, column.format);
           value = o.value;
         }
 
-        if (column.render){
+        if (column.render) {
           o = column.render(o);
           value = o.value;
         }
 
         cellsDom.item(j).css(o.style);
 
-        var _renderTo = F.get(cellsDomInner.item(j).dom);
+        const _renderTo = F.get(cellsDomInner.item(j).dom);
 
-        if (_renderTo.select('.fancy-spark-hbar').length){
-          var spark = F.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
+        if (_renderTo.select('.fancy-spark-hbar').length) {
+          const spark = F.getWidget(_renderTo.select('.fancy-spark-hbar').item(0).attr('id'));
           spark.maxValue = maxValue;
           spark.maxItemValue = maxItemValue;
           spark.update(data);
@@ -2013,16 +2016,16 @@
      * @param {Number} i
      * @param {Number} rowIndex
      */
-    renderCircle: function(i, rowIndex){
+    renderCircle(i, rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
         column = columns[i],
         key = column.index,
-        columsDom = me.el.select('.' + GRID_COLUMN_CLS),
-        columnDom = columsDom.item(i),
-        cellsDomInner = columnDom.select('.' + GRID_CELL_CLS + ' .' + GRID_CELL_INNER_CLS),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
+        columnDom = columnsDom.item(i),
+        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
         j,
         jL,
         cellHeight = w.cellHeight - 4;
@@ -2032,22 +2035,22 @@
       function pieChart(percentage, size){
         //http://jsfiddle.net/da5LN/62/
 
-        var svgns = 'http://www.w3.org/2000/svg';
-        var chart = document.createElementNS(svgns, 'svg:svg');
+        const svgns = 'http://www.w3.org/2000/svg';
+        const chart = document.createElementNS(svgns, 'svg:svg');
         chart.setAttribute('width', size);
         chart.setAttribute('height', size);
         chart.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
 
-        var back = document.createElementNS(svgns, 'circle');
+        const back = document.createElementNS(svgns, 'circle');
         back.setAttributeNS(null, 'cx', size / 2);
         back.setAttributeNS(null, 'cy', size / 2);
         back.setAttributeNS(null, 'r', size / 2);
-        var color = '#F0F0F0';
-        if (size > 50){
+        let color = '#F0F0F0';
+        if (size > 50) {
           color = 'F0F0F0';
         }
 
-        if (percentage < 0){
+        if (percentage < 0) {
           color = '#F9DDE0';
         }
 
@@ -2082,7 +2085,7 @@
         }
         chart.appendChild(path);
 
-        var front = document.createElementNS(svgns, 'circle');
+        const front = document.createElementNS(svgns, 'circle');
         front.setAttributeNS(null, 'cx', (size / 2));
         front.setAttributeNS(null, 'cy', (size / 2));
         front.setAttributeNS(null, 'r', (size * 0.25));
@@ -2100,8 +2103,8 @@
         jL = s.getLength();
       }
 
-      if(w.infinite){
-        var numOfVisibleCells = w.getNumOfVisibleCells();
+      if (w.infinite) {
+        const numOfVisibleCells = w.getNumOfVisibleCells();
 
         if (jL > numOfVisibleCells){
           jL = numOfVisibleCells;
@@ -2117,7 +2120,7 @@
             style: {}
           };
 
-        if (column.smartIndexFn){
+        if (column.smartIndexFn) {
           value = column.smartIndexFn(data);
         }
         else {
@@ -2126,15 +2129,14 @@
 
         o.value = value;
 
-        if (column.render){
+        if (column.render) {
           o = column.render(o);
           value = o.value;
         }
 
-        var innerDom = cellsDomInner.item(j).dom;
+        const innerDom = cellsDomInner.item(j).dom;
 
         if (innerDom.innerHTML === ''){
-
           innerDom.appendChild(pieChart(value, cellHeight));
         }
       }
@@ -2142,7 +2144,7 @@
     /*
      *
      */
-    removeNotUsedCells: function(){
+    removeNotUsedCells(){
       var me = this,
         w = me.widget,
         store = w.store,
@@ -2165,19 +2167,19 @@
      * @param {String|Object} format
      * @return {Function|String|Object}
      */
-    getFormat: function(format){
-      var me = this,
+    getFormat(format){
+      const me = this,
         w = me.widget,
         lang = w.lang;
 
-      switch (format){
+      switch (format) {
         case 'number':
-          return function(value, precision){
-            if(value === undefined){
+          return function(value, precision) {
+            if (value === undefined) {
               return '';
             }
 
-            var splitted = value.toString().split(lang.decimalSeparator);
+            const splitted = value.toString().split(lang.decimalSeparator);
             precision = precision || 0;
 
             splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, lang.thousandSeparator);
@@ -2220,7 +2222,7 @@
           };
         case 'date':
           return function(value){
-            var date = F.Date.parse(value, lang.date.read, format.mode);
+            const date = F.Date.parse(value, lang.date.read, format.mode);
             value = F.Date.format(date, lang.date.write, format.mode);
 
             return value;
@@ -2230,15 +2232,17 @@
       switch (format.type){
         case 'date':
           return function(value){
-            if (!value || value.length === 0){
+            let date;
+
+            if (!value || value.length === 0) {
               return '';
             }
 
-            if(F.isDate(value)){
-              var date = value;
+            if (F.isDate(value)) {
+              date = value;
             }
             else {
-              var date = F.Date.parse(value, format.read, format.mode);
+              date = F.Date.parse(value, format.read, format.mode);
             }
 
             value = F.Date.format(date, format.write, undefined, format.mode);
@@ -2258,7 +2262,7 @@
      * @param {Number} [precision]
      * @return {String}
      */
-    format: function(value, format, precision){
+    format(value, format, precision) {
       switch (F.typeOf(format)){
         case 'string':
           value = this.getFormat(format)(value, precision);
@@ -2275,8 +2279,8 @@
             value = this.getFormat(format)(value);
           }
           */
-          var fn = this.getFormat(format);
-          if(fn){
+          const fn = this.getFormat(format);
+          if (fn) {
             value = fn(value);
           }
 
@@ -2288,8 +2292,8 @@
     /*
      * @param {Fancy.Element} cell
      */
-    enableCellDirty: function(cell){
-      if (cell.hasCls(GRID_CELL_DIRTY_CLS)){
+    enableCellDirty(cell){
+      if (cell.hasCls(GRID_CELL_DIRTY_CLS)) {
         return;
       }
 
@@ -2299,37 +2303,37 @@
     /*
      * @param {Number} rowIndex
      */
-    clearDirty: function(rowIndex){
-      var me = this;
+    clearDirty(rowIndex){
+      const me = this;
 
-      if (rowIndex !== undefined){
+      if (rowIndex !== undefined) {
         me.el.select('.' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .' + GRID_CELL_DIRTY_EL_CLS).destroy();
         me.el.select('.' + GRID_CELL_DIRTY_CLS + '[index="' + rowIndex + '"]').removeCls(GRID_CELL_DIRTY_CLS);
         return;
       }
 
-      me.el.select('.' + GRID_CELL_DIRTY_EL_CLS).destroy();
-      me.el.select('.' + GRID_CELL_DIRTY_CLS).removeCls(GRID_CELL_DIRTY_CLS);
+      me.el.select(`.${GRID_CELL_DIRTY_EL_CLS}`).destroy();
+      me.el.select(`.${GRID_CELL_DIRTY_CLS}`).removeCls(GRID_CELL_DIRTY_CLS);
     },
     /*
      *
      */
     showEmptyText: function(){
-      var me = this,
+      const me = this,
         w = me.widget,
         s = w.store;
 
-      if (me.side !== 'center'){
+      if (me.side !== 'center') {
         return;
       }
 
-      if (me.emptyTextEl){
+      if (me.emptyTextEl) {
         me.emptyTextEl.destroy();
         delete me.emptyTextEl;
       }
 
-      if (s.dataView.length === 0){
-        var el = F.get(document.createElement('div'));
+      if (s.dataView.length === 0) {
+        const el = F.get(document.createElement('div'));
 
         el.addCls(GRID_EMPTY_CLS);
         el.update(w.emptyText);

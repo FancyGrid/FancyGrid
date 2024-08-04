@@ -8,10 +8,10 @@ Fancy.Object = {
    * @return {Object}
    * TODO: deep copy
    */
-  copy: function(o){
-    var _o = {};
+  copy(o){
+    const _o = {};
 
-    for(var p in o){
+    for(const p in o){
       _o[p] = o[p];
     }
 
@@ -21,8 +21,8 @@ Fancy.Object = {
    * @param {Object} o
    * @return {Boolean}
    */
-  isEmpty: function(o){
-    for(var p in o){
+  isEmpty(o){
+    for (const p in o) {
       return false;
     }
 
@@ -32,14 +32,14 @@ Fancy.Object = {
    * @param {Object} o
    * @return {Array}
    */
-  keys: function(o){
-    if(Object.keys){
+  keys(o){
+    if (Object.keys) {
       return Object.keys(o);
     }
 
-    var keys = [];
+    const keys = [];
 
-    for(var p in o){
+    for (const p in o) {
       keys.push(p);
     }
 

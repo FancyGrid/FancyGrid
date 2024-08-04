@@ -7,7 +7,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} groupBy
    * @param {*} value
    */
-  expand: function(groupBy, value){
+  expand(groupBy, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -53,7 +53,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} group
    * @param {*} value
    */
-  collapse: function(group, value){
+  collapse(group, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -86,19 +86,17 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {Array} groups
    * @param {String} by
    */
-  changeOrderByGroups: function(groups, by){
+  changeOrderByGroups(groups, by){
     var me = this,
       grouped = {},
       data = [],
       notGroupedData = [];
 
-    Fancy.each(groups, function(group){
-      grouped[group] = [];
-    });
+    Fancy.each(groups, group => grouped[group] = []);
 
     if(Fancy.isArray(me.data)){
-      Fancy.each(me.data, function(item){
-        var group = item.data[by];
+      Fancy.each(me.data, item => {
+        const group = item.data[by];
 
         if(grouped[group]){
           grouped[group].push(item);
@@ -109,7 +107,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       });
     }
 
-    Fancy.each(groups, function(group){
+    Fancy.each(groups, group => {
       data = data.concat(grouped[group]);
     });
 
@@ -125,7 +123,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} key
    * @param {String} group
    */
-  getColumnOriginalValuesByGroup: function(key, group, options){
+  getColumnOriginalValuesByGroup(key, group, options){
     var me = this,
       data = me.data,
       i = 0,
@@ -179,8 +177,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {String} key
    */
-  addGroup: function(key){
-    var me = this,
+  addGroup(key){
+    const me = this,
       w = me.widget,
       grouping = w.grouping;
 
@@ -191,8 +189,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {String} [dataProperty]
    * @return {Object}
    */
-  initGroups: function(dataProperty){
-    var me = this,
+  initGroups(dataProperty){
+    const me = this,
       w = me.widget,
       grouping = w.grouping,
       by = grouping.by;
@@ -203,13 +201,13 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
     }
 
     //var values = me.getColumnOriginalValues(by, {
-    var values = me.getColumnOriginalValues(by, {
+    const values = me.getColumnOriginalValues(by, {
         dataProperty: dataProperty,
         groupMap: true
       }),
       _groups = {};
 
-    Fancy.each(values, function(value){
+    Fancy.each(values, value  => {
       value = String(value);
 
       if(_groups[value] === undefined){
@@ -219,24 +217,24 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       _groups[value]++;
     });
 
-    var groups = [];
+    let groups = [];
 
-    for(var p in _groups){
+    for(const p in _groups){
       groups.push(p);
     }
 
     groups = me.sortGroupNames(groups);
 
     return {
-      groups: groups,
-      _groups: _groups
+      groups,
+      _groups
     };
   },
   /*
    *
    */
-  orderDataByGroup: function(){
-    var me = this,
+  orderDataByGroup(){
+    const me = this,
       grouping = me.widget.grouping,
       o = me.initGroups(),
       groups = me.sortGroupNames(o.groups);
@@ -248,7 +246,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       me.collapsed = true;
     }
     else{
-      Fancy.each(groups, function(group){
+      Fancy.each(groups, group => {
        if( me.expanded[group] === undefined ){
           me.expanded[group] = true;
         }
@@ -263,7 +261,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
    * @param {Array} groups
    * @return {Array}
    */
-  sortGroupNames: function(groups){
+  sortGroupNames(groups){
     var me = this,
       grouping = me.widget.grouping,
       groupNameUpperCase = {},
@@ -271,8 +269,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       sortedGroups = [],
       sortGroups = grouping.sortGroups || 'asc';
 
-    Fancy.each(groups, function(group){
-      var upperGroup = String(group).toLocaleUpperCase();
+    Fancy.each(groups, group => {
+      let upperGroup = String(group).toLocaleUpperCase();
 
       if(!isNaN(Number(group)) && group !== '' && group !== ' '){
         upperGroup = String(Number(group));
@@ -285,7 +283,7 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
       upperGroups.push(upperGroup);
     });
 
-    var areGroupsNumber = me.areGroupsNumber(upperGroups);
+    const areGroupsNumber = me.areGroupsNumber(upperGroups);
 
     switch(sortGroups){
       case 'asc':
@@ -330,8 +328,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * TODO: needs some map of elements for fast getting elements.
    */
-  getItemsByGroup: function(groupName){
-    var me = this,
+  getItemsByGroup(groupName){
+    const me = this,
       items = me.findItem(me.grouping.by, groupName);
 
     return items;
@@ -339,8 +337,8 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    *
    */
-  clearGroup: function(){
-    var me = this;
+  clearGroup(){
+    const me = this;
 
     delete me.expanded;
     delete me.collapsed;
@@ -352,10 +350,10 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
   /*
    * @param {Array} groups
    */
-  areGroupsNumber: function(groups){
-    var isString = false;
+  areGroupsNumber(groups){
+    let isString = false;
 
-    Fancy.each(groups, function(group){
+    Fancy.each(groups, group => {
       if(Fancy.isString(group) && group !== '' && group !== ' '){
         isString = true;
         return true;
@@ -364,21 +362,22 @@ Fancy.Mixin('Fancy.store.mixin.Grouping', {
 
     return !isString;
   }
-});/*
+});
+/*
  * @class Fancy.grid.plugin.Grouping
  * @extend Fancy.Plugin
  */
 Fancy.modules['grouping'] = true;
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var E = Fancy.each;
+  const F = Fancy;
+  const E = Fancy.each;
 
   //CONSTANTS
-  var GRID_ROW_GROUP_INNER_CLS = F.GRID_ROW_GROUP_INNER_CLS;
-  var GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
-  var GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_ROW_GROUP_INNER_CLS = F.GRID_ROW_GROUP_INNER_CLS;
+  const GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
+  const GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
 
   F.define('Fancy.grid.plugin.Grouping', {
     extend: F.Plugin,
@@ -397,8 +396,8 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    init: function(){
-      var me = this,
+    init(){
+      const me = this,
         w = me.widget;
 
       me.Super('init', arguments);
@@ -425,24 +424,24 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.once('render', function(){
+      w.once('render', () => {
         me.renderGroupedRows();
         me.update();
 
         me.onGridRender();
       }, me);
     },
-    onGridRender: function(){
-      var me = this,
+    onGridRender(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
-      w.el.on('click', me.onClick, me, 'div.' + GRID_ROW_GROUP_CLS);
-      w.el.on('mousedown', me.onMouseDown, me, 'div.' + GRID_ROW_GROUP_CLS);
+      w.el.on('click', me.onClick, me, `div.${GRID_ROW_GROUP_CLS}`);
+      w.el.on('mousedown', me.onMouseDown, me, `div.${GRID_ROW_GROUP_CLS}`);
       w.on('scroll', me.onScroll, me);
 
       w.on('columnresize', me.onColumnResize, me);
@@ -452,13 +451,13 @@ Fancy.modules['grouping'] = true;
 
       w.on('columndrag', me.onColumnDrag, me);
     },
-    uns: function(){
-      var me = this,
+    uns(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
-      w.el.un('click', me.onClick, me, 'div.' + GRID_ROW_GROUP_CLS);
-      w.el.un('mousedown', me.onMouseDown, me, 'div.' + GRID_ROW_GROUP_CLS);
+      w.el.un('click', me.onClick, me, `div.${GRID_ROW_GROUP_CLS}`);
+      w.el.un('mousedown', me.onMouseDown, me, `div.${GRID_ROW_GROUP_CLS}`);
 
       w.un('scroll', me.onScroll);
 
@@ -469,11 +468,11 @@ Fancy.modules['grouping'] = true;
 
       w.un('columndrag', me.onColumnDrag);
     },
-    onInsert: function(){
+    onInsert(){
       this.reGroup();
     },
-    onRemove: function(){
-      var me = this,
+    onRemove(){
+      const me = this,
         w = me.widget,
         s = w.store,
         groups = me.groups;
@@ -498,7 +497,7 @@ Fancy.modules['grouping'] = true;
     /*
      * @param {String} [dataProperty]
      */
-    initGroups: function(dataProperty){
+    initGroups(dataProperty){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -513,17 +512,14 @@ Fancy.modules['grouping'] = true;
      * @param {String|Number} id
      * @return {String}
      */
-    getGroupById: function(id){
-      var w = this.widget,
-        s = w.store;
-
-      return s.groupMap[id];
+    getGroupById(id){
+      return this.store.groupMap[id];
     },
     /*
      * @param {String} group
      * @return {Number}
      */
-    getGroupOrderIndex: function(group){
+    getGroupOrderIndex(group){
       var groups = this.groups,
         i = 0,
         iL = groups.length;
@@ -537,7 +533,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    initOrder: function(){
+    initOrder(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -563,16 +559,16 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    calcPlusScroll: function(){
-      var w = this.widget;
+    calcPlusScroll(){
+      const w = this.widget;
 
       this.plusScroll = this.groups.length * w.groupRowHeight;
     },
     /*
      *
      */
-    configParams: function(){
-      var me = this,
+    configParams(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -582,7 +578,7 @@ Fancy.modules['grouping'] = true;
         s.collapsed = true;
       }
       else {
-        E(me.groups, function(group){
+        me.groups.forEach(group => {
           if (s.expanded[group] === undefined){
             s.expanded[group] = true;
           }
@@ -592,7 +588,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    renderGroupedRows: function(groups){
+    renderGroupedRows(groups){
       var me = this,
         w = me.widget,
         body = w.body,
@@ -607,7 +603,7 @@ Fancy.modules['grouping'] = true;
 
       groups = groups || me.groups;
 
-      E(groups, function(groupText){
+      E(groups, (groupText) => {
         var groupCount = me.groupsCounts[groupText];
 
         if (leftWidth){
@@ -645,7 +641,7 @@ Fancy.modules['grouping'] = true;
      *
      * @param {String} side
      */
-    softRenderGroupedRows: function(side){
+    softRenderGroupedRows(side){
       var me = this,
         w = me.widget,
         body = w.body,
@@ -657,8 +653,8 @@ Fancy.modules['grouping'] = true;
 
       switch(side){
         case 'left':
-          if( leftBody.el.select('.' + GRID_ROW_GROUP_CLS).length ){
-            var groupInnerEls = body.el.select('.' + GRID_ROW_GROUP_INNER_CLS);
+          if( leftBody.el.select(`.${GRID_ROW_GROUP_CLS}`).length ){
+            const groupInnerEls = body.el.select('.' + GRID_ROW_GROUP_INNER_CLS);
 
             if(groupInnerEls.length){
               groupInnerEls.destroy();
@@ -669,7 +665,7 @@ Fancy.modules['grouping'] = true;
           groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS);
           leftWidth = w.getLeftFullWidth();
 
-          E(me.groups, function(groupText, i){
+          E(me.groups, (groupText, i) => {
             var groupCount = me.groupsCounts[groupText],
               groupEl = groupEls.item(i),
               top = parseInt(groupEl.css('top')),
@@ -694,7 +690,7 @@ Fancy.modules['grouping'] = true;
           rightWidth = w.getRightFullWidth();
           groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS);
 
-          E(me.groups, function(groupText, i){
+          E(me.groups, (groupText, i) => {
             var groupCount = me.groupsCounts[groupText],
               groupEl = groupEls.item(i),
               top = parseInt(groupEl.css('top')),
@@ -709,7 +705,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    removeGroupRows: function(){
+    removeGroupRows(){
       var me = this,
         w = me.widget,
         columns = w.columns,
@@ -734,16 +730,16 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    clearGroupRows: function(){
+    clearGroupRows(){
       var me = this,
         w = me.widget,
-        rows = w.el.select('.' + GRID_ROW_GROUP_CLS),
+        rows = w.el.select(`.${GRID_ROW_GROUP_CLS}`),
         toRemove = [],
         presentedGroups = {},
         missedGroups = [];
 
-      rows.each(function(el){
-        var group = el.attr('group');
+      rows.each((el) => {
+        const group = el.attr('group');
 
         if(!me.groupsCounts[group]){
           toRemove.push(el);
@@ -753,11 +749,9 @@ Fancy.modules['grouping'] = true;
         }
       });
 
-      F.each(toRemove, function(el){
-        el.destroy();
-      });
+      toRemove.forEach(el => el.destroy());
 
-      F.each(me.groups, function(group){
+      me.groups.forEach(group => {
         if(!presentedGroups[group]){
           missedGroups.push(group);
         }
@@ -768,7 +762,7 @@ Fancy.modules['grouping'] = true;
     /*
     *
     */
-    removeLastGroupRow: function(){
+    removeLastGroupRow(){
       var me = this,
         w = me.widget,
         columns = w.columns,
@@ -796,7 +790,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    removeCells: function(){
+    removeCells(){
       var me = this,
         w = me.widget,
         columns = w.columns,
@@ -824,7 +818,7 @@ Fancy.modules['grouping'] = true;
      * @param {Boolean} addText
      * @param {Number} top
      */
-    generateGroupRow: function(groupText, groupCount, addText, top){
+    generateGroupRow(groupText, groupCount, addText, top){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -837,7 +831,7 @@ Fancy.modules['grouping'] = true;
           groupText = '&nbsp;';
         }
 
-        var text = me.tpl.getHTML({
+        const text = me.tpl.getHTML({
           text: groupText,
           number: groupCount
         });
@@ -863,21 +857,21 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    insertGroupEls: function(){
+    insertGroupEls(){
       var me = this,
         w = me.widget,
         leftBody = w.leftBody,
         body = w.body;
 
-      if (w.leftColumns.length){
-        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).each(function(el, i){
+      if (w.leftColumns.length) {
+        leftBody.el.select('.' + GRID_ROW_GROUP_CLS).each((el, i)=> {
           var groupText = me.groups[i];
 
           el.update('<div class="' + GRID_ROW_GROUP_INNER_CLS + '">' + groupText + '</div>');
         });
       }
       else {
-        body.el.select('.' + GRID_ROW_GROUP_CLS).each(function(el, i){
+        body.el.select('.' + GRID_ROW_GROUP_CLS).each((el, i)=> {
           var groupText = me.groups[i],
             groupCount = me.groupsCounts[groupText],
             text = me.tpl.getHTML({
@@ -892,7 +886,7 @@ Fancy.modules['grouping'] = true;
     /*
      * @param {Object} e
      */
-    onClick: function(e){
+    onClick(e){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -937,26 +931,25 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    fastCollapse: function(){
-    },
+    fastCollapse(){},
     /*
      * @param {Object} e
      */
-    onMouseDown: function(e){
+    onMouseDown(e){
       e.preventDefault();
     },
     /*
      *
      */
-    onScroll: function(){
+    onScroll(){
       this.setPositions();
     },
     /*
      * @param {String} group
      * @param {String} value
      */
-    collapse: function(group, value){
-      var me = this,
+    collapse(group, value){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -968,8 +961,8 @@ Fancy.modules['grouping'] = true;
      * @param {String} group
      * @param {String} value
      */
-    expand: function(groupBy, value){
-      var me = this,
+    expand(groupBy, value){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -988,27 +981,27 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    setPositions: function(){
+    setPositions(){
       var me = this,
         w = me.widget,
         s = w.store,
         top = -w.scroller.scrollTop || 0;
 
-      E(me.groups, function(groupName){
-        var groupEls = w.el.select('.' + GRID_ROW_GROUP_CLS +'[group="' + groupName + '"]');
+      E(me.groups, (groupName) => {
+        const groupEls = w.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + groupName + '"]');
 
-        groupEls.each(function(el){
+        groupEls.each(el => {
           el.css({
             top: top + 'px',
             visibility: 'visible'
           });
         });
 
-        if (w.expander){
-          var expanded = w.expander.expandedGroups[groupName];
+        if (w.expander) {
+          const expanded = w.expander.expandedGroups[groupName];
 
-          for (var p in expanded){
-            var item = expanded[p];
+          for (const p in expanded){
+            const item = expanded[p];
 
             top += parseInt(item.el.css('height'));
           }
@@ -1018,7 +1011,7 @@ Fancy.modules['grouping'] = true;
 
         if (s.expanded[groupName] === true){
           if(w.rowheight){
-            var items = s.getItemsByGroup(groupName),
+            const items = s.getItemsByGroup(groupName),
               groupRowsHeight = w.rowheight.getRowsHeight(items);
 
             if(isNaN(top)){
@@ -1037,7 +1030,7 @@ Fancy.modules['grouping'] = true;
      * @param {Number} index
      * @param {String} side
      */
-    setCellsPosition: function(index, side){
+    setCellsPosition(index, side){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1057,7 +1050,7 @@ Fancy.modules['grouping'] = true;
         by = me.by;
 
       for (; i < iL; i++){
-        var groupName = me.groups[i];
+        const groupName = me.groups[i];
 
         if (s.expanded[groupName] === true){
           rows.push(row);
@@ -1190,7 +1183,7 @@ Fancy.modules['grouping'] = true;
     /*
      * It is used only to collapse groups of 'grouping row' with 'row expander'.
      */
-    setExpanderCellsPosition: function(){
+    setExpanderCellsPosition(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1206,9 +1199,9 @@ Fancy.modules['grouping'] = true;
         rowIndex = 0,
         nextPlusTop = 0;
 
-      E(me.groups, function(groupName){
+      E(me.groups, (groupName) => {
         if (s.expanded[groupName] === true){
-          var iL = rowIndex + groupsCounts[groupName];
+          const iL = rowIndex + groupsCounts[groupName];
 
           for (; rowIndex < iL; rowIndex++){
             dataItem = dataView[rowIndex];
@@ -1228,17 +1221,17 @@ Fancy.modules['grouping'] = true;
               nextPlusTop = parseInt(expandedItem.el.css('height'));
             }
 
-            E(w.columns, function(column, i){
+            E(w.columns, (column, i) => {
               cell = body.getCell(rowIndex, i);
               cell.css('margin-top', top + 'px');
             });
 
-            E(w.leftColumns, function(column, i){
+            E(w.leftColumns, (column, i) => {
               cell = leftBody.getCell(rowIndex, i);
               cell.css('margin-top', top + 'px');
             });
 
-            E(w.rightColumns, function(column, i){
+            E(w.rightColumns, (column, i) => {
               cell = rightBody.getCell(rowIndex, i);
               cell.css('margin-top', top + 'px');
             });
@@ -1256,8 +1249,8 @@ Fancy.modules['grouping'] = true;
     /*
      * @params {Array|undefined} rows
      */
-    clearMargins: function(rows){
-      var me = this;
+    clearMargins(rows){
+      const me = this;
       rows = rows || me.prevRows;
 
       if (rows === undefined){
@@ -1270,8 +1263,8 @@ Fancy.modules['grouping'] = true;
         rightBody = w.rightBody,
         cell;
 
-      E(rows, function(row){
-        E(w.columns, function(column, j){
+      E(rows, (row) => {
+        E(w.columns, (column, j) => {
           cell = body.getCell(row, j);
           if (cell.dom === undefined){
             return true;
@@ -1280,7 +1273,7 @@ Fancy.modules['grouping'] = true;
           cell.css('margin-top', '0px');
         });
 
-        E(w.leftColumns, function(column, j){
+        E(w.leftColumns, (column, j) => {
           cell = leftBody.getCell(row, j);
 
           if (cell.dom === undefined){
@@ -1290,10 +1283,10 @@ Fancy.modules['grouping'] = true;
           cell.css('margin-top', '0px');
         });
 
-        E(w.rightColumns, function(column, j){
+        E(w.rightColumns, (column, j) => {
           cell = rightBody.getCell(row, j);
 
-          if (cell.dom === undefined){
+          if (cell.dom === undefined) {
             return true;
           }
 
@@ -1304,13 +1297,13 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    onColumnResize: function(){
+    onColumnResize(){
       this.updateGroupRows();
     },
     /*
      *
      */
-    updateGroupRows: function(){
+    updateGroupRows(){
       var me = this,
         w = me.widget,
         leftColumns = w.leftColumns,
@@ -1341,14 +1334,13 @@ Fancy.modules['grouping'] = true;
     /*
      * @param {Boolean} loaded
      */
-    update: function(loaded){
+    update(loaded){
       var me = this,
         w = me.widget,
         s = w.store;
 
       if (!loaded && (s.loading === true || s.autoLoad === false) && !s.data.length){
-        //s.once('load', function(){
-        s.on('load', function(){
+        s.on('load', () => {
           me.initGroups();
           me.initOrder();
           me.calcPlusScroll();
@@ -1376,14 +1368,14 @@ Fancy.modules['grouping'] = true;
      * @param {Number} rowIndex
      * @return {Number}
      */
-    getOffsetForRow: function(rowIndex){
+    getOffsetForRow(rowIndex){
       var me = this,
         w = me.widget,
         s = w.store,
         top = 0,
         rows = 0;
 
-      E(me.groups, function(groupName){
+      E(me.groups, (groupName) => {
         top += w.groupRowHeight;
 
         if (s.expanded[groupName] === true){
@@ -1400,8 +1392,8 @@ Fancy.modules['grouping'] = true;
     /*
      * @return {Number}
      */
-    getCollapsedRowsBefore: function(id){
-      var me = this,
+    getCollapsedRowsBefore(id){
+      const me = this,
         w = me.widget,
         s = w.store,
         item = w.getById(id);
@@ -1419,7 +1411,7 @@ Fancy.modules['grouping'] = true;
         return me.collapsedRowsBefore[groupValue];
       }
 
-      F.each(me.groups, function(group){
+      F.each(me.groups, (group) => {
         if(group === groupValue){
           return true;
         }
@@ -1437,14 +1429,14 @@ Fancy.modules['grouping'] = true;
      * @param {Number} rowIndex
      * @return {Number}
      */
-    getSpecialRowsUnder: function(rowIndex){
+    getSpecialRowsUnder: (rowIndex) => {
       var me = this,
         w = me.widget,
         s = w.store,
         rows = 0,
         rowsAfter = 0;
 
-      E(me.groups, function(groupName){
+      E(me.groups, (groupName) => {
         if (rowIndex < rows){
           rowsAfter++;
         }
@@ -1460,14 +1452,14 @@ Fancy.modules['grouping'] = true;
      * @param {Number} rowIndex
      * @return {Number}
      */
-    getSpecialRowsAbove: function(rowIndex){
+    getSpecialRowsAbove(rowIndex){
       var me = this,
         w = me.widget,
         item = w.get(rowIndex),
         group = me.getGroupById(item.id),
         rows = 0;
 
-      Fancy.each(me.groups, function(_group){
+      Fancy.each(me.groups, (_group)=> {
         rows++;
         if(group == _group){
           return true;
@@ -1479,7 +1471,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    reGroup: function(){
+    reGroup(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1507,10 +1499,10 @@ Fancy.modules['grouping'] = true;
       w.setSidesHeight();
     },
     /*
-     * 
+     *
      */
-    addGroup: function(setEvents){
-      var me = this;
+    addGroup(setEvents){
+      const me = this;
 
       me.reGroup();
 
@@ -1521,8 +1513,8 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    clearGroup: function(){
-      var me = this,
+    clearGroup(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -1542,13 +1534,13 @@ Fancy.modules['grouping'] = true;
     /*
      * @param {Number} value
      */
-    scrollLeft: function(value){
-      this.widget.body.el.select('.' + GRID_ROW_GROUP_CLS).css('left', value);
+    scrollLeft(value){
+      this.widget.body.el.select(`.${GRID_ROW_GROUP_CLS}`).css('left', value);
     },
     /*
      *
      */
-    updateGroupRowsText: function(){
+    updateGroupRowsText(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1562,7 +1554,7 @@ Fancy.modules['grouping'] = true;
         groupEls = body.el.select('.' + GRID_ROW_GROUP_CLS),
         rightGroupEls = rightBody.el.select('.' + GRID_ROW_GROUP_CLS);
 
-      E(groups, function(groupText, i){
+      E(groups, (groupText, i) => {
         var groupCount = me.groupsCounts[groupText],
           text = me.tpl.getHTML({
             text: groupText,
@@ -1602,12 +1594,12 @@ Fancy.modules['grouping'] = true;
       });
 
       if (groups.length < body.el.select('.' + GRID_ROW_GROUP_CLS).length){
-        setTimeout(function(){
+        setTimeout(() => {
           me.removeLastGroupRow();
         }, 10);
       }
     },
-    onColumnDrag: function(){
+    onColumnDrag() {
       var me = this,
         w = me.widget,
         groupRowEls = w.el.select('.' + GRID_ROW_GROUP_CLS),
@@ -1623,8 +1615,8 @@ Fancy.modules['grouping'] = true;
         me.renderGroupedRows();
         me.update();
 
-        for(var p in expandedGroups){
-          var groupEl = w.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + p + '"]');
+        for(const p in expandedGroups){
+          const groupEl = w.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + p + '"]');
 
           groupEl.removeCls(GRID_ROW_GROUP_COLLAPSED_CLS);
         }
@@ -1633,12 +1625,12 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    getGroupRowsHeight: function(){
+    getGroupRowsHeight(){
       var me = this,
         w = me.widget,
         numberFilledGroups = 0;
 
-      F.each(me.groupsCounts, function(value){
+      F.each(me.groupsCounts, (value) => {
         if(value){
           numberFilledGroups++;
         }
@@ -1649,7 +1641,7 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    reFreshExpanded: function(){
+    reFreshExpanded(){
       var me = this,
         w = me.widget,
         groups = me.groups,
@@ -1657,19 +1649,19 @@ Fancy.modules['grouping'] = true;
         expanded = s.expanded,
         memoryCollapsed = s.memoryCollapsed || {};
 
-      for(var p in expanded){
+      for(const p in expanded){
         if(!me.groupsCounts[p]){
           delete expanded[p];
         }
       }
 
-      for(var group in  memoryCollapsed){
+      for(const group in  memoryCollapsed){
         if(memoryCollapsed[group]){
           expanded[group] = false;
         }
       }
 
-      F.each(groups, function(group){
+      F.each(groups, group => {
         if(expanded[group] === undefined){
           expanded[group] = !me.collapsed;
         }
@@ -1680,13 +1672,13 @@ Fancy.modules['grouping'] = true;
     /*
      *
      */
-    reFreshGroupTexts: function(){
-      var me = this,
+    reFreshGroupTexts(){
+      const me = this,
         w = me.widget,
         rows = w.el.select('.' + GRID_ROW_GROUP_CLS);
 
-      rows.each(function(el){
-        var group = el.attr('group'),
+      rows.each(el => {
+        const group = el.attr('group'),
           innerEl = el.firstChild(),
           text = me.tpl.getHTML({
             text: group,

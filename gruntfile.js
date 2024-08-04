@@ -14,7 +14,7 @@ module.exports = function(grunt){
 
     this.files.forEach(function (process) {
       grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
-      
+
       var files = process.orig.src.filter(function (file) {
         if (file.ignore === true) {
           return false;
@@ -30,19 +30,19 @@ module.exports = function(grunt){
         grunt.log.writeln("  " + good + " " + file.path);
         return fileContent;
       }).join('\n');
-      
+
       grunt.file.write(process.orig.dest, files);
       grunt.log.writeln("  Successfully built " + chalk.cyan(process.orig.dest) + " " + chalk.bgYellow.black(":)"));
       done();
     });
   });
-  
+
   grunt.registerMultiTask('core', 'Gets core files and builds them', function(){
     var done = this.async();
 
     this.files.forEach(function (process) {
       grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
-      
+
       var files = process.orig.src.filter(function (file) {
         if(file.module || file.ignore === true){
           return false;
@@ -58,13 +58,13 @@ module.exports = function(grunt){
         grunt.log.writeln("  " + good + " " + file.path);
         return fileContent;
       }).join('\n');
-      
+
       grunt.file.write(process.orig.dest, files);
       grunt.log.writeln("  Successfully built " + chalk.cyan(process.orig.dest) + " " + chalk.bgYellow.black(":)"));
       done();
     });
   });
-  
+
   grunt.registerMultiTask('fully','Built full version', function(){
     var done = this.async();
 
@@ -73,7 +73,7 @@ module.exports = function(grunt){
 		if(file.module === 'excel'){
 		  return false;
 		}
-		  
+
         if (!grunt.file.exists(file.path)) {
           grunt.fail.fatal("  "+bad+ " "+file.path + chalk.red(" not found or does not exist!!!"));
         }
@@ -83,52 +83,52 @@ module.exports = function(grunt){
         grunt.log.writeln("  " + good + " " + file.path);
         return fileContent;
       }).join('\n');
-      
+
       grunt.file.write(process.orig.dest[0], files);
-      
+
       grunt.log.writeln("  Successfully full built ");
       done();
     });
   });
-  
+
   grunt.registerMultiTask('myclean','Cleaning from not min files', function(){
     var done = this.async();
-    
+
     this.files.forEach(function (process) {
       grunt.log.subhead("Building " + chalk.cyan(process.orig.dest) + "...");
-      
+
       var files = process.orig.src.map(function(file){
         var fileContent = grunt.file.delete(file.path);
         grunt.log.writeln("  " + good + " " + file.path);
       }).join('\n');
-      
+
       grunt.log.writeln("Not minified files were removed " + chalk.cyan(process.orig.dest));
       done();
     });
   });
-  
+
   /*
    angular directive
    */
   grunt.registerMultiTask('angular', 'AngularJS directive', function(){
     var done = this.async();
-  
+
     var fileContent = grunt.file.read('./src/js/angular/fancygrid-angularjs.js');
     fileContent += '\n';
     fileContent += grunt.file.read('./src/js/angular/fancyform-angularjs.js');
-    
+
     grunt.file.write('./fancygrid/fancy-angular.js', [fileContent]);
     done();
   });
 
   //Modules
-  
+
   grunt.registerMultiTask('modules','Build modules', function(){
     var done = this.async();
 
     this.files.forEach(function (process) {
       var modulesCode = {};
-      
+
       var files = process.orig.src.filter(function (file) {
         if (file.module === undefined) {
           return false;
@@ -145,16 +145,16 @@ module.exports = function(grunt){
         modulesCode[file.module] += fileContent;
         return fileContent;
       }).join('\n');
-      
+
       for(var p in modulesCode){
         var moduleFileName = p.replace(/ /g, '-');
         grunt.file.write(process.orig.dest + moduleFileName + '.js', modulesCode[p]);
       }
-      
+
       done();
     });
   });
-  
+
   // PACK FILES
   grunt.registerMultiTask('pack','Pack', function () {
     var done = this.async();
@@ -164,22 +164,22 @@ module.exports = function(grunt){
       license: '',
       version: ''
     });
-    
+
     this.files.forEach(function (process) {
       process.src.forEach(function (file) {
         grunt.log.writeln(file);
-        var src = grunt.file.read(file),        
+        var src = grunt.file.read(file),
           packedContent = "/*\n"+options.license+"\n\nBuild: "+options.version+"\n*/\n\n";
-        
+
         packedContent += src;
-        
+
         // Write the file to it's original path (overwriting it)
         grunt.file.write(file, packedContent);
       });
       done();
-    });    
+    });
   });
-  
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('gruntConfig.json'),
     angular: {
@@ -280,15 +280,15 @@ module.exports = function(grunt){
         files: [
           { src: './fancygrid/fancy.js' },
           { src: './fancygrid/fancy.min.js' },
-      
+
           { src: './fancygrid/fancy.full.js' },
           { src: './fancygrid/fancy.full.min.js' },
-      
+
           { src: './fancygrid/fancy.css' },
           { src: './fancygrid/fancy.min.css' },
-          
+
           { src: './fancygrid/fancy-angular.js' },
-          
+
           { src: './fancygrid/modules/**' },
           { src: './fancygrid/images/**' },
         ]
@@ -348,7 +348,7 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-uglify-es');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-image-embed');
@@ -357,23 +357,23 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-bump');
 
   grunt.registerTask('dev', ['less:fancy']);
-  
+
   grunt.registerTask('cl', [
       'myclean:fancy'
   ]);
-  
+
   //grunt.registerTask('packer', ['pack:fancy']);
-  
+
   //bumping - grunt bump
   //comp - grunt comp
-  
+
   grunt.registerTask('debug', ['core:fancy', 'fully:fancy', 'dev', 'uglify:fancy', 'cssmin:fancy', 'modules', 'pack']);
-  
+
   grunt.registerTask('css', ['less:fancy', 'cssmin:fancy']);
 
   //IMPORTANT - done RELEASE zip file
   grunt.registerTask('comp', ['compress:fancy']);
-  
+
   grunt.registerTask('release', ['core:fancy', 'fully:fancy', 'dev', 'modules', 'angular:fancy', 'uglify:fancy', 'cssmin:fancy', 'cl',  'pack']);
   //grunt.registerTask('release', ['core:fancy', 'fully:fancy', 'dev', 'modules', 'angular:fancy', 'uglify:fancy', 'cl', 'comp', 'pack']);
 };

@@ -7,7 +7,7 @@ Fancy.define('Fancy.Data', {
    * @param {Array} data
    */
   constructor: function(data){
-    var me = this;
+    const me = this;
 
     me.map = {};
 
@@ -27,7 +27,7 @@ Fancy.define('Fancy.Data', {
    * @param {String|Number} key
    * @param {*} value
    */
-  add: function(key, value){
+  add(key, value){
     this.map[key] = value;
     this.length++;
   },
@@ -35,7 +35,7 @@ Fancy.define('Fancy.Data', {
    * @param {String|Number} key
    * @return {*}
    */
-  get: function(key){
+  get(key){
     return this.map[key];
   }
 });

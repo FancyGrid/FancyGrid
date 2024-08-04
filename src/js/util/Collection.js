@@ -3,7 +3,7 @@
  * @constructor
  */
 Fancy.Collection = function(arr){
-  var me = this;
+  const me = this;
 
   me.items = [];
   me.keys = [];
@@ -21,7 +21,7 @@ Fancy.Collection = function(arr){
       }
     }
     else{
-      for(var p in arr){
+      for(const p in arr){
         me.add(p, arr[p]);
       }
     }
@@ -34,8 +34,8 @@ Fancy.Collection.prototype = {
    * @param {String|Number} key
    * @param {*} value
    */
-  add: function(key, value){
-    var me = this;
+  add(key, value){
+    const me = this;
 
     me.items.push(value);
     me.keys.push(key);
@@ -46,8 +46,8 @@ Fancy.Collection.prototype = {
   /*
    * @param {String|Number} key
    */
-  remove: function(key){
-    var me = this,
+  remove(key){
+    const me = this,
       index = me.indexMap[key];
 
     me.items.splice(index, 1);
@@ -58,8 +58,8 @@ Fancy.Collection.prototype = {
 
     me.updateIndexMap();
   },
-  updateIndexMap: function(){
-    var me = this,
+  updateIndexMap(){
+    let me = this,
       i = 0,
       iL = me.keys.length;
 
@@ -72,8 +72,8 @@ Fancy.Collection.prototype = {
   /*
    *
    */
-  removeAll: function(){
-    var me = this;
+  removeAll(){
+    const me = this;
 
     me.items = [];
     me.keys = [];
@@ -85,15 +85,15 @@ Fancy.Collection.prototype = {
    * @param {String|Number} key
    * @return {*}
    */
-  get: function(key){
+  get(key){
     return this.map[key];
   },
   /*
    *
    * @param {Function} fn
    */
-  each: function(fn){
-    var me = this,
+  each(fn){
+    let me = this,
       i = 0,
       iL = me.length;
 

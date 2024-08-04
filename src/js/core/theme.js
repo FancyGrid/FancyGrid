@@ -4,15 +4,15 @@ Fancy.themes = {};
  * @param {String} name
  * @param {Object} o
  */
-Fancy.defineTheme = function(name, o){
-  var themeConfig = {};
+Fancy.defineTheme = (name, o) => {
+  const themeConfig = {};
 
-  if(o.extend){
+  if (o.extend) {
     Fancy.apply(themeConfig, Fancy.getTheme(o.extend).config);
     themeConfig.extendedThemes = themeConfig.extendedThemes || [];
     themeConfig.extendedThemes.push(o.extend);
   }
-  else if(name !== 'default'){
+  else if (name !== 'default') {
     Fancy.apply(themeConfig, Fancy.getTheme('default').config);
   }
 
@@ -26,13 +26,13 @@ Fancy.defineTheme = function(name, o){
  * @param {String} name
  * @return {String}
  */
-Fancy.getThemeCSSCls = function(name){
-  var cls = 'fancy-theme-' + name,
-    theme = Fancy.getTheme(name);
+Fancy.getThemeCSSCls = (name) => {
+  const theme = Fancy.getTheme(name);
+  let cls = `fancy-theme-${name}`;
 
-  if(theme && theme.config.extendedThemes){
-    Fancy.each(theme.config.extendedThemes, function(name){
-      cls += ' ' + 'fancy-theme-' + name;
+  if (theme && theme.config.extendedThemes) {
+    Fancy.each(theme.config.extendedThemes, name => {
+      cls += ` fancy-theme-${name}`;
     });
   }
 
@@ -43,12 +43,12 @@ Fancy.getThemeCSSCls = function(name){
  * @param {Object|String} name
  * @return {Object} o
  */
-Fancy.getTheme = function(name){
-  var theme = {
+Fancy.getTheme = (name) => {
+  const theme = {
     config: {}
   };
 
-  if(Fancy.isObject(name)){
+  if (Fancy.isObject(name)) {
     Fancy.applyIf(theme, Fancy.themes[name.name || 'default']);
     Fancy.apply(theme.config, Fancy.themes[name.name || 'default'].config);
     Fancy.apply(theme.config, name.config);

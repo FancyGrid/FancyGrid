@@ -20,25 +20,25 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this;
 
     Fancy.apply(me, o);
-    
+
     me.init();
   },
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.initId();
-    me.initChart();    
+    me.initChart();
     me.setSize();
     me.setRadius();
     me.setInnerRadius();
     me.setParams();
-    
+
     me.iniColors();
-    
-    me.preRender();    
+
+    me.preRender();
     me.render();
 
     if( me.inited !== true ){
@@ -49,8 +49,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /**
    * generate unique id for class
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -60,8 +60,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
+  ons(){
+    const me = this;
 
     me.el.on('mouseenter', me.onMouseEnter, me);
     me.el.on('mouseleave', me.onMouseLeave, me);
@@ -70,15 +70,15 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(){
-    var me = this,
+  onMouseEnter(){
+    let me = this,
       value = me.el.attr('value');
 
     if(!me.tip || !me.tipTpl){
       return;
     }
 
-    var tpl = new Fancy.Template(me.tipTpl);
+    const tpl = new Fancy.Template(me.tipTpl);
     value = tpl.getHTML({
       value: value
     });
@@ -88,8 +88,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(){
-    var me = this;
+  onMouseLeave(){
+    const me = this;
 
     if(!me.tip || !me.tipTpl){
       return;
@@ -100,8 +100,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
 
     //Fix IE 9-10 bug
     if(!me.tooltip){
@@ -117,9 +117,9 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  iniColors: function(){
-    var me = this;
-    
+  iniColors(){
+    const me = this;
+
     if(me.value < 0){
       me.backColor = me.colorBGMinus;
       me.color = me.colorMinus;
@@ -132,11 +132,11 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  preRender: function(){
-    var me = this,
+  preRender(){
+    const me = this,
       size = me.size,
       chart = me.chart;
-      
+
     chart.setAttribute('width', size);
     chart.setAttribute('height', size);
     chart.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
@@ -144,21 +144,21 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  render: function(){
-    var me = this;
-    
+  render(){
+    const me = this;
+
     //render 100% progress
     me.renderBack();
-    
+
     //render progress
     me.renderProgress();
   },
   /*
    *
    */
-  renderBack: function(){
+  renderBack(){
     //render 100% progress
-    var me = this,
+    const me = this,
       radius = me.radius,
       innerRadius = me.innerRadius,
       d = [
@@ -168,7 +168,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         'A', innerRadius, innerRadius, 0, 1, 0, me.cx, me.y2
       ].join(' '),
       path = document.createElementNS(me.svgns, 'path');
-    
+
     path.setAttribute('d', d);
     path.setAttribute('fill', me.backColor);
 
@@ -177,7 +177,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  renderProgress: function(){
+  renderProgress(){
     //render progress
     var me = this,
       radius = me.radius,
@@ -185,30 +185,30 @@ Fancy.define('Fancy.spark.ProgressDonut', {
       path = document.createElementNS(me.svgns, 'path'),
       value = me.value,
       cumulative = 0;
-      
+
     if(value > 99){
       value = 99.99999;
     }
-    
+
     if(value < -99){
       value = 99.99999;
     }
-    
+
     if(value < 0){
       cumulative = 100 + value;
       value *= -1;
     }
-    
-    var portion = value / me.sum,
+
+    const portion = value / me.sum,
       cumulativePlusValue = cumulative + value;
-    
+
     var d = ['M'].concat(
       me.scale(cumulative, radius),
       'A', radius, radius, 0, portion > 0.5 ? 1 : 0, 1,
       me.scale(cumulativePlusValue, radius),
       'L'
     );
-    
+
     if (innerRadius){
       d = d.concat(
         me.scale(cumulativePlusValue, innerRadius),
@@ -216,19 +216,19 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         me.scale(cumulative, innerRadius)
       );
     }
-    
+
     d = d.join(' ');
-    
+
     path.setAttribute('d', d);
     path.setAttribute('fill', me.color);
-    
+
     me.chart.appendChild(path);
   },
   /*
    *
    */
-  initChart: function(){
-    var me = this,
+  initChart(){
+    const me = this,
       el = Fancy.get(me.renderTo);
 
     me.renderTo = Fancy.get(me.renderTo).dom;
@@ -259,10 +259,10 @@ Fancy.define('Fancy.spark.ProgressDonut', {
    * @param {Number} radius
    * @return {Object}
    */
-  scale: function(value, radius){
-    var me = this,
+  scale(value, radius){
+    const me = this,
       pi = Math.PI,
-      sum = me.sum,   
+      sum = me.sum,
       radians = value / sum * pi * 2 - pi / 2;
 
     return [
@@ -274,15 +274,15 @@ Fancy.define('Fancy.spark.ProgressDonut', {
    * @param {Number} degrees
    * @return {Number}
    */
-  radians: function(degrees){
+  radians(degrees){
     return degrees * Math.PI / 180;
   },
   /*
    *
    */
-  setSize: function(){
-    var me = this;
-    
+  setSize(){
+    const me = this;
+
     me.width = me.width || me.height || me.size || 30;
     me.height = me.height || me.width || me.size || 30;
     me.size = me.size || me.height;
@@ -290,37 +290,38 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  setRadius: function(){
-    var me = this;
-    
+  setRadius(){
+    const me = this;
+
     me.radius = me.radius || me.height/2;
   },
   /*
    *
    */
-  setInnerRadius: function(){
-    var me = this;
-    
+  setInnerRadius(){
+    const me = this;
+
     me.innerRadius = me.innerRadius || me.height/2 - me.height/4;
   },
   /*
    *
    */
-  setParams: function(){
-    var me = this,
+  setParams(){
+    const me = this,
       radius = me.radius,
       innerRadius = me.innerRadius,
       height = me.height,
       width = me.width;
-      
+
     me.cy = height / 2;
     me.y1 = me.cy - radius;
     me.y2 = me.cy - innerRadius;
-     
+
     me.cx = width / 2;
     me.x2 = me.cx - 0.01;
   }
-});/*
+});
+/*
  * @class Fancy.spark.GrossLoss
  */
 Fancy.modules['spark'] = true;
@@ -339,10 +340,10 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
-    me.preRender();    
+    me.preRender();
     me.render();
 
     if( me.inited !== true ){
@@ -352,8 +353,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
+  ons(){
+    const me = this;
 
     me.el.on('mouseenter', me.onMouseEnter, me);
     me.el.on('mouseleave', me.onMouseLeave, me);
@@ -362,8 +363,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  onMouseEnter: function(){
-    var me = this,
+  onMouseEnter(){
+    let me = this,
       value = me.el.attr('value'),
       color = me.el.css('background-color'),
       suffix = '',
@@ -377,7 +378,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix = ' %';
     }
 
-    var tpl = new Fancy.Template(me.tipTpl);
+    const tpl = new Fancy.Template(me.tipTpl);
+
     text = tpl.getHTML({
       value: value,
       color: color,
@@ -389,8 +391,9 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  onMouseLeave: function(){
-    var me = this;
+  onMouseLeave(){
+    const me = this;
+
     if(!me.tipTpl || !me.tip){
       return;
     }
@@ -400,8 +403,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
     if(!me.tipTpl || !me.tip){
       return;
     }
@@ -411,11 +414,11 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  preRender: function(){},
+  preRender(){},
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       column = me.column,
       width = column.width,
@@ -451,7 +454,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
 
     me.el.attr('value', me.value.toFixed(2));
   }
-});/*
+});
+/*
  * @class Fancy.spark.ProgressBar
  */
 Fancy.define('Fancy.spark.ProgressBar', {
@@ -462,17 +466,17 @@ Fancy.define('Fancy.spark.ProgressBar', {
    * @param {Object} o
    */
   constructor: function(o){
-    var me = this;
+    const me = this;
 
     Fancy.apply(me, o);
-    
+
     me.init();
   },
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.initId();
     me.render();
@@ -484,8 +488,8 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -495,9 +499,9 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
-    
+  ons(){
+    const me = this;
+
     if(me.tip !== false){
       me.el.on('mouseenter', me.onMouseEnter, me);
       me.el.on('mouseleave', me.onMouseLeave, me);
@@ -507,7 +511,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(){
+  onMouseEnter(){
     var me = this,
       value = me.el.attr('value'),
       suffix = '%',
@@ -540,7 +544,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(){
+  onMouseLeave(){
     if(!this.tip || !this.tipTpl){
       return;
     }
@@ -550,7 +554,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
+  onMouseMove(e){
     if(!this.tip || !this.tipTpl){
       return;
     }
@@ -560,7 +564,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -642,7 +646,7 @@ Fancy.define('Fancy.spark.ProgressBar', {
   /*
    *
    */
-  update: function(){
+  update(){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -717,7 +721,8 @@ Fancy.define('Fancy.spark.ProgressBar', {
       }
     }
   }
-});/*
+});
+/*
  * @class Fancy.spark.HBar
  */
 Fancy.define('Fancy.spark.HBar', {
@@ -731,17 +736,17 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} o
    */
   constructor: function(o){
-    var me = this;
+    const me = this;
 
     Fancy.apply(me, o);
-    
+
     me.init();
   },
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.initId();
     me.render();
@@ -753,8 +758,8 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -764,10 +769,10 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
-    
-    if(me.tip !== false){
+  ons(){
+    const me = this;
+
+    if (me.tip !== false) {
       me.el.on('mouseenter', me.onMouseEnter, me, '.fancy-grid-column-h-bar-node');
       me.el.on('mouseleave', me.onMouseLeave, me, '.fancy-grid-column-h-bar-node');
       me.el.on('mousemove', me.onMouseMove, me, '.fancy-grid-column-h-bar-node');
@@ -776,7 +781,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(e){
+  onMouseEnter(e){
     var me = this,
       el = Fancy.get(e.target),
       key = el.attr('key'),
@@ -789,7 +794,7 @@ Fancy.define('Fancy.spark.HBar', {
     }
 
     if(me.tipFormat){
-      var config = {
+      const config = {
         value: value,
         percents: percents,
         key: key,
@@ -801,7 +806,7 @@ Fancy.define('Fancy.spark.HBar', {
       value = me.tipFormat(config);
     }
 
-    var tpl = new Fancy.Template(me.tipTpl),
+    const tpl = new Fancy.Template(me.tipTpl),
       text = tpl.getHTML({
         value: value
       });
@@ -811,8 +816,8 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(){
-    var me = this;
+  onMouseLeave(){
+    const me = this;
 
     if(!me.tip || !me.tipTpl){
       return;
@@ -823,8 +828,8 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
     if(!me.tip || !me.tipTpl){
       return;
     }
@@ -834,7 +839,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -852,8 +857,8 @@ Fancy.define('Fancy.spark.HBar', {
 
     if(column.fields){
       iL = column.fields.length;
-      Fancy.each(column.fields, function(field){
-        var key = column.index + '.' + field;
+      Fancy.each(column.fields, field => {
+        const key = column.index + '.' + field;
 
         if(disabled[key]){
           return;
@@ -863,7 +868,7 @@ Fancy.define('Fancy.spark.HBar', {
       });
     }
     else{
-      Fancy.each(fields, function(key){
+      Fancy.each(fields, key => {
         if(disabled[key]){
           return;
         }
@@ -884,7 +889,7 @@ Fancy.define('Fancy.spark.HBar', {
 
     i = 0;
 
-    var sparkCls = 'fancy-spark-hbar';
+    let sparkCls = 'fancy-spark-hbar';
 
     if(me.stacked){
       sparkCls += ' fancy-spark-stacked ';
@@ -954,7 +959,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Array} data
    */
-  update: function(data){
+  update(data){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -975,7 +980,7 @@ Fancy.define('Fancy.spark.HBar', {
     if(column.fields){
       iL = column.fields.length;
 
-      Fancy.each(column.fields, function(key){
+      Fancy.each(column.fields, key => {
         if(disabled[column.index + '.' + key]){
           dLength++;
           return;
@@ -985,7 +990,7 @@ Fancy.define('Fancy.spark.HBar', {
       });
     }
     else{
-      Fancy.each(fields, function(key){
+      Fancy.each(fields, key => {
         if(disabled[key]){
           dLength++;
           return;

@@ -7,8 +7,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  initResize: function(){
-    var me = this;
+  initResize(){
+    const me = this;
 
     me.activeResizeEl = undefined;
 
@@ -18,8 +18,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  renderResizeEls: function(){
-    var me = this,
+  renderResizeEls(){
+    const me = this,
       el = me.el,
       cornerEl = Fancy.get(document.createElement('div'));
 
@@ -30,32 +30,32 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  onResize: function(){
-    var me = this;
+  onResize(){
+    const me = this;
 
-    if(me.tbar){
+    if (me.tbar) {
       me._tbar.applyScrollChanges();
     }
 
-    if(me.subTBar){
+    if (me.subTBar) {
       me._subTBar.applyScrollChanges();
     }
 
-    if(me.bbar){
+    if (me.bbar) {
       me._bbar.applyScrollChanges();
     }
 
-    if(me.footer){
+    if (me.footer) {
       me._footer.applyScrollChanges();
     }
 
-    if(me.buttons){
+    if (me.buttons) {
       me._buttons.applyScrollChanges();
     }
 
-    var item = me.items[0];
+    const item = me.items[0];
 
-    if(item && item.type === 'grid' && item.infinite){
+    if (item && item.type === 'grid' && item.infinite) {
       delete item.numOfVisibleCells;
       item.update();
     }
@@ -63,10 +63,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  onsResizeEls: function(){
-    var me = this;
+  onsResizeEls(){
+    const me = this;
 
-    if(Fancy.isTouch){
+    if (Fancy.isTouch) {
       me.cornerResizeEl.on('touchstart', me.onMouseDownResizeEl, me);
     }
     else {
@@ -78,19 +78,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    * @param {Object} e
    */
-  onMouseDownResizeEl: function(e){
-    var me = this,
+  onMouseDownResizeEl(e){
+    const me = this,
       docEl = Fancy.get(document);
 
     e.preventDefault();
 
-    if(Fancy.nojQuery){
-      me.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+    if (Fancy.nojQuery) {
+      me.el.select(`.${Fancy.GRID_ANIMATION_CLS}`).removeCls(Fancy.GRID_ANIMATION_CLS);
     }
 
-    if(Fancy.isTouch){
+    if (Fancy.isTouch) {
       e = e.originalEvent || e;
-      var _e = e.changedTouches[0];
+      const _e = e.changedTouches[0];
 
       docEl.once('touchend', me.onMouseUpResize, me);
       docEl.on('touchmove', me.onMouseMoveResize, me);
@@ -100,7 +100,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.startClientX = _e.clientX;
       me.startClientY = _e.clientY;
     }
-    else{
+    else {
       docEl.once('mouseup', me.onMouseUpResize, me);
       docEl.on('mousemove', me.onMouseMoveResize, me);
 
@@ -113,8 +113,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  onMouseUpResize: function(){
-    var me = this,
+  onMouseUpResize(){
+    const me = this,
       docEl = Fancy.get(document);
 
     delete me.activeResizeEl;
@@ -133,27 +133,27 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       height: me.newResizeHeight
     });
 
-    if(Fancy.nojQuery){
+    if (Fancy.nojQuery) {
       me.el.select('.fancy-grid').addCls(Fancy.GRID_ANIMATION_CLS);
     }
   },
   /*
    * @param {Object} e
    */
-  onMouseMoveResize: function(e){
-    var me = this,
+  onMouseMoveResize(e){
+    let me = this,
       clientX = e.clientX,
       clientY = e.clientY;
 
-    if(Fancy.isTouch){
+    if (Fancy.isTouch) {
       e = e.originalEvent || e;
-      var _e = e.originalEvent.changedTouches[0];
+      const _e = e.originalEvent.changedTouches[0];
 
       clientX = _e.clientX;
       clientY = _e.clientY;
     }
 
-    var deltaX = me.startClientX - clientX,
+    let deltaX = me.startClientX - clientX,
       deltaY = me.startClientY - clientY,
       newWidth = me.startResizeWidth - deltaX,
       newHeight = me.startResizeHeight - deltaY;
@@ -161,11 +161,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     e.preventDefault();
     e.stopPropagation();
 
-    if(newWidth < me.minWidth){
+    if (newWidth < me.minWidth) {
       newWidth = me.minWidth;
     }
 
-    if(newHeight < me.minHeight){
+    if (newHeight < me.minHeight) {
       newHeight = me.minHeight;
     }
 
@@ -180,12 +180,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  renderResizeMask: function(){
-    var me = this,
+  renderResizeMask(){
+    const me = this,
       el = me.el,
       maskWidth = 2;
 
-    var maskEl = Fancy.get(document.createElement('div')),
+    let maskEl = Fancy.get(document.createElement('div')),
       panelTop = parseInt(el.css('top')),
       panelLeft = parseInt(el.css('left')),
       panelWidth = parseInt(el.css('width')) - maskWidth * 2,
@@ -195,8 +195,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     me.startResizeWidth = panelWidth;
     me.startResizeHeight = panelHeight;
 
-    if(!me.window && el.css('position') !== 'absolute'){
-      var offset = el.offset();
+    if (!me.window && el.css('position') !== 'absolute') {
+      const offset = el.offset();
 
       panelTop = offset.top;
       panelLeft = offset.left;

@@ -6,20 +6,20 @@ Fancy.modules['column-drag'] = true;
 (function(){
 
   //SHORTCUTS
-  var F = Fancy;
-  var DOC = F.get(document);
+  const F = Fancy;
+  const DOC = F.get(document);
 
   //CONSTANTS
-  var HIDDEN_CLS = F.HIDDEN_CLS;
-  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
-  var GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
-  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
-  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
-  var GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
-  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
-  var GRID_STATE_DRAG_COLUMN_CLS = F.GRID_STATE_DRAG_COLUMN_CLS;
-  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
-  var FIELD_CHECKBOX_INPUT_CLS =  F.FIELD_CHECKBOX_INPUT_CLS;
+  const HIDDEN_CLS = F.HIDDEN_CLS;
+  const GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  const GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
+  const GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  const GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  const GRID_HEADER_CELL_GROUP_LEVEL_1_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_1_CLS;
+  const GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  const GRID_STATE_DRAG_COLUMN_CLS = F.GRID_STATE_DRAG_COLUMN_CLS;
+  const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  const FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
 
   F.define('Fancy.grid.plugin.ColumnDrag', {
     extend: F.Plugin,
@@ -43,13 +43,13 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    init: function(){
-      var me = this,
+    init(){
+      const me = this,
         w = me.widget;
 
       me.Super('init', arguments);
 
-      w.on('render', function(){
+      w.on('render', () => {
         me.ons();
         me.initHint();
       });
@@ -57,14 +57,14 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.el.on('mousedown', me.onMouseDownCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.on('mousedown', me.onMouseDownCell, me, `div.${GRID_HEADER_CELL_CLS}`);
     },
-    onMouseDownCell: function(e){
-      var me = this,
+    onMouseDownCell(e){
+      const me = this,
         w = me.widget,
         cell = Fancy.get(e.currentTarget),
         index = Number(cell.attr('index')),
@@ -118,21 +118,19 @@ Fancy.modules['column-drag'] = true;
       DOC.on('mousemove', me.onMouseMove, me);
 
       w.el.on('mouseleave', me.onMouseLeave, me);
-      w.el.on('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
-      w.el.on('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.on('mouseenter', me.onMouseEnterCell, me, `div.${GRID_HEADER_CELL_CLS}`);
+      w.el.on('mousemove', me.onMouseMoveCell, me, `div.${GRID_HEADER_CELL_CLS}`);
     },
     /*
      *
      */
-    onMouseLeave: function(){
-      var me = this;
-
-      me.hideHint();
+    onMouseLeave(){
+      this.hideHint();
     },
     /*
      *
      */
-    onMouseUp: function(){
+    onMouseUp(){
       var me = this,
         w = me.widget,
         dragged = false,
@@ -141,8 +139,8 @@ Fancy.modules['column-drag'] = true;
       DOC.un('mousemove', me.onMouseMove, me);
 
       w.el.un('mouseleave', me.onMouseLeave, me);
-      w.el.un('mouseenter', me.onMouseEnterCell, me, 'div.' + GRID_HEADER_CELL_CLS);
-      w.el.un('mousemove', me.onMouseMoveCell, me, 'div.' + GRID_HEADER_CELL_CLS);
+      w.el.un('mouseenter', me.onMouseEnterCell, me, `div.${GRID_HEADER_CELL_CLS}`);
+      w.el.un('mousemove', me.onMouseMoveCell, me, `div.${GRID_HEADER_CELL_CLS}`);
 
       if(me.ok){
         me.fire('beforecolumndrag');
@@ -169,7 +167,7 @@ Fancy.modules['column-drag'] = true;
         dragged = true;
       }
 
-      var columnDragParams = {
+      const columnDragParams = {
         column: me.activeColumn,
         fromSide: me.activeSide,
         toSide: me.inSide
@@ -198,7 +196,7 @@ Fancy.modules['column-drag'] = true;
       me.removeDragState();
 
       if(me.status === 'dragging'){
-        setTimeout(function(){
+        setTimeout(() => {
           me.status = 'none';
           if(dragged){
             w.fire('columndrag', columnDragParams);
@@ -213,14 +211,14 @@ Fancy.modules['column-drag'] = true;
       }
 
       me.hideHint();
-      setTimeout(function(){
+      setTimeout(() => {
         w.updateColumnsVisibility();
       }, 100);
 
       w.scroller.update();
     },
-    onMouseMove: function(e){
-      var me = this,
+    onMouseMove(e){
+      const me = this,
         w = me.widget,
         header = w.header,
         leftHeader = w.leftHeader,
@@ -252,7 +250,7 @@ Fancy.modules['column-drag'] = true;
 
       if(columns.length === 1 && me.activeSide === 'center'){
         F.tip.hide();
-        setTimeout(function(){
+        setTimeout(() => {
           me.status = 'none';
         }, 1);
         me.removeDragState();
@@ -272,20 +270,14 @@ Fancy.modules['column-drag'] = true;
         }
       }
     },
-    addDragState: function(){
-      var me = this,
-        w = me.widget;
-
-      w.el.addClass(GRID_STATE_DRAG_COLUMN_CLS);
+    addDragState(){
+      this.widget.el.addClass(GRID_STATE_DRAG_COLUMN_CLS);
     },
-    removeDragState: function(){
-      var me = this,
-        w = me.widget;
-
-      w.el.removeClass(GRID_STATE_DRAG_COLUMN_CLS);
+    removeDragState(){
+      this.widget.el.removeClass(GRID_STATE_DRAG_COLUMN_CLS);
     },
-    onMouseEnterCell: function(e){
-      var me = this,
+    onMouseEnterCell(e){
+      const me = this,
         w = me.widget,
         cell = Fancy.get(e.currentTarget),
         side = w.getSideByCell(cell);
@@ -314,7 +306,7 @@ Fancy.modules['column-drag'] = true;
           cells = header.el.select('[group-index="' + cell.attr('index') + '"]'),
           index;
 
-        cells.each(function(cell){
+        cells.each((cell) => {
           if(cell.css('display') !== 'none' && index === undefined){
             index = Number(cell.attr('index'));
           }
@@ -326,23 +318,23 @@ Fancy.modules['column-drag'] = true;
         me.inIndex = Number(cell.attr('index'));
       }
     },
-    onMouseMoveCell: function(e){
-      var me = this,
+    onMouseMoveCell(e){
+      const me = this,
         w = me.widget,
         cell = me.inCell,
         cellWidth = parseInt(cell.css('width')),
-        triggerEl = cell.select('.' + GRID_HEADER_CELL_TRIGGER_CLS);
+        triggerEl = cell.select(`.${GRID_HEADER_CELL_TRIGGER_CLS}`);
 
       if(!triggerEl.dom){
         return ;
       }
 
-      var targetEl = Fancy.get(e.target),
+      const targetEl = Fancy.get(e.target),
         inTriggerEl = triggerEl.within(targetEl) || targetEl.hasClass(GRID_HEADER_CELL_TRIGGER_CLS),
         fromGroup = me.activeUnderGroup !== me.inUnderGroup && me.inUnderGroup === true,
         toGroup = me.activeUnderGroup !== me.inUnderGroup && me.activeUnderGroup === true;
 
-      var columns = w.getColumns(me.activeSide);
+      const columns = w.getColumns(me.activeSide);
       if(columns.length === 1 && me.activeSide === 'center'){
         me.ok = false;
         me.hideHint();
@@ -524,8 +516,8 @@ Fancy.modules['column-drag'] = true;
         }
       }
     },
-    showHint: function(position){
-      var me = this,
+    showHint(position){
+      const me = this,
         w = me.widget,
         CELL_HEADER_HEIGHT = w.cellHeaderHeight,
         cell = me.inCell,
@@ -554,7 +546,7 @@ Fancy.modules['column-drag'] = true;
       var bottomTop = o.top + cellHeight;
 
       if(me.inUpGroupCell){
-        var rows = w.header.calcRows();
+        const rows = w.header.calcRows();
         bottomTop = o.top + rows * CELL_HEADER_HEIGHT;
       }
 
@@ -564,20 +556,20 @@ Fancy.modules['column-drag'] = true;
       });
 
       if(w.window){
-        var zIndex = 1000 + F.zIndex++;
+        const zIndex = 1000 + F.zIndex++;
 
         topEl.css('z-index', zIndex);
         bottomEl.css('z-index', zIndex);
       }
     },
-    hideHint: function(){
-      var me = this;
+    hideHint(){
+      const me = this;
 
       me.topEl.addCls(HIDDEN_CLS);
       me.bottomEl.addCls(HIDDEN_CLS);
     },
-    initHint: function(){
-      var me = this,
+    initHint(){
+      const me = this,
         w = me.widget,
         themeCls = Fancy.getThemeCSSCls(w.theme),
         renderTo = F.get(document.body).dom,
@@ -593,7 +585,7 @@ Fancy.modules['column-drag'] = true;
     /*
      * @param {String} side
      */
-    dragColumn: function(side){
+    dragColumn(side){
       var me = this,
         w = me.widget,
         header = w.getHeader(side),
@@ -606,7 +598,7 @@ Fancy.modules['column-drag'] = true;
         rows = header.calcRows();
 
       if(me.activeCellTopGroup){
-        var startIndex = me.activeCellTopGroup.start,
+        const startIndex = me.activeCellTopGroup.start,
           endIndex = me.activeCellTopGroup.end,
           _columns = columns.splice(startIndex, endIndex - startIndex + 1);
 
@@ -626,7 +618,7 @@ Fancy.modules['column-drag'] = true;
         w.setColumnsLinksToSide(columns, side);
       }
       else if(me.inUpGroupCell){
-        var o = me.getGroupStartEnd();
+        const o = me.getGroupStartEnd();
 
         inIndex = o.start;
 
@@ -636,7 +628,7 @@ Fancy.modules['column-drag'] = true;
       }
       else if(position === 'right'){
         if(me.inUnderGroup){
-          var groupName = columns[inIndex].grouping,
+          const groupName = columns[inIndex].grouping,
             nextColumn = columns[inIndex + 1];
 
           if(nextColumn && nextColumn.grouping === groupName){
@@ -649,7 +641,7 @@ Fancy.modules['column-drag'] = true;
       }
 
       if(w.groupheader && !me.activeCellTopGroup){
-        var inColumn = columns[inIndex];
+        const inColumn = columns[inIndex];
 
         if(inColumn && inColumn.grouping && me.inUnderGroup){
           column.grouping = inColumn.grouping;
@@ -678,7 +670,7 @@ Fancy.modules['column-drag'] = true;
       header.updateCellsSizes();
       header.reSetCheckBoxes();
 
-      setTimeout(function(){
+      setTimeout(() => {
         if(w.groupheader){
           w.header.fixGroupHeaderSizing();
           if(w.leftColumns){
@@ -705,15 +697,15 @@ Fancy.modules['column-drag'] = true;
      * @param {String} [side]
      * @return {Object}
      */
-    getGroupStartEnd: function(cell, side){
-      var me = this,
+    getGroupStartEnd(cell, side){
+      const me = this,
         w = me.widget,
         header = w.getHeader(side || me.inSide),
         groupName = (cell || me.inUpGroupCell).attr('index'),
-        inUpGroupCells = header.el.select('[group-index="' + groupName + '"]'),
+        inUpGroupCells = header.el.select(`[group-index="${groupName}"]`),
         values = [];
 
-      inUpGroupCells.each(function(cell){
+      inUpGroupCells.each((cell) => {
         values.push(Number(cell.attr('index')));
       });
 
@@ -725,11 +717,11 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    clearColumnMenus: function(){
-      var me = this,
+    clearColumnMenus(){
+      const me = this,
         w = me.widget;
 
-      F.each(w.columns, function(column){
+      F.each(w.columns, (column) => {
         if(F.isObject(column.menu) && column._menu){
           column.menu = column._menu;
           delete column._menu;
@@ -739,8 +731,8 @@ Fancy.modules['column-drag'] = true;
     /*
      *
      */
-    updateColumnHeaderLImages: function(){
-      var me = this,
+    updateColumnHeaderLImages(){
+      const me = this,
         w = me.widget;
 
       if(!w.header){

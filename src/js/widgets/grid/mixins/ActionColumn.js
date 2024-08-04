@@ -5,8 +5,8 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
   /*
    *
    */
-  initActionColumnHandler: function(){
-    var me = this;
+  initActionColumnHandler(){
+    const me = this;
 
     me.on('cellclick', me.onCellClickColumnAction, me);
   },
@@ -14,7 +14,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
    * @param {Object} grid
    * @param {Object} o
    */
-  onCellClickColumnAction: function(grid, o){
+  onCellClickColumnAction(grid, o){
     var me = this,
       column = o.column,
       activeItem,
@@ -27,7 +27,7 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
 
     activeItem = me.getActiveActionColumnItem(o);
 
-    if(columnItems && activeItem !== undefined){
+    if (columnItems && activeItem !== undefined) {
       item = columnItems[activeItem];
       if(item.handler){
         item.handler(me, o);
@@ -38,10 +38,10 @@ Fancy.Mixin('Fancy.grid.mixin.ActionColumn', {
    * @param {Object} o
    * @return {Number}
    */
-  getActiveActionColumnItem: function(o){
+  getActiveActionColumnItem(o){
     var cell = Fancy.get(o.cell),
       target = o.e.target,
-      actionEls = cell.select('.' + Fancy.GRID_COLUMN_ACTION_ITEM_CLS),
+      actionEls = cell.select(`.${Fancy.GRID_COLUMN_ACTION_ITEM_CLS}`),
       i = 0,
       iL = actionEls.length;
 

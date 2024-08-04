@@ -20,8 +20,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('click', 'change');
 
@@ -56,8 +56,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  renderButton: function(){
-    var me = this;
+  renderButton(){
+    const me = this;
 
     me.button = new Fancy.SegButton({
       renderTo: me.el.select('.fancy-field-text').item(0).dom,
@@ -70,8 +70,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       el = me.el;
 
     me.button.on('toggle', function(){
@@ -91,8 +91,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  onClick: function(){
-    var me = this;
+  onClick(){
+    const me = this;
 
     if(me.disabled){
       return;
@@ -107,11 +107,11 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    * @return {String}
    */
-  get: function(){
-    var me = this,
+  get(){
+    const me = this,
       pressed = [];
 
-    Fancy.each(me.items, function(item, i){
+    Fancy.each(me.items, (item, i) => {
       if(item.pressed){
         if(item.value){
           pressed.push(item.value);
@@ -127,9 +127,9 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    * @param {Boolean} [fire]
    */
-  clear: function(fire){
+  clear(fire){
     if(this.allowToggle){
-      Fancy.each(this.items, function(item){
+      Fancy.each(this.items, (item) => {
         item.setPressed(false, fire);
       });
     }
@@ -138,18 +138,18 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Array|String|Number} value
    * Note: duplicate code in button SegButton
    */
-  setValue: function(value){
-    var me = this,
+  setValue(value){
+    const me = this,
       items = me.items;
 
     me.clear(false);
 
     switch (Fancy.typeOf(value)){
       case 'array':
-        Fancy.each(value, function(v){
+        Fancy.each(value, (v) => {
           switch (Fancy.typeOf(v)){
             case 'string':
-              Fancy.each(items, function(item){
+              Fancy.each(items, (item) => {
                 if(item.value === v){
                   item.setPressed(true, true);
                 }
@@ -162,15 +162,15 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
         });
         break;
       case 'string':
-        Fancy.each(items, function(item){
+        Fancy.each(items, (item) => {
           if(item.value === value){
             item.setPressed(true, true);
           }
         });
         break;
       case 'number':
-        var button = items[value];
-        if(button){
+        const button = items[value];
+        if (button) {
           button.setPressed(true, true);
         }
         break;

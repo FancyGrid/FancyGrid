@@ -4,15 +4,15 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
-  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
 
   F.define(['Fancy.form.field.Date', 'Fancy.DateField'], {
     mixins: [
@@ -50,8 +50,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab', 'change', 'key', 'showpicker');
 
@@ -63,15 +63,15 @@
 
       me.ons();
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
-      if (me.style){
+      if (me.style) {
         me.css(me.style);
       }
 
-      if (!F.isDate(me.value)){
+      if (!F.isDate(me.value)) {
         me.initDate();
       }
       else{
@@ -85,16 +85,16 @@
      * @param {String} value
      * @param {String} format
      */
-    initDate: function(value, format){
-      var me = this;
+    initDate(value, format){
+      const me = this;
 
-      if (value){
+      if (value) {
         if (F.typeOf(value) === 'date'){
           me.date = value;
           return;
         }
 
-        var date;
+        let date;
         if (format){
           date = F.Date.parse(value, format, me.format.mode);
         }
@@ -131,15 +131,15 @@
     /*
      *
      */
-    changeInputValue: function(){
-      var me = this;
+    changeInputValue(){
+      const me = this;
 
       if (F.typeOf(me.date) !== 'date' || me.date.toString() === 'Invalid Date'){
         me.input.dom.value = '';
         return;
       }
 
-      var value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
+      let value = F.Date.format(me.date, me.format.edit, undefined, me.format.mode);
 
       if (me.format && me.format.inputFn){
         value = me.format.inputFn(value);
@@ -156,8 +156,8 @@
     /*
      *
      */
-    initFormat: function(){
-      var me = this;
+    initFormat(){
+      const me = this;
 
       if (me.format){
         if (F.isObject(me.format)){
@@ -171,8 +171,8 @@
     /*
      * @param {*} value
      */
-    formatValue: function(value){
-      var me = this;
+    formatValue(value){
+      const me = this;
 
       if (!me.value && value){
         me.value = value;
@@ -185,21 +185,21 @@
       else if (F.typeOf(me.value) === 'date'){
         me.value = F.Date.format(me.value, me.format.read, undefined, me.format.mode);
         if (value === undefined){
-          var _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
+          const _date = F.Date.parse(me.value, me.format.edit, me.format.mode);
           value = F.Date.format(_date, me.format.edit, undefined, me.format.mode);
         }
         me.acceptedValue = value;
       }
       else {
-        var date = F.Date.parse(me.value, me.format.read, me.format.mode);
+        const date = F.Date.parse(me.value, me.format.read, me.format.mode);
         me.value = F.Date.format(date, me.format.edit, undefined, me.format.mode);
       }
 
-      if (me.format && me.format.inputFn){
+      if (me.format && me.format.inputFn) {
         value = me.format.inputFn(value);
       }
 
-      if (value === undefined){
+      if (value === undefined) {
         value = '';
       }
 
@@ -212,8 +212,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el,
         input = me.el.getByTag('input');
 
@@ -227,7 +227,7 @@
 
       me.on('beforehide', me.onBeforeHide, me);
 
-      if (me.format && me.format.inputFn){
+      if (me.format && me.format.inputFn) {
         me.on('key', me.onKeyInputFn);
       }
 
@@ -241,14 +241,14 @@
     /*
      *
      */
-    initPicker: function(){
-      var me = this;
+    initPicker(){
+      const me = this;
 
-      if (me.picker === false || me.editable === false){
+      if (me.picker === false || me.editable === false) {
         return;
       }
 
-      if (me.dateImage === false){
+      if (me.dateImage === false) {
         me.el.select('.fancy-field-picker-button').css('display', 'none');
         me.input.on('click', me.onInputClick, me);
       }
@@ -261,28 +261,28 @@
     /*
      *
      */
-    onInputClick: function(e){
+    onInputClick(e){
       e.preventDefault();
       this.toggleShowPicker();
     },
     /*
      *
      */
-    onInputMouseDown: function(e){
-      var me = this,
+    onInputMouseDown(e){
+      const me = this,
         picker = me.picker;
 
-      if(picker && picker.el && picker.el.css('display') !== 'none'){
+      if (picker && picker.el && picker.el.css('display') !== 'none') {
         e.stopPropagation();
       }
     },
     /*
      * @param {Object} e
      */
-    onPickerButtonMouseDown: function(e){
-      var me = this;
+    onPickerButtonMouseDown(e){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
@@ -292,30 +292,30 @@
     /*
      *
      */
-    showPicker: function(){
+    showPicker(){
       var me = this,
         el = me.el,
         input = me.input,
         docEl = F.get(document),
         firstShow = false;
 
-      if (me.picker === true){
+      if (me.picker === true) {
         firstShow = true;
         me.renderPicker();
       }
-      else{
-        if(me.picker.monthPicker){
+      else {
+        if (me.picker.monthPicker) {
           me.picker.monthPicker.hide();
           me.picker.monthPicker.panel.css('top', '-300px');
         }
       }
 
-      var offset = input.offset(),
+      let offset = input.offset(),
         x = offset.left,
         y = offset.top + el.select('.' + FIELD_TEXT_CLS).height(),
         date = me.date || new Date();
 
-      if (date.toString() === 'Invalid Date'){
+      if (date.toString() === 'Invalid Date') {
         date = new Date();
       }
 
@@ -327,7 +327,7 @@
 
       me.fire('showpicker');
 
-      if (!me.docSpy){
+      if (!me.docSpy) {
         me.docSpy = true;
         docEl.on('click', me.onDocClick, me);
         docEl.on('scroll', me.onDocScroll, me);
@@ -336,8 +336,8 @@
     /*
      *
      */
-    onDocClick: function(e){
-      var me = this,
+    onDocClick(e){
+      const me = this,
         datePicker = me.picker,
         monthPicker = datePicker.monthPicker,
         target = e.target;
@@ -353,21 +353,21 @@
     /*
      *
      */
-    onDocScroll: function(){
+    onDocScroll(){
       this.hidePicker();
     },
     /*
      *
      */
-    hidePicker: function(){
-      var me = this;
+    hidePicker(){
+      const me = this;
 
-      if (me.picker !== false && me.picker.hide){
+      if (me.picker !== false && me.picker.hide) {
         me.picker.hide();
       }
 
-      if (me.docSpy){
-        var docEl = F.get(document);
+      if (me.docSpy) {
+        const docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
         docEl.un('scroll', me.onDocScroll, me);
@@ -376,15 +376,15 @@
     /*
      *
      */
-    toggleShowPicker: function(){
-      var me = this;
+    toggleShowPicker(){
+      const me = this;
 
-      if (me.picker === true){
+      if (me.picker === true) {
         me.showPicker();
         return;
       }
 
-      if (me.picker.panel.el.css('display') === 'none'){
+      if (me.picker.panel.el.css('display') === 'none') {
         me.showPicker();
       }
       else {
@@ -394,14 +394,14 @@
     /*
      *
      */
-    renderPicker: function(){
-      var me = this;
+    renderPicker(){
+      const me = this;
 
-      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false){
+      if (!F.fullBuilt && !F.modules['grid'] && F.MODULELOAD !== false && F.MODULESLOAD !== false) {
         return;
       }
 
-      var config = {
+      const config = {
         window: true,
         date: me.date,
         format: me.format,
@@ -416,9 +416,9 @@
         }]
       };
 
-      var themeConfig = F.themes[me.theme].config;
+      const themeConfig = F.themes[me.theme].config;
 
-      if(themeConfig.datePickerHeight){
+      if (themeConfig.datePickerHeight) {
         config.height = themeConfig.datePickerHeight;
       }
 
@@ -427,17 +427,17 @@
     /*
      * @return {String}
      */
-    get: function(){
-      var me = this;
+    get(){
+      const me = this;
 
-      if (me.input.dom.value === ''){
+      if (me.input.dom.value === '') {
         delete me.date;
         delete me.value;
 
         return '';
       }
 
-      if (me.date){
+      if (me.date) {
         return F.Date.format(me.date, me.format.write, undefined, me.format.mode);
       }
       else {
@@ -447,13 +447,13 @@
     /*
      * @return {Date}
      */
-    getDate: function(){
+    getDate(){
       return this.date || '';
     },
     /*
      *
      */
-    onBeforeHide: function(){
+    onBeforeHide(){
       this.hidePicker();
     },
     /*
@@ -461,10 +461,10 @@
      * @param {Date} newDate
      * @param {Boolean} hidePicker
      */
-    onPickerChangeDate: function(picker, newDate, hidePicker){
-      var me = this;
+    onPickerChangeDate(picker, newDate, hidePicker){
+      const me = this;
 
-      if (hidePicker !== false){
+      if (hidePicker !== false) {
         me.picker.hide();
       }
 
@@ -474,8 +474,8 @@
     /*
      *
      */
-    onInput: function(){
-      var me = this,
+    onInput(){
+      const me = this,
         input = me.input,
         value = input.dom.value,
         oldValue = me.acceptedValue;
@@ -492,16 +492,16 @@
     /*
      * @return {Boolean}
      */
-    isValid: function(){
-      var me = this;
+    isValid(){
+      const me = this;
 
       return F.Date.parse(me.get(), me.format.edit, me.format.mode).toString() !== 'Invalid Date';
     },
     /*
      * @param {String|Date|Number} value
      */
-    set: function(value){
-      var me = this;
+    set(value){
+      const me = this;
 
       switch (value){
         case '':
@@ -519,8 +519,8 @@
      * @param {*} oldValue
      * @return {Boolean}
      */
-    isEqual: function(oldValue){
-      var me = this,
+    isEqual(oldValue){
+      const me = this,
         oldDate = F.Date.parse(oldValue, me.format.read, me.format.mode),
         value = me.input.dom.value;
 
@@ -528,8 +528,8 @@
 
       return oldValue === value;
     },
-    onEnter: function(){
-      var me = this,
+    onEnter(){
+      const me = this,
         input = me.input,
         value = input.dom.value,
         oldValue = me.acceptedValue;

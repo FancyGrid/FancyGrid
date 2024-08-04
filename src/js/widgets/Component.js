@@ -1,7 +1,7 @@
 /*
  *
  */
-Fancy.enableCompo = function(){
+Fancy.enableCompo = () => {
   var doc = document,
     componentsLength = 0,
     components = {},
@@ -27,7 +27,7 @@ Fancy.enableCompo = function(){
   function findComponent(){
     if (componentsLength === 0) return;
 
-    for (var p in components){
+    for (const p in components) {
       var comp = components[p],
         founded = doc.querySelectorAll(p),
         attrPreSelector = comp.appPreSelector ? comp.appPreSelector + '-' : 'data-',
@@ -37,7 +37,7 @@ Fancy.enableCompo = function(){
         j,
         jL;
 
-      if (founded.length === 0){
+      if (founded.length === 0) {
         return;
       }
 

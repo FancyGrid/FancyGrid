@@ -14,14 +14,14 @@ Fancy.define('Fancy.toolbar.Tab', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
   },
-  cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
+  cls: `${Fancy.BUTTON_CLS} ${Fancy.TAB_TBAR_CLS}`,
   /*
    *
    */
-  render: function(){
+  render(){
     this.Super('render', arguments);
   }
 });

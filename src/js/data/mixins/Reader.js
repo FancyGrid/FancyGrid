@@ -7,19 +7,19 @@ Fancy.Mixin('Fancy.store.mixin.Reader', {
   /*
    *
    */
-  initReader: function(){
-    var me = this,
+  initReader(){
+    const me = this,
       proxy = me.proxy;
 
-    if(proxy.reader){
+    if (proxy.reader) {
       me.configReader(proxy.reader);
     }
   },
   /*
    * @param {String|Object} reader
    */
-  configReader: function(reader){
-    var me = this;
+  configReader(reader){
+    const me = this;
 
     switch(Fancy.typeOf(reader)){
       case 'string':
@@ -29,7 +29,7 @@ Fancy.Mixin('Fancy.store.mixin.Reader', {
             me.readerType = reader;
             break;
           default:
-            throw new Error('[FancyGrid Error] - reader ' + reader + ' does not exist');
+            throw new Error(`[FancyGrid Error] - reader ${reader} does not exist`);
         }
 
         break;
@@ -43,7 +43,7 @@ Fancy.Mixin('Fancy.store.mixin.Reader', {
             me.readerType = reader.type;
             break;
           default:
-            throw new Error('[FancyGrid Error] - reader ' + reader.type + ' does not exist');
+            throw new Error(`[FancyGrid Error] - reader ${reader.type} does not exist`);
         }
 
         if(reader.root){

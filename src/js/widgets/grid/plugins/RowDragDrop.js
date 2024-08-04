@@ -4,7 +4,7 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.DragRowsManager', {
     singleton: true,
@@ -12,22 +12,20 @@
      * @constructor
      */
     constructor: function(){
-      var me = this;
-
-      me.draggingRows = [];
+      this.draggingRows = [];
     },
     /*
      * @params {Object} grid
      * @params {Array} rows
      */
-    add: function(grid, rows){
-      var me = this,
+    add(grid, rows){
+      const me = this,
         docEl = Fancy.get(document);
 
       me.activeGrid = grid;
       me.draggingRows = rows;
 
-      docEl.on('mouseenter', me.onMouseEnterGrid, me, '.' + Fancy.GRID_CLS);
+      docEl.on('mouseenter', me.onMouseEnterGrid, me, `.${Fancy.GRID_CLS}`);
 
       if(me.activeGrid.dropZone){
         me.activeGrid.el.on('mouseleave', me.onMouseLeaveActiveGrid, me);
@@ -36,8 +34,8 @@
     /*
      *
      */
-    remove: function(){
-      var me = this,
+    remove(){
+      const me = this,
         docEl = Fancy.get(document);
 
       if(me.activeGrid && me.activeGrid.dropZone){
@@ -52,8 +50,8 @@
 
       docEl.un('mouseenter', me.onMouseEnterGrid);
     },
-    onMouseEnterGrid: function(e){
-      var me = this,
+    onMouseEnterGrid(e){
+      const me = this,
         targetEl = Fancy.get(e.currentTarget);
 
       if(targetEl.id === me.activeGrid.el.id){
@@ -77,7 +75,7 @@
 
         me.droppable = true;
 
-        var docEl = Fancy.get(document);
+        const docEl = Fancy.get(document);
 
         if(F.nojQuery){
           me.toGrid.el.on('mouseleave', me.onMouseLeaveGrid, me);
@@ -86,12 +84,11 @@
           docEl.once('mouseleave', me.onMouseLeaveGrid, me, '#' + me.toGrid.id);
         }
 
-        setTimeout(function(){
+        setTimeout(() => {
           if(me.dropOutSideRowIndex === undefined && me.toGrid){
-            var s = me.toGrid.store,
-              data = s.getDataView();
-
-            var rowIndex = data.length - 1;
+            const s = me.toGrid.store,
+              data = s.getDataView(),
+              rowIndex = data.length - 1;
 
             me.toGrid.rowdragdrop.activeRowIndex = rowIndex + 1;
 
@@ -103,8 +100,8 @@
         }, 100);
       }
     },
-    onMouseLeaveGrid: function(){
-      var me = this;
+    onMouseLeaveGrid(){
+      const me = this;
 
       if(F.nojQuery && me.toGrid){
         me.toGrid.el.un('mouseleave', me.onMouseLeaveGrid, me);
@@ -114,8 +111,8 @@
       delete me.toGrid;
       delete me.dropOutSideRowIndex;
     },
-    onMouseLeaveActiveGrid: function(){
-      var me = this,
+    onMouseLeaveActiveGrid(){
+      const me = this,
         docEl = Fancy.get(document);
 
       if(me.activeGrid && me.activeGrid.el){
@@ -126,7 +123,7 @@
         });
       }
     },
-    onMouseMoveOutSideActiveGrid: function(e){
+    onMouseMoveOutSideActiveGrid(e){
       var me = this,
         target = e.target,
         tagName = target.tagName.toLocaleLowerCase();
@@ -151,7 +148,7 @@
       if(me.activeGrid.dropZone(me.hoverEl)){
         me.dropEl = F.get(me.hoverEl);
 
-        me.dropEl.once('mouseleave', function(){
+        me.dropEl.once('mouseleave', () => {
           delete me.dropEl;
           delete me.hoverEl;
 
@@ -175,14 +172,14 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var DRM = F.DragRowsManager;
+  const F = Fancy;
+  const DRM = F.DragRowsManager;
 
   //CONSTANTS
-  var GRID_BODY_CLS = F.GRID_BODY_CLS;
-  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+  const GRID_BODY_CLS = F.GRID_BODY_CLS;
+  const GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
 
   F.define('Fancy.grid.plugin.RowDragDrop', {
     extend: F.Plugin,
@@ -206,8 +203,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
       me.addEvents('drop', 'start', 'dropoutside');
@@ -220,8 +217,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('beforecellmousedown', me.onBeforeCellMouseDown, me);
@@ -232,13 +229,10 @@
       me.on('dropoutside', me.onDropOutSide, me);
       me.on('start', me.onStart, me);
     },
-    disableSelectionMove: function(){
-      var me = this,
-        w = me.widget;
-
-      w.selection.disableSelectionMove();
+    disableSelectionMove(){
+      this.widget.selection.disableSelectionMove();
     },
-    showTip: function(e){
+    showTip(e){
       var me = this,
         w = me.widget,
         selection;
@@ -266,8 +260,8 @@
 
       me.tipShown = true;
     },
-    hideTip: function(){
-      var me = this;
+    hideTip(){
+      const me = this;
 
       if(me.tip){
         me.tip.hide();
@@ -275,8 +269,8 @@
 
       me.tipShown = false;
     },
-    onCellMouseDown: function(grid, o){
-      var me = this,
+    onCellMouseDown(grid, o){
+      const me = this,
         docEl = F.get(document),
         targetEl = F.get(o.e.target),
         tagName = targetEl.dom.tagName.toLocaleLowerCase();
@@ -288,8 +282,8 @@
       me.cellMouseDown = F.get(o.cell);
       docEl.once('mouseup', me.onDocMouseUp, me);
     },
-    onDocMouseUp: function(){
-      var me = this,
+    onDocMouseUp(){
+      const me = this,
         w = me.widget,
         docEl = F.get(document);
 
@@ -312,7 +306,7 @@
       }
 
       if(w.selection){
-        setTimeout(function(){
+        setTimeout(() => {
           w.selection.clearOverCells();
         }, 1);
         w.enableSelection();
@@ -325,10 +319,10 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onRowEnter: function(grid, o){
-      var me = this,
+    onRowEnter(grid, o){
+      const me = this,
         w = me.widget,
-        selected = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection();
+        selected = me.singleRowToDrag ? [me.singleRowToDrag.data] : w.getSelection();
 
       if(DRM.droppable && DRM.toGrid.id === w.id){
         DRM.dropOutSideRowIndex = o.rowIndex;
@@ -364,13 +358,13 @@
               var rowsGoOneByOne = true,
                 prevRowIndex;
 
-              F.each(selected, function(item){
+              F.each(selected, (item) => {
                 if(prevRowIndex === undefined){
                   prevRowIndex = w.getRowById(item.id);
                   return;
                 }
 
-                var rowIndex = w.getRowById(item.id);
+                const rowIndex = w.getRowById(item.id);
                 if(prevRowIndex !== rowIndex - 1){
                   rowsGoOneByOne = false;
                   return true;
@@ -390,7 +384,7 @@
           }
         }
 
-        var prevItem = w.get(prevRowIndex);
+        const prevItem = w.get(prevRowIndex);
         me.insertItem = prevItem;
       }
       else{
@@ -405,7 +399,7 @@
                 return;
               }
 
-              var rowIndex = w.getRowById(item.id);
+              const rowIndex = w.getRowById(item.id);
               if(prevRowIndex !== rowIndex - 1){
                 rowsGoOneByOne = false;
                 return true;
@@ -438,7 +432,7 @@
         me.insertItem = 0;
       }
 
-      var memory = w.selection.memory;
+      const memory = w.selection.memory;
       if(memory && memory.all && memory.exceptedLength === 0){
         me.dropOK = false;
         delete me.activeRowIndex;
@@ -452,8 +446,8 @@
      * @param {String} text
      * @param {Object} e
      */
-    initTip: function(){
-      var me = this,
+    initTip(){
+      const me = this,
         dropNotOkCls = me.dropNotOkCls;
 
       if (!me.tip){
@@ -463,7 +457,7 @@
         });
       }
     },
-    updateTipText: function(){
+    updateTipText(){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -487,8 +481,8 @@
         }
       }
     },
-    onDocMouseMove: function(e){
-      var me = this;
+    onDocMouseMove(e){
+      const me = this;
 
       if(me.singleRowToDrag || (me.cellMouseDown && me.cellMouseDown.hasClass(GRID_CELL_SELECTED_CLS))){
         if(!DRM.activeGrid){
@@ -500,8 +494,8 @@
         me.hideTip();
       }
     },
-    showCellsDropMask: function(){
-      var me = this,
+    showCellsDropMask(){
+      const me = this,
         w = me.widget,
         rowIndex = me.activeRowIndex - 1;
 
@@ -513,14 +507,14 @@
         w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').addCls(me.cellMaskCls);
       }
     },
-    clearCellsMask: function(){
-      var me = this,
+    clearCellsMask(){
+      const me = this,
         w = me.widget;
 
       w.el.select('.' + me.cellMaskCls).removeCls(me.cellMaskCls);
       w.el.select('.' + me.cellFirstRowMaskCls).removeCls(me.cellFirstRowMaskCls);
     },
-    onStart: function(){
+    onStart(){
       var me = this,
         w = me.widget,
         selection;
@@ -537,7 +531,7 @@
         DRM.add(w, selection);
       }
     },
-    onDrop: function(){
+    onDrop(){
       var me = this,
         w = me.widget,
         selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
@@ -566,8 +560,8 @@
         rowIndex = w.getRowById(me.insertItem.id) + 1;
         if(selection.length){
           var delta = 0;
-          F.each(selection, function(item){
-            var itemRowIndex = w.getRowById(item.id);
+          F.each(selection, (item) => {
+            const itemRowIndex = w.getRowById(item.id);
 
             if(itemRowIndex < rowIndex){
               delta++;
@@ -582,8 +576,8 @@
       w.store.changeDataView();
       w.update();
       if(!w.selection.memory){
-        F.each(selection, function(item){
-          var rowIndex = w.getRowById(item.id);
+        F.each(selection, (item) => {
+          const rowIndex = w.getRowById(item.id);
           w.flashRow(rowIndex);
         });
       }
@@ -591,10 +585,10 @@
       delete w.draggingRows;
       w.enableSelection();
     },
-    onDropOutSide: function(){
-      var me = this,
+    onDropOutSide(){
+      const me = this,
         w = me.widget,
-        selection = me.singleRowToDrag? [me.singleRowToDrag.data] : w.getSelection(),
+        selection = me.singleRowToDrag ? [me.singleRowToDrag.data] : w.getSelection(),
         rowIndex = DRM.dropOutSideRowIndex || 0;
 
       if(!me.singleRowToDrag && w.dropOutSideActions){
@@ -618,8 +612,8 @@
         DRM.remove();
       }
     },
-    onBeforeCellMouseDown: function(el, o){
-      var me = this,
+    onBeforeCellMouseDown(el, o){
+      const me = this,
         docEl = Fancy.get(document),
         w = me.widget,
         targetEl = F.get(o.e.target);
@@ -646,7 +640,7 @@
           }
 
           me.mouseDownDragEl = true;
-          docEl.once('mousemove', function(e){
+          docEl.once('mousemove', e => {
             me.showTip(e);
             docEl.on('mousemove', me.onDocMouseMove, me);
           });
@@ -657,23 +651,23 @@
     /*
      *
      */
-    initDropCls: function(){
-      var me = this,
+    initDropCls(){
+      const me = this,
         w = me.widget;
 
-      var dropCls = '#' + w.id + ' .' + me.dropZoneOverClass;
+      const dropCls = '#' + w.id + ' .' + me.dropZoneOverClass;
 
       me.dropCls = dropCls;
     },
     /*
      *
      */
-    initEnterLeave: function(){
-      var me = this,
+    initEnterLeave(){
+      const me = this,
         dropEl = F.select(me.dropCls);
 
       if (dropEl.length === 0){
-        setTimeout(function(){
+        setTimeout(() => {
           me.initEnterLeave();
         }, 500);
         return;
@@ -681,13 +675,13 @@
 
       dropEl.on('mouseleave', me.onMouseLeaveDropGroup, me);
     },
-    onMouseLeaveDropGroup: function(){
-      var me = this;
+    onMouseLeaveDropGroup(){
+      const me = this;
 
       me.dropOK = false;
       me.clearCellsMask();
     },
-    onRowLeave: function(grid, params){
+    onRowLeave(grid, params){
       var me = this,
         w = me.widget,
         s = w.store,

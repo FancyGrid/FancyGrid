@@ -3,19 +3,19 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var E = F.each;
+  const F = Fancy;
+  const E = F.each;
 
   //CONSTANTS
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var GRID_ROW_EDIT_CLS = F.GRID_ROW_EDIT_CLS;
-  var GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
-  var GRID_ROW_EDIT_BUTTON_UPDATE_CLS =  F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
-  var GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
-  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const GRID_ROW_EDIT_CLS = F.GRID_ROW_EDIT_CLS;
+  const GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
+  const GRID_ROW_EDIT_BUTTON_UPDATE_CLS = F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
+  const GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
+  const GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
-  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+  const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.plugin.RowEdit', {
     extend: F.Plugin,
@@ -32,15 +32,15 @@
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('scroll', me.onScroll, me);
@@ -63,20 +63,20 @@
     /*
      *
      */
-    onCollapse: function(){
+    onCollapse(){
       this.hide();
     },
     /*
      *
      */
-    onExpand: function(){
+    onExpand(){
       this.hide();
     },
     /*
      * @param {Object} o
      */
-    edit: function(o){
-      var me = this,
+    edit(o){
+      const me = this,
         w = me.widget,
         column = o.column;
 
@@ -92,8 +92,8 @@
     /*
      * @param {Object} o
      */
-    showEditor: function(o){
-      var me = this,
+    showEditor(o){
+      const me = this,
         w = me.widget;
 
       if(w.selection && w.selection.activeCell){
@@ -121,7 +121,7 @@
         me.setValues(o);
       }
       else {
-        var isHidden = me.el.css('display') === 'none';
+        const isHidden = me.el.css('display') === 'none';
         me.show();
         me.changePosition(o.rowIndex, !isHidden);
 
@@ -140,8 +140,8 @@
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         w = me.widget;
 
       if (w.leftColumns){
@@ -168,7 +168,8 @@
      * @param {String} fromSide
      * @return {Fancy.Element}
      */
-    renderTo: function(renderTo, columns, order, side, fromSide){
+    renderTo(renderTo, columns, order, side, fromSide){
+      const fieldEls = renderTo.select('.' + FIELD_CLS);
       var me = this,
         w = me.widget,
         container = F.get(document.createElement('div')),
@@ -190,7 +191,6 @@
         el = F.get(renderTo.dom.appendChild(container.dom));
       }
       else {
-        var fieldEls = renderTo.select('.' + FIELD_CLS);
 
         i = order;
         iL = order + 1;
@@ -227,23 +227,23 @@
       for (; i < iL; i++){
         column = columns[i];
 
-        var columnWidth = column.width;
+        const columnWidth = column.width;
 
-        var itemConfig = {
+        const itemConfig = {
           index: column.index,
           label: false,
-          style: style,
+          style,
           width: columnWidth,
           vtype: column.vtype,
           format: column.format,
           stopPropagation: true,
-          theme: theme,
+          theme,
           checkValidOnTyping: true,
           events: [{
             change: me.onFieldChange,
             delay: 100,
             scope: me
-          },{
+          }, {
             empty: me.onFieldEmpty,
             delay: 100,
             scope: me
@@ -435,7 +435,7 @@
     /*
      *
      */
-    renderButtons: function(){
+    renderButtons(){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -471,8 +471,8 @@
     /*
      *
      */
-    setSizes: function(o){
-      var me = this,
+    setSizes(o){
+      const me = this,
         w = me.widget;
 
       if (w.leftColumns){
@@ -492,7 +492,7 @@
     /*
      *
      */
-    setElSize: function(o){
+    setElSize(o){
       var me = this,
         w = me.widget,
         centerWidth = w.getCenterViewWidth(),
@@ -526,7 +526,7 @@
      * @param {Array} columns
      * @param {String} side
      */
-    _setSizes: function(firstRowCells, columns, side){
+    _setSizes(firstRowCells, columns, side){
       var me = this,
         i = 0,
         iL = columns.length,
@@ -579,7 +579,7 @@
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellSize: function(cell){
+    getCellSize(cell){
       var cellEl = F.get(cell),
         width = cellEl.width(),
         height = cellEl.height(),
@@ -594,15 +594,15 @@
       height += parseInt(cellEl.css('border-bottom-width')) * coeficient;
 
       return {
-        width: width,
-        height: height
+        width,
+        height
       };
     },
     /*
      * @param {Object} editor
      * @param {Number} size
      */
-    setEditorSize: function(editor, size){
+    setEditorSize(editor, size){
       if (editor.wtype === 'field.combo'){
         editor.size(size);
 
@@ -619,7 +619,7 @@
      * @param {Number} rowIndex
      * @param {Boolean} animate
      */
-    changePosition: function(rowIndex, animate){
+    changePosition(rowIndex, animate){
       var me = this,
         w = me.widget,
         scrollTop = w.infinite? 0 : w.scroller.getScroll(),
@@ -712,8 +712,8 @@
     /*
      *
      */
-    changeButtonsLeftPos: function(){
-      var me = this,
+    changeButtonsLeftPos(){
+      const me = this,
         w = me.widget,
         viewWidth = w.getCenterViewWidth(),
         buttonsElWidth = parseInt(me.buttonsEl.css('width'));
@@ -723,8 +723,8 @@
     /*
      * @param {Object} o
      */
-    setValues: function(o){
-      var me = this,
+    setValues(o){
+      const me = this,
         w = me.widget;
 
       if (w.leftColumns){
@@ -747,13 +747,13 @@
      * @param {Array} data
      * @param {Array} columns
      */
-    _setValues: function(data, columns){
-      var me = this;
+    _setValues(data, columns){
+      const me = this;
 
       E(columns, function(column){
-        var editor = column.rowEditor;
+        const editor = column.rowEditor;
 
-        if (editor){
+        if (editor) {
           switch (column.type){
             case 'action':
             case 'button':
@@ -787,8 +787,8 @@
     /*
      *
      */
-    onScroll: function(){
-      var me = this,
+    onScroll(){
+      const me = this,
         w = me.widget;
 
       if (me.rendered === false){
@@ -806,20 +806,20 @@
     /*
      *
      */
-    onColumnResize: function(){
-      var me = this;
+    onColumnResize(){
+      const me = this;
 
       if (me.rendered === false){
         return;
       }
 
       if(F.nojQuery){
-        setTimeout(function(){
+        setTimeout(() => {
           me.setSizes();
         }, 400);
       }
       else {
-        setTimeout(function(){
+        setTimeout(() => {
           me.setSizes();
         }, ANIMATE_DURATION);
       }
@@ -827,13 +827,13 @@
     /*
      *
      */
-    onClickUpdate: function(){
+    onClickUpdate(){
       this.saveChanges();
     },
     /*
      *
      */
-    saveChanges: function(){
+    saveChanges(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -841,8 +841,8 @@
         rowIndex = s.getRow(me.activeId),
         values = me.getComboNewValues();
 
-      for(var p in values){
-        var _values = s.getColumnUniqueData(p);
+      for(const p in values){
+        const _values = s.getColumnUniqueData(p);
         if(F.isString(_values[0])){
           _values.push(values[p]);
         }
@@ -864,17 +864,17 @@
     /*
      *
      */
-    prepareChanged: function(){
-      var me = this,
+    prepareChanged(){
+      const me = this,
         w = me.widget,
         data = me.changed;
 
-      for (var p in data){
-        var column = w.getColumnByIndex(p);
+      for (const p in data){
+        const column = w.getColumnByIndex(p);
 
         switch (column.type){
           case 'date':
-            var date = F.Date.parse(data[p], column.format.edit, column.format.mode),
+            const date = F.Date.parse(data[p], column.format.edit, column.format.mode),
               formattedValue = F.Date.format(date, column.format.read, column.format.mode);
 
             data[p] = formattedValue;
@@ -887,14 +887,14 @@
     /*
      *
      */
-    onClickCancel: function(){
+    onClickCancel(){
       this.hide();
     },
     /*
      *
      */
-    hide: function(){
-      var me = this,
+    hide(){
+      const me = this,
         w = me.widget;
 
       w.fire('beforeendedit', me.activeCellEditParams);
@@ -924,8 +924,8 @@
     /*
      *
      */
-    show: function(){
-      var me = this;
+    show(){
+      const me = this;
 
       if (me.leftEl){
         if(me.leftEl.css('display') === 'none'){
@@ -960,8 +960,8 @@
      * @param {*} newValue
      * @param {*} oldValue
      */
-    onFieldChange: function(field, newValue){
-      var me = this;
+    onFieldChange(field, newValue){
+      const me = this;
 
       if (!field.isValid()){
         delete me.changed[field.index];
@@ -970,8 +970,8 @@
         me.changed[field.index] = newValue;
       }
     },
-    onFieldEmpty: function(field){
-      var me = this;
+    onFieldEmpty(field){
+      const me = this;
 
       if (field.vtype && !field.isValid()){
         delete me.changed[field.index];
@@ -983,15 +983,15 @@
     /*
      *
      */
-    onFieldEnter: function(){
+    onFieldEnter(){
       this.saveChanges();
     },
     /*
      * @param {Number} index
      * @param {String} side
      */
-    hideField: function(index, side){
-      var w = this.widget,
+    hideField(index, side){
+      const w = this.widget,
         columns = w.getColumns(side),
         column = columns[index];
 
@@ -1003,8 +1003,8 @@
      * @param {Number} index
      * @param {String} side
      */
-    showField: function(index, side){
-      var w = this.widget,
+    showField(index, side){
+      const w = this.widget,
         columns = w.getColumns(side),
         column = columns[index];
 
@@ -1018,7 +1018,7 @@
      * @param {String} side
      * @param {String} fromSide
      */
-    moveEditor: function(column, index, side, fromSide){
+    moveEditor(column, index, side, fromSide){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1055,7 +1055,7 @@
      * @param {String} side
      * @return {Object}
      */
-    getField: function(index, side){
+    getField(index, side){
       var w = this.widget,
         body = w.getBody(side),
         field;
@@ -1073,78 +1073,78 @@
     /*
      *
      */
-    reSetColumnsEditorsLinks: function(){
+    reSetColumnsEditorsLinks(){
       var me = this,
         w = me.widget,
         cells = w.body.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.columns, function(column, i){
+      E(w.columns, (column, i) => {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
       cells = w.leftBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.leftColumns, function(column, i){
+      E(w.leftColumns, (column, i) => {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
       cells = w.rightBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.rightColumns, function(column, i){
+      E(w.rightColumns, (column, i) => {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
-    onBeforeColumnDrag: function(){
-      var me = this;
+    onBeforeColumnDrag(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnDrag: function(){
-      var me = this;
+    onColumnDrag(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnHide: function(){
-      var me = this;
+    onColumnHide(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnShow: function(){
-      var me = this;
+    onColumnShow(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onLockColumn: function(){
-      var me = this;
+    onLockColumn(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onRightLockColumn: function(){
-      var me = this;
+    onRightLockColumn(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onUnLockColumn:  function(){
-      var me = this;
+    onUnLockColumn(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    destroyEls: function(){
-      var me = this,
+    destroyEls(){
+      const me = this,
         w = me.widget;
 
       if(me.rendered){
         me.rendered = false;
 
         if (w.leftColumns){
-          F.each(w.leftColumns, function(column){
+          F.each(w.leftColumns, (column) => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -1152,7 +1152,7 @@
         }
 
         if (w.columns){
-          F.each(w.columns, function(column){
+          F.each(w.columns, (column) => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -1160,7 +1160,7 @@
         }
 
         if (w.rightColumns){
-          F.each(w.rightColumns, function(column){
+          F.each(w.rightColumns, (column) => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -1171,15 +1171,15 @@
     /*
      * @return {Boolean}
      */
-    isVisible: function(){
+    isVisible(){
       return this.el.css('display') !== 'none';
     },
     /*
      * @param {String} value
      * @return Function
      */
-    getEditFormat: function(type){
-      var me = this,
+    getEditFormat(type){
+      const me = this,
         w = me.widget,
         lang = w.lang,
         decimalSeparator = lang.decimalSeparator,
@@ -1188,7 +1188,7 @@
       switch(type){
         case 'currency':
           return function(value, params){
-            var currencySign = params.column.currency || lang.currencySign,
+            const currencySign = params.column.currency || lang.currencySign,
               precision = params.column.precision || 0;
 
             value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
@@ -1204,15 +1204,15 @@
     /*
      *
      */
-    getComboNewValues: function(){
-      var me = this,
+    getComboNewValues(){
+      const me = this,
         w = me.widget,
         columns = w.getColumns(),
         values = {};
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(column.type === 'combo' && column.editable && column.rowEditor){
-          var editor = column.rowEditor,
+          const editor = column.rowEditor,
             value = editor.get();
 
           if(editor.value === -1 && F.isString(value) && value.length){

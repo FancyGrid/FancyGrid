@@ -4,35 +4,35 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   /*
    * Constants
    */
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
-  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
-  var GRID_BODY_CLS = F.GRID_BODY_CLS;
-  var GRID_CELL_WRAPPER_CLS = F.GRID_CELL_WRAPPER_CLS;
-  var GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
-  var GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
-  var GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
-  var GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
-  var GRID_COLUMN_TREE_CLS = F.GRID_COLUMN_TREE_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_CELL_INNER_CLS = F.GRID_CELL_INNER_CLS;
+  const GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  const GRID_BODY_CLS = F.GRID_BODY_CLS;
+  const GRID_CELL_WRAPPER_CLS = F.GRID_CELL_WRAPPER_CLS;
+  const GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
+  const GRID_COLUMN_ELLIPSIS_CLS = F.GRID_COLUMN_ELLIPSIS_CLS;
+  const GRID_COLUMN_ORDER_CLS = F.GRID_COLUMN_ORDER_CLS;
+  const GRID_COLUMN_TEXT_CLS = F.GRID_COLUMN_TEXT_CLS;
+  const GRID_COLUMN_TREE_CLS = F.GRID_COLUMN_TREE_CLS;
 
-  var GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
-  var GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
-  var GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS =  F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
-  var GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
-  var GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
-  var GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
-  var GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
+  const GRID_COLUMN_SPARKLINE_CLS = F.GRID_COLUMN_SPARKLINE_CLS;
+  const GRID_COLUMN_CHART_CIRCLE_CLS = F.GRID_COLUMN_CHART_CIRCLE_CLS;
+  const GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS = F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
+  const GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
+  const GRID_COLUMN_PROGRESS_CLS = F.GRID_COLUMN_PROGRESS_CLS;
+  const GRID_COLUMN_H_BAR_CLS = F.GRID_COLUMN_H_BAR_CLS;
+  const GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
 
-  var GRID_ROW_EXPAND_CLS = F.GRID_ROW_EXPAND_CLS;
+  const GRID_ROW_EXPAND_CLS = F.GRID_ROW_EXPAND_CLS;
 
-  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+  const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
-  var spark = {
+  const spark = {
     sparklineline: GRID_COLUMN_SPARKLINE_CLS,
     sparklinebar: GRID_COLUMN_SPARKLINE_CLS,
     sparklinetristate: GRID_COLUMN_SPARKLINE_CLS,
@@ -71,8 +71,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
       me.addEvents('adddomcolumns');
@@ -84,8 +84,8 @@
     /*
      *
      */
-    initTpl: function(){
-      var me = this;
+    initTpl(){
+      const me = this;
 
       me.cellTpl = new F.Template(me.cellTpl);
       me.cellWrapperTpl = new F.Template(me.cellWrapperTpl);
@@ -93,15 +93,15 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         id = w.id;
 
       w.on('afterrender', me.onAfterRender, me);
 
-      var columnSelector = '.' + GRID_COLUMN_CLS + '[grid="' + id + '"]',
-        cellSelector = columnSelector + ' div.' + GRID_CELL_CLS;
+      const columnSelector = `.${GRID_COLUMN_CLS}[grid="${id}"]`,
+        cellSelector = `${columnSelector} div.${GRID_CELL_CLS}`;
 
       me.el.on('click', me.onCellClick, me, cellSelector);
       if(!Fancy.isTouch){
@@ -131,26 +131,26 @@
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      let me = this,
         w = me.widget,
         renderTo,
         el = F.get(document.createElement('div'));
 
       el.addCls(GRID_BODY_CLS);
       el.attr('role', 'presentation');
-      renderTo = w.el.select('.fancy-grid-' + me.side).dom;
+      renderTo = w.el.select(`.fancy-grid-${me.side}`).dom;
       me.el = F.get(renderTo.appendChild(el.dom));
     },
     /*
      *
      */
-    onAfterRender: function(){
-      var me = this,
+    onAfterRender(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
-      if(me.side === 'left' && !w.leftColumns.length){
+      if (me.side === 'left' && !w.leftColumns.length) {
         return;
       }
 
@@ -176,21 +176,21 @@
      * @param {Number} scrollLeft
      * @param {Boolean} animate
      */
-    setColumnsPosition: function(scrollLeft, animate){
+    setColumnsPosition(scrollLeft, animate){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length,
         columnsWidth = 0,
-        bodyDomColumns = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
+        bodyDomColumns = me.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"]`);
 
       scrollLeft = scrollLeft || me.scrollLeft || 0;
 
       columnsWidth += scrollLeft;
 
-      for (; i < iL; i++){
-        var column = columns[i],
+      for (; i < iL; i++) {
+        const column = columns[i],
           columnEl = bodyDomColumns.item(i);
 
         if(animate && !F.nojQuery){
@@ -213,14 +213,14 @@
      * @param {Number} delta
      * @return {Object}
      */
-    wheelScroll: function(delta){
-      var me = this,
+    wheelScroll(delta){
+      const me = this,
         w = me.widget,
         s = w.store,
         knobOffSet = w.knobOffSet,
-        columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]');
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"]`);
 
-      if (columnsDom.length === 0){
+      if (columnsDom.length === 0) {
         return;
       }
 
@@ -236,15 +236,15 @@
           deltaScroll: 30 * delta
         };
 
-      if(scrollRightPath < 0 ){
+      if (scrollRightPath < 0 ) {
         scrollRightPath = 0;
       }
 
-      for (; i < iL; i++){
-        var columnEl = columnsDom.item(i),
+      for (; i < iL; i++) {
+        let columnEl = columnsDom.item(i),
           topValue = parseInt(columnEl.css('top')) + 30 * delta;
 
-        if (topValue > 0){
+        if (topValue > 0) {
           topValue = 0;
           o.newScroll = 0;
         }
@@ -270,12 +270,12 @@
      * @param {Boolean} [animate]
      * @return {Object}
      */
-    scroll: function(y, x, animate){
+    scroll(y, x, animate){
       var me = this,
         w = me.widget,
         scroller = w.scroller,
         s = w.store,
-        columnsDom = me.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"]'),
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"]`),
         i = 0,
         iL = columnsDom.length,
         o = {};
@@ -284,11 +284,11 @@
         o.scrollTop = y;
         if(w.infinite){
           if(scroller.scrollTop !== y){
-            var newRowToView = Math.round(y/w.cellHeight);
+            const newRowToView = Math.round(y / w.cellHeight);
             if(s.infiniteScrolledToRow !== newRowToView){
               s.infiniteScrolledToRow = newRowToView;
               if(me.infiniteTimeOut){
-                var timeDelta = new Date() - me.infiniteTimeOutDate;
+                const timeDelta = new Date() - me.infiniteTimeOutDate;
 
                 if(timeDelta < 100){
                   clearInterval(me.infiniteTimeOut);
@@ -310,8 +310,8 @@
           }
         }
         else {
-          for (; i < iL; i++){
-            var columnEl = columnsDom.item(i);
+          for (; i < iL; i++) {
+            const columnEl = columnsDom.item(i);
             columnEl.css('top', -y + 'px');
           }
         }
@@ -345,22 +345,22 @@
     /*
      *
      */
-    setHeight: function(){
-      var me = this,
+    setHeight(){
+      const me = this,
         height = me.widget.getBodyHeight();
 
-      me.css('height', height + 'px');
+      me.css('height', `${height}px`);
     },
     /*
      * @param {Object} e
      */
-    onCellClick: function(e){
-      var me = this,
+    onCellClick(e){
+      const me = this,
         w = me.widget;
 
-      if(F.isTouch){
-        if(me.waitForDblClickInt){
-          var now = new Date();
+      if (F.isTouch) {
+        if (me.waitForDblClickInt) {
+          const now = new Date();
 
           if(now - me.waitForDblClickDate < 500){
             w.fire('celldblclick', me.getEventParams(e));
@@ -387,7 +387,7 @@
       w.fire('rowclick', me.getEventParams(e));
       w.fire('columnclick', me.getColumnEventParams(e));
 
-      if (w.activated === false){
+      if (w.activated === false) {
         w.activated = true;
         w.fire('activate');
       }
@@ -395,8 +395,8 @@
     /*
      * @param {Object} e
      */
-    onCellDblClick: function(e){
-      var me = this,
+    onCellDblClick(e){
+      const me = this,
         w = me.widget;
 
       w.fire('celldblclick', me.getEventParams(e));
@@ -407,8 +407,8 @@
      * @param {Object} e
      * @return {false|Object}
      */
-    getEventParams: function(e){
-      var me = this,
+    getEventParams(e){
+      const me = this,
         w = me.widget,
         s = w.store,
         columns = me.getColumns(),
@@ -416,22 +416,22 @@
         cellEl = F.get(e.currentTarget),
         columnEl = cellEl.parent();
 
-      if (cellEl.parent().dom === undefined){
+      if (cellEl.parent().dom === undefined) {
         return false;
       }
 
-      if (s.getLength() === 0){
+      if (s.getLength() === 0) {
         return false;
       }
 
-      if(columnEl.attr('index') === undefined){
+      if (columnEl.attr('index') === undefined) {
         //Touch bug
         return false;
       }
 
-      var infiniteScrolledToRow = s.infiniteScrolledToRow || 0;
+      const infiniteScrolledToRow = s.infiniteScrolledToRow || 0;
 
-      var columnIndex = parseInt(columnEl.attr('index')),
+      let columnIndex = parseInt(columnEl.attr('index')),
         rowIndex = parseInt(cellEl.attr('index')),
         column = columns[columnIndex],
         key = column.index,
@@ -440,30 +440,30 @@
         data = s.get(rowIndex + infiniteScrolledToRow),
         item = s.getById(id);
 
-      if (column.smartIndexFn){
+      if (column.smartIndexFn) {
         value = column.smartIndexFn(data);
       }
 
       return {
-        e: e,
-        id: id,
+        e,
+        id,
         side: me.side,
-        cell: cell,
-        column: column,
-        rowIndex: rowIndex,
+        cell,
+        column,
+        rowIndex,
         infiniteRowIndex: rowIndex + infiniteScrolledToRow,
-        columnIndex: columnIndex,
-        value: value,
-        data: data,
-        item: item
+        columnIndex,
+        value,
+        data,
+        item
       };
     },
     /*
      * @param {Object} e
      * @return {Object}
      */
-    getColumnEventParams: function(e){
-      var me = this,
+    getColumnEventParams(e){
+      const me = this,
         w = me.widget,
         s = w.store,
         cellEl = F.get(e.currentTarget),
@@ -490,8 +490,8 @@
      * @param {Object} e
      * @return {Object}
      */
-    getColumnHoverEventParams: function(e){
-      var me = this,
+    getColumnHoverEventParams(e){
+      let me = this,
         columnEl = F.get(e.currentTarget),
         columnIndex = parseInt(columnEl.attr('index')),
         columns = me.getColumns(),
@@ -503,25 +503,25 @@
       }
 
       return {
-        e: e,
+        e,
         side: me.side,
-        columnIndex: columnIndex,
-        column: column,
+        columnIndex,
+        column,
         columnDom: columnEl.dom,
-        cell: cell
+        cell
       };
     },
     /*
      * @return {Array}
      */
-    getColumns: function(){
+    getColumns(){
       return this.widget.getColumns(this.side);
     },
     /*
      * @param {Object} e
      */
-    onCellMouseEnter: function(e){
-      var me = this,
+    onCellMouseEnter(e){
+      const me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
@@ -553,8 +553,8 @@
     /*
      * @param {Object} e
      */
-    onCellMouseDown: function(e){
-      var me = this,
+    onCellMouseDown(e){
+      const me = this,
         w = me.widget,
         params = me.getEventParams(e),
         columnParams = {
@@ -583,15 +583,15 @@
     /*
      * @param {Object} e
      */
-    onCellMouseLeave: function(e){
-      var me = this,
+    onCellMouseLeave(e){
+      const me = this,
         w = me.widget,
         params = me.getEventParams(e),
         prevCellOver = me.prevCellOver;
 
       if (F.nojQuery){
         if(params.rowIndex + 1 === w.getDataView().length){
-          var cellParams = params.cell.getBoundingClientRect();
+          const cellParams = params.cell.getBoundingClientRect();
 
           if(e.clientY > cellParams.top + cellParams.height - 2){
             w.fire('rowleave', prevCellOver);
@@ -617,8 +617,8 @@
     /*
      * @param {Object} e
      */
-    onColumnMouseEnter: function(e){
-      var me = this,
+    onColumnMouseEnter(e){
+      const me = this,
         w = me.widget,
         params = me.getColumnHoverEventParams(e),
         prevColumnOver = me.prevColumnOver;
@@ -637,8 +637,8 @@
     /*
      * @param {Object} e
      */
-    onColumnMouseLeave: function(){
-      var me = this,
+    onColumnMouseLeave(){
+      const me = this,
         w = me.widget;
 
       w.fire('columnleave', me.prevColumnOver);
@@ -649,8 +649,8 @@
      * @param {Number} column
      * @return {Fancy.Element}
      */
-    getCell: function(row, column){
-      var me = this,
+    getCell(row, column){
+      const me = this,
         w = me.widget;
 
       return this.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]');
@@ -660,8 +660,8 @@
      * @param {Number} column
      * @return {HTMLElement}
      */
-    getDomCell: function(row, column){
-      var me = this,
+    getDomCell(row, column){
+      const me = this,
         w = me.widget,
         dom = me.el.select('.' + GRID_COLUMN_CLS + '[index="' + column + '"][grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + row + '"]').dom;
 
@@ -671,8 +671,8 @@
      * @param {Number} index
      * @return {HTMLElement}
      */
-    getDomColumn: function(index){
-      var me = this,
+    getDomColumn(index){
+      const me = this,
         w = me.widget;
 
       return me.el.select('.' + GRID_COLUMN_CLS + '[index="' + index + '"][grid="' + w.id + '"]').dom;
@@ -680,8 +680,8 @@
     /*
      *
      */
-    destroy: function(){
-      var me = this,
+    destroy(){
+      const me = this,
         el = me.el,
         cellSelector = 'div.' + GRID_CELL_CLS,
         columnSelector = 'div.' + GRID_COLUMN_CLS;
@@ -705,7 +705,7 @@
     /*
      * @param {Number} orderIndex
      */
-    hideColumn: function(orderIndex){
+    hideColumn(orderIndex){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -747,7 +747,7 @@
      * @param {Number} orderIndex
      * @param {Number} [columnWidth]
      */
-    showColumn: function(orderIndex, columnWidth){
+    showColumn(orderIndex, columnWidth){
       var me = this,
         w = me.widget,
         columns = me.getColumns(),
@@ -772,7 +772,7 @@
       for (; i < iL; i++){
         columnEl = columnEls.item(i);
 
-        var columnLeft = parseInt(columnEl.css('left')),
+        const columnLeft = parseInt(columnEl.css('left')),
           column = columns[i];
 
         if(column.hidden){
@@ -792,7 +792,7 @@
     /*
      * @param {Number} orderIndex
      */
-    removeColumn: function(orderIndex){
+    removeColumn(orderIndex){
       var me = this,
         columns = me.el.select('.' + GRID_COLUMN_CLS),
         column = columns.item(orderIndex),
@@ -803,7 +803,7 @@
       column.destroy();
 
       for (; i < iL; i++){
-        var _column = columns.item(i),
+        const _column = columns.item(i),
           left = parseInt(_column.css('left')) - columnWidth;
 
         _column.attr('index', i - 1);
@@ -814,7 +814,7 @@
      * @param {Number} index
      * @param {Object} column
      */
-    insertColumn: function(index, column){
+    insertColumn(index, column){
       var me = this,
         w = me.widget,
         _columns = me.getColumns(),
@@ -845,7 +845,7 @@
           continue;
         }
 
-        var _column = columns.item(i);
+        const _column = columns.item(i);
         left = parseInt(_column.css('left')) + column.width;
 
         _column.css('left', left);
@@ -907,7 +907,7 @@
         }
       }
 
-      var scrolled = w.scroller.getScroll();
+      const scrolled = w.scroller.getScroll();
       el.css('top', -scrolled);
 
       if (index === 0 && columns.length){
@@ -932,22 +932,22 @@
       me.checkDomCells();
       me.updateRows(undefined, index);
     },
-    reSetIndexes: function(){
-      var me = this,
-        columnsDom = me.el.select('.' + GRID_COLUMN_CLS);
+    reSetIndexes(){
+      const me = this,
+        columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`);
 
-      columnsDom.each(function(el, i){
+      columnsDom.each((el, i) => {
         el.attr('index', i);
       });
     },
     /*
      *
      */
-    clearColumnsStyles: function(){
-      var me = this,
-        cells = me.el.select('div.' + GRID_CELL_CLS);
+    clearColumnsStyles(){
+      const me = this,
+        cells = me.el.select(`div.${GRID_CELL_CLS}`);
 
-      cells.each(function(cell){
+      cells.each((cell) =>{
         cell.css('color', '');
         cell.css('background-color', '');
       });
@@ -955,22 +955,22 @@
     /*
      *
      */
-    updateColumnsSizes: function(){
-      var me = this,
+    updateColumnsSizes(){
+      let me = this,
         w = me.widget,
         columns = me.getColumns(),
         left = 0;
 
-      if(me.side === 'center'){
+      if (me.side === 'center') {
         left = -w.scroller.scrollLeft;
       }
 
-      F.each(columns, function(column, i){
-        if(column.hidden){
+      F.each(columns, (column, i) => {
+        if (column.hidden) {
           return;
         }
 
-        var el = me.el.select('.' + GRID_COLUMN_CLS + '[index="'+i+'"]');
+        const el = me.el.select(`.${GRID_COLUMN_CLS}[index="${i}"]`);
         if(Fancy.nojQuery){
           //Bug: zepto dom module does not support for 2 animation params.
           //It is not fix
@@ -978,7 +978,7 @@
           //el.animate({'left': left}, ANIMATE_DURATION);
           el.css({
             width: column.width,
-            left: left
+            left
           });
         }
         else{
@@ -987,7 +987,7 @@
           el.animate({
             width: column.width,
             left: left
-          }, ANIMATE_DURATION, undefined, function (){
+          }, ANIMATE_DURATION, undefined, () =>{
             el.css('overflow', '');
           });
 
@@ -1000,13 +1000,13 @@
     /*
      *
      */
-    reSetColumnsAlign: function(){
-      var me = this,
+    reSetColumnsAlign(){
+      const me = this,
         columns = me.getColumns(),
-        columnEls = this.el.select('.' + GRID_COLUMN_CLS);
+        columnEls = this.el.select(`.${GRID_COLUMN_CLS}`);
 
       columnEls.each(function(columnEl, i){
-        var column = columns[i];
+        const column = columns[i];
 
         columnEl.css('text-align', column.cellAlign || '');
       });
@@ -1014,16 +1014,16 @@
     /*
      *
      */
-    reSetColumnsCls: function(){
-      var me = this,
+    reSetColumnsCls(){
+      const me = this,
         columns = me.getColumns(),
-        columnEls = me.el.select('.' + GRID_COLUMN_CLS);
+        columnEls = me.el.select(`.${GRID_COLUMN_CLS}`);
 
-      columnEls.each(function(columnEl, i){
-        var column = columns[i],
+      columnEls.each((columnEl, i) => {
+        const column = columns[i],
           clss = columnEl.attr('class').split(' ');
 
-        F.each(clss, function(cls){
+        F.each(clss, (cls) => {
           switch(cls){
             case GRID_COLUMN_CLS:
               break;
@@ -1036,11 +1036,11 @@
           }
         });
 
-        if(column.cls){
+        if (column.cls) {
           columnEl.addCls(column.cls);
         }
 
-        if(column.ellipsis){
+        if (column.ellipsis) {
           switch (column.type){
             case 'checkbox':
               break;
@@ -1079,19 +1079,19 @@
     /*
      * @param {String] cellSelector
      */
-    initTouchContextMenu: function(cellSelector){
-      var me = this;
+    initTouchContextMenu(cellSelector){
+      const me = this;
 
       me.el.on('touchstart', me.onTouchStart, me, cellSelector);
     },
     /*
      *
      */
-    onTouchStart: function(e){
-      var me = this;
+    onTouchStart(e){
+      const me = this;
 
       me.touchEvent = e;
-      me.intTouchStart = setTimeout(function(){
+      me.intTouchStart = setTimeout(() =>{
         me.touchLongPress = true;
       }, 1000);
 
@@ -1101,11 +1101,11 @@
     /*
      *
      */
-    onTouchEnd: function(){
-      var me = this,
+    onTouchEnd(){
+      const me = this,
         w = me.widget;
 
-      if(me.touchLongPress){
+      if (me.touchLongPress) {
         w.fire('contextmenu', me.getEventParams(me.touchEvent));
       }
 
@@ -1116,8 +1116,8 @@
     /*
      *
      */
-    onTouchMove: function(){
-      var me = this;
+    onTouchMove(){
+      const me = this;
 
       clearInterval(me.intTouchStart);
       delete me.touchLongPress;
@@ -1126,8 +1126,8 @@
     /*
      *
      */
-    onContextMenu: function(e){
-      var me = this,
+    onContextMenu(e){
+      const me = this,
         w = me.widget;
 
       w.fire('contextmenu', me.getEventParams(e));
@@ -1135,16 +1135,16 @@
     /*
      *
      */
-    updateColumnsVisibility: function(){
-      var me = this,
+    updateColumnsVisibility(){
+      const me = this,
         columns = me.getColumns(),
         //For jQuery :not does not work on me.el
-        columnEls = me.el.parent().select(':not(.' + GRID_ROW_EXPAND_CLS + ') .' + GRID_COLUMN_CLS);
+        columnEls = me.el.parent().select(`:not(.${GRID_ROW_EXPAND_CLS}) .${GRID_COLUMN_CLS}`);
 
-      columnEls.each(function(columnEl, i){
-        var column = columns[i];
+      columnEls.each((columnEl, i) => {
+        const column = columns[i];
 
-        if(column.hidden){
+        if (column.hidden) {
           columnEl.hide();
         }
         else if(columnEl.css('display') === 'none'){
@@ -1155,7 +1155,7 @@
     /*
      *
      */
-    onBodyLeave: function(){
+    onBodyLeave(){
       delete this.prevCellOver;
     }
   });

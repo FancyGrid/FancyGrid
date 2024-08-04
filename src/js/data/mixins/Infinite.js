@@ -6,10 +6,10 @@ Fancy.Mixin('Fancy.store.mixin.Infinite',{
   /*
    *
    */
-  initInfinite: function(){
-    var me = this;
+  initInfinite(){
+    const me = this;
 
-    if(me.infinite === undefined){
+    if (me.infinite === undefined) {
       return;
     }
 
@@ -25,8 +25,8 @@ Fancy.Mixin('Fancy.store.mixin.Infinite',{
   /*
    *
    */
-  getNumOfInfiniteRows: function(){
-    var me = this;
+  getNumOfInfiniteRows(){
+    const me = this;
 
     if(me.filteredData){
       return me.filteredData.length;

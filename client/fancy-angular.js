@@ -9,7 +9,7 @@
       },
       link : function($scope, $element, $attrs){
         if($scope.fgConfig){
-          var config = $scope.fgConfig;
+          const config = $scope.fgConfig;
 
           config.renderTo = $scope.id;
 
@@ -19,6 +19,7 @@
     };
   }]);
 })();
+
 (function(){
   'use strict';
   angular.module('fancyform-angularjs', []).directive('fancyform', [function(){
@@ -30,7 +31,7 @@
       },
       link : function($scope, $element, $attrs){
         if($scope.fgConfig){
-          var config = $scope.fgConfig;
+          const config = $scope.fgConfig;
 
           config.renderTo = $scope.id;
 

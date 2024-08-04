@@ -4,7 +4,7 @@
  * @param {Array} html
  */
 Fancy.Template = function(html){
-  var me = this;
+  const me = this;
 
   if(Fancy.isArray(html)){
     me.tpl = html.join('');
@@ -21,16 +21,16 @@ Fancy.Template.prototype = {
   /*
    * @param {Array} values
    */
-  getHTML: function(values){
-    return this.compiled(values || {});
+  getHTML(values = {}){
+    return this.compiled(values);
   },
   /*
    * @return {Fancy.Template}
    */
-  compile: function(){
-    var me = this;
+  compile(){
+    const me = this;
 
-      function fn(m, name){
+    function fn(m, name){
         name = "values['" + name + "']";
         return "'+(" + name + " === undefined ? '' : " + name + ")+'";
       }

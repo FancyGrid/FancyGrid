@@ -5,8 +5,8 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  initTrackDirty: function(){
-    var me = this;
+  initTrackDirty(){
+    const me = this;
 
     me.changed = {
       length: 0
@@ -30,15 +30,15 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtySet: function(store, o){
-    var me = this,
+  onDirtySet(store, o){
+    const me = this,
       id = o.id;
 
-    if(o.key === '$selected'){
+    if (o.key === '$selected') {
       return;
     }
 
-    if(me.changed[id] === undefined){
+    if (me.changed[id] === undefined) {
       me.changed[id] = {
         length: 1
       };
@@ -48,7 +48,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       me.changed[id].length++;
     }
 
-    if(me.changed[id][o.key] === undefined){
+    if (me.changed[id][o.key] === undefined) {
       me.changed[id][o.key] = {
         originValue: o.oldValue
       };
@@ -94,13 +94,13 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtyRemove: function(store, id, record, rowIndex){
-    var me = this;
+  onDirtyRemove(store, id, record, rowIndex){
+    const me = this;
 
     me.removed[id] = record.data;
     me.removed.length++;
 
-    if(me.undoStoppped !== true){
+    if (me.undoStoppped !== true) {
       if(!me.redoing){
         me.redoActions = [];
       }
@@ -115,17 +115,17 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtyInsert: function(store, o){
-    var me = this;
+  onDirtyInsert(store, o){
+    const me = this;
 
-    if(me.treeExpanding){
+    if (me.treeExpanding) {
       return;
     }
 
     me.inserted[o.id] = o;
     me.inserted.length++;
 
-    if(me.undoStoppped !== true){
+    if (me.undoStoppped !== true) {
       if(!me.redoing){
         me.redoActions = [];
       }
@@ -136,8 +136,8 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       });
     }
   },
-  clearDirty: function(){
-    var me = this;
+  clearDirty() {
+    const me = this;
 
     me.changed = {
       length: 0
@@ -157,19 +157,19 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    * @return {Boolean}
    */
-  isDirty: function(){
+  isDirty(){
     var me = this,
       dirty = false;
 
-    if(me.changed.length){
+    if (me.changed.length) {
       dirty = true;
     }
 
-    if(me.removed.length){
+    if (me.removed.length) {
       dirty = true;
     }
 
-    if(me.inserted.length){
+    if (me.inserted.length) {
       dirty = true;
     }
 

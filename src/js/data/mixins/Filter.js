@@ -7,7 +7,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    * @param {Object} item
    * @return {Boolean}
    */
-  filterCheckItem: function(item){
+  filterCheckItem(item){
     var me = this,
       w = me.widget,
       caseSensitive = w.filterCaseSensitive,
@@ -20,14 +20,14 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
       item = new Fancy.Model(item);
     }
 
-    if(me.isTree){
-      var child = item.get('child');
+    if (me.isTree) {
+      const child = item.get('child');
 
-      if(child){
-        var filteredChild = [];
+      if (child) {
+        const filteredChild = [];
 
-        Fancy.each(child, function(_child){
-          var item = _child.data? _child: new me.model(_child),
+        Fancy.each(child, _child => {
+          const item = _child.data ? _child : new me.model(_child),
             filterChild = me.filterCheckItem(item);
 
           if(filterChild){
@@ -47,7 +47,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
     // It requires to find way to enable OR filtering
     //filters = me.combineСomparisonSigns(filters);
 
-    for(var p in filters){
+    for (var p in filters){
       var column = w.getColumnByIndex(p),
         indexFilters = filters[p],
         indexValue = item.data[p];
@@ -240,7 +240,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    * For usual filtering it is ok, but for Tree Grid it does not suit.
    * @param {Boolean} [fire]
    */
-  filterData: function(fire){
+  filterData(fire){
     var me = this,
       w = me.widget,
       data = me.data,
@@ -289,7 +289,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @param {Boolean} [load]
    */
-  serverFilter: function(load){
+  serverFilter(load){
     var me = this,
       value = '[',
       filters = me.filters || {};
@@ -302,9 +302,9 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
           case 'format':
             continue;
         }
-        var operator = me.filterOperators[q];
+        const operator = me.filterOperators[q];
 
-        if(operator === 'or'){
+        if (operator === 'or') {
           var values = [];
 
           for(var pp in filterItem[q]){
@@ -343,14 +343,14 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @return {Boolean}
    */
-  hasFilters: function(){
-    var me = this;
+  hasFilters(){
+    const me = this;
 
-    if(!me.filters){
+    if (!me.filters) {
       return false;
     }
 
-    for(var p in me.filters){
+    for(const p in me.filters){
       return true;
     }
 
@@ -359,11 +359,11 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
   /*
    * @return {Object}
    */
-  combineСomparisonSigns: function(filters){
-    for(var p in filters){
-      var filter = Fancy.Object.copy(filters[p]);
+  combineСomparisonSigns(filters) {
+    for (const p in filters) {
+      const filter = Fancy.Object.copy(filters[p]);
 
-      for(var n in filter){
+      for (const n in filter) {
         switch(n){
           case '<':
           case '>':
@@ -387,7 +387,7 @@ Fancy.Mixin('Fancy.store.mixin.Filter', {
    *
    * @return {String}
    */
-  replaceSpecialSigns: function(value){
+  replaceSpecialSigns(value) {
     value = value.replace(/\\/g, '\\\\');
     value = value.replace(/\(/g, '\\(');
     value = value.replace(/\)/g, '\\)');

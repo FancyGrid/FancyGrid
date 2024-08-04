@@ -15,8 +15,8 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('toggle');
     me.Super('init', arguments);
@@ -35,7 +35,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       renderTo,
       el = Fancy.get(document.createElement('div'));
@@ -69,7 +69,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  renderButtons: function(){
+  renderButtons(){
     var me = this,
       items = me.items,
       i = 0,
@@ -77,7 +77,7 @@ Fancy.define('Fancy.SegButton', {
       toggleGroup = Fancy.id(null, 'fancy-toggle-group-');
 
     for(;i<iL;i++){
-      var item = items[i];
+      const item = items[i];
       item.renderTo = me.el.dom;
 
       if(me.allowToggle !== false){
@@ -127,7 +127,7 @@ Fancy.define('Fancy.SegButton', {
       });
     }
   },
-  getValues: function(){
+  getValues(){
     var me = this,
       values = [],
       items = me.items,
@@ -143,7 +143,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  clear: function(fire){
+  clear(fire){
     var me = this,
       items = me.items,
       i = 0,
@@ -156,8 +156,8 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setItems: function(values){
-    var me = this;
+  setItems(values){
+    const me = this;
 
     me.el.update('');
 
@@ -167,8 +167,8 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setActiveItem: function(index, fire){
-    var me = this,
+  setActiveItem(index, fire){
+    const me = this,
       items = me.items;
 
     items[index].setPressed(true, fire);
@@ -177,8 +177,8 @@ Fancy.define('Fancy.SegButton', {
    * @param {Array|String|Number} value
    * Note: duplicate code in button SegButton
    */
-  setValue: function(value){
-    var me = this,
+  setValue(value){
+    const me = this,
       items = me.items;
 
     me.clear(false);

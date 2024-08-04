@@ -18,8 +18,8 @@ Fancy.define('Fancy.bar.Text', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
     me.render();
@@ -28,8 +28,8 @@ Fancy.define('Fancy.bar.Text', {
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       el = Fancy.get(document.createElement('div'));
 
     el.addCls(me.widgetCls, me.cls);
@@ -37,94 +37,96 @@ Fancy.define('Fancy.bar.Text', {
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
 
-    if(me.style){
-      me.el.css(me.style);
+    const { style, hidden, id, width } = me;
+
+    if (style) {
+      me.el.css(style);
     }
 
-    if(me.hidden){
+    if (hidden) {
       me.el.css('display', 'none');
     }
 
-    if(me.id){
-      me.el.attr('id', me.id);
+    if (id) {
+      me.el.attr('id', id);
     }
 
-    if(me.width){
-      me.el.css('width', me.width);
+    if (width) {
+      me.el.css('width', width);
     }
   },
   /*
    * @return {String}
    */
-  get: function(){
+  get() {
     return this.el.dom.innerHTML;
   },
   /*
    * @return {String}
    */
-  getValue: function(){
+  getValue(){
     return this.get();
   },
   /*
    * @param {String} value
    */
-  set: function(value){
+  set(value){
     this.el.dom.innerHTML = value;
   },
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       el = me.el;
 
     el.on('mouseover', me.onMouseOver, me);
     el.on('mouseout', me.onMouseOut, me);
 
-    if(me.tip){
-      me.el.on('mousemove', me.onMouseMove, me);
+    if (me.tip) {
+      el.on('mousemove', me.onMouseMove, me);
     }
   },
   /*
    *
    */
-  onMouseMove: function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
 
-    if(me.tip && me.tooltip){
+    if (me.tip && me.tooltip) {
       me.tooltip.show(e.pageX + 15, e.pageY - 25);
     }
   },
   /*
      * @param {Object} e
      */
-  onMouseOver: function(e){
-    var me = this;
+  onMouseOver(e){
+    const me = this;
 
     me.fire('mouseover');
 
-    if(me.tip){
+    if (me.tip) {
       me.renderTip(e);
     }
   },
   /*
    * @param {Object} e
    */
-  renderTip: function(e){
-    var me = this,
-      text = '';
+  renderTip(e){
+    const me = this;
+    let text = '';
 
-    if(me.tooltip){
+    if (me.tooltip) {
       me.tooltip.destroy();
     }
 
-    if(me.tip === true){
+    if (me.tip === true) {
       me.tip = new Fancy.Template(me.tipTpl).getHTML({
         value: me.get()
       });
     }
     else{
-      switch (Fancy.typeOf(me.tip)){
+      switch (Fancy.typeOf(me.tip)) {
         case 'function':
           text = me.tip(this, me.get, me.label || '');
           break;
@@ -136,7 +138,7 @@ Fancy.define('Fancy.bar.Text', {
       }
     }
 
-    if (me.tooltip){
+    if (me.tooltip) {
       me.tooltip.update(text);
     }
     else {
@@ -151,12 +153,12 @@ Fancy.define('Fancy.bar.Text', {
   /*
    *
    */
-  onMouseOut: function(){
-    var me = this;
+  onMouseOut(){
+    const me = this;
 
     me.fire('mouseout');
 
-    if(me.tooltip){
+    if (me.tooltip) {
       me.tooltip.destroy();
       delete me.tooltip;
     }

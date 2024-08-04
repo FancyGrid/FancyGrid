@@ -25,8 +25,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  init: function(){
-    var me = this,
+  init(){
+    const me = this,
       w = me.widget,
       s = w.store;
 
@@ -34,7 +34,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
     me.Super('init', arguments);
 
-    w.once('render', function(){
+    w.once('render', () => {
       me.ons();
       s.on('beforeupdate', me.onStoreCRUDBeforeUpdate, me);
       s.on('update', me.onStoreCRUDUpdate, me);
@@ -47,8 +47,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget,
       s = w.store,
       clickEventName = 'cell' + me.getClickEventName();
@@ -57,7 +57,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     s.on('set', me.onStoreSet, me);
     me.on('tab', me.onTab, me);
 
-    w.once('init', function(){
+    w.once('init', () => {
       if(clickEventName !== 'cell'){
         w.on(clickEventName, me.onClickCellToEdit, me);
       }
@@ -69,20 +69,20 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  onGridActivate: function(){
+  onGridActivate(){
     Fancy.get(document).on('keydown', this.onKeyDown, this);
   },
   /*
    *
    */
-  onGridDeActivate: function(){
+  onGridDeActivate(){
     Fancy.get(document).un('keydown', this.onKeyDown, this);
   },
   /*
    * @param {Object} e
    */
-  onKeyDown: function(e){
-    var me = this,
+  onKeyDown(e){
+    const me = this,
       w = me.widget,
       keyCode = e.keyCode,
       key = Fancy.key;
@@ -100,8 +100,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} me
    * @param {Object} e
    */
-  onTab: function(me, e){
-    var w = me.widget,
+  onTab(me, e){
+    const w = me.widget,
       activeParams = me.activeCellEditParams;
 
     if(!activeParams){
@@ -110,12 +110,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
     e.preventDefault();
 
-    var params = me.getNextCellEditParam();
+    const params = me.getNextCellEditParam();
 
     if(w.celledit){
       w.celledit.hideEditor();
       if (w.tabEdit !== false){
-        setTimeout(function(){
+        setTimeout(() => {
           w.celledit.edit(params);
         }, 100);
       }
@@ -124,8 +124,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    * @return {Object}
    */
-  getNextCellEditParam: function(){
-    var me = this,
+  getNextCellEditParam(){
+    const me = this,
       w = me.widget,
       s = w.store,
       activeParams = me.activeCellEditParams,
@@ -145,7 +145,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       maxRecursion = 20;
 
     for(;i<maxRecursion;i++){
-      var cellInfo = me.getNextCellInfo({
+      const cellInfo = me.getNextCellInfo({
         side: side,
         columnIndex: columnIndex,
         rowIndex: rowIndex
@@ -184,12 +184,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     id = s.getId(rowIndex);
 
     return {
-      id: s.getId(rowIndex),
-      side: side,
+      id,
+      side,
       column: nextColumn,
       cell: nextCell,
-      columnIndex: columnIndex,
-      rowIndex: rowIndex,
+      columnIndex,
+      rowIndex,
       value: s.get(rowIndex, key),
       data: s.get(rowIndex),
       item: s.getById(id)
@@ -199,7 +199,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} o
    * @return {Object}
    */
-  getNextCellInfo: function(o){
+  getNextCellInfo(o){
     var me = this,
       w = me.widget,
       side = o.side,
@@ -250,15 +250,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
 
     return {
-      side: side,
-      rowIndex: rowIndex,
-      columnIndex: columnIndex
+      side,
+      rowIndex,
+      columnIndex
     };
   },
   /*
    * @return {String}
    */
-  getClickEventName: function(){
+  getClickEventName(){
     switch(this.clicksToEdit){
       case 1:
         return 'click';
@@ -271,15 +271,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  stopEditor: function(){
+  stopEditor(){
     this.stopped = true;
   },
   /*
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
-  onClickCell: function(grid, o){
-    var w = this.widget,
+  onClickCell(grid, o){
+    const w = this.widget,
       column = o.column;
 
     if(column.editable && (column.type === 'checkbox' || column.type === 'switcher') && w.celledit){
@@ -290,8 +290,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
-  onClickCellToEdit: function(grid, o){
-    var me = this,
+  onClickCellToEdit(grid, o){
+    const me = this,
       w = me.widget,
       column = o.column;
 
@@ -311,14 +311,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Fancy.Store} store
    * @param {Object} o
    */
-  onStoreSet: function(store, o){
+  onStoreSet(store, o){
     this.widget.updater.updateRow(o.rowIndex);
   },
   /*
    *
    */
-  onStoreCRUDBeforeUpdate: function(){
-    var me = this,
+  onStoreCRUDBeforeUpdate(){
+    const me = this,
       w = me.widget,
       o = me.activeCellEditParams;
 
@@ -334,7 +334,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {String} key
    * @param {*} value
    */
-  onStoreCRUDUpdate: function(store, id){
+  onStoreCRUDUpdate(store, id){
     delete store.changed[id];
 
     this.clearDirty();
@@ -342,16 +342,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  onStoreCRUDBeforeDestroy: function(){},
+  onStoreCRUDBeforeDestroy(){},
   /*
    *
    */
-  onStoreCRUDDestroy: function(){
-    var me = this;
+  onStoreCRUDDestroy(){
+    const me = this;
 
     clearInterval(me.intCrudDestroy);
 
-    me.intCrudDestroy = setTimeout(function(){
+    me.intCrudDestroy = setTimeout(() => {
       me.widget.store.loadData();
       me.clearDirty();
     }, 100);
@@ -359,10 +359,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  clearDirty: function(){
-    var w = this.widget;
+  clearDirty(){
+    const w = this.widget;
 
-    setTimeout(function(){
+    setTimeout(() => {
       w.leftBody.clearDirty();
       w.body.clearDirty();
       w.rightBody.clearDirty();
@@ -372,25 +372,26 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} store
    * @param {Array} data
    */
-  onCreate: function(store, data){
-    var me = this,
+  onCreate(store, data){
+    const me = this,
       w = me.widget;
 
     w.updater.update();
     w.fire('insert', data);
     me.clearDirty();
   }
-});/*
+});
+/*
  * @class Fancy.grid.plugin.CellEdit
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
   F.define('Fancy.grid.plugin.CellEdit', {
     extend: F.Plugin,
@@ -407,18 +408,18 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.once('render', function(){
+      w.once('render', () => {
         me.initEditorContainer();
         me.checkAutoInitEditors();
         w.on('scroll', me.onScroll, me);
@@ -431,7 +432,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Fancy.Grid} grid
      * @param {Object} e
      */
-    onDocClick: function(grid, e){
+    onDocClick(grid, e){
       var me = this,
         o = me.activeCellEditParams,
         editor = me.activeEditor,
@@ -447,7 +448,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       }
       else if (o.column.type === 'combo'){}
       else {
-        var cellEl = targetEl.closest('.' + GRID_CELL_CLS);
+        const cellEl = targetEl.closest(`.${GRID_CELL_CLS}`);
 
         if (!cellEl.dom && !editor.el.within(target)){
           editor.hide();
@@ -468,17 +469,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    initEditorContainer: function(){
-      var me = this,
+    initEditorContainer(){
+      const me = this,
         w = me.widget;
 
-      me.editorsContainer = w.el.select('.' + me.editorsCls);
+      me.editorsContainer = w.el.select(`.${me.editorsCls}`);
     },
     /*
      * @param {Object} o
      */
-    edit: function(o){
-      var me = this,
+    edit(o){
+      const me = this,
         w = me.widget,
         s = w.store,
         column = o.column;
@@ -506,8 +507,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Object} column
      * @return {Object}
      */
-    generateEditor: function(column){
-      var me = this,
+    generateEditor(column){
+      let me = this,
         w = me.widget,
         style = {
           position: 'absolute',
@@ -528,7 +529,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       renderTo = me.editorsContainer.dom;
 
-      var itemConfig = {
+      const itemConfig = {
         renderTo: renderTo,
         label: false,
         style: style,
@@ -750,8 +751,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Object} o
      */
-    showEditor: function(o){
-      var me = this,
+    showEditor(o){
+      const me = this,
         w = me.widget,
         column = o.column,
         type = column.type,
@@ -789,7 +790,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       me.setEditorValue(o);
       //Bug fix with wrong validation on start
       if(o.value === ''){
-        setTimeout(function(){
+        setTimeout(() => {
           var value = editor.get();
 
           if(value === '' && editor.input){
@@ -840,8 +841,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Number} side
      */
-    setEditorSize: function(size){
-      var me = this;
+    setEditorSize(size){
+      const me = this;
 
       if (me.activeEditor.wtype === 'field.combo'){
         me.activeEditor.size(size);
@@ -856,7 +857,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    hideEditor: function(){
+    hideEditor(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -906,7 +907,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           }
         }
 
-        var editorValue = editor.getValue();
+        const editorValue = editor.getValue();
 
         if(editorValue !== value){
           editor.setValue(value);
@@ -915,7 +916,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         editor.hideErrorTip();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         delete me.activeEditor;
         w.fire('endedit', o);
       },1);
@@ -929,8 +930,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellPosition: function(cell){
-      var me = this,
+    getCellPosition(cell){
+      const me = this,
         w = me.widget,
         cellEl = F.get(cell),
         cellOffset = cellEl.offset(),
@@ -939,7 +940,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         leftBorder = parseInt(w.el.css('border-left-width')),
         //topBorder = parseInt(w.el.css('border-top-width')),
         topBorder = parseInt(getComputedStyle(w.el.dom)['border-top-width']),
-        topFix = w.panel && F.nojQuery? 1 : 1,
+        topFix = w.panel && F.nojQuery ? 1 : 1,
         offset = {
           left: parseInt(cellOffset.left) - parseInt(gridOffset.left) - 1 - leftBorder + 'px',
           top: parseInt(cellOffset.top) - parseInt(gridOffset.top) - topFix - topBorder + 'px'
@@ -951,21 +952,21 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellSize: function(cell){
-      var cellEl = F.get(cell),
+    getCellSize(cell){
+      const cellEl = F.get(cell),
         width = cellEl.dom.clientWidth + 2,
         height = cellEl.dom.clientHeight + 2;
 
       return {
-        width: width,
-        height: height
+        width,
+        height
       };
     },
     /*
      * @param {Object} o
      */
-    setEditorValue: function(o){
-      var me = this,
+    setEditorValue(o){
+      const me = this,
         editor = me.activeEditor;
 
       if(o.column.editFormat){
@@ -989,7 +990,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           if(!o.value){
             o.value = '';
           }
-          var format = o.column.format,
+          const format = o.column.format,
             date = F.Date.parse(o.value, format.read, format.mode);
 
           editor.set(date);
@@ -1001,16 +1002,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Object} editor
      */
-    onEditorEsc: function(){
-      var me = this;
-
-      me.hideEditor();
+    onEditorEsc(){
+      this.hideEditor();
     },
     /*
      * @param {Object} editor
      */
-    onComboEsc: function(editor){
-      var me = this;
+    onComboEsc(editor){
+      const me = this;
 
       if(editor.list && editor.list.css('display') === 'block'){
         return;
@@ -1026,8 +1025,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Object} editor
      * @param {String} value
      */
-    onEditorEnter: function(){
-      var me = this,
+    onEditorEnter(){
+      const me = this,
         w = me.widget,
         selection = w.selection || {};
 
@@ -1035,8 +1034,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
       if(selection.selectBottomCellAfterEdit){
         var cell = w.selectCellDown();
-        setTimeout(function(){
-          w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+        setTimeout(()=> {
+          w.el.select(`.${F.GRID_CELL_OVER_CLS}`).removeCls(F.GRID_CELL_OVER_CLS);
         }, 1);
       }
 
@@ -1045,7 +1044,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           var cell = selection.moveRight();
 
           if(cell){
-            setTimeout(function(){
+            setTimeout(() =>{
               w.editCell(cell);
             }, 100);
           }
@@ -1054,7 +1053,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           var cell = selection.moveDown();
 
           if(cell){
-            setTimeout(function(){
+            setTimeout(() => {
               w.editCell(cell);
             }, 100);
           }
@@ -1064,13 +1063,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onHeaderCellMouseDown: function(){
+    onHeaderCellMouseDown(){
       this.hideEditor();
     },
     /*
      * @param {String} value
      */
-    setValue: function(value){
+    setValue(value){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1110,7 +1109,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Object} editor
      */
-    onEditorBeforeHide: function(editor){
+    onEditorBeforeHide(editor){
       if (editor.isValid()){
         this.setValue(editor.getValue());
       }
@@ -1118,20 +1117,20 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onScroll: function(){
+    onScroll(){
       this.hideEditor();
     },
     /*
      *
      */
-    onNativeScroll: function(){
+    onNativeScroll(){
       this.hideEditor();
     },
     /*
      * @param {Object} field
      */
-    onBlur: function(field){
-      var me = this;
+    onBlur(field){
+      const me = this;
 
       if (!me.activeEditor || field.id === me.activeEditor.id){
         if (field.mouseDownSpinUp === true || field.mouseDownSpinDown){
@@ -1145,15 +1144,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {*} value
      * @return {*}
      */
-    prepareValue: function(value){
-      var me = this,
+    prepareValue(value){
+      const me = this,
         type = me.getActiveColumnType(),
         o = me.activeCellEditParams,
         column = o.column,
         format = column.format;
 
       if(format && format.beforeSaveFn){
-        var editor = me.activeEditor;
+        const editor = me.activeEditor;
         value = editor.input.dom.value;
 
         return format.beforeSaveFn(value);
@@ -1185,7 +1184,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           break;
         case 'date':
           if (column.format && column.format.read){
-            var date = column.editor.getDate();
+            const date = column.editor.getDate();
 
             if(value){
               value = F.Date.format(date, column.format.read, undefined, column.format.mode);
@@ -1199,8 +1198,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @return {String}
      */
-    getActiveColumnType: function(){
-      var o = this.activeCellEditParams,
+    getActiveColumnType(){
+      const o = this.activeCellEditParams,
         column = o.column;
 
       return column.type;
@@ -1208,8 +1207,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @return {String}
      */
-    getActiveColumnKey: function(){
-      var o = this.activeCellEditParams,
+    getActiveColumnKey(){
+      const o = this.activeCellEditParams,
         column = o.column,
         key = column.index;
 
@@ -1218,15 +1217,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Object} o
      */
-    onCheckBoxChange: function(o){
-      var me = this,
+    onCheckBoxChange(o){
+      const me = this,
         w = me.widget,
         column = o.column,
         key = column.index,
         s = w.store,
         value = me.checkBoxChangedValue;
 
-      if (me.activeEditor){
+      if (me.activeEditor) {
         me.hideEditor();
       }
 
@@ -1244,8 +1243,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Object} combo
      * @param {*} value
      */
-    onComboChange: function(combo, value){
-      var me = this,
+    onComboChange(combo, value){
+      const me = this,
         w = me.widget,
         s = w.store,
         o = me.activeCellEditParams,
@@ -1259,12 +1258,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    checkAutoInitEditors: function(){
-      var me = this,
+    checkAutoInitEditors(){
+      const me = this,
         w = me.widget;
 
-      F.each(w.columns, function(column){
-        if (column.editorAutoInit){
+      F.each(w.columns, (column) => {
+        if (column.editorAutoInit) {
           column.editor = me.generateEditor(column);
         }
       });
@@ -1274,8 +1273,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {String} value
      * @param {Object} e
      */
-    onBeforeKey: function(field, value, e){
-      var me = this,
+    onBeforeKey(field, value, e){
+      const me = this,
         w = me.widget,
         selection = w.selection || {},
         key = F.key;
@@ -1285,8 +1284,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           if(selection.selectUpCellOnUp){
             me.hideEditor();
             w.selectCellUp();
-            setTimeout(function(){
-              w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+            setTimeout(() => {
+              w.el.select(`.${F.GRID_CELL_OVER_CLS}`).removeCls(F.GRID_CELL_OVER_CLS);
             }, 1);
           }
           break;
@@ -1294,8 +1293,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           if(selection.selectBottomCellOnDown){
             me.hideEditor();
             w.selectCellDown();
-            setTimeout(function(){
-              w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+            setTimeout(() => {
+              w.el.select(`.${F.GRID_CELL_OVER_CLS}`).removeCls(F.GRID_CELL_OVER_CLS);
             }, 1);
           }
           break;
@@ -1306,8 +1305,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             if(carret.start === 0 && carret.end === 0){
               me.hideEditor();
               w.selectCellLeft();
-              setTimeout(function(){
-                w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+              setTimeout(() => {
+                w.el.select(`.${F.GRID_CELL_OVER_CLS}`).removeCls(F.GRID_CELL_OVER_CLS);
               }, 1);
             }
           }
@@ -1320,8 +1319,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
             if(carret.start === length && carret.end === length){
               me.hideEditor();
               w.selectCellRight();
-              setTimeout(function(){
-                w.el.select('.' + F.GRID_CELL_OVER_CLS).removeCls(F.GRID_CELL_OVER_CLS);
+              setTimeout(() => {
+                w.el.select(`.${F.GRID_CELL_OVER_CLS}`).removeCls(F.GRID_CELL_OVER_CLS);
               }, 1);
             }
           }
@@ -1332,8 +1331,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {String} value
      * @return Function
      */
-    getEditFormat: function(type){
-      var me = this,
+    getEditFormat(type){
+      const me = this,
         w = me.widget,
         lang = w.lang,
         decimalSeparator = lang.decimalSeparator,
@@ -1342,7 +1341,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       switch(type){
         case 'currency':
           return function(value, params){
-            var currencySign = params.column.currency || lang.currencySign,
+            const currencySign = params.column.currency || lang.currencySign,
               precision = params.column.precision || 0;
 
             value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
@@ -1355,8 +1354,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           };
       }
     },
-    getBeforeSaveFormat: function(type){
-      var me = this,
+    getBeforeSaveFormat(type){
+      const me = this,
         w = me.widget,
         lang = w.lang,
         thousandSeparator = lang.thousandSeparator;
@@ -1364,7 +1363,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       switch(type){
         case 'currency':
           return function(value, params){
-            var currencySign = params.column.currency || lang.currencySign;
+            const currencySign = params.column.currency || lang.currencySign;
 
             value = value.replace(currencySign, '').replace(thousandSeparator, '');
             if(value !== ''){
@@ -1375,8 +1374,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
           };
       }
     },
-    onComboAddNewValue: function(field, value){
-      var me = this,
+    onComboAddNewValue(field, value){
+      const me = this,
         w = me.widget,
         column = field.column,
         index = column.index,
@@ -1396,24 +1395,25 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
   });
 
-})();/*
+})();
+/*
  * @class Fancy.grid.plugin.RowEdit
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var E = F.each;
+  const F = Fancy;
+  const E = F.each;
 
   //CONSTANTS
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var GRID_ROW_EDIT_CLS = F.GRID_ROW_EDIT_CLS;
-  var GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
-  var GRID_ROW_EDIT_BUTTON_UPDATE_CLS =  F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
-  var GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
-  var GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const GRID_ROW_EDIT_CLS = F.GRID_ROW_EDIT_CLS;
+  const GRID_ROW_EDIT_BUTTONS_CLS = F.GRID_ROW_EDIT_BUTTONS_CLS;
+  const GRID_ROW_EDIT_BUTTON_UPDATE_CLS = F.GRID_ROW_EDIT_BUTTON_UPDATE_CLS;
+  const GRID_ROW_EDIT_BUTTON_CANCEL_CLS = F.GRID_ROW_EDIT_BUTTON_CANCEL_CLS;
+  const GRID_ACTIVE_CELL_ENABLED = F.GRID_ACTIVE_CELL_ENABLED;
 
-  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+  const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.plugin.RowEdit', {
     extend: F.Plugin,
@@ -1430,15 +1430,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('scroll', me.onScroll, me);
@@ -1461,20 +1461,20 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onCollapse: function(){
+    onCollapse(){
       this.hide();
     },
     /*
      *
      */
-    onExpand: function(){
+    onExpand(){
       this.hide();
     },
     /*
      * @param {Object} o
      */
-    edit: function(o){
-      var me = this,
+    edit(o){
+      const me = this,
         w = me.widget,
         column = o.column;
 
@@ -1490,8 +1490,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Object} o
      */
-    showEditor: function(o){
-      var me = this,
+    showEditor(o){
+      const me = this,
         w = me.widget;
 
       if(w.selection && w.selection.activeCell){
@@ -1519,7 +1519,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         me.setValues(o);
       }
       else {
-        var isHidden = me.el.css('display') === 'none';
+        const isHidden = me.el.css('display') === 'none';
         me.show();
         me.changePosition(o.rowIndex, !isHidden);
 
@@ -1538,8 +1538,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         w = me.widget;
 
       if (w.leftColumns){
@@ -1566,7 +1566,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {String} fromSide
      * @return {Fancy.Element}
      */
-    renderTo: function(renderTo, columns, order, side, fromSide){
+    renderTo(renderTo, columns, order, side, fromSide){
+      const fieldEls = renderTo.select('.' + FIELD_CLS);
       var me = this,
         w = me.widget,
         container = F.get(document.createElement('div')),
@@ -1588,7 +1589,6 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         el = F.get(renderTo.dom.appendChild(container.dom));
       }
       else {
-        var fieldEls = renderTo.select('.' + FIELD_CLS);
 
         i = order;
         iL = order + 1;
@@ -1625,23 +1625,23 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       for (; i < iL; i++){
         column = columns[i];
 
-        var columnWidth = column.width;
+        const columnWidth = column.width;
 
-        var itemConfig = {
+        const itemConfig = {
           index: column.index,
           label: false,
-          style: style,
+          style,
           width: columnWidth,
           vtype: column.vtype,
           format: column.format,
           stopPropagation: true,
-          theme: theme,
+          theme,
           checkValidOnTyping: true,
           events: [{
             change: me.onFieldChange,
             delay: 100,
             scope: me
-          },{
+          }, {
             empty: me.onFieldEmpty,
             delay: 100,
             scope: me
@@ -1833,7 +1833,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    renderButtons: function(){
+    renderButtons(){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -1869,8 +1869,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    setSizes: function(o){
-      var me = this,
+    setSizes(o){
+      const me = this,
         w = me.widget;
 
       if (w.leftColumns){
@@ -1890,7 +1890,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    setElSize: function(o){
+    setElSize(o){
       var me = this,
         w = me.widget,
         centerWidth = w.getCenterViewWidth(),
@@ -1924,7 +1924,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Array} columns
      * @param {String} side
      */
-    _setSizes: function(firstRowCells, columns, side){
+    _setSizes(firstRowCells, columns, side){
       var me = this,
         i = 0,
         iL = columns.length,
@@ -1977,7 +1977,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Fancy.Element} cell
      * @return {Object}
      */
-    getCellSize: function(cell){
+    getCellSize(cell){
       var cellEl = F.get(cell),
         width = cellEl.width(),
         height = cellEl.height(),
@@ -1992,15 +1992,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       height += parseInt(cellEl.css('border-bottom-width')) * coeficient;
 
       return {
-        width: width,
-        height: height
+        width,
+        height
       };
     },
     /*
      * @param {Object} editor
      * @param {Number} size
      */
-    setEditorSize: function(editor, size){
+    setEditorSize(editor, size){
       if (editor.wtype === 'field.combo'){
         editor.size(size);
 
@@ -2017,7 +2017,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Number} rowIndex
      * @param {Boolean} animate
      */
-    changePosition: function(rowIndex, animate){
+    changePosition(rowIndex, animate){
       var me = this,
         w = me.widget,
         scrollTop = w.infinite? 0 : w.scroller.getScroll(),
@@ -2110,8 +2110,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    changeButtonsLeftPos: function(){
-      var me = this,
+    changeButtonsLeftPos(){
+      const me = this,
         w = me.widget,
         viewWidth = w.getCenterViewWidth(),
         buttonsElWidth = parseInt(me.buttonsEl.css('width'));
@@ -2121,8 +2121,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @param {Object} o
      */
-    setValues: function(o){
-      var me = this,
+    setValues(o){
+      const me = this,
         w = me.widget;
 
       if (w.leftColumns){
@@ -2145,13 +2145,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Array} data
      * @param {Array} columns
      */
-    _setValues: function(data, columns){
-      var me = this;
+    _setValues(data, columns){
+      const me = this;
 
       E(columns, function(column){
-        var editor = column.rowEditor;
+        const editor = column.rowEditor;
 
-        if (editor){
+        if (editor) {
           switch (column.type){
             case 'action':
             case 'button':
@@ -2185,8 +2185,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onScroll: function(){
-      var me = this,
+    onScroll(){
+      const me = this,
         w = me.widget;
 
       if (me.rendered === false){
@@ -2204,20 +2204,20 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onColumnResize: function(){
-      var me = this;
+    onColumnResize(){
+      const me = this;
 
       if (me.rendered === false){
         return;
       }
 
       if(F.nojQuery){
-        setTimeout(function(){
+        setTimeout(() => {
           me.setSizes();
         }, 400);
       }
       else {
-        setTimeout(function(){
+        setTimeout(() => {
           me.setSizes();
         }, ANIMATE_DURATION);
       }
@@ -2225,13 +2225,13 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onClickUpdate: function(){
+    onClickUpdate(){
       this.saveChanges();
     },
     /*
      *
      */
-    saveChanges: function(){
+    saveChanges(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -2239,8 +2239,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         rowIndex = s.getRow(me.activeId),
         values = me.getComboNewValues();
 
-      for(var p in values){
-        var _values = s.getColumnUniqueData(p);
+      for(const p in values){
+        const _values = s.getColumnUniqueData(p);
         if(F.isString(_values[0])){
           _values.push(values[p]);
         }
@@ -2262,17 +2262,17 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    prepareChanged: function(){
-      var me = this,
+    prepareChanged(){
+      const me = this,
         w = me.widget,
         data = me.changed;
 
-      for (var p in data){
-        var column = w.getColumnByIndex(p);
+      for (const p in data){
+        const column = w.getColumnByIndex(p);
 
         switch (column.type){
           case 'date':
-            var date = F.Date.parse(data[p], column.format.edit, column.format.mode),
+            const date = F.Date.parse(data[p], column.format.edit, column.format.mode),
               formattedValue = F.Date.format(date, column.format.read, column.format.mode);
 
             data[p] = formattedValue;
@@ -2285,14 +2285,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onClickCancel: function(){
+    onClickCancel(){
       this.hide();
     },
     /*
      *
      */
-    hide: function(){
-      var me = this,
+    hide(){
+      const me = this,
         w = me.widget;
 
       w.fire('beforeendedit', me.activeCellEditParams);
@@ -2322,8 +2322,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    show: function(){
-      var me = this;
+    show(){
+      const me = this;
 
       if (me.leftEl){
         if(me.leftEl.css('display') === 'none'){
@@ -2358,8 +2358,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {*} newValue
      * @param {*} oldValue
      */
-    onFieldChange: function(field, newValue){
-      var me = this;
+    onFieldChange(field, newValue){
+      const me = this;
 
       if (!field.isValid()){
         delete me.changed[field.index];
@@ -2368,8 +2368,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         me.changed[field.index] = newValue;
       }
     },
-    onFieldEmpty: function(field){
-      var me = this;
+    onFieldEmpty(field){
+      const me = this;
 
       if (field.vtype && !field.isValid()){
         delete me.changed[field.index];
@@ -2381,15 +2381,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    onFieldEnter: function(){
+    onFieldEnter(){
       this.saveChanges();
     },
     /*
      * @param {Number} index
      * @param {String} side
      */
-    hideField: function(index, side){
-      var w = this.widget,
+    hideField(index, side){
+      const w = this.widget,
         columns = w.getColumns(side),
         column = columns[index];
 
@@ -2401,8 +2401,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {Number} index
      * @param {String} side
      */
-    showField: function(index, side){
-      var w = this.widget,
+    showField(index, side){
+      const w = this.widget,
         columns = w.getColumns(side),
         column = columns[index];
 
@@ -2416,7 +2416,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {String} side
      * @param {String} fromSide
      */
-    moveEditor: function(column, index, side, fromSide){
+    moveEditor(column, index, side, fromSide){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -2453,7 +2453,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
      * @param {String} side
      * @return {Object}
      */
-    getField: function(index, side){
+    getField(index, side){
       var w = this.widget,
         body = w.getBody(side),
         field;
@@ -2471,78 +2471,78 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    reSetColumnsEditorsLinks: function(){
+    reSetColumnsEditorsLinks(){
       var me = this,
         w = me.widget,
         cells = w.body.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.columns, function(column, i){
+      E(w.columns, (column, i) => {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
       cells = w.leftBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.leftColumns, function(column, i){
+      E(w.leftColumns, (column, i) => {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
 
       cells = w.rightBody.el.select('.' + GRID_ROW_EDIT_CLS + ' .' + FIELD_CLS);
 
-      E(w.rightColumns, function(column, i){
+      E(w.rightColumns, (column, i) => {
         column.rowEditor = F.getWidget(cells.item(i).attr('id'));
       });
     },
-    onBeforeColumnDrag: function(){
-      var me = this;
+    onBeforeColumnDrag(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnDrag: function(){
-      var me = this;
+    onColumnDrag(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnHide: function(){
-      var me = this;
+    onColumnHide(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onColumnShow: function(){
-      var me = this;
+    onColumnShow(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onLockColumn: function(){
-      var me = this;
+    onLockColumn(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onRightLockColumn: function(){
-      var me = this;
+    onRightLockColumn(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    onUnLockColumn:  function(){
-      var me = this;
+    onUnLockColumn(){
+      const me = this;
 
       me.destroyEls();
       me.hide();
     },
-    destroyEls: function(){
-      var me = this,
+    destroyEls(){
+      const me = this,
         w = me.widget;
 
       if(me.rendered){
         me.rendered = false;
 
         if (w.leftColumns){
-          F.each(w.leftColumns, function(column){
+          F.each(w.leftColumns, (column) => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -2550,7 +2550,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         }
 
         if (w.columns){
-          F.each(w.columns, function(column){
+          F.each(w.columns, (column) => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -2558,7 +2558,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
         }
 
         if (w.rightColumns){
-          F.each(w.rightColumns, function(column){
+          F.each(w.rightColumns, (column) => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -2569,15 +2569,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      * @return {Boolean}
      */
-    isVisible: function(){
+    isVisible(){
       return this.el.css('display') !== 'none';
     },
     /*
      * @param {String} value
      * @return Function
      */
-    getEditFormat: function(type){
-      var me = this,
+    getEditFormat(type){
+      const me = this,
         w = me.widget,
         lang = w.lang,
         decimalSeparator = lang.decimalSeparator,
@@ -2586,7 +2586,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       switch(type){
         case 'currency':
           return function(value, params){
-            var currencySign = params.column.currency || lang.currencySign,
+            const currencySign = params.column.currency || lang.currencySign,
               precision = params.column.precision || 0;
 
             value = F.Number.currencyFormat(value, decimalSeparator, thousandSeparator, precision);
@@ -2602,15 +2602,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     /*
      *
      */
-    getComboNewValues: function(){
-      var me = this,
+    getComboNewValues(){
+      const me = this,
         w = me.widget,
         columns = w.getColumns(),
         values = {};
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(column.type === 'combo' && column.editable && column.rowEditor){
-          var editor = column.rowEditor,
+          const editor = column.rowEditor,
             value = editor.get();
 
           if(editor.value === -1 && F.isString(value) && value.length){

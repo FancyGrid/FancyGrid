@@ -10,17 +10,15 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {String|Number} key
    * @param {Object} [options]
    */
-  sort: function(action, type, key, options){
-    var me = this,
+  sort(action, type, key, options = {}){
+    let me = this,
       w = me.widget,
       fn,
       sortType;
 
-    options = options || {};
-
     me.fire('beforesort', {
       key: 'key',
-      action: action
+      action
     });
 
     if(me.multiSort && me.multiSortInited !== true){
@@ -97,8 +95,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     }
 
     me.fire( 'sort', {
-      key: key,
-      action: action
+      key,
+      action
     });
   },
   /*
@@ -107,8 +105,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {String|Number} key
    * @param {Boolean} load
    */
-  serverSort: function(action, type, key, load){
-    var me = this;
+  serverSort(action, type, key, load){
+    const me = this;
 
     me.params = me.params || {};
 
@@ -125,10 +123,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       }
     }
 
-    me.once('serversuccess', function(){
+    me.once('serversuccess', () => {
       me.fire('sort', {
-        key: key,
-        action: action
+        key,
+        action
       });
     });
 
@@ -141,7 +139,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {String} type
    * @param {String|Number} key
    */
-  sortNumber: function(action, key, options){
+  sortNumber(action, key, options){
     var me = this,
       columnOriginalValues = [],
       sortedColumnValues,
@@ -149,10 +147,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       iL,
       customSort = options.sorter;
 
-    if(me.isTree){
+    if (me.isTree) {
       columnOriginalValues = me.getColumnOriginalValues('id');
 
-      var treeData = me.treeGetDataAsTree(),
+      const treeData = me.treeGetDataAsTree(),
         sortedData = me.treeSort(treeData, action, key, 'number', customSort);
 
       sortedColumnValues = me.treeReadSortedId(sortedData);
@@ -160,7 +158,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     else if(me.grouping){
       //BUG: It does not work for date
 
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
+      const _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -225,12 +223,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       switch (action){
         case 'asc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return customSort('asc', a, b);
             });
           }
           else {
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return a - b;
             });
           }
@@ -239,12 +237,12 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
           break;
         case 'desc':
           if(customSort){
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return customSort('desc', a, b);
             });
           }
           else {
-            sortedColumnValues = Fancy.Array.copy(toSortValues).sort(function(a, b){
+            sortedColumnValues = Fancy.Array.copy(toSortValues).sort((a, b) => {
               return b - a;
             });
           }
@@ -260,7 +258,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} action
    * @param {String|Number} key
    */
-  sortString: function(action, key, options){
+  sortString(action, key, options){
     var me = this,
       columnOriginalValues = [],
       sortedColumnValues,
@@ -271,13 +269,13 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
     if(me.isTree){
       columnOriginalValues = me.getColumnOriginalValues('id');
 
-      var treeData = me.treeGetDataAsTree(),
+      const treeData = me.treeGetDataAsTree(),
         sortedData = me.treeSort(treeData, action, key, 'string', customSort);
 
       sortedColumnValues = me.treeReadSortedId(sortedData);
     }
     else if(me.grouping){
-      var _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
+      const _columnOriginalValues = me.getColumnOriginalValuesByGroup(key, me.grouping.by, options);
       sortedColumnValues = [];
       i = 0;
       iL = _columnOriginalValues.length;
@@ -347,7 +345,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {Array} sorted
    * @return {Array}
    */
-  getOrder: function(original, sorted){
+  getOrder(original, sorted){
     var mapValues = {},
       i = 0,
       iL = original.length,
@@ -380,8 +378,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {Number} value
    * @param {String} action
    */
-  changeOrderIndexes: function(value, action){
-    var me = this;
+  changeOrderIndexes(value, action){
+    const me = this;
 
     if(action === undefined){
       action = '-';
@@ -391,7 +389,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
       return;
     }
 
-    var i = 0,
+    let i = 0,
       iL = me.order.length;
 
     if(action === '-'){
@@ -412,8 +410,8 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    *
    */
-  initMultiSort: function(){
-    var me = this;
+  initMultiSort(){
+    const me = this;
 
     me.multiSortInited = true;
 
@@ -426,7 +424,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
    * @param {'ASC'|'DESC'} dir
    * @param {String} type
    */
-  addSorter: function(key, dir, type){
+  addSorter(key, dir, type){
     var me = this,
       i = 0,
       iL = me.sorters.length;
@@ -453,7 +451,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    * @param {Number} i
    */
-  multiSortOrder: function(i){
+  multiSortOrder(i){
     var me = this,
       w = me.widget,
       s = w.store,
@@ -495,7 +493,7 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
         continue;
       }
 
-      var sortedSubValues;
+      let sortedSubValues;
 
       if(sorter.type === 'number'){
         switch(sorter.dir){
@@ -543,10 +541,10 @@ Fancy.Mixin('Fancy.store.mixin.Sort', {
   /*
    *
    */
-  reSort: function(){
-    var me = this;
-    
-    Fancy.each(me.sorters, function(sorter){
+  reSort(){
+    const me = this;
+
+    Fancy.each(me.sorters, sorter => {
       me.sort(sorter.dir.toLocaleLowerCase(), sorter.type, sorter.key, {
         update: false
       });

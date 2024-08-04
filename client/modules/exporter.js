@@ -24,20 +24,18 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   /*
    *
    */
-  init: function(){},
+  init(){},
   /*
    * @param {Object} [o]
    */
-  exportToExcel: function(o){
-    o = o || {};
-
-    var me = this,
+  exportToExcel(o = {}){
+    const me = this,
       w = me.widget,
       columnsData = me.getColumnsData(o),
       data = me.getData(o),
-      dataToExport = o.header === false? data : [columnsData].concat(data),
-      Workbook = function(){
-        if(!(this instanceof Workbook)) return new Workbook();
+      dataToExport = o.header === false ? data : [columnsData].concat(data),
+      Workbook = function () {
+        if (!(this instanceof Workbook)) return new Workbook();
         this.SheetNames = [];
         this.Sheets = {};
       },
@@ -46,7 +44,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
     ws['!cols'] = [];
 
-    Fancy.each(me.widths, function(width){
+    Fancy.each(me.widths, (width) => {
       ws['!cols'].push({
         wch: width
       });
@@ -61,12 +59,12 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       title = title.text;
     }
 
-    var ws_name = title || me.excelFileName;
+    const ws_name = title || me.excelFileName;
 
     /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);
     wb.Sheets[ws_name] = ws;
-    var wbout = window.XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    const wbout = window.XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
 
     function s2ab(s){
       var buf = new ArrayBuffer(s.length);
@@ -80,7 +78,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
   /*
    * @return {Array}
    */
-  getColumnsData: function(o){
+  getColumnsData(o){
     var me = this,
       w = me.widget,
       columns = w.getColumns(),
@@ -92,12 +90,12 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     if(o && o.indexes){
       indexes = {};
 
-      Fancy.each(o.indexes, function(index){
+      Fancy.each(o.indexes, (index) => {
         indexes[index] = true;
       });
     }
 
-    Fancy.each(columns, function(column){
+    Fancy.each(columns, (column) => {
       if(indexes && indexes[column.index] !== true){
         return;
       }
@@ -116,20 +114,18 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @param {Object} [o]
    * @return {Array}
    */
-  getData: function(o){
-    o = o || {};
-
+  getData(o = {}){
     if(o && o.data){
       return o.data;
     }
 
-    var me = this,
+    const me = this,
       w = me.widget,
       data = [],
       //displayedData = o.all? w.getData() : w.getDisplayedData();
-      displayedData = o.all? w.getDisplayedData(true, o.ignoreRender, o.rowIds, true, o.selection) : w.getDisplayedData(null, o.ingoreRender, o.rowIds, true, o.selection);
+      displayedData = o.all ? w.getDisplayedData(true, o.ignoreRender, o.rowIds, true, o.selection) : w.getDisplayedData(null, o.ingoreRender, o.rowIds, true, o.selection);
 
-    Fancy.each(displayedData, function(rowData){
+    Fancy.each(displayedData, (rowData) => {
       var _rowData = [];
 
       Fancy.each(rowData, function(value){
@@ -146,7 +142,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @param {Array} opts
    * @return {Object}
    */
-  sheet_from_array_of_arrays: function(data){
+  sheet_from_array_of_arrays(data){
     var ws = {},
       range = {
         s: {
@@ -161,11 +157,11 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       R = 0,
       RL = data.length;
 
-    var datenum = function(v, date1904){
-      if(date1904){
+    const datenum = function (v, date1904) {
+      if (date1904) {
         v += 1462;
       }
-      var epoch = Date.parse(v);
+      const epoch = Date.parse(v);
 
       return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
     };
@@ -196,9 +192,9 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
           continue;
         }
 
-        var cell_ref = window.XLSX.utils.encode_cell({
-          c:C,
-          r:R
+        const cell_ref = window.XLSX.utils.encode_cell({
+          c: C,
+          r: R
         });
 
         if(typeof cell.v === 'number'){
@@ -229,12 +225,11 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @param {Object} o
    * @return {String}
    */
-  getDataAsCsv: function(o){
+  getDataAsCsv(o = {}){
     var me = this,
       w = me.widget,
       data = me.getData(o),
       str = '',
-      o = o || {},
       separator = o.separator || me.csvSeparator,
       header = o.header || me.csvHeader,
       indexes;
@@ -242,18 +237,18 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     if(o && o.indexes){
       indexes = {};
 
-      Fancy.each(o.indexes, function(index){
+      Fancy.each(o.indexes, (index) => {
         indexes[index] = true;
       });
     }
 
     if(header){
-      var fn = function(column){
-        if(indexes && indexes[column.index] !== true){
+      const fn = function (column) {
+        if (indexes && indexes[column.index] !== true) {
           return;
         }
 
-        if(!me.isColumnExportable(column)){
+        if (!me.isColumnExportable(column)) {
           return;
         }
 
@@ -268,8 +263,8 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
       str += '\r\n';
     }
 
-    Fancy.each(data, function(row){
-      Fancy.each(row, function(value){
+    Fancy.each(data, (row) => {
+      Fancy.each(row, (value) => {
         if(Fancy.isString(value)){
           value = '"' + value + '"';
         }
@@ -280,22 +275,20 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
 
       str += '\r\n';
     });
-    
+
     return str;
   },
   /*
    * @param {Object} o
    * @return {String}
    */
-  exportToCSV: function(o){
-    o = o || {};
-
-    var me = this,
+  exportToCSV(o = {}){
+    const me = this,
       csvData = me.getDataAsCsv(o),
       fileName = o.fileName || me.csvFileName;
 
     //var blobObject = new Blob(["\ufeff", csvData], {
-    var blobObject = new Blob([csvData], {
+    const blobObject = new Blob([csvData], {
       type: 'text/csv;charset=utf-8;'
     });
 
@@ -305,7 +298,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
     }
     else {
       // Chrome
-      var downloadLink = document.createElement('a');
+      const downloadLink = document.createElement('a');
       downloadLink.href = window.URL.createObjectURL(blobObject);
       downloadLink.download = fileName + '.csv';
       document.body.appendChild(downloadLink);
@@ -317,7 +310,7 @@ Fancy.define('Fancy.grid.plugin.Exporter', {
    * @param {Object} column
    * @return {Boolean}
    */
-  isColumnExportable: function(column){
+  isColumnExportable(column){
     if(/spark/.test(column.type)){
       return false;
     }

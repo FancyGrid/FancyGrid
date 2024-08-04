@@ -7,21 +7,21 @@ Fancy.Number = {
    * @param {Number} value
    * @return {Boolean}
    */
-  isFloat: function(value){
+  isFloat(value){
     return Number(value) === value && value % 1 !== 0;
   },
   /**
    * @param {Number} value
    * @return {Number}
    */
-  getPrecision: function(value){
+  getPrecision(value){
     return (value + '').split('.')[1].length + 1;
   },
   /**
    * @param {Number} value
    * @return {Number}
    */
-  correctFloat: function(value){
+  correctFloat(value){
     return parseFloat(value.toPrecision(14));
   },
   /**
@@ -30,8 +30,8 @@ Fancy.Number = {
    * @param {Number} [precision]
    * @return {String}
    */
-  format: function(value, sep, precision){
-    var dot,
+  format(value, sep, precision){
+    let dot,
       result;
 
     if(sep === undefined){
@@ -53,7 +53,7 @@ Fancy.Number = {
       dot = ',';
     }
 
-    var splitted = value.toString().split('.');
+    const splitted = value.toString().split('.');
     splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 
     if(splitted[1] === undefined){
@@ -88,8 +88,8 @@ Fancy.Number = {
 
     return result;
   },
-  currencyFormat: function(value, decimalSeparator, thousandSeparator, precision){
-    var splitted = value.toString().split(decimalSeparator);
+  currencyFormat(value, decimalSeparator, thousandSeparator, precision) {
+    const splitted = value.toString().split(decimalSeparator);
     precision = precision || 0;
 
     splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);

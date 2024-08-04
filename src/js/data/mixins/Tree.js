@@ -6,8 +6,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
   /*
    *
    */
-  initTreeData: function(data){
-    var me = this;
+  initTreeData(data){
+    const me = this;
 
     data = data || me.data;
 
@@ -27,16 +27,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       me.setData(data);
     }
   },
-  treeReadData: function(data, deep, parentId){
-    var me = this,
-      w = me.widget,
-      _data = [];
+  treeReadData(data, deep, parentId){
+    const me = this,
+      w = me.widget;
+
+    let _data = [];
 
     deep = deep || 1;
 
-    Fancy.each(data, function(dataItem){
+    Fancy.each(data, dataItem => {
       //get model and init new item model
-      if(dataItem.data){
+      if (dataItem.data) {
         dataItem = dataItem.data;
       }
 
@@ -87,11 +88,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _data;
   },
-  treeGetDataAsTree: function(){
-    var me = this,
+  treeGetDataAsTree(){
+    const me = this,
       _core = [];
 
-    Fancy.each(me.data, function(item){
+    Fancy.each(me.data, item => {
       if(item.get('$deep') === 1){
         _core.push(item);
       }
@@ -99,15 +100,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _core;
   },
-  treeSort: function(data, action, key, type, customSort){
+  treeSort(data, action, key, type, customSort){
     var me = this,
       _data = [],
       dataSorted = [],
       dataValues = {},
       sorted = [];
 
-    Fancy.each(data, function(item){
-      var itemData = item.data || item;
+    Fancy.each(data, item => {
+      const itemData = item.data || item;
       _data.push(itemData[key]);
 
       if(dataValues[itemData[key]] === undefined){
@@ -121,17 +122,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       }
     });
 
-    var isAllEmpty = false;
-    var isAllEqual = false;
+    let isAllEmpty = false;
+    let isAllEqual = false;
 
-    if(_data.length){
+    if (_data.length) {
       isAllEmpty = true;
       isAllEqual = true;
 
-      var prevValue;
+      let prevValue;
 
-      Fancy.each(data, function(item){
-        var itemData = item.data || item;
+      Fancy.each(data, item => {
+        const itemData = item.data || item;
 
         if(itemData[key] !== ''){
           isAllEmpty = false;
@@ -145,28 +146,28 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       });
     }
 
-    if(type === 'number'){
-      switch (action){
+    if (type === 'number') {
+      switch (action) {
         case 'asc':
           if(customSort){
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return customSort('asc', a, b);
             });
           }
           else {
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return a - b;
             });
           }
           break;
         case 'desc':
           if(customSort){
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return customSort('desc', a, b);
             });
           }
           else {
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return b - a;
             });
           }
@@ -185,14 +186,14 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       }
     }
 
-    Fancy.each(dataSorted, function(v, i){
-      var item = dataValues[v];
+    Fancy.each(dataSorted, (v, i) => {
+      let item = dataValues[v];
 
-      if(Fancy.isArray(item)){
+      if (Fancy.isArray(item)) {
         item = item.splice(0, 1)[0];
       }
 
-      if(isAllEmpty || isAllEqual){
+      if (isAllEmpty || isAllEqual) {
         item = data[i];
       }
 
@@ -216,11 +217,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return sorted;
   },
-  treeReadSortedId: function(data){
-    var me = this,
+  treeReadSortedId(data){
+    let me = this,
       ids = [];
 
-    Fancy.each(data, function(item){
+    Fancy.each(data, item => {
       ids.push(item.id);
       //!important
       item = me.getById(item.id);
@@ -237,12 +238,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return ids;
   },
-  treeReBuildData: function(){
-    var me = this,
+  treeReBuildData(){
+    let me = this,
       coreData = [],
       data = [];
 
-    Fancy.each(me.data, function(item){
+    Fancy.each(me.data, item => {
       if(item.get('$deep') === 1){
         coreData.push(item.data);
       }

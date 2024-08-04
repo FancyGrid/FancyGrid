@@ -20,14 +20,14 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('beforecollapse', 'collapse', 'expanded', 'expand', 'beforeexpand', 'beforeexpanded');
 
     me.Super('init', arguments);
 
-    Fancy.each(me.items, function(item, i){
+    Fancy.each(me.items, (item, i) => {
       if( item.labelAlign === 'top' ){
         if( i === 0 ){
           item.style = {
@@ -70,8 +70,8 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  initCheckBox: function(){
-    var me = this,
+  initCheckBox() {
+    const me = this,
       checkbox = me.el.select('.fancy-field-checkbox-input');
 
     checkbox.css('display', '');
@@ -80,9 +80,9 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
       me.addCls('fancy-checkbox-on');
     }
 
-    var itemsEl = me.el.select('.fancy-field-set-items');
+    const itemsEl = me.el.select('.fancy-field-set-items');
 
-    setTimeout(function(){
+    setTimeout(() => {
       if( me.checkbox === true ){}
       else{
         me.fire('collapse');
@@ -101,10 +101,10 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
     checkbox.on('click', function(){
       me.toggleCls('fancy-checkbox-on');
 
-      var isChecked = me.el.hasCls('fancy-checkbox-on'),
+      const isChecked = me.el.hasCls('fancy-checkbox-on'),
         itemsEl = me.el.select('.fancy-field-set-items');
 
-      if( isChecked ){
+      if (isChecked) {
         me.fire('beforeexpanded');
         me.fire('beforeexpand');
         itemsEl.css('display', '');
@@ -123,8 +123,8 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  onBeforeCollapsed: function(){
-    var me = this,
+  onBeforeCollapsed(){
+    const me = this,
       form = me.form,
       itemsEl = me.el.select('.fancy-field-set-items'),
       itemsHeight = parseInt(itemsEl.css('height'));
@@ -134,8 +134,8 @@ Fancy.define(['Fancy.form.field.Set', 'Fancy.SetField'], {
   /*
    *
    */
-  onExpanded: function(){
-    var me = this,
+  onExpanded(){
+    const me = this,
       form = me.form,
       itemsEl = me.el.select('.fancy-field-set-items'),
       itemsHeight = parseInt(itemsEl.css('height'));

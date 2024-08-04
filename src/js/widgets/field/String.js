@@ -19,8 +19,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab','change', 'key', 'empty');
 

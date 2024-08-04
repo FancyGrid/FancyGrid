@@ -3,13 +3,13 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FOOTER_STATUS_CLS = F.FOOTER_STATUS_CLS;
-  var STATUS_SOURCE_TEXT_CLS = F.STATUS_SOURCE_TEXT_CLS;
-  var STATUS_SOURCE_LINK_CLS = F.STATUS_SOURCE_LINK_CLS;
-  var FOOTER_SOURCE_CLS = F.FOOTER_SOURCE_CLS;
+  const FOOTER_STATUS_CLS = F.FOOTER_STATUS_CLS;
+  const STATUS_SOURCE_TEXT_CLS = F.STATUS_SOURCE_TEXT_CLS;
+  const STATUS_SOURCE_LINK_CLS = F.STATUS_SOURCE_LINK_CLS;
+  const FOOTER_SOURCE_CLS = F.FOOTER_SOURCE_CLS;
 
   Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
     /*
@@ -17,11 +17,11 @@
      * @param {Object} originalConfig
      * @return {Object}
      */
-    prepareConfigTheme: function(config, originalConfig){
-      var themeName = config.theme || originalConfig.theme,
+    prepareConfigTheme(config, originalConfig){
+      const themeName = config.theme || originalConfig.theme,
         themeConfig = Fancy.getTheme(themeName).config;
 
-      if (Fancy.isObject(themeName)){
+      if (Fancy.isObject(themeName)) {
         config.theme = themeName.name;
       }
 
@@ -38,14 +38,14 @@
      * @param {Object} config
      * @return {Object}
      */
-    prepareConfigFooter: function(config){
-      var footer = config.footer,
+    prepareConfigFooter(config) {
+      const footer = config.footer,
         lang = config.lang;
 
-      if (footer){
-        var bar = [];
+      if (footer) {
+        const bar = [];
 
-        if (Fancy.isString(footer.status)){
+        if (Fancy.isString(footer.status)) {
           bar.push({
             type: 'text',
             text: footer.status,
@@ -53,31 +53,32 @@
           });
         }
 
-        if (footer.status && footer.source){
+        if (footer.status && footer.source) {
           bar.push('side');
         }
 
-        if (Fancy.isString(footer.source)){
+        if (Fancy.isString(footer.source)) {
           bar.push({
             type: 'text',
             text: footer.source,
             cls: FOOTER_SOURCE_CLS
           });
         }
-        else if (Fancy.isObject(footer.source)){
-          var text = footer.source.text,
+        else if (Fancy.isObject(footer.source)) {
+          let text = footer.source.text,
             sourceText = footer.source.sourceText || lang.sourceText;
 
-          if (footer.source.link){
-            var link = footer.source.link;
+          if (footer.source.link) {
+            let link = footer.source.link;
 
             link = link.replace('http://', '');
-            link = 'http://' + link;
+            link = link.replace('https://', '');
+            link = `https://${link}`;
 
-            text = '<span class="' + STATUS_SOURCE_TEXT_CLS + '">' + sourceText + '</span>: <a class="' + STATUS_SOURCE_LINK_CLS + '" href="' + link + '">' + text + '</a>';
+            text = `<span class="${STATUS_SOURCE_TEXT_CLS}">${sourceText}</span>: <a class="${STATUS_SOURCE_LINK_CLS}" href="${link}">${text}</a>`;
           }
           else {
-            text = '<span>' + sourceText + ':</span> ' + text;
+            text = `<span>${sourceText}:</span> ${text}`;
           }
 
           bar.push({
@@ -97,11 +98,11 @@
      * @param {Object} originalConfig
      * @return {Object}
      */
-    prepareConfigLang: function(config, originalConfig){
-      var i18n = config.i18n || originalConfig.i18n,
+    prepareConfigLang(config, originalConfig) {
+      const i18n = config.i18n || originalConfig.i18n,
         lang = Fancy.Object.copy(Fancy.i18n[i18n]);
 
-      if (config.lang){
+      if (config.lang) {
         for (var p in config.lang){
           switch(Fancy.isObject(config.lang[p])) {
             case false:

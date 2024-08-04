@@ -4,10 +4,10 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var BUTTON_CLS = F.BUTTON_CLS;
+  const BUTTON_CLS = F.BUTTON_CLS;
 
   F.define('Fancy.Tool', {
     extend: F.Widget,
@@ -23,8 +23,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
       me.Super('init', arguments);
@@ -37,7 +37,7 @@
     /*
      *
      */
-    ons: function(){
+    ons(){
       this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
@@ -47,8 +47,8 @@
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = document.createElement('div');
 
@@ -64,12 +64,12 @@
     /*
      *
      */
-    onClick: function(){
-      var me = this;
+    onClick(){
+      const me = this;
 
       me.fire('click');
-      if (me.handler){
-        if (me.scope){
+      if (me.handler) {
+        if (me.scope) {
           me.handler.apply(me.scope, [me]);
         }
         else {
@@ -80,7 +80,7 @@
     /*
      * @param {String} value
      */
-    setText: function(value){
+    setText(value){
       this.el.update(value);
     }
   });

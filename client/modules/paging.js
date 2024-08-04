@@ -6,8 +6,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  initPaging: function(){
-    var me = this;
+  initPaging(){
+    const me = this;
 
     if(me.paging === undefined){
       return;
@@ -23,8 +23,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  firstPage: function(){
-    var me = this;
+  firstPage(){
+    const me = this;
 
     me.calcPages();
 
@@ -42,8 +42,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  prevPage: function(){
-    var me = this;
+  prevPage(){
+    const me = this;
 
     me.calcPages();
     me.showPage--;
@@ -64,8 +64,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  nextPage: function(){
-    var me = this;
+  nextPage(){
+    const me = this;
 
     me.calcPages();
     me.showPage++;
@@ -90,8 +90,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  lastPage: function(){
-    var me = this;
+  lastPage(){
+    const me = this;
 
     me.calcPages();
     me.showPage = me.pages - 1;
@@ -112,7 +112,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  calcPages: function(){
+  calcPages(){
     var me = this,
       w = me.widget,
       pageOverFlowType;
@@ -167,8 +167,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
    * @param {Number} value
    * @param {Boolean} [update]
    */
-  setPage: function(value, update){
-    var me = this;
+  setPage(value, update){
+    const me = this;
 
     me.showPage = value;
 
@@ -189,8 +189,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       });
     }
   },
-  refresh: function(){
-    var me = this;
+  refresh(){
+    const me = this;
 
     if(me.pageType === 'server'){
       me.loadPage();
@@ -204,11 +204,11 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    * @param {Object} o
    */
-  processPagingData: function(o){
-    var me = this,
+  processPagingData(o){
+    const me = this,
       w = me.widget;
 
-    if(o.totalCount !== undefined){
+    if (o.totalCount !== undefined) {
       me.totalCount = o.totalCount;
     }
 
@@ -239,8 +239,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    * @param {Object} o
    */
-  checkPagingType: function(o){
-    var me = this;
+  checkPagingType(o){
+    const me = this;
 
     if(o.totalCount !== undefined && o.totalCount !== o[me.readerRootProperty].length){
       me.totalCount = o.totalCount;
@@ -256,16 +256,14 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
   /*
    *
    */
-  loadPage: function(){
-    var me = this;
-
-    me.loadData();
+  loadPage(){
+    this.loadData();
   },
   /*
    * @param {Number} value
    */
-  setPageSize: function(value){
-    var me = this,
+  setPageSize(value){
+    const me = this,
       w = me.widget;
 
     me.pageSize = value;
@@ -283,17 +281,18 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
 
     w.fire('changepagesize', value);
   }
-});/*
+});
+/*
  * @class Fancy.grid.plugin.Paging
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
-  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
-  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
-  var PANEL_BAR_PAGING_CLS = F.PANEL_BAR_PAGING_CLS;
+  const PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  const PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  const PANEL_BAR_PAGING_CLS = F.PANEL_BAR_PAGING_CLS;
 
   Fancy.define('Fancy.grid.plugin.Paging', {
     extend: Fancy.Plugin,
@@ -310,8 +309,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
       me.ons();
@@ -319,8 +318,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         store = w.store;
 
@@ -329,49 +328,47 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
       store.on('filter', me.onChangeStore, me);
       w.on('render', me.onRenderGrid, me);
       w.on('docmove', me.onDocMouseMove, me);
-      w.on('render', function(){
-        me.setCls();
-      });
+      w.on('render', () => me.setCls());
     },
     /*
      * @param {Number} value
      */
-    setPageSize: function(value){
+    setPageSize(value){
       this.widget.store.setPageSize(value);
       this.widget.update();
     },
     /*
      *
      */
-    nextPage: function(){
+    nextPage(){
       this.widget.store.nextPage();
       this.widget.update();
     },
     /*
      *
      */
-    lastPage: function(){
+    lastPage(){
       this.widget.store.lastPage();
       this.widget.update();
     },
     /*
      *
      */
-    prevPage: function(){
+    prevPage(){
       this.widget.store.prevPage();
       this.widget.update();
     },
     /*
      *
      */
-    firstPage: function(){
+    firstPage(){
       this.widget.store.firstPage();
       this.widget.update();
     },
     /*
      * @param {Fancy.Store} store
      */
-    onChangeStore: function(store){
+    onChangeStore(store){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -413,8 +410,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
      * @param {Number} value
      * @param {Boolean} [update]
      */
-    setPage: function(value, update){
-      var me = this,
+    setPage(value, update){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -433,13 +430,13 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    refresh: function(){
-      var me = this,
+    refresh(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
       w.showLoadMask();
-      setTimeout(function(){
+      setTimeout(() => {
         s.refresh();
 
         if (s.pageType !== 'server'){
@@ -450,7 +447,7 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      * @param {String} barType
      */
-    updateBar: function(barType){
+    updateBar(barType){
       barType = barType || this.barType;
 
       var me = this,
@@ -517,8 +514,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    onRenderGrid: function(){
-      var me = this;
+    onRenderGrid(){
+      const me = this;
 
       switch (me.barType){
         case 'both':
@@ -535,8 +532,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    onDocMouseMove: function(){
-      var me = this,
+    onDocMouseMove(){
+      const me = this,
         w = me.widget;
 
       if (w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
@@ -552,8 +549,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    update: function(){
-      var me = this,
+    update(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -563,8 +560,8 @@ Fancy.Mixin('Fancy.store.mixin.Paging',{
     /*
      *
      */
-    setCls: function(){
-      var me = this,
+    setCls(){
+      const me = this,
         w = me.widget;
 
       switch (me.barType){

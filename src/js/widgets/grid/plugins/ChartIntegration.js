@@ -16,8 +16,8 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
     me.initKeys();
@@ -28,7 +28,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    *
    */
-  initKeys: function(){
+  initKeys(){
     var me = this,
       chart = me.chart,
       i = 0,
@@ -45,7 +45,6 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
         keys = fields;
       }
       else {
-
         kL = fields.length;
 
         for (; k < kL; k++){
@@ -59,12 +58,12 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget,
       s = w.store;
 
-    w.once('render', function(){
+    w.once('render', () => {
       if(me.toChart){
         me.renderToChart();
       }
@@ -79,7 +78,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    *
    */
-  renderToChart: function(){
+  renderToChart(){
     var me = this,
       w = me.widget,
       chart = me.chart,
@@ -87,7 +86,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
       iL = chart.length;
 
     for(;i<iL;i++){
-      var _chart = chart[i],
+      const _chart = chart[i],
         type = _chart.type;
 
       switch(type){
@@ -102,7 +101,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
    * @param {Object} store
    * @param {Object} o
    */
-  onSet: function(store, o){
+  onSet(store, o){
     var me = this,
       w = me.widget,
       chart = me.chart,
@@ -111,7 +110,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
       key = o.key;
 
     for(;i<iL;i++){
-      var _chart = chart[i],
+      const _chart = chart[i],
         type = _chart.type;
 
       if(_chart.keys[key] !== true){
@@ -130,7 +129,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
    * @param {Object} store
    * @param {Object} o
    */
-  onSort: function(store, o){
+  onSort(store, o){
     var me = this,
       w = me.widget,
       chart = me.chart,
@@ -138,14 +137,14 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
       iL = chart.length;
 
     for(;i<iL;i++){
-      var _chart = chart[i],
+      const _chart = chart[i],
         type = _chart.type;
 
       switch(type){
         case 'highchart':
         case 'highcharts':
           if (_chart.sortBind !== false){
-            var categories = w.highchart.sort(_chart, o);
+            const categories = w.highchart.sort(_chart, o);
             chart[i].categories = categories.original;
           }
           break;
@@ -155,7 +154,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    *
    */
-  readDataFromChart: function(){
+  readDataFromChart(){
     var me = this,
       w = me.widget,
       s = w.store,
@@ -177,7 +176,7 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    *
    */
-  initBind: function(){
+  initBind(){
     var me = this,
       chart = me.chart,
       _chart,
@@ -195,8 +194,8 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
   /*
    * @param {Object} chart
    */
-  chartBind: function(chart){
-    var me = this,
+  chartBind(chart){
+    const me = this,
       w = me.widget,
       bind = chart.bind;
 
@@ -208,8 +207,8 @@ Fancy.define('Fancy.grid.plugin.ChartIntegration', {
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
-  onBindEvent: function(grid, o){
-    var me = this,
+  onBindEvent(grid, o){
+    const me = this,
       w = grid,
       chart = me.chart,
       bind = chart.bind,

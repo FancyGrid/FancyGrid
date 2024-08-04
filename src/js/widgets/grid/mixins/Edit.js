@@ -7,19 +7,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {Boolean} [at]
    * @param {Boolean} [fire]
    */
-  remove: function(o, at, fire){
-    var me = this,
+  remove(o, at, fire){
+    let me = this,
       store = me.store,
       method = 'remove';
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.remove(o, at);
       }, 100);
       return;
     }
 
-    if(at){
+    if (at) {
       method = 'removeAt';
     }
 
@@ -41,7 +41,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     clearInterval(me.removeInt);
 
-    me.removeInt = setTimeout(function(){
+    me.removeInt = setTimeout(() => {
       me.update();
       delete me.removeInt;
     }, 1);
@@ -49,32 +49,32 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @param {*} o
    */
-  removeAt: function(o){
+  removeAt(o){
     this.remove(o, true);
   },
   /*
    * @param {Number} row
    */
-  removeRow: function(row){
+  removeRow(row){
     this.remove(row, true);
   },
   /*
    * @param {*} id
    */
-  removeRowById: function(id){
+  removeRowById(id){
     this.remove(id);
   },
   /*
    * @param {*} id
    */
-  removeRowByID: function(id){
+  removeRowByID(id){
     this.remove(id);
   },
   /*
    *
    */
-  removeAll: function(){
-    var me = this;
+  removeAll(){
+    const me = this;
 
     me.store.removeAll();
     me.update();
@@ -91,11 +91,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @param {*} o
    */
-  add: function(o){
-    var me = this;
+  add(o){
+    const me = this;
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.add(o);
       }, 100);
       return;
@@ -117,7 +117,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     clearInterval(me.addInt);
 
-    me.addInt = setTimeout(function(){
+    me.addInt = setTimeout(() => {
       me.update();
       delete me.addInt;
     }, 1);
@@ -127,13 +127,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {Object|Array} o
    * @param {Boolean} fire
    */
-  insert: function(index, o, fire){
+  insert(index, o, fire){
     var me = this,
       s = me.store,
       i;
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.insert(index, o, fire);
       }, 100);
       return;
@@ -186,7 +186,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     else if(Fancy.isObject(index) && Fancy.isNumber(o)){
       s.addField(Fancy.Object.keys(index));
 
-      var _index = o;
+      const _index = o;
       o = index;
       index = _index;
     }
@@ -203,7 +203,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     clearInterval(me.addInt);
 
-    me.addInt = setTimeout(function(){
+    me.addInt = setTimeout(() => {
       me.update();
       delete me.addInt;
     }, 1);
@@ -213,12 +213,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {String} key
    * @param {*} value
    */
-  set: function(rowIndex, key, value){
-    var me = this,
+  set(rowIndex, key, value){
+    const me = this,
       s = me.store;
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.set(rowIndex, key, value);
       }, 100);
       return;
@@ -237,13 +237,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {*} value
    * @return {Number}
    */
-  setById: function(id, key, value){
+  setById(id, key, value){
     var me = this,
       s = me.store,
       rowIndex = s.getRow(id);
 
-    if(rowIndex === undefined){
-      var item = s.getById(id);
+    if (rowIndex === undefined) {
+      const item = s.getById(id);
 
       if(item === undefined){
         return false;
@@ -253,7 +253,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         if(rowIndex === -1){
           me.setById(rowIndex, key, value);
         }
@@ -265,11 +265,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(Fancy.isObject(key) && value === undefined){
-      for(var p in key){
-        var column = me.getColumnByIndex(p);
+      for(const p in key){
+        const column = me.getColumnByIndex(p);
 
         if(column && column.type === 'date'){
-          var format = column.format,
+          const format = column.format,
             newDate = Fancy.Date.parse(key[p], format.read, format.mode),
             oldDate = Fancy.Date.parse(s.getById(id).get(p), format.edit, format.mode);
 
@@ -299,19 +299,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * TODO: undo by id and key
    */
-  undo: function(){
-    var me = this,
+  undo(){
+    const me = this,
       s = me.store,
       action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
 
-    if(!action){
+    if (!action) {
       return;
     }
 
-    switch(action.type){
+    switch (action.type) {
       case 'edit':
         me.setById(action.id, action.key, action.oldValue);
-        var value = action.value;
+        const value = action.value;
         action.value = action.oldValue;
         action.oldValue = value;
         s.redoActions.push(action);
@@ -334,13 +334,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  redo: function(){
-    var me = this,
+  redo(){
+    const me = this,
       s = me.store,
       action = s.redoActions.splice(s.redoActions.length - 1, 1)[0];
 
     s.redoing = true;
-    switch(action.type){
+    switch (action.type) {
       case 'edit':
         me.setById(action.id, action.key, action.oldValue);
         break;
@@ -357,8 +357,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  undoAll: function(){
-    var me = this,
+  undoAll(){
+    let me = this,
       s = me.store,
       i = 0,
       iL = s.undoActions.length;
@@ -370,15 +370,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @params {Object} cell
    */
-  editCell: function(cell){
-    var me = this,
+  editCell(cell){
+    const me = this,
       side = me.getSideByCell(cell),
       rowIndex = Number(cell.attr('index')),
       columnIndex = Number(cell.parent().attr('index')),
       info = {
-        side: side,
-        rowIndex: rowIndex,
-        columnIndex: columnIndex
+        side,
+        rowIndex,
+        columnIndex
       },
       columns = me.getColumns(info.side);
 
@@ -403,7 +403,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     info.cell = cell.dom;
 
-    var item = me.get(info.rowIndex);
+    const item = me.get(info.rowIndex);
     info.item = item;
     info.data = item.data;
 
@@ -420,7 +420,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @params {Object} o
    * @return {Object}
    */
-  getCell: function(o){
+  getCell(o){
     var me = this,
       side,
       body,
@@ -429,7 +429,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     //o.id
     //o.index
     if(o.id !== undefined && o.index !== undefined){
-      var _o = me.getColumnOrderByKey(o.index),
+      const _o = me.getColumnOrderByKey(o.index),
         columnIndex = _o.order,
         rowIndex = me.getRowById(o.id);
 

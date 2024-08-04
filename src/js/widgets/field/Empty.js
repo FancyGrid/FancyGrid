@@ -19,8 +19,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents();
 
@@ -29,14 +29,14 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     me.preRender();
     me.render();
 
-    if( me.style ){
+    if (me.style) {
       me.css(me.style);
     }
   },
   /*
    *
    */
-  ons: function(){},
+  ons(){},
   fieldCls: Fancy.FIELD_CLS + ' ' + Fancy.FIELD_EMPTY_CLS,
   width: 100,
   tpl: [

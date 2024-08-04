@@ -2,20 +2,20 @@ Fancy.modules['menu'] = true;
 
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var MENU_CLS = F.MENU_CLS;
-  var MENU_ITEM_CLS = F.MENU_ITEM_CLS;
-  var MENU_ITEM_IMAGE_CLS =  F.MENU_ITEM_IMAGE_CLS;
-  var MENU_ITEM_TEXT_CLS = F.MENU_ITEM_TEXT_CLS;
-  var MENU_ITEM_SIDE_TEXT_CLS = F.MENU_ITEM_SIDE_TEXT_CLS;
-  var MENU_ITEM_ACTIVE_CLS = F.MENU_ITEM_ACTIVE_CLS;
-  var MENU_ITEM_RIGHT_IMAGE_CLS = F.MENU_ITEM_RIGHT_IMAGE_CLS;
-  var MENU_ITEM_EXPAND_CLS = F.MENU_ITEM_EXPAND_CLS;
-  var MENU_ITEM_DISABLED_CLS = F.MENU_ITEM_DISABLED_CLS;
-  var MENU_ITEM_SEP_CLS = F.MENU_ITEM_SEP_CLS;
-  var MENU_ITEM_NO_IMAGE_CLS = F.MENU_ITEM_NO_IMAGE_CLS;
+  const MENU_CLS = F.MENU_CLS;
+  const MENU_ITEM_CLS = F.MENU_ITEM_CLS;
+  const MENU_ITEM_IMAGE_CLS = F.MENU_ITEM_IMAGE_CLS;
+  const MENU_ITEM_TEXT_CLS = F.MENU_ITEM_TEXT_CLS;
+  const MENU_ITEM_SIDE_TEXT_CLS = F.MENU_ITEM_SIDE_TEXT_CLS;
+  const MENU_ITEM_ACTIVE_CLS = F.MENU_ITEM_ACTIVE_CLS;
+  const MENU_ITEM_RIGHT_IMAGE_CLS = F.MENU_ITEM_RIGHT_IMAGE_CLS;
+  const MENU_ITEM_EXPAND_CLS = F.MENU_ITEM_EXPAND_CLS;
+  const MENU_ITEM_DISABLED_CLS = F.MENU_ITEM_DISABLED_CLS;
+  const MENU_ITEM_SEP_CLS = F.MENU_ITEM_SEP_CLS;
+  const MENU_ITEM_NO_IMAGE_CLS = F.MENU_ITEM_NO_IMAGE_CLS;
 
   /**
    * @class Fancy.Menu
@@ -40,13 +40,13 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('hide');
       me.Super('init', arguments);
 
-      if(me.width < me.minWidth){
+      if (me.width < me.minWidth) {
         me.width = me.minWidth;
       }
 
@@ -57,14 +57,14 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el;
 
-      el.on('mousedown', me.onItemMouseDown, me, '.' + MENU_ITEM_CLS);
-      el.on('click', me.onItemClick, me, '.' + MENU_ITEM_CLS);
-      el.on('mouseenter', me.onItemEnter, me, '.' + MENU_ITEM_CLS);
-      el.on('mouseleave', me.onItemLeave, me, '.' + MENU_ITEM_CLS);
+      el.on('mousedown', me.onItemMouseDown, me, `.${MENU_ITEM_CLS}`);
+      el.on('click', me.onItemClick, me, `.${MENU_ITEM_CLS}`);
+      el.on('mouseenter', me.onItemEnter, me, `.${MENU_ITEM_CLS}`);
+      el.on('mouseleave', me.onItemLeave, me, `.${MENU_ITEM_CLS}`);
     },
     widgetCls: MENU_CLS,
     itemCls: MENU_ITEM_CLS,
@@ -77,14 +77,15 @@ Fancy.modules['menu'] = true;
     maxHeight: 200,
     rendered: false,
     theme: 'default',
-    render: function(){
-      var me = this,
-        renderTo,
+    render(){
+      const me = this,
         el = Fancy.get(document.createElement('div'));
+
+      let renderTo;
 
       me.fire('beforerender');
 
-      if( me.theme !== 'default' ){
+      if (me.theme !== 'default') {
         el.addCls(Fancy.getThemeCSSCls(me.theme));
       }
 
@@ -104,7 +105,7 @@ Fancy.modules['menu'] = true;
         height: me.getItemsHeight()
       });
 
-      if(me.height){
+      if (me.height) {
         el.css({
           'height': me.height,
           'overflow-y': 'scroll'
@@ -118,7 +119,7 @@ Fancy.modules['menu'] = true;
 
       me.renderItems();
 
-      if(!me.items.length){
+      if (!me.items.length) {
         me.el.css('border', '0px');
       }
 
@@ -132,11 +133,11 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    checkHeight: function(){
-      var me = this,
+    checkHeight(){
+      const me = this,
         height = parseInt(me.el.css('height'));
 
-      if(height > me.maxHeight){
+      if (height > me.maxHeight) {
         me.el.css({
           height: me.maxHeight,
           'overflow-y': 'scroll'
@@ -146,10 +147,10 @@ Fancy.modules['menu'] = true;
     /*
      * @return {Number}
      */
-    getItemsHeight: function(){
+    getItemsHeight(){
       var me = this,
         items = me.items,
-        itemHeight = this.itemHeight,
+        itemHeight = me.itemHeight,
         height = 0,
         i = 0,
         iL = items.length;
@@ -170,7 +171,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    renderItems: function(){
+    renderItems(){
       var me = this,
         i = 0,
         iL = me.items.length,
@@ -185,7 +186,7 @@ Fancy.modules['menu'] = true;
           };
         }
 
-        var itemEl = Fancy.get(document.createElement('div'));
+        const itemEl = Fancy.get(document.createElement('div'));
         itemEl.attr('index', i);
 
         itemEl.addCls(me.itemCls);
@@ -258,7 +259,7 @@ Fancy.modules['menu'] = true;
             itemEl.select('.' + MENU_ITEM_TEXT_CLS).item(0).update(item.text || '');
         }
 
-        if(item.checked !== undefined){
+        if (item.checked !== undefined) {
           me.items[i].checkbox = new Fancy.CheckBox({
             label: false,
             theme: me.theme,
@@ -272,23 +273,23 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    applyDefaults: function(){
+    applyDefaults(){
       var me = this,
         i = 0,
         iL = me.items.length;
 
-      if (!me.defaults){
+      if (!me.defaults) {
         return;
       }
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         Fancy.applyIf(me.items[i], me.defaults);
       }
     },
     /*
      * @param {Object} e
      */
-    onItemClick: function(e){
+    onItemClick(e){
       var me = this,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
@@ -307,7 +308,7 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onItemEnter: function(e){
+    onItemEnter(e){
       var me = this,
         target = Fancy.get(e.currentTarget),
         index = target.attr('index'),
@@ -321,9 +322,9 @@ Fancy.modules['menu'] = true;
       me.deActivateItem();
       me.activateItem(index);
 
-      if(item.items){
-        if(!item.menu){
-          var itemConfig = me.items[index];
+      if (item.items) {
+        if (!item.menu) {
+          const itemConfig = me.items[index];
 
           Fancy.apply(itemConfig, {
             parentItem: item,
@@ -344,14 +345,14 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    onItemLeave: function(){},
+    onItemLeave(){},
     /*
      * @param {Number} x
      * @param {Number} y
-     * @param {Boolean} [checkPostion]
+     * @param {Boolean} [checkPosition]
      */
-    showAt: function(x, y, checkPostion){
-      var me = this;
+    showAt(x, y, checkPosition){
+      const me = this;
 
       me.css('position', 'absolute');
       me.css('left', x);
@@ -360,7 +361,7 @@ Fancy.modules['menu'] = true;
 
       me.el.show();
 
-      if(checkPostion !== false){
+      if (checkPosition !== false) {
         if(!me.parentMenu && Fancy.MenuManager.activeMenu && Fancy.MenuManager.activeMenu.id !== me.id){
           Fancy.MenuManager.remove();
         }
@@ -377,8 +378,8 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       me.el.hide();
       me.deActivateItem();
@@ -392,10 +393,10 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    hideAll: function(){
-      var parentMenu = this.parentMenu;
+    hideAll(){
+      const parentMenu = this.parentMenu;
 
-      if(parentMenu && parentMenu.el.css('display') !== 'none'){
+      if (parentMenu && parentMenu.el.css('display') !== 'none') {
         parentMenu.hide();
       }
 
@@ -404,11 +405,11 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    activateItem: function(index){
-      var me = this,
+    activateItem(index){
+      const me = this,
         item = me.items[index];
 
-      if(item.type === 'sep' || item === '-' || item.disabled){
+      if (item.type === 'sep' || item === '-' || item.disabled) {
         return;
       }
 
@@ -418,10 +419,10 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    deActivateItem: function(){
-      var activeItem = this.activeItem;
+    deActivateItem(){
+      const activeItem = this.activeItem;
 
-      if (!activeItem){
+      if (!activeItem) {
         return;
       }
 
@@ -431,10 +432,10 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onItemMouseDown: function(e){
-      var target = e.target;
+    onItemMouseDown(e){
+      const target = e.target;
 
-      if(target.tagName.toLocaleLowerCase() === 'input'){}
+      if (target.tagName.toLocaleLowerCase() === 'input') {}
       else{
         e.preventDefault();
       }
@@ -442,8 +443,8 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    enableItem: function(index){
-      var me = this,
+    enableItem(index){
+      const me = this,
         item = me.items[index];
 
       item.el.removeCls(MENU_ITEM_DISABLED_CLS);
@@ -452,8 +453,8 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Number} index
      */
-    disableItem: function(index){
-      var me = this,
+    disableItem(index){
+      const me = this,
         item = me.items[index];
 
       item.el.addCls(MENU_ITEM_DISABLED_CLS);
@@ -462,7 +463,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    checkPosition: function(){
+    checkPosition(){
       var me = this,
         el = me.el,
         offset = el.offset(),
@@ -496,14 +497,14 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    setChecked: function(index, clear){
-      var me = this;
+    setChecked(index, clear){
+      const me = this;
 
-      if(clear){
+      if (clear) {
         me.clearChecked();
       }
 
-      var item = me.el.select('.fancy-menu-item').item(index),
+      const item = me.el.select('.fancy-menu-item').item(index),
         checkBox = F.getWidget(item.select('.fancy-field-checkbox').attr('id'));
 
       checkBox.set(true);
@@ -511,11 +512,11 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    clearChecked: function(){
-      var me = this;
+    clearChecked(){
+      const me = this;
 
-      me.el.select('.fancy-checkbox-on').each(function(el){
-        var id = el.attr('id'),
+      me.el.select('.fancy-checkbox-on').each((el) => {
+        const id = el.attr('id'),
           checkBox = F.getWidget(id);
 
         checkBox.set(false);
@@ -530,27 +531,27 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    init: function(){
-      var docEl = Fancy.get(document);
+    init(){
+      const docEl = Fancy.get(document);
 
       docEl.on('click', this.onDocClick, this);
     },
     /*
      * @param {Object} menu
      */
-    add: function(menu){
-      var me = this;
+    add(menu){
+      const me = this;
 
-      if(!me.inited){
+      if (!me.inited) {
         me.init();
       }
 
       me.activeMenu = menu;
     },
-    remove: function(){
-      var me = this;
+    remove(){
+      const me = this;
 
-      if(!me.activeMenu){
+      if (!me.activeMenu) {
         return;
       }
 
@@ -560,13 +561,13 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Object} e
      */
-    onDocClick: function(e){
+    onDocClick(e){
       var me = this,
         target = Fancy.get(e.target),
         maxDepth = 10,
         parentEl = target;
 
-      if(!me.activeMenu){
+      if (!me.activeMenu) {
         return;
       }
 
@@ -587,19 +588,20 @@ Fancy.modules['menu'] = true;
     }
   });
 
-})();/*
+})();
+/*
  * @class Fancy.grid.plugin.ContextMenu
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
-  var MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
-  var MENU_ITEM_IMG_DUPLICATE_CLS = F.MENU_ITEM_IMG_DUPLICATE_CLS;
-  var MENU_ITEM_IMG_EDIT_CLS =  F.MENU_ITEM_IMG_EDIT_CLS;
+  const MENU_ITEM_IMG_COPY_CLS = F.MENU_ITEM_IMG_COPY_CLS;
+  const MENU_ITEM_IMG_DELETE_CLS = F.MENU_ITEM_IMG_DELETE_CLS;
+  const MENU_ITEM_IMG_DUPLICATE_CLS = F.MENU_ITEM_IMG_DUPLICATE_CLS;
+  const MENU_ITEM_IMG_EDIT_CLS = F.MENU_ITEM_IMG_EDIT_CLS;
 
   F.define('Fancy.grid.plugin.ContextMenu', {
     extend: F.Plugin,
@@ -622,15 +624,15 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('contextmenu', me.onContextMenu, me);
@@ -639,8 +641,8 @@ Fancy.modules['menu'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onContextMenu: function(grid, o){
-      var me = this,
+    onContextMenu(grid, o){
+      const me = this,
         e = o.e;
 
       me.activeItem = o;
@@ -651,18 +653,18 @@ Fancy.modules['menu'] = true;
         me.initMenu();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.showMenu(e, true);
       }, 50);
 
     },
-    initMenu: function(){
-      var me = this,
+    initMenu(){
+      const me = this,
         w = me.widget,
         items = [],
-        _items =  me.items || F.Array.copy(me.defaultItems);
+        _items = me.items || F.Array.copy(me.defaultItems);
 
-      F.each(_items, function(item, i){
+      F.each(_items, (item, i) => {
         var type = item,
           _item = {};
 
@@ -677,7 +679,7 @@ Fancy.modules['menu'] = true;
               text: 'Copy',
               sideText: 'CTRL+C',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
-              handler: function(){
+              handler(){
                 w.copy();
               }
             });
@@ -689,7 +691,7 @@ Fancy.modules['menu'] = true;
             F.applyIf(_item, {
               text: 'Copy with Headers',
               imageCls: MENU_ITEM_IMG_COPY_CLS,
-              handler: function(){
+              handler(){
                 w.copy(true);
               }
             });
@@ -700,7 +702,7 @@ Fancy.modules['menu'] = true;
             F.applyIf(_item, {
               text: 'Delete',
               imageCls: MENU_ITEM_IMG_DELETE_CLS,
-              handler: function(){
+              handler(){
                 switch(w.selection.selModel){
                   case 'rows':
                   case 'row':
@@ -725,9 +727,9 @@ Fancy.modules['menu'] = true;
               text: 'Edit',
               imageCls: MENU_ITEM_IMG_EDIT_CLS,
               disabled: true,
-              handler: function(){
+              handler(){
                 if(w.rowEdit){
-                  var activeCell = w.selection.getActiveCell(),
+                  const activeCell = w.selection.getActiveCell(),
                     side = w.getSideByCell(activeCell),
                     body = w.getBody(side),
                     o = body.getEventParams({
@@ -753,7 +755,7 @@ Fancy.modules['menu'] = true;
                 }
               },{
                 text: 'Excel Export',
-                handler: function(){
+                handler(){
                   w.exportToExcel({
                     header: true
                   });
@@ -767,7 +769,7 @@ Fancy.modules['menu'] = true;
             F.applyIf(_item, {
               text: 'Duplicate',
               imageCls: MENU_ITEM_IMG_DUPLICATE_CLS,
-              handler: function(){
+              handler(){
                 switch(w.selection.selModel){
                   case 'rows':
                   case 'row':
@@ -789,8 +791,8 @@ Fancy.modules['menu'] = true;
                     else{
                       rowIndex = w.getRowById( selection[selection.length - 1].id ) + 1;
 
-                      F.each( selection, function(item){
-                        var _item = F.Object.copy( item );
+                      F.each( selection, (item)=>{
+                        const _item = F.Object.copy(item);
                         _item.id = F.id(null, 'TEMP-');
                         data.push( _item );
                       } );
@@ -798,8 +800,8 @@ Fancy.modules['menu'] = true;
 
                     w.insert(rowIndex, data);
 
-                    F.each(data, function(item){
-                      var rowIndex = w.getRowById(item.id);
+                    F.each(data, (item)=> {
+                      const rowIndex = w.getRowById(item.id);
 
                       w.flashRow(rowIndex);
                     });
@@ -821,7 +823,7 @@ Fancy.modules['menu'] = true;
         items: items
       });
     },
-    showMenu: function(e, eventPosition){
+    showMenu(e, eventPosition){
       var me = this,
         w = me.widget,
         selection = w.selection,
@@ -843,8 +845,8 @@ Fancy.modules['menu'] = true;
 
       listEl.css({
         position: 'absolute',
-        top: top,
-        left: left
+        top,
+        left
       });
 
       me.menu.css('z-index', 1000 + F.zIndex++);
@@ -872,34 +874,31 @@ Fancy.modules['menu'] = true;
         }
       }
 
-      setTimeout(function(){
-        Fancy.get(document).once('click', function(){
-          me.hideMenu();
-        });
+      setTimeout(()=>{
+        Fancy.get(document).once('click', () => me.hideMenu());
       }, 50);
     },
-    hideMenu: function(){
-      var me = this;
+    hideMenu(){
+      const me = this;
 
-      setTimeout(function(){
-        me.menu.hide();
-      }, 50);
+      setTimeout(() => me.menu.hide(), 50);
 
       delete me.activeItem;
     }
   });
 
-})();/*
+})();
+/*
  * @mixin Fancy.grid.header.mixin.Menu
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_HEADER_COLUMN_TRIGGERED_CLS = F.GRID_HEADER_COLUMN_TRIGGERED_CLS;
-  var GRID_HEADER_CELL_TRIGGER_UP_CLS = F.GRID_HEADER_CELL_TRIGGER_UP_CLS;
-  var GRID_HEADER_CELL_TRIGGER_DOWN_CLS = F.GRID_HEADER_CELL_TRIGGER_DOWN_CLS;
+  const GRID_HEADER_COLUMN_TRIGGERED_CLS = F.GRID_HEADER_COLUMN_TRIGGERED_CLS;
+  const GRID_HEADER_CELL_TRIGGER_UP_CLS = F.GRID_HEADER_CELL_TRIGGER_UP_CLS;
+  const GRID_HEADER_CELL_TRIGGER_DOWN_CLS = F.GRID_HEADER_CELL_TRIGGER_DOWN_CLS;
 
   F.Mixin('Fancy.grid.header.mixin.Menu', {
     triggeredColumnCls: GRID_HEADER_COLUMN_TRIGGERED_CLS,
@@ -911,13 +910,13 @@ Fancy.modules['menu'] = true;
      * @param {Object} column
      * @param {Array} columns
      */
-    showMenu: function(cell, index, column, columns){
-      var me = this,
+    showMenu(cell, index, column, columns){
+      const me = this,
         w = me.widget,
         offset = cell.offset();
 
-      if(column.menu && column.menu.rendered){
-        if(column.menu.el.css('display') === 'block'){
+      if (column.menu && column.menu.rendered) {
+        if (column.menu.el.css('display') === 'block') {
           me.hideMenu();
           return;
         }
@@ -953,16 +952,16 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    hideMenu: function(){
-      var me = this,
+    hideMenu(){
+      const me = this,
         w = me.widget,
         header = w.header,
         rightHeader = w.rightHeader,
         leftHeader = w.leftHeader;
 
-      switch (me.side){
+      switch (me.side) {
         case 'left':
-          if (header.activeMenu){
+          if (header.activeMenu) {
             header.activeMenu.hide();
             header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete header.activeMenu;
@@ -1020,7 +1019,7 @@ Fancy.modules['menu'] = true;
      * @param {Object} column
      * @param {Array} columns
      */
-    generateMenu: function(column, columns){
+    generateMenu(column, columns){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -1036,7 +1035,7 @@ Fancy.modules['menu'] = true;
           text: lang.sortAsc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
-          handler: function(){
+          handler(){
             w.sorter.sort('asc', column.index, me.side);
             column.menu.hide();
           }
@@ -1045,7 +1044,7 @@ Fancy.modules['menu'] = true;
           text: lang.sortDesc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
-          handler: function(){
+          handler(){
             w.sorter.sort('desc', column.index, me.side);
             column.menu.hide();
           }
@@ -1058,7 +1057,7 @@ Fancy.modules['menu'] = true;
         itemSizeColumn = {
           text: lang.autoSizeColumn,
           cls: cls,
-          handler: function(){
+          handler(){
             w.autoSizeColumn(column.index, me.side, column);
             column.menu.hide();
           }
@@ -1066,13 +1065,13 @@ Fancy.modules['menu'] = true;
         itemSizeColumns = {
           text: lang.autoSizeColumns,
           cls: cls,
-          handler: function(){
+          handler(){
             w.autoSizeColumns();
             column.menu.hide();
           }
         };
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         if (column.index === columns[i].index){
           indexOrder = i;
           break;
@@ -1114,7 +1113,7 @@ Fancy.modules['menu'] = true;
                 case 'right':
                   menu.push({
                     text: lang.unlock,
-                    handler: function(){
+                    handler(){
                       column.menu.hide();
                       w.unLockColumn(indexOrder, me.side);
                     }
@@ -1123,7 +1122,7 @@ Fancy.modules['menu'] = true;
                 case 'center':
                   menu.push({
                     text: lang.lock,
-                    handler: function(){
+                    handler(){
                       column.menu.hide();
                       w.lockColumn(indexOrder, me.side);
                     }
@@ -1131,7 +1130,7 @@ Fancy.modules['menu'] = true;
 
                   menu.push({
                     text: lang.rightLock,
-                    handler: function(){
+                    handler(){
                       column.menu.hide();
                       w.rightLockColumn(indexOrder, me.side);
                     }
@@ -1165,7 +1164,7 @@ Fancy.modules['menu'] = true;
 
               menu.push({
                 text: lang.unlock,
-                handler: function(){
+                handler(){
                   column.menu.hide();
                   w.unLockColumn(indexOrder, me.side);
                 }
@@ -1178,7 +1177,7 @@ Fancy.modules['menu'] = true;
 
               menu.push({
                 text: lang.lock,
-                handler: function(){
+                handler(){
                   column.menu.hide();
                   w.lockColumn(indexOrder, me.side);
                 }
@@ -1186,7 +1185,7 @@ Fancy.modules['menu'] = true;
 
               menu.push({
                 text: lang.rightLock,
-                handler: function(){
+                handler(){
                   column.menu.hide();
                   w.rightLockColumn(indexOrder, me.side);
                 }
@@ -1201,35 +1200,35 @@ Fancy.modules['menu'] = true;
     /*
      * @param {Array} columns
      */
-    prepareColumns: function(columns){
+    prepareColumns(columns){
       var me = this,
         w = me.widget,
         _columns = [],
         group = [],
         groupName;
 
-      F.each(columns, function(column){
-        var value = true;
+      F.each(columns, (column) => {
+        let value = true;
 
-        if(column.columnMenu === false){
+        if (column.columnMenu === false) {
           return;
         }
 
-        if (column.hidden){
+        if (column.hidden) {
           value = false;
         }
 
-        var columnConfig = {
+        const columnConfig = {
           text: column.title,
           checked: value,
           index: column.index,
           column: column,
-          handler: function(menu, item){
-            if (item.checked === true && !item.checkbox.get()){
+          handler(menu, item) {
+            if (item.checked === true && !item.checkbox.get()) {
               item.checkbox.set(true);
             }
 
-            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
+            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1) {
               item.checkbox.set(true);
               return;
             }
@@ -1237,20 +1236,19 @@ Fancy.modules['menu'] = true;
             item.checked = !item.checked;
             item.checkbox.set(item.checked);
 
-            if (item.checked){
+            if (item.checked) {
               w.showColumn(me.side, item.index, column);
-            }
-            else {
+            } else {
               w.hideColumn(me.side, item.index, column);
             }
 
-            if(w.responsive){
+            if (w.responsive) {
               w.onWindowResize();
             }
           }
         };
 
-        if (column.grouping){
+        if (column.grouping) {
           group = group || [];
           group.push(columnConfig);
           groupName = column.grouping;
@@ -1280,15 +1278,15 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    onMenuHide: function(){
-      this.el.select('.' + GRID_HEADER_COLUMN_TRIGGERED_CLS).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+    onMenuHide(){
+      this.el.select(`.${GRID_HEADER_COLUMN_TRIGGERED_CLS}`).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
     },
     /*
      * @param {Object} column
      * @param {Array} columns
      * @param {Boolean} hard
      */
-    updateColumnsMenu: function(column, columns, hard){
+    updateColumnsMenu(column, columns, hard){
       var me = this,
         menu = column.menu,
         columnsMenu,
@@ -1296,10 +1294,10 @@ Fancy.modules['menu'] = true;
         iL = menu.items.length,
         item;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         item = menu.items[i];
 
-        if (item.index === 'columns'){
+        if (item.index === 'columns') {
           columnsMenu = item;
           break;
         }
@@ -1312,13 +1310,13 @@ Fancy.modules['menu'] = true;
 
       i = 0;
       iL = columnsMenu.items.length;
-      var rendered = false;
+      let rendered = false;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         item = columnsMenu.items[i];
-        var _column = columns[i];
+        const _column = columns[i];
 
-        if (item.checkbox){
+        if (item.checkbox) {
           item.checkbox.set(!_column.hidden, false);
           rendered = true;
         }
@@ -1331,7 +1329,7 @@ Fancy.modules['menu'] = true;
     /*
      *
      */
-    destroyMenus: function(){
+    destroyMenus(){
       var me = this,
         w = me.widget,
         columns = w.getColumns(me.side),

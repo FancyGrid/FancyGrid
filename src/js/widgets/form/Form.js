@@ -25,7 +25,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @param {Object} config
    */
   constructor: function(renderTo, config){
-    var me = this;
+    const me = this;
 
     if(Fancy.isDom(renderTo)){
       config = config || {};
@@ -37,8 +37,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
 
     config = config || {};
 
-    var fn = function(params){
-      if(params){
+    const fn = function (params) {
+      if (params) {
         Fancy.apply(config, params);
       }
 
@@ -48,10 +48,10 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       me.Super('const', arguments);
     };
 
-    var preInit = function(){
-      var i18n = config.i18n || me.i18n;
+    const preInit = function () {
+      const i18n = config.i18n || me.i18n;
 
-      if( Fancy.loadLang(i18n, fn) === true ){
+      if (Fancy.loadLang(i18n, fn) === true) {
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -78,8 +78,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @param {Function} preInit
    * @param {Object} config
    */
-  loadModules: function(preInit, config){
-    var me = this,
+  loadModules(preInit, config){
+    const me = this,
       requiredModules = {
         form: true
       };
@@ -98,8 +98,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       requiredModules.ajax = true;
     }
 
-    var containsMenu = function(item){
-      if(item.menu){
+    const containsMenu = function (item) {
+      if (item.menu) {
         requiredModules['menu'] = true;
         return true;
       }
@@ -110,25 +110,25 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     Fancy.each(config.buttons, containsMenu);
     Fancy.each(config.subTBar, containsMenu);
 
-    var readItems = function(items){
+    const readItems = function (items) {
       var i = 0,
         iL = items.length,
         item;
 
-      for(;i<iL;i++){
+      for (; i < iL; i++) {
         item = items[i];
 
-        if(item.type === 'combo' && item.data && item.data.proxy){
+        if (item.type === 'combo' && item.data && item.data.proxy) {
           requiredModules.ajax = true;
         }
 
-        if(item.type === 'date'){
+        if (item.type === 'date') {
           requiredModules.grid = true;
           requiredModules.date = true;
           requiredModules.selection = true;
         }
 
-        if(item.items){
+        if (item.items) {
           readItems(item.items);
         }
       }
@@ -153,11 +153,11 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       return;
     }
 
-    var onLoad = function(name){
+    const onLoad = function (name) {
       delete me.neededModules[name];
       me.neededModules.length--;
 
-      if(me.neededModules.length === 0){
+      if (me.neededModules.length === 0) {
         me.neededModules = true;
         preInit();
       }
@@ -191,14 +191,14 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
 /*
  * @param {String} id
  */
-FancyForm.get = function(id){
-  var el = Fancy.get(id);
+FancyForm.get = (id) => {
+  const el = Fancy.get(id);
 
   if(!el.dom){
     return;
   }
 
-  var formId = el.select('.fancy-form').dom.id;
+  const formId = el.select('.fancy-form').dom.id;
 
   return Fancy.getWidget(formId);
 };

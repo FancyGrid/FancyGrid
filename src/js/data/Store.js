@@ -59,8 +59,8 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents(
       'add', 'change', 'changepages', 'set',
@@ -94,7 +94,7 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  setModel: function(){
+  setModel(){
     var me = this,
       model = me.model;
 
@@ -114,7 +114,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {Array} data
    */
-  setData: function(data){
+  setData(data){
     var me = this,
       i = 0,
       iL = data.length,
@@ -174,10 +174,10 @@ Fancy.define('Fancy.Store', {
     }
 
     if(me.isTree){
-      Fancy.each(me.data, function(item){
+      Fancy.each(me.data, item => {
         if(item.get('expanded')){
           Fancy.each(item.data.child, function(_child,_i){
-            var childItem = me.getById(_child.id);
+            const childItem = me.getById(_child.id);
 
             item.data.child[_i] = childItem;
           });
@@ -189,7 +189,7 @@ Fancy.define('Fancy.Store', {
    * @param {Number} rowIndex
    * @return {Fancy.Model}
    */
-  getItem: function(rowIndex){
+  getItem(rowIndex){
     var me = this,
       item = me.dataView[rowIndex];
 
@@ -209,15 +209,15 @@ Fancy.define('Fancy.Store', {
    * @param {String|Number} key
    * @param {Boolean} origin
    */
-  get: function(rowIndex, key, origin){
-    var me = this,
+  get(rowIndex, key, origin){
+    let me = this,
       data;
 
     if(rowIndex === undefined){
       return me.data;
     }
 
-    var item = me.dataView[rowIndex];
+    let item = me.dataView[rowIndex];
 
     if(!item){
       if(me.order){
@@ -274,7 +274,7 @@ Fancy.define('Fancy.Store', {
    * @param {Number} rowIndex
    * @return {String|Number}
    */
-  getId: function(rowIndex){
+  getId(rowIndex){
     if(!this.dataView[rowIndex]){
       return '';
     }
@@ -285,7 +285,7 @@ Fancy.define('Fancy.Store', {
    * @param {Number} id
    * @return {Fancy.Model}
    */
-  getRow: function(id){
+  getRow(id){
     return this.dataViewMap[id];
   },
   /*
@@ -294,7 +294,7 @@ Fancy.define('Fancy.Store', {
    * @param {String|Number} value
    * @param {String|Number} [id]
    */
-  set: function(rowIndex, key, value, id){
+  set(rowIndex, key, value, id){
     var me = this,
       w = me.widget,
       item,
@@ -318,10 +318,10 @@ Fancy.define('Fancy.Store', {
 
     if(!me._stopSaving){
       w.fire('beforesaving', {
-        rowIndex: rowIndex,
-        key: key,
-        value: value,
-        id: id,
+        rowIndex,
+        key,
+        value,
+        id,
         saving: function(){
           me._set(rowIndex, key, value, id);
         }
@@ -330,7 +330,7 @@ Fancy.define('Fancy.Store', {
 
     if(me.stopSaving){
       me._stopSaving = true;
-      setTimeout(function(){
+      setTimeout(() => {
         delete me.stopSaving;
         delete me._stopSaving;
       });
@@ -346,7 +346,7 @@ Fancy.define('Fancy.Store', {
    * @param {String|Number} value
    * @param {String|Number} [id]
    */
-  _set: function(rowIndex, key, value, id){
+  _set(rowIndex, key, value, id){
     var me = this,
       item,
       oldValue,
@@ -365,14 +365,14 @@ Fancy.define('Fancy.Store', {
     }
 
     if(value === undefined){
-      var data = key;
+      const data = key;
 
-      for(var p in data){
+      for(const p in data){
         if(p === 'id'){
           continue;
         }
 
-        var _data;
+        let _data;
 
         if(rowIndex + infiniteScrolledToRow === -1){
           oldValue = item.get(p);
@@ -388,14 +388,14 @@ Fancy.define('Fancy.Store', {
         }
 
         me.fire('set', {
-          id: id,
+          id,
           data: _data,
-          rowIndex: rowIndex,
+          rowIndex,
           infiniteRowIndex: rowIndex + infiniteScrolledToRow,
           key: p,
           value: data[p],
-          oldValue: oldValue,
-          item: item
+          oldValue,
+          item
         });
       }
 
@@ -427,7 +427,7 @@ Fancy.define('Fancy.Store', {
         //TODO: it is bad about perfomance, it needs to redo.
         var parentItem = me.getById(_item.data.parentId);
 
-        Fancy.each(parentItem.data.child, function(child){
+        Fancy.each(parentItem.data.child, child =>{
           if(child.id === _item.id){
             child[key] = value;
           }
@@ -451,22 +451,22 @@ Fancy.define('Fancy.Store', {
     }
 
     me.fire('set', {
-      id: id,
+      id,
       data: _data,
-      rowIndex: rowIndex,
+      rowIndex,
       infiniteRowIndex: rowIndex + infiniteScrolledToRow,
-      key: key,
-      value: value,
-      oldValue: oldValue,
-      item: item
+      key,
+      value,
+      oldValue,
+      item
     });
   },
   /*
    * @param {Number} rowIndex
    * @param {Object} data
    */
-  setItemData: function(rowIndex, data){
-    var me = this,
+  setItemData(rowIndex, data){
+    const me = this,
       pastData = me.get(rowIndex);
 
     if(me.infinite){
@@ -477,7 +477,7 @@ Fancy.define('Fancy.Store', {
       me.set(rowIndex, data);
     }
     else {
-      for (var p in data){
+      for (const p in data) {
         if (pastData[p] == data[p]){
           continue;
         }
@@ -489,11 +489,11 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Number}
    */
-  getLength: function(){
-    var me = this,
+  getLength(){
+    let me = this,
       length = me.dataView.length;
 
-    if(me.infinite){
+    if (me.infinite) {
       if(length > me.infiniteDisplayedRows){
         length = me.infiniteDisplayedRows;
       }
@@ -504,10 +504,10 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Number}
    */
-  getTotal: function(){
-    var me = this;
+  getTotal(){
+    const me = this;
 
-    if(me.pageType === 'server'){
+    if (me.pageType === 'server') {
       return me.totalCount;
     }
 
@@ -528,8 +528,8 @@ Fancy.define('Fancy.Store', {
    * @param {Object} data
    * @param {Boolean} force
    */
-  defineModel: function(data, force){
-    var me = this,
+  defineModel(data, force){
+    const me = this,
       s = me.store;
 
     if(me.model && me.fields && me.fields.length !== 0 && !force){
@@ -554,14 +554,14 @@ Fancy.define('Fancy.Store', {
    * @param {Object} data
    * @return {Array}
    */
-  getFieldsFromData: function(data){
-    var items = data.items || data;
+  getFieldsFromData(data){
+    const items = data.items || data;
 
-    if( data.fields){
+    if (data.fields) {
       return data.fields;
     }
 
-    if( !items ){
+    if (!items) {
       throw new Error('[FancyGrid Error] - not set fields of data');
     }
 
@@ -572,7 +572,7 @@ Fancy.define('Fancy.Store', {
       itemZero = items;
     }
 
-    for(var p in itemZero){
+    for(const p in itemZero){
       fields.push(p);
     }
 
@@ -583,11 +583,10 @@ Fancy.define('Fancy.Store', {
    * @param {Object} options
    * @return {Array}
    */
-  getColumnOriginalValues: function(key, options){
+  getColumnOriginalValues(key, options = {}){
     var me = this,
       i = 0,
       values = [],
-      options = options || {},
       dataProperty = options.dataProperty || 'data',
       data = me[dataProperty],
       iL = data.length,
@@ -677,8 +676,8 @@ Fancy.define('Fancy.Store', {
 
     return values;
   },
-  getNestedValue: function(data, key){
-    var splitted = key.split('.');
+  getNestedValue(data, key){
+    const splitted = key.split('.');
 
     if(splitted.length > 1){
       return this.getNestedValue(data[splitted.shift(0, 1)], splitted.join('.'));
@@ -689,9 +688,8 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {Object} [o]
    */
-  changeDataView: function(o){
+  changeDataView(o = {}){
     var me = this,
-      o = o || {},
       groupBy,
       dataView = [],
       dataViewMap = {},
@@ -740,7 +738,7 @@ Fancy.define('Fancy.Store', {
       iL = i + me.pageSize;
     }
 
-    var totalCount = me.getTotal();
+    const totalCount = me.getTotal();
 
     if(iL > me.data.length){
       iL = me.data.length;
@@ -754,7 +752,7 @@ Fancy.define('Fancy.Store', {
       iL = 0;
     }
 
-    var item;
+    let item;
 
     if(me.order){
       if(me.grouping){
@@ -829,7 +827,7 @@ Fancy.define('Fancy.Store', {
    * @param {Function} fn
    * @return {Array}
    */
-  getColumnData: function(key, fn){
+  getColumnData(key, fn){
     var me = this,
       i = 0,
       iL = me.data.length,
@@ -853,7 +851,7 @@ Fancy.define('Fancy.Store', {
    * @param {Function} fn
    * @return {Array}
    */
-  getColumnUniqueData: function(key){
+  getColumnUniqueData(key){
     var me = this,
       i = 0,
       iL = me.data.length,
@@ -878,7 +876,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Array}
    */
-  getData: function(){
+  getData(){
     var me = this,
       i = 0,
       iL = me.data.length,
@@ -893,7 +891,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Array}
    */
-  getDataView: function(){
+  getDataView(){
     var me = this,
       i = 0,
       iL = me.dataView.length,
@@ -909,16 +907,14 @@ Fancy.define('Fancy.Store', {
    * @param {String} id
    * @return {Fancy.Model}
    */
-  getById: function(id){
-    var me = this;
-
-    return me.map[id];
+  getById(id){
+    return this.map[id];
   },
   /*
    * @param {String} id
    * @param {String} newId
    */
-  changeItemId: function(id, newId){
+  changeItemId(id, newId){
     var me = this,
       item = me.getById(id);
 
@@ -941,7 +937,7 @@ Fancy.define('Fancy.Store', {
    * @param {Boolean} [complex]
    * @return {Array}
    */
-  find: function(key, value, complex){
+  find(key, value, complex){
     var me = this,
       dataView = me.dataView,
       i = 0,
@@ -981,7 +977,7 @@ Fancy.define('Fancy.Store', {
    * @param {*} value
    * @return {Array}
    */
-  findItem: function(key, value){
+  findItem(key, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -1003,7 +999,7 @@ Fancy.define('Fancy.Store', {
    * @param {String} id
    * @return {Array}
    */
-  getDataIndex: function(id){
+  getDataIndex(id){
     var me = this,
       data = me.data,
       i = 0,
@@ -1025,7 +1021,7 @@ Fancy.define('Fancy.Store', {
    * @param {Function} fn
    * @param {Object} scope
    */
-  each: function(fn, scope){
+  each(fn, scope){
     var me = this,
       dataView = me.dataView,
       i = 0,
@@ -1045,13 +1041,13 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  readSmartIndexes: function(){
+  readSmartIndexes(){
     var me = this,
       w = me.widget,
       numOfSmartIndexes = 0,
       smartIndexes = {};
 
-    Fancy.each(w.columns, function(column){
+    Fancy.each(w.columns, column => {
       if(column.smartIndexFn){
         smartIndexes[column.index] = column.smartIndexFn;
         numOfSmartIndexes++;
@@ -1062,10 +1058,10 @@ Fancy.define('Fancy.Store', {
       me.smartIndexes = smartIndexes;
     }
   },
-  destroy: function(){
-    var me = this;
+  destroy(){
+    const me = this;
 
-    Fancy.each(me.data, function(item){
+    Fancy.each(me.data, item => {
       delete item.data;
       delete item.id;
     });
@@ -1079,21 +1075,19 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  addField: function(index){
+  addField(index){
     var me = this,
       fields = me.fields,
       presented = false;
 
     if(Fancy.isArray(index)){
-      Fancy.Array.each(index, function(_index){
-        me.addField(_index);
-      });
+      Fancy.Array.each(index, _index => me.addField(_index));
 
       return;
     }
 
-    Fancy.each(fields, function(field){
-      if(field === index){
+    Fancy.each(fields, field =>{
+      if (field === index) {
         presented = true;
         return true;
       }
@@ -1106,15 +1100,15 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Boolean}
    */
-  isFiltered: function(){
-    var me = this,
+  isFiltered(){
+    const me = this,
       filters = me.filters || {};
 
-    if(me._clearedFilter){
+    if (me._clearedFilter) {
       return true;
     }
 
-    for(var p in filters){
+    for(const p in filters){
       return true;
     }
 
@@ -1123,8 +1117,8 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Boolean}
    */
-  isSorted: function(){
-    var me = this,
+  isSorted(){
+    const me = this,
       sorters = me.sorters || {};
 
     return !Fancy.Object.isEmpty(sorters);

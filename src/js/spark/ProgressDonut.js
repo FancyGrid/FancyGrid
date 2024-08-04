@@ -20,25 +20,25 @@ Fancy.define('Fancy.spark.ProgressDonut', {
     var me = this;
 
     Fancy.apply(me, o);
-    
+
     me.init();
   },
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.initId();
-    me.initChart();    
+    me.initChart();
     me.setSize();
     me.setRadius();
     me.setInnerRadius();
     me.setParams();
-    
+
     me.iniColors();
-    
-    me.preRender();    
+
+    me.preRender();
     me.render();
 
     if( me.inited !== true ){
@@ -49,8 +49,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /**
    * generate unique id for class
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -60,8 +60,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
+  ons(){
+    const me = this;
 
     me.el.on('mouseenter', me.onMouseEnter, me);
     me.el.on('mouseleave', me.onMouseLeave, me);
@@ -70,15 +70,15 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(){
-    var me = this,
+  onMouseEnter(){
+    let me = this,
       value = me.el.attr('value');
 
     if(!me.tip || !me.tipTpl){
       return;
     }
 
-    var tpl = new Fancy.Template(me.tipTpl);
+    const tpl = new Fancy.Template(me.tipTpl);
     value = tpl.getHTML({
       value: value
     });
@@ -88,8 +88,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(){
-    var me = this;
+  onMouseLeave(){
+    const me = this;
 
     if(!me.tip || !me.tipTpl){
       return;
@@ -100,8 +100,8 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
 
     //Fix IE 9-10 bug
     if(!me.tooltip){
@@ -117,9 +117,9 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  iniColors: function(){
-    var me = this;
-    
+  iniColors(){
+    const me = this;
+
     if(me.value < 0){
       me.backColor = me.colorBGMinus;
       me.color = me.colorMinus;
@@ -132,11 +132,11 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  preRender: function(){
-    var me = this,
+  preRender(){
+    const me = this,
       size = me.size,
       chart = me.chart;
-      
+
     chart.setAttribute('width', size);
     chart.setAttribute('height', size);
     chart.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
@@ -144,21 +144,21 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  render: function(){
-    var me = this;
-    
+  render(){
+    const me = this;
+
     //render 100% progress
     me.renderBack();
-    
+
     //render progress
     me.renderProgress();
   },
   /*
    *
    */
-  renderBack: function(){
+  renderBack(){
     //render 100% progress
-    var me = this,
+    const me = this,
       radius = me.radius,
       innerRadius = me.innerRadius,
       d = [
@@ -168,7 +168,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         'A', innerRadius, innerRadius, 0, 1, 0, me.cx, me.y2
       ].join(' '),
       path = document.createElementNS(me.svgns, 'path');
-    
+
     path.setAttribute('d', d);
     path.setAttribute('fill', me.backColor);
 
@@ -177,7 +177,7 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  renderProgress: function(){
+  renderProgress(){
     //render progress
     var me = this,
       radius = me.radius,
@@ -185,30 +185,30 @@ Fancy.define('Fancy.spark.ProgressDonut', {
       path = document.createElementNS(me.svgns, 'path'),
       value = me.value,
       cumulative = 0;
-      
+
     if(value > 99){
       value = 99.99999;
     }
-    
+
     if(value < -99){
       value = 99.99999;
     }
-    
+
     if(value < 0){
       cumulative = 100 + value;
       value *= -1;
     }
-    
-    var portion = value / me.sum,
+
+    const portion = value / me.sum,
       cumulativePlusValue = cumulative + value;
-    
+
     var d = ['M'].concat(
       me.scale(cumulative, radius),
       'A', radius, radius, 0, portion > 0.5 ? 1 : 0, 1,
       me.scale(cumulativePlusValue, radius),
       'L'
     );
-    
+
     if (innerRadius){
       d = d.concat(
         me.scale(cumulativePlusValue, innerRadius),
@@ -216,19 +216,19 @@ Fancy.define('Fancy.spark.ProgressDonut', {
         me.scale(cumulative, innerRadius)
       );
     }
-    
+
     d = d.join(' ');
-    
+
     path.setAttribute('d', d);
     path.setAttribute('fill', me.color);
-    
+
     me.chart.appendChild(path);
   },
   /*
    *
    */
-  initChart: function(){
-    var me = this,
+  initChart(){
+    const me = this,
       el = Fancy.get(me.renderTo);
 
     me.renderTo = Fancy.get(me.renderTo).dom;
@@ -259,10 +259,10 @@ Fancy.define('Fancy.spark.ProgressDonut', {
    * @param {Number} radius
    * @return {Object}
    */
-  scale: function(value, radius){
-    var me = this,
+  scale(value, radius){
+    const me = this,
       pi = Math.PI,
-      sum = me.sum,   
+      sum = me.sum,
       radians = value / sum * pi * 2 - pi / 2;
 
     return [
@@ -274,15 +274,15 @@ Fancy.define('Fancy.spark.ProgressDonut', {
    * @param {Number} degrees
    * @return {Number}
    */
-  radians: function(degrees){
+  radians(degrees){
     return degrees * Math.PI / 180;
   },
   /*
    *
    */
-  setSize: function(){
-    var me = this;
-    
+  setSize(){
+    const me = this;
+
     me.width = me.width || me.height || me.size || 30;
     me.height = me.height || me.width || me.size || 30;
     me.size = me.size || me.height;
@@ -290,33 +290,33 @@ Fancy.define('Fancy.spark.ProgressDonut', {
   /*
    *
    */
-  setRadius: function(){
-    var me = this;
-    
+  setRadius(){
+    const me = this;
+
     me.radius = me.radius || me.height/2;
   },
   /*
    *
    */
-  setInnerRadius: function(){
-    var me = this;
-    
+  setInnerRadius(){
+    const me = this;
+
     me.innerRadius = me.innerRadius || me.height/2 - me.height/4;
   },
   /*
    *
    */
-  setParams: function(){
-    var me = this,
+  setParams(){
+    const me = this,
       radius = me.radius,
       innerRadius = me.innerRadius,
       height = me.height,
       width = me.width;
-      
+
     me.cy = height / 2;
     me.y1 = me.cy - radius;
     me.y2 = me.cy - innerRadius;
-     
+
     me.cx = width / 2;
     me.x2 = me.cx - 0.01;
   }

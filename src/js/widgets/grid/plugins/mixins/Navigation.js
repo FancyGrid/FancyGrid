@@ -4,27 +4,27 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   /*
    * CONSTANTS
    */
-  var GRID_CELL_ACTIVE_CLS = F.GRID_CELL_ACTIVE_CLS;
-  var GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
+  const GRID_CELL_ACTIVE_CLS = F.GRID_CELL_ACTIVE_CLS;
+  const GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
 
   F.Mixin('Fancy.grid.selection.mixin.Navigation', {
     /*
      *
      */
-    initNavigation: function(){
+    initNavigation(){
       this.addEvents('up', 'down', 'left', 'right');
       this.onsNav();
     },
     /*
      *
      */
-    onsNav: function(){
-      var me = this,
+    onsNav(){
+      const me = this,
         doc = Fancy.get(document);
 
       doc.on('keydown', me.onKeyDown, me);
@@ -32,8 +32,8 @@
     /*
      * @param {Object} e
      */
-    onKeyDown: function(e){
-      var me = this,
+    onKeyDown(e){
+      const me = this,
         w = me.widget,
         keyCode = e.keyCode,
         key = Fancy.key;
@@ -43,11 +43,9 @@
       }
 
       if(!me.keyNavigating){
-        var docEl = F.get(document);
+        const docEl = F.get(document);
 
-        docEl.once('keyup', function(){
-          delete me.keyNavigating;
-        });
+        docEl.once('keyup', ()=> delete me.keyNavigating);
       }
 
       if(w.celledit && w.celledit.activeEditor){
@@ -66,7 +64,7 @@
           e.preventDefault();
           clearInterval(me.intervalUp);
 
-          me.intervalUp = setTimeout(function(){
+          me.intervalUp = setTimeout(() => {
             me.moveUp();
             delete me.intervalUp;
           }, 1);
@@ -76,7 +74,7 @@
           e.preventDefault();
           clearInterval(me.intervalDown);
 
-          me.intervalDown = setTimeout(function(){
+          me.intervalDown = setTimeout(() => {
             me.moveDown();
             delete me.intervalDown;
           }, 1);
@@ -114,7 +112,7 @@
             if(w.selection && w.selection.selModel === 'cell' || w.selection.selModel === 'cells'){
               var activeCell = w.selection.getActiveCell();
 
-              if (activeCell){
+              if (activeCell) {
                 var info = w.selection.getActiveCellInfo(),
                   columns = w.getColumns( info.side );
 
@@ -131,7 +129,7 @@
                     info.item = item;
                     info.data = item.data;
 
-                    if (info.column.smartIndexFn){
+                    if (info.column.smartIndexFn) {
                       info.value = info.column.smartIndexFn(info.data);
                     }
                     else{
@@ -292,7 +290,7 @@
     /*
      * @return {Cell}
      */
-    moveRight: function(){
+    moveRight(){
       var me = this,
         w = me.widget,
         info = me.getActiveCellInfo(),
@@ -314,7 +312,7 @@
             break;
           case 'center':
             if(w.rightColumns && w.rightColumns.length){
-              F.each(w.rightColumns, function(column, i){
+              F.each(w.rightColumns, (column, i) => {
                 if(!column.hidden){
                   info.columnIndex = i;
                   body = w.getBody('right');
@@ -400,7 +398,7 @@
             if(!foundVisibleColumn){
               var foundVisibleColumn = false;
 
-              F.each(w.rightColumns, function(_column, i){
+              F.each(w.rightColumns, (_column, i) => {
                 if(!_column.hidden){
                   foundVisibleColumn = true;
                   info.columnIndex = i;
@@ -480,7 +478,7 @@
 
       return nextCell;
     },
-    moveLeft: function(){
+    moveLeft(){
       var me = this,
         w = me.widget,
         info = me.getActiveCellInfo(),
@@ -704,7 +702,7 @@
     /*
      * @return {Cell}
      */
-    moveUp: function(){
+    moveUp(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -786,7 +784,7 @@
     /*
      * @return {Cell|undefined}
      */
-    moveDown: function(){
+    moveDown(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -865,7 +863,7 @@
     /*
      *
      */
-    scrollPageUP: function(){
+    scrollPageUP(){
       var me = this,
         w = me.widget,
         bodyHeight = parseInt(w.body.el.height()),
@@ -888,7 +886,7 @@
     /*
      *
      */
-    scrollPageDOWN: function(){
+    scrollPageDOWN(){
       var me = this,
         w = me.widget,
         gridBorders = w.gridBorders,
@@ -917,20 +915,14 @@
     /*
      *
      */
-    scrollHome: function(){
-      var me = this,
-        w = me.widget;
-
-      w.scroll(0);
+    scrollHome(){
+      this.widget.scroll(0);
     },
     /*
      *
      */
-    scrollEnd: function(){
-      var me = this,
-        w = me.widget;
-
-      w.scroll(1000000);
+    scrollEnd(){
+      this.widget.scroll(1000000);
     }
   });
 

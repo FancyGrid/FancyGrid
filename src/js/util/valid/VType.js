@@ -6,7 +6,7 @@
    * @param {String} name
    * @param {Object} o
    */
-  Fancy.addValid = function(name, o){
+  Fancy.addValid = (name, o) => {
     Fancy.vtypes[name] = o;
   };
 
@@ -16,8 +16,8 @@
    * @param {*} value
    * @return {Boolean}
    */
-  Fancy.isValid = function(type, value){
-    var vtype;
+  Fancy.isValid = (type, value) => {
+    let vtype;
 
     if (Fancy.isString(type)){
       vtype = Fancy.vtypes[type];
@@ -32,8 +32,8 @@
       }
     }
 
-    if (vtype.before){
-      var before = vtype.before,
+    if (vtype.before) {
+      let before = vtype.before,
         list = [type];
 
       if (Fancy.isString(before)){
@@ -45,7 +45,7 @@
 
       list.reverse();
 
-      var i = 0,
+      let i = 0,
         iL = list.length;
 
       for (; i < iL; i++){

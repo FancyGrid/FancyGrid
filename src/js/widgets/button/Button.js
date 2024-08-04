@@ -1,20 +1,20 @@
 (function(){
-  var toggleGroups = {};
+  const toggleGroups = {};
 
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_CLS = F.GRID_CLS;
-  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
-  var BUTTON_CLS = F.BUTTON_CLS;
-  var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
-  var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
-  var BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
-  var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
-  var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
-  var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
-  var BUTTON_MENU_CLS = F.BUTTON_MENU_CLS;
+  const GRID_CLS = F.GRID_CLS;
+  const PANEL_BODY_CLS = F.PANEL_BODY_CLS;
+  const BUTTON_CLS = F.BUTTON_CLS;
+  const BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
+  const BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
+  const BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
+  const BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
+  const BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
+  const BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+  const BUTTON_MENU_CLS = F.BUTTON_MENU_CLS;
 
   /**
    * @class Fancy.Button
@@ -29,9 +29,9 @@
      * @param {Object} scope
      */
     constructor: function(config, scope){
-      var me = this;
+      const me = this;
 
-      if (config.toggleGroup){
+      if (config.toggleGroup) {
         toggleGroups[config.toggleGroup] = toggleGroups[config.toggleGroup] || {
             active: false,
             items: []
@@ -47,8 +47,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'pressedchange', 'init-menu');
       me.Super('init', arguments);
@@ -62,8 +62,8 @@
     /*
      *
      */
-    setOns: function(){
-      var me = this,
+    setOns(){
+      const me = this,
         el = me.el;
 
       el.on('click', me.onClick, me);
@@ -72,7 +72,7 @@
       el.on('mouseover', me.onMouseOver, me);
       el.on('mouseout', me.onMouseOut, me);
 
-      if(me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
@@ -100,18 +100,18 @@
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo,
         el = F.get(document.createElement('div')),
         width = 0,
         charWidth = 7;
 
-      if(me.theme && Fancy.themes[me.theme]){
+      if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
-      switch (me.i18n){
+      switch (me.i18n) {
         case 'zh-CN':
         case 'zh-TW':
         case 'ja':
@@ -122,13 +122,13 @@
 
       me.fire('beforerender');
 
-      if( me.wrapper ){
+      if (me.wrapper) {
         me.renderWrapper();
       }
 
       renderTo = F.get(me.renderTo || document.body).dom;
 
-      if(me.width){
+      if (me.width) {
         width = me.width;
       }
       else{
@@ -137,24 +137,24 @@
         }
       }
 
-      if(me.imageColor){
+      if (me.imageColor) {
         me.imageCls = BUTTON_IMAGE_COLOR_CLS;
       }
 
-      if(width < me.minWidth){
-        if(me.text && me.text.length > 0){
+      if (width < me.minWidth) {
+        if (me.text && me.text.length > 0) {
           width = me.minWidth;
         }
-        else{
+        else {
           width = me.minWidth;
         }
       }
 
-      if(me.imageCls && me.text){
+      if (me.imageCls && me.text) {
         width += me.imageWidth;
       }
 
-      if(me.menu){
+      if (me.menu) {
         width += me.rightImageWidth;
       }
 
@@ -165,11 +165,11 @@
         me.extraCls
       );
 
-      if (me.disabled){
+      if (me.disabled) {
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
-      if(me.menu && me.menuIcon !== false){
+      if (me.menu && me.menuIcon !== false) {
         el.addCls(BUTTON_MENU_CLS);
       }
 
@@ -188,28 +188,28 @@
         text: me.text || ''
       }));
 
-      if(me.imageCls){
-        var imageEl = el.select('.' + BUTTON_IMAGE_CLS);
-        if(me.imageColor){
+      if (me.imageCls) {
+        const imageEl = el.select('.' + BUTTON_IMAGE_CLS);
+        if (me.imageColor) {
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
-        if(F.isString(me.imageCls)){
+        if (F.isString(me.imageCls)) {
           imageEl.addCls(me.imageCls);
         }
       }
 
-      if(me.id){
+      if (me.id) {
         el.attr('id', me.id);
       }
 
       me.el = F.get(renderTo.appendChild(el.dom));
 
-      if (me.disabled){
+      if (me.disabled) {
         me.disable();
       }
 
-      if(me.pressed){
+      if (me.pressed) {
         me.setPressed(me.pressed);
       }
 
@@ -223,8 +223,8 @@
     /*
      *
      */
-    renderWrapper: function(){
-      var me = this,
+    renderWrapper(){
+      const me = this,
         wrapper = me.wrapper,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div'));
@@ -239,24 +239,24 @@
     /*
      *
      */
-    initToggle: function(){
-      if (!this.enableToggle){
+    initToggle(){
+      if (!this.enableToggle) {
         return false;
       }
     },
     /*
      * @param {Boolean} value
      */
-    setPressed: function(value, fire){
-      var me = this;
+    setPressed(value, fire){
+      const me = this;
 
-      if (value){
+      if (value) {
         me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
-        if(me.toggleGroup){
-          var active = toggleGroups[me.toggleGroup].active;
-          if(active){
+        if (me.toggleGroup) {
+          const active = toggleGroups[me.toggleGroup].active;
+          if (active) {
             active.setPressed(false);
           }
 
@@ -266,20 +266,20 @@
       else {
         me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
-        if(me.toggleGroup){
+        if (me.toggleGroup) {
           delete toggleGroups[me.toggleGroup].active;
         }
       }
 
-      if(fire !== false){
+      if (fire !== false) {
         me.fire('pressedchange', me.pressed);
       }
     },
     /*
      *
      */
-    toggle: function(){
-      var me = this,
+    toggle(){
+      const me = this,
         value = !me.pressed;
 
       me.setPressed(value);
@@ -288,8 +288,8 @@
     /*
      *
      */
-    onClick: function(e){
-      var me = this,
+    onClick(e){
+      let me = this,
         handler = me.handler;
 
       me.fire('click');
@@ -331,9 +331,9 @@
     /*
      * @param {String} name
      */
-    getHandler: function(name){
-      var me = this,
-        grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
+    getHandler(name){
+      const me = this,
+        grid = F.getWidget(me.el.closest(`.${PANEL_BODY_CLS}`).select(`.${GRID_CLS}`).attr('id'));
 
       return grid[name] || function(){
           F.error('Handler does not exist');
@@ -342,34 +342,34 @@
     /*
      *
      */
-    onMouseDown: function(){
+    onMouseDown(){
       this.fire('mousedown');
     },
     /*
      *
      */
-    onMouseUp: function(){
+    onMouseUp(){
       this.fire('mouseup');
     },
     /*
      * @param {Object} e
      */
-    onMouseOver: function(e){
-      var me = this;
+    onMouseOver(e){
+      const me = this;
 
       me.fire('mouseover');
 
-      if(me.tip){
+      if (me.tip) {
         me.renderTip(e);
       }
     },
     /*
      * @param {Object} e
      */
-    renderTip: function(e){
-      var me = this;
+    renderTip(e){
+      const me = this;
 
-      if(me.tooltip){
+      if (me.tooltip) {
         me.tooltip.destroy();
       }
 
@@ -383,12 +383,12 @@
     /*
      *
      */
-    onMouseOut: function(){
-      var me = this;
+    onMouseOut(){
+      const me = this;
 
       me.fire('mouseout');
 
-      if(me.tooltip){
+      if (me.tooltip) {
         me.tooltip.destroy();
         delete me.tooltip;
       }
@@ -396,18 +396,18 @@
     /*
      * @param {String} text
      */
-    setText: function(text, width){
-      var me = this,
+    setText(text, width){
+      let me = this,
         el = me.el,
         charWidth = 7;
 
       me.text = text;
 
-      if (me.theme && Fancy.themes[me.theme]){
+      if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
-      switch (me.i18n){
+      switch (me.i18n) {
         case 'zh-CN':
         case 'zh-TW':
         case 'ja':
@@ -416,18 +416,18 @@
           break;
       }
 
-      if(!width){
+      if (!width) {
         width = 0;
       }
 
-      if(!width){
+      if (!width) {
         width += text.length * charWidth + charWidth * 2;
 
-        if (me.imageColor){
+        if (me.imageColor) {
           me.imageCls = BUTTON_IMAGE_COLOR_CLS;
         }
 
-        if (width < me.minWidth){
+        if (width < me.minWidth) {
           if (me.text && me.text.length > 0){
             width = me.minWidth;
           }
@@ -436,7 +436,7 @@
           }
         }
 
-        if (me.imageCls && me.text){
+        if (me.imageCls && me.text) {
           width += me.imageWidth;
         }
 
@@ -447,58 +447,58 @@
 
       me.css('width', width);
 
-      el.select('.' + BUTTON_TEXT_CLS).update(text);
+      el.select(`.${BUTTON_TEXT_CLS}`).update(text);
     },
     /*
      *
      */
-    disable: function(){
+    disable(){
       this.disabled = true;
       this.addCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
-    enable: function(){
+    enable(){
       this.disabled = false;
       this.removeCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
-    onMouseMove: function(e){
-      var me = this;
+    onMouseMove(e){
+      const me = this;
 
-      if(me.tip && me.tooltip){
+      if (me.tip && me.tooltip) {
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
     },
-    toggleMenuShow: function(){
-      var me = this,
+    toggleMenuShow(){
+      const me = this,
         p = me.el.$dom.offset(),
         xy = [p.left, p.top + me.el.$dom.height()];
 
-      if(me.pressed){
+      if (me.pressed) {
         me.menu.hide();
         return;
       }
 
-      if(F.isArray(me.menu)){
+      if (F.isArray(me.menu)) {
         me.initMenu();
       }
-      else if(!me.menu.type){
+      else if (!me.menu.type) {
         me.initMenu();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
     /*
      *
      */
-    initMenu: function(){
-      var me = this,
+    initMenu(){
+      const me = this,
         config = {
           theme: me.theme,
           events: [{
@@ -507,10 +507,10 @@
           }]
         };
 
-      if(F.isObject(me.menu)){
+      if (F.isObject(me.menu)) {
         F.apply(config, me.menu);
       }
-      else{
+      else {
         config.items = me.menu;
       }
 
@@ -521,7 +521,7 @@
     /*
      *
      */
-    onMenuHide: function(){
+    onMenuHide(){
       this.setPressed(false);
     }
   });

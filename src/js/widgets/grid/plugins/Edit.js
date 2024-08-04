@@ -25,8 +25,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  init: function(){
-    var me = this,
+  init(){
+    const me = this,
       w = me.widget,
       s = w.store;
 
@@ -34,7 +34,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
     me.Super('init', arguments);
 
-    w.once('render', function(){
+    w.once('render', () => {
       me.ons();
       s.on('beforeupdate', me.onStoreCRUDBeforeUpdate, me);
       s.on('update', me.onStoreCRUDUpdate, me);
@@ -47,8 +47,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget,
       s = w.store,
       clickEventName = 'cell' + me.getClickEventName();
@@ -57,7 +57,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     s.on('set', me.onStoreSet, me);
     me.on('tab', me.onTab, me);
 
-    w.once('init', function(){
+    w.once('init', () => {
       if(clickEventName !== 'cell'){
         w.on(clickEventName, me.onClickCellToEdit, me);
       }
@@ -69,20 +69,20 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  onGridActivate: function(){
+  onGridActivate(){
     Fancy.get(document).on('keydown', this.onKeyDown, this);
   },
   /*
    *
    */
-  onGridDeActivate: function(){
+  onGridDeActivate(){
     Fancy.get(document).un('keydown', this.onKeyDown, this);
   },
   /*
    * @param {Object} e
    */
-  onKeyDown: function(e){
-    var me = this,
+  onKeyDown(e){
+    const me = this,
       w = me.widget,
       keyCode = e.keyCode,
       key = Fancy.key;
@@ -100,8 +100,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} me
    * @param {Object} e
    */
-  onTab: function(me, e){
-    var w = me.widget,
+  onTab(me, e){
+    const w = me.widget,
       activeParams = me.activeCellEditParams;
 
     if(!activeParams){
@@ -110,12 +110,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
 
     e.preventDefault();
 
-    var params = me.getNextCellEditParam();
+    const params = me.getNextCellEditParam();
 
     if(w.celledit){
       w.celledit.hideEditor();
       if (w.tabEdit !== false){
-        setTimeout(function(){
+        setTimeout(() => {
           w.celledit.edit(params);
         }, 100);
       }
@@ -124,8 +124,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    * @return {Object}
    */
-  getNextCellEditParam: function(){
-    var me = this,
+  getNextCellEditParam(){
+    const me = this,
       w = me.widget,
       s = w.store,
       activeParams = me.activeCellEditParams,
@@ -145,7 +145,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
       maxRecursion = 20;
 
     for(;i<maxRecursion;i++){
-      var cellInfo = me.getNextCellInfo({
+      const cellInfo = me.getNextCellInfo({
         side: side,
         columnIndex: columnIndex,
         rowIndex: rowIndex
@@ -184,12 +184,12 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     id = s.getId(rowIndex);
 
     return {
-      id: s.getId(rowIndex),
-      side: side,
+      id,
+      side,
       column: nextColumn,
       cell: nextCell,
-      columnIndex: columnIndex,
-      rowIndex: rowIndex,
+      columnIndex,
+      rowIndex,
       value: s.get(rowIndex, key),
       data: s.get(rowIndex),
       item: s.getById(id)
@@ -199,7 +199,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} o
    * @return {Object}
    */
-  getNextCellInfo: function(o){
+  getNextCellInfo(o){
     var me = this,
       w = me.widget,
       side = o.side,
@@ -250,15 +250,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
     }
 
     return {
-      side: side,
-      rowIndex: rowIndex,
-      columnIndex: columnIndex
+      side,
+      rowIndex,
+      columnIndex
     };
   },
   /*
    * @return {String}
    */
-  getClickEventName: function(){
+  getClickEventName(){
     switch(this.clicksToEdit){
       case 1:
         return 'click';
@@ -271,15 +271,15 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  stopEditor: function(){
+  stopEditor(){
     this.stopped = true;
   },
   /*
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
-  onClickCell: function(grid, o){
-    var w = this.widget,
+  onClickCell(grid, o){
+    const w = this.widget,
       column = o.column;
 
     if(column.editable && (column.type === 'checkbox' || column.type === 'switcher') && w.celledit){
@@ -290,8 +290,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Fancy.Grid} grid
    * @param {Object} o
    */
-  onClickCellToEdit: function(grid, o){
-    var me = this,
+  onClickCellToEdit(grid, o){
+    const me = this,
       w = me.widget,
       column = o.column;
 
@@ -311,14 +311,14 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Fancy.Store} store
    * @param {Object} o
    */
-  onStoreSet: function(store, o){
+  onStoreSet(store, o){
     this.widget.updater.updateRow(o.rowIndex);
   },
   /*
    *
    */
-  onStoreCRUDBeforeUpdate: function(){
-    var me = this,
+  onStoreCRUDBeforeUpdate(){
+    const me = this,
       w = me.widget,
       o = me.activeCellEditParams;
 
@@ -334,7 +334,7 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {String} key
    * @param {*} value
    */
-  onStoreCRUDUpdate: function(store, id){
+  onStoreCRUDUpdate(store, id){
     delete store.changed[id];
 
     this.clearDirty();
@@ -342,16 +342,16 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  onStoreCRUDBeforeDestroy: function(){},
+  onStoreCRUDBeforeDestroy(){},
   /*
    *
    */
-  onStoreCRUDDestroy: function(){
-    var me = this;
+  onStoreCRUDDestroy(){
+    const me = this;
 
     clearInterval(me.intCrudDestroy);
 
-    me.intCrudDestroy = setTimeout(function(){
+    me.intCrudDestroy = setTimeout(() => {
       me.widget.store.loadData();
       me.clearDirty();
     }, 100);
@@ -359,10 +359,10 @@ Fancy.define('Fancy.grid.plugin.Edit', {
   /*
    *
    */
-  clearDirty: function(){
-    var w = this.widget;
+  clearDirty(){
+    const w = this.widget;
 
-    setTimeout(function(){
+    setTimeout(() => {
       w.leftBody.clearDirty();
       w.body.clearDirty();
       w.rightBody.clearDirty();
@@ -372,8 +372,8 @@ Fancy.define('Fancy.grid.plugin.Edit', {
    * @param {Object} store
    * @param {Array} data
    */
-  onCreate: function(store, data){
-    var me = this,
+  onCreate(store, data){
+    const me = this,
       w = me.widget;
 
     w.updater.update();

@@ -5,8 +5,8 @@ Fancy.Mixin('Fancy.store.mixin.Rest', {
   /*
    *
    */
-  initRest: function(){
-    var me = this;
+  initRest(){
+    const me = this;
 
     me.proxyType = 'server';
 
@@ -17,8 +17,8 @@ Fancy.Mixin('Fancy.store.mixin.Rest', {
   /*
    *
    */
-  initRestServerAPI: function(){
-    var me = this,
+  initRestServerAPI(){
+    const me = this,
       proxy = me.proxy,
       url = proxy.url;
 
@@ -32,8 +32,8 @@ Fancy.Mixin('Fancy.store.mixin.Rest', {
   /*
    *
    */
-  initRestActionMethods: function(){
-    var me = this,
+  initRestActionMethods(){
+    const me = this,
       proxy = me.proxy,
       methods = proxy.methods || {};
 

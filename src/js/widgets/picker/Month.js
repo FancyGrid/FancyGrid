@@ -4,14 +4,14 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var PICKER_MONTH_CELL_ACTIVE_CLS = F.PICKER_MONTH_CELL_ACTIVE_CLS;
-  var PICKER_MONTH_CLS = F.PICKER_MONTH_CLS;
-  var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
-  var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
-  var PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
+  const PICKER_MONTH_CELL_ACTIVE_CLS = F.PICKER_MONTH_CELL_ACTIVE_CLS;
+  const PICKER_MONTH_CLS = F.PICKER_MONTH_CLS;
+  const PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
+  const PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
+  const PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
 
   F.define(['Fancy.picker.Month', 'Fancy.MonthPicker'], {
     extend: F.Grid,
@@ -50,7 +50,7 @@
      * @param {Object} config
      */
     constructor: function(config){
-      var me = this;
+      const me = this;
 
       F.apply(me, config);
       me.initLang();
@@ -64,8 +64,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
       me.addEvents('cancelclick', 'okclick');
@@ -78,16 +78,16 @@
     /*
      *
      */
-    initData: function(){
+    initData(){
       this.data = this.generateData();
     },
     /*
      *
      */
-    initDate: function(){
-      var me = this;
+    initDate(){
+      const me = this;
 
-      if (me.date === undefined){
+      if (me.date === undefined) {
         me.date = new Date();
       }
 
@@ -96,10 +96,10 @@
     /*
      *
      */
-    initLang: function(){
-      var me = this;
+    initLang(){
+      const me = this;
 
-      if (me.lang){
+      if (me.lang) {
         return;
       }
 
@@ -108,25 +108,25 @@
     /*
      *
      */
-    initColumns: function(){
-      var me = this;
+    initColumns(){
+      const me = this;
 
-      var renderMonth = function(o){
-        var date = me.date,
+      const renderMonth = (o) => {
+        const date = me.date,
           month = date.getMonth();
 
-        if (me.lang.date.months[month].substr(0, 3) === o.value){
+        if (me.lang.date.months[month].substr(0, 3) === o.value) {
           o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
         }
 
         return o;
       };
 
-      var renderYear = function(o){
-        var date = me.date,
+      const renderYear = (o) => {
+        const date = me.date,
           year = date.getFullYear();
 
-        if (year === Number(o.value)){
+        if (year === Number(o.value)) {
           o.cls = PICKER_MONTH_CELL_ACTIVE_CLS;
         }
 
@@ -155,7 +155,7 @@
     /*
      * @return {Object}
      */
-    generateData: function(){
+    generateData(){
       var me = this,
         lang = me.lang,
         date = me.showDate,
@@ -194,15 +194,15 @@
     /*
      *
      */
-    initBars: function(){
+    initBars(){
       this.initTBar();
       this.initBBar();
     },
     /*
      *
      */
-    initTBar: function(){
-      var me = this,
+    initTBar(){
+      const me = this,
         tbar = [];
 
       tbar.push('side');
@@ -224,8 +224,8 @@
     /*
      *
      */
-    initBBar: function(){
-      var me = this,
+    initBBar(){
+      const me = this,
         bbar = [],
         lang = me.lang;
 
@@ -250,7 +250,7 @@
     /*
      *
      */
-    onBackClick: function(){
+    onBackClick(){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -265,14 +265,14 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
     /*
      *
      */
-    onNextClick: function(){
+    onNextClick(){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -287,27 +287,27 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
     /*
      *
      */
-    onClickOk: function(){
+    onClickOk(){
       this.fire('okclick');
     },
     /*
      *
      */
-    onClickCancel: function(){
+    onClickCancel(){
       this.fire('cancelclick');
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellClick: function(grid, o){
+    onCellClick(grid, o){
       var me = this,
         date = me.date,
         year = date.getFullYear(),
@@ -320,7 +320,7 @@
         cell = F.get(o.cell),
         body;
 
-      if (o.side === 'center'){
+      if (o.side === 'center') {
         body = me.body;
         year = Number(o.value);
       }
@@ -329,10 +329,10 @@
         month = o.rowIndex + o.columnIndex * 6;
       }
 
-      body.el.select('.' + PICKER_MONTH_CELL_ACTIVE_CLS).removeCls(PICKER_MONTH_CELL_ACTIVE_CLS);
+      body.el.select(`.${PICKER_MONTH_CELL_ACTIVE_CLS}`).removeCls(PICKER_MONTH_CELL_ACTIVE_CLS);
       cell.addCls(PICKER_MONTH_CELL_ACTIVE_CLS);
 
-      if (_date > 28){
+      if (_date > 28) {
         _date = 1;
       }
 
@@ -344,23 +344,23 @@
     /*
      * @param {Object} e
      */
-    onMouseWheel: function(e){
-      var delta = F.getWheelDelta(e.originalEvent || e);
+    onMouseWheel(e){
+      const delta = F.getWheelDelta(e.originalEvent || e);
 
-      if (delta < 0){
+      if (delta < 0) {
         this.onBackClick();
       }
       else {
         this.onNextClick();
       }
     },
-    setDate: function(date){
-      var me = this;
+    setDate(date){
+      const me = this;
 
       me.date = date;
       me.showDate = date;
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
     }

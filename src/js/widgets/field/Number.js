@@ -6,15 +6,15 @@
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
-  var FIELD_CLS = Fancy.FIELD_CLS;
-  var FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
-  var FIELD_ERROR_CLS = Fancy.FIELD_ERROR_CLS;
-  var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
-  var FIELD_TEXT_INPUT_CLS = Fancy.FIELD_TEXT_INPUT_CLS;
-  var FIELD_SPIN_CLS = Fancy.FIELD_SPIN_CLS;
-  var FIELD_SPIN_UP_CLS = Fancy.FIELD_SPIN_UP_CLS;
-  var FIELD_SPIN_DOWN_CLS = Fancy.FIELD_SPIN_DOWN_CLS;
+  const CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
+  const FIELD_CLS = Fancy.FIELD_CLS;
+  const FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
+  const FIELD_ERROR_CLS = Fancy.FIELD_ERROR_CLS;
+  const FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
+  const FIELD_TEXT_INPUT_CLS = Fancy.FIELD_TEXT_INPUT_CLS;
+  const FIELD_SPIN_CLS = Fancy.FIELD_SPIN_CLS;
+  const FIELD_SPIN_UP_CLS = Fancy.FIELD_SPIN_UP_CLS;
+  const FIELD_SPIN_DOWN_CLS = Fancy.FIELD_SPIN_DOWN_CLS;
 
   Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
     mixins: [
@@ -34,8 +34,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab', 'change', 'key', 'empty');
 
@@ -74,13 +74,13 @@
     /*
      *
      */
-    onInput: function(){
+    onInput(){
       var me = this,
         input = me.input,
         value = me.get(),
         oldValue = me.acceptedValue;
 
-      if (me.isValid()){
+      if (me.isValid()) {
         var _value = input.dom.value,
           _newValue = '',
           i = 0,
@@ -120,7 +120,7 @@
      * @param {String} value
      * @return {Boolean}
      */
-    isNumber: function(value){
+    isNumber(value){
       if (value === '' || value === '-'){
         return true;
       }
@@ -131,10 +131,10 @@
      * @param {Number|String} value
      * @return {Boolean}
      */
-    checkMinMax: function(value){
-      var me = this;
+    checkMinMax(value){
+      const me = this;
 
-      if (value === '' || value === '-'){
+      if (value === '' || value === '-') {
         return true;
       }
 
@@ -145,20 +145,20 @@
     /*
      * @param {Number} value
      */
-    setMin: function(value){
+    setMin(value){
       this.min = value;
     },
     /*
      * @param {Number} value
      */
-    setMax: function(value){
+    setMax(value){
       this.max = value;
     },
     /*
      *
      */
-    initSpin: function(){
-      var me = this;
+    initSpin(){
+      const me = this;
 
       if (me.spin !== true){
         return;
@@ -172,7 +172,7 @@
     /*
      * @param {Object} e
      */
-    onMouseDownSpinUp: function(e){
+    onMouseDownSpinUp(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -204,16 +204,14 @@
         }
       }, 20);
 
-      docEl.once('mouseup', function(){
-        clearInterval(me.spinInterval);
-      });
+      docEl.once('mouseup', () => clearInterval(me.spinInterval));
 
       me.focus();
     },
     /*
      * @param {Object} e
      */
-    onMouseDownSpinDown: function(e){
+    onMouseDownSpinDown(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -246,17 +244,15 @@
         }
       }, 20);
 
-      docEl.once('mouseup', function(){
-        clearInterval(me.spinInterval);
-      });
+      docEl.once('mouseup', () => clearInterval(me.spinInterval));
 
       me.focus();
     },
     /*
      *
      */
-    spinUp: function(){
-      var me = this,
+    spinUp(){
+      let me = this,
         newValue = +me.get() + me.step;
 
       if (Fancy.Number.isFloat(me.step)){
@@ -279,8 +275,8 @@
     /*
      *
      */
-    spinDown: function(){
-      var me = this,
+    spinDown(){
+      let me = this,
         newValue = +me.get() - me.step;
 
       if (Fancy.Number.isFloat(me.step)){

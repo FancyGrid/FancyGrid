@@ -1,30 +1,29 @@
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var renderInt;
+  const F = Fancy;
+  let renderInt;
 
-  var COLUMNS_PROPERTIES_FN = {
-    title: function(grid, value, order, side){
+  const COLUMNS_PROPERTIES_FN = {
+    title: function (grid, value, order, side) {
       grid.setColumnTitle(order, value, side);
     },
-    width: function(grid, value, order, side){
+    width: function (grid, value, order, side) {
       grid.setColumnWidth(order, value, side);
     },
-    hidden: function(grid, value, order, side, id){
-      if(value){
+    hidden: function (grid, value, order, side, id) {
+      if (value) {
         grid.hideColumn(id);
-      }
-      else{
+      } else {
         grid.showColumn(id);
       }
     },
-    render: function(grid, value, order, side, id){
+    render: function (grid, value, order, side, id) {
       clearInterval(renderInt);
 
       var column = grid.getColumnById(id);
       column.render = value;
 
-      renderInt = setTimeout(function(){
+      renderInt = setTimeout(function () {
         grid.update();
       }, 1);
     }
@@ -47,8 +46,8 @@
     /*
      * @param {Array} newColumns
      */
-    setColumns: function(newColumns){
-      var me = this,
+    setColumns(newColumns){
+      const me = this,
         w = me.widget;
 
       me.applyChanges(newColumns);
@@ -67,18 +66,18 @@
       if(w.filter){
         clearInterval(w.intFilterFieldsUpdate);
 
-        w.intFilterFieldsUpdate = setTimeout(function(){
+        w.intFilterFieldsUpdate = setTimeout(() => {
           delete w.intFilterFieldsUpdate;
           w.filter.updateFields();
         }, F.ANIMATE_DURATION);
       }
     },
-    applyChanges: function(newColumns){
-      var me = this,
+    applyChanges(newColumns){
+      const me = this,
         newColumnsIds = {},
         newColumnsWithoutIds = [];
 
-      F.each(newColumns, function(column){
+      F.each(newColumns, (column) => {
         if(column.id){
           newColumnsIds[column.id] = column;
         }
@@ -97,20 +96,20 @@
     /*
      *
      */
-    setChangesByIds: function(newColumnsIds){
-      var me = this,
+    setChangesByIds(newColumnsIds){
+      const me = this,
         w = me.widget,
         currentColumns = w.getColumns();
 
       // Check missed columns by id-s and indexes
-      F.each(currentColumns, function(column){
+      F.each(currentColumns, (column) => {
         if(column.id && !/col-id-/.test(column.id) && !newColumnsIds[column.id]){
           w.removeColumn(column.id);
         }
       });
 
-      for(var id in newColumnsIds){
-        var currentColumn = w.getColumnById(id),
+      for(const id in newColumnsIds){
+        const currentColumn = w.getColumnById(id),
           info = w.getColumnOrderById(id),
           newColumn = newColumnsIds[id];
 
@@ -118,7 +117,7 @@
           continue;
         }
 
-        for(var p in COLUMNS_PROPERTIES_FN){
+        for(const p in COLUMNS_PROPERTIES_FN){
           if(newColumn[p] !== undefined && currentColumn[p] !== newColumn[p]){
             COLUMNS_PROPERTIES_FN[p](w, newColumn[p], info.order, info.side, id);
           }
@@ -131,27 +130,27 @@
     /*
      * @param {Array} newColumns
      */
-    setChangesWithoutIds: function(newColumns){
-      var me = this,
+    setChangesWithoutIds(newColumns){
+      const me = this,
         w = me.widget,
         columns = w.getColumns();
 
-      F.each(newColumns, function(newColumn){
+      F.each(newColumns, (newColumn) => {
         if(newColumn.render){
-          var equalRenders = [],
+          const equalRenders = [],
             renderStr = newColumn.render.toString();
 
-          F.each(columns, function(currentColumn){
+          F.each(columns, (currentColumn) => {
             if(currentColumn.render && renderStr === currentColumn.render.toString()){
               equalRenders.push(currentColumn);
             }
           });
 
           if(equalRenders.length === 1){
-            var currentColumn = equalRenders[0],
+            const currentColumn = equalRenders[0],
               info = w.getColumnOrderById(currentColumn.id);
 
-            for(var p in COLUMNS_PROPERTIES_FN){
+            for(const p in COLUMNS_PROPERTIES_FN){
               if(newColumn[p] !== undefined && currentColumn[p] !== newColumn[p]){
                 COLUMNS_PROPERTIES_FN[p](w, newColumn[p], info.order, info.side, currentColumn.id);
               }
@@ -166,7 +165,7 @@
     /*
      * @param {Array} newColumns
      */
-    setChangesToNotCheckedColumns: function(newColumns){
+    setChangesToNotCheckedColumns(newColumns){
       var me = this,
         w = me.widget,
         columns = w.getColumns(),
@@ -174,7 +173,7 @@
         types = {},
         newTypes = {};
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(!column.$checked){
           notCheckedColumns.push(column);
           types[column.type] = types[column.type] || [];
@@ -182,7 +181,7 @@
         }
       });
 
-      F.each(newColumns, function(column){
+      F.each(newColumns, (column) => {
         if(!column.$checked){
           newTypes[column.type] = newTypes[column.type] || [];
           newTypes[column.type].push(column);
@@ -191,12 +190,12 @@
 
       for(var type in types){
         var columnsOfType = types[type];
-        F.each(columnsOfType, function(column){
+        F.each(columnsOfType, (column) => {
           var newColumnsOfType = newTypes[type];
 
-          F.each(newColumnsOfType, function(newColumn){
+          F.each(newColumnsOfType, (newColumn) => {
             var equalProperties = true;
-            for(var p in newColumn){
+            for(const p in newColumn){
               if(newColumn[p] !== column[p]){
                 equalProperties = false;
                 break;
@@ -212,34 +211,34 @@
       }
 
       notCheckedColumns = [];
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(!column.$checked){
           notCheckedColumns.push(column);
         }
       });
 
-      F.each(notCheckedColumns, function(column){
+      F.each(notCheckedColumns, (column) => {
         w.removeColumn(column.id);
       });
 
-      F.each(newColumns, function(column){
+      F.each(newColumns, (column) => {
         delete column.$checked;
       });
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         delete column.$checked;
       });
     },
     /*
      * @param {Array} newColumns
      */
-    setColumnsByOrder: function(newColumns){
-      var me = this,
+    setColumnsByOrder(newColumns){
+      const me = this,
         newLeftColumns = [],
         newRightColumns = [],
         newCenterColumns = [];
 
-      F.each(newColumns, function(column){
+      F.each(newColumns, (column) => {
         if(column.locked){
           newLeftColumns.push(column);
         }
@@ -259,17 +258,17 @@
      * @param {Array} newColumns
      * @param {String} side
      */
-    setColumnsByOrderInSide: function(newColumns, side){
-      var me = this,
+    setColumnsByOrderInSide(newColumns, side){
+      const me = this,
         w = me.widget,
         columns = w.getColumns(side);
 
-      F.each(newColumns, function(newColumn, i){
+      F.each(newColumns, (newColumn, i) => {
         var isColumnEqualToCurrent = true,
           column = columns[i];
 
         if(column !== undefined){
-          for(var p in newColumn){
+          for(const p in newColumn){
             if(newColumn.id !== undefined && newColumn.id === column.id){
               break;
             }
@@ -296,7 +295,7 @@
             w.addColumn(newColumn, side, i, false);
           }
           else if(!newColumn.id){
-            var _column = w.getColumnByIndex(newColumn.index);
+            const _column = w.getColumnByIndex(newColumn.index);
 
             if(_column){
               w.removeColumn(_column.id);

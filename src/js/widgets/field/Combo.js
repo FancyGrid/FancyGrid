@@ -6,38 +6,38 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_COMBO_RESULT_LIST_CLS = F.FIELD_COMBO_RESULT_LIST_CLS;
-  var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
-  var FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
-  var FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
-  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
-  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
-  var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
-  var FIELD_COMBO_DROPDOWN_BUTTON_CLS = F.FIELD_COMBO_DROPDOWN_BUTTON_CLS;
-  var FIELD_COMBO_INPUT_CONTAINER_CLS = F.FIELD_COMBO_INPUT_CONTAINER_CLS;
-  var FIELD_COMBO_LEFT_EL_CLS = F.FIELD_COMBO_LEFT_EL_CLS;
-  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
-  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
-  var FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
-  var FIELD_COMBO_LIST_VALUE_CLS = F.FIELD_COMBO_LIST_VALUE_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_COMBO_RESULT_LIST_CLS = F.FIELD_COMBO_RESULT_LIST_CLS;
+  const FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
+  const FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
+  const FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  const FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
+  const FIELD_COMBO_DROPDOWN_BUTTON_CLS = F.FIELD_COMBO_DROPDOWN_BUTTON_CLS;
+  const FIELD_COMBO_INPUT_CONTAINER_CLS = F.FIELD_COMBO_INPUT_CONTAINER_CLS;
+  const FIELD_COMBO_LEFT_EL_CLS = F.FIELD_COMBO_LEFT_EL_CLS;
+  const FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  const FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
+  const FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
+  const FIELD_COMBO_LIST_VALUE_CLS = F.FIELD_COMBO_LIST_VALUE_CLS;
 
   F.define('Fancy.combo.Manager', {
     singleton: true,
     opened: [],
-    add: function(combo){
+    add(combo){
       this.hideLists();
 
       this.opened.push(combo);
     },
-    hideLists: function(){
-      F.each(this.opened, function(item){
+    hideLists(){
+      F.each(this.opened, (item) => {
         item.hideList();
         item.hideAheadList();
       });
@@ -95,8 +95,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents(
         'focus', 'blur', 'input',
@@ -107,16 +107,16 @@
       );
       me.Super('init', arguments);
 
-      if(me.subSearch){
+      if (me.subSearch) {
         me.editable = false;
       }
 
-      if (!me.loadListData()){
+      if (!me.loadListData()) {
         me.data = me.configData(me.data);
         me.data = Fancy.Array.copy(me.data);
       }
 
-      if(me.multiSelect && me.data.length){
+      if (me.multiSelect && me.data.length) {
         me.initMultiSelect();
       }
 
@@ -132,28 +132,28 @@
        * Bug fix: #1074
        * Theme is not applied to list element.
        */
-      setTimeout(function(){
+      setTimeout(() => {
         me.applyTheme();
       }, 1);
     },
     /*
      * @return {Boolean}
      */
-    loadListData: function(){
-      var me = this;
+    loadListData(){
+      const me = this;
 
-      if (!F.isObject(me.data)){
+      if (!F.isObject(me.data)) {
         return false;
       }
 
-      var proxy = me.data.proxy,
+      let proxy = me.data.proxy,
         readerRootProperty = me.readerRootProperty;
 
-      if (!proxy || !proxy.url){
+      if (!proxy || !proxy.url) {
         throw new Error('[FancyGrid Error]: combo data url is not defined');
       }
 
-      if (proxy.reader && proxy.reader.root){
+      if (proxy.reader && proxy.reader.root) {
         readerRootProperty = proxy.reader.root;
       }
 
@@ -162,22 +162,22 @@
         params: proxy.params || {},
         method: proxy.method || 'GET',
         getJSON: true,
-        success: function(o){
+        success: (o) => {
           me.data = me.configData(o[readerRootProperty]);
           me.renderList();
           me.onsList();
 
-          if(me.multiSelect){
+          if (me.multiSelect) {
             me.initMultiSelect();
 
-            if(me.value){
+            if (me.value) {
               me.updateInput();
             }
           }
-          else if (me.value){
-            var displayValue = me.getDisplayValue(me.value);
+          else if (me.value) {
+            const displayValue = me.getDisplayValue(me.value);
 
-            if (displayValue){
+            if (displayValue) {
               me.input.dom.value = displayValue;
             }
           }
@@ -192,17 +192,17 @@
      * @param {Array} data
      * @return {Array}
      */
-    configData: function(data){
-      if (F.isObject(data) || data.length === 0){
+    configData(data){
+      if (F.isObject(data) || data.length === 0) {
         return data;
       }
 
-      if (!F.isObject(data[0])){
+      if (!F.isObject(data[0])) {
         var _data = [],
           i = 0,
           iL = data.length;
 
-        for (; i < iL; i++){
+        for (; i < iL; i++) {
           _data.push({
             text: data[i],
             value: i
@@ -217,28 +217,28 @@
     /*
      *
      */
-    applyStyle: function(){
-      var me = this;
+    applyStyle(){
+      const me = this;
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
-      if (me.style){
+      if (me.style) {
         me.css(me.style);
       }
     },
     /*
      *
      */
-    applyTheme: function(){
-      var me = this;
+    applyTheme(){
+      const me = this;
 
-      if (me.theme && me.theme !== 'default'){
+      if (me.theme && me.theme !== 'default') {
         me.addCls(Fancy.getThemeCSSCls(me.theme));
         me.list.addCls(Fancy.getThemeCSSCls(me.theme));
 
-        if(me.aheadList){
+        if (me.aheadList) {
           me.aheadList.addCls(Fancy.getThemeCSSCls(me.theme));
         }
       }
@@ -246,13 +246,13 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el,
-        drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
+        drop = me.el.select(`.${FIELD_COMBO_DROPDOWN_BUTTON_CLS}`);
 
       me.input = me.el.getByTag('input');
-      me.inputContainer = me.el.select('.' + FIELD_COMBO_INPUT_CONTAINER_CLS);
+      me.inputContainer = me.el.select(`.${FIELD_COMBO_INPUT_CONTAINER_CLS}`);
       me.drop = drop;
 
       me.onsList();
@@ -264,7 +264,7 @@
       drop.on('click', me.onDropClick, me);
       me.on('key', me.onKey, me);
 
-      if (me.typeAhead && me.editable){
+      if (me.typeAhead && me.editable) {
         me.input.on('keydown', me.onKeyDown, me);
       }
 
@@ -276,16 +276,16 @@
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    onSubSearchKeyDown: function(e){
-      var me = this,
+    onSubSearchKeyDown(e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode){
+      switch (keyCode) {
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -303,12 +303,12 @@
     /*
      * @param {Object} e
      */
-    onKeyDown: function(e){
-      var me = this,
+    onKeyDown(e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode){
+      switch (keyCode) {
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -324,8 +324,8 @@
         case key.TAB:
           break;
         case key.BACKSPACE:
-          setTimeout(function(){
-            if (me.input.dom.value.length === 0){
+          setTimeout(() => {
+            if (me.input.dom.value.length === 0) {
               me.value = -1;
               me.valueIndex = -1;
               me.hideAheadList();
@@ -338,15 +338,15 @@
               me.fire('empty');
             }
             else {
-              if(me.multiSelect){
-                if(me.input.dom.value.split(',').length !== me.valuesIndex.length){
+              if (me.multiSelect) {
+                if (me.input.dom.value.split(',').length !== me.valuesIndex.length) {
                   //var newValues = me.getFromInput();
 
                   //me.set(newValues);
                 }
               }
 
-              if (me.generateAheadData().length === 0){
+              if (me.generateAheadData().length === 0) {
                 me.hideAheadList();
                 return;
               }
@@ -357,7 +357,7 @@
           }, 100);
           break;
         default:
-          setTimeout(function(){
+          setTimeout(() => {
             if (me.generateAheadData().length === 0){
               me.hideAheadList();
               return;
@@ -368,18 +368,18 @@
           }, 1);
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
     /*
      * @param {Object} e
      */
-    onInputClick: function(){
-      var me = this,
+    onInputClick(){
+      const me = this,
         list = me.list;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
@@ -387,7 +387,7 @@
         return;
       }
 
-      if (list.css('display') === 'none'){
+      if (list.css('display') === 'none') {
         me.showList();
       }
       else {
@@ -397,32 +397,32 @@
     /*
      * @param {Object} e
      */
-    onDropClick: function(){
-      var me = this,
+    onDropClick(){
+      const me = this,
         list = me.list;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if (list.css('display') === 'none'){
+      if (list.css('display') === 'none') {
         F.combo.Manager.add(this);
-        
+
         me.showList();
       }
       else {
         me.hideList();
       }
 
-      if (me.editable === true){
+      if (me.editable === true) {
         me.input.focus();
       }
     },
     /*
      *
      */
-    showList: function(){
-      var me = this,
+    showList(){
+      const me = this,
         list = me.list,
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
@@ -433,12 +433,12 @@
 
       me.hideAheadList();
 
-      if (!me.list || me.data.length === 0){
+      if (!me.list || me.data.length === 0) {
         return;
       }
 
-      if(!me.isListInsideViewBox(el)){
-        var listHeight = this.calcListHeight();
+      if (!me.isListInsideViewBox(el)) {
+        const listHeight = this.calcListHeight();
 
         xy[1] = p.top - listHeight;
       }
@@ -452,7 +452,7 @@
         'z-index': 2000 + F.zIndex++
       });
 
-      if(me.listCls){
+      if (me.listCls) {
         list.addCls(me.listCls);
       }
 
@@ -461,14 +461,14 @@
         top: xy[1]
       }, F.ANIMATE_DURATION);
 
-      var index;
+      let index;
 
       me.clearFocused();
 
-      var selected = list.select('.' + selectedItemCls);
+      const selected = list.select(`.${selectedItemCls}`);
 
-      if (selected.length === 0){
-        if(me.multiSelect && me.values.length){
+      if (selected.length === 0) {
+        if (me.multiSelect && me.values.length) {
           me.valuesIndex.each(function(i, value, length){
             if(index === undefined){
               index = i;
@@ -482,10 +482,10 @@
         }
       }
       else {
-        if(me.multiSelect && selected.length !== me.valuesIndex.length){
-          list.select('.' + selectedItemCls).removeCls(selectedItemCls);
+        if (me.multiSelect && selected.length !== me.valuesIndex.length) {
+          list.select(`.${selectedItemCls}`).removeCls(selectedItemCls);
 
-          me.valuesIndex.each(function(i, value, length){
+          me.valuesIndex.each((i, value, length) => {
             if(index === undefined){
               index = i;
             }
@@ -520,7 +520,7 @@
     /*
      *
      */
-    showAheadList: function(){
+    showAheadList(){
       var me = this,
         list = me.aheadList,
         el = me.input.parent().parent(),
@@ -550,8 +550,8 @@
     /*
      * @param {Object} e
      */
-    onDocClick: function(e){
-      var me = this;
+    onDocClick(e){
+      const me = this;
 
       if (me.input.parent().parent().within(e.target) === false){
         if (me.list.within(e.target) === true){
@@ -564,8 +564,8 @@
     /*
      *
      */
-    hideList: function(){
-      var me = this;
+    hideList(){
+      const me = this;
 
       if (!me.list){
         return;
@@ -574,7 +574,7 @@
       me.list.css('display', 'none');
 
       if (me.docSpy){
-        var docEl = F.get(document);
+        const docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -582,17 +582,17 @@
     /*
      *
      */
-    hideAheadList: function(){
-      var me = this;
+    hideAheadList(){
+      const me = this;
 
-      if (!me.aheadList){
+      if (!me.aheadList) {
         return;
       }
 
       me.aheadList.css('display', 'none');
 
-      if (me.docSpy){
-        var docEl = F.get(document);
+      if (me.docSpy) {
+        const docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -600,23 +600,23 @@
     /*
      * @param {Object} e
      */
-    onInputMouseDown: function(e){
-      var me = this;
+    onInputMouseDown(e){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         e.preventDefault();
         return;
       }
 
-      if (me.editable === false){
+      if (me.editable === false) {
         e.preventDefault();
       }
     },
     /*
      * @param {Object} e
      */
-    onDropMouseDown: function(e){
-      if(this.disabled){
+    onDropMouseDown(e){
+      if (this.disabled) {
         e.stopPropagation();
       }
 
@@ -625,36 +625,36 @@
     /*
      *
      */
-    onsList: function(){
-      var me = this;
+    onsList(){
+      const me = this;
 
       me.list.on('mousedown', me.onListItemMouseDown, me, 'li');
       me.list.on('click', me.onListItemClick, me, 'li');
       me.list.on('mouseenter', me.onListItemOver, me, 'li');
       me.list.on('mouseleave', me.onListItemLeave, me, 'li');
 
-      if(me.selectAllText){
+      if (me.selectAllText) {
         me.list.select('.fancy-combo-list-select-all').on('click', me.onSelectAllClick, me);
       }
     },
     /*
      *
      */
-    onsAheadList: function(){
-      var me = this;
+    onsAheadList(){
+      const me = this;
 
       me.aheadList.on('click', me.onAHeadListItemClick, me, 'li');
     },
     /*
      * @param {Object} e
      */
-    onListItemOver: function(e){
-      if(this.disabled){
+    onListItemOver(e){
+      if (this.disabled) {
         return;
       }
 
-      var li = F.get(e.target);
-      if(li.prop('tagName').toLocaleLowerCase() !== 'li'){
+      const li = F.get(e.target);
+      if (li.prop('tagName').toLocaleLowerCase() !== 'li') {
         return;
       }
 
@@ -663,52 +663,52 @@
     /*
      *
      */
-    onListItemLeave: function(){
+    onListItemLeave(){
       if(this.disabled){
         return;
       }
 
       this.clearFocused();
     },
-    onListItemMouseDown: function(){
-      var me = this;
+    onListItemMouseDown(){
+      const me = this;
 
       me.listItemClicked = true;
 
-      setTimeout(function(){
+      setTimeout(() => {
         delete me.listItemClicked;
       }, 1000);
     },
     /*
      * @param {Object} e
      */
-    onListItemClick: function(e){
+    onListItemClick(e){
       var me = this,
         li = F.get(e.currentTarget),
         value = li.attr('value'),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if (F.nojQuery && value === 0){
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
-      if (me.multiSelect){
-        if (me.values.length === 0){
+      if (me.multiSelect) {
+        if (me.values.length === 0) {
           me.clearListActive();
         }
 
         me.clearFocused();
 
-        if(me.getTypeActiveList() === 'list'){
+        if (me.getTypeActiveList() === 'list') {
           li.toggleCls(selectedItemCls);
         }
 
-        if (li.hasCls(selectedItemCls)){
+        if (li.hasCls(selectedItemCls)) {
           me.addValue(value);
           li.addCls(focusedItemCls);
         }
@@ -716,7 +716,7 @@
           me.removeValue(value);
           me.clearFocused();
 
-          if(me.selectAllText){
+          if (me.selectAllText) {
             me.list.select('.fancy-combo-list-select-all').removeCls('fancy-combo-item-selected');
           }
         }
@@ -728,7 +728,7 @@
         me.hideList();
       }
 
-      if (me.editable){
+      if (me.editable) {
         me.input.focus();
       }
       else {
@@ -738,22 +738,22 @@
     /*
      * @param {Object} e
      */
-    onAHeadListItemClick: function(e){
+    onAHeadListItemClick(e){
       var me = this,
         li = F.get(e.currentTarget),
         value = li.attr('value'),
         focusedItemCls = me.focusedItemCls;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if (F.nojQuery && value === 0){
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
-      if (me.multiSelect){
-        if (me.values.length === 0){
+      if (me.multiSelect) {
+        if (me.values.length === 0) {
           me.clearListActive();
         }
 
@@ -769,7 +769,7 @@
         me.hideList();
       }
 
-      if (me.editable){
+      if (me.editable) {
         me.input.focus();
       }
       else {
@@ -780,12 +780,12 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function(value, onInput){
-      var me = this,
+    set(value, onInput){
+      let me = this,
         valueStr = '',
         index;
 
-      if(me.multiSelect && !F.isArray(value)){
+      if (me.multiSelect && !F.isArray(value)) {
         if(value === -1){
           value = [];
         }
@@ -794,15 +794,15 @@
         }
       }
 
-      if(F.isArray(value) && me.multiSelect){
-        var displayedValues = [];
+      if (F.isArray(value) && me.multiSelect) {
+        const displayedValues = [];
 
         me.valuesIndex.removeAll();
 
         F.each(value, function(v, i){
-          var _index = me.getIndex(v);
+          const _index = me.getIndex(v);
 
-          if(_index === -1){
+          if (_index === -1) {
             return;
           }
 
@@ -818,16 +818,16 @@
         me.value = value[0];
         me.valueIndex = index;
       }
-      else{
+      else {
         index = me.getIndex(value);
 
-        if(index !== -1){
+        if (index !== -1) {
           me.valueIndex = index;
           valueStr = me.data[index][me.displayKey];
           me.selectItem(index);
         }
-        else{
-          if (value !== -1 && value && value.length > 0){
+        else {
+          if (value !== -1 && value && value.length > 0) {
             valueStr = '';
             //valueStr = value;
             me.value = -1;
@@ -843,15 +843,15 @@
 
       me.input.dom.value = valueStr;
 
-      if (onInput !== false){
+      if (onInput !== false) {
         me.onInput();
       }
 
-      if(me.left){
+      if (me.left) {
         me.updateLeft();
       }
 
-      if(!Fancy.isObject(me.data)){
+      if (!Fancy.isObject(me.data)) {
         me.validate(valueStr);
       }
     },
@@ -860,11 +860,11 @@
      *
      * @param {*} v
      */
-    addValue: function(v){
-      var me = this,
+    addValue(v){
+      const me = this,
         index = me.getIndex(v);
 
-      if(index !== -1 && !me.valuesIndex.get(index)){
+      if (index !== -1 && !me.valuesIndex.get(index)) {
         me.value = v;
         me.values.push(v);
         me.valuesIndex.add(index, v);
@@ -875,22 +875,22 @@
      *
      * @param {*} v
      */
-    removeValue: function(v){
-      var me = this,
+    removeValue(v){
+      let me = this,
         index = -1;
 
-      F.each(me.values, function(value, i){
+      F.each(me.values, (value, i) => {
         if( String(value).toLocaleLowerCase() === String(v).toLocaleLowerCase() ){
           index = i;
         }
       });
 
-      if(index !== -1){
+      if (index !== -1) {
         me.values.splice(index, 1);
         me.valuesIndex.remove(me.getIndex(v));
       }
 
-      if (me.values.length){
+      if (me.values.length) {
         me.value = me.values[me.values.length - 1];
       }
       else {
@@ -903,44 +903,44 @@
      *
      * @param {Boolean} onInput
      */
-    updateInput: function(onInput){
-      var me = this,
+    updateInput(onInput){
+      const me = this,
         displayValues = [];
 
-      me.valuesIndex.each(function(i, v, length){
+      me.valuesIndex.each((i, v, length) => {
         displayValues.push(me.data[i][me.displayKey]);
       });
 
       me.input.dom.value = displayValues.join(", ");
 
-      if (onInput !== false){
+      if (onInput !== false) {
         me.onInput();
       }
     },
     /*
      * @param {Number} index
      */
-    selectItem: function(index){
-      var me = this;
+    selectItem(index){
+      const me = this;
 
-      if (!me.list){
+      if (!me.list) {
         return;
       }
 
-      if (!me.multiSelect){
+      if (!me.multiSelect) {
         me.clearListActive();
       }
 
       me.clearFocused();
 
-      var item = me.list.select('li').item(index);
+      const item = me.list.select('li').item(index);
 
       item.addCls(me.focusedItemCls, me.selectedItemCls);
     },
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div')),
@@ -949,7 +949,7 @@
 
       el.attr('id', me.id);
 
-      if (value === undefined){
+      if (value === undefined) {
         value = '';
       }
       else {
@@ -989,21 +989,21 @@
         me.fieldCls
       );
 
-      var labelWidth = '';
+      let labelWidth = '';
 
-      if (me.labelWidth){
-        labelWidth = 'width:' + me.labelWidth + 'px;';
+      if (me.labelWidth) {
+        labelWidth = `width:${me.labelWidth}px;`;
       }
 
-      var label = me.label;
+      let label = me.label;
 
-      if (me.label === ''){
+      if (me.label === '') {
         label = '&nbsp;';
       }
-      else if (me.label === undefined){
+      else if (me.label === undefined) {
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right'){
+      else if (me.labelAlign !== 'right') {
         label += ':';
       }
 
@@ -1020,10 +1020,10 @@
       me.setStyle();
 
       me.input = me.el.getByTag('input');
-      me.inputContainer = me.el.select('.' + FIELD_COMBO_INPUT_CONTAINER_CLS);
-      me.drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
+      me.inputContainer = me.el.select(`.${FIELD_COMBO_INPUT_CONTAINER_CLS}`);
+      me.drop = me.el.select(`.${FIELD_COMBO_DROPDOWN_BUTTON_CLS}`);
 
-      if(me.leftTpl){
+      if (me.leftTpl) {
         me.left = me.el.select('.' + FIELD_COMBO_LEFT_EL_CLS);
 
         me.left.css({
@@ -1035,28 +1035,28 @@
       me.setSize();
       renderTo.appendChild(el.dom);
 
-      if (me.labelAlign === 'top'){
+      if (me.labelAlign === 'top') {
         me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
       }
-      else if (me.labelAlign === 'right'){
+      else if (me.labelAlign === 'right') {
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
-        F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
+        F.$(el.dom).find(`.${FIELD_LABEL_CLS}`).insertAfter(F.$(el.dom).find(`.${FIELD_TEXT_CLS}`));
       }
 
-      if (me.valueIndex){
+      if (me.valueIndex) {
         me.acceptedValue = me.value;
       }
 
-      if (me.editable){
+      if (me.editable) {
         me.input.css('cursor', 'auto');
       }
       else {
-        if(me.input){
+        if (me.input) {
           me.input.attr('tabIndex', -1);
         }
       }
 
-      if(me.disabled){
+      if (me.disabled) {
         me.addCls(FIELD_DISABLED_CLS);
 
         if(me.input){
@@ -1066,18 +1066,18 @@
 
       me.renderList();
 
-      if(me.leftTpl){
-        setTimeout(function(){
+      if (me.leftTpl) {
+        setTimeout(() => {
           me.updateLeft();
         }, 1);
 
         //Bug fix with images
-        setTimeout(function(){
+        setTimeout(() => {
           me.updateLeft();
         }, 500);
 
         //Bug fix with images
-        setTimeout(function(){
+        setTimeout(() => {
           me.updateLeft();
         }, 1000);
       }
@@ -1088,8 +1088,8 @@
     /*
      *
      */
-    renderList: function(){
-      var me = this,
+    renderList(){
+      const me = this,
         list = F.get(document.createElement('div')),
         listHtml = [];
 
@@ -1187,13 +1187,13 @@
     /*
      * @return {Number}
      */
-    getListWidth: function(){
-      var me = this,
+    getListWidth(){
+      let me = this,
         el,
         listWidth = me.inputWidth + 14,
         minListWidth = me.minListWidth;
 
-      if (me.input){
+      if (me.input) {
         el = me.input.parent().parent();
         listWidth = el.width();
       }
@@ -1207,8 +1207,8 @@
     /*
      * @return {Array}
      */
-    generateAheadData: function(){
-      var me = this,
+    generateAheadData(){
+      let me = this,
         inputValue = me.input.dom.value.toLocaleLowerCase(),
         aheadData = [];
 
@@ -1252,7 +1252,7 @@
     /*
      *
      */
-    renderAheadList: function(){
+    renderAheadList(){
       var me = this,
         list,
         listHtml = [
@@ -1318,8 +1318,8 @@
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       me.css('display', 'none');
       me.hideList();
@@ -1328,8 +1328,8 @@
     /*
      *
      */
-    clear: function(){
-      var me = this;
+    clear(){
+      const me = this;
 
       if(me.multiSelect){
         me.set([], false);
@@ -1341,38 +1341,38 @@
     /*
      *
      */
-    clearListActive: function(){
-      var me = this,
+    clearListActive(){
+      const me = this,
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
-      me.list.select('.' + selectedItemCls).removeCls(selectedItemCls);
+      me.list.select(`.${focusedItemCls}`).removeCls(focusedItemCls);
+      me.list.select(`.${selectedItemCls}`).removeCls(selectedItemCls);
     },
-    clearFocused: function(){
-      var me = this,
+    clearFocused(){
+      const me = this,
         focusedItemCls = me.focusedItemCls;
 
-      if(me.list){
-        me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
+      if (me.list) {
+        me.list.select(`.${focusedItemCls}`).removeCls(focusedItemCls);
       }
 
-      if(me.aheadList){
-        me.aheadList.select('.' + focusedItemCls).removeCls(focusedItemCls);
+      if (me.aheadList) {
+        me.aheadList.select(`.${focusedItemCls}`).removeCls(focusedItemCls);
       }
     },
     /*
      *
      */
-    onInput: function(){
-      var me = this,
+    onInput(){
+      const me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
 
       me.acceptedValue = me.get();
       me.fire('change', value, oldValue);
 
-      if(me.left){
+      if (me.left) {
         me.updateLeft();
       }
     },
@@ -1380,15 +1380,15 @@
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function(value, onInput){
+    setValue(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @param {key} value
      * @return {*}
      */
-    getDisplayValue: function(value, returnPosition){
-      var me = this,
+    getDisplayValue(value, returnPosition){
+      const me = this,
         index = me.getIndex(value);
 
       if(returnPosition){
@@ -1405,8 +1405,8 @@
      * @param {key} value
      * @param {Boolean} [returnPosition]
      */
-    getValueKey: function(value, returnPosition){
-      var me = this,
+    getValueKey(value, returnPosition){
+      let me = this,
         i = 0,
         iL = me.data.length;
 
@@ -1423,14 +1423,14 @@
     /*
      * @return {*}
      */
-    get: function(){
+    get(){
       return this.getValue();
     },
     /*
      * @return {*}
      */
-    getValue: function(){
-      var me = this;
+    getValue(){
+      const me = this;
 
       if (me.multiSelect){
         return me.values;
@@ -1452,7 +1452,7 @@
     /*
      * @param {Object} o
      */
-    size: function(o){
+    size(o){
       var me = this,
         width = o.width,
         height = o.height,
@@ -1487,14 +1487,14 @@
         });
       }
 
-      var inputWidth = me.inputWidth,
+      let inputWidth = me.inputWidth,
         minusWidth = 2;
 
       if(me.theme === 'dark'){
         minusWidth = 0;
       }
 
-      var _inputWidth = inputWidth - minusWidth;
+      let _inputWidth = inputWidth - minusWidth;
 
       if(me.left){
         _inputWidth -= me.leftWidth;
@@ -1517,22 +1517,23 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onEnter: function(field, e){
+    onEnter(field, e){
+      let item;
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls,
         value;
 
-      if (me.multiSelect){
+      if (me.multiSelect) {
         if (!list){
           return;
         }
 
-        var item = list.select('.' + focusedItemCls);
+        item = list.select(`.${focusedItemCls}`);
 
-        if (!item || !item.dom){
-          item = list.select('.' + selectedItemCls).last();
+        if (!item || !item.dom) {
+          item = list.select(`.${selectedItemCls}`).last();
         }
 
         if (item && item.dom){
@@ -1546,11 +1547,11 @@
           me.updateInput();
         }
       }
-      else if (list){
-        var item = list.select('.' + focusedItemCls);
+      else if (list) {
+        item = list.select(`.${focusedItemCls}`);
 
-        if(!item || !item.dom){
-          item = list.select('.' + selectedItemCls);
+        if (!item || !item.dom) {
+          item = list.select(`.${selectedItemCls}`);
         }
 
         value = item.attr('value');
@@ -1562,7 +1563,7 @@
           me.set(me.input.dom.value);
         }
         else{
-          var value = me.input.dom.value;
+          let value = me.input.dom.value;
           me.detectedNewValue(value);
         }
       }
@@ -1574,8 +1575,8 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onEsc: function(field, e){
-      var me = this;
+    onEsc(field, e){
+      const me = this;
 
       me.hideList();
       me.hideAheadList();
@@ -1584,28 +1585,28 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onUp: function(field, e){
+    onUp(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list){
+      if (list) {
         list = me.getActiveList().select('ul');
         e.preventDefault();
-        var activeLi = list.select('.' + focusedItemCls),
+        let activeLi = list.select(`.${focusedItemCls}`),
           notFocused = false;
 
-        if (!activeLi.dom){
-          activeLi = list.select('.' + selectedItemCls);
+        if (!activeLi.dom) {
+          activeLi = list.select(`.${selectedItemCls}`);
         }
 
-        if (!activeLi.dom){
+        if (!activeLi.dom) {
           notFocused = true;
           activeLi = list.lastChild();
         }
 
-        if(activeLi.length > 1){
+        if (activeLi.length > 1) {
           activeLi = activeLi.item(0);
         }
 
@@ -1613,20 +1614,20 @@
           lis = list.select('li'),
           height = parseInt(list.css('height'));
 
-        if (index !== 0 && !notFocused){
+        if (index !== 0 && !notFocused) {
           index--;
         }
         else {
           index = lis.length - 1;
         }
 
-        var nextActiveLi = lis.item(index),
+        const nextActiveLi = lis.item(index),
           top = nextActiveLi.dom.offsetTop;
 
-        if (top - list.dom.scrollTop > height){
+        if (top - list.dom.scrollTop > height) {
           list.dom.scrollTop = 10000;
         }
-        else if (top - list.dom.scrollTop < 0){
+        else if (top - list.dom.scrollTop < 0) {
           list.dom.scrollTop = top;
         }
 
@@ -1639,13 +1640,13 @@
      * @param {Object} field
      * @param {Object} e
      */
-    onDown: function(field, e){
+    onDown(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list){
+      if (list) {
         list = me.getActiveList().select('ul');
         e.preventDefault();
 
@@ -1699,14 +1700,14 @@
     /*
      * @param {Number} index
      */
-    scrollToListItem: function(index){
-      var me = this,
+    scrollToListItem(index){
+      const me = this,
         list = me.getActiveList().select('ul'),
         lis = list.select('li'),
         item = lis.item(index),
         top = item.dom.offsetTop;
 
-      if (index === 0){
+      if (index === 0) {
         list.dom.scrollTop = 0;
       }
       else if (index === lis.length - 1){
@@ -1719,8 +1720,8 @@
     /*
      * @return {Fancy.Element}
      */
-    getActiveList: function(){
-      var me = this,
+    getActiveList(){
+      let me = this,
         list = false;
 
       if (me.list && me.list.css('display') !== 'none'){
@@ -1735,8 +1736,8 @@
     /*
      * @return {String}
      */
-    getTypeActiveList: function(){
-      var me = this;
+    getTypeActiveList(){
+      const me = this;
 
       if (me.list && me.list.css('display') !== 'none'){
         return 'list';
@@ -1748,8 +1749,8 @@
     /*
      *
      */
-    initMultiSelect: function(){
-      var me = this,
+    initMultiSelect(){
+      const me = this,
         value = me.value;
 
       me.values = [];
@@ -1773,7 +1774,7 @@
      * @param {*} value
      * @return {Number}
      */
-    getIndex: function(value){
+    getIndex(value){
       var me = this,
         data = me.data,
         i = 0,
@@ -1793,14 +1794,14 @@
      *
      * @return {Array}
      */
-    getFromInput: function(){
-      var me = this,
+    getFromInput(){
+      const me = this,
         value = me.input.dom.value,
         values = value.split(','),
         _values = [];
 
       F.each(values, function(v){
-        var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
+        const displayValue = v.replace(/ $/, '').replace(/^ /, ''),
           _value = me.getValueKey(displayValue);
 
         if(_value){
@@ -1813,8 +1814,8 @@
     /*
      *
      */
-    updateLeft: function(){
-      var me = this,
+    updateLeft(){
+      const me = this,
         item = me.data[me.getIndex(me.getValue())];
 
       me.left.update(new F.Template(me.leftTpl).getHTML(item));
@@ -1822,11 +1823,11 @@
     /*
      *
      */
-    setData: function(data){
-      var me = this;
+    setData(data){
+      const me = this;
 
       me.data = data;
-      if (me.multiSelect){
+      if (me.multiSelect) {
         me.values = [];
         me.valuesIndex = new F.Collection();
         me.clearListActive();
@@ -1840,14 +1841,14 @@
     /*
      *
      */
-    onSelectAllClick: function(){
-      var me = this,
+    onSelectAllClick(){
+      const me = this,
         lis = me.list.select('li'),
         selectAllEl = me.list.select('.fancy-combo-list-select-all').item(0),
         value = selectAllEl.hasClass('fancy-combo-item-selected');
 
-      setTimeout(function(){
-        if (value){
+      setTimeout(() => {
+        if (value) {
           selectAllEl.removeCls('fancy-combo-item-selected');
         }
         else {
@@ -1855,7 +1856,7 @@
         }
       }, 100);
 
-      lis.each(function(li, i){
+      lis.each((li, i) => {
         if(value){
           if(li.hasClass('fancy-combo-item-selected')){
             li.dom.click();
@@ -1874,7 +1875,7 @@
      * @param {Object} field
      * @param {String} value
      */
-    onSubSearchChange: function(field, value){
+    onSubSearchChange(field, value){
       var me = this,
         lis = me.list.select('li'),
         height = 0,
@@ -1882,7 +1883,7 @@
 
       value = value.toLocaleLowerCase();
 
-      F.each(me.data, function(item, i){
+      F.each(me.data, (item, i) => {
         if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())){
           lis.item(i).css('display', 'block');
           height += parseInt(lis.item(i).css('height'));
@@ -1892,7 +1893,7 @@
         }
       });
 
-      var listUl = me.list.select('ul').item(0);
+      const listUl = me.list.select('ul').item(0);
 
       if(height > maxListHeight){
         listUl.css('height', maxListHeight);
@@ -1901,38 +1902,38 @@
         listUl.css('height', height);
       }
     },
-    isListInsideViewBox: function(el){
-      var me = this,
+    isListInsideViewBox(el){
+      const me = this,
         p = el.$dom.offset(),
         listHeight = me.calcListHeight() + el.$dom.height(),
         listBottomPoint = p.top + listHeight,
         viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
 
-      if(listBottomPoint > viewBottom ){
+      if (listBottomPoint > viewBottom ) {
         return false;
       }
 
       return true;
     },
-    calcListHeight: function(){
-      var me = this,
+    calcListHeight(){
+      let me = this,
         listHeight = me.data.length * me.listRowHeight;
 
-      if(me.data.length > me.maxListRows){
+      if (me.data.length > me.maxListRows) {
         listHeight = me.maxListRows * me.listRowHeight;
       }
 
       return listHeight;
     },
-    detectedNewValue: function(value){
-      var me = this;
+    detectedNewValue(value){
+      const me = this;
 
       me.data.push({
         text: value,
         value: value
       });
 
-      if (me.multiSelect){
+      if (me.multiSelect) {
         me.values = [];
         me.valuesIndex = new F.Collection();
         me.clearListActive();

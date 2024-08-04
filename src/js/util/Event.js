@@ -1,10 +1,10 @@
 (function(){
-var seedFn = 0,
-  fns = {};
+  let seedFn = 0,
+    fns = {};
 
-/*
- * @class Fancy.Event
- */
+  /*
+   * @class Fancy.Event
+   */
 Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
   mixins: [
     Fancy.MixinClass
@@ -13,10 +13,10 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
-    var me = this;
+  constructor: function(config = {}){
+    const me = this;
 
-    Fancy.applyConfig(me, config || {});
+    Fancy.applyConfig(me, config);
 
     me.$events = {};
     if(me.listeners || me.events){
@@ -84,13 +84,13 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {Object} scope
    * @param {Object} params
    */
-  on: function(eventName, fn, scope, params, delay){
-    if( this.$events[eventName] === undefined ){
-      throw new Error('[FancyGrid Error] - Event name is not set: ' + eventName);
+  on(eventName, fn, scope, params = [], delay){
+    if (this.$events[eventName] === undefined) {
+      throw new Error(`[FancyGrid Error] - Event name is not set: ${eventName}`);
     }
 
-    if(fn === undefined){
-      throw new Error('[FancyGrid Error] - Handler is undefined. Name of event is ' + eventName + '.');
+    if (fn === undefined) {
+      throw new Error(`[FancyGrid Error] - Handler is undefined. Name of event is ${eventName}.`);
     }
 
     fn.$fancyFnSeed = seedFn;
@@ -100,7 +100,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     this.$events[eventName].push({
       fn:fn,
       scope: scope,
-      params: params || [],
+      params: params,
       delay: delay
     });
   },
@@ -108,19 +108,19 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {String} eventName
    * @param {Function} fn
    */
-  un: function(eventName, fn){
-    var me = this,
+  un(eventName, fn){
+    const me = this,
       $events = me.$events[eventName];
 
     if(!$events){
       return false;
     }
 
-    var i = 0,
+    let i = 0,
       iL = $events.length;
 
     for(;i<iL;i++){
-      var lis = $events[i];
+      const lis = $events[i];
       if(lis.fn.$fancyFnSeed === fn.$fancyFnSeed){
         lis.toRemove = true;
         return true;
@@ -133,9 +133,9 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {Function} fn
    * @param {Object} scope
    */
-  once: function(eventName, fn, scope){
-    var me = this,
-      fnWrapper = function(){
+  once(eventName, fn, scope){
+    const me = this,
+      fnWrapper = function () {
         fn.apply(this, arguments);
         me.un(eventName, fnWrapper);
       };
@@ -145,20 +145,20 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
   /*
    *
    */
-  unAll: function(){
+  unAll(){
     this.$events = {};
   },
   /*
    * @param {String} eventName
    */
-  unAllByType: function(eventName){
+  unAllByType(eventName){
     this.$events[eventName] = [];
   },
   /*
    * @param {String} eventName
    */
-  fire: function(eventName){
-    var me = this,
+  fire(eventName){
+    const me = this,
       $events = me.$events[eventName];
 
     if(!$events){
@@ -208,15 +208,15 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {String} eventName
    * @return {Array}
    */
-  addEvent: function(eventName){
+  addEvent(eventName){
     return this.addEvents(eventName);
   },
   /*
    * @param {String...} eventName
    * @return {Array}
    */
-  addEvents: function(eventName){
-    var me = this;
+  addEvents(eventName){
+    const me = this;
 
     if(arguments.length > 1){
       var tempEventName = [],
@@ -244,8 +244,8 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {String} eventName
    * @return {Boolean}
    */
-  has: function(eventName){
-    var lis = this.$events[eventName];
+  has(eventName){
+    const lis = this.$events[eventName];
     if(!lis){
       return false;
     }
@@ -271,7 +271,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     /*
      *
      */
-    init: function(){
+    init(){
       this.addEvents('loaded');
     }
   });

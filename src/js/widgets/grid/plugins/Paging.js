@@ -4,11 +4,11 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
-  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
-  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
-  var PANEL_BAR_PAGING_CLS = F.PANEL_BAR_PAGING_CLS;
+  const PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  const PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  const PANEL_BAR_PAGING_CLS = F.PANEL_BAR_PAGING_CLS;
 
   Fancy.define('Fancy.grid.plugin.Paging', {
     extend: Fancy.Plugin,
@@ -25,8 +25,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
       me.ons();
@@ -34,8 +34,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         store = w.store;
 
@@ -44,49 +44,47 @@
       store.on('filter', me.onChangeStore, me);
       w.on('render', me.onRenderGrid, me);
       w.on('docmove', me.onDocMouseMove, me);
-      w.on('render', function(){
-        me.setCls();
-      });
+      w.on('render', () => me.setCls());
     },
     /*
      * @param {Number} value
      */
-    setPageSize: function(value){
+    setPageSize(value){
       this.widget.store.setPageSize(value);
       this.widget.update();
     },
     /*
      *
      */
-    nextPage: function(){
+    nextPage(){
       this.widget.store.nextPage();
       this.widget.update();
     },
     /*
      *
      */
-    lastPage: function(){
+    lastPage(){
       this.widget.store.lastPage();
       this.widget.update();
     },
     /*
      *
      */
-    prevPage: function(){
+    prevPage(){
       this.widget.store.prevPage();
       this.widget.update();
     },
     /*
      *
      */
-    firstPage: function(){
+    firstPage(){
       this.widget.store.firstPage();
       this.widget.update();
     },
     /*
      * @param {Fancy.Store} store
      */
-    onChangeStore: function(store){
+    onChangeStore(store){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -128,8 +126,8 @@
      * @param {Number} value
      * @param {Boolean} [update]
      */
-    setPage: function(value, update){
-      var me = this,
+    setPage(value, update){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -148,13 +146,13 @@
     /*
      *
      */
-    refresh: function(){
-      var me = this,
+    refresh(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
       w.showLoadMask();
-      setTimeout(function(){
+      setTimeout(() => {
         s.refresh();
 
         if (s.pageType !== 'server'){
@@ -165,7 +163,7 @@
     /*
      * @param {String} barType
      */
-    updateBar: function(barType){
+    updateBar(barType){
       barType = barType || this.barType;
 
       var me = this,
@@ -232,8 +230,8 @@
     /*
      *
      */
-    onRenderGrid: function(){
-      var me = this;
+    onRenderGrid(){
+      const me = this;
 
       switch (me.barType){
         case 'both':
@@ -250,8 +248,8 @@
     /*
      *
      */
-    onDocMouseMove: function(){
-      var me = this,
+    onDocMouseMove(){
+      const me = this,
         w = me.widget;
 
       if (w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
@@ -267,8 +265,8 @@
     /*
      *
      */
-    update: function(){
-      var me = this,
+    update(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -278,8 +276,8 @@
     /*
      *
      */
-    setCls: function(){
-      var me = this,
+    setCls(){
+      const me = this,
         w = me.widget;
 
       switch (me.barType){

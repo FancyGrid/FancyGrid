@@ -6,8 +6,8 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
   /*
    *
    */
-  initTreeData: function(data){
-    var me = this;
+  initTreeData(data){
+    const me = this;
 
     data = data || me.data;
 
@@ -27,16 +27,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       me.setData(data);
     }
   },
-  treeReadData: function(data, deep, parentId){
-    var me = this,
-      w = me.widget,
-      _data = [];
+  treeReadData(data, deep, parentId){
+    const me = this,
+      w = me.widget;
+
+    let _data = [];
 
     deep = deep || 1;
 
-    Fancy.each(data, function(dataItem){
+    Fancy.each(data, dataItem => {
       //get model and init new item model
-      if(dataItem.data){
+      if (dataItem.data) {
         dataItem = dataItem.data;
       }
 
@@ -87,11 +88,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _data;
   },
-  treeGetDataAsTree: function(){
-    var me = this,
+  treeGetDataAsTree(){
+    const me = this,
       _core = [];
 
-    Fancy.each(me.data, function(item){
+    Fancy.each(me.data, item => {
       if(item.get('$deep') === 1){
         _core.push(item);
       }
@@ -99,15 +100,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return _core;
   },
-  treeSort: function(data, action, key, type, customSort){
+  treeSort(data, action, key, type, customSort){
     var me = this,
       _data = [],
       dataSorted = [],
       dataValues = {},
       sorted = [];
 
-    Fancy.each(data, function(item){
-      var itemData = item.data || item;
+    Fancy.each(data, item => {
+      const itemData = item.data || item;
       _data.push(itemData[key]);
 
       if(dataValues[itemData[key]] === undefined){
@@ -121,17 +122,17 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       }
     });
 
-    var isAllEmpty = false;
-    var isAllEqual = false;
+    let isAllEmpty = false;
+    let isAllEqual = false;
 
-    if(_data.length){
+    if (_data.length) {
       isAllEmpty = true;
       isAllEqual = true;
 
-      var prevValue;
+      let prevValue;
 
-      Fancy.each(data, function(item){
-        var itemData = item.data || item;
+      Fancy.each(data, item => {
+        const itemData = item.data || item;
 
         if(itemData[key] !== ''){
           isAllEmpty = false;
@@ -145,28 +146,28 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       });
     }
 
-    if(type === 'number'){
-      switch (action){
+    if (type === 'number') {
+      switch (action) {
         case 'asc':
           if(customSort){
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return customSort('asc', a, b);
             });
           }
           else {
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return a - b;
             });
           }
           break;
         case 'desc':
           if(customSort){
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return customSort('desc', a, b);
             });
           }
           else {
-            dataSorted = Fancy.Array.copy(_data).sort(function(a, b){
+            dataSorted = Fancy.Array.copy(_data).sort((a, b) => {
               return b - a;
             });
           }
@@ -185,14 +186,14 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       }
     }
 
-    Fancy.each(dataSorted, function(v, i){
-      var item = dataValues[v];
+    Fancy.each(dataSorted, (v, i) => {
+      let item = dataValues[v];
 
-      if(Fancy.isArray(item)){
+      if (Fancy.isArray(item)) {
         item = item.splice(0, 1)[0];
       }
 
-      if(isAllEmpty || isAllEqual){
+      if (isAllEmpty || isAllEqual) {
         item = data[i];
       }
 
@@ -216,11 +217,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return sorted;
   },
-  treeReadSortedId: function(data){
-    var me = this,
+  treeReadSortedId(data){
+    let me = this,
       ids = [];
 
-    Fancy.each(data, function(item){
+    Fancy.each(data, item => {
       ids.push(item.id);
       //!important
       item = me.getById(item.id);
@@ -237,12 +238,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     return ids;
   },
-  treeReBuildData: function(){
-    var me = this,
+  treeReBuildData(){
+    let me = this,
       coreData = [],
       data = [];
 
-    Fancy.each(me.data, function(item){
+    Fancy.each(me.data, item => {
       if(item.get('$deep') === 1){
         coreData.push(item.data);
       }
@@ -252,47 +253,46 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
     me.setData(data);
   }
-});/*
+});
+/*
  * @class Fancy.grid.plugin.Tree
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   /*
    * CONSTANTS
    */
-  var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
+  const GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
 
-  var getChildNumber = function(items, num){
-    num = num || 0;
-    var me = this,
+  const getChildNumber = function (items, num = 0) {
+    const me = this,
       w = me.widget;
 
-    Fancy.each(items, function(item){
+    Fancy.each(items, function (item) {
       num++;
-      var itemData = item.data?item.data:item;
+      let itemData = item.data ? item.data : item;
 
-      if(w.store.filteredData){
+      if (w.store.filteredData) {
         //Getting item data from grid
-        if(itemData.id){
-          if(w.store.map[itemData.id]){
+        if (itemData.id) {
+          if (w.store.map[itemData.id]) {
             itemData = w.store.map[itemData.id].data;
           }
         }
-      }
-      else{
+      } else {
         //Getting item data from grid
         itemData = w.getById(itemData.id).data;
       }
 
-      var child = itemData.child;
+      const child = itemData.child;
       //if(itemData.filteredChild){
-        //child = itemData.filteredChild;
+      //child = itemData.filteredChild;
       //}
 
-      if(child && itemData.expanded){
+      if (child && itemData.expanded) {
         num += getChildNumber.apply(me, [child]);
       }
     });
@@ -315,12 +315,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     /*
      *
      */
-    init: function(){
-      var me = this,
+    init(){
+      const me = this,
         w = me.widget;
 
       me.expandMap = {};
-      if(w._tempExpandMap){
+      if (w._tempExpandMap) {
         me.expandMap = w._tempExpandMap;
       }
 
@@ -330,61 +330,61 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.once('init', function(){
+      w.once('init', () => {
         w.on('rowdblclick', me.onRowDBLClick, me);
         w.on('cellclick', me.onTreeExpanderClick, me);
         w.on('beforesort', me.onBeforeSort, me);
       });
     },
-    onRowDBLClick: function(grid, o){
-      var me = this,
+    onRowDBLClick(grid, o){
+      const me = this,
         w = me.widget,
         item = o.item;
 
-      if (item.get('leaf')){
+      if (item.get('leaf')) {
         return;
       }
 
-      if(w.edit && w.edit.clicksToEdit === 2){
+      if (w.edit && w.edit.clicksToEdit === 2) {
         return;
       }
 
-      var expanded = item.get('expanded');
+      const expanded = item.get('expanded');
 
-      if (expanded){
+      if (expanded) {
         me.collapseRow(o.item);
       }
       else {
         me.expandRow(o.item);
       }
     },
-    onTreeExpanderClick: function(grid, o){
-      var me = this,
+    onTreeExpanderClick(grid, o){
+      const me = this,
         item = o.item,
         target = Fancy.get(o.e.target);
 
-      if(!target.hasClass(GRID_COLUMN_TREE_EXPANDER_CLS)){
+      if (!target.hasClass(GRID_COLUMN_TREE_EXPANDER_CLS)) {
         return;
       }
 
-      if (item.get('leaf')){
+      if (item.get('leaf')) {
         return;
       }
 
-      var expanded = item.get('expanded');
+      const expanded = item.get('expanded');
 
-      if (expanded){
+      if (expanded) {
         me.collapseRow(o.item);
       }
       else {
         me.expandRow(o.item);
       }
     },
-    collapseRow: function(item){
+    collapseRow(item){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -406,7 +406,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         i = 0,
         iL = getChildNumber.apply(this, [child]);
 
-      if(s.filteredData){
+      if (s.filteredData) {
         var itemId = item.get('id'),
           startIndex,
           _parentIds = {};
@@ -433,9 +433,9 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
               startIndex = i;
             }
 
-            var removedItem = s.data.splice(startIndex, 1)[0];
+            const removedItem = s.data.splice(startIndex, 1)[0];
 
-            if(removedItem.data.child){
+            if (removedItem.data.child) {
               _parentIds[removedItem.data.id] = true;
             }
 
@@ -444,12 +444,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
             iL--;
           }
 
-          if(item.data.child && deepStart){
+          if (item.data.child && deepStart) {
             _parentIds[item.data.id] = true;
           }
         }
 
-        if(s.order){
+        if (s.order) {
           delete s.order;
           delete s.filterOrder;
           s.reSort();
@@ -473,7 +473,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
       w.fire('treecollapse');
     },
-    expandRow: function(item){
+    expandRow(item){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -485,18 +485,19 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
       w.$onChangeUpdate = false;
 
-      if(filteredChild){
+      if (filteredChild) {
         //child = filteredChild;
       }
 
-      if(me.singleExpand){
-        if(parentId){
-          var parent = w.getById(parentId);
+      if (me.singleExpand) {
+        if (parentId) {
+          const parent = w.getById(parentId);
+
           parentChild = parent.get('child');
 
           //Bad for performance
           Fancy.each(parentChild, function(item){
-            var expanded = item.get('expanded');
+            let expanded = item.get('expanded');
 
             if(me.expandMap[item.id] !== undefined){
               expanded = me.expandMap[item.id];
@@ -511,7 +512,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           parentChild = w.findItem('parentId', '');
 
           Fancy.each(parentChild, function(child){
-            var expanded = child.get('expanded');
+            let expanded = child.get('expanded');
 
             if(me.expandMap[child.id] !== undefined){
               expanded = me.expandMap[child.id];
@@ -532,9 +533,9 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         deep = item.get('$deep') + 1,
         childsModelsRequired = false;
 
-      if(s.filteredData){
+      if (s.filteredData) {
         //Bad about performance
-        var itemId = item.get('id');
+        const itemId = item.get('id');
         Fancy.each(s.data, function(item, i){
           if(item.id === itemId){
             rowIndex = i;
@@ -543,12 +544,12 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
         });
       }
 
-      var expandChilds = function(child, rowIndex, deep, _id){
+      const expandChilds = function (child, rowIndex, deep, _id) {
         _id = _id || id;
 
-        Fancy.each(child, function(item){
+        Fancy.each(child, function (item) {
           var itemData = item.data;
-          if(!item.data){
+          if (!item.data) {
             childsModelsRequired = true;
             itemData = item;
           }
@@ -556,12 +557,11 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           itemData.$deep = deep;
           itemData.parentId = _id;
           var expanded = itemData.expanded;
-          if(me.expandMap[itemData.id] !== undefined){
+          if (me.expandMap[itemData.id] !== undefined) {
             expanded = me.expandMap[itemData.id];
             itemData.expanded = expanded;
-          }
-          else{
-            if(itemData.child !== undefined){
+          } else {
+            if (itemData.child !== undefined) {
               itemData.expanded = false;
             }
           }
@@ -569,9 +569,9 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
           rowIndex++;
           w.insert(rowIndex, itemData);
 
-          if(expanded === true){
+          if (expanded === true) {
             var child = itemData.child;
-            if(itemData.filteredChild){
+            if (itemData.filteredChild) {
               //child = itemData.filteredChild;
             }
             rowIndex = expandChilds(child, rowIndex, deep + 1, itemData.id);
@@ -588,10 +588,10 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       if(childsModelsRequired){
 
         Fancy.each(item.data.child, function(_child, i){
-          var childItem = s.getById(_child.id);
+          const childItem = s.getById(_child.id);
 
           //This case could occur for filtered data
-          if(childItem === undefined){
+          if (childItem === undefined) {
             return;
           }
 
@@ -606,7 +606,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
       //}
 
       //Sorted
-      if(s.sorters){
+      if (s.sorters) {
         //TODO: needed to do sub sorting of only expanded
         //If item contains sorted than needs to detirmine that it suits or not
         //Also it needs to think about multisorting
@@ -614,7 +614,7 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
         //s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
 
-        if(s.order){
+        if (s.order) {
           delete s.order;
           delete s.filterOrder;
           s.reSort();
@@ -631,19 +631,15 @@ Fancy.Mixin('Fancy.store.mixin.Tree', {
 
       w.fire('treeexpand');
     },
-    onBeforeSort: function(grid, options){
-      var me = this;
+    onBeforeSort(grid, options){
+      const me = this;
 
-      if(options.action === 'drop'){
+      if (options.action === 'drop') {
         me.onDropSort();
       }
     },
-    onDropSort: function(){
-      var me = this,
-        w = me.widget,
-        s = w.store;
-
-      s.treeReBuildData();
+    onDropSort(){
+      this.widget.store.treeReBuildData();
     }
   });
 

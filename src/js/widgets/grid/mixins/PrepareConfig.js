@@ -12,8 +12,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfig: function(config, originalConfig){
-    var me = this;
+  prepareConfig(config, originalConfig) {
+    const me = this;
 
     config._plugins = config._plugins || [];
 
@@ -71,7 +71,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  copyColumns: function(config, originalConfig){
+  copyColumns(config, originalConfig){
     if(config.columns){
       config.columns = Fancy.Array.copy(config.columns, true);
     }
@@ -87,13 +87,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  generateColumnsFromData: function(config, originalConfig){
+  generateColumnsFromData(config, originalConfig){
     if(!config.columns && config.data && config.data.length && Fancy.isArray(config.data[0])){
-      var firstDataRow = config.data[0] || config.data[0],
+      const firstDataRow = config.data[0] || config.data[0],
         columns = [],
         fields = [];
 
-      Fancy.each(firstDataRow, function(value, i){
+      Fancy.each(firstDataRow, (value, i) => {
         columns.push({
           index: 'autoIndex' + i
         });
@@ -117,7 +117,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigScroll: function(config, originalConfig){
+  prepareConfigScroll(config, originalConfig){
     if(Fancy.isIE && originalConfig.nativeScroller !== false){
       config.nativeScroller = true;
     }
@@ -129,11 +129,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSpark: function(config){
-    var me = this;
+  prepareConfigSpark(config){
+    const me = this;
 
-    Fancy.each(config.columns, function(column){
-      var spark = column.sparkConfig;
+    Fancy.each(config.columns, (column) => {
+      const spark = column.sparkConfig;
 
       if(spark && spark.legend){
         switch(spark.legend.type){
@@ -159,38 +159,37 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} column
    * @return {Array}
    */
-  _generateLegendBar: function(title, indexes, style, column){
+  _generateLegendBar(title, indexes, style, column){
     var i = 0,
       iL = title.length,
       bar = [],
       me = this;
 
-    var disabled = {
+    const disabled = {
       length: 0
     };
 
-    var legendFn = function(button){
+    const legendFn = function (button) {
       var grid = me,
         indexOrder;
 
-      Fancy.each(me.columns, function(column, i){
-        if(column.index === me.columns[i].index){
+      Fancy.each(me.columns, (column, i) =>  {
+        if (column.index === me.columns[i].index) {
           indexOrder = i;
         }
       });
 
-      if(!button.hasCls('fancy-legend-item-disabled') && title.length - 1 === disabled.length){
+      if (!button.hasCls('fancy-legend-item-disabled') && title.length - 1 === disabled.length) {
         return;
       }
 
       button.toggleCls('fancy-legend-item-disabled');
 
-      if(button.hasCls('fancy-legend-item-disabled')){
+      if (button.hasCls('fancy-legend-item-disabled')) {
         disabled[button.index] = true;
         grid.disableLegend(indexOrder, button.index);
         disabled.length++;
-      }
-      else{
+      } else {
         grid.enableLegend(indexOrder, button.index);
         delete disabled[button.index];
         disabled.length--;
@@ -203,7 +202,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         index = column.index + '.' + i;
       }
 
-      var buttonConfig = {
+      const buttonConfig = {
         handler: legendFn,
         index: index,
         imageColor: Fancy.COLORS[i],
@@ -224,16 +223,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigData: function(config){
+  prepareConfigData(config){
     if(!config.data){
       config.data = [];
     }
 
     if(Fancy.isArray(config.data) && config.data.length === 0 && config.columns){
-      var fields = [],
+      const fields = [],
         nestedKey = {};
 
-      Fancy.each(config.columns, function(column){
+      Fancy.each(config.columns, (column) => {
         if(column.index){
           if(/\./.test(column.index)){
             var splitted =column.index.split('.');
@@ -248,7 +247,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
 
         if(column.columns){
-          Fancy.each(column.columns, function(column){
+          Fancy.each(column.columns, (column) => {
             if(column.index){
               fields.push(column.index || column.key);
             }
@@ -268,7 +267,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigLoadMask: function(config){
+  prepareConfigLoadMask(config){
     var showOnWaitingServer = config.loadMask === false? false: true,
       loadText;
 
@@ -287,11 +286,11 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    * @param {Array} data
    */
-  reConfigStore: function(data){
-    var me = this,
+  reConfigStore(data){
+    const me = this,
       s = me.store,
       fields = me.getFieldsFromData(data),
-      modelName = 'Fancy.model.'+Fancy.id();
+      modelName = 'Fancy.model.' + Fancy.id();
 
     Fancy.define(modelName, {
       extend: Fancy.Model,
@@ -309,15 +308,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigDefaults: function(config){
+  prepareConfigDefaults(config){
     config.defaults = config.defaults || {};
 
     if(config.defaults.type === undefined){
       config.defaults.type = 'string';
     }
 
-    Fancy.each(config.defaults, function(value, p){
-      Fancy.each(config.columns, function(column){
+    Fancy.each(config.defaults, (value, p) => {
+      Fancy.each(config.columns, (column)=> {
         switch(column.type){
           case 'select':
           case 'order':
@@ -338,8 +337,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
-  prepareConfigColumnMinMaxWidth: function(config){
-    Fancy.each(config.columns, function(column){
+  prepareConfigColumnMinMaxWidth(config){
+    Fancy.each(config.columns, (column)=> {
       if(column.width === undefined && !column.flex && column.minWidth){
         column.width = column.minWidth;
       }
@@ -351,8 +350,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigCellTip: function(config){
-    Fancy.each(config.columns, function(column){
+  prepareConfigCellTip(config){
+    Fancy.each(config.columns, (column) => {
       if(column.cellTip){
         config._plugins.push({
           type: 'grid.celltip'
@@ -367,8 +366,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigHeaderCellTip: function(config){
-    Fancy.each(config.columns, function(column){
+  prepareConfigHeaderCellTip(config){
+    Fancy.each(config.columns, (column)=> {
       if(column.headerCellTip){
         config._plugins.push({
           type: 'grid.headercelltip'
@@ -383,7 +382,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigDD: function(config){
+  prepareConfigDD(config){
     if(config.gridToGrid){
       var pluginConfig = {
         type: 'grid.dragdrop'
@@ -411,7 +410,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Boolean} initial
    * @return {Object}
    */
-  prepareConfigColumns: function(config, initial){
+  prepareConfigColumns(config, initial){
     var columns = config.columns,
       leftColumns = [],
       rightColumns = [],
@@ -425,7 +424,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       $rowdrag = 0;
 
     for(;i<iL;i++){
-      var column = columns[i];
+      const column = columns[i];
 
       if(column.draggable){
         isDraggable = true;
@@ -607,7 +606,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigColumnsWidth: function(config){
+  prepareConfigColumnsWidth(config){
     var me = this,
       columns = config.columns,
       width = config.width,
@@ -658,7 +657,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     }
 
-    Fancy.each(columns, function(column, i){
+    Fancy.each(columns, (column, i) => {
       if(column.autoWidth){
         config.autoColumnWidth = true;
       }
@@ -691,9 +690,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         case 'combo':
           if(!column.data){
             column.data = [];
-            setTimeout(function(){
-              me.on('init', function(){
-                var data = me.store.getColumnUniqueData(column.index);
+            setTimeout(() => {
+              me.on('init', () => {
+                const data = me.store.getColumnUniqueData(column.index);
 
                 me.setColumnComboData(column.index, data);
               });
@@ -756,7 +755,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     var isOverFlow = false,
       _width = width;
 
-    Fancy.each(columnsWithoutWidth, function(value){
+    Fancy.each(columnsWithoutWidth, (value) => {
       column = columns[value];
       if(column.flex === undefined){
         _width -= defaultWidth;
@@ -764,8 +763,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     });
 
     if(flexTotal){
-      var onePerCent = parseInt(_width/flexTotal);
-      Fancy.each(flexColumns, function(columnIndex){
+      const onePerCent = parseInt(_width / flexTotal);
+      Fancy.each(flexColumns, (columnIndex) => {
         _width -= onePerCent * columns[columnIndex].flex;
       });
     }
@@ -774,7 +773,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       isOverFlow = true;
     }
 
-    Fancy.each(columnsWithoutWidth, function(value){
+    Fancy.each(columnsWithoutWidth, (value) => {
       column = columns[value];
       if(column.flex === undefined){
         column.width = defaultWidth;
@@ -783,7 +782,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     });
 
     if(flexTotal){
-      Fancy.each(flexColumns, function(value){
+      Fancy.each(flexColumns, (value) => {
         column = columns[value];
         if(isOverFlow){
           column.width = defaultWidth * column.flex;
@@ -800,7 +799,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
 
       if(_width>= 1){
-        Fancy.each(flexColumns, function(value){
+        Fancy.each(flexColumns, (value) => {
           if(_width < 1){
             return true;
           }
@@ -826,10 +825,10 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} column
    * @return {Object}
    */
-  prepareConfigActionRender: function(column){
+  prepareConfigActionRender(column){
     return function(o){
-      Fancy.each(column.items, function(item){
-        var itemText = item.text || '',
+      Fancy.each(column.items, (item) => {
+        const itemText = item.text || '',
           style = Fancy.styleToString(item.style),
           cls = item.cls || '';
 
@@ -851,8 +850,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigSmartIndex: function(config){
-    Fancy.each(config.columns, function(column){
+  prepareConfigSmartIndex(config){
+    Fancy.each(config.columns, (column) => {
       if(/\+|\-|\/|\*|\[|\./.test(column.index)){
         var smartIndex = column.index;
 
@@ -884,14 +883,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigActionColumn: function(config){
+  prepareConfigActionColumn(config){
     var me = this,
       columns = config.columns,
       i = 0,
       iL = columns.length;
 
     for(;i<iL;i++){
-      var column = columns[i];
+      const column = columns[i];
 
       if(column.type === 'action'){
         column.sortable = false;
@@ -924,7 +923,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                       height = 42 + 38 + 7;
 
                     for(;k<kL;k++){
-                      var _column = columns[k];
+                      const _column = columns[k];
                       switch (_column.type){
                         case 'action':
                           continue;
@@ -953,7 +952,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                             text: 'Edit',
                             tools: [{
                               text: 'Close',
-                              handler: function(){
+                              handler(){
                                 this.hide();
                               }
                             }]
@@ -963,13 +962,13 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                           items: _items,
                           buttons: ['side', {
                             text: 'Clear',
-                            handler: function(){
+                            handler(){
                               this.clear();
                             }
                           }, {
                             text: 'Save',
-                            handler: function(){
-                              var values = this.get();
+                            handler(){
+                              const values = this.get();
 
                               if(!values.id){
                                 return;
@@ -980,7 +979,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                             }
                           }],
                           events: [{
-                            init: function(){
+                            init(){
                               this.show();
                               this.set(o.data);
                             }
@@ -1004,14 +1003,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigWidgetColumn: function(config){
+  prepareConfigWidgetColumn(config){
     var me = this,
       columns = config.columns,
       i = 0,
       iL = columns.length;
 
     for(;i<iL;i++){
-      var column = columns[i];
+      const column = columns[i];
 
       if(column.widget){
         column.render = function(o){
@@ -1020,7 +1019,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
             renderTo = o.cell.dom,
             column = o.column;
 
-          var itemComfig = {
+          const itemComfig = {
             vtype: column.vtype,
             style: {
               'padding': '0px',
@@ -1053,7 +1052,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                   min: column.min,
                   max: column.max,
                   events: [{
-                    change: function(field, value){
+                    change(field, value){
                       me.set(o.rowIndex, index, value);
                       me.updater.updateRow();
                     }
@@ -1066,7 +1065,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
               case 'image':
                 Fancy.apply(itemComfig, {
                   events: [{
-                    change: function(field, value){
+                    change(field, value){
                       me.set(o.rowIndex, index, value);
                       me.updater.updateRow();
                     }
@@ -1083,7 +1082,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                   checkValidOnTyping: true,
                   data: o.column.data,
                   events: [{
-                    change: function(field, value){
+                    change(field, value){
                       me.set(o.rowIndex, index, value);
                       me.updater.updateRow();
                     }
@@ -1124,8 +1123,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigSorting: function(config){
-    var defaults = config.defaults || {};
+  prepareConfigSorting(config){
+    const defaults = config.defaults || {};
 
     if(defaults.sortable){
       config._plugins.push({
@@ -1149,7 +1148,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigSelection: function(config){
+  prepareConfigSelection(config){
     var initSelection = false,
       selectionConfig = {
         type: 'grid.selection'
@@ -1210,7 +1209,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         var containsTreeColumn = false,
           containsSelectColumn = false;
 
-        Fancy.each(config.columns, function(column){
+        Fancy.each(config.columns, (column) => {
           if(column.type === 'tree'){
             containsTreeColumn = true;
           }
@@ -1298,7 +1297,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigEdit: function(config){
+  prepareConfigEdit(config){
     var defaults = config.defaults || {},
       editPluginConfig = {
         type: 'grid.edit'
@@ -1328,7 +1327,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       });
     }
 
-    Fancy.each(config.columns, function(column){
+    Fancy.each(config.columns, (column) => {
       if(column.index === undefined && column.key === undefined){
         column.editable = false;
       }
@@ -1364,9 +1363,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigExpander: function(config){
+  prepareConfigExpander(config){
     if(config.expander){
-      var expanderConfig = config.expander;
+      const expanderConfig = config.expander;
 
       Fancy.apply(expanderConfig, {
         type: 'grid.expander'
@@ -1387,7 +1386,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigGrouping: function(config){
+  prepareConfigGrouping(config){
     if(config.grouping){
       var groupConfig = config.grouping;
 
@@ -1410,7 +1409,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigSummary: function(config){
+  prepareConfigSummary(config){
     if(config.summary){
       var summaryConfig = config.summary;
 
@@ -1431,7 +1430,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigContextMenu: function(config){
+  prepareConfigContextMenu(config){
     if(config.contextmenu){
       var menuConfig = config.contextmenu;
 
@@ -1466,7 +1465,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigExporter: function(config){
+  prepareConfigExporter(config){
     if(config.exporter){
       var exporterConfig = config.exporter;
 
@@ -1487,7 +1486,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigFilter: function(config){
+  prepareConfigFilter(config){
     var columns = config.columns,
       isFilterable = false,
       isHeaderFilter = false,
@@ -1508,7 +1507,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       Fancy.apply(filterConfig, config.filter);
     }
 
-    Fancy.each(columns, function(column){
+    Fancy.each(columns, (column) => {
       if(column.filter){
         isFilterable = true;
         if(column.filter.header){
@@ -1535,7 +1534,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigSearch: function(config){
+  prepareConfigSearch(config){
     var searchConfig = {
         type: 'grid.search'
       },
@@ -1556,7 +1555,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigGroupHeader: function(config){
+  prepareConfigGroupHeader(config){
     var columns = config.columns,
       i = 0,
       iL = columns.length,
@@ -1564,7 +1563,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       isGrouped = false,
       _columns = [];
 
-    Fancy.each(columns, function(column){
+    Fancy.each(columns, (column) => {
       if(column.columns){
         isGrouped = true;
         groups.push(column);
@@ -1607,9 +1606,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         }
       }
 
-      var groupsMap = {};
+      const groupsMap = {};
 
-      Fancy.each(groups, function(group){
+      Fancy.each(groups, (group) =>{
         groupsMap[group.title || group.text || ''] = group;
       });
 
@@ -1631,7 +1630,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigPaging: function(config, originalConfig){
+  prepareConfigPaging(config, originalConfig){
     var me = this,
       lang = config.lang,
       paging = config.paging,
@@ -1685,8 +1684,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigInfinite: function(config){
-    var infinite = config.infinite;
+  prepareConfigInfinite(config){
+    const infinite = config.infinite;
 
     if(!infinite){
       return config;
@@ -1705,7 +1704,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} lang
    * @return {Array}
    */
-  generatePagingBar: function(paging, lang){
+  generatePagingBar(paging, lang){
     var me = this,
       bar = [],
       disabledCls = 'fancy-bar-button-disabled',
@@ -1762,7 +1761,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       min: 1,
       width: paging.inputWidth || 30,
       listeners: [{
-        enter: function(field){
+        enter(field){
           if (parseInt(field.getValue()) === 0){
             field.set(1);
           }
@@ -1775,7 +1774,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           }
         }
       },{
-        up: function(field, value){
+        up(field, value){
           var pages = me.store.pages,
             value = Number(value) + 1;
 
@@ -1786,7 +1785,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           field.set(value);
         }
       },{
-        down: function(field, value){
+        down(field, value){
           var pages = me.store.pages,
             value = Number(value) - 1;
 
@@ -1812,7 +1811,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       disabledCls: disabledCls,
       role: 'next',
       style: style,
-      handler: function(){
+      handler(){
         me.paging.nextPage();
       }
     });
@@ -1822,7 +1821,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       disabledCls: disabledCls,
       role: 'last',
       style: style,
-      handler: function(){
+      handler(){
         me.paging.lastPage();
       }
     });
@@ -1835,7 +1834,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         disabledCls: disabledCls,
         role: 'refresh',
         style: style,
-        handler: function(){
+        handler(){
           me.paging.refresh();
         }
       });
@@ -1875,16 +1874,16 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         value: value,
         subSearch: false,
         events: [{
-          change: function(field, value){
+          change(field, value){
             me.scroll(0, 0);
             me.paging.setPageSize(pageSizeData[value]);
           }
         },{
           render: function(combo){
-            me.store.on('changepages', function(){
+            me.store.on('changepages', () => {
               if(me.store.pageSize !== Number(combo.input.dom.value)){
                 var index;
-                Fancy.each(combo.data, function(item){
+                Fancy.each(combo.data, (item) => {
                   if(item.value === me.store.pageSize){
                     index = item.index;
                     return true;
@@ -1916,8 +1915,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigState: function(config){
-    var me = this;
+  prepareConfigState(config){
+    const me = this;
 
     if(config.stateful){
       var log = {};
@@ -1926,7 +1925,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         log = config.stateful;
       }
 
-      var startState = config.state || {};
+      const startState = config.state || {};
 
       var name = config.stateId || this.getStateName(),
         state = localStorage.getItem(name);
@@ -1957,14 +1956,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
           }
         }
 
-        var stateColumns = state.columns;
+        const stateColumns = state.columns;
 
         if(stateColumns){
-          Fancy.each(stateColumns, function(stateColumn){
-            Fancy.each(stateColumn, function(v, p){
+          Fancy.each(stateColumns, (stateColumn) => {
+            Fancy.each(stateColumn, (v, p) => {
               if(v === 'FUNCTION' || v === 'OBJECT' || v === 'ARRAY'){
                 var index = stateColumn.index;
-                Fancy.each(config.columns, function(column){
+                Fancy.each(config.columns, (column) => {
                   if(column.index === index){
                     stateColumn[p] = column[p];
                     return true;
@@ -2008,8 +2007,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigColumnsResizer: function(config){
-    var defaults = config.defaults || {};
+  prepareConfigColumnsResizer(config){
+    const defaults = config.defaults || {};
 
     if(defaults.resizable){
       config._plugins.push({
@@ -2021,7 +2020,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     var columns = [].concat(config.columns).concat(config.leftColumns).concat(config.rightColumns);
 
-    Fancy.each(columns, function(column){
+    Fancy.each(columns, (column) => {
       if(column.resizable || column.autoWidth){
         config._plugins.push({
           type: 'grid.columnresizer'
@@ -2032,15 +2031,15 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
     return config;
   },
-  prepareConfigBars: function(config){
-    var fn = function(bar){
+  prepareConfigBars(config){
+    const fn = function (bar) {
       var i = 0,
         iL = bar.length;
 
-      for(;i<iL;i++){
-        switch (bar[i].type){
+      for (; i < iL; i++) {
+        switch (bar[i].type) {
           case 'date':
-            if (!bar[i].format){
+            if (!bar[i].format) {
               var date = config.lang.date;
               bar[i].format = {
                 read: date.read,
@@ -2049,7 +2048,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
               };
             }
 
-            if(config.i18n){
+            if (config.i18n) {
               bar[i].i18n = config.i18n;
             }
             break;
@@ -2068,8 +2067,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigTBar: function(config){
-    var me = this,
+  prepareConfigTBar(config){
+    const me = this,
       tbar = config.tbar;
 
     if(tbar){
@@ -2085,7 +2084,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
             var menu = [];
 
-            Fancy.each(config.columns, function(column){
+            Fancy.each(config.columns, (column) => {
               if(!column.title){
                 return;
               }
@@ -2095,7 +2094,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                 index: column.index,
                 column: column,
                 checked: !column.hidden,
-                handler: function(menu, item){
+                handler(menu, item){
                   if (item.checked === true && !item.checkbox.get()){
                     item.checkbox.set(true);
                   }
@@ -2179,12 +2178,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
               tbar[i].events = [{
                 render: function(){
-                  var me = this;
-                  setTimeout(function(){
-                    var grid = Fancy.getWidget( me.el.parent().parent().parent().select('.' + Fancy.GRID_CLS).dom.id );
+                  const me = this;
+                  setTimeout(() => {
+                    const grid = Fancy.getWidget(me.el.parent().parent().parent().select('.' + Fancy.GRID_CLS).dom.id);
 
-                    grid.on('select', function(){
-                      var selection = grid.getSelection();
+                    grid.on('select', () => {
+                      const selection = grid.getSelection();
 
                       if(selection.length === 0){
                         me.disable();
@@ -2194,7 +2193,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
                       }
                     });
 
-                    grid.on('clearselect', function(){
+                    grid.on('clearselect', () => {
                       me.disable();
                     });
                   }, 10);
@@ -2212,8 +2211,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigSubTBar: function(config){
-    var bar = config.subTBar;
+  prepareConfigSubTBar(config){
+    const bar = config.subTBar;
 
     if(bar){
       var i = 0,
@@ -2235,7 +2234,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} config
    * @return {Object}
    */
-  prepareConfigChart: function(config){
+  prepareConfigChart(config){
     var data = config.data,
       chart = data.chart;
 
@@ -2275,7 +2274,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} originalConfig
    * @return {Object}
    */
-  prepareConfigSize: function(config){
+  prepareConfigSize(config){
     var me = this,
       renderTo = config.renderTo,
       length,
@@ -2294,7 +2293,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
         config.width = parseInt(el.width());
 
         if(config.width < 1 && el.prop('tagName').toLocaleLowerCase() !== 'body'){
-          var bootstrapTab = el.closest('.tab-pane');
+          const bootstrapTab = el.closest('.tab-pane');
           if(bootstrapTab){
             bootstrapTab.css({
               display: 'block',
@@ -2324,7 +2323,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
 
       this.fitWidth = true;
 
-      Fancy.each(config.columns, function(column){
+      Fancy.each(config.columns, (column) => {
         if(!column.hidden){
           width += column.width;
         }
@@ -2362,7 +2361,7 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       var headerRows = 1;
       length = 0,
 
-      Fancy.each(config.columns, function(column){
+      Fancy.each(config.columns, (column) => {
         if(column.grouping){
           if(headerRows < 2){
             headerRows = 2;
@@ -2455,9 +2454,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Object} defaults
    * @return {Boolean}
    */
-  wasDefaultChanged: function(name, defaults){
+  wasDefaultChanged(name, defaults){
     name = name + '-memory-defaults';
-    var memoryDefaults = JSON.parse(localStorage.getItem(name));
+    const memoryDefaults = JSON.parse(localStorage.getItem(name));
 
     if(!memoryDefaults || !defaults){
       return false;
@@ -2500,9 +2499,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {Array} columns
    * @return {Boolean}
    */
-  wasColumnsCodeChanged: function(name, columns){
+  wasColumnsCodeChanged(name, columns){
     name = name + '-memory-columns';
-    var memoryColumns = JSON.parse(localStorage.getItem(name));
+    const memoryColumns = JSON.parse(localStorage.getItem(name));
 
     if(!memoryColumns){
       return false;
@@ -2513,9 +2512,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
     }
 
     var wasChanges = false;
-    
-    Fancy.each(memoryColumns, function(column, i){
-      for(var p in column){
+
+    Fancy.each(memoryColumns, (column, i) => {
+      for(const p in column){
         if(column[p] !== columns[i][p]){
           if(p === 'width' && column.autoWidth){
             continue;
@@ -2526,8 +2525,8 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       }
     });
 
-    Fancy.each(columns, function(column, i){
-      for(var p in column){
+    Fancy.each(columns, (column, i) => {
+      for(const p in column){
         switch(Fancy.typeOf(column[p])){
           case 'number':
           case 'string':
@@ -2546,9 +2545,9 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
   /*
    *
    */
-  memoryInitialDefaults: function(name, defaults){
+  memoryInitialDefaults(name, defaults){
     name = name + '-memory-defaults';
-    var memoryDefaults = {};
+    const memoryDefaults = {};
 
     for(var p in defaults){
       switch(Fancy.typeOf(defaults[p])){
@@ -2566,14 +2565,14 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
    * @param {String} name
    * @param {Array} columns
    */
-  memoryInitialColumns: function(name, columns){
+  memoryInitialColumns(name, columns){
     name = name + '-memory-columns';
-    var memoryColumns = [];
+    const memoryColumns = [];
 
-    Fancy.each(columns, function(column){
-      var memoryColumn = {};
+    Fancy.each(columns, (column) => {
+      const memoryColumn = {};
 
-      for(var p in column){
+      for(const p in column){
         switch (Fancy.typeOf(column[p])){
           case 'string':
           case 'number':

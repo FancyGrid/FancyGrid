@@ -89,8 +89,8 @@ Fancy.define('Fancy.Model', {
    * @param {String} key
    * @return {Object}
    */
-  get: function(key){
-    var me = this;
+  get(key){
+    const me = this;
 
     if(key === undefined){
       return me.data;
@@ -102,11 +102,11 @@ Fancy.define('Fancy.Model', {
    * @param {String} key
    * @param {*} value
    */
-  set: function(key, value){
-    var me = this;
+  set(key, value){
+    const me = this;
 
     if(value === undefined && Fancy.isObject(key)){
-      for(var p in key){
+      for(const p in key){
         me.set(p, key[p]);
       }
       return;

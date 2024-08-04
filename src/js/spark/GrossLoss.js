@@ -17,10 +17,10 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
-    me.preRender();    
+    me.preRender();
     me.render();
 
     if( me.inited !== true ){
@@ -30,8 +30,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
+  ons(){
+    const me = this;
 
     me.el.on('mouseenter', me.onMouseEnter, me);
     me.el.on('mouseleave', me.onMouseLeave, me);
@@ -40,8 +40,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  onMouseEnter: function(){
-    var me = this,
+  onMouseEnter(){
+    let me = this,
       value = me.el.attr('value'),
       color = me.el.css('background-color'),
       suffix = '',
@@ -55,7 +55,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
       suffix = ' %';
     }
 
-    var tpl = new Fancy.Template(me.tipTpl);
+    const tpl = new Fancy.Template(me.tipTpl);
+
     text = tpl.getHTML({
       value: value,
       color: color,
@@ -67,8 +68,9 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  onMouseLeave: function(){
-    var me = this;
+  onMouseLeave(){
+    const me = this;
+
     if(!me.tipTpl || !me.tip){
       return;
     }
@@ -78,8 +80,8 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
     if(!me.tipTpl || !me.tip){
       return;
     }
@@ -89,11 +91,11 @@ Fancy.define('Fancy.spark.GrossLoss', {
   /*
    *
    */
-  preRender: function(){},
+  preRender(){},
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       column = me.column,
       width = column.width,

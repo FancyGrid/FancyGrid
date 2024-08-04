@@ -95,8 +95,8 @@ Fancy.Key = {
    * @param {number} c
    * @return {Boolean}
    */
-  isNum: function(c){
-    var key = Fancy.key;
+  isNum(c){
+    const key = Fancy.key;
 
     switch(c){
       case key.ZERO:
@@ -129,8 +129,8 @@ Fancy.Key = {
    * @param {Object} w
    * @return {Boolean}
    */
-  isNumControl: function(c, e){
-    var key = Fancy.key;
+  isNumControl(c, e){
+    const key = Fancy.key;
 
     if( Fancy.Key.isNum(c) ){
       return true;

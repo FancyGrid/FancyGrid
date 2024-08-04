@@ -17,7 +17,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
 
     //me.generateKeys();
@@ -26,20 +26,18 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget;
-    
-    w.once('init', function(){
-      me.generateKeys();
-    });
+
+    w.once('init', () => me.generateKeys());
   },
   /*
    * @param {*} keys
    * @param {*} values
    */
-  search: function(keys, values){
-    var me = this,
+  search(keys, values){
+    const me = this,
       w = me.widget,
       s = w.store,
       selection = w.selection;
@@ -47,7 +45,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
     if(w.isRequiredChangeAllMemorySelection()){
       selection.memory.clearAll();
       selection.memory.selectAllFiltered();
-      setTimeout(function() {
+      setTimeout(() =>  {
         selection.updateHeaderCheckBox();
       }, 1);
     }
@@ -76,16 +74,14 @@ Fancy.define('Fancy.grid.plugin.Search', {
     }
     else {
       me.updateStoreSearches();
-      setTimeout(function(){
+      setTimeout(() => {
         w.fire('filter', s.filters);
       },1);
     }
 
     if(w.isGroupable()){
       if(s.remoteSort){
-        s.once('load', function(){
-          w.grouping.reGroup();
-        });
+        s.once('load', () => w.grouping.reGroup());
       }
       else {
         w.grouping.reGroup();
@@ -95,8 +91,8 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    *
    */
-  updateStoreSearches: function(){
-    var w = this.widget,
+  updateStoreSearches(){
+    const w = this.widget,
       s = w.store;
 
     s.changeDataView();
@@ -105,8 +101,8 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    * @param {*} keys
    */
-  setKeys: function(keys){
-    var me = this;
+  setKeys(keys){
+    const me = this;
 
     me.keys = keys;
     me.setFilters();
@@ -115,14 +111,14 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    * @return {Object}
    */
-  generateKeys: function(){
-    var me = this,
+  generateKeys(){
+    const me = this,
       w = me.widget;
 
     if(me.items){
       me.keys = {};
 
-      Fancy.each(me.items, function(item){
+      Fancy.each(me.items, (item) => {
         me.keys[item.index] = true;
       });
     }
@@ -145,8 +141,8 @@ Fancy.define('Fancy.grid.plugin.Search', {
 
       var fields = [];
 
-      Fancy.each(columns, function(column){
-        var index = column.index;
+      Fancy.each(columns, (column) => {
+        const index = column.index;
 
         if(column.searchable === false){
           return;
@@ -170,7 +166,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
         }
       });
 
-      Fancy.each(fields, function(index){
+      Fancy.each(fields, (index) => {
         if(index === '$selected'){
           return;
         }
@@ -184,8 +180,8 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    *
    */
-  setFilters: function(){
-    var me = this,
+  setFilters(){
+    const me = this,
       w = me.widget,
       s = w.store,
       filters = s.filters || {};
@@ -195,7 +191,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
       return;
     }
 
-    for(var p in me.keys){
+    for(const p in me.keys){
       if(me.keys[p] === false){
         if(filters[p]){
           delete filters[p]['*'];
@@ -213,13 +209,13 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    *
    */
-  clear: function(){
+  clear(){
     var me = this,
       w = me.widget,
       s = w.store,
       filters = s.filters || {};
 
-    for(var p in me.keys){
+    for(const p in me.keys){
       if(filters[p] === undefined){
         continue;
       }
@@ -237,7 +233,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    *
    */
-  clearBarField: function(){
+  clearBarField(){
     var me = this,
       field = me.getSearchField('tbar');
 
@@ -254,7 +250,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
   /*
    * @params {String} value
    */
-  setValueInField: function(value){
+  setValueInField(value){
     var me = this,
       field = me.getSearchField('tbar');
 
@@ -272,7 +268,7 @@ Fancy.define('Fancy.grid.plugin.Search', {
    * @params {String} barType
    * @return {Field|undefined}
    */
-  getSearchField: function(barType){
+  getSearchField(barType){
     var me = this,
       w = me.widget,
       bar = w[barType],

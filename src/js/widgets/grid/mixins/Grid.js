@@ -3,40 +3,40 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var TOUCH_CLS = F.TOUCH_CLS;
-  var HIDDEN_CLS = F.HIDDEN_CLS;
-  var GRID_CLS = F.GRID_CLS;
-  var GRID_STATE_SORTED_CLS = F.GRID_STATE_SORTED_CLS;
-  var GRID_STATE_FILTERED_CLS = F.GRID_STATE_FILTERED_CLS;
-  var GRID_CENTER_CLS = F.GRID_CENTER_CLS;
-  var GRID_LEFT_CLS = F.GRID_LEFT_CLS;
-  var GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
-  var GRID_HEADER_CLS = F.GRID_HEADER_CLS;
-  var GRID_BODY_CLS = F.GRID_BODY_CLS;
-  var PANEL_BODY_INNER_CLS =  F.PANEL_BODY_INNER_CLS;
-  var GRID_UNSELECTABLE_CLS = F.GRID_UNSELECTABLE_CLS;
-  var GRID_LEFT_EMPTY_CLS = F.GRID_LEFT_EMPTY_CLS;
-  var GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
-  var GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
-  var GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
-  var GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
-  var GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
+  const TOUCH_CLS = F.TOUCH_CLS;
+  const HIDDEN_CLS = F.HIDDEN_CLS;
+  const GRID_CLS = F.GRID_CLS;
+  const GRID_STATE_SORTED_CLS = F.GRID_STATE_SORTED_CLS;
+  const GRID_STATE_FILTERED_CLS = F.GRID_STATE_FILTERED_CLS;
+  const GRID_CENTER_CLS = F.GRID_CENTER_CLS;
+  const GRID_LEFT_CLS = F.GRID_LEFT_CLS;
+  const GRID_RIGHT_CLS = F.GRID_RIGHT_CLS;
+  const GRID_HEADER_CLS = F.GRID_HEADER_CLS;
+  const GRID_BODY_CLS = F.GRID_BODY_CLS;
+  const PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  const GRID_UNSELECTABLE_CLS = F.GRID_UNSELECTABLE_CLS;
+  const GRID_LEFT_EMPTY_CLS = F.GRID_LEFT_EMPTY_CLS;
+  const GRID_RIGHT_EMPTY_CLS = F.GRID_RIGHT_EMPTY_CLS;
+  const GRID_COLUMN_SORT_ASC_CLS = F.GRID_COLUMN_SORT_ASC;
+  const GRID_COLUMN_SORT_DESC_CLS = F.GRID_COLUMN_SORT_DESC;
+  const GRID_ROW_GROUP_CLS = F.GRID_ROW_GROUP_CLS;
+  const GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
 
-  var PANEL_CLS = F.PANEL_CLS;
-  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
-  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
-  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
-  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
-  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  const PANEL_CLS = F.PANEL_CLS;
+  const PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  const PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  const PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  const PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  const PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
 
-  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+  const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
-  var GRID_ANIMATION_CLS = F.GRID_ANIMATION_CLS;
+  const GRID_ANIMATION_CLS = F.GRID_ANIMATION_CLS;
 
-  var activeGrid;
+  let activeGrid;
 
   F.Mixin('Fancy.grid.mixin.Grid', {
     tabScrollStep: 80,
@@ -50,7 +50,7 @@
     /*
      *
      */
-    initStore: function(){
+    initStore(){
       var me = this,
         fields = me.getFieldsFromData(me.data),
         modelName = 'Fancy.model.' + F.id(),
@@ -61,7 +61,7 @@
         collapsed = false,
         state = me.state;
 
-      if (me.data.items){
+      if (me.data.items) {
         data = me.data.items;
       }
 
@@ -82,15 +82,15 @@
         collapsed = me.grouping.collapsed;
       }
 
-      var storeConfig = {
+      const storeConfig = {
         widget: me,
         model: modelName,
-        data: data,
+        data,
         paging: me.paging,
-        remoteSort: remoteSort,
-        remoteFilter: remoteFilter,
-        pageType: pageType,
-        collapsed: collapsed,
+        remoteSort,
+        remoteFilter,
+        pageType,
+        collapsed,
         multiSort: me.multiSort
       };
 
@@ -107,7 +107,7 @@
           storeConfig.filters = state.filters;
         }
       }
-      
+
       if(me.filterable === true && !storeConfig.filters){
         storeConfig.filters = {};
       }
@@ -129,8 +129,8 @@
       }
       */
     },
-    initDebug: function(){
-      var me = this;
+    initDebug(){
+      const me = this;
 
       if(F.DEBUG){
         if (me.panel){
@@ -144,11 +144,11 @@
     /*
      *
      */
-    initTouch: function(){
-      var me = this;
+    initTouch(){
+      const me = this;
 
-      if (F.isTouch && window.FastClick){
-        if (me.panel){
+      if (F.isTouch && window.FastClick) {
+        if (me.panel) {
           // eslint-disable-next-line
           FastClick.attach(me.panel.el.dom);
           me.panel.addCls(TOUCH_CLS);
@@ -163,10 +163,10 @@
     /*
      *
      */
-    initElements: function(){
-      var me = this;
+    initElements(){
+      const me = this;
 
-      if (me.header !== false){
+      if (me.header !== false) {
 
         me.leftHeader = new F.grid.Header({
           widget: me,
@@ -199,16 +199,16 @@
         side: 'right'
       });
 
-      me.leftEl = me.el.select('.' + GRID_LEFT_CLS);
-      me.centerEl = me.el.select('.' + GRID_CENTER_CLS);
-      me.rightEl = me.el.select('.' + GRID_RIGHT_CLS);
+      me.leftEl = me.el.select(`.${GRID_LEFT_CLS}`);
+      me.centerEl = me.el.select(`.${GRID_CENTER_CLS}`);
+      me.rightEl = me.el.select(`.${GRID_RIGHT_CLS}`);
     },
     /*
      * @param {Array} data
      * @return {Array}
      */
-    getFieldsFromData: function(data){
-      var me = this,
+    getFieldsFromData(data){
+      const me = this,
         items = data.items || data;
 
       if (data.fields){
@@ -228,7 +228,7 @@
         F.error('Data is empty and not set fields of data to build model', 4);
       }
 
-      var itemZero = items[0],
+      const itemZero = items[0],
         fields = [];
 
       for (var p in itemZero){
@@ -248,7 +248,7 @@
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo = Fancy.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
@@ -271,7 +271,7 @@
       if (Fancy.loadingStyle){
         if (me.panel){
           me.panel.el.css('opacity', 0);
-          me.intervalStyleLoad = setInterval(function(){
+          me.intervalStyleLoad = setInterval(() => {
             if (!Fancy.loadingStyle){
               clearInterval(me.intervalStyleLoad);
               me.panel.el.animate({
@@ -283,7 +283,7 @@
         }
         else {
           el.css('opacity', 0);
-          me.intervalStyleLoad = setInterval(function(){
+          me.intervalStyleLoad = setInterval(() => {
             if (!Fancy.loadingStyle){
               clearInterval(me.intervalStyleLoad);
               me.el.animate({
@@ -321,7 +321,7 @@
       var panelBordersWidth = 0,
         panelBorderHeight = 0;
 
-      if (me.panel){
+      if (me.panel) {
         panelBordersWidth = panelBodyBorders[1] + panelBodyBorders[3];
       }
 
@@ -333,7 +333,7 @@
       me.initTpl();
       el.update(me.tpl.getHTML({}));
 
-      if (me.renderOuter){
+      if (me.renderOuter) {
         me.el = el;
       }
       else {
@@ -342,7 +342,7 @@
 
       me.setHardBordersWidth();
 
-      setTimeout(function(){
+      setTimeout(() => {
         if (Fancy.nojQuery){
           me.el.addCls(Fancy.GRID_ANIMATION_CLS);
         }
@@ -353,7 +353,7 @@
     /*
      *
      */
-    setHardBordersWidth: function(){
+    setHardBordersWidth(){
       var me = this,
         borders = me.panel ? me.gridBorders : me.gridWithoutPanelBorders;
 
@@ -371,54 +371,54 @@
     /*
      * @param {Object} [o]
      */
-    update: function(o){
-      var me = this,
+    update(o){
+      const me = this,
         s = me.store;
 
-      if (s.loading){
+      if (s.loading) {
         return;
       }
 
-      if (me.expander){
+      if (me.expander) {
         me.expander.reSet();
       }
 
       var type = 'default';
 
-      if (o && o.type){
+      if (o && o.type) {
         type = o.type;
       }
 
       me.updater.update(type);
       me.fire('update');
 
-      if (me.heightFit){
+      if (me.heightFit) {
         me.fitHeight();
       }
 
       me.setBodysHeight();
 
-      if (me.paging){
+      if (me.paging) {
         me.paging.update();
       }
 
-      if (o && o.flash){
-        var changes = me.store.changed;
+      if (o && o.flash) {
+        const changes = me.store.changed;
 
-        for (var id in changes){
-          var item = changes[id],
+        for (const id in changes) {
+          const item = changes[id],
             rowIndex = me.getRowById(id);
 
-          if (rowIndex === undefined){
+          if (rowIndex === undefined) {
             continue;
           }
 
-          for (var key in item){
+          for (const key in item) {
             switch (key){
               case 'length':
                 break;
               default:
-                var _o = me.getColumnOrderByKey(key);
+                const _o = me.getColumnOrderByKey(key);
 
                 switch (o.flash){
                   case true:
@@ -446,10 +446,10 @@
     /*
      *
      */
-    lightStartUpdate: function(){
-      var me = this;
+    lightStartUpdate(){
+      const me = this;
 
-      if(me.rowheight){
+      if (me.rowheight) {
         me.rowheight.onUpdate();
       }
 
@@ -460,12 +460,12 @@
     /*
      *
      */
-    bugFixReFreshChartColumns: function(side){
-      var me = this,
+    bugFixReFreshChartColumns(side){
+      const me = this,
         body = me.getBody(side),
         columns = me.getColumns(side);
 
-      F.each(columns, function(column, i){
+      F.each(columns, (column, i) => {
         switch(column.type){
           case 'grossloss':
             body.renderGrossLoss(i);
@@ -480,8 +480,8 @@
      * @param {String} side
      * @return {Number}
      */
-    getColumnsWidth: function(side){
-      var me = this;
+    getColumnsWidth(side){
+      const me = this;
 
       switch (side){
         case 'center':
@@ -496,7 +496,7 @@
     /*
      *
      */
-    setSides: function(){
+    setSides(){
       var me = this,
         leftColumns = me.leftColumns,
         rightColumns = me.rightColumns,
@@ -507,18 +507,18 @@
         panelBodyBorders = me.panelBodyBorders,
         gridWithoutPanelBorders = me.gridWithoutPanelBorders;
 
-      if (leftColumns.length > 0){
+      if (leftColumns.length > 0) {
         me.leftEl.removeCls(GRID_LEFT_EMPTY_CLS);
       }
 
-      if (rightColumns.length > 0){
+      if (rightColumns.length > 0) {
         me.rightEl.removeCls(GRID_RIGHT_EMPTY_CLS);
       }
 
-      if (me.wrapped){
+      if (me.wrapped) {
         centerWidth = me.width - gridBorders[1] - gridBorders[3];
       }
-      else if (me.panel){
+      else if (me.panel) {
         centerWidth = me.width - gridBorders[1] - gridBorders[3] - panelBodyBorders[1] - panelBodyBorders[3];
       }
       else {
@@ -579,7 +579,7 @@
       });
 
       if (me.header){
-        me.el.select('.' + GRID_RIGHT_CLS + ' .' + GRID_HEADER_CLS).css({
+        me.el.select(`.${GRID_RIGHT_CLS} .${GRID_HEADER_CLS}`).css({
           width: rightWidth + 'px'
         });
       }
@@ -593,8 +593,8 @@
     /*
      *
      */
-    setColumnsPosition: function(){
-      var me = this;
+    setColumnsPosition(){
+      const me = this;
 
       me.body.setColumnsPosition();
       me.leftBody.setColumnsPosition();
@@ -603,7 +603,7 @@
     /*
      * @param {Number} [viewHeight]
      */
-    setSidesHeight: function(viewHeight){
+    setSidesHeight(viewHeight){
       var me = this,
         s = me.store,
         height = 1,
@@ -670,8 +670,8 @@
     /*
      *
      */
-    setBodysHeight: function(){
-      var me = this;
+    setBodysHeight(){
+      const me = this;
 
       me.body.setHeight();
       me.leftBody.setHeight();
@@ -680,8 +680,8 @@
     /*
      *
      */
-    preRender: function(){
-      var me = this;
+    preRender(){
+      const me = this;
 
       if (me.title || me.subTitle || me.tbar || me.bbar || me.buttons || me.panel){
         me.renderPanel();
@@ -690,8 +690,8 @@
     /*
      *
      */
-    renderPanel: function(){
-      var me = this,
+    renderPanel(){
+      const me = this,
         panelConfig = {
           renderTo: me.renderTo,
           renderOuter: me.renderOuter,
@@ -724,9 +724,9 @@
         },
         panelBodyBorders = me.panelBodyBorders;
 
-      if (me.bbar){
+      if (me.bbar) {
         panelConfig.bbar = me.bbar;
-        if(me.bbarHidden){
+        if(me.bbarHidden) {
           panelConfig.bbarHidden = true;
         }
         else {
@@ -734,7 +734,7 @@
         }
       }
 
-      if (me.tbar){
+      if (me.tbar) {
         panelConfig.tbar = me.tbar;
         if(me.tbarHidden){
           panelConfig.tbarHidden = true;
@@ -744,9 +744,9 @@
         }
       }
 
-      if (me.subTBar){
+      if (me.subTBar) {
         panelConfig.subTBar = me.subTBar;
-        if(me.subTBarHidden){
+        if(me.subTBarHidden) {
           panelConfig.subTBarHidden = true;
         }
         else{
@@ -754,9 +754,9 @@
         }
       }
 
-      if (me.buttons){
+      if (me.buttons) {
         panelConfig.buttons = me.buttons;
-        if(me.buttonsHidden){
+        if(me.buttonsHidden) {
           panelConfig.buttonsHidden = true;
         }
         else {
@@ -764,7 +764,7 @@
         }
       }
 
-      if (me.footer){
+      if (me.footer) {
         panelConfig.footer = me.footer;
         me.height -= me.barHeight;
       }
@@ -776,44 +776,42 @@
       me.subTBar = me.panel.subTBar;
       me.buttons = me.panel.buttons;
 
-      if (!me.wrapped){
+      if (!me.wrapped) {
         me.panel.addCls(PANEL_GRID_INSIDE_CLS);
       }
 
-      if (me.title){
+      if (me.title) {
         me.height -= me.titleHeight;
       }
 
-      if (me.subTitle){
+      if (me.subTitle) {
         me.height -= me.subTitleHeight;
         me.height += panelBodyBorders[2];
       }
 
       me.height -= panelBodyBorders[0] + panelBodyBorders[2];
 
-      me.renderTo = me.panel.el.select('.' + PANEL_BODY_INNER_CLS).dom;
+      me.renderTo = me.panel.el.select(`.${PANEL_BODY_INNER_CLS}`).dom;
 
-      if(me.resizable){
-        me.panel.on('resize', function(){
-          me.setBodysHeight();
-        });
+      if(me.resizable) {
+        me.panel.on('resize', () => me.setBodysHeight());
       }
     },
     /*
      * @return {Number}
      */
-    getBodyHeight: function(){
-      var me = this,
+    getBodyHeight(){
+      let me = this,
         height = me.height,
         rows = 1,
         gridBorders = me.gridBorders,
         gridWithoutPanelBorders = me.gridWithoutPanelBorders;
 
-      if (me.groupheader){
+      if (me.groupheader) {
         rows = 2;
       }
 
-      if (me.filter && me.filter.header){
+      if (me.filter && me.filter.header) {
         if (me.groupheader){
           if (me.filter.groupHeader && !me.subHeaderFilter){
             rows++;
@@ -854,8 +852,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         store = me.store,
         docEl = F.get(document);
 
@@ -872,7 +870,7 @@
       store.on('servererror', me.onServerError, me);
       store.on('serversuccess', me.onServerSuccess, me);
 
-      if (me.responsive){
+      if (me.responsive) {
         me.once('render', me.initResponsiveness, me);
       }
 
@@ -887,7 +885,7 @@
      * @param {String} errorText
      * @param {Object} request
      */
-    onServerError: function(grid, errorTitle, errorText, request){
+    onServerError(grid, errorTitle, errorText, request){
       this.fire('servererror', errorTitle, errorText, request);
     },
     /*
@@ -895,13 +893,13 @@
      * @param {Array} data
      * @param {Object} request
      */
-    onServerSuccess: function(grid, data, request){
+    onServerSuccess(grid, data, request){
       this.fire('serversuccess', data, request);
     },
     /*
      * @param {Object} store
      */
-    onBeforeLoadStore: function(){
+    onBeforeLoadStore(){
       this.fire('beforeload');
     },
     /*
@@ -909,27 +907,23 @@
      * @param {String} id
      * @param {Fancy.Model} record
      */
-    onRemoveStore: function(store, id, record){
-      var me = this;
-
-      me.fire('remove', id, record);
+    onRemoveStore(store, id, record){
+      this.fire('remove', id, record);
     },
     /*
      * @param {Object} store
      * @param {Fancy.Model} record
      */
-    onInsertStore: function(store, record){
-      var me = this;
-
-      me.fire('insert', record);
+    onInsertStore(store, record){
+      this.fire('insert', record);
     },
     /*
      * @param {Object} store
      */
-    onLoadStore: function(){
-      var me = this;
+    onLoadStore(){
+      const me = this;
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.fire('load');
         if(!me.stateIsWaiting){
           me.UPDATING_AFTER_LOAD = true;
@@ -946,8 +940,8 @@
      * @param {Object} store
      * @param {Object} o
      */
-    onSetStore: function(store, o){
-      var me = this;
+    onSetStore(store, o){
+      const me = this;
 
       me.fire('set', o);
       me.fire('change', o);
@@ -957,20 +951,20 @@
      * @param {Object} store
      * @param {Object} o
      */
-    onBeforeSortStore: function(store, o){
+    onBeforeSortStore(store, o){
       this.fire('beforesort', o);
     },
     /*
      * @param {Object} store
      * @param {Object} o
      */
-    onSortStore: function(store, o){
+    onSortStore(store, o){
       this.fire('sort', o);
     },
     /*
      * @return {Number}
      */
-    getCellsViewHeight: function(){
+    getCellsViewHeight(){
       var me = this,
         s = me.store,
         plusScroll = 0,
@@ -1004,27 +998,27 @@
     /*
      * @param {Object} e
      */
-    onDocMouseUp: function(){
+    onDocMouseUp(){
       this.fire('docmouseup');
     },
     /*
      * @param {Object} e
      */
-    onDocClick: function(e){
+    onDocClick(e){
       this.fire('docclick', e);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function(e){
+    onDocMove(e){
       this.fire('docmove', e);
     },
     /*
      * @return {Number}
      */
-    getCenterViewWidth: function(){
+    getCenterViewWidth(){
       //Realization could be reason of bug
-      var me = this,
+      const me = this,
         elWidth = me.centerEl.width();
 
       if (elWidth === 0){
@@ -1034,7 +1028,7 @@
           iL = columns.length;
 
         for (; i < iL; i++){
-          var column = columns[i];
+          const column = columns[i];
           if (!column.hidden){
             columnsWidth += column.width;
           }
@@ -1048,7 +1042,7 @@
     /*
      * @return {Number}
      */
-    getCenterFullWidth: function(){
+    getCenterFullWidth(){
       var me = this,
         centerColumnsWidths = 0,
         columns = me.columns,
@@ -1056,7 +1050,7 @@
         iL = columns.length;
 
       for (; i < iL; i++){
-        var column = columns[i];
+        const column = columns[i];
         if (!column.hidden){
           centerColumnsWidths += column.width;
         }
@@ -1067,7 +1061,7 @@
     /*
      * @return {Number}
      */
-    getLeftFullWidth: function(){
+    getLeftFullWidth(){
       var me = this,
         width = 0,
         columns = me.leftColumns,
@@ -1075,7 +1069,7 @@
         iL = columns.length;
 
       for (; i < iL; i++){
-        var column = columns[i];
+        const column = columns[i];
         if (!column.hidden){
           width += column.width;
         }
@@ -1086,7 +1080,7 @@
     /*
      * @return {Number}
      */
-    getRightFullWidth: function(){
+    getRightFullWidth(){
       var me = this,
         width = 0,
         columns = me.rightColumns,
@@ -1094,7 +1088,7 @@
         iL = columns.length;
 
       for (; i < iL; i++){
-        var column = columns[i];
+        const column = columns[i];
         if (!column.hidden){
           width += column.width;
         }
@@ -1106,7 +1100,7 @@
      * @param {String} [side]
      * @return {Array}
      */
-    getColumns: function(side){
+    getColumns(side){
       var me = this,
         columns = [];
 
@@ -1131,8 +1125,8 @@
      * @param {Array} columns
      * @param {String} side
      */
-    setColumnsLinksToSide: function(columns, side){
-      var me = this;
+    setColumnsLinksToSide(columns, side){
+      const me = this;
 
       switch (side){
         case 'left':
@@ -1151,7 +1145,7 @@
      * @param {String} side
      * @return {Fancy.grid.Body}
      */
-    getBody: function(side){
+    getBody(side){
       var me = this,
         body;
 
@@ -1173,7 +1167,7 @@
      * @param {String} side
      * @return {Fancy.grid.Header}
      */
-    getHeader: function(side){
+    getHeader(side){
       var me = this,
         header;
 
@@ -1196,13 +1190,13 @@
      * @param {String} [side]
      * @return {Fancy.Element}
      */
-    getHeaderCell: function(index, side){
+    getHeaderCell(index, side){
       var me = this,
         cell,
         header;
 
       if (F.isString(index)){
-        var o = me.getColumnOrderByKey(index);
+        const o = me.getColumnOrderByKey(index);
 
         header = me.getHeader(o.side);
         if(!header){
@@ -1225,7 +1219,7 @@
      * @param {Number} rowIndex
      * @return {Array}
      */
-    getDomRow: function(rowIndex){
+    getDomRow(rowIndex){
       var me = this,
         leftBody = me.leftBody,
         body = me.body,
@@ -1258,8 +1252,8 @@
     /*
      *
      */
-    initTextSelection: function(){
-      var me = this;
+    initTextSelection(){
+      const me = this;
 
       if (me.textSelection === false){
         me.addCls(GRID_UNSELECTABLE_CLS);
@@ -1269,8 +1263,8 @@
      * @param {String} type
      * @param {*} value
      */
-    setTrackOver: function(type, value){
-      var me = this;
+    setTrackOver(type, value){
+      const me = this;
 
       switch (type){
         case 'cell':
@@ -1287,8 +1281,8 @@
     /*
      * @param {String} type
      */
-    setSelModel: function(type){
-      var me = this,
+    setSelModel(type){
+      const me = this,
         selection = me.selection;
 
       selection.cell = false;
@@ -1301,7 +1295,7 @@
 
       selection.selModel = type;
 
-      if (type === 'rows'){
+      if (type === 'rows') {
         me.multiSelect = true;
       }
       else {
@@ -1314,57 +1308,44 @@
      * @param {Boolean} [returnModel]
      * @return {Array}
      */
-    getSelection: function(returnModel){
-      var me = this;
-
-      return me.selection.getSelection(returnModel);
+    getSelection(returnModel){
+      return this.selection.getSelection(returnModel);
     },
     /*
      * @param {Number} params
      */
-    selectCell: function(params){
-      var me = this;
-
-      return me.selection.selectCell(params);
+    selectCell(params){
+      return this.selection.selectCell(params);
     },
     /*
      *
      */
-    selectCellLeft: function(){
-      var me = this;
-
-      return me.selection.moveLeft();
+    selectCellLeft(){
+      return this.selection.moveLeft();
     },
     /*
      *
      */
-    selectCellRight: function(){
-      var me = this;
-
-      return me.selection.moveRight();
+    selectCellRight(){
+      return this.selection.moveRight();
     },
     /*
      * @return {Cell|undefined}
      */
-    selectCellDown: function(){
-      var me = this;
-
-      return me.selection.moveDown();
+    selectCellDown(){
+      return this.selection.moveDown();
     },
     /*
      *
      */
-    selectCellUp: function(){
-      var me = this;
-
-      return me.selection.moveUp();
+    selectCellUp(){
+      return this.selection.moveUp();
     },
     /*
      *
      */
-    clearSelection: function(){
-      var me = this,
-        selection = me.selection;
+    clearSelection(){
+      const selection = this.selection;
 
       if(selection){
         selection.clearSelection();
@@ -1373,10 +1354,10 @@
     /*
      * @param {Boolean} container
      */
-    destroy: function(container){
-      var me = this,
+    destroy(container){
+      const me = this,
         s = me.store;
-        // docEl = F.get(document);
+      // docEl = F.get(document);
 
       if (me.panel){
         me.panel.hide();
@@ -1428,8 +1409,8 @@
         delete me.responsiveOverver;
       }
     },
-    clearData: function(){
-      var me = this;
+    clearData(){
+      const me = this;
 
       me.setData([]);
       me.update();
@@ -1438,21 +1419,21 @@
     /*
      *
      */
-    showAt: function(){
-      var me = this;
+    showAt(){
+      const me = this;
 
-      if (me.panel){
+      if (me.panel) {
         me.panel.showAt.apply(me.panel, arguments);
       }
     },
     /*
      *
      */
-    show: function(){
-      var me = this;
+    show(){
+      const me = this;
 
-      setTimeout(function(){
-        if (me.panel){
+      setTimeout(() => {
+        if (me.panel) {
           me.panel.show.apply(me.panel, arguments);
         }
         else {
@@ -1463,8 +1444,8 @@
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       if (me.panel){
         me.panel.hide.apply(me.panel, arguments);
@@ -1473,8 +1454,8 @@
         me.el.hide();
       }
 
-      if (me.celledit){
-        var editor = me.celledit.activeEditor;
+      if (me.celledit) {
+        const editor = me.celledit.activeEditor;
 
         if (editor){
           editor.hide();
@@ -1484,20 +1465,20 @@
     /*
      *
      */
-    initDateColumn: function(){
-      var me = this;
+    initDateColumn(){
+      const me = this;
 
-      var prepareColumns = function(columns){
+      const prepareColumns = function (columns) {
         var i = 0,
           iL = columns.length;
 
-        for (; i < iL; i++){
-          var column = columns[i];
+        for (; i < iL; i++) {
+          const column = columns[i];
 
-          if (column.type === 'date'){
+          if (column.type === 'date') {
             column.format = column.format || {};
 
-            var format = {
+            const format = {
               type: 'date'
             };
 
@@ -1517,35 +1498,29 @@
     /*
      *
      */
-    stopEditor: function(){
-      var me = this;
-
-      me.edit.stopEditor();
+    stopEditor(){
+      this.edit.stopEditor();
     },
     /*
      *
      */
-    stopSaving: function(){
-      var me = this;
-
-      me.store.stopSaving = true;
+    stopSaving(){
+      this.store.stopSaving = true;
     },
     /*
      * @param {String} id
      * @return {Fancy.Model}
      */
-    getById: function(id){
-      var me = this;
-
-      return me.store.getById(id);
+    getById(id){
+      return this.store.getById(id);
     },
     /*
      * @param {Number} rowIndex
      * @param {String} key
      * @return {Fancy.Model}
      */
-    get: function(rowIndex, key){
-      var me = this,
+    get(rowIndex, key){
+      const me = this,
         store = me.store;
 
       if (key !== undefined){
@@ -1561,31 +1536,31 @@
      * @param {Number} id
      * @return {Number}
      */
-    getRowById: function(id){
+    getRowById(id){
       return this.store.getRow(id);
     },
     /*
      * @return {Number}
      */
-    getTotal: function(){
+    getTotal(){
       return this.store.getTotal();
     },
     /*
      * @return {Number}
      */
-    getViewTotal: function(){
+    getViewTotal(){
       return this.store.getLength();
     },
     /*
      * @return {Array}
      */
-    getDataView: function(){
+    getDataView(){
       return this.store.getDataView();
     },
     /*
      * @return {Array}
      */
-    getData: function(){
+    getData(){
       return this.store.getData();
     },
     /*
@@ -1594,7 +1569,7 @@
      * @param {Boolean} [multi]
      * @param {Boolean} [fire]
      */
-    selectRow: function(rowIndex, value, multi, fire){
+    selectRow(rowIndex, value, multi, fire){
       this.selection.selectRow(rowIndex, value, multi, fire);
       //this.activated = true;
     },
@@ -1603,7 +1578,7 @@
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
      */
-    deSelectRow: function(rowIndex){
+    deSelectRow(rowIndex){
       this.selection.selectRow(rowIndex, false, true);
       //this.activated = true;
     },
@@ -1612,13 +1587,13 @@
      * @param {Boolean} [value]
      * @param {Boolean} [multi]
      */
-    selectById: function(rowIndex, value, multi){
+    selectById(rowIndex, value, multi){
       this.selection.selectById(rowIndex, value, multi);
     },
     /*
      * @param {String} key
      */
-    selectColumn: function(key){
+    selectColumn(key){
       var me = this,
         side,
         columnIndex,
@@ -1626,13 +1601,13 @@
         columns = me.columns || [],
         rightColumns = me.rightColumns || [];
 
-      var isInSide = function(columns){
+      const isInSide = (columns) =>  {
         var i = 0,
           iL = columns.length;
 
-        for (; i < iL; i++){
-          var column = columns[i];
-          if (column.index === key){
+        for (; i < iL; i++) {
+          const column = columns[i];
+          if (column.index === key) {
             columnIndex = i;
             return true;
           }
@@ -1659,15 +1634,15 @@
      * @param {String} key
      * @return {Object}
      */
-    getColumnByIndex: function(key){
+    getColumnByIndex(key){
       var me = this,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length;
 
       for (; i < iL; i++){
-        var column = columns[i];
-        if (column.index === key){
+        const column = columns[i];
+        if (column.index === key) {
           return column;
         }
       }
@@ -1676,21 +1651,21 @@
      * @param {String} key
      * @return {Object}
      */
-    getColumn: function(key){
+    getColumn(key){
       return this.getColumnByIndex(key);
     },
     /*
      * @param {String} id
      * @return {Object}
      */
-    getColumnById: function(id){
+    getColumnById(id){
       var me = this,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length;
 
-      for (; i < iL; i++){
-        var column = columns[i];
+      for (; i < iL; i++) {
+        const column = columns[i];
         if (column.id === id){
           return column;
         }
@@ -1700,7 +1675,7 @@
      * @param {String} key
      * @return {Object}
      */
-    getColumnOrderByKey: function(key){
+    getColumnOrderByKey(key){
       var me = this,
         leftColumns = me.leftColumns || [],
         columns = me.columns || [],
@@ -1708,15 +1683,15 @@
         side = '',
         order;
 
-      F.each(columns, function(column, i){
-        if (column.index === key){
+      F.each(columns, (column, i) => {
+        if (column.index === key) {
           side = 'center';
           order = i;
         }
       });
 
       if (!side){
-        F.each(leftColumns, function(column, i){
+        F.each(leftColumns, (column, i) => {
           if (column.index === key){
             side = 'left';
             order = i;
@@ -1724,7 +1699,7 @@
         });
 
         if (!side){
-          F.each(rightColumns, function(column, i){
+          F.each(rightColumns, (column, i) => {
             if (column.index === key){
               side = 'right';
               order = i;
@@ -1734,15 +1709,15 @@
       }
 
       return {
-        side: side,
-        order: order
+        side,
+        order
       };
     },
     /*
      * @param {String} id
      * @return {Object}
      */
-    getColumnOrderById: function(id){
+    getColumnOrderById(id){
       var me = this,
         leftColumns = me.leftColumns || [],
         columns = me.columns || [],
@@ -1750,7 +1725,7 @@
         side = '',
         order;
 
-      F.each(columns, function(column, i){
+      F.each(columns, (column, i) => {
         if (column.id === id){
           side = 'center';
           order = i;
@@ -1758,16 +1733,16 @@
       });
 
       if (!side){
-        F.each(leftColumns, function(column, i){
-          if (column.id === id){
+        F.each(leftColumns, (column, i) => {
+          if (column.id === id) {
             side = 'left';
             order = i;
           }
         });
 
         if (!side){
-          F.each(rightColumns, function(column, i){
-            if (column.id === id){
+          F.each(rightColumns, (column, i) => {
+            if (column.id === id) {
               side = 'right';
               order = i;
             }
@@ -1776,70 +1751,66 @@
       }
 
       return {
-        side: side,
-        order: order
+        side,
+        order
       };
     },
     /*
      * @param {Function} [fn]
      */
-    load: function(fn){
-      var me = this;
-
-      me.store.loadData(fn);
+    load(fn){
+      this.store.loadData(fn);
     },
     /*
      *
      */
-    save: function(){
-      var me = this;
-
-      me.store.save();
+    save(){
+      this.store.save();
     },
     /*
      *
      */
-    onWindowResize: function(){
+    onWindowResize(){
       var me = this,
         renderTo = me.renderTo,
         el;
 
-      if (me.panel){
+      if (me.panel) {
         renderTo = me.panel.renderTo;
       }
 
-      if (me.responsive){
+      if (me.responsive) {
         el = F.get(renderTo);
       }
-      else if (me.panel){
+      else if (me.panel) {
         el = me.panel.el;
       }
       else {
         el = F.get(renderTo);
       }
 
-      if (el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)){
+      if (el.hasClass(PANEL_CLS) || el.hasClass(GRID_CLS)) {
         el = el.parent();
       }
 
-      var newWidth = el.width();
+      let newWidth = el.width();
 
-      if (el.dom === undefined){
+      if (el.dom === undefined) {
         return;
       }
 
-      if (newWidth === 0){
+      if (newWidth === 0) {
         newWidth = el.parent().width();
       }
 
-      if (me.responsive){
+      if (me.responsive) {
         me.setWidth(newWidth);
       }
       else if (me.fitWidth){
         //me.setWidthFit();
       }
 
-      if (me.responsiveHeight){
+      if (me.responsiveHeight) {
         var height = parseInt(el.height());
 
         if (height === 0){
@@ -1855,16 +1826,16 @@
       me.scroller.scrollDelta(0);
       me.scroller.update();
     },
-    updateColumnsWidth: function(){
-      var me = this;
+    updateColumnsWidth(){
+      const me = this;
 
-      var fn = function(columns, header, side){
-        Fancy.each(columns, function(column, i){
-          if (column.hidden){
+      const fn = function (columns, header, side) {
+        Fancy.each(columns, (column, i) =>  {
+          if (column.hidden) {
             return;
           }
 
-          if (column.flex){
+          if (column.flex) {
             var cell = header.getCell(i);
 
             /*
@@ -1886,8 +1857,8 @@
     /*
      * @param {Number} width
      */
-    setWidth: function(width){
-      var me = this,
+    setWidth(width){
+      const me = this,
         el = me.el,
         gridBorders = me.gridBorders,
         gridWithoutPanelBorders = me.gridWithoutPanelBorders,
@@ -1897,15 +1868,15 @@
 
       //me.scroller.scroll(0, 0);
 
-      var calcColumnsWidth = function(columns){
+      const calcColumnsWidth = (columns) =>  {
         var i = 0,
           iL = columns.length,
           width = 0;
 
-        for (; i < iL; i++){
-          var column = columns[i];
+        for (; i < iL; i++) {
+          const column = columns[i];
 
-          if (!column.hidden){
+          if (!column.hidden) {
             width += columns[i].width;
           }
         }
@@ -1918,7 +1889,7 @@
         newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3],
         gridWidth;
 
-      if (me.wrapped){
+      if (me.wrapped) {
         gridWidth = width;
         newCenterWidth = width - leftColumnWidth - rightColumnWidth;
 
@@ -1928,7 +1899,7 @@
           width: gridWidth
         });
       }
-      else if (me.panel){
+      else if (me.panel) {
         newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3];
         me.panel.el.width(width);
 
@@ -1946,16 +1917,16 @@
         el.css('width', width);
       }
 
-      if (newCenterWidth < 100){
+      if (newCenterWidth < 100) {
         newCenterWidth = 100;
       }
 
-      el.select('.' + GRID_CENTER_CLS).css('width', newCenterWidth);
+      el.select(`.${GRID_CENTER_CLS}`).css('width', newCenterWidth);
 
       header.css('width', newCenterWidth);
       body.css('width', newCenterWidth);
 
-      if (me.hasFlexColumns){
+      if (me.hasFlexColumns) {
         me.reCalcColumnsWidth();
         me.columnresizer.updateColumnsWidth();
       }
@@ -1966,11 +1937,11 @@
     /*
      * @return {Number}
      */
-    getWidth: function(){
+    getWidth(){
       var me = this,
         value;
 
-      if (me.panel){
+      if (me.panel) {
         value = parseInt(me.panel.css('width'));
       }
       else {
@@ -1982,11 +1953,11 @@
     /*
      * @return {Number}
      */
-    getHeight: function(){
+    getHeight(){
       var me = this,
         value;
 
-      if (me.panel){
+      if (me.panel) {
         value = parseInt(me.panel.css('height'));
       }
       else {
@@ -1999,54 +1970,54 @@
      * @param {Number} value
      * @param {Number} changePanelHeight
      */
-    setHeight: function(value, changePanelHeight){
-      var me = this,
+    setHeight(value, changePanelHeight){
+      const me = this,
         originalHeight = value,
         gridBorders = me.gridBorders,
         panelBodyBorders = me.panelBodyBorders;
 
-      if (me.panel && changePanelHeight !== false){
+      if (me.panel && changePanelHeight !== false) {
         me.panel.setHeight(value);
       }
 
-      if (me.title){
+      if (me.title) {
         value -= me.titleHeight;
       }
 
-      if (me.subTitle){
+      if (me.subTitle) {
         value -= me.subTitleHeight;
       }
 
-      if (me.footer){
+      if (me.footer) {
         value -= me.barHeight;
       }
 
-      if (me.bbar && !me.bbarHidden){
+      if (me.bbar && !me.bbarHidden) {
         value -= me.bbarHeight || me.barHeight;
       }
 
-      if (me.tbar && !me.tbarHidden){
+      if (me.tbar && !me.tbarHidden) {
         value -= me.tbarHeight || me.barHeight;
       }
 
-      if (me.subTBar && !me.subTBarHidden){
+      if (me.subTBar && !me.subTBarHidden) {
         value -= me.subTBarHeight || me.barHeight;
       }
 
-      if (me.buttons && !me.buttonsHidden){
+      if (me.buttons && !me.buttonsHidden) {
         value -= me.buttonsHeight || me.barHeight;
       }
 
       var bodyHeight = value;
 
-      if (me.header){
+      if (me.header) {
         bodyHeight -= me.cellHeaderHeight;
         if (me.groupheader){
           bodyHeight -= me.cellHeaderHeight;
         }
       }
 
-      if (me.panel){
+      if (me.panel) {
         bodyHeight -= 2;
         //bodyHeight -= panelBodyBorders[0] + panelBodyBorders[2];
         //bodyHeight -= gridBorders[0] + gridBorders[2];
@@ -2055,8 +2026,8 @@
         bodyHeight -= gridBorders[0] + gridBorders[2];
       }
 
-      if (me.summary){
-        if(me.summary.el){
+      if (me.summary) {
+        if (me.summary.el) {
           bodyHeight -= me.summary.el.dom.clientHeight;
         }
         else{
@@ -2064,11 +2035,11 @@
         }
       }
 
-      if (me.body){
+      if (me.body) {
         me.body.css('height', bodyHeight);
       }
 
-      if (me.leftBody){
+      if (me.leftBody) {
         me.leftBody.css('height', bodyHeight);
       }
 
@@ -2088,7 +2059,7 @@
      * @param {Boolean} complex
      * @return {Array}
      */
-    find: function(key, value, complex){
+    find(key, value, complex) {
       return this.store.find(key, value, complex);
     },
     /*
@@ -2096,28 +2067,28 @@
      * @param {*} value
      * @return {Array}
      */
-    findItem: function(key, value){
+    findItem(key, value) {
       return this.store.findItem(key, value);
     },
     /*
      * @param {Function} fn
      * @param {Object} scope
      */
-    each: function(fn, scope){
+    each(fn, scope){
       this.store.each(fn, scope);
     },
     /*
      *
      */
-    onActivate: function(){
-      var me = this,
+    onActivate(){
+      const me = this,
         doc = F.get(document);
 
-      if (activeGrid && activeGrid.id !== me.id){
+      if (activeGrid && activeGrid.id !== me.id) {
         activeGrid.fire('deactivate');
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         doc.on('click', me.onDeactivateClick, me);
       }, 100);
 
@@ -2126,21 +2097,21 @@
     /*
      *
      */
-    onDeActivate: function(){
-      var me = this,
+    onDeActivate(){
+      const me = this,
         doc = F.get(document);
 
       me.activated = false;
       doc.un('click', me.onDeactivateClick, me);
 
-      if(me.selection && me.selection.activeCell){
+      if (me.selection && me.selection.activeCell) {
         me.selection.clearActiveCell();
       }
     },
     /*
      * @param {Object} e
      */
-    onDeactivateClick: function(e){
+    onDeactivateClick(e){
       var me = this,
         i = 0,
         iL = 20,
@@ -2173,16 +2144,14 @@
      * @param {Array} keys
      * @param {Array} values
      */
-    search: function(keys, values){
-      var me = this;
-
-      me.searching.search(keys, values);
+    search(keys, values){
+      this.searching.search(keys, values);
     },
     /*
      *
      */
-    stopSelection: function(){
-      var me = this;
+    stopSelection(){
+      const me = this;
 
       if (me.selection){
         me.selection.stopSelection();
@@ -2191,10 +2160,10 @@
     /*
      * @param {Boolean} value
      */
-    enableSelection: function(value){
-      var me = this;
+    enableSelection(value){
+      const me = this;
 
-      if (me.selection){
+      if (me.selection) {
         me.selection.enableSelection(value);
       }
     },
@@ -2203,14 +2172,14 @@
      * @param {String|Number} [index]
       @param {Object} [column]
      */
-    hideColumn: function(side, index, column){
-      var me = this;
+    hideColumn(side, index, column){
+      const me = this;
 
-      if (index === undefined && !F.isArray(index) && !F.isArray(side)){
+      if (index === undefined && !F.isArray(index) && !F.isArray(side)) {
         index = side;
         side = this.getSideByColumnIndex(index);
 
-        if(!side){
+        if (!side) {
           var info = me.getColumnOrderById(index);
 
           if(!info.side){
@@ -2228,8 +2197,8 @@
       }
 
       if(F.isArray(index)){
-        F.each(index, function(value){
-          if(side){
+        F.each(index, (value) => {
+          if (side) {
             me.hideColumn(side, value);
           }
           else{
@@ -2240,11 +2209,11 @@
         return;
       }
 
-      if(column){
+      if (column) {
         var info = me.getColumnOrderById(column.id);
         side = info.side;
 
-        if(column.hidden){
+        if (column.hidden) {
           return;
         }
       }
@@ -2294,7 +2263,7 @@
       header.hideCell(orderIndex);
       body.hideColumn(orderIndex);
 
-      if (me.rowedit){
+      if (me.rowedit) {
         me.rowedit.hideField(orderIndex, side);
       }
 
@@ -2327,14 +2296,14 @@
         }
       }
 
-      if (me.isGroupable()){
+      if (me.isGroupable()) {
         me.grouping.updateGroupRows();
       }
 
       if(side === 'right' || side === 'left'){
         clearInterval(me.intervalScrollUpdate);
 
-        me.intervalScrollUpdate = setTimeout(function(){
+        me.intervalScrollUpdate = setTimeout(() => {
           me.scroller.update();
           delete me.intervalScrollUpdate;
         }, ANIMATE_DURATION);
@@ -2343,9 +2312,9 @@
       me.onWindowResize();
 
       me.fire('columnhide', {
-        column: column,
-        side: side,
-        orderIndex: orderIndex
+        column,
+        side,
+        orderIndex
       });
     },
     /*
@@ -2353,18 +2322,18 @@
      * @param {String|Number|Array} [index]
      * @param {Object} [column]
      */
-    showColumn: function(side, index, column){
-      var me = this;
+    showColumn(side, index, column){
+      const me = this;
 
-      if (index === undefined && !F.isArray(index) && !F.isArray(side)){
+      if (index === undefined && !F.isArray(index) && !F.isArray(side)) {
         index = side;
         side = this.getSideByColumnIndex(index);
 
-        if(!side){
+        if (!side) {
           var info = me.getColumnOrderById(index);
 
-          if(!info.side){
-            F.error('Column ' + index + ' does not exist');
+          if (!info.side) {
+            F.error(`Column ${index} does not exist`);
           }
 
           column = me.getColumnById(index);
@@ -2372,14 +2341,14 @@
         }
       }
 
-      if(index === undefined){
+      if (index === undefined) {
         index = side;
         side = undefined;
       }
 
-      if(F.isArray(index)){
-        F.each(index, function(value){
-          if(side){
+      if (F.isArray(index)) {
+        F.each(index, (value) => {
+          if (side) {
             me.showColumn(side, value);
           }
           else{
@@ -2390,7 +2359,7 @@
         return;
       }
 
-      if(column){
+      if (column) {
         var info = me.getColumnOrderById(column.id);
         side = info.side;
 
@@ -2480,7 +2449,7 @@
       if(side === 'right' || side === 'left'){
         clearInterval(me.intervalScrollUpdate);
 
-        me.intervalScrollUpdate = setTimeout(function(){
+        me.intervalScrollUpdate = setTimeout(() => {
           me.scroller.update();
           delete me.intervalScrollUpdate;
         }, ANIMATE_DURATION);
@@ -2488,9 +2457,9 @@
 
       me.onWindowResize();
       me.fire('columnshow', {
-        column: column,
-        side: side,
-        orderIndex: orderIndex
+        column,
+        side,
+        orderIndex
       });
     },
     /*
@@ -2498,7 +2467,7 @@
      * @param {String} side
      * @return {Object}
      */
-    removeColumn: function(indexOrder, side){
+    removeColumn(indexOrder, side){
       var me = this,
         leftEl = me.leftEl,
         leftHeader = me.leftHeader,
@@ -2511,7 +2480,7 @@
         rightHeader = me.rightHeader,
         column;
 
-      if (side === undefined){
+      if (side === undefined) {
         side = 'center';
       }
 
@@ -2526,7 +2495,7 @@
         else{
           var columns = me.getColumns(side);
 
-          F.each(columns, function(column, i){
+          F.each(columns, (column, i) => {
             if (column.index === indexOrder){
               indexOrder = i;
               return true;
@@ -2536,7 +2505,7 @@
           if (F.isString(indexOrder) && side === 'center'){
             columns = me.getColumns('left');
 
-            F.each(columns, function(column, i){
+            F.each(columns, (column, i) => {
               if (column.index === indexOrder){
                 indexOrder = i;
                 side = 'left';
@@ -2547,7 +2516,7 @@
             if (F.isString(indexOrder)){
               columns = me.getColumns('right');
 
-              F.each(columns, function(column, i){
+              F.each(columns, (column, i) => {
                 if (column.index === indexOrder){
                   indexOrder = i;
                   side = 'right';
@@ -2618,11 +2587,11 @@
           break;
       }
 
-      if (column.grouping){
+      if (column.grouping) {
         delete column.grouping;
       }
 
-      if (me.summary){
+      if (me.summary) {
         me.summary.removeColumn(indexOrder, side);
       }
 
@@ -2630,7 +2599,7 @@
 
       clearInterval(me.removeColumnScrollInt);
 
-      me.removeColumnScrollInt = setTimeout(function(){
+      me.removeColumnScrollInt = setTimeout(() => {
         delete me.removeColumnScrollInt;
         me.scroller.update();
       }, Fancy.ANIMATE_DURATION);
@@ -2655,7 +2624,7 @@
      * @param {String} side
      * @param {String} fromSide
      */
-    insertColumn: function(column, index, side, fromSide){
+    insertColumn(column, index, side, fromSide){
       var me = this,
         s = me.store,
         leftEl = me.leftEl,
@@ -2669,7 +2638,7 @@
         rightHeader = me.rightHeader,
         extraLeft = 0;
 
-      if(column.index){
+      if (column.index) {
         s.addField(column.index);
       }
 
@@ -2689,8 +2658,8 @@
           var extraHeaderWidth = 0;
           var extraWidth = 0;
 
-          if (me.leftColumns.length === 0){
-            if (!F.nojQuery){
+          if (me.leftColumns.length === 0) {
+            if (!F.nojQuery) {
               extraLeft = 1;
               extraWidth = 2;
             }
@@ -2728,7 +2697,7 @@
 
           var extraWidth = 0;
 
-          if (me.rightColumns.length === 0){
+          if (me.rightColumns.length === 0) {
             if (!F.nojQuery){
               extraLeft = 1;
               extraWidth = 2;
@@ -2746,14 +2715,14 @@
           break;
       }
 
-      if (column.menu){
-        if(column._menu){
+      if (column.menu) {
+        if(column._menu) {
           column.menu = column._menu;
         }
         else{
           var isMenuConfig = true;
 
-          F.each(column.menu, function(item){
+          F.each(column.menu, (item) => {
             if(F.isString(item)){
               return;
             }
@@ -2772,12 +2741,12 @@
       if (me.isGroupable()){
         switch (side){
           case 'left':
-            if (me.leftColumns.length === 1){
+            if (me.leftColumns.length === 1) {
               me.grouping.softRenderGroupedRows('left');
             }
             break;
           case 'right':
-            if (me.rightColumns.length === 1){
+            if (me.rightColumns.length === 1) {
               me.grouping.softRenderGroupedRows('right');
             }
             break;
@@ -2787,15 +2756,15 @@
         me.grouping.setCellsPosition(index, side);
       }
 
-      if (column.rowEditor){
-        if (side === 'left'){
+      if (column.rowEditor) {
+        if (side === 'left') {
           index--;
         }
 
         me.rowedit.moveEditor(column, index, side, fromSide);
       }
 
-      if (me.summary){
+      if (me.summary) {
         me.summary.insertColumn(index, side);
       }
 
@@ -2803,14 +2772,14 @@
       me.leftHeader.destroyMenus();
       me.rightHeader.destroyMenus();
 
-      if (me.sorter){
+      if (me.sorter) {
         me.sorter.updateSortedHeader();
       }
 
-      if (me.filter){
+      if (me.filter) {
         clearInterval(me.intFilterFieldsUpdate);
 
-        me.intFilterFieldsUpdate = setTimeout(function(){
+        me.intFilterFieldsUpdate = setTimeout(() => {
           me.filter.updateFields();
           delete me.intFilterFieldsUpdate;
         }, F.ANIMATE_DURATION);
@@ -2822,16 +2791,16 @@
      * @param {Number} orderIndex
      * @param {Boolean} [timeout]
      */
-    addColumn: function(column, side, orderIndex, timeout){
-      var me = this;
+    addColumn(column, side, orderIndex, timeout){
+      const me = this;
 
-      if(timeout === false){
+      if (timeout === false) {
         me._addColumn(column, side, orderIndex);
         return;
       }
 
       // Delay is used to prevent running sort on column if it was executed inside of headercellclick event.
-      setTimeout(function(){
+      setTimeout(() => {
         me._addColumn(column, side, orderIndex);
       }, 1);
     },
@@ -2840,31 +2809,30 @@
        * @param {String} side
        * @param {Number} orderIndex
        */
-    _addColumn: function(column, side, orderIndex){
-      var me = this;
-      side = side || 'center';
+    _addColumn(column, side = 'center', orderIndex){
+      const me = this;
 
-      if (!column.type){
+      if (!column.type) {
         column.type = 'string';
       }
 
-      if (!column.width){
+      if (!column.width) {
         column.width = me.defaultColumnWidth;
       }
 
-      if (orderIndex === undefined){
-        var columns = me.getColumns(side);
+      if (orderIndex === undefined) {
+        const columns = me.getColumns(side);
 
         orderIndex = columns.length;
       }
 
-      var specialIndexes = {
+      const specialIndexes = {
         $selected: true,
         $order: true,
         $rowdrag: true
       };
 
-      if(column.id === undefined){
+      if (column.id === undefined) {
         if(column.index && !specialIndexes[column.index]){
           column.id = me.getColumnId(column.index);
         }
@@ -2887,8 +2855,8 @@
      * @param {Number} orderIndex
      * @param {String} legend
      */
-    disableLegend: function(orderIndex, legend){
-      var me = this;
+    disableLegend(orderIndex, legend){
+      const me = this;
 
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       me.columns[orderIndex].disabled[legend] = true;
@@ -2900,8 +2868,8 @@
      * @param {Number} orderIndex
      * @param {String} legend
      */
-    enableLegend: function(orderIndex, legend){
-      var me = this;
+    enableLegend(orderIndex, legend){
+      const me = this;
 
       me.columns[orderIndex].disabled = me.columns[orderIndex].disabled || {};
       delete me.columns[orderIndex].disabled[legend];
@@ -2912,7 +2880,7 @@
     /*
      *
      */
-    fitHeight: function(){
+    fitHeight(){
       var me = this,
         s = me.store,
         panelBodyBorders = me.panelBodyBorders,
@@ -2921,7 +2889,7 @@
         headerRows = 1,
         columns = me.columns.concat(me.leftColumns || []).concat(me.rightColumns || []);
 
-      Fancy.each(columns, function(column){
+      Fancy.each(columns, (column) => {
         if (column.grouping){
           if (headerRows < 2){
             headerRows = 2;
@@ -2996,7 +2964,7 @@
      * @param {String} sign
      * @param {Boolean} [updateHeaderFilter]
      */
-    addFilter: function(index, value, sign, updateHeaderFilter){
+    addFilter(index, value, sign, updateHeaderFilter){
       var me = this,
         filter = me.store.filters[index],
         update = me.waitingForFilters === false;
@@ -3012,7 +2980,7 @@
       }
 
       if (F.isDate(value)){
-        var format = this.getColumnByIndex(index).format;
+        const format = this.getColumnByIndex(index).format;
 
         filter['type'] = 'date';
         filter['format'] = format;
@@ -3023,10 +2991,10 @@
 
       me.store.filters[index] = filter;
 
-      if(update){
+      if (update) {
         clearInterval(me.intervalUpdatingFilter);
 
-        me.intervalUpdatingFilter = setTimeout(function(){
+        me.intervalUpdatingFilter = setTimeout(() => {
           if (me.WAIT_FOR_STATE_TO_LOAD){
             me.filter.updateStoreFilters(false);
           }
@@ -3052,14 +3020,14 @@
      * @param {String} [sign]
      * @param {Boolean} [updateHeaderField]
      */
-    clearFilter: function(index, sign, updateHeaderField){
-      var me = this,
+    clearFilter(index, sign, updateHeaderField){
+      const me = this,
         s = me.store,
         update = me.waitingForFilters === false;
 
       if(me.isRequiredChangeAllMemorySelection()){
         me.selection.memory.selectAllFiltered();
-        setTimeout(function() {
+        setTimeout(() =>  {
           me.selection.updateHeaderCheckBox();
         }, 1);
       }
@@ -3103,9 +3071,9 @@
       if(update){
         clearInterval(me.intervalUpdatingFilter);
 
-        me.intervalUpdatingFilter = setTimeout(function(){
+        me.intervalUpdatingFilter = setTimeout(() => {
           if (s.remoteFilter){
-            s.once('serversuccess', function(){
+            s.once('serversuccess', () => {
               me.fire('filter', s.filters);
 
               delete me.intervalUpdatingFilter;
@@ -3116,7 +3084,7 @@
           }
 
           if(s.grouping && s.grouping.by){
-            var grouping = me.grouping;
+            const grouping = me.grouping;
 
             if(s.isFiltered()){
               //s.filterData();
@@ -3171,8 +3139,8 @@
     /*
     *
     */
-    isRequiredChangeAllMemorySelection: function(){
-      var me = this,
+    isRequiredChangeAllMemorySelection(){
+      const me = this,
         s = me.store,
         selection = me.selection;
 
@@ -3181,8 +3149,8 @@
     /*
      *
      */
-    updateFilters: function(){
-      var me = this;
+    updateFilters(){
+      const me = this;
 
       delete me.waitingForFilters;
       me.filter.updateStoreFilters();
@@ -3190,19 +3158,19 @@
     /*
      *
      */
-    updateFilter: function(){
+    updateFilter(){
       this.updateFilters();
     },
     /*
      * @param {String} text
      */
-    showLoadMask: function(text){
+    showLoadMask(text){
       this.loadmask.show(text);
     },
     /*
      *
      */
-    clearSorter: function(){
+    clearSorter(){
       if(this.sorter){
         this.sorter.clearSort();
       }
@@ -3210,26 +3178,26 @@
     /*
      *
      */
-    hideLoadMask: function(){
+    hideLoadMask(){
       this.loadmask.hide();
     },
     /*
      *
      */
-    prevPage: function(){
+    prevPage(){
       this.paging.prevPage();
     },
     /*
      *
      */
-    nextPage: function(){
+    nextPage(){
       this.paging.nextPage();
     },
     /*
      * @param {Number} value
      * @param {Boolean} [update]
      */
-    setPage: function(value, update){
+    setPage(value, update){
       value--;
       if (value < 0){
         value = 0;
@@ -3240,43 +3208,43 @@
     /*
      *
      */
-    firstPage: function(){
+    firstPage(){
       this.paging.firstPage();
     },
     /*
      *
      */
-    lastPage: function(){
+    lastPage(){
       this.paging.lastPage();
     },
     /*
      * @param {Number} value
      */
-    setPageSize: function(value){
+    setPageSize(value){
       this.paging.setPageSize(value);
     },
     /*
      * @return {Number}
      */
-    getPage: function(){
+    getPage(){
       return this.store.showPage + 1;
     },
     /*
      * @return {Number}
      */
-    getPages: function(){
+    getPages(){
       return this.store.pages;
     },
     /*
      * @return {Number}
      */
-    getPageSize: function(){
+    getPageSize(){
       return this.store.pageSize;
     },
     /*
      *
      */
-    refresh: function(){
+    refresh(){
       this.paging.refresh();
     },
     /*
@@ -3284,15 +3252,15 @@
      * @param {Number} y
      * @param {Boolean} [animate]
      */
-    scroll: function(x, y, animate){
-      var me = this,
+    scroll(x, y, animate){
+      const me = this,
         scroller = me.scroller;
 
-      if (y !== undefined && y > 0){
+      if (y !== undefined && y > 0) {
         y = -y;
       }
 
-      var scrollHeight = scroller.getScrollHeight();
+      const scrollHeight = scroller.getScrollHeight();
 
       if (x > scrollHeight){
         x = scrollHeight;
@@ -3301,13 +3269,13 @@
         }
       }
 
-      var scrollWidth = scroller.getScrollWidth();
+      const scrollWidth = scroller.getScrollWidth();
 
-      if (Math.abs(y) > scrollWidth){
+      if (Math.abs(y) > scrollWidth) {
         y = -scrollWidth;
       }
 
-      if(scroller.isBottomScrollable() === false){
+      if (scroller.isBottomScrollable() === false) {
         y = 0;
       }
       else{
@@ -3324,14 +3292,14 @@
     /*
      * @return {Array}
      */
-    getDataFiltered: function(){
+    getDataFiltered(){
       return this.store.filteredData;
     },
     /*
      *
      */
-    reCalcColumnsWidth: function(){
-      var me = this;
+    reCalcColumnsWidth(){
+      const me = this;
 
       if (!me.hasFlexColumns){
         return;
@@ -3347,11 +3315,11 @@
         flexPerCent,
         column;
 
-      if (me.flexScrollSensitive !== false && scroller.isRightScrollable() && !scroller.nativeScroller){
+      if (me.flexScrollSensitive !== false && scroller.isRightScrollable() && !scroller.nativeScroller) {
         widthForFlex -= me.bottomScrollHeight;
       }
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         column = columns[i];
 
         if (column.hidden){
@@ -3404,7 +3372,7 @@
      * @param {Boolean} [selection]
      * @return {Array}
      */
-    getDisplayedData: function(all, ignoreRender, rowIds, exporting, selection){
+    getDisplayedData(all, ignoreRender, rowIds, exporting, selection){
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
@@ -3428,20 +3396,20 @@
         viewTotal = me.getTotal();
       }
 
-      var fn = function(column){
-        if (column.index === undefined || column.index === '$selected' || column.hidden){
+      const fn = function (column) {
+        if (column.index === undefined || column.index === '$selected' || column.hidden) {
           return;
         }
 
-        if(exporting && column.exportable === false){
+        if (exporting && column.exportable === false) {
           return;
         }
 
-        if(/spark/.test(column.type)){
+        if (/spark/.test(column.type)) {
           return false;
         }
 
-        switch (column.type){
+        switch (column.type) {
           case 'select':
           case 'action':
           case 'expand':
@@ -3453,17 +3421,16 @@
             rowData.push(i + 1);
             break;
           default:
-            if(selection){
+            if (selection) {
               var data = selection[i],
                 value = data[column.index];
-            }
-            else {
+            } else {
               var data = me.get(i),
                 value = me.get(i, column.index);
             }
 
-            if(column.exportFn && exporting){
-              if(data && data.data){
+            if (column.exportFn && exporting) {
+              if (data && data.data) {
                 data = data.data;
               }
 
@@ -3471,9 +3438,8 @@
                 value: value,
                 data: data
               }).value);
-            }
-            else if (column.render && ignoreRender !== true){
-              if(data && data.data){
+            } else if (column.render && ignoreRender !== true) {
+              if (data && data.data) {
                 data = data.data;
               }
 
@@ -3483,12 +3449,10 @@
               }).value.replace(/<\/?[^>]+(>|$)/g, '');
 
               rowData.push(value);
-            }
-            else {
-              if(selection){
+            } else {
+              if (selection) {
                 rowData.push(value);
-              }
-              else {
+              } else {
                 rowData.push(me.get(i, column.index));
               }
             }
@@ -3523,7 +3487,7 @@
     /*
      * @return {Array}
      */
-    getAllDisplayedData: function(){
+    getAllDisplayedData(){
       var me = this,
         viewTotal = me.getViewTotal(),
         data = [],
@@ -3532,17 +3496,17 @@
         columns = me.columns,
         rightColumns = me.rightColumns;
 
-      var fn = function(column){
-        if (column.index === undefined || column.index === '$selected' || column.hidden){
+      const fn = function (column) {
+        if (column.index === undefined || column.index === '$selected' || column.hidden) {
           return;
         }
 
-        switch (column.type){
+        switch (column.type) {
           case 'order':
             rowData.push(i + 1);
             break;
           default:
-            if (column.render){
+            if (column.render) {
               var data = me.get(i),
                 value = me.get(i, column.index);
 
@@ -3550,8 +3514,7 @@
                 value: value,
                 data: data
               }).value);
-            }
-            else {
+            } else {
               rowData.push(me.get(i, column.index));
             }
         }
@@ -3572,8 +3535,8 @@
     /*
      * @param {Array} data
      */
-    setData: function(data){
-      var me = this,
+    setData(data){
+      const me = this,
         s = me.store;
 
       //me.clearSelection();
@@ -3621,8 +3584,8 @@
     /*
      * @params {Object} [o]
      */
-    exportToExcel: function(o){
-      var me = this;
+    exportToExcel(o){
+      const me = this;
 
       if (me.exporter){
         me.exporter.exportToExcel(o);
@@ -3631,49 +3594,49 @@
     /*
      * @params {Object} [o]
      */
-    getDataAsCsv: function(o){
-      var me = this;
+    getDataAsCsv(o){
+      const me = this;
 
-      if (me.exporter){
+      if (me.exporter) {
         return me.exporter.getDataAsCsv(o);
       }
     },
     /*
      * @params {Object} o
      */
-    getDataAsCSV: function(o){
+    getDataAsCSV(o){
       return this.getDataAsCsv(o);
     },
     /*
      * @params {Object} [o]
      */
-    exportToCSV: function(o){
-      var me = this;
+    exportToCSV(o){
+      const me = this;
 
-      if (me.exporter){
+      if (me.exporter) {
         return me.exporter.exportToCSV(o);
       }
     },
     /*
      * @params {Object} o
      */
-    exportToCsv: function(o){
+    exportToCsv(o){
       return this.exportToCSV(o);
     },
     /*
      *
      */
-    disableSelection: function(){
+    disableSelection(){
       this.selection.disableSelection();
     },
     /*
      * @param {Object} o
      */
-    setParams: function(o){
-      var me = this,
+    setParams(o){
+      const me = this,
         s = me.store;
 
-      if (s.proxy){
+      if (s.proxy) {
         s.proxy.params = s.proxy.params || {};
 
         F.apply(s.proxy.params, o);
@@ -3682,14 +3645,14 @@
     /*
      * @param {String|Object} url
      */
-    setUrl: function(url){
-      var me = this,
+    setUrl(url){
+      const me = this,
         s = me.store;
 
-      if (F.isString(url)){
-        if (s.proxy && s.proxy.api){
-          if (s.proxy.type === 'rest'){
-            for (var p in s.proxy.api){
+      if (F.isString(url)) {
+        if (s.proxy && s.proxy.api) {
+          if (s.proxy.type === 'rest') {
+            for (var p in s.proxy.api) {
               s.proxy.api[p] = url;
             }
           }
@@ -3708,7 +3671,7 @@
      * @param {Object} cell
      * @return {String}
      */
-    getSideByCell: function(cell){
+    getSideByCell(cell){
       var me = this,
         side;
 
@@ -3728,8 +3691,8 @@
      * @param {String} side
      * @return {String}
      */
-    getSideEl: function(side){
-      var me = this;
+    getSideEl(side){
+      const me = this;
 
       switch(side){
         case 'left':
@@ -3746,11 +3709,11 @@
      *
      * Used for tree grid
      */
-    addChild: function(item, o){
-      var me = this,
+    addChild(item, o){
+      const me = this,
         s = me.store;
 
-      if (o === undefined){
+      if (o === undefined) {
         item.$deep = 1;
         if (item.child === undefined){
           item.child = [];
@@ -3773,7 +3736,7 @@
           fixParent = true;
         }
 
-        var $deep = item.get('$deep'),
+        const $deep = item.get('$deep'),
           child = item.get('child'),
           rowIndex = me.getRowById(item.id) + child.length + 1;
 
@@ -3781,11 +3744,11 @@
         o.parentId = item.id;
 
         if (fixParent){
-          var parentId = item.get('parentId');
-          if (parentId){
-            var parentItem = me.getById(parentId);
+          const parentId = item.get('parentId');
+          if (parentId) {
+            const parentItem = me.getById(parentId);
 
-            F.each(parentItem.data.child, function(child){
+            F.each(parentItem.data.child, (child) => {
               if (child.id === item.id){
                 child.leaf = false;
                 child.expanded = true;
@@ -3809,7 +3772,7 @@
      * @param {Number|String|Object} id
      * @param {Boolean} toggle
      */
-    expand: function(id, toggle){
+    expand(id, toggle){
       var item,
         me = this;
 
@@ -3849,14 +3812,14 @@
     /*
      * @param {Number|String|Object} id
      */
-    toggleExpand: function(id){
+    toggleExpand(id){
       this.expand(id, true);
     },
     /*
      * @param {Number|String|Object} id
      * @param {Boolean} toggle
      */
-    collapse: function(id, toggle){
+    collapse(id, toggle){
       var item,
         me = this;
 
@@ -3875,7 +3838,7 @@
         return;
       }
 
-      if(me.tree){
+      if(me.tree) {
         me.tree.collapseRow(item);
       }
 
@@ -3898,19 +3861,19 @@
     /*
      * @param {Number} id
      */
-    toggleCollapse: function(id){
+    toggleCollapse(id){
       this.collapse(id, true);
     },
     /*
      *
      */
-    collapseAll: function(){
-      var me = this;
+    collapseAll(){
+      const me = this;
 
       if(me.tree){
-        var items = me.findItem('$deep', 1);
+        const items = me.findItem('$deep', 1);
 
-        F.each(items, function(item){
+        F.each(items, (item) => {
           me.collapse(item.id);
         });
       }
@@ -3921,27 +3884,27 @@
     /*
      *
      */
-    expandAll: function(){
+    expandAll(){
       var me = this,
         items = me.findItem('expanded', false);
 
-      F.each(items, function(item){
+      F.each(items, (item) => {
         me.expand(item.id);
       });
 
       items = me.findItem('expanded', false);
 
-      if (items.length){
+      if (items.length) {
         me.expandAll();
       }
     },
     /*
      * @param {Boolean} copyHeader
      */
-    copy: function(copyHeader){
-      var me = this;
+    copy(copyHeader){
+      const me = this;
 
-      if (me.selection){
+      if (me.selection) {
         me.selection.copy(copyHeader);
       }
     },
@@ -3950,7 +3913,7 @@
      * @param {'ASC'|'DESC'} direction
      * @param {Boolean} [update]
      */
-    sort: function(key, direction, update){
+    sort(key, direction, update){
       var me = this,
         column = me.getColumnByIndex(key),
         o = me.getColumnOrderByKey(key),
@@ -4000,26 +3963,26 @@
     /*
      * @param {Number} rowIndex
      */
-    flashRow: function(rowIndex){
-      var me = this,
+    flashRow(rowIndex){
+      const me = this,
         cells = me.getDomRow(rowIndex);
 
-      F.each(cells, function(cell){
+      F.each(cells, (cell) => {
         cell = F.get(cell);
 
         cell.addCls('fancy-grid-cell-flash');
       });
 
-      setTimeout(function(){
-        F.each(cells, function(cell){
+      setTimeout(() => {
+        F.each(cells, (cell) => {
           cell = F.get(cell);
 
           cell.addCls('fancy-grid-cell-animation');
         });
       }, 200);
 
-      setTimeout(function(){
-        F.each(cells, function(cell){
+      setTimeout(() => {
+        F.each(cells, (cell) => {
           cell = F.get(cell);
 
           cell.removeCls('fancy-grid-cell-flash');
@@ -4033,31 +3996,29 @@
      * @param {String} [side]
      * @param {Object} [o]
      */
-    flashCell: function(rowIndex, columnIndex, side, o){
-      side = side || 'center';
-
+    flashCell(rowIndex, columnIndex, side = 'center', o){
       var me = this,
         body = me.getBody(side),
         duration = 700,
         cell = Fancy.isObject(rowIndex) ? rowIndex : body.getCell(rowIndex, columnIndex);
 
-      if (o){
-        if (o.duration){
+      if (o) {
+        if (o.duration) {
           duration = o.duration;
         }
 
-        switch (o.type){
+        switch (o.type) {
           case 'plusminus':
-            if (o.delta > 0){
+            if (o.delta > 0) {
               cell.addCls('fancy-grid-cell-flash-plus');
-              setTimeout(function(){
+              setTimeout(() => {
                 cell.removeCls('fancy-grid-cell-flash-plus');
                 cell.removeCls('fancy-grid-cell-animation');
               }, duration);
             }
             else {
               cell.addCls('fancy-grid-cell-flash-minus');
-              setTimeout(function(){
+              setTimeout(() => {
                 cell.removeCls('fancy-grid-cell-flash-minus');
                 cell.removeCls('fancy-grid-cell-animation');
               }, duration);
@@ -4068,21 +4029,21 @@
       else {
         cell.addCls('fancy-grid-cell-flash');
 
-        setTimeout(function(){
+        setTimeout(() => {
           cell.removeCls('fancy-grid-cell-flash');
           cell.removeCls('fancy-grid-cell-animation');
         }, 700);
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         cell.addCls('fancy-grid-cell-animation');
       }, 200);
     },
     /*
     * @param {Number} rowIndex
      */
-    scrollToRow: function(rowIndex){
-      var me = this,
+    scrollToRow(rowIndex){
+      const me = this,
         cell = me.body.getCell(rowIndex, 0);
 
       me.scroller.scrollToCell(cell.dom, false, true);
@@ -4093,22 +4054,22 @@
     /*
      * @return {Object}
      */
-    getStateSorters: function(){
-      var me = this,
+    getStateSorters(){
+      const me = this,
         o = {},
         state = JSON.parse(localStorage.getItem(me.getStateName()));
 
-      if (!state){
+      if (!state) {
         return;
       }
 
-      if (!state.sorters){
+      if (!state.sorters) {
         return {};
       }
 
-      var sorted = JSON.parse(state.sorters);
+      const sorted = JSON.parse(state.sorters);
 
-      F.each(sorted, function(sorter){
+      F.each(sorted, (sorter) => {
         o[sorter.key] = sorter;
       });
 
@@ -4117,8 +4078,8 @@
     /*
      *
      */
-    getStateName: function(){
-      var me = this,
+    getStateName(){
+      const me = this,
         id = me.id,
         url = location.host + '-' + location.pathname;
 
@@ -4131,7 +4092,7 @@
     /*
      *
      */
-    setWidthFit: function(){
+    setWidthFit(){
       var me = this,
         panelBodyBorders = me.panelBodyBorders,
         gridWithoutPanelBorders = me.gridWithoutPanelBorders,
@@ -4140,16 +4101,17 @@
         hasLocked = false,
         columns = [].concat(me.leftColumns).concat(me.columns).concat(me.rightColumns);
 
-      Fancy.each(columns, function(column){
-        if (!column.hidden){
+      Fancy.each(columns, (column) => {
+        if (!column.hidden) {
           width += column.width;
         }
-        if (column.locked){
+
+        if (column.locked) {
           hasLocked = true;
         }
       });
 
-      if (me.panel){
+      if (me.panel) {
         width += panelBodyBorders[1] + panelBodyBorders[3] + gridBorders[1] + gridBorders[3];
       }
       else {
@@ -4167,16 +4129,14 @@
      * @param {String} value
      * @param {String} [side]
      */
-    setColumnTitle: function(index, value, side){
-      side = side || 'center';
-
+    setColumnTitle(index, value, side = 'center'){
       var me = this,
         header = me.getHeader(side),
         cell,
         column,
         columns = header.getColumns();
 
-      if (Fancy.isString(index)){
+      if (Fancy.isString(index)) {
         index = me.getColumnOrderByKey(index).order;
       }
 
@@ -4184,20 +4144,20 @@
       column.title = value;
 
       cell = header.getCell(index);
-      cell.select('.' + Fancy.GRID_HEADER_CELL_TEXT_CLS).item(0).update(value);
+      cell.select(`.${Fancy.GRID_HEADER_CELL_TEXT_CLS}`).item(0).update(value);
 
       me.fire('columntitlechange', {
         orderIndex: index,
         index: column.index,
-        value: value,
-        side: side
+        value,
+        side
       });
     },
     /*
      *
      */
-    clearDirty: function(){
-      var me = this;
+    clearDirty(){
+      const me = this;
 
       me.store.clearDirty();
       me.body.clearDirty();
@@ -4207,13 +4167,13 @@
     /*
      * @return {Boolean}
      */
-    isDirty: function(){
+    isDirty(){
       return this.store.isDirty();
     },
     /*
      * @param {String} bar
      */
-    hideBar: function(bar){
+    hideBar(bar){
       var me = this,
         barCls,
         barEl,
@@ -4252,12 +4212,12 @@
           F.error('Bar does not exist');
       }
 
-      barEl = me.panel.el.select('.' + barCls);
+      barEl = me.panel.el.select(`.${barCls}`);
 
-      if (barEl.css('display') !== 'none'){
+      if (barEl.css('display') !== 'none') {
         barEl.hide();
 
-        var panelHeight = parseInt(me.panel.el.css('height'));
+        const panelHeight = parseInt(me.panel.el.css('height'));
         //me.panel.el.css('height', panelHeight - barHeight);
         me.setHeight(panelHeight);
       }
@@ -4265,7 +4225,7 @@
     /*
      * @param {String} bar
      */
-    showBar: function(bar){
+    showBar(bar){
       var me = this,
         barCls,
         barEl,
@@ -4304,12 +4264,12 @@
           F.error('Bar does not exist');
       }
 
-      barEl = me.panel.el.select('.' + barCls);
+      barEl = me.panel.el.select(`.${barCls}`);
 
-      if (barEl.css('display') == 'none'){
+      if (barEl.css('display') == 'none') {
         barEl.show();
 
-        var panelHeight = parseInt(me.panel.el.css('height'));
+        const panelHeight = parseInt(me.panel.el.css('height'));
         //me.panel.el.css('height', panelHeight + barHeight);
         me.setHeight(panelHeight);
       }
@@ -4317,27 +4277,27 @@
     /*
      *
      */
-    initResponsiveness: function(){
-      var me = this;
+    initResponsiveness(){
+      const me = this;
 
-      var onWindowResize = function(){
+      const onWindowResize = function () {
         me.onWindowResize();
 
         clearInterval(me.intWindowResize);
 
-        me.intWindowResize = setTimeout(function(){
+        me.intWindowResize = setTimeout(() =>  {
           me.onWindowResize();
           delete me.intWindowResize;
 
           //Bug fix for Mac
-          setTimeout(function(){
+          setTimeout(() =>  {
             me.onWindowResize();
           }, 300);
         }, 30);
       };
 
       if('ResizeObserver' in window){
-        setTimeout(function(){
+        setTimeout(() => {
           var myObserver;
           if(me.nativeResizeObserver){
             myObserver = new ResizeObserver(onWindowResize);
@@ -4365,11 +4325,11 @@
         F.$(window).bind('resize', onWindowResize);
       }
       else {
-        setTimeout(function(){
-          var myObserver = new F.ResizeObserver(onWindowResize),
+        setTimeout(() => {
+          const myObserver = new F.ResizeObserver(onWindowResize),
             dom = me.el.parent().dom;
 
-          if(!dom){
+          if (!dom) {
             return;
           }
 
@@ -4382,8 +4342,8 @@
     /*
      * @return {Number}
      */
-    getNumOfVisibleCells: function(){
-      var me = this;
+    getNumOfVisibleCells(){
+      const me = this;
 
       if(!me.numOfVisibleCells){
         try{
@@ -4400,23 +4360,23 @@
      * @params {String} index
      * @return {'center'|'left'|'right'}
      */
-    getSideByColumnIndex: function(index){
+    getSideByColumnIndex(index){
       var me = this,
         side;
 
-      F.each(me.columns, function(column){
+      F.each(me.columns, (column) => {
         if(column.index === index){
           side = 'center';
         }
       });
 
-      F.each(me.leftColumns, function(column){
+      F.each(me.leftColumns, (column) => {
         if(column.index === index){
           side = 'left';
         }
       });
 
-      F.each(me.rightColumns, function(column){
+      F.each(me.rightColumns, (column) => {
         if(column.index === index){
           side = 'right';
         }
@@ -4429,18 +4389,16 @@
      * @param {Number} width
      * @param {'center'|'left'|'right'} [side]
      */
-    setColumnWidth: function(index, width, side){
-      var me = this;
-
-      side = side || 'center';
+    setColumnWidth(index, width, side = 'center'){
+      const me = this;
 
       if(F.isArray(index)){
-        F.each(index, function(item){
+        F.each(index, (item) => {
           me.setColumnWidth(item.index, item.width, item.side);
         });
       }
       else{
-        var columns = me.getColumns(side);
+        const columns = me.getColumns(side);
 
         if(F.isNumber(index)){
           columns[index].width = width;
@@ -4452,11 +4410,11 @@
 
       clearInterval(me.intervalUpdateColumnsWidth);
 
-      me.intervalUpdateColumnsWidth = setTimeout(function(){
-        if(me.columnresizer){
+      me.intervalUpdateColumnsWidth = setTimeout(() => {
+        if (me.columnresizer) {
           me.columnresizer.updateColumnsWidth('all');
           delete this.intervalUpdateColumnsWidth;
-          setTimeout(function(){
+          setTimeout(() => {
             me.scroller.update();
           }, Fancy.ANIMATE_DURATION);
         }
@@ -4465,17 +4423,14 @@
     /*
      * @return {Boolean}
      */
-    isLoading: function(){
-      var me = this,
-        s = me.store;
-
-      return s.loading;
+    isLoading(){
+      return this.store.loading;
     },
     /*
      * @return {Object}
      */
-    getChanges: function(){
-      var me = this,
+    getChanges(){
+      const me = this,
         s = me.store,
         changes = {};
 
@@ -4490,7 +4445,7 @@
      * @param {String|Boolean} [side]
      * @param {Object} [column]
      */
-    autoSizeColumn: function(index, side, column){
+    autoSizeColumn(index, side, column){
       var me = this,
         info;
 
@@ -4542,11 +4497,11 @@
       columnEl.css('width', width);
 
       if(me.header){
-        var headerCell = me.getHeaderCell(info.order, side);
+        const headerCell = me.getHeaderCell(info.order, side);
         width = headerCell.css('width');
 
         headerCell.css('width', '');
-        var headerCellOffset = headerCell.dom.offsetWidth + 25;
+        const headerCellOffset = headerCell.dom.offsetWidth + 25;
         headerCell.css('width', width);
 
         if(headerCellOffset > offsetWidth){
@@ -4559,11 +4514,11 @@
     /*
      *
      */
-    autoSizeColumns: function(){
-      var me = this,
+    autoSizeColumns(){
+      const me = this,
         columns = me.getColumns();
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(me.isServiceColumn(column)){
           return;
         }
@@ -4576,12 +4531,12 @@
     /*
      *
      */
-    onFilter: function(){
-      var me = this,
+    onFilter(){
+      const me = this,
         s = me.store,
         isFiltered = s.hasFilters();
 
-      if(isFiltered){
+      if (isFiltered) {
         me.addCls(GRID_STATE_FILTERED_CLS);
       }
       else{
@@ -4591,11 +4546,11 @@
     /*
      *
      */
-    onSort: function(){
-      var me = this,
+    onSort(){
+      const me = this,
         s = me.store;
 
-      if(s.sorters && s.sorters.length){
+      if (s.sorters && s.sorters.length) {
         me.addCls(GRID_STATE_SORTED_CLS);
       }
       else{
@@ -4605,7 +4560,7 @@
     /*
      *
      */
-    isServiceColumn: function(column){
+    isServiceColumn(column){
       switch(column.type){
         case 'order':
         case 'select':
@@ -4622,14 +4577,14 @@
      *
      * @return {Array|Object|undefined}
      */
-    getFilter: function(index, sign){
-      var me = this;
+    getFilter(index, sign){
+      const me = this;
 
       if(index === undefined && sign === undefined){
         return me.store.filters;
       }
 
-      var filter = me.store.filters[index];
+      const filter = me.store.filters[index];
 
       if(sign === undefined){
         if(filter){
@@ -4643,21 +4598,19 @@
       if(filter && filter[sign]){
         return filter[sign];
       }
-
-      return;
     },
     /*
      * @params {String} [index]
      *
      * @return {Array|Object}
      */
-    getSorter: function(index){
-      var me = this;
+    getSorter(index){
+      const me = this;
 
       if(index !== undefined){
-        var foundedItem;
+        let foundedItem;
 
-        F.each(me.store.sorters, function(item){
+        F.each(me.store.sorters, (item) => {
           if(item.key === index){
             foundedItem = item;
 
@@ -4674,11 +4627,11 @@
      * @param {String} index
      * @param {Array} data
      */
-    setColumnComboData: function(index, data){
-      var me = this,
+    setColumnComboData(index, data){
+      const me = this,
         columns = me.getColumns();
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(column.index === index || column.id === index){
           column.data = data;
 
@@ -4692,7 +4645,7 @@
               comboData = data;
             }
             else{
-              F.each(data, function(value, i){
+              F.each(data, (value, i) => {
                 comboData.push({
                   value: i,
                   text: value
@@ -4709,7 +4662,7 @@
               comboData = data;
             }
             else{
-              F.each(data, function(value, i){
+              F.each(data, (value, i) => {
                 comboData.push({
                   value: i,
                   text: value
@@ -4725,8 +4678,8 @@
     /*
      *
      */
-    clearGroup: function(){
-      var me = this,
+    clearGroup(){
+      const me = this,
         s = me.store;
 
       s.clearGroup();
@@ -4741,8 +4694,8 @@
      * @param {String} key
      * @param {Boolean} [expand]
      */
-    addGroup: function(key, expand){
-      var me = this,
+    addGroup(key, expand){
+      const me = this,
         s = me.store,
         isBySet = !me.grouping.by;
 
@@ -4770,16 +4723,16 @@
     /*
      * @return {Boolean}
      */
-    isGroupable: function(){
-      var me = this;
+    isGroupable(){
+      const me = this;
 
       return me.grouping && me.grouping.by;
     },
     /*
      * @param {String} [group]
      */
-    expandGroup: function(group){
-      var me = this,
+    expandGroup(group){
+      const me = this,
         s = me.store,
         grouping = me.grouping,
         groups = grouping.groups;
@@ -4812,12 +4765,12 @@
     /*
      * @param {key} [group]
      */
-    collapseGroup: function(group){
-      var me = this,
+    collapseGroup(group){
+      const me = this,
         grouping = me.grouping,
         groups = grouping.groups;
 
-      if(group){
+      if (group) {
         me.el.select('.' + GRID_ROW_GROUP_CLS + '[group="' + group + '"]').addCls(GRID_ROW_GROUP_COLLAPSED_CLS);
         grouping.collapse(grouping.by, group);
       }
@@ -4833,11 +4786,11 @@
     /*
      * @return {Number}
      */
-    calcCurrentLeftWidth: function(){
+    calcCurrentLeftWidth(){
       var columns = this.getColumns('left'),
         width = 0;
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(!column.hidden){
           width += column.width;
         }
@@ -4848,11 +4801,11 @@
     /*
      *
      */
-    calcCurrentRightWidth: function(){
+    calcCurrentRightWidth(){
       var columns = this.getColumns('right'),
         width = 0;
 
-      F.each(columns, function(column){
+      F.each(columns, (column) => {
         if(!column.hidden){
           width += column.width;
         }
@@ -4863,8 +4816,8 @@
     /*
      * @param {Array} columns
      */
-    setColumns: function(columns){
-      var me = this;
+    setColumns(columns){
+      const me = this;
 
       columns = Fancy.Array.copy(columns, true);
 
@@ -4882,9 +4835,9 @@
       me.refreshcolumns.setColumns(columns);
       me._setColumnsAutoWidth();
 
-      setTimeout(function(){
-        Fancy.each(['left', 'center', 'right'], function(side){
-          var header = me.getHeader(side),
+      setTimeout(() => {
+        Fancy.each(['left', 'center', 'right'], (side) => {
+          const header = me.getHeader(side),
             body = me.getBody(side);
 
           header.reSetColumnsAlign();
@@ -4907,13 +4860,13 @@
   };
 
   F.ResizeObserver.prototype.init = function(){
-    var me = this;
+    const me = this;
 
     me.width = me.el.clientWidth;
     me.height = me.el.clientHeight;
 
-    me.interval = setInterval(function(){
-      var width = me.el.clientWidth,
+    me.interval = setInterval(() => {
+      const width = me.el.clientWidth,
         height = me.el.clientHeight;
 
       if(width !== me.width || height !== me.height){

@@ -12,13 +12,13 @@
  * @class Fancy utilities and functions.
  * @singleton
  */
-var Fancy = {
+const Fancy = {
   global: window,
   /**
    * The version of the framework
    * @type String
    */
-  version: '1.7.176',
+  version: '1.7.178',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -27,28 +27,28 @@ window.Fancy = Fancy;
 
 /**
  * Copies all the properties of `from` to the specified `to`.
- * 
+ *
  * @param {Object} to The receiver of the properties.
  * @param {Object} from The primary source of the properties.
  */
-Fancy.apply = function(to, from){
+Fancy.apply = (to, from) => {
   if(from === undefined){
     return;
   }
 
-  for(var p in from){
+  for(const p in from){
     to[p] = from[p];
   }
 };
 
 /**
  * Copies all the properties of `from` to the specified `to`.
- * 
+ *
  * @param {Object} to The receiver of the properties.
  * @param {Object} from The primary source of the properties.
  */
-Fancy.applyIf = function(to, from){
-  for(var p in from){
+Fancy.applyIf = (to, from) => {
+  for (const p in from) {
     if( to[p] === undefined ){
       to[p] = from[p];
     }
@@ -62,29 +62,25 @@ Fancy.applyIf = function(to, from){
  * @param {String} namespace2
  * @param {String} etc
  */
-Fancy.namespace = function(){
-  var i = 0,
-    iL = arguments.length;
-  
-  for(;i<iL;i++){
-    var value = arguments[i],
-      parts = value.split('.'),
+Fancy.namespace = (...args) => {
+  args.forEach(arg => {
+    let parts = arg.split('.'),
       j = 1,
       jL = parts.length;
-    
+
     Fancy.global[parts[0]] = Fancy.global[parts[0]] || {};
-    var namespace = Fancy.global[parts[0]];
-    
+    let namespace = Fancy.global[parts[0]];
+
     for(;j<jL;j++){
       namespace[parts[j]] = namespace[parts[j]] || {};
       namespace = namespace[parts[j]];
     }
-  }
+  });
 };
 
 /**
  * Creates namespaces to be used for scoping variables and classes so that they are not global.
- * Specifying the last node of a namespace implicitly creates all other nodes. 
+ * Specifying the last node of a namespace implicitly creates all other nodes.
  * @param {String} namespace1
  * @param {String} namespace2
  * @param {String} etc
@@ -107,20 +103,20 @@ Fancy.ns = Fancy.namespace;
  * @param {*} value
  * @return {String}
  */
-Fancy.typeOf = function(value){
-  if(value === null){
+Fancy.typeOf = (value) => {
+  if (value === null) {
     return 'null';
   }
 
-  var type = typeof value;
+  const type = typeof value;
   if(type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean'){
     return type;
   }
 
-  var toString = Object.prototype.toString,
+  const toString = Object.prototype.toString,
     typeToString = toString.call(value);
 
-  if(value.length !== undefined && typeof value !== 'function'){
+  if (value.length !== undefined && typeof value !== 'function') {
     return 'array';
   }
 
@@ -151,9 +147,9 @@ Fancy.typeOf = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isArray = ('isArray' in Array) ? Array.isArray : function(value){
-  var toString = Object.prototype.toString;
-  
+Fancy.isArray = ('isArray' in Array) ? Array.isArray : (value) => {
+  const toString = Object.prototype.toString;
+
   return toString.call(value) === '[object Array]';
 };
 
@@ -162,9 +158,9 @@ Fancy.isArray = ('isArray' in Array) ? Array.isArray : function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isObject = function(value){
-  var toString = Object.prototype.toString;
-  
+Fancy.isObject = (value) => {
+  const toString = Object.prototype.toString;
+
   return toString.call(value) === '[object Object]';
 };
 
@@ -173,9 +169,9 @@ Fancy.isObject = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isFunction = function(value){
-  var toString = Object.prototype.toString;
-  
+Fancy.isFunction = (value) => {
+  const toString = Object.prototype.toString;
+
   return toString.apply(value) === '[object Function]';
 };
 
@@ -184,7 +180,7 @@ Fancy.isFunction = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isString = function(value){
+Fancy.isString = (value) => {
   return typeof value === 'string';
 };
 
@@ -193,7 +189,7 @@ Fancy.isString = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isNumber = function(value){
+Fancy.isNumber = (value) => {
   return typeof value === 'number' && isFinite(value);
 };
 
@@ -202,7 +198,7 @@ Fancy.isNumber = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isDom = function(value){
+Fancy.isDom = (value) => {
   try {
     //Using W3 DOM2 (works for FF, Opera and Chrome)
     return value instanceof HTMLElement;
@@ -222,7 +218,7 @@ Fancy.isDom = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isBoolean = function(value){
+Fancy.isBoolean = (value) => {
   return typeof value === 'boolean';
 };
 
@@ -231,7 +227,7 @@ Fancy.isBoolean = function(value){
  * @param {*} value The value to test
  * @return {Boolean}
  */
-Fancy.isDate = function(value){
+Fancy.isDate = (value) => {
   return Fancy.typeOf(value) === 'date';
 };
 
@@ -242,13 +238,13 @@ Fancy.isDate = function(value){
  * @param {Function} fn The function to be called with each item.
  * @return See description for the fn parameter.
  */
-Fancy.each = function(arrayObject, fn){
-  var type = Fancy.typeOf(arrayObject);
+Fancy.each = (arrayObject, fn) => {
+  const type = Fancy.typeOf(arrayObject);
 
   switch(type){
     case 'array':
     case 'string':
-      var i = 0,
+      let i = 0,
         iL = arrayObject.length;
 
       for(;i<iL;i++){
@@ -258,7 +254,7 @@ Fancy.each = function(arrayObject, fn){
       }
       break;
     case 'object':
-      for(var p in arrayObject){
+      for(const p in arrayObject){
         if(fn(arrayObject[p], p, arrayObject) === true){
           break;
         }
@@ -277,12 +273,12 @@ Fancy.each = function(arrayObject, fn){
  * @param {Function} classes The function to be called with each item.
  * @return See description for the fn parameter.
  */
-Fancy.mixin = function(proto, classes){
-   var i = 0,
+Fancy.mixin = (proto, classes) => {
+  let i = 0,
     iL = classes.length,
-     item;
+    item;
 
-  if( Fancy.typeOf( classes[0] ) === 'object' ){
+  if ( Fancy.typeOf( classes[0] ) === 'object' ) {
     for(;i<iL;i++){
       item = classes[i];
 
@@ -292,7 +288,7 @@ Fancy.mixin = function(proto, classes){
         jL = methods.length;
 
       for(;j<jL;j++){
-        var methodName = methods[j];
+        const methodName = methods[j];
         proto[methodName] = _class['prototype'][methodName];
       }
     }
@@ -301,10 +297,10 @@ Fancy.mixin = function(proto, classes){
     for(;i<iL;i++){
       item = classes[i];
 
-      if(Fancy.isString(item)){
-        var _item = Fancy.ClassManager.getMixin(item);
+      if (Fancy.isString(item)) {
+        const _item = Fancy.ClassManager.getMixin(item);
 
-        if(_item){
+        if (_item) {
           Fancy.apply(proto, _item['prototype']);
         }
         else{
@@ -318,20 +314,21 @@ Fancy.mixin = function(proto, classes){
   }
 };
 
-Fancy.Mixin = function(name, config){
-  var parts = name.split('.'),
-    i = 1,
+Fancy.Mixin = (name, config) => {
+  const parts = name.split('.');
+
+  let i = 1,
     iL = parts.length - 1;
 
   Fancy.ns(name);
 
-  var ref = Fancy.global[parts[0]];
+  let ref = Fancy.global[parts[0]];
 
-  for(;i<iL;i++){
+  for(;i<iL;i++) {
     ref = ref[parts[i]];
   }
 
-  if(parts.length > 1){
+  if (parts.length > 1) {
     ref[parts[parts.length - 1]] = function(){};
     ref[parts[parts.length - 1]].prototype = config;
   }
@@ -340,9 +337,9 @@ Fancy.Mixin = function(name, config){
     Fancy.global[parts[0]].prototype = config;
   }
 
-  var waiters = Fancy.ClassManager.waitMixins[name];
+  let waiters = Fancy.ClassManager.waitMixins[name];
 
-  if(waiters){
+  if (waiters) {
     waiters = waiters.waiters;
 
     i = 0;
@@ -362,24 +359,21 @@ Fancy.Mixin = function(name, config){
  * @param {Object} config The primary source of the properties.
  * @return {Object}
  */
-Fancy.applyConfig = function(object, config){
-  var property;
-  config = config || {};
-
-  if(object.plugins && config.plugins){
+Fancy.applyConfig = (object, config= {}) => {
+  if (object.plugins && config.plugins) {
     object.plugins = object.plugins.concat(config.plugins);
     delete config.plugins;
   }
 
-  if(object._isConfigApplied === true){
+  if (object._isConfigApplied === true) {
     return object;
   }
-  
-  for(property in config){
+
+  for(const property in config){
     object[property] = config[property];
   }
   object._isConfigApplied = true;
-  
+
   return object;
 };
 
@@ -387,13 +381,11 @@ Fancy.applyConfig = function(object, config){
  * @param {Object} o
  * @return {Object}
  */
-Fancy.styleToString = function(o){
-  var str = '';
+Fancy.styleToString = (o= {}) => {
+  let str = '';
 
-  o = o || {};
-
-  for(var p in o){
-    str += p + ': ' + o[p] + ';';
+  for (const p in o) {
+    str += `${p}: ${o[p]};`;
   }
 
   return str;
@@ -403,7 +395,7 @@ Fancy.apply(Fancy, {
   prefix: 'fancy-gen-',
   idSeed: 0,
   zIndex: 1,
-  id: function(el, prefix){
+  id(el, prefix) {
     if(!el){
       return (prefix || Fancy.prefix) + (++Fancy.idSeed);
     }
@@ -690,170 +682,170 @@ Fancy.ANIMATE_DURATION = 400;
 
 (function(){
 
-var userAgent = navigator.userAgent.toLowerCase(),
-  check = function(regex){
-    return regex.test(userAgent);
-  },
-  isOpera = check(/opera/),
-  isIE = !isOpera && check(/msie/),
-  isChromium = window.chrome,
-  winNav = window.navigator,
-  vendorName = winNav.vendor,
-  isIEedge = winNav.userAgent.indexOf('Edge') > -1,
-  isIOSChrome = winNav.userAgent.match('CriOS'),
-  isChrome = function(){
-    var isOpera = winNav.userAgent.indexOf('OPR') > -1;
+  var userAgent = navigator.userAgent.toLowerCase(),
+    check = function(regex){
+      return regex.test(userAgent);
+    },
+    isOpera = check(/opera/),
+    isIE = !isOpera && check(/msie/),
+    isChromium = window.chrome,
+    winNav = window.navigator,
+    vendorName = winNav.vendor,
+    isIEedge = winNav.userAgent.indexOf('Edge') > -1,
+    isIOSChrome = winNav.userAgent.match('CriOS'),
+    isChrome = function(){
+      const isOpera = winNav.userAgent.indexOf('OPR') > -1;
 
-    if (isIOSChrome){
-      return true;
-    }
-    else if (
-      isChromium !== null &&
-      typeof isChromium !== 'undefined' &&
-      vendorName === 'Google Inc.' &&
-      isOpera === false &&
-      isIEedge === false
-    ){
-      return true;
-    } else {
-      return false;
-    }
-  }(),
-  getInternetExplorerVersion = function(){
-    var rv = -1,
-      ua,
-      re;
-
-    if (navigator.appName == 'Microsoft Internet Explorer'){
-      ua = navigator.userAgent;
-      re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
-
-      if (re.exec(ua) != null){
-        rv = parseFloat(RegExp.$1);
+      if (isIOSChrome){
+        return true;
       }
-    }
-    else if (navigator.appName == 'Netscape'){
-      ua = navigator.userAgent;
-      re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
-
-      if (re.exec(ua) != null){
-        rv = parseFloat(RegExp.$1);
+      else if (
+        isChromium !== null &&
+        typeof isChromium !== 'undefined' &&
+        vendorName === 'Google Inc.' &&
+        isOpera === false &&
+        isIEedge === false
+      ){
+        return true;
+      } else {
+        return false;
       }
+    }(),
+    getInternetExplorerVersion = function(){
+      var rv = -1,
+        ua,
+        re;
+
+      if (navigator.appName == 'Microsoft Internet Explorer'){
+        ua = navigator.userAgent;
+        re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
+
+        if (re.exec(ua) != null){
+          rv = parseFloat(RegExp.$1);
+        }
+      }
+      else if (navigator.appName == 'Netscape'){
+        ua = navigator.userAgent;
+        re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
+
+        if (re.exec(ua) != null){
+          rv = parseFloat(RegExp.$1);
+        }
+      }
+      return rv;
+    };
+
+  if (getInternetExplorerVersion() === 11) {
+    isIE = true;
+  }
+
+  if (isIE === false && isIEedge) {
+    isIE = true;
+  }
+
+  Fancy.apply(Fancy, {
+    isOpera: isOpera,
+    isIE: isIE,
+    isChrome: isChrome
+  });
+
+  /**
+   *
+   * @return {Array}
+   */
+  Fancy.getViewSize = () => {
+    const xy = [];
+
+    if(Fancy.isIE){
+      xy[0] = document.documentElement.clientHeight;
+      xy[1] = document.documentElement.clientWidth;
     }
-    return rv;
+    else{
+      xy[0] = window.innerHeight;
+      xy[1] = window.innerWidth;
+    }
+
+    return xy;
   };
 
-  if(getInternetExplorerVersion() === 11){
-    isIE = true;
-  }
+  /**
+   * @return {Object}
+   */
+  Fancy.getScroll = () => {
+    const dd = document.documentElement,
+      db = document.body;
 
-  if(isIE === false && isIEedge){
-    isIE = true;
-  }
+    if (dd && (dd.scrollTop || dd.scrollLeft)){
+      return [dd.scrollTop, dd.scrollLeft];
+    }
+    else if (db){
+      return [db.scrollTop, db.scrollLeft];
+    }
+    else {
+      return [0, 0];
+    }
+  };
 
-Fancy.apply(Fancy, {
-  isOpera: isOpera,
-  isIE: isIE,
-  isChrome: isChrome
-});
+  /**
+   * @return {String}
+   */
+  Fancy.getMouseWheelEventName = () => {
+    if('onmousewheel' in document.body){
+      return 'mousewheel';
+    }
+    else{
+      return 'DOMMouseScroll';
+    }
+  };
 
-/**
- *
- * @return {Array}
- */
-Fancy.getViewSize = function(){
-  var xy = [];
-  
-  if(Fancy.isIE){
-    xy[0] = document.documentElement.clientHeight;
-    xy[1] = document.documentElement.clientWidth;
-  }
-  else{
-    xy[0] = window.innerHeight;
-    xy[1] = window.innerWidth;
-  }
-  
-  return xy;
-};
+  /**
+   * @param {Object} e
+   * @return {Number}
+   */
+  Fancy.getWheelDelta = (e) =>{
+    let delta = 0;
 
-/**
- * @return {Object}
- */
-Fancy.getScroll = function(){
-  var dd = document.documentElement,
-    db = document.body;
+    if (e.wheelDelta) { // IE/Opera way
+      delta = e.wheelDelta / 120;
+    }
+    else if (e.detail) { // Mozilla way
+      delta = -e.detail / 3;
+    }
 
-  if (dd && (dd.scrollTop || dd.scrollLeft)){
-    return [dd.scrollTop, dd.scrollLeft];
-  }
-  else if (db){
-    return [db.scrollTop, db.scrollLeft];
-  }
-  else {
-    return [0, 0];
-  }
-};
+    return delta;
+  };
 
-/**
- * @return {String}
- */
-Fancy.getMouseWheelEventName = function(){
-  if('onmousewheel' in document.body){
-    return 'mousewheel';
-  }
-  else{
-    return 'DOMMouseScroll';
-  }
-};
+  Fancy.isTouch = (document.ontouchstart !== undefined);
 
-/**
- * @param {Object} e
- * @return {Number}
- */
-Fancy.getWheelDelta = function(e){
-  var delta = 0;
+  Fancy.i18n = {};
 
-  if (e.wheelDelta){ // IE/Opera way
-    delta = e.wheelDelta / 120;
-  }
-  else if (e.detail){ // Mozilla way
-    delta = -e.detail / 3;
-  }
-
-  return delta;
-};
-
-Fancy.isTouch = (document.ontouchstart !== undefined);
-
-Fancy.i18n = {};
-
-Fancy.currency = {
-  EUR: '€',
-  USD: '$',
-  GBP: '£',
-  RUB: '₽',
-  CZK: 'Kč',
-  AUD: '$',
-  JPY: '¥',
-  PLN: 'zł',
-  TRY: '₺',
-  DKK: 'kr',
-  KRW: '₩',
-  BRL: 'R$',
-  CNY: '¥',
-  SEK: 'kr',
-  CAD: '$',
-  NOK: 'kr',
-  IDR: 'Rp'
-};
+  Fancy.currency = {
+    EUR: '€',
+    USD: '$',
+    GBP: '£',
+    RUB: '₽',
+    CZK: 'Kč',
+    AUD: '$',
+    JPY: '¥',
+    PLN: 'zł',
+    TRY: '₺',
+    DKK: 'kr',
+    KRW: '₩',
+    BRL: 'R$',
+    CNY: '¥',
+    SEK: 'kr',
+    CAD: '$',
+    NOK: 'kr',
+    IDR: 'Rp'
+  };
 
 })();
 
 Fancy.modules = {};
-Fancy.getModulesList = function(){
-  var list = [];
+Fancy.getModulesList = () => {
+  const list = [];
 
-  Fancy.each(Fancy.modules, function(value, p){
+  Fancy.each(Fancy.modules, (value, p) => {
     list.push(p);
   });
 
@@ -880,7 +872,7 @@ var FancyForm = function(){
 };
 */
 (function(){
-  var moduleNames = {};
+  const moduleNames = {};
 
   /**
    * @param {String} name
@@ -892,31 +884,31 @@ var FancyForm = function(){
       _name = name,
       endUrl = Fancy.DEBUG ? '.js' : '.min.js',
       _v = Fancy.version.replace(/\./g, ''),
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (`https://cdn.jsdelivr.net/npm/fancygrid@${Fancy.version}/client/modules/`);
 
     fn = fn || function(){};
 
-    if(Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false){
+    if (Fancy.MODULELOAD === false || Fancy.MODULESLOAD === false) {
       return;
     }
 
     name = name.replace(/ /g, '-');
 
-    if(Fancy.DEBUG){
+    if (Fancy.DEBUG) {
       endUrl += '?_dc='+(+new Date());
     }
     else{
-      endUrl += '?_v=' + _v;
+      endUrl += `?_v=${_v}`;
     }
 
-    Fancy.Modules.on('loaded', function(modules, $name){
-      if($name === name){
+    Fancy.Modules.on('loaded', (modules, $name) => {
+      if ($name === name) {
         Fancy.modules[_name] = true;
         fn(name);
       }
     });
 
-    if(moduleNames[name]){
+    if (moduleNames[name]) {
       return;
     }
 
@@ -926,12 +918,12 @@ var FancyForm = function(){
 
     _script.charset = 'utf-8';
 
-    _script.onload = function(){
+    _script.onload = () =>{
       Fancy.Modules.fire('loaded', name);
     };
 
-    _script.onerror = function(){
-      throw new Error('[FancyGrid Error] - module ' + name + ' was not loaded');
+    _script.onerror = () =>{
+      throw new Error(`[FancyGrid Error] - module ${name} was not loaded`);
     };
 
     body.appendChild(_script);
@@ -941,21 +933,21 @@ var FancyForm = function(){
    * @param {String} i18n
    * @param {Function} fn
    */
-  Fancy.loadLang = function(i18n, fn){
-    if(Fancy.i18n[i18n] !== undefined){
+  Fancy.loadLang = (i18n, fn) => {
+    if (Fancy.i18n[i18n] !== undefined) {
       return true;
     }
 
-    var  body = document.getElementsByTagName('body')[0],
+    const body = document.getElementsByTagName('body')[0],
       _script = document.createElement('script'),
       endUrl = '.js',
-      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+      MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (`https://cdn.jsdelivr.net/npm/fancygrid@${Fancy.version}/client/modules/`);
 
-    _script.src = MODULESDIR + 'i18n/' + i18n + endUrl;
+    _script.src = `${MODULESDIR}i18n/${i18n}${endUrl}`;
     _script.charset = 'utf-8';
     _script.async = 'true';
 
-    _script.onload = function(){
+    _script.onload = () => {
       fn({
         lang: Fancy.i18n[i18n]
       });
@@ -964,27 +956,27 @@ var FancyForm = function(){
     body.appendChild(_script);
   };
 
-  Fancy.loadStyle = function(){
-    var links = document.querySelectorAll('link');
+  Fancy.loadStyle = () => {
+    let links = document.querySelectorAll('link');
 
-    if(Fancy.stylesLoaded){
+    if (Fancy.stylesLoaded) {
       return;
     }
 
-    Fancy.each(links, function(link){
+    links.forEach(link => {
       if(/fancy\./.test(link.href)){
         Fancy.stylesLoaded = true;
       }
-    });
+    })
 
     links = document.querySelectorAll('link');
 
-    if(Fancy.stylesLoaded){
+    if (Fancy.stylesLoaded) {
       return;
     }
 
-    Fancy.each(links, function(link){
-      if(/fancy\./.test(link.href)){
+    links.forEach(link => {
+      if (/fancy\./.test(link.href)) {
         Fancy.stylesLoaded = true;
       }
     });
@@ -995,16 +987,16 @@ var FancyForm = function(){
         name = 'fancy',
         endUrl = Fancy.DEBUG ? '.css': '.min.css',
         _v = Fancy.version.replace(/\./g, ''),
-        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || ('https://cdn.fancygrid.com/@'+Fancy.version+'/modules/');
+        MODULESDIR = Fancy.MODULESDIR || FancyGrid.MODULESDIR || (`https://cdn.jsdelivr.net/npm/fancygrid@${Fancy.version}/client/modules/`);
 
       MODULESDIR = MODULESDIR.replace('modules/', '');
       MODULESDIR = MODULESDIR.replace('modules', '');
 
-      if(Fancy.DEBUG){
+      if (Fancy.DEBUG) {
         endUrl += '?_dc='+(+new Date());
       }
       else{
-        endUrl += '?_v=' + _v;
+        endUrl += `?_v=${_v}`;
       }
 
       _link.href = MODULESDIR + name + endUrl;
@@ -1012,8 +1004,8 @@ var FancyForm = function(){
 
       Fancy.loadingStyle = true;
 
-      _link.onload = function(){
-        setTimeout(function(){
+      _link.onload = () => {
+        setTimeout(() =>{
           Fancy.loadingStyle = false;
           Fancy.stylesLoaded = true;
         }, 100);
@@ -1023,31 +1015,28 @@ var FancyForm = function(){
     }
   };
 
-  Fancy.error = function(message, code){
-    var errorNumber = '';
+  Fancy.error = (message, code) => {
+    const errorNumber = code ? ` {code}` : '';
 
-    if(code){
-      errorNumber = ' ' + code;
-    }
-
-    throw new Error('[FancyGrid Error' + errorNumber + ']: ' + message);
+    throw new Error(`[FancyGrid Error${errorNumber}]: ${message}`);
   };
 })();
+
 Fancy.themes = {};
 
 /**
  * @param {String} name
  * @param {Object} o
  */
-Fancy.defineTheme = function(name, o){
-  var themeConfig = {};
+Fancy.defineTheme = (name, o) => {
+  const themeConfig = {};
 
-  if(o.extend){
+  if (o.extend) {
     Fancy.apply(themeConfig, Fancy.getTheme(o.extend).config);
     themeConfig.extendedThemes = themeConfig.extendedThemes || [];
     themeConfig.extendedThemes.push(o.extend);
   }
-  else if(name !== 'default'){
+  else if (name !== 'default') {
     Fancy.apply(themeConfig, Fancy.getTheme('default').config);
   }
 
@@ -1061,13 +1050,13 @@ Fancy.defineTheme = function(name, o){
  * @param {String} name
  * @return {String}
  */
-Fancy.getThemeCSSCls = function(name){
-  var cls = 'fancy-theme-' + name,
-    theme = Fancy.getTheme(name);
+Fancy.getThemeCSSCls = (name) => {
+  const theme = Fancy.getTheme(name);
+  let cls = `fancy-theme-${name}`;
 
-  if(theme && theme.config.extendedThemes){
-    Fancy.each(theme.config.extendedThemes, function(name){
-      cls += ' ' + 'fancy-theme-' + name;
+  if (theme && theme.config.extendedThemes) {
+    Fancy.each(theme.config.extendedThemes, name => {
+      cls += ` fancy-theme-${name}`;
     });
   }
 
@@ -1078,12 +1067,12 @@ Fancy.getThemeCSSCls = function(name){
  * @param {Object|String} name
  * @return {Object} o
  */
-Fancy.getTheme = function(name){
-  var theme = {
+Fancy.getTheme = (name) => {
+  const theme = {
     config: {}
   };
 
-  if(Fancy.isObject(name)){
+  if (Fancy.isObject(name)) {
     Fancy.applyIf(theme, Fancy.themes[name.name || 'default']);
     Fancy.apply(theme.config, Fancy.themes[name.name || 'default'].config);
     Fancy.apply(theme.config, name.config);
@@ -1234,6 +1223,7 @@ Fancy.defineTheme('material', {
     menuItemHeight: 35
   }
 });
+
 /**
  * @class Fancy.String
  * @singleton
@@ -1243,7 +1233,7 @@ Fancy.String = {
    * @param {String} tpl
    * @return {String}
    */
-  format: function(tpl){
+  format(tpl){
     var arr,
       i,
       iL;
@@ -1269,26 +1259,26 @@ Fancy.String = {
    * @param {String} str
    * @return {String}
    */
-  upFirstChar: function(str){
+  upFirstChar(str){
     return str[0].toLocaleUpperCase() + str.substr(1, str.length);
   },
   /**
    * @param {String} str
    * @return {String}
    */
-  trim: function(str){
+  trim(str){
     return str.replace(/\s/g, '');
   }
 };
 
 
 Fancy.Array = {
-  copy: function(a, deep){
+  copy(a, deep){
     if(!deep){
       return a.slice();
     }
 
-    var newArray = [],
+    let newArray = [],
       i = 0,
       iL = a.length;
 
@@ -1308,8 +1298,8 @@ Fancy.Array = {
 
     return newArray;
   },
-  each: function(arr, fn){
-    var i = 0,
+  each(arr, fn){
+    let i = 0,
       iL = arr.length;
 
     for(;i<iL;i++){
@@ -1320,14 +1310,14 @@ Fancy.Array = {
    * @param {Array} values
    * @return {Number}
    */
-  count: function(values){
+  count(values){
     return values.length;
   },
   /*
    * @param {Array} values
    * @return {Number}
    */
-  sum: function(values){
+  sum(values){
     var i = 0,
       iL = values.length,
       value = 0;
@@ -1362,21 +1352,21 @@ Fancy.Array = {
    * @param {Array} values
    * @return {Number}
    */
-  min: function(values){
+  min(values){
     return Math.min.apply(this, values);
   },
   /*
    * @param {Array} values
    * @return {Number}
    */
-  max: function(values){
+  max(values){
     return Math.max.apply(this, values);
   },
   /*
    * @param {Array} values
    * @return {Number}
    */
-  average: function(values){
+  average(values){
     var sum = 0,
       i = 0,
       iL = values.length;
@@ -1396,20 +1386,15 @@ Fancy.Array = {
    * @param {Array} insert
    * @return {Array}
    */
-  insert: function(arr, index, insert){
-    var arr2 = arr.splice(index, arr.length - index);
+  insert(arr, index, insert){
+    const arr2 = arr.splice(index, arr.length - index);
 
     arr = arr.concat(insert).concat(arr2);
 
     return arr;
-  },
-  /*
-   *
-   */
-  none: function(){
-    return '';
   }
 };
+
 /**
  * @class Fancy.Object
  * @singleton
@@ -1420,10 +1405,10 @@ Fancy.Object = {
    * @return {Object}
    * TODO: deep copy
    */
-  copy: function(o){
-    var _o = {};
+  copy(o){
+    const _o = {};
 
-    for(var p in o){
+    for(const p in o){
       _o[p] = o[p];
     }
 
@@ -1433,8 +1418,8 @@ Fancy.Object = {
    * @param {Object} o
    * @return {Boolean}
    */
-  isEmpty: function(o){
-    for(var p in o){
+  isEmpty(o){
+    for (const p in o) {
       return false;
     }
 
@@ -1444,20 +1429,21 @@ Fancy.Object = {
    * @param {Object} o
    * @return {Array}
    */
-  keys: function(o){
-    if(Object.keys){
+  keys(o){
+    if (Object.keys) {
       return Object.keys(o);
     }
 
-    var keys = [];
+    const keys = [];
 
-    for(var p in o){
+    for (const p in o) {
       keys.push(p);
     }
 
     return keys;
   }
 };
+
 /**
  * @class Fancy.Number
  * @singleton
@@ -1467,21 +1453,21 @@ Fancy.Number = {
    * @param {Number} value
    * @return {Boolean}
    */
-  isFloat: function(value){
+  isFloat(value){
     return Number(value) === value && value % 1 !== 0;
   },
   /**
    * @param {Number} value
    * @return {Number}
    */
-  getPrecision: function(value){
+  getPrecision(value){
     return (value + '').split('.')[1].length + 1;
   },
   /**
    * @param {Number} value
    * @return {Number}
    */
-  correctFloat: function(value){
+  correctFloat(value){
     return parseFloat(value.toPrecision(14));
   },
   /**
@@ -1490,8 +1476,8 @@ Fancy.Number = {
    * @param {Number} [precision]
    * @return {String}
    */
-  format: function(value, sep, precision){
-    var dot,
+  format(value, sep, precision){
+    let dot,
       result;
 
     if(sep === undefined){
@@ -1513,7 +1499,7 @@ Fancy.Number = {
       dot = ',';
     }
 
-    var splitted = value.toString().split('.');
+    const splitted = value.toString().split('.');
     splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 
     if(splitted[1] === undefined){
@@ -1548,8 +1534,8 @@ Fancy.Number = {
 
     return result;
   },
-  currencyFormat: function(value, decimalSeparator, thousandSeparator, precision){
-    var splitted = value.toString().split(decimalSeparator);
+  currencyFormat(value, decimalSeparator, thousandSeparator, precision) {
+    const splitted = value.toString().split(decimalSeparator);
     precision = precision || 0;
 
     splitted[0] = splitted[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
@@ -1588,12 +1574,13 @@ Fancy.Number = {
     return splitted[0];
   }
 };
+
 /*
  * @class Fancy.Collection
  * @constructor
  */
 Fancy.Collection = function(arr){
-  var me = this;
+  const me = this;
 
   me.items = [];
   me.keys = [];
@@ -1611,7 +1598,7 @@ Fancy.Collection = function(arr){
       }
     }
     else{
-      for(var p in arr){
+      for(const p in arr){
         me.add(p, arr[p]);
       }
     }
@@ -1624,8 +1611,8 @@ Fancy.Collection.prototype = {
    * @param {String|Number} key
    * @param {*} value
    */
-  add: function(key, value){
-    var me = this;
+  add(key, value){
+    const me = this;
 
     me.items.push(value);
     me.keys.push(key);
@@ -1636,8 +1623,8 @@ Fancy.Collection.prototype = {
   /*
    * @param {String|Number} key
    */
-  remove: function(key){
-    var me = this,
+  remove(key){
+    const me = this,
       index = me.indexMap[key];
 
     me.items.splice(index, 1);
@@ -1648,8 +1635,8 @@ Fancy.Collection.prototype = {
 
     me.updateIndexMap();
   },
-  updateIndexMap: function(){
-    var me = this,
+  updateIndexMap(){
+    let me = this,
       i = 0,
       iL = me.keys.length;
 
@@ -1662,8 +1649,8 @@ Fancy.Collection.prototype = {
   /*
    *
    */
-  removeAll: function(){
-    var me = this;
+  removeAll(){
+    const me = this;
 
     me.items = [];
     me.keys = [];
@@ -1675,15 +1662,15 @@ Fancy.Collection.prototype = {
    * @param {String|Number} key
    * @return {*}
    */
-  get: function(key){
+  get(key){
     return this.map[key];
   },
   /*
    *
    * @param {Function} fn
    */
-  each: function(fn){
-    var me = this,
+  each(fn){
+    let me = this,
       i = 0,
       iL = me.length;
 
@@ -1692,13 +1679,14 @@ Fancy.Collection.prototype = {
     }
   }
 };
+
 /**
  * @class Fancy.Template
  * @constructor
  * @param {Array} html
  */
 Fancy.Template = function(html){
-  var me = this;
+  const me = this;
 
   if(Fancy.isArray(html)){
     me.tpl = html.join('');
@@ -1715,16 +1703,16 @@ Fancy.Template.prototype = {
   /*
    * @param {Array} values
    */
-  getHTML: function(values){
-    return this.compiled(values || {});
+  getHTML(values = {}){
+    return this.compiled(values);
   },
   /*
    * @return {Fancy.Template}
    */
-  compile: function(){
-    var me = this;
+  compile(){
+    const me = this;
 
-      function fn(m, name){
+    function fn(m, name){
         name = "values['" + name + "']";
         return "'+(" + name + " === undefined ? '' : " + name + ")+'";
       }
@@ -1734,6 +1722,7 @@ Fancy.Template.prototype = {
     return me;
   }
 };
+
 Fancy.key = {
   BACKSPACE: 8,
   TAB: 9,
@@ -1831,8 +1820,8 @@ Fancy.Key = {
    * @param {number} c
    * @return {Boolean}
    */
-  isNum: function(c){
-    var key = Fancy.key;
+  isNum(c){
+    const key = Fancy.key;
 
     switch(c){
       case key.ZERO:
@@ -1865,8 +1854,8 @@ Fancy.Key = {
    * @param {Object} w
    * @return {Boolean}
    */
-  isNumControl: function(c, e){
-    var key = Fancy.key;
+  isNumControl(c, e){
+    const key = Fancy.key;
 
     if( Fancy.Key.isNum(c) ){
       return true;
@@ -1904,268 +1893,269 @@ Fancy.Key = {
     }
   }
 };
+
 (function(){
 
-var $classes = {},
-  $types = {};
+  const $classes = {},
+    $types = {};
 
-/**
- * Apply method and properties of Parent prototype to Child prototype
- * @private
- * @param {Object} Child
- * @param {Object} Parent
- */
-var applyIf = function(Child, Parent){
-  for(var p in Parent.prototype){
-    if(Child.prototype[p] === undefined){
-      Child.prototype[p] = Parent.prototype[p];
-    }
-  }
-};
-
-/**
- * @class ClassManager manage all classes, helps to manipulate
- * @private
- * @constructor
- */
-var ClassManager = function(){
-
-  this.waitMixins = {};
-};
-ClassManager.prototype = {
-  items: new Fancy.Collection(),
-  /*
-   * Define class in global scope with it namespace
-   * @param {String} key
+  /**
+   * Apply method and properties of Parent prototype to Child prototype
+   * @private
+   * @param {Object} Child
+   * @param {Object} Parent
    */
-  add: function(key, value){
-    var parts = key.split('.'),
-      i = 1,
-      iL = parts.length - 1;
-    
-    Fancy.ns(key);
-    
-    var ref = Fancy.global[parts[0]];
-    
-    for(;i<iL;i++){
-      ref = ref[parts[i]];
-    }
-    
-    if(parts.length > 1){
-      ref[parts[parts.length - 1]] = value;
-    }
-    else{
-      Fancy.global[parts[0]] = value;
-    }
-    
-    this.items.add(key, value);
-  },
-  /*
-   * Returns class by key
-   * @param {String} key
-   * @return {Object}
-   */
-  get: function(key){
-    return this.items.get(key);
-  },
-  /*
-   * @param {String} whatWait
-   * @param {String} whoWait
-   */
-  waitMixin: function(whatWait, whoWait){
-    var me = this;
-
-    me.waitMixins[whatWait] = me.waitMixins[whatWait] || {
-        waiters: []
-      };
-
-    me.waitMixins[whatWait].waiters.push(whoWait);
-  },
-  /*
-   * @param {String} name
-   * @return {Object}
-   */
-  getMixin: function(name){
-    var parts = name.split('.'),
-      j = 1,
-      jL = parts.length;
-
-    var namespace = Fancy.global[parts[0]];
-
-    if(namespace === undefined){
-      return false;
-    }
-
-    for(;j<jL;j++){
-      namespace = namespace[parts[j]];
-
-      if(namespace === undefined){
-        return false;
+  const applyIf = (Child, Parent) => {
+    for (const p in Parent.prototype) {
+      if (Child.prototype[p] === undefined) {
+        Child.prototype[p] = Parent.prototype[p];
       }
     }
+  };
 
-    return namespace;
-  },
-  /*
-   * @param {String|String} name
-   * @return {Boolean}
+  /**
+   * @class ClassManager manage all classes, helps to manipulate
+   * @private
+   * @constructor
    */
-  has: function(name){
-    if(Fancy.isString(name)){
-      return !!$classes[name];
-    }
-    else if(Fancy.isArray(name)){
-      var exist = false;
-      Fancy.each(name, function(_name){
-        if(Fancy.ClassManager.get(_name)){
-          exist = true;
-        }
-      });
+  const ClassManager = function () {
+    this.waitMixins = {};
+  };
 
-      return exist;
-    }
-  }
-};
+  ClassManager.prototype = {
+    items: new Fancy.Collection(),
+    /*
+     * Define class in global scope with it namespace
+     * @param {String} key
+     */
+    add(key, value){
+      const parts = key.split('.');
 
-/**
- * @class Fancy.ClassManager manages all classes, helps to manipulate
- * @private
- * @singleton
- */
-Fancy.ClassManager = new ClassManager();
+      let i = 1,
+        iL = parts.length - 1;
 
-/*
- * Define class
- * @method
- * @param {String|Array} name
- * @param {Object} config
- */
-Fancy.define = function(name, config){
-  config = config || {};
-  var names = [];
+      Fancy.ns(key);
 
-  if(Fancy.ClassManager.has(name)){
-    Fancy.error('Overwritting class name ' + name );
-  }
-  
-  if( Fancy.isArray(name) ){
-    names = name;
-    name = names[0];
-  }
-  
-  if(config.constructor === Object){
-    if(config.extend === undefined){
-      config.constructor = function(){
-        
-      };
-    }
-    else{
-      config.constructor = function(){
-        this.Super('constructor', arguments);
-      };
-    }
-  }
-  
-  if(config.extend === undefined){
-    $classes[name] = config.constructor;
-  }
-  else{
-    $classes[name] = config.constructor;
-    
-    var extendClass;
-    switch(typeof config.extend){
-      case 'string':
-        extendClass = Fancy.ClassManager.get(config.extend);
-        $classes[name].prototype.$Super = Fancy.ClassManager.get(config.extend);
-        break;
-      case 'function':
-        extendClass = config.extend;
-        $classes[name].prototype.$Super = config.extend;
-        break;
-    }
-    delete config.extend;
-    
-    $classes[name].prototype.Super = function(method, args){
-      var me = this;
-      if( me.$Iam ){
-        me.$Iam = Fancy.ClassManager.get( me.$Iam.prototype.$Super.prototype.$name );
+      let ref = Fancy.global[parts[0]];
+
+      for(;i<iL;i++){
+        ref = ref[parts[i]];
+      }
+
+      if(parts.length > 1){
+        ref[parts[parts.length - 1]] = value;
       }
       else{
-        me.$Iam = Fancy.ClassManager.get( me.$Super.prototype.$name );
+        Fancy.global[parts[0]] = value;
       }
 
-      switch(method){
-        case 'const':
-        case 'constructor':
-          me.$Iam.apply(me, args);
-        break;
-        default:
-          me.$Iam.prototype[method].apply(me, args);
-      }
-      
-      delete me.$Iam;
-    };
-    applyIf($classes[name], extendClass);
-  }
-  
-  $classes[name].prototype.$name = name;
-  
-  if(config.mixins){
-    Fancy.mixin( $classes[name].prototype, config.mixins );
-    delete $classes[name].prototype.mixins;
-  }
+      this.items.add(key, value);
+    },
+    /*
+     * Returns class by key
+     * @param {String} key
+     * @return {Object}
+     */
+    get(key) {
+      return this.items.get(key);
+    },
+    /*
+     * @param {String} whatWait
+     * @param {String} whoWait
+     */
+    waitMixin(whatWait, whoWait){
+      const me = this;
 
-  if(config.plugins !== undefined){
-    if( $classes[name].prototype.$plugins === undefined ){
-      $classes[name].prototype.$plugins = [];
+      me.waitMixins[whatWait] = me.waitMixins[whatWait] || {
+          waiters: []
+        };
+
+      me.waitMixins[whatWait].waiters.push(whoWait);
+    },
+    /*
+     * @param {String} name
+     * @return {Object}
+     */
+    getMixin(name){
+      const parts = name.split('.');
+
+      let  j = 1,
+        jL = parts.length;
+
+      let namespace = Fancy.global[parts[0]];
+
+      if (namespace === undefined) {
+        return false;
+      }
+
+      for(;j<jL;j++){
+        namespace = namespace[parts[j]];
+
+        if(namespace === undefined){
+          return false;
+        }
+      }
+
+      return namespace;
+    },
+    /*
+     * @param {String|String} name
+     * @return {Boolean}
+     */
+    has(name){
+      if (Fancy.isString(name)) {
+        return !!$classes[name];
+      }
+      else if(Fancy.isArray(name)){
+        let exist = false;
+        Fancy.each(name, (_name) => {
+          if (Fancy.ClassManager.get(_name)) {
+            exist = true;
+          }
+        });
+
+        return exist;
+      }
+    }
+  };
+
+  /**
+   * @class Fancy.ClassManager manages all classes, helps to manipulate
+   * @private
+   * @singleton
+   */
+  Fancy.ClassManager = new ClassManager();
+
+  /*
+   * Define class
+   * @method
+   * @param {String|Array} name
+   * @param {Object} config
+   */
+  Fancy.define = (name, config = {}) => {
+    let names = [];
+
+    if (Fancy.ClassManager.has(name)) {
+      Fancy.error(`Overwriting class name ${name}`);
     }
 
-    $classes[name].prototype.$plugins = $classes[name].prototype.$plugins.concat( config.plugins );
-    delete $classes[name].prototype.plugins;
-  }
+    if( Fancy.isArray(name) ){
+      names = name;
+      name = names[0];
+    }
 
-  for(var p in config){
-    $classes[name].prototype[p] = config[p];
-  }
-  
-  var _classRef = $classes[name];
-  
-  if( config.singleton === true ){
-    delete $classes[name];
-    _classRef = new _classRef(config);
-    $classes[name] = _classRef;
-    
-  }
-  
-  if( names.length > 1 ){
-    Fancy.each(names, function(name){
+    if(config.constructor === Object){
+      if(config.extend === undefined){
+        config.constructor = function(){};
+      }
+      else{
+        config.constructor = function(){
+          this.Super('constructor', arguments);
+        };
+      }
+    }
+
+    if (config.extend === undefined) {
+      $classes[name] = config.constructor;
+    }
+    else {
+      $classes[name] = config.constructor;
+
+      var extendClass;
+      switch(typeof config.extend){
+        case 'string':
+          extendClass = Fancy.ClassManager.get(config.extend);
+          $classes[name].prototype.$Super = Fancy.ClassManager.get(config.extend);
+          break;
+        case 'function':
+          extendClass = config.extend;
+          $classes[name].prototype.$Super = config.extend;
+          break;
+      }
+      delete config.extend;
+
+      $classes[name].prototype.Super = function(method, args){
+        const me = this;
+        if( me.$Iam ){
+          me.$Iam = Fancy.ClassManager.get( me.$Iam.prototype.$Super.prototype.$name );
+        }
+        else{
+          me.$Iam = Fancy.ClassManager.get( me.$Super.prototype.$name );
+        }
+
+        switch(method){
+          case 'const':
+          case 'constructor':
+            me.$Iam.apply(me, args);
+          break;
+          default:
+            me.$Iam.prototype[method].apply(me, args);
+        }
+
+        delete me.$Iam;
+      };
+      applyIf($classes[name], extendClass);
+    }
+
+    $classes[name].prototype.$name = name;
+
+    if (config.mixins) {
+      Fancy.mixin( $classes[name].prototype, config.mixins );
+      delete $classes[name].prototype.mixins;
+    }
+
+    if (config.plugins !== undefined) {
+      if( $classes[name].prototype.$plugins === undefined ){
+        $classes[name].prototype.$plugins = [];
+      }
+
+      $classes[name].prototype.$plugins = $classes[name].prototype.$plugins.concat( config.plugins );
+      delete $classes[name].prototype.plugins;
+    }
+
+    for (const p in config) {
+      $classes[name].prototype[p] = config[p];
+    }
+
+    var _classRef = $classes[name];
+
+    if( config.singleton === true ){
+      delete $classes[name];
+      _classRef = new _classRef(config);
+      $classes[name] = _classRef;
+
+    }
+
+    if( names.length > 1 ){
+      Fancy.each(names, (name) => {
+        Fancy.ClassManager.add(name, _classRef);
+      });
+    }
+    else{
       Fancy.ClassManager.add(name, _classRef);
-    });
-  }
-  else{
-    Fancy.ClassManager.add(name, _classRef);
-  }
-  
-  if(config.type){
-    $types[config.type] = _classRef;
-    Fancy.addWidgetType(config.type, _classRef);
-  }
-  else if(config.ptype){
-    $types[config.type] = _classRef;
-    Fancy.addPluginByType(config.ptype, _classRef);
-  }
-};
+    }
 
-/*
- * Returns class by it's type
- * @param {String} type
- * @return {Object}
- */
-Fancy.getClassByType = function(type){
-  return $types[type];
-};
+    if(config.type){
+      $types[config.type] = _classRef;
+      Fancy.addWidgetType(config.type, _classRef);
+    }
+    else if(config.ptype){
+      $types[config.type] = _classRef;
+      Fancy.addPluginByType(config.ptype, _classRef);
+    }
+  };
+
+  /*
+   * Returns class by it's type
+   * @param {String} type
+   * @return {Object}
+   */
+  Fancy.getClassByType = (type) => {
+    return $types[type];
+  };
 
 })();
+
 /**
  * @class Fancy.MixinClass
  * @constructor
@@ -2176,8 +2166,8 @@ Fancy.MixinClass.prototype = {
   /**
    * generate unique id for class
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -2187,16 +2177,17 @@ Fancy.MixinClass.prototype = {
   /*
    * Initialize plugins if they are presented in class
    */
-  initPlugins: function(){
-    var me = this,
-      widget = me,
-      plugin,
+  initPlugins() {
+    const me = this,
+      widget = me;
+
+    let plugin,
       objectPlugin,
       pluginConfig;
 
     me.plugins = me.plugins || [];
 
-    if(me._plugins){
+    if (me._plugins) {
       me.plugins = me.plugins.concat(me._plugins);
     }
 
@@ -2219,16 +2210,16 @@ Fancy.MixinClass.prototype = {
       pluginConfig = plugins[i];
       pluginConfig.widget = widget;
 
-      var type = pluginConfig.type || pluginConfig.ptype;
+      const type = pluginConfig.type || pluginConfig.ptype;
 
-      if(types[type] === true){
+      if (types[type] === true) {
         continue;
       }
 
       types[type] = true;
       plugin = Fancy.getPluginByType( type );
       if(plugin === undefined){
-        throw new Error('[FancyGrid Error] - some of module was not loaded. Grid plugin does not exist - ' + type);
+        throw new Error(`[FancyGrid Error] - some of module was not loaded. Grid plugin does not exist - ${type}`);
       }
       objectPlugin = new plugin(pluginConfig);
       inWidgetName = pluginConfig.inWidgetName || objectPlugin.inWidgetName;
@@ -2239,6 +2230,7 @@ Fancy.MixinClass.prototype = {
     }
   }
 };
+
 /*
  * @class Fancy.Data
  */
@@ -2248,7 +2240,7 @@ Fancy.define('Fancy.Data', {
    * @param {Array} data
    */
   constructor: function(data){
-    var me = this;
+    const me = this;
 
     me.map = {};
 
@@ -2268,7 +2260,7 @@ Fancy.define('Fancy.Data', {
    * @param {String|Number} key
    * @param {*} value
    */
-  add: function(key, value){
+  add(key, value){
     this.map[key] = value;
     this.length++;
   },
@@ -2276,10 +2268,11 @@ Fancy.define('Fancy.Data', {
    * @param {String|Number} key
    * @return {*}
    */
-  get: function(key){
+  get(key){
     return this.map[key];
   }
 });
+
 /*
  * @class Fancy.Model
  */
@@ -2371,8 +2364,8 @@ Fancy.define('Fancy.Model', {
    * @param {String} key
    * @return {Object}
    */
-  get: function(key){
-    var me = this;
+  get(key){
+    const me = this;
 
     if(key === undefined){
       return me.data;
@@ -2384,11 +2377,11 @@ Fancy.define('Fancy.Model', {
    * @param {String} key
    * @param {*} value
    */
-  set: function(key, value){
-    var me = this;
+  set(key, value){
+    const me = this;
 
     if(value === undefined && Fancy.isObject(key)){
-      for(var p in key){
+      for(const p in key){
         me.set(p, key[p]);
       }
       return;
@@ -2397,6 +2390,7 @@ Fancy.define('Fancy.Model', {
     me.data[key] = value;
   }
 });
+
 /*
  * @class Fancy.PluginManager
  * @singleton
@@ -2413,14 +2407,14 @@ Fancy.define('Fancy.PluginManager', {
    * @param {String} ptype
    * @param {Object} plugin
    */
-  addPlugin: function(ptype, plugin){
+  addPlugin(ptype, plugin){
     this.ptypes.add(ptype, plugin);
   },
   /*
    * @param {String} ptype
    * @return {Object}
    */
-  getPlugin: function(ptype){
+  getPlugin(ptype){
     return this.ptypes.get(ptype);
   }
 });
@@ -2429,7 +2423,7 @@ Fancy.define('Fancy.PluginManager', {
  * @param {String} ptype
  * @param {Object} plugin
  */
-Fancy.addPluginByType = function(ptype, plugin){
+Fancy.addPluginByType = (ptype, plugin) => {
   Fancy.PluginManager.addPlugin(ptype, plugin);
 };
 
@@ -2437,16 +2431,17 @@ Fancy.addPluginByType = function(ptype, plugin){
  * @param {String} ptype
  * @return {Object}
  */
-Fancy.getPluginByType = function(ptype){
+Fancy.getPluginByType = (ptype) => {
   return Fancy.PluginManager.getPlugin(ptype);
 };
+
 /*
  * @class Fancy.WidgetManager
  * @singleton
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.WidgetManager', {
     singleton: true,
@@ -2461,7 +2456,7 @@ Fancy.getPluginByType = function(ptype){
      * @param {String} wtype
      * @param {Object} widget
      */
-    addWidgetType: function(wtype, widget){
+    addWidgetType(wtype, widget){
       widget.prototype.wtype = wtype;
       this.wtypes.add(wtype, widget);
     },
@@ -2469,32 +2464,32 @@ Fancy.getPluginByType = function(ptype){
      * @param {String} wtype
      * @return {Object}
      */
-    getWidgetClassByType: function(wtype){
+    getWidgetClassByType(wtype){
       return this.wtypes.get(wtype);
     },
     /*
      * @param {String} id
      * @param {Object} widget
      */
-    addWidget: function(id, widget){
+    addWidget(id, widget){
       this.widgets.add(id, widget);
     },
     /*
      * @param {String} id
      * @return {Object}
      */
-    getWidget: function(id){
+    getWidget(id){
       return this.widgets.get(id);
     }
   });
 
-  var W = F.WidgetManager;
+  const W = F.WidgetManager;
 
   /*
    * @param {String} wtype
    * @param {Object} widget
    */
-  F.addWidgetType = function(wtype, widget){
+  F.addWidgetType = (wtype, widget) => {
     W.addWidgetType(wtype, widget);
   };
 
@@ -2502,7 +2497,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} wtype
    * @return {Object}
    */
-  F.getWidgetClassByType = function(wtype){
+  F.getWidgetClassByType = (wtype) => {
     return W.getWidgetClassByType(wtype);
   };
 
@@ -2510,7 +2505,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} id
    * @param {Object} widget
    */
-  F.addWidget = function(id, widget){
+  F.addWidget = (id, widget) => {
     W.addWidget(id, widget);
   };
 
@@ -2518,7 +2513,7 @@ Fancy.getPluginByType = function(ptype){
    * @param {String} id
    * @return {Object} widget
    */
-  F.getWidget = function(id){
+  F.getWidget = (id) => {
     return W.getWidget(id);
   };
 
@@ -2527,7 +2522,7 @@ Fancy.getPluginByType = function(ptype){
    * @return {Object} widget
    * F.getWidget was duplicated over F.getGrid and F.getForm for TypeScript typization.
    */
-  F.getGrid = function(id){
+  F.getGrid = (id) => {
     return W.getWidget(id);
   };
 
@@ -2536,18 +2531,19 @@ Fancy.getPluginByType = function(ptype){
    * @return {Object} widget
    * F.getWidget was duplicated over F.getGrid and F.getForm for TypeScript typization.
    */
-  F.getForm = function(id){
+  F.getForm = (id) => {
     return W.getWidget(id);
   };
 
 })();
-(function(){
-var seedFn = 0,
-  fns = {};
 
-/*
- * @class Fancy.Event
- */
+(function(){
+  let seedFn = 0,
+    fns = {};
+
+  /*
+   * @class Fancy.Event
+   */
 Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
   mixins: [
     Fancy.MixinClass
@@ -2556,10 +2552,10 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @constructor
    * @param {Object} config
    */
-  constructor: function(config){
-    var me = this;
+  constructor: function(config = {}){
+    const me = this;
 
-    Fancy.applyConfig(me, config || {});
+    Fancy.applyConfig(me, config);
 
     me.$events = {};
     if(me.listeners || me.events){
@@ -2627,13 +2623,13 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {Object} scope
    * @param {Object} params
    */
-  on: function(eventName, fn, scope, params, delay){
-    if( this.$events[eventName] === undefined ){
-      throw new Error('[FancyGrid Error] - Event name is not set: ' + eventName);
+  on(eventName, fn, scope, params = [], delay){
+    if (this.$events[eventName] === undefined) {
+      throw new Error(`[FancyGrid Error] - Event name is not set: ${eventName}`);
     }
 
-    if(fn === undefined){
-      throw new Error('[FancyGrid Error] - Handler is undefined. Name of event is ' + eventName + '.');
+    if (fn === undefined) {
+      throw new Error(`[FancyGrid Error] - Handler is undefined. Name of event is ${eventName}.`);
     }
 
     fn.$fancyFnSeed = seedFn;
@@ -2643,7 +2639,7 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     this.$events[eventName].push({
       fn:fn,
       scope: scope,
-      params: params || [],
+      params: params,
       delay: delay
     });
   },
@@ -2651,19 +2647,19 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {String} eventName
    * @param {Function} fn
    */
-  un: function(eventName, fn){
-    var me = this,
+  un(eventName, fn){
+    const me = this,
       $events = me.$events[eventName];
 
     if(!$events){
       return false;
     }
 
-    var i = 0,
+    let i = 0,
       iL = $events.length;
 
     for(;i<iL;i++){
-      var lis = $events[i];
+      const lis = $events[i];
       if(lis.fn.$fancyFnSeed === fn.$fancyFnSeed){
         lis.toRemove = true;
         return true;
@@ -2676,9 +2672,9 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {Function} fn
    * @param {Object} scope
    */
-  once: function(eventName, fn, scope){
-    var me = this,
-      fnWrapper = function(){
+  once(eventName, fn, scope){
+    const me = this,
+      fnWrapper = function () {
         fn.apply(this, arguments);
         me.un(eventName, fnWrapper);
       };
@@ -2688,20 +2684,20 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
   /*
    *
    */
-  unAll: function(){
+  unAll(){
     this.$events = {};
   },
   /*
    * @param {String} eventName
    */
-  unAllByType: function(eventName){
+  unAllByType(eventName){
     this.$events[eventName] = [];
   },
   /*
    * @param {String} eventName
    */
-  fire: function(eventName){
-    var me = this,
+  fire(eventName){
+    const me = this,
       $events = me.$events[eventName];
 
     if(!$events){
@@ -2751,15 +2747,15 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {String} eventName
    * @return {Array}
    */
-  addEvent: function(eventName){
+  addEvent(eventName){
     return this.addEvents(eventName);
   },
   /*
    * @param {String...} eventName
    * @return {Array}
    */
-  addEvents: function(eventName){
-    var me = this;
+  addEvents(eventName){
+    const me = this;
 
     if(arguments.length > 1){
       var tempEventName = [],
@@ -2787,8 +2783,8 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
    * @param {String} eventName
    * @return {Boolean}
    */
-  has: function(eventName){
-    var lis = this.$events[eventName];
+  has(eventName){
+    const lis = this.$events[eventName];
     if(!lis){
       return false;
     }
@@ -2814,12 +2810,13 @@ Fancy.define(['Fancy.Event', 'Fancy.Observable'], {
     /*
      *
      */
-    init: function(){
+    init(){
       this.addEvents('loaded');
     }
   });
 
 })();
+
 /*
  * @mixin Fancy.store.mixin.Edit
  */
@@ -2830,7 +2827,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} o
    * @param {Boolean} [fire]
    */
-  remove: function(o, fire){
+  remove(o, fire){
     var me = this,
       w = me.widget,
       id = o.id,
@@ -2838,7 +2835,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       orderIndex,
       itemData;
 
-    switch (Fancy.typeOf(o)){
+    switch (Fancy.typeOf(o)) {
       case 'string':
       case 'number':
         id = o;
@@ -2911,7 +2908,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
     }
 
 
-    if (me.paging){
+    if (me.paging) {
       orderIndex += me.showPage * me.pageSize;
     }
 
@@ -2945,9 +2942,9 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    * @param {Number} index
    */
-  removeAt: function(index){
+  removeAt(index){
     //NOT FINISHED!!!
-    var me = this;
+    const me = this;
 
     me.remove({
       rowIndex: index,
@@ -2957,8 +2954,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
   /*
    *
    */
-  removeAll: function(){
-    var me = this;
+  removeAll(){
+    const me = this;
 
     me.data = [];
     me.dataView = [];
@@ -2969,7 +2966,7 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       me.calcPages();
     }
 
-    if(me.filters){
+    if (me.filters) {
       delete me.filters;
       delete me.filteredData;
       delete me.filterOrder;
@@ -2979,8 +2976,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} o
    * @return {Fancy.Model}
    */
-  add: function(o){
-    var me = this;
+  add(o) {
+    const me = this;
 
     return me.insert(me.getTotal(), o);
   },
@@ -2990,10 +2987,10 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Boolean} [fire]
    * @return {Fancy.Model}
    */
-  insert: function(index, o, fire){
-    var me = this;
+  insert(index, o, fire){
+    const me = this;
 
-    Fancy.each(me.fields, function(field){
+    Fancy.each(me.fields, field => {
       if(o[field] === undefined){
         o[field] = '';
       }
@@ -3007,22 +3004,22 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
 
     me.addIndex = index;
 
-    if(o.id === undefined){
+    if (o.id === undefined) {
       Fancy.idSeed++;
-      var id = Fancy.idSeed + 1000;
-      if(me.proxyType === 'server'){
-        o.id = 'Temp-' + id;
+      const id = Fancy.idSeed + 1000;
+      if (me.proxyType === 'server') {
+        o.id = `Temp-${id}`;
       }
       else {
         o.id = id;
       }
     }
 
-    if(me.getById(o.id)){
+    if (me.getById(o.id)) {
       me.remove(o.id, fire);
     }
 
-    if(me.widget.isGroupable()){
+    if (me.widget.isGroupable()) {
       clearTimeout(this.timeOutGroupDataOrder);
 
       this.timeOutGroupDataOrder = setTimeout(function(){
@@ -3030,13 +3027,13 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
       });
     }
 
-    if(me.proxyType === 'server' && me.autoSave && me.proxy.api.create){
-      if(fire !== false){
+    if (me.proxyType === 'server' && me.autoSave && me.proxy.api.create) {
+      if (fire !== false) {
         me.once('create', me.onCreate, me);
         me.proxyCRUD('CREATE', o);
       }
     }
-    else{
+    else {
       return me.insertItem(o, index, fire);
     }
   },
@@ -3046,8 +3043,8 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Boolean} fire
    * @return {Fancy.Model}
    */
-  insertItem: function(o, index, fire){
-    var me = this,
+  insertItem(o, index, fire){
+    const me = this,
       model = me.model,
       item = new model(o);
 
@@ -3080,10 +3077,11 @@ Fancy.Mixin('Fancy.store.mixin.Edit', {
    * @param {Object} store
    * @param {Object} o
    */
-  onCreate: function(store, o){
+  onCreate(store, o) {
     return this.insertItem(o);
   }
 });
+
 /*
  * @mixin Fancy.store.mixin.Dirty
  */
@@ -3091,8 +3089,8 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  initTrackDirty: function(){
-    var me = this;
+  initTrackDirty(){
+    const me = this;
 
     me.changed = {
       length: 0
@@ -3116,15 +3114,15 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtySet: function(store, o){
-    var me = this,
+  onDirtySet(store, o){
+    const me = this,
       id = o.id;
 
-    if(o.key === '$selected'){
+    if (o.key === '$selected') {
       return;
     }
 
-    if(me.changed[id] === undefined){
+    if (me.changed[id] === undefined) {
       me.changed[id] = {
         length: 1
       };
@@ -3134,7 +3132,7 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       me.changed[id].length++;
     }
 
-    if(me.changed[id][o.key] === undefined){
+    if (me.changed[id][o.key] === undefined) {
       me.changed[id][o.key] = {
         originValue: o.oldValue
       };
@@ -3180,13 +3178,13 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtyRemove: function(store, id, record, rowIndex){
-    var me = this;
+  onDirtyRemove(store, id, record, rowIndex){
+    const me = this;
 
     me.removed[id] = record.data;
     me.removed.length++;
 
-    if(me.undoStoppped !== true){
+    if (me.undoStoppped !== true) {
       if(!me.redoing){
         me.redoActions = [];
       }
@@ -3201,17 +3199,17 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    *
    */
-  onDirtyInsert: function(store, o){
-    var me = this;
+  onDirtyInsert(store, o){
+    const me = this;
 
-    if(me.treeExpanding){
+    if (me.treeExpanding) {
       return;
     }
 
     me.inserted[o.id] = o;
     me.inserted.length++;
 
-    if(me.undoStoppped !== true){
+    if (me.undoStoppped !== true) {
       if(!me.redoing){
         me.redoActions = [];
       }
@@ -3222,8 +3220,8 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
       });
     }
   },
-  clearDirty: function(){
-    var me = this;
+  clearDirty() {
+    const me = this;
 
     me.changed = {
       length: 0
@@ -3243,25 +3241,26 @@ Fancy.Mixin('Fancy.store.mixin.Dirty', {
   /*
    * @return {Boolean}
    */
-  isDirty: function(){
+  isDirty(){
     var me = this,
       dirty = false;
 
-    if(me.changed.length){
+    if (me.changed.length) {
       dirty = true;
     }
 
-    if(me.removed.length){
+    if (me.removed.length) {
       dirty = true;
     }
 
-    if(me.inserted.length){
+    if (me.inserted.length) {
       dirty = true;
     }
 
     return dirty;
   }
 });
+
 /*
  * @class Fancy.Store
  */
@@ -3323,8 +3322,8 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents(
       'add', 'change', 'changepages', 'set',
@@ -3358,7 +3357,7 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  setModel: function(){
+  setModel(){
     var me = this,
       model = me.model;
 
@@ -3378,7 +3377,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {Array} data
    */
-  setData: function(data){
+  setData(data){
     var me = this,
       i = 0,
       iL = data.length,
@@ -3438,10 +3437,10 @@ Fancy.define('Fancy.Store', {
     }
 
     if(me.isTree){
-      Fancy.each(me.data, function(item){
+      Fancy.each(me.data, item => {
         if(item.get('expanded')){
           Fancy.each(item.data.child, function(_child,_i){
-            var childItem = me.getById(_child.id);
+            const childItem = me.getById(_child.id);
 
             item.data.child[_i] = childItem;
           });
@@ -3453,7 +3452,7 @@ Fancy.define('Fancy.Store', {
    * @param {Number} rowIndex
    * @return {Fancy.Model}
    */
-  getItem: function(rowIndex){
+  getItem(rowIndex){
     var me = this,
       item = me.dataView[rowIndex];
 
@@ -3473,15 +3472,15 @@ Fancy.define('Fancy.Store', {
    * @param {String|Number} key
    * @param {Boolean} origin
    */
-  get: function(rowIndex, key, origin){
-    var me = this,
+  get(rowIndex, key, origin){
+    let me = this,
       data;
 
     if(rowIndex === undefined){
       return me.data;
     }
 
-    var item = me.dataView[rowIndex];
+    let item = me.dataView[rowIndex];
 
     if(!item){
       if(me.order){
@@ -3538,7 +3537,7 @@ Fancy.define('Fancy.Store', {
    * @param {Number} rowIndex
    * @return {String|Number}
    */
-  getId: function(rowIndex){
+  getId(rowIndex){
     if(!this.dataView[rowIndex]){
       return '';
     }
@@ -3549,7 +3548,7 @@ Fancy.define('Fancy.Store', {
    * @param {Number} id
    * @return {Fancy.Model}
    */
-  getRow: function(id){
+  getRow(id){
     return this.dataViewMap[id];
   },
   /*
@@ -3558,7 +3557,7 @@ Fancy.define('Fancy.Store', {
    * @param {String|Number} value
    * @param {String|Number} [id]
    */
-  set: function(rowIndex, key, value, id){
+  set(rowIndex, key, value, id){
     var me = this,
       w = me.widget,
       item,
@@ -3582,10 +3581,10 @@ Fancy.define('Fancy.Store', {
 
     if(!me._stopSaving){
       w.fire('beforesaving', {
-        rowIndex: rowIndex,
-        key: key,
-        value: value,
-        id: id,
+        rowIndex,
+        key,
+        value,
+        id,
         saving: function(){
           me._set(rowIndex, key, value, id);
         }
@@ -3594,7 +3593,7 @@ Fancy.define('Fancy.Store', {
 
     if(me.stopSaving){
       me._stopSaving = true;
-      setTimeout(function(){
+      setTimeout(() => {
         delete me.stopSaving;
         delete me._stopSaving;
       });
@@ -3610,7 +3609,7 @@ Fancy.define('Fancy.Store', {
    * @param {String|Number} value
    * @param {String|Number} [id]
    */
-  _set: function(rowIndex, key, value, id){
+  _set(rowIndex, key, value, id){
     var me = this,
       item,
       oldValue,
@@ -3629,14 +3628,14 @@ Fancy.define('Fancy.Store', {
     }
 
     if(value === undefined){
-      var data = key;
+      const data = key;
 
-      for(var p in data){
+      for(const p in data){
         if(p === 'id'){
           continue;
         }
 
-        var _data;
+        let _data;
 
         if(rowIndex + infiniteScrolledToRow === -1){
           oldValue = item.get(p);
@@ -3652,14 +3651,14 @@ Fancy.define('Fancy.Store', {
         }
 
         me.fire('set', {
-          id: id,
+          id,
           data: _data,
-          rowIndex: rowIndex,
+          rowIndex,
           infiniteRowIndex: rowIndex + infiniteScrolledToRow,
           key: p,
           value: data[p],
-          oldValue: oldValue,
-          item: item
+          oldValue,
+          item
         });
       }
 
@@ -3691,7 +3690,7 @@ Fancy.define('Fancy.Store', {
         //TODO: it is bad about perfomance, it needs to redo.
         var parentItem = me.getById(_item.data.parentId);
 
-        Fancy.each(parentItem.data.child, function(child){
+        Fancy.each(parentItem.data.child, child =>{
           if(child.id === _item.id){
             child[key] = value;
           }
@@ -3715,22 +3714,22 @@ Fancy.define('Fancy.Store', {
     }
 
     me.fire('set', {
-      id: id,
+      id,
       data: _data,
-      rowIndex: rowIndex,
+      rowIndex,
       infiniteRowIndex: rowIndex + infiniteScrolledToRow,
-      key: key,
-      value: value,
-      oldValue: oldValue,
-      item: item
+      key,
+      value,
+      oldValue,
+      item
     });
   },
   /*
    * @param {Number} rowIndex
    * @param {Object} data
    */
-  setItemData: function(rowIndex, data){
-    var me = this,
+  setItemData(rowIndex, data){
+    const me = this,
       pastData = me.get(rowIndex);
 
     if(me.infinite){
@@ -3741,7 +3740,7 @@ Fancy.define('Fancy.Store', {
       me.set(rowIndex, data);
     }
     else {
-      for (var p in data){
+      for (const p in data) {
         if (pastData[p] == data[p]){
           continue;
         }
@@ -3753,11 +3752,11 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Number}
    */
-  getLength: function(){
-    var me = this,
+  getLength(){
+    let me = this,
       length = me.dataView.length;
 
-    if(me.infinite){
+    if (me.infinite) {
       if(length > me.infiniteDisplayedRows){
         length = me.infiniteDisplayedRows;
       }
@@ -3768,10 +3767,10 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Number}
    */
-  getTotal: function(){
-    var me = this;
+  getTotal(){
+    const me = this;
 
-    if(me.pageType === 'server'){
+    if (me.pageType === 'server') {
       return me.totalCount;
     }
 
@@ -3792,8 +3791,8 @@ Fancy.define('Fancy.Store', {
    * @param {Object} data
    * @param {Boolean} force
    */
-  defineModel: function(data, force){
-    var me = this,
+  defineModel(data, force){
+    const me = this,
       s = me.store;
 
     if(me.model && me.fields && me.fields.length !== 0 && !force){
@@ -3818,14 +3817,14 @@ Fancy.define('Fancy.Store', {
    * @param {Object} data
    * @return {Array}
    */
-  getFieldsFromData: function(data){
-    var items = data.items || data;
+  getFieldsFromData(data){
+    const items = data.items || data;
 
-    if( data.fields){
+    if (data.fields) {
       return data.fields;
     }
 
-    if( !items ){
+    if (!items) {
       throw new Error('[FancyGrid Error] - not set fields of data');
     }
 
@@ -3836,7 +3835,7 @@ Fancy.define('Fancy.Store', {
       itemZero = items;
     }
 
-    for(var p in itemZero){
+    for(const p in itemZero){
       fields.push(p);
     }
 
@@ -3847,11 +3846,10 @@ Fancy.define('Fancy.Store', {
    * @param {Object} options
    * @return {Array}
    */
-  getColumnOriginalValues: function(key, options){
+  getColumnOriginalValues(key, options = {}){
     var me = this,
       i = 0,
       values = [],
-      options = options || {},
       dataProperty = options.dataProperty || 'data',
       data = me[dataProperty],
       iL = data.length,
@@ -3941,8 +3939,8 @@ Fancy.define('Fancy.Store', {
 
     return values;
   },
-  getNestedValue: function(data, key){
-    var splitted = key.split('.');
+  getNestedValue(data, key){
+    const splitted = key.split('.');
 
     if(splitted.length > 1){
       return this.getNestedValue(data[splitted.shift(0, 1)], splitted.join('.'));
@@ -3953,9 +3951,8 @@ Fancy.define('Fancy.Store', {
   /*
    * @param {Object} [o]
    */
-  changeDataView: function(o){
+  changeDataView(o = {}){
     var me = this,
-      o = o || {},
       groupBy,
       dataView = [],
       dataViewMap = {},
@@ -4004,7 +4001,7 @@ Fancy.define('Fancy.Store', {
       iL = i + me.pageSize;
     }
 
-    var totalCount = me.getTotal();
+    const totalCount = me.getTotal();
 
     if(iL > me.data.length){
       iL = me.data.length;
@@ -4018,7 +4015,7 @@ Fancy.define('Fancy.Store', {
       iL = 0;
     }
 
-    var item;
+    let item;
 
     if(me.order){
       if(me.grouping){
@@ -4093,7 +4090,7 @@ Fancy.define('Fancy.Store', {
    * @param {Function} fn
    * @return {Array}
    */
-  getColumnData: function(key, fn){
+  getColumnData(key, fn){
     var me = this,
       i = 0,
       iL = me.data.length,
@@ -4117,7 +4114,7 @@ Fancy.define('Fancy.Store', {
    * @param {Function} fn
    * @return {Array}
    */
-  getColumnUniqueData: function(key){
+  getColumnUniqueData(key){
     var me = this,
       i = 0,
       iL = me.data.length,
@@ -4142,7 +4139,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Array}
    */
-  getData: function(){
+  getData(){
     var me = this,
       i = 0,
       iL = me.data.length,
@@ -4157,7 +4154,7 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Array}
    */
-  getDataView: function(){
+  getDataView(){
     var me = this,
       i = 0,
       iL = me.dataView.length,
@@ -4173,16 +4170,14 @@ Fancy.define('Fancy.Store', {
    * @param {String} id
    * @return {Fancy.Model}
    */
-  getById: function(id){
-    var me = this;
-
-    return me.map[id];
+  getById(id){
+    return this.map[id];
   },
   /*
    * @param {String} id
    * @param {String} newId
    */
-  changeItemId: function(id, newId){
+  changeItemId(id, newId){
     var me = this,
       item = me.getById(id);
 
@@ -4205,7 +4200,7 @@ Fancy.define('Fancy.Store', {
    * @param {Boolean} [complex]
    * @return {Array}
    */
-  find: function(key, value, complex){
+  find(key, value, complex){
     var me = this,
       dataView = me.dataView,
       i = 0,
@@ -4245,7 +4240,7 @@ Fancy.define('Fancy.Store', {
    * @param {*} value
    * @return {Array}
    */
-  findItem: function(key, value){
+  findItem(key, value){
     var me = this,
       data = me.data,
       i = 0,
@@ -4267,7 +4262,7 @@ Fancy.define('Fancy.Store', {
    * @param {String} id
    * @return {Array}
    */
-  getDataIndex: function(id){
+  getDataIndex(id){
     var me = this,
       data = me.data,
       i = 0,
@@ -4289,7 +4284,7 @@ Fancy.define('Fancy.Store', {
    * @param {Function} fn
    * @param {Object} scope
    */
-  each: function(fn, scope){
+  each(fn, scope){
     var me = this,
       dataView = me.dataView,
       i = 0,
@@ -4309,13 +4304,13 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  readSmartIndexes: function(){
+  readSmartIndexes(){
     var me = this,
       w = me.widget,
       numOfSmartIndexes = 0,
       smartIndexes = {};
 
-    Fancy.each(w.columns, function(column){
+    Fancy.each(w.columns, column => {
       if(column.smartIndexFn){
         smartIndexes[column.index] = column.smartIndexFn;
         numOfSmartIndexes++;
@@ -4326,10 +4321,10 @@ Fancy.define('Fancy.Store', {
       me.smartIndexes = smartIndexes;
     }
   },
-  destroy: function(){
-    var me = this;
+  destroy(){
+    const me = this;
 
-    Fancy.each(me.data, function(item){
+    Fancy.each(me.data, item => {
       delete item.data;
       delete item.id;
     });
@@ -4343,21 +4338,19 @@ Fancy.define('Fancy.Store', {
   /*
    *
    */
-  addField: function(index){
+  addField(index){
     var me = this,
       fields = me.fields,
       presented = false;
 
     if(Fancy.isArray(index)){
-      Fancy.Array.each(index, function(_index){
-        me.addField(_index);
-      });
+      Fancy.Array.each(index, _index => me.addField(_index));
 
       return;
     }
 
-    Fancy.each(fields, function(field){
-      if(field === index){
+    Fancy.each(fields, field =>{
+      if (field === index) {
         presented = true;
         return true;
       }
@@ -4370,15 +4363,15 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Boolean}
    */
-  isFiltered: function(){
-    var me = this,
+  isFiltered(){
+    const me = this,
       filters = me.filters || {};
 
-    if(me._clearedFilter){
+    if (me._clearedFilter) {
       return true;
     }
 
-    for(var p in filters){
+    for(const p in filters){
       return true;
     }
 
@@ -4387,13 +4380,14 @@ Fancy.define('Fancy.Store', {
   /*
    * @return {Boolean}
    */
-  isSorted: function(){
-    var me = this,
+  isSorted(){
+    const me = this,
       sorters = me.sorters || {};
 
     return !Fancy.Object.isEmpty(sorters);
   }
 });
+
 Fancy.$ = window.$ || window.jQuery;
 Fancy.nojQuery = Fancy.$ === undefined;
 
@@ -4401,8 +4395,8 @@ Fancy.nojQuery = Fancy.$ === undefined;
  * @param {String|Number} id
  * @return {Fancy.Element}
  */
-Fancy.get = function(id){
-  var type = Fancy.typeOf(id);
+Fancy.get = (id) => {
+  const type = Fancy.typeOf(id);
 
   switch(type){
     case 'string':
@@ -4418,12 +4412,12 @@ Fancy.get = function(id){
  * @class Fancy.Element
  */
 Fancy.Element = function(dom){
-  var me = this;
+  const me = this;
 
   me.dom = dom;
   me.$dom = Fancy.$(dom);
 
-  if(dom && dom.id){
+  if (dom && dom.id) {
     me.id = dom.id;
   }
 
@@ -4434,66 +4428,60 @@ Fancy.Element.prototype = {
   /*
    * @return {Fancy.Element}
    */
-  last: function(){
+  last() {
     return Fancy.get(this.$dom);
   },
   /*
    * @param {String} selector
    * @return {Fancy.Element}
    */
-  closest: function(selector){
+  closest(selector) {
     return Fancy.get(this.$dom.closest(selector)[0]);
   },
   /*
    *
    */
-  destroy: function(){
+  destroy(){
     this.$dom.remove();
   },
   /*
    *
    */
-  remove: function(){
+  remove(){
     this.$dom.remove();
   },
   /*
    *
    */
-  finish: function(){
+  finish(){
     this.$dom.finish();
   },
   //Not Used
   /*
    *
    */
-  prev: function(){
+  prev() {
     return Fancy.get(this.$dom.prev()[0]);
   },
   /*
    * @return {Fancy.Element}
    */
-  lastChild: function(){
-    var childs = this.$dom.children();
+  lastChild() {
+    const children = this.$dom.children();
 
-    return Fancy.get(childs[childs.length - 1]);
+    return Fancy.get(children[children.length - 1]);
   },
   /*
    * @return {Fancy.Element}
    */
-  firstChild: function(){
+  firstChild() {
     return Fancy.get(this.$dom.children()[0]);
   },
   /*
    * @return {Array}
    */
-  child: function (){
-    var childs = this.$dom.children();
-
-    Fancy.each(childs, function(child, index){
-      childs[index] = Fancy.get(child);
-    });
-
-    return childs;
+  child() {
+    return this.$dom.children().map(child => Fancy.get(child));
   },
   /*
    * @param {String} eventName
@@ -4501,10 +4489,10 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  on: function(eventName, fn, scope, delegate){
-    var me = this;
+  on(eventName, fn, scope, delegate){
+    const me = this;
 
-    if(scope){
+    if (scope) {
       fn = Fancy.$.proxy(fn, scope);
     }
 
@@ -4540,17 +4528,17 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  once: function(eventName, fn, scope, delegate){
-    var me = this;
+  once(eventName, fn, scope, delegate){
+    const me = this;
 
-    if (scope){
+    if (scope) {
       fn = Fancy.$.proxy(fn, scope);
     }
 
-    if(delegate){
+    if (delegate) {
       me.$dom.one(eventName, delegate, fn);
     }
-    else{
+    else {
       me.$dom.one(eventName, fn);
     }
   },
@@ -4558,7 +4546,7 @@ Fancy.Element.prototype = {
    * @param {String} name
    * @return {String}
    */
-  prop: function(name){
+  prop: function(name) {
     return this.$dom.prop(name);
   },
   /*
@@ -4567,14 +4555,14 @@ Fancy.Element.prototype = {
    * @param {Object} scope
    * @param {String} delegate
    */
-  un: function(eventName, fn, scope, delegate){
-    var me = this;
+  un(eventName, fn, scope, delegate){
+    const me = this;
 
-    if (scope){
+    if (scope) {
       fn = Fancy.$.proxy(fn, scope);
     }
 
-    if(delegate){
+    if (delegate) {
       me.$dom.off(eventName, delegate, fn);
     }
     else{
@@ -4584,20 +4572,20 @@ Fancy.Element.prototype = {
   /*
    *
    */
-  show: function(){
+  show(){
     this.$dom.show();
   },
   /*
    *
    */
-  hide: function(){
+  hide(){
     this.$dom.hide();
   },
   /*
    * @param {String} oldCls
    * @param {String} newCls
    */
-  replaceClass: function(oldCls, newCls){
+  replaceClass(oldCls, newCls){
     this.$dom.removeClass(oldCls);
     this.$dom.addClass(newCls);
   },
@@ -4605,79 +4593,74 @@ Fancy.Element.prototype = {
    * @param {String} tag
    * @return {Fancy.Element}
    */
-  getByTag: function(tag){
+  getByTag(tag) {
     return Fancy.get(this.$dom.find(tag)[0]);
   },
-  getByClass: function(cls){
-    return this.$dom.find('.'+cls)[0];
+  getByClass(cls) {
+    return this.$dom.find(`.${cls}`)[0];
   },
   /*
    * @param {String} cls
    */
-  addClass: function(cls){
+  addClass(cls){
     this.addCls.apply(this, arguments);
   },
   /*
    * @param {String} cls
    */
-  addCls: function(cls){
+  addCls(cls, ...args){
     this.$dom.addClass(cls);
 
-    if(arguments.length > 1){
-      var i = 1,
-        iL = arguments.length;
-
-      for (;i<iL;i++){
-        this.addClass(arguments[i]);
-      }
-    }
+    args.forEach(arg => {
+      this.$dom.addClass(arg);
+    });
   },
   /*
    * @param {String} cls
    */
-  removeClass: function(cls){
+  removeClass(cls){
     this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    */
-  removeCls: function(cls){
+  removeCls(cls){
     this.$dom.removeClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
-  hasClass: function(cls){
+  hasClass(cls) {
     return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    * @return {Boolean}
    */
-  hasCls: function(cls){
+  hasCls(cls) {
     return this.$dom.hasClass(cls);
   },
   /*
    * @param {String} cls
    */
-  toggleClass: function(cls){
+  toggleClass(cls){
     this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} cls
    */
-  toggleCls: function(cls){
+  toggleCls(cls){
     this.$dom.toggleClass(cls);
   },
   /*
    * @param {String} selector
    * @return {Array}
    */
-  select: function(selector){
-    var me = this,
+  select(selector){
+    const me = this,
       founded = me.$dom.find(selector);
-      //founded = me.dom.querySelectorAll(selector);
+    //founded = me.dom.querySelectorAll(selector);
 
     if(founded.length === 1){
       return Fancy.get(founded[0]);
@@ -4689,16 +4672,16 @@ Fancy.Element.prototype = {
       return {
         length: 0,
         dom: undefined,
-        addClass: function(){},
-        addCls: function(){},
-        removeClass: function(){},
-        removeCls: function(){},
-        destroy: function(){},
-        remove: function(){},
-        css: function(){},
-        each: function(){},
-        last: function(){},
-        attr: function(){}
+        addClass: () => {},
+        addCls: () => {},
+        removeClass: () => {},
+        removeCls: () => {},
+        destroy: () => {},
+        remove: () => {},
+        css: () => {},
+        each: () => {},
+        last: () => {},
+        attr: () => {}
       };
     }
 
@@ -4709,8 +4692,8 @@ Fancy.Element.prototype = {
    * @param {String|Number} o2
    * @return {String|Number}
    */
-  css: function(o1, o2){
-    if( o2 === undefined){
+  css(o1, o2){
+    if (o2 === undefined) {
       return this.$dom.css(o1);
     }
     return this.$dom.css(o1, o2);
@@ -4720,8 +4703,8 @@ Fancy.Element.prototype = {
    * @param {String|Number} o2
    * @return {String|Number}
    */
-  attr: function(o1, o2){
-    if( o2 === undefined ){
+  attr(o1, o2){
+    if (o2 === undefined){
       return this.$dom.attr(o1);
     }
     return this.$dom.attr(o1, o2);
@@ -4730,34 +4713,34 @@ Fancy.Element.prototype = {
    * @param {String} html
    * @return {Fancy.Element}
    */
-  append: function(html){
+  append(html) {
     return Fancy.get(this.$dom.append(html)[0]);
   },
-  after: function(html){
+  after(html) {
     return Fancy.get(this.$dom.after(html)[0]);
   },
-  next: function(){
+  next() {
     return Fancy.get(this.$dom.next()[0]);
   },
   /*
    *
    */
-  insertAfter: function(html){
+  insertAfter(html) {
     return Fancy.get(this.$dom.insertAfter(html)[0]);
   },
   /*
    * @param {String} html
    .* @return {Fancy.Element}
    */
-  before: function(html){
+  before(html) {
     return Fancy.get(this.$dom.before(html)[0]);
   },
   /*
    * @param {String|Number} value
    * @return {Number}
    */
-  height: function(value){
-    if(value){
+  height(value){
+    if (value) {
       this.$dom.height(value);
       return this;
     }
@@ -4768,8 +4751,8 @@ Fancy.Element.prototype = {
    * @param {String|Number} value
    * @return {Number}
    */
-  width: function(value){
-    if(value){
+  width(value){
+    if (value) {
       this.$dom.width(value);
       return this;
     }
@@ -4780,57 +4763,57 @@ Fancy.Element.prototype = {
    * @param {String} selector
    * @return {Fancy.Element}
    */
-  parent: function(selector){
+  parent(selector) {
     return Fancy.get(this.$dom.parent(selector)[0]);
   },
   /*
    * @param {String} html
    */
-  update: function(html){
+  update(html){
     this.dom.innerHTML = html;
   },
   /*
    * @param {Function} overFn
    * @param {Function} outFn
    */
-  hover: function(overFn, outFn){
-    if(overFn){
+  hover(overFn, outFn){
+    if (overFn) {
       this.$dom.on('mouseenter', overFn);
     }
 
-    if(overFn){
+    if (overFn) {
       this.$dom.on('mouseleave', outFn);
     }
   },
   /*
    * @return {Object}
    */
-  position: function(){
+  position() {
     return this.$dom.position();
   },
   /*
    * @return {Object}
    */
-  offset: function(){
+  offset() {
     return this.$dom.offset();
   },
   /*
    *
    */
-  focus: function(){
+  focus(){
     this.$dom.focus();
   },
   /*
    *
    */
-  blur: function(){
+  blur(){
     this.$dom.blur();
   },
   /*
    * @param {HTMLElement} child
    * @return {Boolean}
    */
-  within: function(child){
+  within(child){
     var me = this,
       childId,
       isWithin = true,
@@ -4839,22 +4822,22 @@ Fancy.Element.prototype = {
     child = Fancy.get(child);
     childId = child.attr('id');
 
-    if(childId === undefined || childId === ''){
+    if (childId === undefined || childId === '') {
       childId = Fancy.id();
       removeId = true;
     }
 
     child.attr('id', childId);
 
-    if( me.select('#' + childId).length === 0 ){
+    if (me.select(`#${childId}`).length === 0) {
       isWithin = false;
     }
 
-    if(me.dom.id === child.dom.id){
+    if (me.dom.id === child.dom.id) {
       isWithin = true;
     }
 
-    if(removeId){
+    if (removeId) {
       me.removeAttr(childId);
     }
 
@@ -4863,20 +4846,20 @@ Fancy.Element.prototype = {
   /*
    * @param {String} attr
    */
-  removeAttr: function(attr){
+  removeAttr(attr){
     this.$dom.removeAttr(attr);
   },
   /*
    * @return {Fancy.Element}
    */
-  item: function(){
+  item(){
     return this;
   },
   /*
    *
    */
-  stop: function(){
-    if(this.$dom.stop){
+  stop(){
+    if (this.$dom.stop) {
       this.$dom.stop();
     }
   },
@@ -4886,30 +4869,30 @@ Fancy.Element.prototype = {
    * @param {String} easing
    * @param {Function} callback
    */
-  animate: function(style, speed, easing, callback){
+  animate(style, speed, easing, callback){
     var _style = {},
       doAnimating = false,
       force = style.force;
 
-    if(!Fancy.nojQuery){
+    if (!Fancy.nojQuery) {
       doAnimating = true;
       force = true;
     }
 
-    if(Fancy.isObject(style)){
+    if (Fancy.isObject(style)) {
       delete style.force;
     }
 
-    for(var p in style){
-      var newValue = style[p];
+    for(const p in style){
+      let newValue = style[p];
 
-      if(Fancy.isString(newValue)){
+      if (Fancy.isString(newValue)) {
         newValue = Number(newValue.replace('px', ''));
       }
 
-      var oldValue = this.css(p);
+      let oldValue = this.css(p);
 
-      if(Fancy.isString(oldValue)){
+      if (Fancy.isString(oldValue)) {
         oldValue = Number(oldValue.replace('px', ''));
       }
 
@@ -4919,11 +4902,11 @@ Fancy.Element.prototype = {
       }
     }
 
-    if(doAnimating === false){
+    if (doAnimating === false) {
       return;
     }
 
-    if(force){
+    if (force) {
       this.$dom.animate(_style,speed,easing,callback);
     }
     else {
@@ -4933,11 +4916,11 @@ Fancy.Element.prototype = {
   /*
    * @return {Number}
    */
-  index: function(){
+  index() {
     return this.$dom.index();
   },
-  onTouchEnterEvent: function(eventName, fn, scope, delegate){
-    var me = this,
+  onTouchEnterEvent(eventName, fn, scope, delegate){
+    const me = this,
       docEl = Fancy.get(document.body);
 
     if(!Fancy.isTouch){
@@ -4945,7 +4928,7 @@ Fancy.Element.prototype = {
     }
 
     var wrappedFn = function(e, target){
-      var tempId = Fancy.id(),
+      const tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr';
 
       e = e.originalEvent || e;
@@ -5035,7 +5018,7 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
-  onTouchLeaveEvent: function(eventName, fn, scope, delegate){
+  onTouchLeaveEvent(eventName, fn, scope, delegate){
     var me = this,
       docEl = Fancy.get(document.body),
       arr = [];
@@ -5146,7 +5129,7 @@ Fancy.Element.prototype = {
 
     docEl.on('touchmove', wrappedFn);
   },
-  getDelegateTarget: function(delegate, delegates, arr, _i){
+  getDelegateTarget(delegate, delegates, arr, _i){
     var fastGetDelegate = arr[_i - delegate.match(/\./g).length],
       i = 0,
       iL = delegates.length;
@@ -5164,11 +5147,11 @@ Fancy.Element.prototype = {
    * @param {Function} fn
    * @param {Object} [scope]
    */
-  onTouchMove: function(eventName, fn, scope){
-    var me = this,
+  onTouchMove(eventName, fn, scope){
+    const me = this,
       docEl = Fancy.get(document.body);
 
-    if(!Fancy.isTouch){
+    if (!Fancy.isTouch) {
       return;
     }
 
@@ -5217,16 +5200,14 @@ Fancy.Element.prototype = {
   /*
    * @param {Function} fn
    */
-  each: function(fn){
+  each(fn){
     fn(this, 0);
   },
   /*
    *
    */
-  getCls: function(){
-    var classList = this.dom.className.split(/\s+/);
-
-    return classList;
+  getCls() {
+    return this.dom.className.split(/\s+/);
   }
 };
 
@@ -5236,7 +5217,7 @@ Fancy.Element.prototype = {
  * @param {HTMLElement|HTMLElements} dom
  */
 Fancy.Elements = function(dom){
-  var me = this;
+  const me = this;
 
   me.dom = dom;
   me.$dom = dom;
@@ -5244,7 +5225,7 @@ Fancy.Elements = function(dom){
 };
 
 Fancy.Elements.prototype = {
-  attr: function(o1, o2){
+  attr(o1, o2){
     var me = this,
       dom = me.$dom;
 
@@ -5261,13 +5242,13 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  addClass: function(cls){
+  addClass(cls){
     this.addCls.apply(this, arguments);
   },
   /*
    *
    */
-  finish: function(){
+  finish(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5279,7 +5260,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  addCls: function(cls){
+  addCls(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5300,13 +5281,13 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  removeClass: function(cls){
+  removeClass(cls){
     this.removeCls.apply(this, arguments);
   },
   /*
    * @param {String} cls
    */
-  removeCls: function(cls){
+  removeCls(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5318,7 +5299,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {Function} fn
    */
-  hover: function(fn){
+  hover(fn){
     this.$dom.on('mouseenter', fn);
   },
   /*
@@ -5333,7 +5314,7 @@ Fancy.Elements.prototype = {
    * @param {Number} index
    * @return {Fancy.Element}
    */
-  item: function(index){
+  item(index) {
     return Fancy.get(this.$dom[index]);
   },
   /*
@@ -5341,7 +5322,7 @@ Fancy.Elements.prototype = {
    * @param {String|Number} o2
    * @return {String|Number}
    */
-  css: function(o1, o2){
+  css(o1, o2){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5353,7 +5334,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  toggleClass: function(cls){
+  toggleClass(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5365,7 +5346,7 @@ Fancy.Elements.prototype = {
   /*
    * @param {String} cls
    */
-  toggleCls: function(cls){
+  toggleCls(cls){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5377,7 +5358,7 @@ Fancy.Elements.prototype = {
   /*
    *
    */
-  destroy: function(){
+  destroy(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5389,13 +5370,13 @@ Fancy.Elements.prototype = {
   /*
    *
    */
-  remove: function(){
+  remove(){
     this.destroy();
   },
   /*
    *
    */
-  hide: function(){
+  hide(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5407,7 +5388,7 @@ Fancy.Elements.prototype = {
   /*
    *
    */
-  show: function(){
+  show(){
     var me = this,
       i = 0,
       iL = me.length;
@@ -5419,13 +5400,13 @@ Fancy.Elements.prototype = {
   /*
    * @return {Number}
    */
-  index: function(){
+  index(){
     return this.$dom[0].index();
   },
   /*
    * @param {Function} fn
    */
-  each: function(fn){
+  each(fn){
     var me = this,
       i = 0,
       iL = me.length,
@@ -5437,8 +5418,8 @@ Fancy.Elements.prototype = {
       fn(el, i);
     }
   },
-  last: function(){
-    var me = this;
+  last(){
+    const me = this;
 
     return new Fancy.Element(me.$dom[me.length - 1]);
   }
@@ -5447,7 +5428,7 @@ Fancy.Elements.prototype = {
 /*
  * @param {String} selector
  */
-Fancy.select = function(selector){
+Fancy.select = (selector) => {
   return Fancy.get(document.body).select(selector);
 };
 
@@ -5458,7 +5439,7 @@ Fancy.select = function(selector){
 /*
  * @param {Function} fn
  */
-Fancy.onReady = function(fn){
+Fancy.onReady = (fn) => {
   Fancy.$(document).ready(fn);
 };
 
@@ -5475,8 +5456,8 @@ Fancy.onReady = function(fn){
 /*
  * @param {Object} o
  */
-Fancy.Ajax = function(o){
-  var _o = {};
+Fancy.Ajax = (o) => {
+  const _o = {};
 
   if( o.url ){
     _o.url = o.url;
@@ -5520,6 +5501,7 @@ Fancy.Ajax = function(o){
 
   Fancy.$.ajax(_o);
 };
+
 /**
  * English Translations
  */
@@ -5576,7 +5558,7 @@ Fancy.controllers = {};
  * @param {String} name
  * @param {Object} o
  */
-Fancy.defineController = function(name, o){
+Fancy.defineController = (name, o) => {
   Fancy.controllers[name] = o;
 };
 
@@ -5586,11 +5568,12 @@ Fancy.defineControl = Fancy.defineController;
  * @param {String} name
  * @return {Object}
  */
-Fancy.getController = function(name){
+Fancy.getController = (name) => {
   return Fancy.controllers[name];
 };
 
 Fancy.getControl = Fancy.getController;
+
 /**
  * @class Fancy.DD
  * @singleton
@@ -5610,15 +5593,15 @@ Fancy.define('Fancy.DD', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.addEvents();
     this.els = {};
   },
   /*
    * @param {Object} o
    */
-  add: function(o){
-    var me = this,
+  add(o){
+    const me = this,
       id = Fancy.id(o.overEl);
 
     /*
@@ -5635,8 +5618,8 @@ Fancy.define('Fancy.DD', {
   /*
    * @param {Object} e
    */
-  onMouseDown: function(e){
-    var me = this,
+  onMouseDown(e){
+    const me = this,
       doc = Fancy.get(document),
       overEl = Fancy.get(e.currentTarget),
       dragEl = me.els[overEl.attr('id')].dragEl;
@@ -5657,15 +5640,15 @@ Fancy.define('Fancy.DD', {
   /*
    *
    */
-  onMouseUp: function(){
-    var doc = Fancy.get(document);
+  onMouseUp(){
+    const doc = Fancy.get(document);
 
     doc.un('mousemove', this.onMouseMove, this);
   },
   /*
    * @param {Object} e
    */
-  onMouseMove: function(e){
+  onMouseMove(e){
     var me = this,
       activeO = me.els[me.activeId],
       dragEl = activeO.dragEl,
@@ -5676,16 +5659,17 @@ Fancy.define('Fancy.DD', {
       left = me.startX - deltaX,
       top = me.startY - deltaY;
 
-    if(top < 0){
+    if (top < 0) {
       top = 0;
     }
 
     dragEl.css({
-      left: left,
-      top: top
+      left,
+      top
     });
   }
 });
+
 /**
  * @class Fancy.Widget
  * @extends Fancy.Event
@@ -5697,7 +5681,7 @@ Fancy.define('Fancy.Widget', {
    * @param {Object} config
    */
   constructor: function(config){
-    var me = this;
+    const me = this;
 
     Fancy.applyConfig(me, config);
 
@@ -5710,10 +5694,10 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  init: function(){
+  init(){
     //not runned in grid
     //maybe to redo that run
-    var me = this;
+    const me = this;
 
     me.initId();
     me.addEvents(
@@ -5724,11 +5708,11 @@ Fancy.define('Fancy.Widget', {
   /*
    * @param {String|HTMLElement}
    */
-  renderItems: function(renderTo){
-    var me = this;
+  renderItems(renderTo){
+    const me = this;
 
     Fancy.each(me.items, function(item, i){
-      var w = Fancy.getClassByType(item.type);
+      const w = Fancy.getClassByType(item.type);
 
       item.renderTo = renderTo;
       me.items[i] = new w(item);
@@ -5737,11 +5721,11 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  preInitControls: function(){
-    var me = this,
-      controller = me.controller || me.controllers;
+  preInitControls(){
+    const me = this;
+    let controller = me.controller || me.controllers;
 
-    if(controller){
+    if (controller) {
       switch(Fancy.typeOf(controller)){
         case 'string':
           controller = Fancy.getController(controller);
@@ -5781,10 +5765,10 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  initControls: function(){
-    var me = this;
+  initControls(){
+    const me = this;
 
-    if(me.controls === undefined){
+    if (me.controls === undefined) {
       return;
     }
 
@@ -5815,8 +5799,8 @@ Fancy.define('Fancy.Widget', {
       if(selector){
         (function(event, handler, scope, selector){
           if(me.$events[event]){
-            me.on(event, function(grid, o){
-              var target = o.e.target,
+            me.on(event, (grid, o) => {
+              const target = o.e.target,
                 el = Fancy.get(target),
                 parentEl = el.parent(),
                 selectored = parentEl.select(selector);
@@ -5837,9 +5821,7 @@ Fancy.define('Fancy.Widget', {
             }, scope);
           }
           else {
-            me.on('render', function(){
-              me.el.on(event, handler, scope, selector);
-            });
+            me.on('render', () => me.el.on(event, handler, scope, selector));
           }
         })(event, handler, scope, selector);
       }
@@ -5852,61 +5834,61 @@ Fancy.define('Fancy.Widget', {
    * @param {String|Object} o1
    * @param {Number|String} [o2]
    */
-  css: function(o1, o2){
+  css(o1, o2) {
     return this.el.css(o1, o2);
   },
   /*
    * @param {String} value
    */
-  addClass: function(value){
+  addClass(value){
     this.el.addCls(value);
   },
   /*
    * @param {String} value
    */
-  addCls: function(value){
+  addCls(value){
     this.el.addCls(value);
   },
   /*
    * @param {String} value
    */
-  removeClass: function(value){
+  removeClass(value){
     this.el.removeCls(value);
   },
   /*
  * @param {String} value
  */
-  removeCls: function(value){
+  removeCls(value){
     this.el.removeCls(value);
   },
   /*
    * @param {String} value
    */
-  hasClass: function(value){
+  hasClass(value){
     return this.el.hasCls(value);
   },
   /*
    * @param {String} value
    */
-  hasCls: function(value){
+  hasCls(value){
     return this.el.hasCls(value);
   },
   /*
    * @param {String} value
    */
-  toggleClass: function(value){
+  toggleClass(value){
     this.el.toggleCls(value);
   },
   /*
    * @param {String} value
    */
-  toggleCls: function(value){
+  toggleCls(value){
     this.el.toggleCls(value);
   },
   /*
    *
    */
-  destroy: function(){
+  destroy(){
     if(this.el && this.el.dom){
       this.el.destroy();
     }
@@ -5914,34 +5896,35 @@ Fancy.define('Fancy.Widget', {
   /*
    *
    */
-  show: function(){
+  show(){
     this.el.show();
   },
   /*
    *
    */
-  hide: function(){
+  hide(){
     this.el.hide();
   },
   /*
    *
    */
-  isVisible: function(){
+  isVisible(){
     return this.el.css('display') !== 'none';
   },
   /*
    *
    */
-  initTpl: function(){
-    var me = this;
+  initTpl(){
+    const me = this;
 
-    if(!me.tpl){
+    if (!me.tpl) {
       return;
     }
 
     me.tpl = new Fancy.Template(me.tpl);
   }
 });
+
 /*
  * @class Fancy.Plugin
  */
@@ -5957,17 +5940,17 @@ Fancy.define('Fancy.Plugin', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.initId();
     this.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
   },
   /*
    *
    */
-  initTpl: function(){
-    var tpl = this.tpl;
+  initTpl(){
+    const tpl = this.tpl;
 
-    if(!tpl){
+    if (!tpl) {
       return;
     }
 
@@ -5976,22 +5959,22 @@ Fancy.define('Fancy.Plugin', {
 });
 
 (function(){
-  var toggleGroups = {};
+  const toggleGroups = {};
 
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_CLS = F.GRID_CLS;
-  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
-  var BUTTON_CLS = F.BUTTON_CLS;
-  var BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
-  var BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
-  var BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
-  var BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
-  var BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
-  var BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
-  var BUTTON_MENU_CLS = F.BUTTON_MENU_CLS;
+  const GRID_CLS = F.GRID_CLS;
+  const PANEL_BODY_CLS = F.PANEL_BODY_CLS;
+  const BUTTON_CLS = F.BUTTON_CLS;
+  const BUTTON_DISABLED_CLS = F.BUTTON_DISABLED_CLS;
+  const BUTTON_PRESSED_CLS = F.BUTTON_PRESSED_CLS;
+  const BUTTON_IMAGE_CLS = F.BUTTON_IMAGE_CLS;
+  const BUTTON_IMAGE_COLOR_CLS = F.BUTTON_IMAGE_COLOR_CLS;
+  const BUTTON_TEXT_CLS = F.BUTTON_TEXT_CLS;
+  const BUTTON_DROP_CLS = F.BUTTON_DROP_CLS;
+  const BUTTON_MENU_CLS = F.BUTTON_MENU_CLS;
 
   /**
    * @class Fancy.Button
@@ -6006,9 +5989,9 @@ Fancy.define('Fancy.Plugin', {
      * @param {Object} scope
      */
     constructor: function(config, scope){
-      var me = this;
+      const me = this;
 
-      if (config.toggleGroup){
+      if (config.toggleGroup) {
         toggleGroups[config.toggleGroup] = toggleGroups[config.toggleGroup] || {
             active: false,
             items: []
@@ -6024,8 +6007,8 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'pressedchange', 'init-menu');
       me.Super('init', arguments);
@@ -6039,8 +6022,8 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    setOns: function(){
-      var me = this,
+    setOns(){
+      const me = this,
         el = me.el;
 
       el.on('click', me.onClick, me);
@@ -6049,7 +6032,7 @@ Fancy.define('Fancy.Plugin', {
       el.on('mouseover', me.onMouseOver, me);
       el.on('mouseout', me.onMouseOut, me);
 
-      if(me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
@@ -6077,18 +6060,18 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo,
         el = F.get(document.createElement('div')),
         width = 0,
         charWidth = 7;
 
-      if(me.theme && Fancy.themes[me.theme]){
+      if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
-      switch (me.i18n){
+      switch (me.i18n) {
         case 'zh-CN':
         case 'zh-TW':
         case 'ja':
@@ -6099,13 +6082,13 @@ Fancy.define('Fancy.Plugin', {
 
       me.fire('beforerender');
 
-      if( me.wrapper ){
+      if (me.wrapper) {
         me.renderWrapper();
       }
 
       renderTo = F.get(me.renderTo || document.body).dom;
 
-      if(me.width){
+      if (me.width) {
         width = me.width;
       }
       else{
@@ -6114,24 +6097,24 @@ Fancy.define('Fancy.Plugin', {
         }
       }
 
-      if(me.imageColor){
+      if (me.imageColor) {
         me.imageCls = BUTTON_IMAGE_COLOR_CLS;
       }
 
-      if(width < me.minWidth){
-        if(me.text && me.text.length > 0){
+      if (width < me.minWidth) {
+        if (me.text && me.text.length > 0) {
           width = me.minWidth;
         }
-        else{
+        else {
           width = me.minWidth;
         }
       }
 
-      if(me.imageCls && me.text){
+      if (me.imageCls && me.text) {
         width += me.imageWidth;
       }
 
-      if(me.menu){
+      if (me.menu) {
         width += me.rightImageWidth;
       }
 
@@ -6142,11 +6125,11 @@ Fancy.define('Fancy.Plugin', {
         me.extraCls
       );
 
-      if (me.disabled){
+      if (me.disabled) {
         el.addCls(BUTTON_DISABLED_CLS);
       }
 
-      if(me.menu && me.menuIcon !== false){
+      if (me.menu && me.menuIcon !== false) {
         el.addCls(BUTTON_MENU_CLS);
       }
 
@@ -6165,28 +6148,28 @@ Fancy.define('Fancy.Plugin', {
         text: me.text || ''
       }));
 
-      if(me.imageCls){
-        var imageEl = el.select('.' + BUTTON_IMAGE_CLS);
-        if(me.imageColor){
+      if (me.imageCls) {
+        const imageEl = el.select('.' + BUTTON_IMAGE_CLS);
+        if (me.imageColor) {
           imageEl.css('background-color', me.imageColor);
         }
         imageEl.css('display', 'block');
-        if(F.isString(me.imageCls)){
+        if (F.isString(me.imageCls)) {
           imageEl.addCls(me.imageCls);
         }
       }
 
-      if(me.id){
+      if (me.id) {
         el.attr('id', me.id);
       }
 
       me.el = F.get(renderTo.appendChild(el.dom));
 
-      if (me.disabled){
+      if (me.disabled) {
         me.disable();
       }
 
-      if(me.pressed){
+      if (me.pressed) {
         me.setPressed(me.pressed);
       }
 
@@ -6200,8 +6183,8 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    renderWrapper: function(){
-      var me = this,
+    renderWrapper(){
+      const me = this,
         wrapper = me.wrapper,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div'));
@@ -6216,24 +6199,24 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    initToggle: function(){
-      if (!this.enableToggle){
+    initToggle(){
+      if (!this.enableToggle) {
         return false;
       }
     },
     /*
      * @param {Boolean} value
      */
-    setPressed: function(value, fire){
-      var me = this;
+    setPressed(value, fire){
+      const me = this;
 
-      if (value){
+      if (value) {
         me.addCls(BUTTON_PRESSED_CLS);
         me.pressed = true;
 
-        if(me.toggleGroup){
-          var active = toggleGroups[me.toggleGroup].active;
-          if(active){
+        if (me.toggleGroup) {
+          const active = toggleGroups[me.toggleGroup].active;
+          if (active) {
             active.setPressed(false);
           }
 
@@ -6243,20 +6226,20 @@ Fancy.define('Fancy.Plugin', {
       else {
         me.removeCls(BUTTON_PRESSED_CLS);
         me.pressed = false;
-        if(me.toggleGroup){
+        if (me.toggleGroup) {
           delete toggleGroups[me.toggleGroup].active;
         }
       }
 
-      if(fire !== false){
+      if (fire !== false) {
         me.fire('pressedchange', me.pressed);
       }
     },
     /*
      *
      */
-    toggle: function(){
-      var me = this,
+    toggle(){
+      const me = this,
         value = !me.pressed;
 
       me.setPressed(value);
@@ -6265,8 +6248,8 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    onClick: function(e){
-      var me = this,
+    onClick(e){
+      let me = this,
         handler = me.handler;
 
       me.fire('click');
@@ -6308,9 +6291,9 @@ Fancy.define('Fancy.Plugin', {
     /*
      * @param {String} name
      */
-    getHandler: function(name){
-      var me = this,
-        grid = F.getWidget(me.el.closest('.' + PANEL_BODY_CLS).select('.' + GRID_CLS).attr('id'));
+    getHandler(name){
+      const me = this,
+        grid = F.getWidget(me.el.closest(`.${PANEL_BODY_CLS}`).select(`.${GRID_CLS}`).attr('id'));
 
       return grid[name] || function(){
           F.error('Handler does not exist');
@@ -6319,34 +6302,34 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    onMouseDown: function(){
+    onMouseDown(){
       this.fire('mousedown');
     },
     /*
      *
      */
-    onMouseUp: function(){
+    onMouseUp(){
       this.fire('mouseup');
     },
     /*
      * @param {Object} e
      */
-    onMouseOver: function(e){
-      var me = this;
+    onMouseOver(e){
+      const me = this;
 
       me.fire('mouseover');
 
-      if(me.tip){
+      if (me.tip) {
         me.renderTip(e);
       }
     },
     /*
      * @param {Object} e
      */
-    renderTip: function(e){
-      var me = this;
+    renderTip(e){
+      const me = this;
 
-      if(me.tooltip){
+      if (me.tooltip) {
         me.tooltip.destroy();
       }
 
@@ -6360,12 +6343,12 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    onMouseOut: function(){
-      var me = this;
+    onMouseOut(){
+      const me = this;
 
       me.fire('mouseout');
 
-      if(me.tooltip){
+      if (me.tooltip) {
         me.tooltip.destroy();
         delete me.tooltip;
       }
@@ -6373,18 +6356,18 @@ Fancy.define('Fancy.Plugin', {
     /*
      * @param {String} text
      */
-    setText: function(text, width){
-      var me = this,
+    setText(text, width){
+      let me = this,
         el = me.el,
         charWidth = 7;
 
       me.text = text;
 
-      if (me.theme && Fancy.themes[me.theme]){
+      if (me.theme && Fancy.themes[me.theme]) {
         charWidth = Fancy.themes[me.theme].config.charWidth;
       }
 
-      switch (me.i18n){
+      switch (me.i18n) {
         case 'zh-CN':
         case 'zh-TW':
         case 'ja':
@@ -6393,18 +6376,18 @@ Fancy.define('Fancy.Plugin', {
           break;
       }
 
-      if(!width){
+      if (!width) {
         width = 0;
       }
 
-      if(!width){
+      if (!width) {
         width += text.length * charWidth + charWidth * 2;
 
-        if (me.imageColor){
+        if (me.imageColor) {
           me.imageCls = BUTTON_IMAGE_COLOR_CLS;
         }
 
-        if (width < me.minWidth){
+        if (width < me.minWidth) {
           if (me.text && me.text.length > 0){
             width = me.minWidth;
           }
@@ -6413,7 +6396,7 @@ Fancy.define('Fancy.Plugin', {
           }
         }
 
-        if (me.imageCls && me.text){
+        if (me.imageCls && me.text) {
           width += me.imageWidth;
         }
 
@@ -6424,58 +6407,58 @@ Fancy.define('Fancy.Plugin', {
 
       me.css('width', width);
 
-      el.select('.' + BUTTON_TEXT_CLS).update(text);
+      el.select(`.${BUTTON_TEXT_CLS}`).update(text);
     },
     /*
      *
      */
-    disable: function(){
+    disable(){
       this.disabled = true;
       this.addCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
-    enable: function(){
+    enable(){
       this.disabled = false;
       this.removeCls(BUTTON_DISABLED_CLS);
     },
     /*
      *
      */
-    onMouseMove: function(e){
-      var me = this;
+    onMouseMove(e){
+      const me = this;
 
-      if(me.tip && me.tooltip){
+      if (me.tip && me.tooltip) {
         me.tooltip.show(e.pageX + 15, e.pageY - 25);
       }
     },
-    toggleMenuShow: function(){
-      var me = this,
+    toggleMenuShow(){
+      const me = this,
         p = me.el.$dom.offset(),
         xy = [p.left, p.top + me.el.$dom.height()];
 
-      if(me.pressed){
+      if (me.pressed) {
         me.menu.hide();
         return;
       }
 
-      if(F.isArray(me.menu)){
+      if (F.isArray(me.menu)) {
         me.initMenu();
       }
-      else if(!me.menu.type){
+      else if (!me.menu.type) {
         me.initMenu();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.menu.showAt(xy[0], xy[1]);
       }, 100);
     },
     /*
      *
      */
-    initMenu: function(){
-      var me = this,
+    initMenu(){
+      const me = this,
         config = {
           theme: me.theme,
           events: [{
@@ -6484,10 +6467,10 @@ Fancy.define('Fancy.Plugin', {
           }]
         };
 
-      if(F.isObject(me.menu)){
+      if (F.isObject(me.menu)) {
         F.apply(config, me.menu);
       }
-      else{
+      else {
         config.items = me.menu;
       }
 
@@ -6498,11 +6481,12 @@ Fancy.define('Fancy.Plugin', {
     /*
      *
      */
-    onMenuHide: function(){
+    onMenuHide(){
       this.setPressed(false);
     }
   });
 })();
+
 /**
  * @class Fancy.SegButton
  * @extends Fancy.Widget
@@ -6520,8 +6504,8 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('toggle');
     me.Super('init', arguments);
@@ -6540,7 +6524,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       renderTo,
       el = Fancy.get(document.createElement('div'));
@@ -6574,7 +6558,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  renderButtons: function(){
+  renderButtons(){
     var me = this,
       items = me.items,
       i = 0,
@@ -6582,7 +6566,7 @@ Fancy.define('Fancy.SegButton', {
       toggleGroup = Fancy.id(null, 'fancy-toggle-group-');
 
     for(;i<iL;i++){
-      var item = items[i];
+      const item = items[i];
       item.renderTo = me.el.dom;
 
       if(me.allowToggle !== false){
@@ -6632,7 +6616,7 @@ Fancy.define('Fancy.SegButton', {
       });
     }
   },
-  getValues: function(){
+  getValues(){
     var me = this,
       values = [],
       items = me.items,
@@ -6648,7 +6632,7 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  clear: function(fire){
+  clear(fire){
     var me = this,
       items = me.items,
       i = 0,
@@ -6661,8 +6645,8 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setItems: function(values){
-    var me = this;
+  setItems(values){
+    const me = this;
 
     me.el.update('');
 
@@ -6672,8 +6656,8 @@ Fancy.define('Fancy.SegButton', {
   /*
    *
    */
-  setActiveItem: function(index, fire){
-    var me = this,
+  setActiveItem(index, fire){
+    const me = this,
       items = me.items;
 
     items[index].setPressed(true, fire);
@@ -6682,8 +6666,8 @@ Fancy.define('Fancy.SegButton', {
    * @param {Array|String|Number} value
    * Note: duplicate code in button SegButton
    */
-  setValue: function(value){
-    var me = this,
+  setValue(value){
+    const me = this,
       items = me.items;
 
     me.clear(false);
@@ -6721,6 +6705,7 @@ Fancy.define('Fancy.SegButton', {
     }
   }
 });
+
 /**
  * @class Fancy.toolbar.Tab
  * @extends Fancy.Button
@@ -6737,29 +6722,30 @@ Fancy.define('Fancy.toolbar.Tab', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
   },
-  cls: Fancy.BUTTON_CLS + ' ' + Fancy.TAB_TBAR_CLS,
+  cls: `${Fancy.BUTTON_CLS} ${Fancy.TAB_TBAR_CLS}`,
   /*
    *
    */
-  render: function(){
+  render(){
     this.Super('render', arguments);
   }
 });
+
 /*
  * @mixin Fancy.panel.mixin.PrepareConfig
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FOOTER_STATUS_CLS = F.FOOTER_STATUS_CLS;
-  var STATUS_SOURCE_TEXT_CLS = F.STATUS_SOURCE_TEXT_CLS;
-  var STATUS_SOURCE_LINK_CLS = F.STATUS_SOURCE_LINK_CLS;
-  var FOOTER_SOURCE_CLS = F.FOOTER_SOURCE_CLS;
+  const FOOTER_STATUS_CLS = F.FOOTER_STATUS_CLS;
+  const STATUS_SOURCE_TEXT_CLS = F.STATUS_SOURCE_TEXT_CLS;
+  const STATUS_SOURCE_LINK_CLS = F.STATUS_SOURCE_LINK_CLS;
+  const FOOTER_SOURCE_CLS = F.FOOTER_SOURCE_CLS;
 
   Fancy.Mixin('Fancy.panel.mixin.PrepareConfig', {
     /*
@@ -6767,11 +6753,11 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} originalConfig
      * @return {Object}
      */
-    prepareConfigTheme: function(config, originalConfig){
-      var themeName = config.theme || originalConfig.theme,
+    prepareConfigTheme(config, originalConfig){
+      const themeName = config.theme || originalConfig.theme,
         themeConfig = Fancy.getTheme(themeName).config;
 
-      if (Fancy.isObject(themeName)){
+      if (Fancy.isObject(themeName)) {
         config.theme = themeName.name;
       }
 
@@ -6788,14 +6774,14 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} config
      * @return {Object}
      */
-    prepareConfigFooter: function(config){
-      var footer = config.footer,
+    prepareConfigFooter(config) {
+      const footer = config.footer,
         lang = config.lang;
 
-      if (footer){
-        var bar = [];
+      if (footer) {
+        const bar = [];
 
-        if (Fancy.isString(footer.status)){
+        if (Fancy.isString(footer.status)) {
           bar.push({
             type: 'text',
             text: footer.status,
@@ -6803,31 +6789,32 @@ Fancy.define('Fancy.toolbar.Tab', {
           });
         }
 
-        if (footer.status && footer.source){
+        if (footer.status && footer.source) {
           bar.push('side');
         }
 
-        if (Fancy.isString(footer.source)){
+        if (Fancy.isString(footer.source)) {
           bar.push({
             type: 'text',
             text: footer.source,
             cls: FOOTER_SOURCE_CLS
           });
         }
-        else if (Fancy.isObject(footer.source)){
-          var text = footer.source.text,
+        else if (Fancy.isObject(footer.source)) {
+          let text = footer.source.text,
             sourceText = footer.source.sourceText || lang.sourceText;
 
-          if (footer.source.link){
-            var link = footer.source.link;
+          if (footer.source.link) {
+            let link = footer.source.link;
 
             link = link.replace('http://', '');
-            link = 'http://' + link;
+            link = link.replace('https://', '');
+            link = `https://${link}`;
 
-            text = '<span class="' + STATUS_SOURCE_TEXT_CLS + '">' + sourceText + '</span>: <a class="' + STATUS_SOURCE_LINK_CLS + '" href="' + link + '">' + text + '</a>';
+            text = `<span class="${STATUS_SOURCE_TEXT_CLS}">${sourceText}</span>: <a class="${STATUS_SOURCE_LINK_CLS}" href="${link}">${text}</a>`;
           }
           else {
-            text = '<span>' + sourceText + ':</span> ' + text;
+            text = `<span>${sourceText}:</span> ${text}`;
           }
 
           bar.push({
@@ -6847,11 +6834,11 @@ Fancy.define('Fancy.toolbar.Tab', {
      * @param {Object} originalConfig
      * @return {Object}
      */
-    prepareConfigLang: function(config, originalConfig){
-      var i18n = config.i18n || originalConfig.i18n,
+    prepareConfigLang(config, originalConfig) {
+      const i18n = config.i18n || originalConfig.i18n,
         lang = Fancy.Object.copy(Fancy.i18n[i18n]);
 
-      if (config.lang){
+      if (config.lang) {
         for (var p in config.lang){
           switch(Fancy.isObject(config.lang[p])) {
             case false:
@@ -6891,6 +6878,7 @@ Fancy.define('Fancy.toolbar.Tab', {
   });
 
 })();
+
 /*
  * @mixin Fancy.panel.mixin.methods
  */
@@ -6898,36 +6886,37 @@ Fancy.Mixin('Fancy.panel.mixin.methods', {
   /*
    * @param {String} value
    */
-  setTitle: function(value){
-    if(this.panel){
+  setTitle(value){
+    if (this.panel) {
       this.panel.setTitle(value);
     }
   },
   /*
    * @return {String}
    */
-  getTitle: function(){
-    if(this.panel){
+  getTitle(){
+    if (this.panel) {
       return this.panel.getTitle();
     }
   },
   /*
    * @param {String} value
    */
-  setSubTitle: function(value){
-    if(this.panel){
+  setSubTitle(value){
+    if (this.panel) {
       this.panel.setSubTitle(value);
     }
   },
   /*
    * @return {String}
    */
-  getSubTitle: function(){
-    if(this.panel){
+  getSubTitle(){
+    if (this.panel) {
       return this.panel.getSubTitle();
     }
   }
 });
+
 /*
  * @mixin Fancy.panel.mixin.DD
  */
@@ -6936,26 +6925,27 @@ Fancy.Mixin('Fancy.panel.mixin.DD', {
   /*
    *
    */
-  initDD: function(){
+  initDD(){
     this.addDDCls();
     this.addDD();
   },
   /*
    *
    */
-  addDDCls: function(){
+  addDDCls(){
     this.el.addCls(this.ddCls);
   },
   /*
    *
    */
-  addDD: function(){
+  addDD(){
     Fancy.DD.add({
       dragEl: this.el,
-      overEl: this.el.select('.' + Fancy.PANEL_HEADER_CLS).item(0)
+      overEl: this.el.select(`.${Fancy.PANEL_HEADER_CLS}`).item(0)
     });
   }
 });
+
 /*
  * @mixin Fancy.panel.mixin.Resize
  */
@@ -6965,8 +6955,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  initResize: function(){
-    var me = this;
+  initResize(){
+    const me = this;
 
     me.activeResizeEl = undefined;
 
@@ -6976,8 +6966,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  renderResizeEls: function(){
-    var me = this,
+  renderResizeEls(){
+    const me = this,
       el = me.el,
       cornerEl = Fancy.get(document.createElement('div'));
 
@@ -6988,32 +6978,32 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  onResize: function(){
-    var me = this;
+  onResize(){
+    const me = this;
 
-    if(me.tbar){
+    if (me.tbar) {
       me._tbar.applyScrollChanges();
     }
 
-    if(me.subTBar){
+    if (me.subTBar) {
       me._subTBar.applyScrollChanges();
     }
 
-    if(me.bbar){
+    if (me.bbar) {
       me._bbar.applyScrollChanges();
     }
 
-    if(me.footer){
+    if (me.footer) {
       me._footer.applyScrollChanges();
     }
 
-    if(me.buttons){
+    if (me.buttons) {
       me._buttons.applyScrollChanges();
     }
 
-    var item = me.items[0];
+    const item = me.items[0];
 
-    if(item && item.type === 'grid' && item.infinite){
+    if (item && item.type === 'grid' && item.infinite) {
       delete item.numOfVisibleCells;
       item.update();
     }
@@ -7021,10 +7011,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  onsResizeEls: function(){
-    var me = this;
+  onsResizeEls(){
+    const me = this;
 
-    if(Fancy.isTouch){
+    if (Fancy.isTouch) {
       me.cornerResizeEl.on('touchstart', me.onMouseDownResizeEl, me);
     }
     else {
@@ -7036,19 +7026,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    * @param {Object} e
    */
-  onMouseDownResizeEl: function(e){
-    var me = this,
+  onMouseDownResizeEl(e){
+    const me = this,
       docEl = Fancy.get(document);
 
     e.preventDefault();
 
-    if(Fancy.nojQuery){
-      me.el.select('.' + Fancy.GRID_ANIMATION_CLS).removeCls(Fancy.GRID_ANIMATION_CLS);
+    if (Fancy.nojQuery) {
+      me.el.select(`.${Fancy.GRID_ANIMATION_CLS}`).removeCls(Fancy.GRID_ANIMATION_CLS);
     }
 
-    if(Fancy.isTouch){
+    if (Fancy.isTouch) {
       e = e.originalEvent || e;
-      var _e = e.changedTouches[0];
+      const _e = e.changedTouches[0];
 
       docEl.once('touchend', me.onMouseUpResize, me);
       docEl.on('touchmove', me.onMouseMoveResize, me);
@@ -7058,7 +7048,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.startClientX = _e.clientX;
       me.startClientY = _e.clientY;
     }
-    else{
+    else {
       docEl.once('mouseup', me.onMouseUpResize, me);
       docEl.on('mousemove', me.onMouseMoveResize, me);
 
@@ -7071,8 +7061,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  onMouseUpResize: function(){
-    var me = this,
+  onMouseUpResize(){
+    const me = this,
       docEl = Fancy.get(document);
 
     delete me.activeResizeEl;
@@ -7091,27 +7081,27 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       height: me.newResizeHeight
     });
 
-    if(Fancy.nojQuery){
+    if (Fancy.nojQuery) {
       me.el.select('.fancy-grid').addCls(Fancy.GRID_ANIMATION_CLS);
     }
   },
   /*
    * @param {Object} e
    */
-  onMouseMoveResize: function(e){
-    var me = this,
+  onMouseMoveResize(e){
+    let me = this,
       clientX = e.clientX,
       clientY = e.clientY;
 
-    if(Fancy.isTouch){
+    if (Fancy.isTouch) {
       e = e.originalEvent || e;
-      var _e = e.originalEvent.changedTouches[0];
+      const _e = e.originalEvent.changedTouches[0];
 
       clientX = _e.clientX;
       clientY = _e.clientY;
     }
 
-    var deltaX = me.startClientX - clientX,
+    let deltaX = me.startClientX - clientX,
       deltaY = me.startClientY - clientY,
       newWidth = me.startResizeWidth - deltaX,
       newHeight = me.startResizeHeight - deltaY;
@@ -7119,11 +7109,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     e.preventDefault();
     e.stopPropagation();
 
-    if(newWidth < me.minWidth){
+    if (newWidth < me.minWidth) {
       newWidth = me.minWidth;
     }
 
-    if(newHeight < me.minHeight){
+    if (newHeight < me.minHeight) {
       newHeight = me.minHeight;
     }
 
@@ -7138,12 +7128,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   /*
    *
    */
-  renderResizeMask: function(){
-    var me = this,
+  renderResizeMask(){
+    const me = this,
       el = me.el,
       maskWidth = 2;
 
-    var maskEl = Fancy.get(document.createElement('div')),
+    let maskEl = Fancy.get(document.createElement('div')),
       panelTop = parseInt(el.css('top')),
       panelLeft = parseInt(el.css('left')),
       panelWidth = parseInt(el.css('width')) - maskWidth * 2,
@@ -7153,8 +7143,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     me.startResizeWidth = panelWidth;
     me.startResizeHeight = panelHeight;
 
-    if(!me.window && el.css('position') !== 'absolute'){
-      var offset = el.offset();
+    if (!me.window && el.css('position') !== 'absolute') {
+      const offset = el.offset();
 
       panelTop = offset.top;
       panelLeft = offset.left;
@@ -7173,36 +7163,37 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     me.resizeMaskEl = Fancy.get(document.body.appendChild(maskEl.dom));
   }
 });
+
 /*
  * @class Fancy.Panel
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   /*
    * CONSTANTS
    */
-  var HIDDEN_CLS = F.HIDDEN_CLS;
-  var MODAL_CLS = F.MODAL_CLS;
-  var PANEL_CLS = F.PANEL_CLS;
-  var PANEL_HEADER_CLS = F.PANEL_HEADER_CLS;
-  var PANEL_SUB_HEADER_TEXT_CLS = F.PANEL_SUB_HEADER_TEXT_CLS;
-  var PANEL_HEADER_TEXT_CLS = F.PANEL_HEADER_TEXT_CLS;
-  var PANEL_HEADER_TOOLS_CLS = F.PANEL_HEADER_TOOLS_CLS;
-  var PANEL_SUB_HEADER_CLS = F.PANEL_SUB_HEADER_CLS;
-  var PANEL_BODY_CLS = F.PANEL_BODY_CLS;
-  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
-  var PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
-  var PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
-  var PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
-  var PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
-  var PANEL_HEADER_IMG_CLS = F.PANEL_HEADER_IMG_CLS;
-  var PANEL_NOFRAME_CLS = F.PANEL_NOFRAME_CLS;
-  var PANEL_SHADOW_CLS = F.PANEL_SHADOW_CLS;
-  var PANEL_FOOTER_CLS = F.PANEL_FOOTER_CLS;
-  var FIELD_PICKER_BUTTON_CLS = F.FIELD_PICKER_BUTTON_CLS;
+  const HIDDEN_CLS = F.HIDDEN_CLS;
+  const MODAL_CLS = F.MODAL_CLS;
+  const PANEL_CLS = F.PANEL_CLS;
+  const PANEL_HEADER_CLS = F.PANEL_HEADER_CLS;
+  const PANEL_SUB_HEADER_TEXT_CLS = F.PANEL_SUB_HEADER_TEXT_CLS;
+  const PANEL_HEADER_TEXT_CLS = F.PANEL_HEADER_TEXT_CLS;
+  const PANEL_HEADER_TOOLS_CLS = F.PANEL_HEADER_TOOLS_CLS;
+  const PANEL_SUB_HEADER_CLS = F.PANEL_SUB_HEADER_CLS;
+  const PANEL_BODY_CLS = F.PANEL_BODY_CLS;
+  const PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  const PANEL_TBAR_CLS = F.PANEL_TBAR_CLS;
+  const PANEL_SUB_TBAR_CLS = F.PANEL_SUB_TBAR_CLS;
+  const PANEL_BUTTONS_CLS = F.PANEL_BUTTONS_CLS;
+  const PANEL_BBAR_CLS = F.PANEL_BBAR_CLS;
+  const PANEL_HEADER_IMG_CLS = F.PANEL_HEADER_IMG_CLS;
+  const PANEL_NOFRAME_CLS = F.PANEL_NOFRAME_CLS;
+  const PANEL_SHADOW_CLS = F.PANEL_SHADOW_CLS;
+  const PANEL_FOOTER_CLS = F.PANEL_FOOTER_CLS;
+  const FIELD_PICKER_BUTTON_CLS = F.FIELD_PICKER_BUTTON_CLS;
 
   F.define('Fancy.Panel', {
     extend: F.Widget,
@@ -7222,8 +7213,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
       me.addEvents('resize');
@@ -7231,15 +7222,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.initTpl();
       me.render();
 
-      if (me.draggable){
+      if (me.draggable) {
         me.initDD();
       }
 
-      if (me.resizable){
+      if (me.resizable) {
         me.initResize();
       }
 
-      if (me.window){
+      if (me.window) {
         me.setActiveWindowWatcher();
       }
     },
@@ -7280,7 +7271,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body),
         el = F.get(document.createElement('div')),
@@ -7288,64 +7279,64 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
 
-      if(me.renderOuter){
+      if (me.renderOuter) {
         el = renderTo;
       }
 
-      if(!renderTo.dom){
-        F.error('Could not find renderTo element: ' + me.renderTo, 1);
+      if (!renderTo.dom) {
+        F.error(`Could not find renderTo element: ${me.renderTo}`, 1);
       }
 
-      if (me.window === true){
+      if (me.window === true) {
         el.css({
           display: 'none',
           position: 'absolute'
         });
       }
 
-      if (me.frame === false){
+      if (me.frame === false) {
         el.addCls(PANEL_NOFRAME_CLS);
       }
 
       el.addCls(F.cls, me.cls, me.fieldCls);
-      if (me.theme !== 'default'){
+      if (me.theme !== 'default') {
         el.addCls(Fancy.getThemeCSSCls(me.theme));
       }
 
-      if (me.shadow){
+      if (me.shadow) {
         el.addCls(PANEL_SHADOW_CLS);
       }
 
       el.css({
-        width: me.width + 'px',
+        width: `${me.width}px`,
         height: (me.height - minusHeight) + 'px'
       });
 
-      if (me.style){
+      if (me.style) {
         el.css(me.style);
       }
 
-      var titleText = '',
+      let titleText = '',
         subTitleText = '';
 
-      if (F.isObject(me.title)){
+      if (F.isObject(me.title)) {
         titleText = me.title.text;
       }
-      else if (F.isString(me.title)){
+      else if (F.isString(me.title)) {
         titleText = me.title;
       }
 
-      if (F.isObject(me.subTitle)){
+      if (F.isObject(me.subTitle)) {
         subTitleText = me.subTitle.text;
       }
-      else if (F.isString(me.subTitle)){
+      else if (F.isString(me.subTitle)) {
         subTitleText = me.subTitle;
       }
 
-      var imgCls = '';
+      let imgCls = '';
 
-      if (F.isObject(me.title) && me.title.imgCls){
-        imgCls = '<div class="' + PANEL_HEADER_IMG_CLS + ' ' + me.title.imgCls + '"></div>';
+      if (F.isObject(me.title) && me.title.imgCls) {
+        imgCls = `<div class="${PANEL_HEADER_IMG_CLS} ${me.title.imgCls}"></div>`;
       }
 
       el.update(me.tpl.getHTML({
@@ -7361,63 +7352,63 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         subTitle: subTitleText
       }));
 
-      if (F.isObject(me.title)){
-        if (me.title.style){
-          el.select('.' + PANEL_HEADER_CLS).css(me.title.style);
+      if (F.isObject(me.title)) {
+        if (me.title.style) {
+          el.select(`.${PANEL_HEADER_CLS}`).css(me.title.style);
         }
 
-        if (me.title.cls){
-          el.select('.' + PANEL_HEADER_CLS).addCls(me.title.cls);
+        if (me.title.cls) {
+          el.select(`.${PANEL_HEADER_CLS}`).addCls(me.title.cls);
         }
 
-        if (me.title.tools){
+        if (me.title.tools) {
           me.tools = me.title.tools;
         }
       }
 
-      if (F.isObject(me.subTitle)){
-        if (me.subTitle.style){
-          el.select('.' + PANEL_SUB_HEADER_CLS).css(me.subTitle.style);
+      if (F.isObject(me.subTitle)) {
+        if (me.subTitle.style) {
+          el.select(`.${PANEL_SUB_HEADER_CLS}`).css(me.subTitle.style);
         }
 
-        if (me.subTitle.cls){
-          el.select('.' + PANEL_SUB_HEADER_CLS).addCls(me.subTitle.cls);
+        if (me.subTitle.cls) {
+          el.select(`.${PANEL_SUB_HEADER_CLS}`).addCls(me.subTitle.cls);
         }
       }
 
-      if (me.title){
-        el.select('.' + PANEL_HEADER_CLS).removeCls(HIDDEN_CLS);
+      if (me.title) {
+        el.select(`.${PANEL_HEADER_CLS}`).removeCls(HIDDEN_CLS);
       }
       else {
-        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
+        el.select(`.${PANEL_BODY_CLS}`).css('border-top-width', '0px');
       }
 
-      if (me.subTitle){
-        el.select('.' + PANEL_BODY_CLS).css('border-top-width', '0px');
-        el.select('.' + PANEL_SUB_HEADER_CLS).removeCls(HIDDEN_CLS);
+      if (me.subTitle) {
+        el.select(`.${PANEL_BODY_CLS}`).css('border-top-width', '0px');
+        el.select(`.${PANEL_SUB_HEADER_CLS}`).removeCls(HIDDEN_CLS);
       }
 
-      if (me.tbar){
-        el.select('.' + PANEL_TBAR_CLS).removeCls(HIDDEN_CLS);
+      if (me.tbar) {
+        el.select(`.${PANEL_TBAR_CLS}`).removeCls(HIDDEN_CLS);
       }
 
-      if (me.subTBar){
-        el.select('.' + PANEL_SUB_TBAR_CLS).removeCls(HIDDEN_CLS);
+      if (me.subTBar) {
+        el.select(`.${PANEL_SUB_TBAR_CLS}`).removeCls(HIDDEN_CLS);
       }
 
-      if (me.bbar){
-        el.select('.' + PANEL_BBAR_CLS).removeCls(HIDDEN_CLS);
+      if (me.bbar) {
+        el.select(`.${PANEL_BBAR_CLS}`).removeCls(HIDDEN_CLS);
       }
 
-      if (me.buttons){
-        el.select('.' + PANEL_BUTTONS_CLS).removeCls(HIDDEN_CLS);
+      if (me.buttons) {
+        el.select(`.${PANEL_BUTTONS_CLS}`).removeCls(HIDDEN_CLS);
       }
 
-      if (me.footer){
-        el.select('.' + PANEL_FOOTER_CLS).removeCls(HIDDEN_CLS);
+      if (me.footer) {
+        el.select(`.${PANEL_FOOTER_CLS}`).removeCls(HIDDEN_CLS);
       }
 
-      if(me.renderOuter){
+      if (me.renderOuter) {
         me.el = el;
       }
       else {
@@ -7425,13 +7416,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.el = F.get(me.el);
       }
 
-      if (me.modal){
-        if (F.select(MODAL_CLS).length === 0){
-          F.get(document.body).append('<div class="'+MODAL_CLS+'" style="display: none;"></div>');
+      if (me.modal) {
+        if (F.select(MODAL_CLS).length === 0) {
+          F.get(document.body).append(`<div class="${MODAL_CLS}" style="display: none;"></div>`);
         }
       }
 
-      if (me.id && !me.el.attr('id')){
+      if (me.id && !me.el.attr('id')) {
         me.el.attr('id', me.id);
       }
 
@@ -7443,10 +7434,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    setHardBordersWidth: function(){
-      var panelBodyBorders = this.panelBodyBorders;
+    setHardBordersWidth(){
+      const panelBodyBorders = this.panelBodyBorders;
 
-      this.el.select('.' + PANEL_BODY_CLS).css({
+      this.el.select(`.${PANEL_BODY_CLS}`).css({
         'border-top-width': panelBodyBorders[0],
         'border-right-width': panelBodyBorders[1],
         'border-bottom-width': panelBodyBorders[2],
@@ -7456,39 +7447,39 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    renderTools: function(){
-      var me = this,
+    renderTools(){
+      const me = this,
         tools = me.tools;
 
-      if (tools === undefined){
+      if (tools === undefined) {
         return;
       }
 
       F.each(tools, function(tool, i){
-        tool.renderTo = me.el.select('.' + PANEL_HEADER_TOOLS_CLS).dom;
+        tool.renderTo = me.el.select(`.${PANEL_HEADER_TOOLS_CLS}`).dom;
         me.tools[i] = new F.Tool(tool, me.scope || me);
       });
     },
     /*
      *
      */
-    renderBars: function(){
+    renderBars(){
       var me = this,
         containsGrid = false,
         theme = me.theme,
         scope = this;
 
-      if (me.items && me.items[0]){
-        if (me.items[0].type === 'grid'){
+      if (me.items && me.items[0]) {
+        if (me.items[0].type === 'grid') {
           containsGrid = true;
         }
 
         scope = me.items[0];
       }
 
-      if (me.bbar){
+      if (me.bbar) {
         me._bbar = new F.Bar({
-          el: me.el.select('.' + PANEL_BBAR_CLS),
+          el: me.el.select(`.${PANEL_BBAR_CLS}`),
           items: me.bbar,
           height: me.bbarHeight || me.barHeight,
           barContainer: me.barContainer,
@@ -7503,9 +7494,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.bbar = me._bbar.items;
       }
 
-      if (me.buttons){
+      if (me.buttons) {
         me._buttons = new F.Bar({
-          el: me.el.select('.' + PANEL_BUTTONS_CLS),
+          el: me.el.select(`.${PANEL_BUTTONS_CLS}`),
           items: me.buttons,
           height: me.buttonsHeight || me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -7518,9 +7509,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.buttons = me._buttons.items;
       }
 
-      if (me.tbar){
+      if (me.tbar) {
         me._tbar = new F.Bar({
-          el: me.el.select('.' + PANEL_TBAR_CLS),
+          el: me.el.select(`.${PANEL_TBAR_CLS}`),
           items: me.tbar,
           height: me.tbarHeight || me.barHeight,
           tabEdit: !me.subTBar && containsGrid,
@@ -7534,9 +7525,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.tbar = me._tbar.items;
       }
 
-      if (me.subTBar){
+      if (me.subTBar) {
         me._subTBar = new F.Bar({
-          el: me.el.select('.' + PANEL_SUB_TBAR_CLS),
+          el: me.el.select(`.${PANEL_SUB_TBAR_CLS}`),
           items: me.subTBar,
           height:  me.subTBarHeight || me.barHeight,
           tabEdit: containsGrid,
@@ -7550,10 +7541,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.subTBar = me._subTBar.items;
       }
 
-      if (me.footer){
+      if (me.footer) {
         me._footer = new F.Bar({
           disableScroll: true,
-          el: me.el.select('.' + PANEL_FOOTER_CLS),
+          el: me.el.select(`.${PANEL_FOOTER_CLS}`),
           items: me.footer,
           height: me.barHeight,
           barScrollEnabled: me.barScrollEnabled,
@@ -7570,14 +7561,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Number} x
      * @param {Number} y
      */
-    showAt: function(x, y){
+    showAt(x, y){
       this.css({
-        left: x + 'px',
+        left: `${x}px`,
         display: '',
         'z-index': 1000 + F.zIndex++
       });
 
-      if (y !== undefined){
+      if (y !== undefined) {
         this.css({
           top: y + 'px'
         });
@@ -7586,32 +7577,32 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    show: function(){
-      var me = this;
+    show(){
+      const me = this;
 
       me.el.show();
 
-      if (me.window !== true){
+      if (me.window !== true) {
         return;
       }
 
-      if (me.buttons){
+      if (me.buttons) {
         me._buttons.checkScroll();
       }
 
-      if (me.tbar){
+      if (me.tbar) {
         me._tbar.checkScroll();
       }
 
-      if (me.bbar){
+      if (me.bbar) {
         me._bbar.checkScroll();
       }
 
-      if (me.subTBar){
+      if (me.subTBar) {
         me._subTBar.checkScroll();
       }
 
-      var viewSize = F.getViewSize(),
+      const viewSize = F.getViewSize(),
         height = me.el.height(),
         width = me.el.width(),
         xy = [],
@@ -7622,11 +7613,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       xy[0] = (viewSize[1] - width) / 2;
       xy[1] = (viewSize[0] - height) / 2;
 
-      if (xy[0] < 10){
+      if (xy[0] < 10) {
         xy[0] = 10;
       }
 
-      if (xy[1] < 10){
+      if (xy[1] < 10) {
         xy[1] = 10;
       }
 
@@ -7637,8 +7628,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         'z-index': 1000 + F.zIndex++
       });
 
-      if(me.modal){
-        F.select('.' + MODAL_CLS).css({
+      if (me.modal) {
+        F.select(`.${MODAL_CLS}`).css({
           'display': '',
           'z-index': 1000 + F.zIndex - 2
         });
@@ -7647,19 +7638,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       me.css({
         display: 'none'
       });
 
-      if(me.modal){
-        F.select('.' + MODAL_CLS).css('display', 'none');
+      if (me.modal) {
+        F.select(`.${MODAL_CLS}`).css('display', 'none');
       }
 
-      F.each(this.items || [], function(item){
-        if (item.type === 'combo'){
+      F.each(this.items || [], (item) => {
+        if (item.type === 'combo') {
           item.hideList();
         }
       });
@@ -7667,61 +7658,61 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {String} value
      */
-    setTitle: function(value){
-      this.el.select('.' + PANEL_HEADER_TEXT_CLS).update(value);
+    setTitle(value){
+      this.el.select(`.${PANEL_HEADER_TEXT_CLS}`).update(value);
     },
     /*
      * @return {String}
      */
-    getTitle: function(){
-      return this.el.select('.' + PANEL_HEADER_TEXT_CLS).dom.innerHTML;
+    getTitle(){
+      return this.el.select(`.${PANEL_HEADER_TEXT_CLS}`).dom.innerHTML;
     },
     /*
      * @param {String} value
      */
-    setSubTitle: function(value){
-      this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).update(value);
+    setSubTitle(value){
+      this.el.select(`.${PANEL_SUB_HEADER_TEXT_CLS}`).update(value);
     },
     /*
      * @return {String}
      */
-    getSubTitle: function(){
-      return this.el.select('.' + PANEL_SUB_HEADER_TEXT_CLS).dom.innerHTML;
+    getSubTitle(){
+      return this.el.select(`.${PANEL_SUB_HEADER_TEXT_CLS}`).dom.innerHTML;
     },
     /*
      * @return {Number}
      */
-    getHeight: function(){
+    getHeight(){
       return parseInt(this.css('height'));
     },
     /*
      * @param {String} value
      */
-    setWidth: function(value){
+    setWidth(value){
       //TODO: Redo
       this.items[0].setWidth(value);
     },
     /*
      * @param {Number} value
      */
-    setHeight: function(value){
+    setHeight(value){
       this.css('height', value);
       this.items[0].setHeight(value, false);
     },
     /*
      *
      */
-    setActiveWindowWatcher: function(){
-      var me = this;
+    setActiveWindowWatcher(){
+      const me = this;
 
       me.el.on('mousedown', function(e){
-        var targetEl = F.get(e.target);
+        const targetEl = F.get(e.target);
 
-        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)){
+        if (targetEl.hasCls(FIELD_PICKER_BUTTON_CLS)) {
           return;
         }
 
-        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))){
+        if (1000 + F.zIndex - 1 > parseInt(me.css('z-index'))) {
           me.css('z-index', 1000 + F.zIndex++);
         }
 
@@ -7732,16 +7723,17 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   });
 
 })();
+
 /**
  * @class Fancy.Tool
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var BUTTON_CLS = F.BUTTON_CLS;
+  const BUTTON_CLS = F.BUTTON_CLS;
 
   F.define('Fancy.Tool', {
     extend: F.Widget,
@@ -7757,8 +7749,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('click', 'mousedown', 'mouseup', 'mouseover', 'mouseout');
       me.Super('init', arguments);
@@ -7771,7 +7763,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    ons: function(){
+    ons(){
       this.el.on('click', this.onClick, this);
     },
     cls: BUTTON_CLS,
@@ -7781,8 +7773,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = document.createElement('div');
 
@@ -7798,12 +7790,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onClick: function(){
-      var me = this;
+    onClick(){
+      const me = this;
 
       me.fire('click');
-      if (me.handler){
-        if (me.scope){
+      if (me.handler) {
+        if (me.scope) {
           me.handler.apply(me.scope, [me]);
         }
         else {
@@ -7814,12 +7806,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {String} value
      */
-    setText: function(value){
+    setText(value){
       this.el.update(value);
     }
   });
 
 })();
+
 /**
  * @class Fancy.panel.Tab
  */
@@ -7828,14 +7821,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   var F = Fancy;
 
   //CONSTANTS
-  var PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
-  var PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
-  var TAB_WRAPPER_CLS = F.TAB_WRAPPER_CLS;
-  var TAB_ACTIVE_WRAPPER_CLS = F.TAB_ACTIVE_WRAPPER_CLS;
-  var TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
-  var PANEL_TAB_CLS = F.PANEL_TAB_CLS;
-  var PANEL_CLS = F.PANEL_CLS;
-  var GRID_CLS = F.GRID_CLS;
+  const PANEL_BODY_INNER_CLS = F.PANEL_BODY_INNER_CLS;
+  const PANEL_GRID_INSIDE_CLS = F.PANEL_GRID_INSIDE_CLS;
+  const TAB_WRAPPER_CLS = F.TAB_WRAPPER_CLS;
+  const TAB_ACTIVE_WRAPPER_CLS = F.TAB_ACTIVE_WRAPPER_CLS;
+  const TAB_TBAR_ACTIVE_CLS = F.TAB_TBAR_ACTIVE_CLS;
+  const PANEL_TAB_CLS = F.PANEL_TAB_CLS;
+  const PANEL_CLS = F.PANEL_CLS;
+  const GRID_CLS = F.GRID_CLS;
 
   F.define(['Fancy.panel.Tab', 'Fancy.Tab', 'FancyTab'], {
     extend: F.Panel,
@@ -7845,20 +7838,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} config
      */
     constructor: function(renderTo, config){
-      var me = this;
+      const me = this;
 
-      var fn = function(){
-        if(Fancy.isDom(renderTo)){
+      const fn = function () {
+        if (Fancy.isDom(renderTo)) {
           config = config || {};
           config.renderTo = renderTo;
-        }
-        else{
+        } else {
           config = renderTo;
         }
 
         config = config || {};
 
-        if(config.renderOuter){
+        if (config.renderOuter) {
           config.renderTo = config.renderOuter;
         }
 
@@ -7889,8 +7881,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.prepareTabs();
       me.Super( 'init', arguments );
@@ -7904,14 +7896,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     render: function(){
-      var me = this;
+      const me = this;
 
       me.Super('render', arguments);
 
-      if( Fancy.loadingStyle ){
+      if (Fancy.loadingStyle) {
         me.el.css('opacity', 0);
-        me.intervalStyleLoad = setInterval(function(){
-          if(!Fancy.loadingStyle){
+        me.intervalStyleLoad = setInterval(() => {
+          if (!Fancy.loadingStyle) {
             clearInterval(me.intervalStyleLoad);
             me.el.animate({
               'opacity': 1,
@@ -7921,7 +7913,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         }, 100);
       }
 
-      me.panelBodyEl = me.el.select('.' + PANEL_BODY_INNER_CLS).item(0);
+      me.panelBodyEl = me.el.select(`.${PANEL_BODY_INNER_CLS}`).item(0);
 
       me.setPanelBodySize();
 
@@ -7934,28 +7926,28 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       me.rendered = true;
     },
-    ons: function(){
-      var me = this;
+    ons(){
+      const me = this;
 
-      if (me.responsive){
+      if (me.responsive) {
         F.$(window).bind('resize', function(){
           me.onWindowResize();
 
           clearInterval(me.intWindowResize);
 
-          me.intWindowResize = setTimeout(function(){
+          me.intWindowResize = setTimeout(() => {
             me.onWindowResize();
             delete me.intWindowResize;
 
             //Bug fix for Mac
-            setTimeout(function(){
+            setTimeout(() => {
               me.onWindowResize();
             }, 300);
           }, 30);
         });
       }
     },
-    onWindowResize: function(){
+    onWindowResize(){
       var me = this,
         renderTo = me.renderTo,
         el;
@@ -7978,24 +7970,24 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         el = el.parent();
       }
 
-      var newWidth = el.width();
+      let newWidth = el.width();
 
-      if(el.dom === undefined){
+      if (el.dom === undefined) {
         return;
       }
 
-      if(newWidth === 0){
+      if (newWidth === 0) {
         newWidth = el.parent().width();
       }
 
-      if(me.responsive){
+      if (me.responsive) {
         me.setWidth(newWidth);
       }
 
-      if(me.responsiveHeight){
-        var height = parseInt(el.height());
+      if (me.responsiveHeight) {
+        let height = parseInt(el.height());
 
-        if(height === 0){
+        if (height === 0) {
           height = parseInt(el.parent().height());
         }
 
@@ -8005,52 +7997,53 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.setPanelBodySize();
 
       // Clear height and width for
-      var els = me.el.select('.' + TAB_WRAPPER_CLS + ' .' + PANEL_CLS + ':first-child');
-      els.each(function(el){
+      const els = me.el.select(`.${TAB_WRAPPER_CLS} .${PANEL_CLS}:first-child`);
+
+      els.forEach(el => {
         el.css({
           height: 'auto',
           width: 'auto'
         });
       });
     },
-    setPanelBodySize: function(){
-      var me = this,
+    setPanelBodySize(){
+      let me = this,
         height = me.height,
         panelBodyBorders = me.panelBodyBorders;
 
-      if (me.title){
+      if (me.title) {
         height -= me.titleHeight;
       }
 
-      if (me.subTitle){
+      if (me.subTitle) {
         height -= me.subTitleHeight;
         height += panelBodyBorders[2];
       }
 
-      if (me.bbar){
+      if (me.bbar) {
         height -= me.bbarHeight || me.barHeight;
       }
 
-      if (me.tbar){
+      if (me.tbar) {
         height -= me.tbarHeight || me.barHeight;
       }
 
-      if (me.subTBar){
+      if (me.subTBar) {
         height -= me.subTBarHeight || me.barHeight;
       }
 
-      if (me.buttons){
+      if (me.buttons) {
         height -= me.buttonsHeight || me.barHeight;
       }
 
-      if (me.footer){
+      if (me.footer) {
         height -= me.barHeight;
       }
 
       height -= panelBodyBorders[0] + panelBodyBorders[2];
 
       me.panelBodyEl.css({
-        height: height
+        height
       });
 
       me.panelBodyHeight = height;
@@ -8060,13 +8053,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Object} config
      */
-    prepareConfigTheme: function(config){
-      var me = this,
+    prepareConfigTheme(config){
+      const me = this,
         themeName = config.theme || me.theme,
         themeConfig = F.getTheme(themeName).config,
         wrapped = me.wrapped || config.wrapped;
 
-      if (wrapped){
+      if (wrapped) {
         config.panelBodyBorders = [0, 0, 0, 0];
         me.panelBodyBorders = [0, 0, 0, 0];
       }
@@ -8077,24 +8070,24 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Object} config
      */
-    prepareConfigSize: function(config){
-      var renderTo = config.renderTo,
+    prepareConfigSize(config){
+      let renderTo = config.renderTo,
         el;
 
-      if(config.width === undefined){
-        if (renderTo){
+      if (config.width === undefined) {
+        if (renderTo) {
           config.responsive = true;
           el = Fancy.get(renderTo);
           config.width = parseInt(el.width());
         }
       }
 
-      if(config.height === undefined){
-        if(renderTo){
+      if (config.height === undefined) {
+        if (renderTo) {
           config.responsiveHeight = true;
           el = Fancy.get(renderTo);
-          var height = parseInt(el.height());
-          if(height < 50){
+          let height = parseInt(el.height());
+          if (height < 50) {
             height = parseInt(el.parent().css('height'));
           }
 
@@ -8105,14 +8098,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    prepareTabs: function(){
-      var me = this,
-        tabs = [],
+    prepareTabs(){
+      const me = this;
+
+      let tabs = [],
         i = 0,
         iL = me.items.length;
 
       for (; i < iL; i++){
-        var item = me.items[i],
+        const item = me.items[i],
           tabConfig = {
             type: 'tab'
           };
@@ -8137,23 +8131,23 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       me.tbar = tabs;
       me.tabs = tabs;
     },
-    renderTabWrappers: function(){
-      var me = this;
+    renderTabWrappers(){
+      const me = this;
 
-      F.each(me.items, function(item){
-        var el = F.get(document.createElement('div'));
+      me.items.forEach(item => {
+        const el = F.get(document.createElement('div'));
 
         el.addCls(TAB_WRAPPER_CLS);
 
         item.renderTo = me.panelBodyEl.dom.appendChild(el.dom);
       });
     },
-    setActiveTab: function(newActiveTab){
-      var me = this,
-        tabs = me.el.select('.' + TAB_WRAPPER_CLS),
+    setActiveTab(newActiveTab){
+      const me = this,
+        tabs = me.el.select(`.${TAB_WRAPPER_CLS}`),
         oldActiveTab = me.activeTab;
 
-      if (me.items.length === 0){
+      if (me.items.length === 0) {
         return;
       }
 
@@ -8162,7 +8156,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       tabs.item(me.activeTab).addCls(TAB_ACTIVE_WRAPPER_CLS);
 
-      var item = me.items[me.activeTab];
+      const item = me.items[me.activeTab];
 
       item.theme = me.theme;
       item.wrapped = true;
@@ -8170,8 +8164,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       item.width = me.panelBodyWidth;
       item.height = me.panelBodyHeight;
 
-      if (!item.rendered){
-        switch (item.type){
+      if (!item.rendered) {
+        switch (item.type) {
           case 'form':
             me.items[me.activeTab] = new FancyForm(item);
             break;
@@ -8188,7 +8182,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         me.setActiveItemHeight();
       }
 
-      if (me.tabs){
+      if (me.tabs) {
         me.tbar[oldActiveTab].removeCls(TAB_TBAR_ACTIVE_CLS);
         me.tbar[me.activeTab].addCls(TAB_TBAR_ACTIVE_CLS);
       }
@@ -8196,8 +8190,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {String} value
      */
-    setWidth: function(value){
-      var me = this;
+    setWidth(value){
+      const me = this;
 
       me.width = value;
 
@@ -8209,8 +8203,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @param {Number} value
      */
-    setHeight: function(value){
-      var me = this;
+    setHeight(value){
+      const me = this;
 
       me.height = value;
 
@@ -8219,19 +8213,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
       me.setActiveItemHeight();
     },
-    setActiveItemWidth: function(){
-      var me = this;
+    setActiveItemWidth(){
+      const me = this;
 
-      if(me.items.length === 0){
+      if (me.items.length === 0) {
         return;
       }
 
       me.items[me.activeTab].setWidth(me.panelBodyWidth);
     },
-    setActiveItemHeight: function(){
-      var me = this;
+    setActiveItemHeight(){
+      const me = this;
 
-      if(me.items.length === 0){
+      if (me.items.length === 0) {
         return;
       }
 
@@ -8239,15 +8233,15 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     }
   });
 
-  FancyTab.get = function(id){
-    var tabId = F.get(id).select('.' + PANEL_TAB_CLS).dom.id;
+  FancyTab.get = (id) => {
+    const tabId = F.get(id).select(`.${PANEL_TAB_CLS}`).dom.id;
 
     return F.getWidget(tabId);
   };
 
-  if (!F.nojQuery && F.$){
-    F.$.fn.FancyTab = function(o){
-      if(this.selector){
+  if (!F.nojQuery && F.$) {
+    F.$.fn.FancyTab = function(o) {
+      if (this.selector) {
         o.renderTo = F.$(this.selector)[0].id;
       }
       else{
@@ -8259,36 +8253,37 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   }
 
 })();
+
 /*
  * @class Fancy.Bar
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_CLS = F.GRID_CLS;
-  var GRID_CELL_CLS = F.GRID_CELL_CLS;
+  const GRID_CLS = F.GRID_CLS;
+  const GRID_CELL_CLS = F.GRID_CELL_CLS;
 
-  var BAR_CLS = F.BAR_CLS;
-  var BAR_CONTAINER_CLS = F.BAR_CONTAINER_CLS;
-  var BAR_BUTTON_CLS = F.BAR_BUTTON_CLS;
-  var BAR_SEG_BUTTON_CLS = F.BAR_SEG_BUTTON_CLS;
-  var BAR_LEFT_SCROLLER_CLS = F.BAR_LEFT_SCROLLER_CLS;
-  var BAR_RIGHT_SCROLLER_CLS = F.BAR_RIGHT_SCROLLER_CLS;
+  const BAR_CLS = F.BAR_CLS;
+  const BAR_CONTAINER_CLS = F.BAR_CONTAINER_CLS;
+  const BAR_BUTTON_CLS = F.BAR_BUTTON_CLS;
+  const BAR_SEG_BUTTON_CLS = F.BAR_SEG_BUTTON_CLS;
+  const BAR_LEFT_SCROLLER_CLS = F.BAR_LEFT_SCROLLER_CLS;
+  const BAR_RIGHT_SCROLLER_CLS = F.BAR_RIGHT_SCROLLER_CLS;
 
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
-  var FIELD_SEARCH_CLS = F.FIELD_SEARCH_CLS;
-  var FIELD_SEARCH_LIST_CLS = F.FIELD_SEARCH_LIST_CLS;
-  var FIELD_SEARCH_PARAMS_LINK_CLS = F.FIELD_SEARCH_PARAMS_LINK_CLS;
-  var FIELD_SEARCH_PARAMED_CLS = F.FIELD_SEARCH_PARAMED_CLS;
-  var FIELD_SEARCH_PARAMED_EMPTY_CLS = F.FIELD_SEARCH_PARAMED_EMPTY_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  const FIELD_SEARCH_CLS = F.FIELD_SEARCH_CLS;
+  const FIELD_SEARCH_LIST_CLS = F.FIELD_SEARCH_LIST_CLS;
+  const FIELD_SEARCH_PARAMS_LINK_CLS = F.FIELD_SEARCH_PARAMS_LINK_CLS;
+  const FIELD_SEARCH_PARAMED_CLS = F.FIELD_SEARCH_PARAMED_CLS;
+  const FIELD_SEARCH_PARAMED_EMPTY_CLS = F.FIELD_SEARCH_PARAMED_EMPTY_CLS;
 
-  var PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const PICKER_MONTH_ACTION_BUTTONS_CLS = F.PICKER_MONTH_ACTION_BUTTONS_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
 
   F.define('Fancy.Bar', {
     extend: F.Widget,
@@ -8313,13 +8308,13 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.roles = {};
       me.render();
 
-      if (me.barScrollEnabled){
+      if (me.barScrollEnabled) {
         me.initScroll();
         setTimeout(function(){
           me.checkScroll();
@@ -8329,8 +8324,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    render: function(){
-      var me = this;
+    render(){
+      const me = this;
 
       me.renderEl();
       me.renderItems();
@@ -8339,11 +8334,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    renderEl: function(){
-      var me = this;
+    renderEl(){
+      const me = this;
 
-      if (!me.el){
-        var el = F.get(document.createElement('div'));
+      if (!me.el) {
+        const el = F.get(document.createElement('div'));
 
         el.addCls(
           me.widgetCls,
@@ -8359,11 +8354,11 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         }
       }
 
-      if(me.hidden){
+      if (me.hidden) {
         me.el.css('display', 'none');
       }
 
-      var containerEl = F.get(document.createElement('div'));
+      const containerEl = F.get(document.createElement('div'));
       containerEl.addCls(me.containerCls);
 
       me.containerEl = F.get(me.el.dom.appendChild(containerEl.dom));
@@ -8371,7 +8366,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    renderItems: function(){
+    renderItems(){
       var me = this,
         containerEl = me.containerEl,
         items = me.items || [],
@@ -8382,7 +8377,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         sidePassed = iL - 1,
         passedRight = 0;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         var item = items[i];
 
         if (isSide){
@@ -8390,34 +8385,34 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
           sidePassed--;
         }
 
-        if (item.toggleGroup){
+        if (item.toggleGroup) {
           item.enableToggle = true;
         }
 
-        if (F.isObject(item)){
+        if (F.isObject(item)) {
           item.type = item.type || 'button';
         }
 
-        if (isSide){
+        if (isSide) {
           me.floating = 'right';
           item.style = item.style || {};
           item.style['right'] = passedRight;
         }
 
-        if (F.isObject(item)){
+        if (F.isObject(item)) {
           item.renderTo = containerEl.dom;
         }
 
-        switch (item){
+        switch (item) {
           case '|':
-            var style = {
+            const style = {
               'float': me.floating,
               'margin-right': '5px',
               'margin-top': '6px',
               'padding-left': '0px'
             };
 
-            if (me.floating === 'right'){
+            if (me.floating === 'right') {
               F.applyIf(style, {
                 right: '1px',
                 position: 'absolute'
@@ -8445,19 +8440,19 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
             }
         }
 
-        if(isSide){
+        if (isSide) {
           //TODO: redo with variable
           //Needs variable charWidth from theme
           //Possible place of bug: wrong right value.
-          if(item.text){
+          if (item.text) {
             passedRight += item.text.length * 7 + 5 + 5 + 5;
           }
-          else if(item.width){
+          else if (item.width) {
             passedRight += item.width + 5;
           }
 
-          if(item.imageCls){
-            if(item.imageWidth){
+          if (item.imageCls) {
+            if (item.imageWidth) {
               passedRight += item.imageWidth;
             }
             else{
@@ -8475,7 +8470,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} item
      * @return {Object}
      */
-    renderItem: function(item){
+    renderItem(item){
       var me = this,
         field,
         containerEl = me.containerEl,
@@ -8490,20 +8485,20 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         'float': me.floating
       });
 
-      if (me.floating === 'right'){
+      if (me.floating === 'right') {
         F.applyIf(item.style, {
           right: me.sideRight,
           position: 'absolute'
         });
       }
 
-      if (!item.scope && me.scope){
+      if (!item.scope && me.scope) {
         item.scope = me.scope;
       }
 
-      switch (item.type){
+      switch (item.type) {
         case 'wrapper':
-          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS){
+          if (item.cls === PICKER_MONTH_ACTION_BUTTONS_CLS) {
             containerEl.destroy();
             containerEl = me.el;
           }
@@ -8523,16 +8518,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
             _item.renderTo = renderTo.dom;
             field = me.renderItem(_item);
-            var fieldEl = field.el;
+            const fieldEl = field.el;
 
-            if (i === iL - 1){
+            if (i === iL - 1) {
               fieldEl.css('margin-right', '0px');
             }
             else {
               width += parseInt(fieldEl.css('margin-right'));
             }
 
-            if (F.nojQuery){
+            if (F.nojQuery) {
               width += parseInt(fieldEl.width());
             }
             else {
@@ -8676,22 +8671,22 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
           item.events = item.events.concat([{
             enter: function(field, value){
-              var grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+              const grid = F.getWidget(field.el.parent().parent().parent().parent().select(`.${GRID_CLS}`).item(0).attr('id'));
 
               //this.search(['name', 'surname', 'position'], value);
               //this.search(value);
               //this.search(['a', 'b', 'c']);
               grid.search(value);
-              if(grid.expander){
+              if (grid.expander) {
                 grid.expander.reSet();
               }
             }
           }, {
             key: function(field, value){
-              var me = this,
-                grid = F.getWidget(field.el.parent().parent().parent().parent().select('.' + GRID_CLS).item(0).attr('id'));
+              const me = this,
+                grid = F.getWidget(field.el.parent().parent().parent().parent().select(`.${GRID_CLS}`).item(0).attr('id'));
 
-              if(grid.filter && grid.filter.autoEnterDelay === false){
+              if (grid.filter && grid.filter.autoEnterDelay === false) {
                 return;
               }
 
@@ -8703,9 +8698,9 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
               delete me.intervalAutoEnter;
 
               me.intervalAutoEnter = setInterval(function(){
-                var now = new Date();
+                const now = new Date();
 
-                if (now - me.autoEnterTime > 500){
+                if (now - me.autoEnterTime > 500) {
                   clearInterval(me.intervalAutoEnter);
                   delete me.intervalAutoEnter;
                   value = field.getValue();
@@ -8916,7 +8911,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
           var cls = FIELD_SEARCH_CLS;
 
-          if (item.paramsMenu){
+          if (item.paramsMenu) {
             item.tpl = [
               '<div class="' + FIELD_LABEL_CLS + '" style="{labelWidth}{labelDisplay}">',
               '{label}',
@@ -8946,12 +8941,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         default:
       }
 
-      if (me.floating === 'right'){
+      if (me.floating === 'right') {
         me.sideRight += field.width;
         me.sideRight += 7;
       }
 
-      if (item.role){
+      if (item.role) {
         me.roles[item.role] = field;
       }
 
@@ -8961,7 +8956,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      *
      */
     initScroll: function(){
-      var me = this;
+      const me = this;
 
       me.leftScroller = new F.Button({
         imageCls: true,
@@ -9010,14 +9005,14 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      * @return {Number}
      */
-    getBarWidth: function(){
+    getBarWidth(){
       return parseInt(this.el.css('width'));
     },
     /*
      * @return {Number}
      */
-    getItemsWidth: function(){
-      var width = 0;
+    getItemsWidth(){
+      let width = 0;
 
       F.each(this.items, function(item){
         if(item.el.css('display') === 'none' ){
@@ -9041,8 +9036,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onPrevScrollClick: function(){
-      var me = this;
+    onPrevScrollClick(){
+      const me = this;
 
       me.scrolled += me.tabScrollStep;
 
@@ -9055,8 +9050,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onNextScrollClick: function(){
-      var me = this;
+    onNextScrollClick(){
+      const me = this;
 
       me.scrolled -= me.tabScrollStep;
       me.applyScrollChanges();
@@ -9064,8 +9059,8 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    applyScrollChanges: function(){
-      var me = this,
+    applyScrollChanges(){
+      const me = this,
         itemsWidth = me.getItemsWidth() + me.tabOffSet,
         //itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth() - parseInt(me.leftScroller.el.css('width')) - parseInt(me.rightScroller.el.css('width')) - me.tabOffSet * 2,
@@ -9114,10 +9109,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    onDocMouseUp: function(){
-      var me = this;
+    onDocMouseUp(){
+      const me = this;
 
-      if (me.scrollInterval){
+      if (me.scrollInterval) {
         clearTimeout(me.scrollInterval);
         delete me.scrollInterval;
       }
@@ -9125,16 +9120,16 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    checkScroll: function(){
-      var me = this,
+    checkScroll(){
+      const me = this,
         itemsWidth = me.getItemsWidth(),
         barWidth = me.getBarWidth();
 
-      if (me.disableScroll){
+      if (me.disableScroll) {
         return;
       }
 
-      if(me.isParentHidden()){
+      if (me.isParentHidden()) {
         me.checkVisInt = setInterval(function(){
           if(!me.isParentHidden()){
             me.checkScroll();
@@ -9148,10 +9143,10 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
         delete me.checkVisInt;
       }
 
-      if (itemsWidth > barWidth){
+      if (itemsWidth > barWidth) {
         me.enableScroll();
       }
-      else if(me.barScrollEnabled){
+      else if(me.barScrollEnabled) {
         me.leftScroller.el.hide();
         me.rightScroller.el.hide();
       }
@@ -9159,35 +9154,35 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     /*
      *
      */
-    enableScroll: function(){
-      var me = this;
+    enableScroll(){
+      const me = this;
 
-      if(!me.barScrollEnabled){
+      if (!me.barScrollEnabled) {
         return;
       }
 
       me.leftScroller.el.show();
       me.rightScroller.el.show();
 
-      if (me.scrolled === 0){
+      if (me.scrolled === 0) {
         me.leftScroller.disable();
-        me.containerEl.css('margin-left', 20 + 'px');
+        me.containerEl.css('margin-left', '20px');
       }
     },
     /*
      *
      */
-    initTabEdit: function(){
-      var me = this;
+    initTabEdit(){
+      const me = this;
 
       if (!me.tabEdit){
         return;
       }
 
-      var i = me.items.length - 1;
+      let i = me.items.length - 1;
 
       for (; i > -1; i--){
-        var item = me.items[i];
+        const item = me.items[i];
 
         switch (item.type){
           case 'number':
@@ -9202,38 +9197,37 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
      * @param {Object} field
      * @param {Object} e
      */
-    onTabLastInput: function(field, e){
-      var me = this,
-        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id'));
+    onTabLastInput(field, e){
+      const me = this,
+        grid = F.getWidget(me.el.parent().select(`.${GRID_CLS}`).attr('id'));
 
-      //NOTE: setTimeout to fix strange bug. It runs second second cell without it.
+      //NOTE: setTimeout to fix strange bug. It runs second cell without it.
       e.preventDefault();
 
-      if (grid.leftColumns.length){
-        setTimeout(function(){
-          grid.leftBody.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+      if (grid.leftColumns.length) {
+        setTimeout(() => {
+          grid.leftBody.el.select(`.${GRID_CELL_CLS}`).item(0).dom.click();
         }, 100);
       }
       else {
-        setTimeout(function(){
-          grid.body.el.select('.' + GRID_CELL_CLS).item(0).dom.click();
+        setTimeout(() => {
+          grid.body.el.select(`.${GRID_CELL_CLS}`).item(0).dom.click();
         }, 100);
       }
     },
-    isParentHidden: function(parent, deep){
-      var me = this,
-        grid = F.getWidget(me.el.parent().select('.' + GRID_CLS).attr('id')),
-        deep = deep || 1;
+    isParentHidden(parent, deep = 1){
+      const me = this,
+        grid = F.getWidget(me.el.parent().select(`.${GRID_CLS}`).attr('id'));
 
-      if(!grid){
+      if (!grid) {
         return false;
       }
 
-      if(!parent){
+      if (!parent) {
         parent = grid.el;
       }
 
-      if(parent.css('display') === 'none'){
+      if (parent.css('display') === 'none') {
         return true;
       }
 
@@ -9249,6 +9243,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   });
 
 })();
+
 /*
  * @class Fancy.Separator
  */
@@ -9265,14 +9260,14 @@ Fancy.define('Fancy.Separator', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.render();
   },
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       el = Fancy.get(document.createElement('div'));
 
     el.addCls(me.cls);
@@ -9280,11 +9275,12 @@ Fancy.define('Fancy.Separator', {
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
 
-    if(me.style){
+    if (me.style) {
       me.el.css(me.style);
     }
   }
 });
+
 /*
  * @class Fancy.bar.Text
  */
@@ -9305,8 +9301,8 @@ Fancy.define('Fancy.bar.Text', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
     me.render();
@@ -9315,8 +9311,8 @@ Fancy.define('Fancy.bar.Text', {
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       el = Fancy.get(document.createElement('div'));
 
     el.addCls(me.widgetCls, me.cls);
@@ -9324,94 +9320,96 @@ Fancy.define('Fancy.bar.Text', {
 
     me.el = Fancy.get(me.renderTo.appendChild(el.dom));
 
-    if(me.style){
-      me.el.css(me.style);
+    const { style, hidden, id, width } = me;
+
+    if (style) {
+      me.el.css(style);
     }
 
-    if(me.hidden){
+    if (hidden) {
       me.el.css('display', 'none');
     }
 
-    if(me.id){
-      me.el.attr('id', me.id);
+    if (id) {
+      me.el.attr('id', id);
     }
 
-    if(me.width){
-      me.el.css('width', me.width);
+    if (width) {
+      me.el.css('width', width);
     }
   },
   /*
    * @return {String}
    */
-  get: function(){
+  get() {
     return this.el.dom.innerHTML;
   },
   /*
    * @return {String}
    */
-  getValue: function(){
+  getValue(){
     return this.get();
   },
   /*
    * @param {String} value
    */
-  set: function(value){
+  set(value){
     this.el.dom.innerHTML = value;
   },
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       el = me.el;
 
     el.on('mouseover', me.onMouseOver, me);
     el.on('mouseout', me.onMouseOut, me);
 
-    if(me.tip){
-      me.el.on('mousemove', me.onMouseMove, me);
+    if (me.tip) {
+      el.on('mousemove', me.onMouseMove, me);
     }
   },
   /*
    *
    */
-  onMouseMove: function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
 
-    if(me.tip && me.tooltip){
+    if (me.tip && me.tooltip) {
       me.tooltip.show(e.pageX + 15, e.pageY - 25);
     }
   },
   /*
      * @param {Object} e
      */
-  onMouseOver: function(e){
-    var me = this;
+  onMouseOver(e){
+    const me = this;
 
     me.fire('mouseover');
 
-    if(me.tip){
+    if (me.tip) {
       me.renderTip(e);
     }
   },
   /*
    * @param {Object} e
    */
-  renderTip: function(e){
-    var me = this,
-      text = '';
+  renderTip(e){
+    const me = this;
+    let text = '';
 
-    if(me.tooltip){
+    if (me.tooltip) {
       me.tooltip.destroy();
     }
 
-    if(me.tip === true){
+    if (me.tip === true) {
       me.tip = new Fancy.Template(me.tipTpl).getHTML({
         value: me.get()
       });
     }
     else{
-      switch (Fancy.typeOf(me.tip)){
+      switch (Fancy.typeOf(me.tip)) {
         case 'function':
           text = me.tip(this, me.get, me.label || '');
           break;
@@ -9423,7 +9421,7 @@ Fancy.define('Fancy.bar.Text', {
       }
     }
 
-    if (me.tooltip){
+    if (me.tooltip) {
       me.tooltip.update(text);
     }
     else {
@@ -9438,17 +9436,18 @@ Fancy.define('Fancy.bar.Text', {
   /*
    *
    */
-  onMouseOut: function(){
-    var me = this;
+  onMouseOut(){
+    const me = this;
 
     me.fire('mouseout');
 
-    if(me.tooltip){
+    if (me.tooltip) {
       me.tooltip.destroy();
       delete me.tooltip;
     }
   }
 });
+
 /**
  * @class Fancy.Form
  * @extends Fancy.Widget
@@ -9476,7 +9475,7 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @param {Object} config
    */
   constructor: function(renderTo, config){
-    var me = this;
+    const me = this;
 
     if(Fancy.isDom(renderTo)){
       config = config || {};
@@ -9488,8 +9487,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
 
     config = config || {};
 
-    var fn = function(params){
-      if(params){
+    const fn = function (params) {
+      if (params) {
         Fancy.apply(config, params);
       }
 
@@ -9499,10 +9498,10 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       me.Super('const', arguments);
     };
 
-    var preInit = function(){
-      var i18n = config.i18n || me.i18n;
+    const preInit = function () {
+      const i18n = config.i18n || me.i18n;
 
-      if( Fancy.loadLang(i18n, fn) === true ){
+      if (Fancy.loadLang(i18n, fn) === true) {
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -9529,8 +9528,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
    * @param {Function} preInit
    * @param {Object} config
    */
-  loadModules: function(preInit, config){
-    var me = this,
+  loadModules(preInit, config){
+    const me = this,
       requiredModules = {
         form: true
       };
@@ -9549,8 +9548,8 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       requiredModules.ajax = true;
     }
 
-    var containsMenu = function(item){
-      if(item.menu){
+    const containsMenu = function (item) {
+      if (item.menu) {
         requiredModules['menu'] = true;
         return true;
       }
@@ -9561,25 +9560,25 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
     Fancy.each(config.buttons, containsMenu);
     Fancy.each(config.subTBar, containsMenu);
 
-    var readItems = function(items){
+    const readItems = function (items) {
       var i = 0,
         iL = items.length,
         item;
 
-      for(;i<iL;i++){
+      for (; i < iL; i++) {
         item = items[i];
 
-        if(item.type === 'combo' && item.data && item.data.proxy){
+        if (item.type === 'combo' && item.data && item.data.proxy) {
           requiredModules.ajax = true;
         }
 
-        if(item.type === 'date'){
+        if (item.type === 'date') {
           requiredModules.grid = true;
           requiredModules.date = true;
           requiredModules.selection = true;
         }
 
-        if(item.items){
+        if (item.items) {
           readItems(item.items);
         }
       }
@@ -9604,11 +9603,11 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
       return;
     }
 
-    var onLoad = function(name){
+    const onLoad = function (name) {
       delete me.neededModules[name];
       me.neededModules.length--;
 
-      if(me.neededModules.length === 0){
+      if (me.neededModules.length === 0) {
         me.neededModules = true;
         preInit();
       }
@@ -9642,14 +9641,14 @@ Fancy.define(['Fancy.Form', 'FancyForm'], {
 /*
  * @param {String} id
  */
-FancyForm.get = function(id){
-  var el = Fancy.get(id);
+FancyForm.get = (id) => {
+  const el = Fancy.get(id);
 
   if(!el.dom){
     return;
   }
 
-  var formId = el.select('.fancy-form').dom.id;
+  const formId = el.select('.fancy-form').dom.id;
 
   return Fancy.getWidget(formId);
 };
@@ -9670,21 +9669,22 @@ if(!Fancy.nojQuery && Fancy.$){
     return new Fancy.Form(o);
   };
 }
+
 /*
  * @mixin Fancy.form.field.Mixin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
-  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
-  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
-  var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
+  const FIELD_NOT_VALID_CLS = F.FIELD_NOT_VALID_CLS;
+  const FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  const FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
+  const FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
 
   F.ns('Fancy.form.field');
 
@@ -9701,8 +9701,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el,
         input = me.el.getByTag('input');
 
@@ -9715,11 +9715,11 @@ if(!Fancy.nojQuery && Fancy.$){
       el.on('mouseleave', me.onMouseOut, me);
       me.on('key', me.onKey, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
 
-      if (me.format && me.format.inputFn){
+      if (me.format && me.format.inputFn) {
         switch (me.value){
           case '':
           case undefined:
@@ -9748,8 +9748,8 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {*} value
      * @param {Object} e
      */
-    onKeyInputFn: function(field, value, e){
-      var me = this,
+    onKeyInputFn(field, value, e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
@@ -9771,11 +9771,11 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {*} value
      */
-    formatValue: function(value){
-      var me = this;
+    formatValue(value){
+      const me = this;
       value = this.format.inputFn(value);
-      var position = this.input.dom.selectionStart;
-      var oldValue = this.input.dom.value;
+      let position = this.input.dom.selectionStart;
+      const oldValue = this.input.dom.value;
 
       this.input.dom.value = value;
 
@@ -9787,8 +9787,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    setCaretPosition: function(position){
-      var input = this.input.dom;
+    setCaretPosition(position){
+      const input = this.input.dom;
 
       if(input.createTextRange){
         var range = input.createTextRange();
@@ -9809,8 +9809,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onMouseOver: function(e){
-      var me = this;
+    onMouseOver(e){
+      const me = this;
 
       if(me.disabled){
         return;
@@ -9825,8 +9825,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onMouseOut: function(){
-      var me = this;
+    onMouseOut(){
+      const me = this;
 
       if(me.disabled){
         return;
@@ -9841,7 +9841,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo = me.renderTo || document.body,
         renderAfter = me.renderAfter,
@@ -9884,7 +9884,7 @@ if(!Fancy.nojQuery && Fancy.$){
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
-      var label = me.label;
+      let label = me.label;
 
       if (me.label === ''){
         label = '&nbsp;';
@@ -9918,7 +9918,7 @@ if(!Fancy.nojQuery && Fancy.$){
         );
       }
       else {
-        var itemConfig = {
+        const itemConfig = {
           labelWidth: labelWidth,
           label: label,
           labelDisplay: labelDisplay,
@@ -10035,8 +10035,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onKeyDown: function(e){
-      var me = this,
+    onKeyDown(e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
@@ -10079,7 +10079,7 @@ if(!Fancy.nojQuery && Fancy.$){
           me.fire('esc', e);
           break;
         case key.ENTER:
-          var isTextArea = me.type === 'textarea' || me.type === 'field.textarea';
+          const isTextArea = me.type === 'textarea' || me.type === 'field.textarea';
 
           if (isTextArea && e.shiftKey){
             break;
@@ -10153,7 +10153,7 @@ if(!Fancy.nojQuery && Fancy.$){
           }, 1);
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
@@ -10161,7 +10161,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Object} me
      * @param {*} value
      */
-    onKey: function(me, value){
+    onKey(me, value){
       if(me.disabled){
         return;
       }
@@ -10174,18 +10174,18 @@ if(!Fancy.nojQuery && Fancy.$){
      * It used also for validation.
      * @return {Boolean} - returns true/false if validation passed successful.
      */
-    onBlur: function(){
-      var me = this;
+    onBlur(){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         return true;
       }
 
       me.fire('blur');
 
-      if (me.input){
-        if(me.type === 'combo'){
-          setTimeout(function(){
+      if (me.input) {
+        if (me.type === 'combo') {
+          setTimeout(() => {
             if(me.listItemClicked){}
             else{
               me.validate(me.input.dom.value);
@@ -10202,16 +10202,16 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {*} value
      */
-    validate: function(value){
-      var me = this,
+    validate(value) {
+      const me = this,
         vtype = me.vtype;
 
-      if (vtype === undefined){
+      if (vtype === undefined) {
         return true;
       }
       else {
-        var valid = F.isValid(vtype, value);
-        if (valid !== true){
+        const valid = F.isValid(vtype, value);
+        if (valid !== true) {
           me.errorText = new F.Template(valid.text).getHTML(valid);
           me.failedValid();
 
@@ -10226,14 +10226,14 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    isValid: function(){
+    isValid() {
       return !this.hasCls(this.failedValidCls);
     },
     /*
      *
      */
-    onFocus: function(){
-      var me = this;
+    onFocus(){
+      const me = this;
 
       if(me.disabled || me.editable === false){
         this.input.blur();
@@ -10245,18 +10245,18 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    blur: function(){
+    blur(){
       this.input.blur();
     },
     /*
      *
      */
-    onInput: function(){
-      var me = this,
+    onInput(){
+      const me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
@@ -10267,10 +10267,10 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    get: function(){
-      var me = this;
+    get(){
+      const me = this;
 
-      if (me.format){
+      if (me.format) {
         //Place of bugs
         if (F.isString(me.format)){}
         else if (F.isObject(me.format)){
@@ -10304,68 +10304,66 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    getValue: function(){
+    getValue() {
       return this.get();
     },
     /*
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function(value, onInput){
-      var me = this;
+    set(value, onInput){
+      const me = this;
 
       me.value = value;
 
-      if (me.format && me.format.inputFn){
+      if (me.format && me.format.inputFn) {
         me.formatValue(value);
       }
       else {
         me.input.dom.value = value;
       }
 
-      if (onInput !== false){
+      if (onInput !== false) {
         me.onInput();
       }
 
       me.validate(value);
     },
-    setLabel: function(value){
-      var me = this;
-
-      me.el.select('.' + FIELD_LABEL_CLS).update(value);
+    setLabel(value){
+      this.el.select(`.${FIELD_LABEL_CLS}`).update(value);
     },
     /*
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function(value, onInput){
+    setValue(value, onInput){
       this.set(value, onInput);
     },
     /*
      *
      */
-    clear: function(){
+    clear(){
       this.set('');
       this.clearValid();
     },
     /*
      *
      */
-    failedValid: function(){
-      var me = this;
+    failedValid(){
+      const me = this;
 
-      if (me.hasCls(me.failedValidCls)){
-        if (me.tooltip && me.errorText){
+      if (me.hasCls(me.failedValidCls)) {
+        if (me.tooltip && me.errorText) {
           F.tip.update(me.errorText);
         }
       }
       else {
-        if (!me.tooltip && me.errorText){
+        if (!me.tooltip && me.errorText) {
           me.showErrorTip();
 
           me.el.on('mousemove', me.onMouseMove, me);
           me.input.hover(function(e){
-            if (me.errorText){
+            if (me.errorText) {
               me.showErrorTip();
               F.tip.show(e.pageX + 15, e.pageY - 25);
             }
@@ -10377,14 +10375,14 @@ if(!Fancy.nojQuery && Fancy.$){
         me.addCls(me.failedValidCls);
       }
     },
-    clearValid: function(){
+    clearValid(){
       this.removeCls(this.failedValidCls);
     },
     /*
      *
      */
-    successValid: function(){
-      var me = this;
+    successValid(){
+      const me = this;
 
       me.removeCls(me.failedValidCls);
       me.hideErrorTip();
@@ -10393,51 +10391,49 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    showErrorTip: function(){
-      var me = this;
-
-      F.tip.update(me.errorText);
+    showErrorTip(){
+      F.tip.update(this.errorText);
     },
     /*
      *
      */
-    hideErrorTip: function(){
+    hideErrorTip(){
       F.tip.hide();
     },
     /*
      * @param {Object} o
      */
-    setInputSize: function(o){
-      var me = this;
+    setInputSize(o){
+      const me = this;
 
-      if(me.type === 'combo'){
+      if (me.type === 'combo') {
         me.inputContainer.css('width', o.width);
       }
 
-      if (o.width){
+      if (o.width) {
         me.input.css('width', o.width);
       }
 
-      if (o.height && me.type !== 'set'){
+      if (o.height && me.type !== 'set') {
         me.input.css('height', o.height);
       }
     },
     /*
      *
      */
-    focus: function(){
-      var me = this;
+    focus(){
+      const me = this;
 
       me.input.focus();
-      setTimeout(function(){
+      setTimeout(() => {
         me.input.dom.selectionStart = me.input.dom.selectionEnd = 10000;
       }, 0);
     },
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       me.fire('beforehide');
       me.css('display', 'none');
@@ -10446,30 +10442,28 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    show: function(){
-      var me = this;
-
-      me.css('display', 'block');
+    show(){
+      this.css('display', 'block');
     },
     /*
      * @param {Number|Object} width
      * @param {Number} height
      */
-    setSize: function(width, height){
-      var me = this;
+    setSize(width, height){
+      const me = this;
 
       switch (me.type){
         case 'set':
         case 'line':
       }
 
-      if (width === undefined && height === undefined){
+      if (width === undefined && height === undefined) {
         width = me.width;
         height = me.height;
       }
-      else if (height === undefined){
-        var o = width;
-        if (o.width){
+      else if (height === undefined) {
+        const o = width;
+        if (o.width) {
           width = o.width;
         }
         else {
@@ -10484,7 +10478,7 @@ if(!Fancy.nojQuery && Fancy.$){
         }
       }
 
-      if (me.size){
+      if (me.size) {
         me.size({
           width: width,
           height: height
@@ -10493,19 +10487,19 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      if (width !== undefined){
+      if (width !== undefined) {
         me.css('width', width);
       }
 
-      if (me.labelAlign === 'top'){
+      if (me.labelAlign === 'top') {
         me.css('height', height * 1.5);
       }
       else {
-        if(me.type !== 'set'){
+        if(me.type !== 'set') {
           me.css('height', height);
         }
 
-        if (me.label){
+        if (me.label) {
           me.el.select('.' + FIELD_LABEL_CLS).css('height', me.inputHeight);
         }
       }
@@ -10518,18 +10512,18 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    setStyle: function(){
-      var me = this,
+    setStyle(){
+      let me = this,
         style = me.style || {},
         padding = me.padding;
 
-      if (padding){
-        if (F.isNumber(padding)){
+      if (padding) {
+        if (F.isNumber(padding)) {
           padding = padding + 'px';
         }
         else if (F.isString(padding)){}
 
-        if (style.padding === undefined){
+        if (style.padding === undefined) {
           style.padding = padding;
         }
       }
@@ -10537,7 +10531,7 @@ if(!Fancy.nojQuery && Fancy.$){
         style.padding = '0px';
       }
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
@@ -10546,10 +10540,10 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    preRender: function(){
-      var me = this;
+    preRender(){
+      const me = this;
 
-      if (me.tpl && F.isObject(me.tpl) === false){
+      if (me.tpl && F.isObject(me.tpl) === false) {
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -10558,7 +10552,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    calcSize: function(){
+    calcSize(){
       var me = this,
         inputWidth,
         inputHeight = me.inputHeight,
@@ -10568,7 +10562,7 @@ if(!Fancy.nojQuery && Fancy.$){
         value2,
         value3;
 
-      if (F.isString(padding)){
+      if (F.isString(padding)) {
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
         switch (padding.length){
@@ -10597,25 +10591,25 @@ if(!Fancy.nojQuery && Fancy.$){
       else if (F.isNumber(padding)){
         padding = [padding, padding, padding, padding];
       }
-      else if (padding === false){
+      else if (padding === false) {
         padding = [0, 0, 0, 0];
       }
 
-      if (me.labelAlign === 'top'){
+      if (me.labelAlign === 'top') {
         me.height *= 1.5;
       }
 
       inputWidth = me.width;
 
-      if (me.labelAlign !== 'top' && me.label){
+      if (me.labelAlign !== 'top' && me.label) {
         inputWidth -= me.labelWidth;
       }
 
-      if (me.height === me.inputHeight && me.padding !== false){
+      if (me.height === me.inputHeight && me.padding !== false) {
         inputHeight -= padding[0] + padding[2];
       }
 
-      if (me.type === 'radio' && !me.column){
+      if (me.type === 'radio' && !me.column) {
         me.calcColumns();
         if (me.rows !== 1){
           inputHeight = (inputHeight - padding[0] - padding[2]) * me.rows;
@@ -10629,8 +10623,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Number} value
      */
-    setWidth: function(value){
-      var me = this;
+    setWidth(value){
+      const me = this;
 
       me.width = value;
       me.calcSize();
@@ -10643,17 +10637,17 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    onMouseMove: function(e){
-      var me = this,
+    onMouseMove(e){
+      const me = this,
         //Link on grid if presented
         w = me.widget;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if(w){
-        if(w.startResizing && me.tooltip){
+      if (w) {
+        if (w.startResizing && me.tooltip) {
           F.tip.hide();
           return;
         }
@@ -10674,14 +10668,14 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Object} e
      */
-    renderTip: function(e){
+    renderTip(e){
       var me = this,
         value = '',
         tip = me.tip,
         tpl,
         text;
 
-      if (me.getValue){
+      if (me.getValue) {
         switch(me.type){
           case 'button':
           case 'field.button':
@@ -10692,7 +10686,7 @@ if(!Fancy.nojQuery && Fancy.$){
         }
       }
 
-      switch (Fancy.typeOf(tip)){
+      switch (Fancy.typeOf(tip)) {
         case 'function':
           text = tip(this, value, me.label || '');
           break;
@@ -10710,7 +10704,7 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @return {Object}
      */
-    getInputSelection: function(){
+    getInputSelection(){
       var me = this,
         start = 0,
         end = 0,
@@ -10721,14 +10715,14 @@ if(!Fancy.nojQuery && Fancy.$){
         endRange,
         el = me.input.dom;
 
-      if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number'){
+      if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number') {
         start = el.selectionStart;
         end = el.selectionEnd;
       }
       else {
         range = document.selection.createRange();
 
-        if (range && range.parentElement() == el){
+        if (range && range.parentElement() == el) {
           len = el.value.length;
           normalizedValue = el.value.replace(/\r\n/g, '\n');
 
@@ -10759,57 +10753,55 @@ if(!Fancy.nojQuery && Fancy.$){
       }
 
       return {
-        start: start,
-        end: end
+        start,
+        end
       };
     },
     /*
      *
      */
-    enable: function(){
-      var me = this;
+    enable(){
+      const me = this;
 
       me.disabled = false;
       me.removeCls(FIELD_DISABLED_CLS);
 
-      if(me.button){
+      if (me.button) {
         me.button.enable();
       }
 
-      if(me.input){
+      if (me.input) {
         me.input.attr('tabIndex', me.tabIndex || 0);
       }
     },
     /*
      *
      */
-    disable: function(){
-      var me = this;
+    disable(){
+      const me = this;
 
       me.disabled = true;
       me.addCls(FIELD_DISABLED_CLS);
 
-      if(me.button){
+      if (me.button) {
         me.button.disable();
       }
 
-      if(me.input){
+      if (me.input) {
         me.input.attr('tabIndex', -1);
       }
     },
     /*
      *
      */
-    getInputValue: function(){
-      var me = this;
-
-      return me.input.dom.value;
+    getInputValue(){
+      return this.input.dom.value;
     },
     /*
      *
      */
-    clearInput: function(){
-      var me = this;
+    clearInput(){
+      const me = this;
 
       if(me.input){
         me.input.dom.value = '';
@@ -10818,6 +10810,7 @@ if(!Fancy.nojQuery && Fancy.$){
   };
 
 })();
+
 /*
  * @class Fancy.StringField
  * @extends Fancy.Widget
@@ -10839,8 +10832,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab','change', 'key', 'empty');
 
@@ -10902,6 +10895,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     '<div class="fancy-clearfix"></div>'
   ]
 });
+
 /*
  * @class Fancy.NumberField
  * @extends Fancy.Widget
@@ -10910,15 +10904,15 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
-  var FIELD_CLS = Fancy.FIELD_CLS;
-  var FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
-  var FIELD_ERROR_CLS = Fancy.FIELD_ERROR_CLS;
-  var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
-  var FIELD_TEXT_INPUT_CLS = Fancy.FIELD_TEXT_INPUT_CLS;
-  var FIELD_SPIN_CLS = Fancy.FIELD_SPIN_CLS;
-  var FIELD_SPIN_UP_CLS = Fancy.FIELD_SPIN_UP_CLS;
-  var FIELD_SPIN_DOWN_CLS = Fancy.FIELD_SPIN_DOWN_CLS;
+  const CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
+  const FIELD_CLS = Fancy.FIELD_CLS;
+  const FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
+  const FIELD_ERROR_CLS = Fancy.FIELD_ERROR_CLS;
+  const FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
+  const FIELD_TEXT_INPUT_CLS = Fancy.FIELD_TEXT_INPUT_CLS;
+  const FIELD_SPIN_CLS = Fancy.FIELD_SPIN_CLS;
+  const FIELD_SPIN_UP_CLS = Fancy.FIELD_SPIN_UP_CLS;
+  const FIELD_SPIN_DOWN_CLS = Fancy.FIELD_SPIN_DOWN_CLS;
 
   Fancy.define(['Fancy.form.field.Number', 'Fancy.NumberField'], {
     mixins: [
@@ -10938,8 +10932,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'tab', 'change', 'key', 'empty');
 
@@ -10978,13 +10972,13 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      *
      */
-    onInput: function(){
+    onInput(){
       var me = this,
         input = me.input,
         value = me.get(),
         oldValue = me.acceptedValue;
 
-      if (me.isValid()){
+      if (me.isValid()) {
         var _value = input.dom.value,
           _newValue = '',
           i = 0,
@@ -11024,7 +11018,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {String} value
      * @return {Boolean}
      */
-    isNumber: function(value){
+    isNumber(value){
       if (value === '' || value === '-'){
         return true;
       }
@@ -11035,10 +11029,10 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
      * @param {Number|String} value
      * @return {Boolean}
      */
-    checkMinMax: function(value){
-      var me = this;
+    checkMinMax(value){
+      const me = this;
 
-      if (value === '' || value === '-'){
+      if (value === '' || value === '-') {
         return true;
       }
 
@@ -11049,20 +11043,20 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      * @param {Number} value
      */
-    setMin: function(value){
+    setMin(value){
       this.min = value;
     },
     /*
      * @param {Number} value
      */
-    setMax: function(value){
+    setMax(value){
       this.max = value;
     },
     /*
      *
      */
-    initSpin: function(){
-      var me = this;
+    initSpin(){
+      const me = this;
 
       if (me.spin !== true){
         return;
@@ -11076,7 +11070,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      * @param {Object} e
      */
-    onMouseDownSpinUp: function(e){
+    onMouseDownSpinUp(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -11108,16 +11102,14 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         }
       }, 20);
 
-      docEl.once('mouseup', function(){
-        clearInterval(me.spinInterval);
-      });
+      docEl.once('mouseup', () => clearInterval(me.spinInterval));
 
       me.focus();
     },
     /*
      * @param {Object} e
      */
-    onMouseDownSpinDown: function(e){
+    onMouseDownSpinDown(e){
       var me = this,
         docEl = Fancy.get(document),
         timeInterval = 700,
@@ -11150,17 +11142,15 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
         }
       }, 20);
 
-      docEl.once('mouseup', function(){
-        clearInterval(me.spinInterval);
-      });
+      docEl.once('mouseup', () => clearInterval(me.spinInterval));
 
       me.focus();
     },
     /*
      *
      */
-    spinUp: function(){
-      var me = this,
+    spinUp(){
+      let me = this,
         newValue = +me.get() + me.step;
 
       if (Fancy.Number.isFloat(me.step)){
@@ -11183,8 +11173,8 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
     /*
      *
      */
-    spinDown: function(){
-      var me = this,
+    spinDown(){
+      let me = this,
         newValue = +me.get() - me.step;
 
       if (Fancy.Number.isFloat(me.step)){
@@ -11207,6 +11197,7 @@ Fancy.define(['Fancy.form.field.String', 'Fancy.StringField'], {
   });
 
 })();
+
 /*
  * @class Fancy.TextField
  * @extends Fancy.Widget
@@ -11228,8 +11219,8 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.Super('init', arguments);
 
@@ -11238,11 +11229,11 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
 
     //me.ons();
 
-    if( me.hidden ){
+    if (me.hidden) {
       me.css('display', 'none');
     }
 
-    if( me.style ){
+    if (me.style) {
       me.css(me.style);
     }
   },
@@ -11263,10 +11254,11 @@ Fancy.define(['Fancy.form.field.Text', 'Fancy.TextField'], {
   /*
    * @param {*} value
    */
-  set: function(value){
+  set(value){
     this.el.select('.fancy-field-text-value').item(0).update(value);
   }
 });
+
 /*
  * @class Fancy.EmptyField
  * @extends Fancy.Widget
@@ -11288,8 +11280,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents();
 
@@ -11298,14 +11290,14 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     me.preRender();
     me.render();
 
-    if( me.style ){
+    if (me.style) {
       me.css(me.style);
     }
   },
   /*
    *
    */
-  ons: function(){},
+  ons(){},
   fieldCls: Fancy.FIELD_CLS + ' ' + Fancy.FIELD_EMPTY_CLS,
   width: 100,
   tpl: [
@@ -11318,22 +11310,23 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     '<div class="fancy-clearfix"></div>'
   ]
 });
+
 /*
  * @class Fancy.TextArea
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_TEXTAREA_CLS = F.FIELD_TEXTAREA_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
-  var FIELD_TEXTAREA_TEXT_INPUT_CLS = F.FIELD_TEXTAREA_TEXT_INPUT_CLS;
-  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_TEXTAREA_CLS = F.FIELD_TEXTAREA_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXTAREA_TEXT_CLS = F.FIELD_TEXTAREA_TEXT_CLS;
+  const FIELD_TEXTAREA_TEXT_INPUT_CLS = F.FIELD_TEXTAREA_TEXT_INPUT_CLS;
+  const FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
 
   F.define(['Fancy.form.field.TextArea', 'Fancy.TextArea'], {
     mixins: [
@@ -11350,8 +11343,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('change', 'key');
       me.Super('init', arguments);
@@ -11384,8 +11377,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el,
         input = me.el.getByTag('textarea');
 
@@ -11396,7 +11389,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       input.on('keydown', me.onKeyDown, me);
       me.on('key', me.onKey, me);
 
-      if (me.autoHeight){
+      if (me.autoHeight) {
         input.on('input', me.onChange, me);
       }
 
@@ -11409,17 +11402,17 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    preRender: function(){
-      var me = this;
+    preRender(){
+      const me = this;
 
-      if (me.tpl){
+      if (me.tpl) {
         me.tpl = new F.Template(me.tpl);
       }
 
@@ -11429,23 +11422,23 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    initHeight: function(){
-      var me = this,
+    initHeight(){
+      let me = this,
         height;
 
       if (me.height){
         height = me.height;
         if (me.maxHeight < me.height){
           //me.maxHeight = me.height;
-          setTimeout(function(){
+          setTimeout(() => {
             me.input.css({
               'overflow-y': 'scroll'
             });
           }, 1);
         }
       }
-      else if (me.value){
-        var length = me.value.match(/\n/g);
+      else if (me.value) {
+        let length = me.value.match(/\n/g);
 
         if (length){
           length = length.length;
@@ -11460,12 +11453,12 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
         height = me.height;
       }
 
-      if (height < me.minHeight){
+      if (height < me.minHeight) {
         //height = me.minHeight;
       }
-      else if (height > me.maxHeight){
+      else if (height > me.maxHeight) {
         //height = me.maxHeight;
-        setTimeout(function(){
+        setTimeout(() => {
           me.input.css({
             'overflow-y': 'scroll'
           });
@@ -11478,8 +11471,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    calcSize: function(){
-      var me = this,
+    calcSize(){
+      let me = this,
         inputWidth,
         padding = me.padding,
         value,
@@ -11487,7 +11480,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
         value2,
         value3;
 
-      if (F.isString(padding)){
+      if (F.isString(padding)) {
         padding = padding.replace(/px/g, '');
         padding = padding.split(' ');
         switch (padding.length){
@@ -11540,19 +11533,19 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    onChange: function(){
-      var me = this,
+    onChange(){
+      let me = this,
         value = me.input.dom.value,
         input = me.el.getByTag('textarea'),
         height = value.match(/\n/g).length * me.lineHeight;
 
-      if (height < me.minHeight){
+      if (height < me.minHeight) {
         height = me.minHeight;
         input.css({
           'overflow-y': 'hidden'
         });
       }
-      else if (height > me.maxHeight){
+      else if (height > me.maxHeight) {
         height = me.maxHeight;
         input.css({
           'overflow-y': 'scroll'
@@ -11569,6 +11562,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
   });
 
 })();
+
 /*
  * @class Fancy.CheckBox
  * @extends Fancy.Widget
@@ -11577,14 +11571,14 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
-  var FIELD_CLS = Fancy.FIELD_CLS;
-  var FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
-  var FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
-  var FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
-  var FIELD_INPUT_LABEL_CLS =  Fancy.FIELD_INPUT_LABEL_CLS;
-  var FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
+  const CLEARFIX_CLS = Fancy.CLEARFIX_CLS;
+  const FIELD_CLS = Fancy.FIELD_CLS;
+  const FIELD_LABEL_CLS = Fancy.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = Fancy.FIELD_TEXT_CLS;
+  const FIELD_CHECKBOX_CLS = Fancy.FIELD_CHECKBOX_CLS;
+  const FIELD_CHECKBOX_INPUT_CLS = Fancy.FIELD_CHECKBOX_INPUT_CLS;
+  const FIELD_INPUT_LABEL_CLS = Fancy.FIELD_INPUT_LABEL_CLS;
+  const FIELD_CHECKBOX_ON_CLS = Fancy.FIELD_CHECKBOX_ON_CLS;
 
   Fancy.define(['Fancy.form.field.CheckBox', 'Fancy.CheckBox'], {
     mixins: [
@@ -11605,8 +11599,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents(
         'focus', 'blur', 'input',
@@ -11620,11 +11614,11 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       me.preRender();
       me.render({
         labelWidth: me.labelWidth,
-        labelDispay: me.labelText ? '' : 'none',
+        labelDisplay: me.labelText ? '' : 'none',
         label: me.label
       });
 
-      if (me.expander){
+      if (me.expander) {
         me.addCls('fancy-checkbox-expander');
       }
 
@@ -11641,7 +11635,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     editable: true,
     stopIfCTRL: false,
     checkedCls: FIELD_CHECKBOX_ON_CLS,
-    fieldCls: FIELD_CLS + ' ' + FIELD_CHECKBOX_CLS,
+    fieldCls: `${FIELD_CLS} ${FIELD_CHECKBOX_CLS}`,
     tpl: [
       '<div class="'+FIELD_LABEL_CLS+'" style="{labelWidth}{labelDisplay}">',
         '{label}',
@@ -11657,8 +11651,8 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el;
 
       el.on('click', me.onClick, me);
@@ -11667,42 +11661,42 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      * @param {Object} e
      */
-    onClick: function(e){
-      var me = this,
+    onClick(e){
+      const me = this,
         el = me.el;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
       me.fire('beforechange');
 
-      if (e.ctrlKey && me.stopIfCTRL){
+      if (e.ctrlKey && me.stopIfCTRL) {
         return;
       }
 
-      if (me.editable === false){
+      if (me.editable === false) {
         return;
       }
 
-      if (me.canceledChange === true){
+      if (me.canceledChange === true) {
         me.canceledChange = false;
         return;
       }
 
       el.toggleCls(me.checkedCls);
-      var oldValue = me.value;
+      const oldValue = me.value;
       me.value = el.hasCls(me.checkedCls);
       me.fire('change', me.value, oldValue);
 
-      if(me.middle === true){
+      if (me.middle === true) {
         me.middle = false;
         me.checkMiddle();
       }
@@ -11710,38 +11704,38 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
     /*
      * @params {Object} e
      */
-    onMouseDown: function(e){
+    onMouseDown(e){
       e.preventDefault();
     },
     /*
      * @params {*} value
      * @params {Boolean} fire
      */
-    set: function(value, fire){
-      var me = this,
+    set(value, fire){
+      const me = this,
         el = me.el;
 
-      if (value === ''){
+      if (value === '') {
         value = false;
       }
 
-      if (value === true || value === 1){
+      if (value === true || value === 1) {
         el.addCls(me.checkedCls);
         value = true;
       }
-      else if (value === false || value === 0){
+      else if (value === false || value === 0) {
         el.removeClass(me.checkedCls);
         value = false;
       }
-      else if (value === undefined){
+      else if (value === undefined) {
         value = false;
       }
       else {
-        throw new Error('[FancyGrid Error] - not right value for checkbox ' + value);
+        throw new Error(`[FancyGrid Error] - not right value for checkbox ${value}`);
       }
 
       me.value = value;
-      if (fire !== false){
+      if (fire !== false) {
         me.fire('change', me.value);
       }
     },
@@ -11749,57 +11743,57 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
      * @params {*} value
      * @params {Boolean} onInput
      */
-    setValue: function(value, onInput){
+    setValue(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @return {*}
      */
-    getValue: function(){
+    getValue(){
       return this.value;
     },
     /*
      * @return {*}
      */
-    get: function(){
+    get(){
       return this.getValue();
     },
     /*
      *
      */
-    clear: function(){
+    clear(){
       this.set(false);
     },
     /*
      *
      */
-    toggle: function(){
+    toggle(){
       this.set(!this.value);
     },
     /*
      *
      */
-    destroy: function(){
+    destroy(){
       this.Super('destroy', arguments);
     },
     /*
      *
      */
-    checkMiddle: function(){
-      var me = this;
+    checkMiddle(){
+      const me = this;
 
-      if(me.middle){
+      if (me.middle) {
         me.el.addCls('fancy-checkbox-middle');
       }
-      else{
+      else {
         me.el.removeCls('fancy-checkbox-middle');
       }
     },
     /*
      * @param {Boolean} value
      */
-    setMiddle: function(value){
-      var me = this;
+    setMiddle(value){
+      const me = this;
 
       me.middle = value;
       me.checkMiddle();
@@ -11807,6 +11801,7 @@ Fancy.define(['Fancy.form.field.Empty', 'Fancy.EmptyField'], {
   });
 
 })();
+
 /*
  * @class Fancy.Switcher
  */
@@ -11824,11 +11819,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
   },
   checkedCls: 'fancy-switcher-on',
-  fieldCls: Fancy.FIELD_CLS + ' fancy-field-switcher',
+  fieldCls: `${Fancy.FIELD_CLS} fancy-field-switcher`,
   tpl: [
     '<div class="fancy-field-label" style="{labelWidth}{labelDisplay}">',
       '{label}',
@@ -11841,6 +11836,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     '<div class="fancy-clearfix"></div>'
   ]
 });
+
 /**
  * @class Fancy.Combo
  * @extends Fancy.Widget
@@ -11849,38 +11845,38 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_COMBO_RESULT_LIST_CLS = F.FIELD_COMBO_RESULT_LIST_CLS;
-  var FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
-  var FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
-  var FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
-  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
-  var FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
-  var FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
-  var FIELD_COMBO_DROPDOWN_BUTTON_CLS = F.FIELD_COMBO_DROPDOWN_BUTTON_CLS;
-  var FIELD_COMBO_INPUT_CONTAINER_CLS = F.FIELD_COMBO_INPUT_CONTAINER_CLS;
-  var FIELD_COMBO_LEFT_EL_CLS = F.FIELD_COMBO_LEFT_EL_CLS;
-  var FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
-  var FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
-  var FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
-  var FIELD_COMBO_LIST_VALUE_CLS = F.FIELD_COMBO_LIST_VALUE_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_COMBO_RESULT_LIST_CLS = F.FIELD_COMBO_RESULT_LIST_CLS;
+  const FIELD_COMBO_CLS = F.FIELD_COMBO_CLS;
+  const FIELD_COMBO_SELECTED_ITEM_CLS = F.FIELD_COMBO_SELECTED_ITEM_CLS;
+  const FIELD_COMBO_FOCUSED_ITEM_CLS = F.FIELD_COMBO_FOCUSED_ITEM_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
+  const FIELD_DISABLED_CLS = F.FIELD_DISABLED_CLS;
+  const FIELD_COMBO_DROPDOWN_BUTTON_CLS = F.FIELD_COMBO_DROPDOWN_BUTTON_CLS;
+  const FIELD_COMBO_INPUT_CONTAINER_CLS = F.FIELD_COMBO_INPUT_CONTAINER_CLS;
+  const FIELD_COMBO_LEFT_EL_CLS = F.FIELD_COMBO_LEFT_EL_CLS;
+  const FIELD_LABEL_ALIGN_TOP_CLS = F.FIELD_LABEL_ALIGN_TOP_CLS;
+  const FIELD_LABEL_ALIGN_RIGHT_CLS = F.FIELD_LABEL_ALIGN_RIGHT_CLS;
+  const FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
+  const FIELD_COMBO_LIST_VALUE_CLS = F.FIELD_COMBO_LIST_VALUE_CLS;
 
   F.define('Fancy.combo.Manager', {
     singleton: true,
     opened: [],
-    add: function(combo){
+    add(combo){
       this.hideLists();
 
       this.opened.push(combo);
     },
-    hideLists: function(){
-      F.each(this.opened, function(item){
+    hideLists(){
+      F.each(this.opened, (item) => {
         item.hideList();
         item.hideAheadList();
       });
@@ -11938,8 +11934,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents(
         'focus', 'blur', 'input',
@@ -11950,16 +11946,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       );
       me.Super('init', arguments);
 
-      if(me.subSearch){
+      if (me.subSearch) {
         me.editable = false;
       }
 
-      if (!me.loadListData()){
+      if (!me.loadListData()) {
         me.data = me.configData(me.data);
         me.data = Fancy.Array.copy(me.data);
       }
 
-      if(me.multiSelect && me.data.length){
+      if (me.multiSelect && me.data.length) {
         me.initMultiSelect();
       }
 
@@ -11975,28 +11971,28 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
        * Bug fix: #1074
        * Theme is not applied to list element.
        */
-      setTimeout(function(){
+      setTimeout(() => {
         me.applyTheme();
       }, 1);
     },
     /*
      * @return {Boolean}
      */
-    loadListData: function(){
-      var me = this;
+    loadListData(){
+      const me = this;
 
-      if (!F.isObject(me.data)){
+      if (!F.isObject(me.data)) {
         return false;
       }
 
-      var proxy = me.data.proxy,
+      let proxy = me.data.proxy,
         readerRootProperty = me.readerRootProperty;
 
-      if (!proxy || !proxy.url){
+      if (!proxy || !proxy.url) {
         throw new Error('[FancyGrid Error]: combo data url is not defined');
       }
 
-      if (proxy.reader && proxy.reader.root){
+      if (proxy.reader && proxy.reader.root) {
         readerRootProperty = proxy.reader.root;
       }
 
@@ -12005,22 +12001,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         params: proxy.params || {},
         method: proxy.method || 'GET',
         getJSON: true,
-        success: function(o){
+        success: (o) => {
           me.data = me.configData(o[readerRootProperty]);
           me.renderList();
           me.onsList();
 
-          if(me.multiSelect){
+          if (me.multiSelect) {
             me.initMultiSelect();
 
-            if(me.value){
+            if (me.value) {
               me.updateInput();
             }
           }
-          else if (me.value){
-            var displayValue = me.getDisplayValue(me.value);
+          else if (me.value) {
+            const displayValue = me.getDisplayValue(me.value);
 
-            if (displayValue){
+            if (displayValue) {
               me.input.dom.value = displayValue;
             }
           }
@@ -12035,17 +12031,17 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Array} data
      * @return {Array}
      */
-    configData: function(data){
-      if (F.isObject(data) || data.length === 0){
+    configData(data){
+      if (F.isObject(data) || data.length === 0) {
         return data;
       }
 
-      if (!F.isObject(data[0])){
+      if (!F.isObject(data[0])) {
         var _data = [],
           i = 0,
           iL = data.length;
 
-        for (; i < iL; i++){
+        for (; i < iL; i++) {
           _data.push({
             text: data[i],
             value: i
@@ -12060,28 +12056,28 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    applyStyle: function(){
-      var me = this;
+    applyStyle(){
+      const me = this;
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
-      if (me.style){
+      if (me.style) {
         me.css(me.style);
       }
     },
     /*
      *
      */
-    applyTheme: function(){
-      var me = this;
+    applyTheme(){
+      const me = this;
 
-      if (me.theme && me.theme !== 'default'){
+      if (me.theme && me.theme !== 'default') {
         me.addCls(Fancy.getThemeCSSCls(me.theme));
         me.list.addCls(Fancy.getThemeCSSCls(me.theme));
 
-        if(me.aheadList){
+        if (me.aheadList) {
           me.aheadList.addCls(Fancy.getThemeCSSCls(me.theme));
         }
       }
@@ -12089,13 +12085,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el,
-        drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
+        drop = me.el.select(`.${FIELD_COMBO_DROPDOWN_BUTTON_CLS}`);
 
       me.input = me.el.getByTag('input');
-      me.inputContainer = me.el.select('.' + FIELD_COMBO_INPUT_CONTAINER_CLS);
+      me.inputContainer = me.el.select(`.${FIELD_COMBO_INPUT_CONTAINER_CLS}`);
       me.drop = drop;
 
       me.onsList();
@@ -12107,7 +12103,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       drop.on('click', me.onDropClick, me);
       me.on('key', me.onKey, me);
 
-      if (me.typeAhead && me.editable){
+      if (me.typeAhead && me.editable) {
         me.input.on('keydown', me.onKeyDown, me);
       }
 
@@ -12119,16 +12115,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
-    onSubSearchKeyDown: function(e){
-      var me = this,
+    onSubSearchKeyDown(e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode){
+      switch (keyCode) {
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -12146,12 +12142,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onKeyDown: function(e){
-      var me = this,
+    onKeyDown(e){
+      const me = this,
         keyCode = e.keyCode,
         key = F.key;
 
-      switch (keyCode){
+      switch (keyCode) {
         case key.ESC:
           me.fire('esc', e);
           break;
@@ -12167,8 +12163,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         case key.TAB:
           break;
         case key.BACKSPACE:
-          setTimeout(function(){
-            if (me.input.dom.value.length === 0){
+          setTimeout(() => {
+            if (me.input.dom.value.length === 0) {
               me.value = -1;
               me.valueIndex = -1;
               me.hideAheadList();
@@ -12181,15 +12177,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
               me.fire('empty');
             }
             else {
-              if(me.multiSelect){
-                if(me.input.dom.value.split(',').length !== me.valuesIndex.length){
+              if (me.multiSelect) {
+                if (me.input.dom.value.split(',').length !== me.valuesIndex.length) {
                   //var newValues = me.getFromInput();
 
                   //me.set(newValues);
                 }
               }
 
-              if (me.generateAheadData().length === 0){
+              if (me.generateAheadData().length === 0) {
                 me.hideAheadList();
                 return;
               }
@@ -12200,7 +12196,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           }, 100);
           break;
         default:
-          setTimeout(function(){
+          setTimeout(() => {
             if (me.generateAheadData().length === 0){
               me.hideAheadList();
               return;
@@ -12211,18 +12207,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           }, 1);
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         me.fire('key', me.input.dom.value, e);
       }, 1);
     },
     /*
      * @param {Object} e
      */
-    onInputClick: function(){
-      var me = this,
+    onInputClick(){
+      const me = this,
         list = me.list;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
@@ -12230,7 +12226,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         return;
       }
 
-      if (list.css('display') === 'none'){
+      if (list.css('display') === 'none') {
         me.showList();
       }
       else {
@@ -12240,32 +12236,32 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onDropClick: function(){
-      var me = this,
+    onDropClick(){
+      const me = this,
         list = me.list;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if (list.css('display') === 'none'){
+      if (list.css('display') === 'none') {
         F.combo.Manager.add(this);
-        
+
         me.showList();
       }
       else {
         me.hideList();
       }
 
-      if (me.editable === true){
+      if (me.editable === true) {
         me.input.focus();
       }
     },
     /*
      *
      */
-    showList: function(){
-      var me = this,
+    showList(){
+      const me = this,
         list = me.list,
         el = me.input.parent().parent(),
         p = el.$dom.offset(),
@@ -12276,12 +12272,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.hideAheadList();
 
-      if (!me.list || me.data.length === 0){
+      if (!me.list || me.data.length === 0) {
         return;
       }
 
-      if(!me.isListInsideViewBox(el)){
-        var listHeight = this.calcListHeight();
+      if (!me.isListInsideViewBox(el)) {
+        const listHeight = this.calcListHeight();
 
         xy[1] = p.top - listHeight;
       }
@@ -12295,7 +12291,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         'z-index': 2000 + F.zIndex++
       });
 
-      if(me.listCls){
+      if (me.listCls) {
         list.addCls(me.listCls);
       }
 
@@ -12304,14 +12300,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         top: xy[1]
       }, F.ANIMATE_DURATION);
 
-      var index;
+      let index;
 
       me.clearFocused();
 
-      var selected = list.select('.' + selectedItemCls);
+      const selected = list.select(`.${selectedItemCls}`);
 
-      if (selected.length === 0){
-        if(me.multiSelect && me.values.length){
+      if (selected.length === 0) {
+        if (me.multiSelect && me.values.length) {
           me.valuesIndex.each(function(i, value, length){
             if(index === undefined){
               index = i;
@@ -12325,10 +12321,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }
       else {
-        if(me.multiSelect && selected.length !== me.valuesIndex.length){
-          list.select('.' + selectedItemCls).removeCls(selectedItemCls);
+        if (me.multiSelect && selected.length !== me.valuesIndex.length) {
+          list.select(`.${selectedItemCls}`).removeCls(selectedItemCls);
 
-          me.valuesIndex.each(function(i, value, length){
+          me.valuesIndex.each((i, value, length) => {
             if(index === undefined){
               index = i;
             }
@@ -12363,7 +12359,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    showAheadList: function(){
+    showAheadList(){
       var me = this,
         list = me.aheadList,
         el = me.input.parent().parent(),
@@ -12393,8 +12389,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onDocClick: function(e){
-      var me = this;
+    onDocClick(e){
+      const me = this;
 
       if (me.input.parent().parent().within(e.target) === false){
         if (me.list.within(e.target) === true){
@@ -12407,8 +12403,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    hideList: function(){
-      var me = this;
+    hideList(){
+      const me = this;
 
       if (!me.list){
         return;
@@ -12417,7 +12413,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.list.css('display', 'none');
 
       if (me.docSpy){
-        var docEl = F.get(document);
+        const docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -12425,17 +12421,17 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    hideAheadList: function(){
-      var me = this;
+    hideAheadList(){
+      const me = this;
 
-      if (!me.aheadList){
+      if (!me.aheadList) {
         return;
       }
 
       me.aheadList.css('display', 'none');
 
-      if (me.docSpy){
-        var docEl = F.get(document);
+      if (me.docSpy) {
+        const docEl = F.get(document);
         me.docSpy = false;
         docEl.un('click', me.onDocClick, me);
       }
@@ -12443,23 +12439,23 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onInputMouseDown: function(e){
-      var me = this;
+    onInputMouseDown(e){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         e.preventDefault();
         return;
       }
 
-      if (me.editable === false){
+      if (me.editable === false) {
         e.preventDefault();
       }
     },
     /*
      * @param {Object} e
      */
-    onDropMouseDown: function(e){
-      if(this.disabled){
+    onDropMouseDown(e){
+      if (this.disabled) {
         e.stopPropagation();
       }
 
@@ -12468,36 +12464,36 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onsList: function(){
-      var me = this;
+    onsList(){
+      const me = this;
 
       me.list.on('mousedown', me.onListItemMouseDown, me, 'li');
       me.list.on('click', me.onListItemClick, me, 'li');
       me.list.on('mouseenter', me.onListItemOver, me, 'li');
       me.list.on('mouseleave', me.onListItemLeave, me, 'li');
 
-      if(me.selectAllText){
+      if (me.selectAllText) {
         me.list.select('.fancy-combo-list-select-all').on('click', me.onSelectAllClick, me);
       }
     },
     /*
      *
      */
-    onsAheadList: function(){
-      var me = this;
+    onsAheadList(){
+      const me = this;
 
       me.aheadList.on('click', me.onAHeadListItemClick, me, 'li');
     },
     /*
      * @param {Object} e
      */
-    onListItemOver: function(e){
-      if(this.disabled){
+    onListItemOver(e){
+      if (this.disabled) {
         return;
       }
 
-      var li = F.get(e.target);
-      if(li.prop('tagName').toLocaleLowerCase() !== 'li'){
+      const li = F.get(e.target);
+      if (li.prop('tagName').toLocaleLowerCase() !== 'li') {
         return;
       }
 
@@ -12506,52 +12502,52 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onListItemLeave: function(){
+    onListItemLeave(){
       if(this.disabled){
         return;
       }
 
       this.clearFocused();
     },
-    onListItemMouseDown: function(){
-      var me = this;
+    onListItemMouseDown(){
+      const me = this;
 
       me.listItemClicked = true;
 
-      setTimeout(function(){
+      setTimeout(() => {
         delete me.listItemClicked;
       }, 1000);
     },
     /*
      * @param {Object} e
      */
-    onListItemClick: function(e){
+    onListItemClick(e){
       var me = this,
         li = F.get(e.currentTarget),
         value = li.attr('value'),
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if (F.nojQuery && value === 0){
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
-      if (me.multiSelect){
-        if (me.values.length === 0){
+      if (me.multiSelect) {
+        if (me.values.length === 0) {
           me.clearListActive();
         }
 
         me.clearFocused();
 
-        if(me.getTypeActiveList() === 'list'){
+        if (me.getTypeActiveList() === 'list') {
           li.toggleCls(selectedItemCls);
         }
 
-        if (li.hasCls(selectedItemCls)){
+        if (li.hasCls(selectedItemCls)) {
           me.addValue(value);
           li.addCls(focusedItemCls);
         }
@@ -12559,7 +12555,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.removeValue(value);
           me.clearFocused();
 
-          if(me.selectAllText){
+          if (me.selectAllText) {
             me.list.select('.fancy-combo-list-select-all').removeCls('fancy-combo-item-selected');
           }
         }
@@ -12571,7 +12567,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.hideList();
       }
 
-      if (me.editable){
+      if (me.editable) {
         me.input.focus();
       }
       else {
@@ -12581,22 +12577,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} e
      */
-    onAHeadListItemClick: function(e){
+    onAHeadListItemClick(e){
       var me = this,
         li = F.get(e.currentTarget),
         value = li.attr('value'),
         focusedItemCls = me.focusedItemCls;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if (F.nojQuery && value === 0){
+      if (F.nojQuery && value === 0) {
         value = '';
       }
 
-      if (me.multiSelect){
-        if (me.values.length === 0){
+      if (me.multiSelect) {
+        if (me.values.length === 0) {
           me.clearListActive();
         }
 
@@ -12612,7 +12608,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.hideList();
       }
 
-      if (me.editable){
+      if (me.editable) {
         me.input.focus();
       }
       else {
@@ -12623,12 +12619,12 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function(value, onInput){
-      var me = this,
+    set(value, onInput){
+      let me = this,
         valueStr = '',
         index;
 
-      if(me.multiSelect && !F.isArray(value)){
+      if (me.multiSelect && !F.isArray(value)) {
         if(value === -1){
           value = [];
         }
@@ -12637,15 +12633,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }
 
-      if(F.isArray(value) && me.multiSelect){
-        var displayedValues = [];
+      if (F.isArray(value) && me.multiSelect) {
+        const displayedValues = [];
 
         me.valuesIndex.removeAll();
 
         F.each(value, function(v, i){
-          var _index = me.getIndex(v);
+          const _index = me.getIndex(v);
 
-          if(_index === -1){
+          if (_index === -1) {
             return;
           }
 
@@ -12661,16 +12657,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.value = value[0];
         me.valueIndex = index;
       }
-      else{
+      else {
         index = me.getIndex(value);
 
-        if(index !== -1){
+        if (index !== -1) {
           me.valueIndex = index;
           valueStr = me.data[index][me.displayKey];
           me.selectItem(index);
         }
-        else{
-          if (value !== -1 && value && value.length > 0){
+        else {
+          if (value !== -1 && value && value.length > 0) {
             valueStr = '';
             //valueStr = value;
             me.value = -1;
@@ -12686,15 +12682,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.input.dom.value = valueStr;
 
-      if (onInput !== false){
+      if (onInput !== false) {
         me.onInput();
       }
 
-      if(me.left){
+      if (me.left) {
         me.updateLeft();
       }
 
-      if(!Fancy.isObject(me.data)){
+      if (!Fancy.isObject(me.data)) {
         me.validate(valueStr);
       }
     },
@@ -12703,11 +12699,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      *
      * @param {*} v
      */
-    addValue: function(v){
-      var me = this,
+    addValue(v){
+      const me = this,
         index = me.getIndex(v);
 
-      if(index !== -1 && !me.valuesIndex.get(index)){
+      if (index !== -1 && !me.valuesIndex.get(index)) {
         me.value = v;
         me.values.push(v);
         me.valuesIndex.add(index, v);
@@ -12718,22 +12714,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      *
      * @param {*} v
      */
-    removeValue: function(v){
-      var me = this,
+    removeValue(v){
+      let me = this,
         index = -1;
 
-      F.each(me.values, function(value, i){
+      F.each(me.values, (value, i) => {
         if( String(value).toLocaleLowerCase() === String(v).toLocaleLowerCase() ){
           index = i;
         }
       });
 
-      if(index !== -1){
+      if (index !== -1) {
         me.values.splice(index, 1);
         me.valuesIndex.remove(me.getIndex(v));
       }
 
-      if (me.values.length){
+      if (me.values.length) {
         me.value = me.values[me.values.length - 1];
       }
       else {
@@ -12746,44 +12742,44 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      *
      * @param {Boolean} onInput
      */
-    updateInput: function(onInput){
-      var me = this,
+    updateInput(onInput){
+      const me = this,
         displayValues = [];
 
-      me.valuesIndex.each(function(i, v, length){
+      me.valuesIndex.each((i, v, length) => {
         displayValues.push(me.data[i][me.displayKey]);
       });
 
       me.input.dom.value = displayValues.join(", ");
 
-      if (onInput !== false){
+      if (onInput !== false) {
         me.onInput();
       }
     },
     /*
      * @param {Number} index
      */
-    selectItem: function(index){
-      var me = this;
+    selectItem(index){
+      const me = this;
 
-      if (!me.list){
+      if (!me.list) {
         return;
       }
 
-      if (!me.multiSelect){
+      if (!me.multiSelect) {
         me.clearListActive();
       }
 
       me.clearFocused();
 
-      var item = me.list.select('li').item(index);
+      const item = me.list.select('li').item(index);
 
       item.addCls(me.focusedItemCls, me.selectedItemCls);
     },
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div')),
@@ -12792,7 +12788,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       el.attr('id', me.id);
 
-      if (value === undefined){
+      if (value === undefined) {
         value = '';
       }
       else {
@@ -12832,21 +12828,21 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         me.fieldCls
       );
 
-      var labelWidth = '';
+      let labelWidth = '';
 
-      if (me.labelWidth){
-        labelWidth = 'width:' + me.labelWidth + 'px;';
+      if (me.labelWidth) {
+        labelWidth = `width:${me.labelWidth}px;`;
       }
 
-      var label = me.label;
+      let label = me.label;
 
-      if (me.label === ''){
+      if (me.label === '') {
         label = '&nbsp;';
       }
-      else if (me.label === undefined){
+      else if (me.label === undefined) {
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right'){
+      else if (me.labelAlign !== 'right') {
         label += ':';
       }
 
@@ -12863,10 +12859,10 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.setStyle();
 
       me.input = me.el.getByTag('input');
-      me.inputContainer = me.el.select('.' + FIELD_COMBO_INPUT_CONTAINER_CLS);
-      me.drop = me.el.select('.' + FIELD_COMBO_DROPDOWN_BUTTON_CLS);
+      me.inputContainer = me.el.select(`.${FIELD_COMBO_INPUT_CONTAINER_CLS}`);
+      me.drop = me.el.select(`.${FIELD_COMBO_DROPDOWN_BUTTON_CLS}`);
 
-      if(me.leftTpl){
+      if (me.leftTpl) {
         me.left = me.el.select('.' + FIELD_COMBO_LEFT_EL_CLS);
 
         me.left.css({
@@ -12878,28 +12874,28 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       me.setSize();
       renderTo.appendChild(el.dom);
 
-      if (me.labelAlign === 'top'){
+      if (me.labelAlign === 'top') {
         me.el.addCls(FIELD_LABEL_ALIGN_TOP_CLS);
       }
-      else if (me.labelAlign === 'right'){
+      else if (me.labelAlign === 'right') {
         me.el.addCls(FIELD_LABEL_ALIGN_RIGHT_CLS);
-        F.$(el.dom).find('.' + FIELD_LABEL_CLS).insertAfter(F.$(el.dom).find('.' + FIELD_TEXT_CLS));
+        F.$(el.dom).find(`.${FIELD_LABEL_CLS}`).insertAfter(F.$(el.dom).find(`.${FIELD_TEXT_CLS}`));
       }
 
-      if (me.valueIndex){
+      if (me.valueIndex) {
         me.acceptedValue = me.value;
       }
 
-      if (me.editable){
+      if (me.editable) {
         me.input.css('cursor', 'auto');
       }
       else {
-        if(me.input){
+        if (me.input) {
           me.input.attr('tabIndex', -1);
         }
       }
 
-      if(me.disabled){
+      if (me.disabled) {
         me.addCls(FIELD_DISABLED_CLS);
 
         if(me.input){
@@ -12909,18 +12905,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.renderList();
 
-      if(me.leftTpl){
-        setTimeout(function(){
+      if (me.leftTpl) {
+        setTimeout(() => {
           me.updateLeft();
         }, 1);
 
         //Bug fix with images
-        setTimeout(function(){
+        setTimeout(() => {
           me.updateLeft();
         }, 500);
 
         //Bug fix with images
-        setTimeout(function(){
+        setTimeout(() => {
           me.updateLeft();
         }, 1000);
       }
@@ -12931,8 +12927,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    renderList: function(){
-      var me = this,
+    renderList(){
+      const me = this,
         list = F.get(document.createElement('div')),
         listHtml = [];
 
@@ -13030,13 +13026,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {Number}
      */
-    getListWidth: function(){
-      var me = this,
+    getListWidth(){
+      let me = this,
         el,
         listWidth = me.inputWidth + 14,
         minListWidth = me.minListWidth;
 
-      if (me.input){
+      if (me.input) {
         el = me.input.parent().parent();
         listWidth = el.width();
       }
@@ -13050,8 +13046,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {Array}
      */
-    generateAheadData: function(){
-      var me = this,
+    generateAheadData(){
+      let me = this,
         inputValue = me.input.dom.value.toLocaleLowerCase(),
         aheadData = [];
 
@@ -13095,7 +13091,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    renderAheadList: function(){
+    renderAheadList(){
       var me = this,
         list,
         listHtml = [
@@ -13161,8 +13157,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    hide: function(){
-      var me = this;
+    hide(){
+      const me = this;
 
       me.css('display', 'none');
       me.hideList();
@@ -13171,8 +13167,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    clear: function(){
-      var me = this;
+    clear(){
+      const me = this;
 
       if(me.multiSelect){
         me.set([], false);
@@ -13184,38 +13180,38 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    clearListActive: function(){
-      var me = this,
+    clearListActive(){
+      const me = this,
         selectedItemCls = me.selectedItemCls,
         focusedItemCls = me.focusedItemCls;
 
-      me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
-      me.list.select('.' + selectedItemCls).removeCls(selectedItemCls);
+      me.list.select(`.${focusedItemCls}`).removeCls(focusedItemCls);
+      me.list.select(`.${selectedItemCls}`).removeCls(selectedItemCls);
     },
-    clearFocused: function(){
-      var me = this,
+    clearFocused(){
+      const me = this,
         focusedItemCls = me.focusedItemCls;
 
-      if(me.list){
-        me.list.select('.' + focusedItemCls).removeCls(focusedItemCls);
+      if (me.list) {
+        me.list.select(`.${focusedItemCls}`).removeCls(focusedItemCls);
       }
 
-      if(me.aheadList){
-        me.aheadList.select('.' + focusedItemCls).removeCls(focusedItemCls);
+      if (me.aheadList) {
+        me.aheadList.select(`.${focusedItemCls}`).removeCls(focusedItemCls);
       }
     },
     /*
      *
      */
-    onInput: function(){
-      var me = this,
+    onInput(){
+      const me = this,
         value = me.getValue(),
         oldValue = me.acceptedValue;
 
       me.acceptedValue = me.get();
       me.fire('change', value, oldValue);
 
-      if(me.left){
+      if (me.left) {
         me.updateLeft();
       }
     },
@@ -13223,15 +13219,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function(value, onInput){
+    setValue(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @param {key} value
      * @return {*}
      */
-    getDisplayValue: function(value, returnPosition){
-      var me = this,
+    getDisplayValue(value, returnPosition){
+      const me = this,
         index = me.getIndex(value);
 
       if(returnPosition){
@@ -13248,8 +13244,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {key} value
      * @param {Boolean} [returnPosition]
      */
-    getValueKey: function(value, returnPosition){
-      var me = this,
+    getValueKey(value, returnPosition){
+      let me = this,
         i = 0,
         iL = me.data.length;
 
@@ -13266,14 +13262,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {*}
      */
-    get: function(){
+    get(){
       return this.getValue();
     },
     /*
      * @return {*}
      */
-    getValue: function(){
-      var me = this;
+    getValue(){
+      const me = this;
 
       if (me.multiSelect){
         return me.values;
@@ -13295,7 +13291,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Object} o
      */
-    size: function(o){
+    size(o){
       var me = this,
         width = o.width,
         height = o.height,
@@ -13330,14 +13326,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         });
       }
 
-      var inputWidth = me.inputWidth,
+      let inputWidth = me.inputWidth,
         minusWidth = 2;
 
       if(me.theme === 'dark'){
         minusWidth = 0;
       }
 
-      var _inputWidth = inputWidth - minusWidth;
+      let _inputWidth = inputWidth - minusWidth;
 
       if(me.left){
         _inputWidth -= me.leftWidth;
@@ -13360,22 +13356,23 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onEnter: function(field, e){
+    onEnter(field, e){
+      let item;
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls,
         value;
 
-      if (me.multiSelect){
+      if (me.multiSelect) {
         if (!list){
           return;
         }
 
-        var item = list.select('.' + focusedItemCls);
+        item = list.select(`.${focusedItemCls}`);
 
-        if (!item || !item.dom){
-          item = list.select('.' + selectedItemCls).last();
+        if (!item || !item.dom) {
+          item = list.select(`.${selectedItemCls}`).last();
         }
 
         if (item && item.dom){
@@ -13389,11 +13386,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.updateInput();
         }
       }
-      else if (list){
-        var item = list.select('.' + focusedItemCls);
+      else if (list) {
+        item = list.select(`.${focusedItemCls}`);
 
-        if(!item || !item.dom){
-          item = list.select('.' + selectedItemCls);
+        if (!item || !item.dom) {
+          item = list.select(`.${selectedItemCls}`);
         }
 
         value = item.attr('value');
@@ -13405,7 +13402,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           me.set(me.input.dom.value);
         }
         else{
-          var value = me.input.dom.value;
+          let value = me.input.dom.value;
           me.detectedNewValue(value);
         }
       }
@@ -13417,8 +13414,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onEsc: function(field, e){
-      var me = this;
+    onEsc(field, e){
+      const me = this;
 
       me.hideList();
       me.hideAheadList();
@@ -13427,28 +13424,28 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onUp: function(field, e){
+    onUp(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list){
+      if (list) {
         list = me.getActiveList().select('ul');
         e.preventDefault();
-        var activeLi = list.select('.' + focusedItemCls),
+        let activeLi = list.select(`.${focusedItemCls}`),
           notFocused = false;
 
-        if (!activeLi.dom){
-          activeLi = list.select('.' + selectedItemCls);
+        if (!activeLi.dom) {
+          activeLi = list.select(`.${selectedItemCls}`);
         }
 
-        if (!activeLi.dom){
+        if (!activeLi.dom) {
           notFocused = true;
           activeLi = list.lastChild();
         }
 
-        if(activeLi.length > 1){
+        if (activeLi.length > 1) {
           activeLi = activeLi.item(0);
         }
 
@@ -13456,20 +13453,20 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
           lis = list.select('li'),
           height = parseInt(list.css('height'));
 
-        if (index !== 0 && !notFocused){
+        if (index !== 0 && !notFocused) {
           index--;
         }
         else {
           index = lis.length - 1;
         }
 
-        var nextActiveLi = lis.item(index),
+        const nextActiveLi = lis.item(index),
           top = nextActiveLi.dom.offsetTop;
 
-        if (top - list.dom.scrollTop > height){
+        if (top - list.dom.scrollTop > height) {
           list.dom.scrollTop = 10000;
         }
-        else if (top - list.dom.scrollTop < 0){
+        else if (top - list.dom.scrollTop < 0) {
           list.dom.scrollTop = top;
         }
 
@@ -13482,13 +13479,13 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {Object} e
      */
-    onDown: function(field, e){
+    onDown(field, e){
       var me = this,
         list = me.getActiveList(),
         focusedItemCls = me.focusedItemCls,
         selectedItemCls = me.selectedItemCls;
 
-      if (list){
+      if (list) {
         list = me.getActiveList().select('ul');
         e.preventDefault();
 
@@ -13542,14 +13539,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @param {Number} index
      */
-    scrollToListItem: function(index){
-      var me = this,
+    scrollToListItem(index){
+      const me = this,
         list = me.getActiveList().select('ul'),
         lis = list.select('li'),
         item = lis.item(index),
         top = item.dom.offsetTop;
 
-      if (index === 0){
+      if (index === 0) {
         list.dom.scrollTop = 0;
       }
       else if (index === lis.length - 1){
@@ -13562,8 +13559,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {Fancy.Element}
      */
-    getActiveList: function(){
-      var me = this,
+    getActiveList(){
+      let me = this,
         list = false;
 
       if (me.list && me.list.css('display') !== 'none'){
@@ -13578,8 +13575,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      * @return {String}
      */
-    getTypeActiveList: function(){
-      var me = this;
+    getTypeActiveList(){
+      const me = this;
 
       if (me.list && me.list.css('display') !== 'none'){
         return 'list';
@@ -13591,8 +13588,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    initMultiSelect: function(){
-      var me = this,
+    initMultiSelect(){
+      const me = this,
         value = me.value;
 
       me.values = [];
@@ -13616,7 +13613,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {*} value
      * @return {Number}
      */
-    getIndex: function(value){
+    getIndex(value){
       var me = this,
         data = me.data,
         i = 0,
@@ -13636,14 +13633,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      *
      * @return {Array}
      */
-    getFromInput: function(){
-      var me = this,
+    getFromInput(){
+      const me = this,
         value = me.input.dom.value,
         values = value.split(','),
         _values = [];
 
       F.each(values, function(v){
-        var displayValue = v.replace(/ $/, '').replace(/^ /, ''),
+        const displayValue = v.replace(/ $/, '').replace(/^ /, ''),
           _value = me.getValueKey(displayValue);
 
         if(_value){
@@ -13656,8 +13653,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    updateLeft: function(){
-      var me = this,
+    updateLeft(){
+      const me = this,
         item = me.data[me.getIndex(me.getValue())];
 
       me.left.update(new F.Template(me.leftTpl).getHTML(item));
@@ -13665,11 +13662,11 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    setData: function(data){
-      var me = this;
+    setData(data){
+      const me = this;
 
       me.data = data;
-      if (me.multiSelect){
+      if (me.multiSelect) {
         me.values = [];
         me.valuesIndex = new F.Collection();
         me.clearListActive();
@@ -13683,14 +13680,14 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    onSelectAllClick: function(){
-      var me = this,
+    onSelectAllClick(){
+      const me = this,
         lis = me.list.select('li'),
         selectAllEl = me.list.select('.fancy-combo-list-select-all').item(0),
         value = selectAllEl.hasClass('fancy-combo-item-selected');
 
-      setTimeout(function(){
-        if (value){
+      setTimeout(() => {
+        if (value) {
           selectAllEl.removeCls('fancy-combo-item-selected');
         }
         else {
@@ -13698,7 +13695,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       }, 100);
 
-      lis.each(function(li, i){
+      lis.each((li, i) => {
         if(value){
           if(li.hasClass('fancy-combo-item-selected')){
             li.dom.click();
@@ -13717,7 +13714,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      * @param {Object} field
      * @param {String} value
      */
-    onSubSearchChange: function(field, value){
+    onSubSearchChange(field, value){
       var me = this,
         lis = me.list.select('li'),
         height = 0,
@@ -13725,7 +13722,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       value = value.toLocaleLowerCase();
 
-      F.each(me.data, function(item, i){
+      F.each(me.data, (item, i) => {
         if (new RegExp('^' + value).test(item[me.displayKey].toLocaleLowerCase())){
           lis.item(i).css('display', 'block');
           height += parseInt(lis.item(i).css('height'));
@@ -13735,7 +13732,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         }
       });
 
-      var listUl = me.list.select('ul').item(0);
+      const listUl = me.list.select('ul').item(0);
 
       if(height > maxListHeight){
         listUl.css('height', maxListHeight);
@@ -13744,38 +13741,38 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         listUl.css('height', height);
       }
     },
-    isListInsideViewBox: function(el){
-      var me = this,
+    isListInsideViewBox(el){
+      const me = this,
         p = el.$dom.offset(),
         listHeight = me.calcListHeight() + el.$dom.height(),
         listBottomPoint = p.top + listHeight,
         viewBottom = F.getViewSize()[0] + Fancy.getScroll()[0];
 
-      if(listBottomPoint > viewBottom ){
+      if (listBottomPoint > viewBottom ) {
         return false;
       }
 
       return true;
     },
-    calcListHeight: function(){
-      var me = this,
+    calcListHeight(){
+      let me = this,
         listHeight = me.data.length * me.listRowHeight;
 
-      if(me.data.length > me.maxListRows){
+      if (me.data.length > me.maxListRows) {
         listHeight = me.maxListRows * me.listRowHeight;
       }
 
       return listHeight;
     },
-    detectedNewValue: function(value){
-      var me = this;
+    detectedNewValue(value){
+      const me = this;
 
       me.data.push({
         text: value,
         value: value
       });
 
-      if (me.multiSelect){
+      if (me.multiSelect) {
         me.values = [];
         me.valuesIndex = new F.Collection();
         me.clearListActive();
@@ -13791,21 +13788,22 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
   });
 
 })();
+
 /*
  * @class Fancy.ButtonField
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_BUTTON_CLS= F.FIELD_BUTTON_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_BUTTON_CLS = F.FIELD_BUTTON_CLS;
 
   F.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     mixins: [
@@ -13825,8 +13823,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('click');
 
@@ -13838,15 +13836,15 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
 
       me.ons();
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
-      if (me.style){
+      if (me.style) {
         me.css(me.style);
       }
     },
-    fieldCls: FIELD_CLS + ' ' + FIELD_BUTTON_CLS,
+    fieldCls: `${FIELD_CLS} ${FIELD_BUTTON_CLS}`,
     value: '',
     width: 100,
     emptyText: '',
@@ -13861,18 +13859,18 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    renderButton: function(){
-      var me = this;
+    renderButton(){
+      const me = this;
 
       me.button = new F.Button({
-        renderTo: me.el.select('.' + FIELD_TEXT_CLS).item(0).dom,
+        renderTo: me.el.select(`.${FIELD_TEXT_CLS}`).item(0).dom,
         text: me.buttonText,
         disabled: me.disabled,
         pressed: me.pressed,
         enableToggle: me.enableToggle,
         imageCls: me.imageCls,
         handler: function(){
-          if(me.disabled){
+          if (me.disabled) {
             return;
           }
 
@@ -13888,8 +13886,8 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el;
 
       me.button.on('pressedchange', function(button, value){
@@ -13899,31 +13897,32 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    onClick: function(){
-      var me = this;
+    onClick(){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
       me.fire('click');
 
-      if (me.handler){
+      if (me.handler) {
         me.handler();
       }
     },
-    setPressed: function(value){
+    setPressed(value){
       this.button.setPressed(value);
     }
   });
 })();
+
 /*
  * @class Fancy.SegButtonField
  * @extends Fancy.Widget
@@ -13946,8 +13945,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('click', 'change');
 
@@ -13982,8 +13981,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  renderButton: function(){
-    var me = this;
+  renderButton(){
+    const me = this;
 
     me.button = new Fancy.SegButton({
       renderTo: me.el.select('.fancy-field-text').item(0).dom,
@@ -13996,8 +13995,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       el = me.el;
 
     me.button.on('toggle', function(){
@@ -14017,8 +14016,8 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    *
    */
-  onClick: function(){
-    var me = this;
+  onClick(){
+    const me = this;
 
     if(me.disabled){
       return;
@@ -14033,11 +14032,11 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    * @return {String}
    */
-  get: function(){
-    var me = this,
+  get(){
+    const me = this,
       pressed = [];
 
-    Fancy.each(me.items, function(item, i){
+    Fancy.each(me.items, (item, i) => {
       if(item.pressed){
         if(item.value){
           pressed.push(item.value);
@@ -14053,9 +14052,9 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
   /*
    * @param {Boolean} [fire]
    */
-  clear: function(fire){
+  clear(fire){
     if(this.allowToggle){
-      Fancy.each(this.items, function(item){
+      Fancy.each(this.items, (item) => {
         item.setPressed(false, fire);
       });
     }
@@ -14064,18 +14063,18 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
    * @param {Array|String|Number} value
    * Note: duplicate code in button SegButton
    */
-  setValue: function(value){
-    var me = this,
+  setValue(value){
+    const me = this,
       items = me.items;
 
     me.clear(false);
 
     switch (Fancy.typeOf(value)){
       case 'array':
-        Fancy.each(value, function(v){
+        Fancy.each(value, (v) => {
           switch (Fancy.typeOf(v)){
             case 'string':
-              Fancy.each(items, function(item){
+              Fancy.each(items, (item) => {
                 if(item.value === v){
                   item.setPressed(true, true);
                 }
@@ -14088,21 +14087,22 @@ Fancy.define(['Fancy.form.field.SegButton', 'Fancy.SegButtonField'], {
         });
         break;
       case 'string':
-        Fancy.each(items, function(item){
+        Fancy.each(items, (item) => {
           if(item.value === value){
             item.setPressed(true, true);
           }
         });
         break;
       case 'number':
-        var button = items[value];
-        if(button){
+        const button = items[value];
+        if (button) {
           button.setPressed(true, true);
         }
         break;
     }
   }
 });
+
 /*
  * @class Fancy.form.field.Tab
  * @extends Fancy.Widget
@@ -14124,18 +14124,18 @@ Fancy.define('Fancy.form.field.Tab', {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('collapsed', 'expanded');
 
     me.Super('init', arguments);
 
-    var i = 0,
+    let i = 0,
       iL = me.items.length;
 
     for(;i<iL;i++){
-      var item = me.items[i];
+      const item = me.items[i];
 
       if( item.labelAlign === 'top' ){
         if( i === 0 ){
@@ -14159,24 +14159,25 @@ Fancy.define('Fancy.form.field.Tab', {
     '</div>'
   ]
 });
+
 /*
  * @class Fancy.Radio
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_RADIO_CLS = F.FIELD_RADIO_CLS;
-  var FIELD_RADIO_COLUMN_CLS = F.FIELD_RADIO_COLUMN_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_RADIO_ON_CLS = F.FIELD_RADIO_ON_CLS;
-  var FIELD_RADIO_INPUT_CLS = F.FIELD_RADIO_INPUT_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_RADIO_CLS = F.FIELD_RADIO_CLS;
+  const FIELD_RADIO_COLUMN_CLS = F.FIELD_RADIO_COLUMN_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_RADIO_ON_CLS = F.FIELD_RADIO_ON_CLS;
+  const FIELD_RADIO_INPUT_CLS = F.FIELD_RADIO_INPUT_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_ERROR_CLS = F.FIELD_ERROR_CLS;
 
   F.define(['Fancy.form.field.Radio', 'Fancy.Radio'], {
     mixins: [
@@ -14198,27 +14199,27 @@ Fancy.define('Fancy.form.field.Tab', {
      *
      */
     init: function(){
-      var me = this;
+      const me = this;
 
       me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key');
       me.Super('init', arguments);
 
-      var itemsHTML = '';
+      let itemsHTML = '';
 
-      if (me.column){
+      if (me.column) {
         me.cls += ' ' + FIELD_RADIO_COLUMN_CLS;
         itemsHTML += '<div style="margin-left: ' + ( me.labelWidth ) + 'px;">';
       }
 
-      F.each(me.items, function(item, i){
-        var marginLeft = '',
+      F.each(me.items, (item, i) => {
+        let marginLeft = '',
           itemCls = FIELD_TEXT_CLS;
 
-        if (!me.column && i !== 0){
+        if (!me.column && i !== 0) {
           marginLeft = 'margin-left:10px;';
         }
 
-        if (item.value === me.value){
+        if (item.value === me.value) {
           itemCls += ' ' + FIELD_RADIO_ON_CLS;
         }
 
@@ -14230,7 +14231,7 @@ Fancy.define('Fancy.form.field.Tab', {
         ].join('');
       });
 
-      if (me.column){
+      if (me.column) {
         itemsHTML += '</div>';
       }
 
@@ -14260,11 +14261,11 @@ Fancy.define('Fancy.form.field.Tab', {
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = this.el;
 
-      el.$dom.delegate('.' + FIELD_TEXT_CLS, 'click', function(){
+      el.$dom.delegate(`.${FIELD_TEXT_CLS}`, 'click', function(){
         if(me.disabled){
           return;
         }
@@ -14283,8 +14284,8 @@ Fancy.define('Fancy.form.field.Tab', {
     /*
      *
      */
-    onClick: function(){
-      var me = this,
+    onClick(){
+      const me = this,
         checkedCls = me.checkedCls;
 
       if(me.disabled){
@@ -14301,7 +14302,7 @@ Fancy.define('Fancy.form.field.Tab', {
     /*
      * @param {Object} e
      */
-    onMouseDown: function(e){
+    onMouseDown(e){
       if(this.disabled){
         e.stopPropagation();
       }
@@ -14311,11 +14312,11 @@ Fancy.define('Fancy.form.field.Tab', {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    set: function(value, fire){
-      var me = this,
+    set(value, fire){
+      const me = this,
         el = me.el,
         checkedCls = me.checkedCls,
-        radioEls = el.select('.' + FIELD_TEXT_CLS);
+        radioEls = el.select(`.${FIELD_TEXT_CLS}`);
 
       radioEls.removeCls(checkedCls);
 
@@ -14330,31 +14331,31 @@ Fancy.define('Fancy.form.field.Tab', {
      * @param {*} value
      * @param {Boolean} onInput
      */
-    setValue: function(value, onInput){
+    setValue(value, onInput){
       this.set(value, onInput);
     },
     /*
      * @return {*} value
      */
-    getValue: function(){
+    getValue(){
       return this.value;
     },
     /*
      * @return {*} value
      */
-    get: function(){
+    get(){
       return this.getValue();
     },
     /*
      *
      */
-    clear: function(){
+    clear(){
       this.set(false);
     },
     /*
      *
      */
-    calcColumns: function(){
+    calcColumns(){
       var me = this,
         maxChars = 0,
         inputWidth = me.width;
@@ -14370,7 +14371,7 @@ Fancy.define('Fancy.form.field.Tab', {
         }
       });
 
-      var columns = Math.floor(inputWidth / (maxChars * 7 + 30));
+      let columns = Math.floor(inputWidth / (maxChars * 7 + 30));
 
       if (me.columns && me.columns <= columns){
         columns = me.columns;
@@ -14385,17 +14386,17 @@ Fancy.define('Fancy.form.field.Tab', {
     /*
      *
      */
-    setColumnsStyle: function(){
-      var me = this;
+    setColumnsStyle(){
+      const me = this;
 
-      if (!me.columns || me.rows === 1){
+      if (!me.columns || me.rows === 1) {
         return;
       }
 
-      var radioEls = me.el.select('.' + FIELD_TEXT_CLS),
-        radioInputs = me.el.select('.' + FIELD_TEXT_CLS + ' .' + FIELD_RADIO_INPUT_CLS);
+      const radioEls = me.el.select(`.${FIELD_TEXT_CLS}`),
+        radioInputs = me.el.select(`.${FIELD_TEXT_CLS} .${FIELD_RADIO_INPUT_CLS}`);
 
-      radioEls.each(function(item, i){
+      radioEls.each((item, i) => {
         if (i % me.columns === 0){
           radioInputs.item(i).css('margin-left', '0px');
         }
@@ -14406,6 +14407,7 @@ Fancy.define('Fancy.form.field.Tab', {
   });
 
 })();
+
 (function(){
 
   Fancy.vtypes = {};
@@ -14414,7 +14416,7 @@ Fancy.define('Fancy.form.field.Tab', {
    * @param {String} name
    * @param {Object} o
    */
-  Fancy.addValid = function(name, o){
+  Fancy.addValid = (name, o) => {
     Fancy.vtypes[name] = o;
   };
 
@@ -14424,8 +14426,8 @@ Fancy.define('Fancy.form.field.Tab', {
    * @param {*} value
    * @return {Boolean}
    */
-  Fancy.isValid = function(type, value){
-    var vtype;
+  Fancy.isValid = (type, value) => {
+    let vtype;
 
     if (Fancy.isString(type)){
       vtype = Fancy.vtypes[type];
@@ -14440,8 +14442,8 @@ Fancy.define('Fancy.form.field.Tab', {
       }
     }
 
-    if (vtype.before){
-      var before = vtype.before,
+    if (vtype.before) {
+      let before = vtype.before,
         list = [type];
 
       if (Fancy.isString(before)){
@@ -14453,7 +14455,7 @@ Fancy.define('Fancy.form.field.Tab', {
 
       list.reverse();
 
-      var i = 0,
+      let i = 0,
         iL = list.length;
 
       for (; i < iL; i++){
@@ -14491,9 +14493,10 @@ Fancy.define('Fancy.form.field.Tab', {
   };
 
 })();
+
 Fancy.addValid('notempty', {
   text: 'Must be present',
-  fn: function(value){
+  fn(value){
     if(value === null || value === undefined){
       return false;
     }
@@ -14504,7 +14507,7 @@ Fancy.addValid('notempty', {
 
 Fancy.addValid('notnan', {
   text: 'Must be numeric',
-  fn: function(value){
+  fn(value){
     return !isNaN(value);
   }
 });
@@ -14512,7 +14515,7 @@ Fancy.addValid('notnan', {
 Fancy.addValid('min', {
   before: ['notempty', 'notnan'],
   text: 'Must be must be at least {param}',
-  fn: function(value){
+  fn(value){
     return value >= this.param;
   }
 });
@@ -14520,7 +14523,7 @@ Fancy.addValid('min', {
 Fancy.addValid('max', {
   before: ['notempty', 'notnan'],
   text: 'Must be no more than {param}',
-  fn: function(value){
+  fn(value){
     return value <= this.param;
   }
 });
@@ -14528,7 +14531,7 @@ Fancy.addValid('max', {
 Fancy.addValid('range', {
   before: ['notempty', 'notnan'],
   text: 'Must be between {min} and {max}',
-  fn: function(value){
+  fn(value){
     return value >= this.min && value <= this.max;
   }
 });
@@ -14538,6 +14541,7 @@ Fancy.addValid('email', {
   re: /^(")?(?:[^\."])(?:(?:[\.])?(?:[\w\-!#$%&'*+\/=?\^_`{|}~]))*\1@(\w[\-\w]*\.){1,5}([A-Za-z]){2,6}$/,
   text: 'Is not a valid email address'
 });
+
 /*
  * @mixin Fancy.grid.mixin.Edit
  */
@@ -14547,19 +14551,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {Boolean} [at]
    * @param {Boolean} [fire]
    */
-  remove: function(o, at, fire){
-    var me = this,
+  remove(o, at, fire){
+    let me = this,
       store = me.store,
       method = 'remove';
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.remove(o, at);
       }, 100);
       return;
     }
 
-    if(at){
+    if (at) {
       method = 'removeAt';
     }
 
@@ -14581,7 +14585,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     clearInterval(me.removeInt);
 
-    me.removeInt = setTimeout(function(){
+    me.removeInt = setTimeout(() => {
       me.update();
       delete me.removeInt;
     }, 1);
@@ -14589,32 +14593,32 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @param {*} o
    */
-  removeAt: function(o){
+  removeAt(o){
     this.remove(o, true);
   },
   /*
    * @param {Number} row
    */
-  removeRow: function(row){
+  removeRow(row){
     this.remove(row, true);
   },
   /*
    * @param {*} id
    */
-  removeRowById: function(id){
+  removeRowById(id){
     this.remove(id);
   },
   /*
    * @param {*} id
    */
-  removeRowByID: function(id){
+  removeRowByID(id){
     this.remove(id);
   },
   /*
    *
    */
-  removeAll: function(){
-    var me = this;
+  removeAll(){
+    const me = this;
 
     me.store.removeAll();
     me.update();
@@ -14631,11 +14635,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @param {*} o
    */
-  add: function(o){
-    var me = this;
+  add(o){
+    const me = this;
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.add(o);
       }, 100);
       return;
@@ -14657,7 +14661,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     clearInterval(me.addInt);
 
-    me.addInt = setTimeout(function(){
+    me.addInt = setTimeout(() => {
       me.update();
       delete me.addInt;
     }, 1);
@@ -14667,13 +14671,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {Object|Array} o
    * @param {Boolean} fire
    */
-  insert: function(index, o, fire){
+  insert(index, o, fire){
     var me = this,
       s = me.store,
       i;
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.insert(index, o, fire);
       }, 100);
       return;
@@ -14726,7 +14730,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     else if(Fancy.isObject(index) && Fancy.isNumber(o)){
       s.addField(Fancy.Object.keys(index));
 
-      var _index = o;
+      const _index = o;
       o = index;
       index = _index;
     }
@@ -14743,7 +14747,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     clearInterval(me.addInt);
 
-    me.addInt = setTimeout(function(){
+    me.addInt = setTimeout(() => {
       me.update();
       delete me.addInt;
     }, 1);
@@ -14753,12 +14757,12 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {String} key
    * @param {*} value
    */
-  set: function(rowIndex, key, value){
-    var me = this,
+  set(rowIndex, key, value){
+    const me = this,
       s = me.store;
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         me.set(rowIndex, key, value);
       }, 100);
       return;
@@ -14777,13 +14781,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @param {*} value
    * @return {Number}
    */
-  setById: function(id, key, value){
+  setById(id, key, value){
     var me = this,
       s = me.store,
       rowIndex = s.getRow(id);
 
-    if(rowIndex === undefined){
-      var item = s.getById(id);
+    if (rowIndex === undefined) {
+      const item = s.getById(id);
 
       if(item === undefined){
         return false;
@@ -14793,7 +14797,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(!me.store){
-      setTimeout(function(){
+      setTimeout(() => {
         if(rowIndex === -1){
           me.setById(rowIndex, key, value);
         }
@@ -14805,11 +14809,11 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
 
     if(Fancy.isObject(key) && value === undefined){
-      for(var p in key){
-        var column = me.getColumnByIndex(p);
+      for(const p in key){
+        const column = me.getColumnByIndex(p);
 
         if(column && column.type === 'date'){
-          var format = column.format,
+          const format = column.format,
             newDate = Fancy.Date.parse(key[p], format.read, format.mode),
             oldDate = Fancy.Date.parse(s.getById(id).get(p), format.edit, format.mode);
 
@@ -14839,19 +14843,19 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * TODO: undo by id and key
    */
-  undo: function(){
-    var me = this,
+  undo(){
+    const me = this,
       s = me.store,
       action = s.undoActions.splice(s.undoActions.length - 1, 1)[0];
 
-    if(!action){
+    if (!action) {
       return;
     }
 
-    switch(action.type){
+    switch (action.type) {
       case 'edit':
         me.setById(action.id, action.key, action.oldValue);
-        var value = action.value;
+        const value = action.value;
         action.value = action.oldValue;
         action.oldValue = value;
         s.redoActions.push(action);
@@ -14874,13 +14878,13 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  redo: function(){
-    var me = this,
+  redo(){
+    const me = this,
       s = me.store,
       action = s.redoActions.splice(s.redoActions.length - 1, 1)[0];
 
     s.redoing = true;
-    switch(action.type){
+    switch (action.type) {
       case 'edit':
         me.setById(action.id, action.key, action.oldValue);
         break;
@@ -14897,8 +14901,8 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    *
    */
-  undoAll: function(){
-    var me = this,
+  undoAll(){
+    let me = this,
       s = me.store,
       i = 0,
       iL = s.undoActions.length;
@@ -14910,15 +14914,15 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
   /*
    * @params {Object} cell
    */
-  editCell: function(cell){
-    var me = this,
+  editCell(cell){
+    const me = this,
       side = me.getSideByCell(cell),
       rowIndex = Number(cell.attr('index')),
       columnIndex = Number(cell.parent().attr('index')),
       info = {
-        side: side,
-        rowIndex: rowIndex,
-        columnIndex: columnIndex
+        side,
+        rowIndex,
+        columnIndex
       },
       columns = me.getColumns(info.side);
 
@@ -14943,7 +14947,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
 
     info.cell = cell.dom;
 
-    var item = me.get(info.rowIndex);
+    const item = me.get(info.rowIndex);
     info.item = item;
     info.data = item.data;
 
@@ -14960,7 +14964,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
    * @params {Object} o
    * @return {Object}
    */
-  getCell: function(o){
+  getCell(o){
     var me = this,
       side,
       body,
@@ -14969,7 +14973,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     //o.id
     //o.index
     if(o.id !== undefined && o.index !== undefined){
-      var _o = me.getColumnOrderByKey(o.index),
+      const _o = me.getColumnOrderByKey(o.index),
         columnIndex = _o.order,
         rowIndex = me.getRowById(o.id);
 
@@ -15009,6 +15013,7 @@ Fancy.Mixin('Fancy.grid.mixin.Edit', {
     }
   }
 });
+
 /**
  * @class Fancy.Grid
  * @extends Fancy.Widget
@@ -15070,9 +15075,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Object} [config]
    */
   constructor: function(renderTo, config){
-    var me = this;
+    const me = this;
 
-    if(Fancy.isDom(renderTo)){
+    if (Fancy.isDom(renderTo)) {
       config = config || {};
       config.renderTo = renderTo;
     }
@@ -15082,17 +15087,17 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     config = config || {};
 
-    var fn = function(params){
-      if(params){
-        var lang = config.lang;
+    const fn = function (params) {
+      if (params) {
+        const lang = config.lang;
         Fancy.apply(config, params);
 
-        if(lang){
+        if (lang) {
           Fancy.apply(config.lang, lang);
         }
       }
 
-      if(config.id){
+      if (config.id) {
         me.id = config.id;
       }
       me.initId();
@@ -15103,10 +15108,10 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.Super('const', arguments);
     };
 
-    var preInit = function(){
-      var i18n = config.i18n || me.i18n;
+    const preInit = function () {
+      const i18n = config.i18n || me.i18n;
 
-      if( Fancy.loadLang(i18n, fn) === true ){
+      if (Fancy.loadLang(i18n, fn) === true) {
         fn({
           //lang: Fancy.i18n[i18n]
         });
@@ -15134,8 +15139,8 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     //me.initId();
     me.addEvents('beforerender', 'afterrender', 'render', 'show', 'hide', 'destroy');
@@ -15222,11 +15227,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     me.initDebug();
     me.fire('beforeinit');
 
-    setTimeout(function(){
+    setTimeout(() =>{
       me.inited = true;
       me.fire('init');
       me.setBodysHeight();
-      if(!me.state){
+      if (!me.state) {
         me._setColumnsAutoWidth();
       }
     }, 100);
@@ -15235,7 +15240,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   /*
    *
    */
-  loadModules: function(){
+  loadModules(){
     var me = this,
       requiredModules = {},
       columns = me.columns || [],
@@ -15334,36 +15339,36 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       requiredModules.infinite = true;
     }
 
-    var containsMenu = function(item){
-      if(item.menu){
+    const containsMenu = (item) => {
+      if (item.menu) {
         requiredModules['menu'] = true;
         return true;
       }
     };
 
-    Fancy.each(me.events, function(e){
-      for(var p in e){
+    Fancy.each(me.events, e =>{
+      for (const p in e) {
         if(p === 'contextmenu'){
           requiredModules.menu = true;
         }
       }
     });
 
-    Fancy.each(me.controls, function(c){
-      if(c.event === 'contextmenu'){
+    Fancy.each(me.controls, (c) => {
+      if (c.event === 'contextmenu') {
         requiredModules.menu = true;
       }
     });
-    
+
     Fancy.each(me.tbar, containsMenu);
     Fancy.each(me.bbar, containsMenu);
     Fancy.each(me.buttons, containsMenu);
     Fancy.each(me.subTBar, containsMenu);
 
-    var _columns = columns.concat(leftColumns).concat(rightColumns);
+    const _columns = columns.concat(leftColumns).concat(rightColumns);
 
-    Fancy.each(_columns, function(column){
-      if(column.draggable === true){
+    Fancy.each(_columns, (column) => {
+      if (column.draggable === true) {
         requiredModules['column-drag'] = true;
       }
 
@@ -15410,7 +15415,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
     });
 
     if(Fancy.isArray(me.tbar)){
-      Fancy.each(me.tbar, function(item){
+      Fancy.each(me.tbar, (item) => {
         switch(item.action){
           case 'add':
           case 'remove':
@@ -15432,7 +15437,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       length: 0
     };
 
-    for(var p in requiredModules){
+    for (var p in requiredModules) {
       if(Fancy.modules[p] === undefined){
         me.neededModules[p] = true;
         me.neededModules.length++;
@@ -15445,11 +15450,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    var onLoad = function(name){
+    const onLoad = function (name) {
       delete me.neededModules[name];
       me.neededModules.length--;
 
-      if(me.neededModules.length === 0){
+      if (me.neededModules.length === 0) {
         me.neededModules = true;
         me.init();
       }
@@ -15489,23 +15494,23 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number|String} indexOrder
    * @param {String} side
    */
-  lockColumn: function(indexOrder, side){
-    var me = this;
+  lockColumn(indexOrder, side){
+    const me = this;
 
-    if(me.columns.length === 1){
+    if (me.columns.length === 1) {
       return false;
     }
 
-    if(Fancy.isString(indexOrder)){
-      Fancy.each(me.columns, function(column, i){
-        if(column.index === indexOrder){
+    if (Fancy.isString(indexOrder)) {
+      Fancy.each(me.columns, (column, i) => {
+        if (column.index === indexOrder) {
           indexOrder = i;
           return true;
         }
       });
     }
 
-    var removedColumn = me.removeColumn(indexOrder, side);
+    const removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, me.leftColumns.length, 'left');
     if(me.header){
@@ -15529,14 +15534,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number|String} indexOrder
    * @param {String} side
    */
-  rightLockColumn: function(indexOrder, side){
-    var me = this;
+  rightLockColumn(indexOrder, side){
+    const me = this;
 
-    if(me.columns.length === 1){
+    if (me.columns.length === 1) {
       return false;
     }
 
-    if(Fancy.isString(indexOrder)){
+    if (Fancy.isString(indexOrder)) {
       Fancy.each(me.columns, function(column, i){
         if(column.index === indexOrder){
           indexOrder = i;
@@ -15545,14 +15550,14 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       });
     }
 
-    var removedColumn = me.removeColumn(indexOrder, side);
+    const removedColumn = me.removeColumn(indexOrder, side);
 
     me.insertColumn(removedColumn, 0, 'right');
 
-    if(me.header){
+    if (me.header) {
       me.rightHeader.reSetCheckBoxes();
 
-      if(me.groupheader){
+      if (me.groupheader) {
         me.header.fixGroupHeaderSizing();
         me.rightHeader.fixGroupHeaderSizing();
       }
@@ -15570,11 +15575,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number|String} indexOrder
    * @param {String} side
    */
-  unLockColumn: function(indexOrder, side){
-    var me = this,
-      removedColumn;
+  unLockColumn(indexOrder, side){
+    const me = this;
+    let removedColumn;
 
-    if(side === undefined){
+    if (side === undefined) {
       if(Fancy.isString(indexOrder)){
         Fancy.each(me.leftColumns, function(column, i){
           if (column.index === indexOrder){
@@ -15631,9 +15636,9 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         removedColumn = me.removeColumn(indexOrder, side);
         me.insertColumn(removedColumn, me.columns.length, 'center', 'right');
 
-        if(me.rightColumns.length === 0){
+        if (me.rightColumns.length === 0) {
           me.rightEl.addCls(Fancy.GRID_RIGHT_EMPTY_CLS);
-          var bodyWidth = parseInt(me.body.el.css('width'));
+          const bodyWidth = parseInt(me.body.el.css('width'));
 
           me.body.el.css('width', bodyWidth + 2);
         }
@@ -15644,7 +15649,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       me.grouping.insertGroupEls();
     }
 
-    if(me.header){
+    if (me.header) {
       if(me.groupheader){
         me.header.fixGroupHeaderSizing();
 
@@ -15673,11 +15678,11 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
    * @param {Number} toIndex
    * @param {Object} [grouping]
    */
-  moveColumn: function(fromSide, toSide, fromIndex, toIndex, grouping){
-    var me = this,
-      removedColumn;
+  moveColumn(fromSide, toSide, fromIndex, toIndex, grouping){
+    const me = this;
+    let removedColumn;
 
-    if(grouping){
+    if (grouping) {
       var i = 0,
         iL = grouping.end - grouping.start + 1,
         groupIndex = grouping.cell.attr('index'),
@@ -15688,15 +15693,15 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
         me.moveColumn(fromSide, toSide, grouping.end - i, toIndex);
       }
 
-      var toColumns = me.getColumns(toSide);
-      var cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
+      const toColumns = me.getColumns(toSide);
+      const cells = toHeader.el.select('.' + Fancy.GRID_HEADER_CELL_CLS);
 
       i = toIndex;
       iL = i + (grouping.end - grouping.start + 1);
 
-      for(;i<iL;i++){
-        var column = toColumns[i],
-          cell =  cells.item(i);
+      for (;i<iL;i++) {
+        const column = toColumns[i],
+          cell = cells.item(i);
 
         column.grouping = groupIndex;
         cell.attr('group-index', groupIndex);
@@ -15709,7 +15714,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       return;
     }
 
-    if(fromSide === 'center'){
+    if (fromSide === 'center') {
       removedColumn = me.removeColumn(fromIndex, 'center');
       switch(toSide){
         case 'left':
@@ -15720,7 +15725,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           break;
       }
     }
-    else if(fromSide === 'left'){
+    else if (fromSide === 'left') {
       removedColumn = me.removeColumn(fromIndex, 'left');
       switch(toSide){
         case 'center':
@@ -15731,7 +15736,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
           break;
       }
     }
-    else if(fromSide === 'right'){
+    else if (fromSide === 'right') {
       removedColumn = me.removeColumn(fromIndex, 'right');
       switch(toSide){
         case 'center':
@@ -15743,7 +15748,7 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
       }
     }
 
-    if(me.groupheader){
+    if (me.groupheader) {
       me.header.fixGroupHeaderSizing();
 
       if(me.leftColumns){
@@ -15760,37 +15765,36 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 
     me.update();
   },
-  updateColumnsVisibility: function(){
-    var me = this;
+  updateColumnsVisibility(){
+    const me = this;
 
-    if(me.columns){
-      if(me.header){
+    if (me.columns) {
+      if (me.header) {
         me.header.updateCellsVisibility();
       }
       me.body.updateColumnsVisibility();
     }
 
-    if(me.leftColumns){
-      if(me.leftHeader){
+    if (me.leftColumns) {
+      if (me.leftHeader) {
         me.leftHeader.updateCellsVisibility();
       }
+
       me.leftBody.updateColumnsVisibility();
     }
 
-    if(me.rightColumns){
-      if(me.rightHeader){
+    if (me.rightColumns) {
+      if (me.rightHeader) {
         me.rightHeader.updateCellsVisibility();
       }
       me.rightBody.updateColumnsVisibility();
     }
   },
-  initColumnsIdSeedByIndex: function(){
-    var me = this;
-
-    me.columnsIdsSeed = {};
+  initColumnsIdSeedByIndex(){
+    this.columnsIdsSeed = {};
   },
-  getColumnId: function(index){
-    var me = this;
+  getColumnId(index){
+    const me = this;
 
     if(me.columnsIdsSeed[index] === undefined){
       me.columnsIdsSeed[index] = 0;
@@ -15808,37 +15812,37 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
   /*
    * @return {Boolean}
    */
-  isGroupable: function(){
-    var me = this;
+  isGroupable(){
+    const me = this;
 
     return me.grouping && me.grouping.by;
   },
   /*
    *
    */
-  _setColumnsAutoWidth: function(){
-    var me = this;
+  _setColumnsAutoWidth(){
+    const me = this;
 
-    if(!me.autoColumnWidth){
+    if (!me.autoColumnWidth) {
       return;
     }
 
-    if(me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty){
+    if (me.state && !Fancy.Object.isEmpty(me.state.getState()) && !me.allowAutoWidthStateIsEmpty) {
       return;
     }
 
-    if(me._firstTimeAutoColumnWidth){
+    if (me._firstTimeAutoColumnWidth) {
       return;
     }
 
-    var columns = me.getColumns();
+    const columns = me.getColumns();
     Fancy.each(columns, function(column){
       if(column.autoWidth && !column.hidden && (column.index || column.smartIndexFn || column.render)){
         me.autoSizeColumn(column.id, true, column);
       }
     });
 
-    setTimeout(function(){
+    setTimeout(() => {
       me._firstTimeAutoColumnWidth = true;
       delete me.allowAutoWidthStateIsEmpty;
     }, 1000);
@@ -15848,20 +15852,20 @@ Fancy.define(['Fancy.Grid', 'FancyGrid'], {
 /*
  * @param {String} id
  */
-FancyGrid.get = function(id){
-  var el = Fancy.get(id);
+FancyGrid.get = (id) => {
+  const el = Fancy.get(id);
 
-  if(!el.dom){
+  if (!el.dom) {
     return;
   }
 
-  var gridEl = el.select('.' + Fancy.GRID_CLS).item(0);
+  const gridEl = el.select(`.${Fancy.GRID_CLS}`).item(0);
 
-  if(!gridEl.dom){
+  if (!gridEl.dom) {
     return;
   }
 
-  var gridId = gridEl.dom.id;
+  const gridId = gridEl.dom.id;
 
   return Fancy.getWidget(gridId);
 };
@@ -15870,7 +15874,7 @@ FancyGrid.defineTheme = Fancy.defineTheme;
 FancyGrid.defineController = Fancy.defineController;
 FancyGrid.addValid = Fancy.addValid;
 
-if(!Fancy.nojQuery && Fancy.$){
+if (!Fancy.nojQuery && Fancy.$) {
   Fancy.$.fn.FancyGrid = function(o){
     if(this.selector){
       o.renderTo = Fancy.$(this.selector)[0].id;
@@ -15882,13 +15886,14 @@ if(!Fancy.nojQuery && Fancy.$){
     return new Fancy.Grid(o);
   };
 }
+
 /*
  * @class Fancy.grid.plugin.RowHeight
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.grid.plugin.RowHeight', {
     extend: F.Plugin,
@@ -15910,15 +15915,15 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('init', me.onInit, me);
@@ -15927,31 +15932,31 @@ if(!Fancy.nojQuery && Fancy.$){
       w.on('changepage', me.onChangePage, me);
       w.on('sort', me.onSort, me);
     },
-    onInit: function(){
-      var me = this,
+    onInit(){
+      const me = this,
         w = me.widget;
 
-      setTimeout(function(){
+      setTimeout(() => {
         w.scroller.update(me.totalHeight);
       }, 50);
     },
     /*
      *
      */
-    onUpdate: function(){
+    onUpdate(){
       var me = this,
         w = me.widget,
         viewData = w.getDataView(),
         totalHeight = 0;
 
-      F.each(viewData, function(item){
-        var id = item.id,
+      F.each(viewData, (item) => {
+        const id = item.id,
           height = me.rows[id],
           rowIndex = w.getRowById(id),
           cells = w.getDomRow(rowIndex);
 
-        F.each(cells, function(cellDom){
-          var cell = F.get(cellDom);
+        F.each(cells, (cellDom) => {
+          const cell = F.get(cellDom);
 
           cell.css('height', height);
         });
@@ -15965,7 +15970,7 @@ if(!Fancy.nojQuery && Fancy.$){
         me.totalHeight += w.grouping.getGroupRowsHeight();
       }
 
-      setTimeout(function(){
+      setTimeout(() => {
         w.setSidesHeight(me.totalHeight);
         w.scroller.update(me.totalHeight);
       }, 50);
@@ -15973,8 +15978,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    add: function(id, height, rowIndex){
-      var me = this;
+    add(id, height, rowIndex){
+      const me = this;
 
       if(me.rows[id] && me.rows[id] > height){
         return;
@@ -15985,10 +15990,10 @@ if(!Fancy.nojQuery && Fancy.$){
 
       clearInterval(me.intIndexesSum);
 
-      me.intIndexesSum = setTimeout(function(){
+      me.intIndexesSum = setTimeout(() => {
         me.rowIndexesSum = [];
 
-        F.each(me.rowIndexes, function(value, index){
+        F.each(me.rowIndexes, (value, index) => {
           if(index === 0){
             me.rowIndexesSum[index] = value;
           }
@@ -16001,12 +16006,12 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    getRowsHeight: function(items){
+    getRowsHeight(items){
       var me = this,
         height = 0;
 
-      F.each(items, function(item){
-        var id = item.get('id');
+      F.each(items, (item) => {
+        const id = item.get('id');
 
         height += me.rows[id];
       });
@@ -16016,14 +16021,14 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    onColumnResize: function(grid, o){
-      var me = this;
+    onColumnResize(grid, o){
+      const me = this;
 
       me.rows = {};
 
       if(o.column.type === 'text' && o.column.autoHeight){
 
-        setTimeout(function(){
+        setTimeout(() => {
           me.widget.update();
           me.onUpdate();
         }, 400);
@@ -16032,24 +16037,20 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    onChangePage:  function(){
-      var me = this;
-
-      me.rows = {};
+    onChangePage(){
+      this.rows = {};
     },
     /*
      *
      */
-    onSort:  function(){
-      var me = this;
-
-      me.rows = {};
+    onSort(){
+      this.rows = {};
     },
     /*
      *
      */
-    waitToShow: function(){
-      var me = this;
+    waitToShow(){
+      const me = this;
 
       if(me.waitingForParentVisibility){
         return;
@@ -16057,14 +16058,14 @@ if(!Fancy.nojQuery && Fancy.$){
 
       me.waitingForParentVisibility = true;
 
-      var w = me.widget,
+      const w = me.widget,
         parentEl = me.getHiddenParent(w.el);
 
       if(!parentEl){
         return;
       }
 
-      me.intWaitToShow = setInterval(function(){
+      me.intWaitToShow = setInterval(() => {
         if(parentEl.css('display') === 'none'){
           return;
         }
@@ -16078,9 +16079,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    getHiddenParent: function(el, deep){
-      var deep = deep || 0,
-        maxDeep = 10;
+    getHiddenParent: function(el, deep = 0){
+      const maxDeep = 10;
 
       deep++;
 
@@ -16103,17 +16103,18 @@ if(!Fancy.nojQuery && Fancy.$){
   });
 
 })();
+
 /*
  * @class Fancy.grid.plugin.CellTip
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var HIDE_TIMEOUT = 500;
+  const F = Fancy;
+  const HIDE_TIMEOUT = 500;
 
-  var TOOLTIP_CLS = F.TOOLTIP_CLS;
-  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
+  const TOOLTIP_CLS = F.TOOLTIP_CLS;
+  const TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
   F.define('Fancy.grid.plugin.CellTip', {
     extend: F.Plugin,
@@ -16130,15 +16131,15 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         docEl = F.get(document);
 
@@ -16151,8 +16152,8 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function(grid, o){
-      var me = this,
+    onCellEnter(grid, o){
+      let me = this,
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
@@ -16172,7 +16173,7 @@ if(!Fancy.nojQuery && Fancy.$){
           }
         }
 
-        var tpl = new F.Template(cellTip),
+        const tpl = new F.Template(cellTip),
           data = {
             title: column.title,
             value: o.value,
@@ -16191,7 +16192,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function(){
+    onCellLeave(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -16199,19 +16200,19 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function(){
+    onTouchEnd(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function(e){
+    onDocMove(e){
       if (this.stopped === true){
         return;
       }
 
-      var me = this,
+      const me = this,
         w = me.widget;
 
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
@@ -16220,7 +16221,7 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      var targetEl = F.get(e.target);
+      const targetEl = F.get(e.target);
 
       if(targetEl.prop('tagName').toLocaleLowerCase() === 'body'){
         me.stopped = true;
@@ -16241,17 +16242,18 @@ if(!Fancy.nojQuery && Fancy.$){
   });
 
 })();
+
 /*
  * @class Fancy.grid.plugin.HeaderCellTip
  * @extends Fancy.Plugin
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var HIDE_TIMEOUT = 500;
+  const F = Fancy;
+  const HIDE_TIMEOUT = 500;
 
-  var TOOLTIP_CLS = F.TOOLTIP_CLS;
-  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
+  const TOOLTIP_CLS = F.TOOLTIP_CLS;
+  const TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
   F.define('Fancy.grid.plugin.HeaderCellTip', {
     extend: F.Plugin,
@@ -16268,15 +16270,15 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         docEl = F.get(document);
 
@@ -16289,14 +16291,14 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function(grid, o){
+    onCellEnter(grid, o){
       var me = this,
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
 
       if (column.headerCellTip){
-        var data = {
+        const data = {
           title: column.title,
           columnIndex: o.columnIndex,
           side: o.side
@@ -16312,7 +16314,7 @@ if(!Fancy.nojQuery && Fancy.$){
           }
         }
 
-        var tpl = new F.Template(cellTip);
+        const tpl = new F.Template(cellTip);
 
         me.stopped = false;
         F.apply(data, o.data);
@@ -16325,7 +16327,7 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function(){
+    onCellLeave(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -16333,19 +16335,19 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function(){
+    onTouchEnd(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function(e){
+    onDocMove(e){
       if (this.stopped === true){
         return;
       }
 
-      var me = this,
+      const me = this,
         w = me.widget;
 
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
@@ -16354,7 +16356,7 @@ if(!Fancy.nojQuery && Fancy.$){
         return;
       }
 
-      var targetEl = F.get(e.target);
+      const targetEl = F.get(e.target);
 
       if(targetEl.prop('tagName').toLocaleLowerCase() === 'body'){
         me.stopped = true;
@@ -16375,17 +16377,18 @@ if(!Fancy.nojQuery && Fancy.$){
   });
 
 })();
+
 /*
  * @class Fancy.ToolTip
  * @extends Fancy.Widget
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var TOOLTIP_CLS = F.TOOLTIP_CLS;
-  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
+  const TOOLTIP_CLS = F.TOOLTIP_CLS;
+  const TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
   F.define('Fancy.ToolTip', {
     extend: F.Widget,
@@ -16399,13 +16402,13 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    init: function(){
+    init(){
       this.initTpl();
       this.render();
       this.ons();
     },
     tpl: [
-      '<div class="' + TOOLTIP_INNER_CLS + '">{text}</div>'
+      `<div class="${TOOLTIP_INNER_CLS}">{text}</div>`
     ],
     widgetCls: TOOLTIP_CLS,
     cls: '',
@@ -16413,8 +16416,8 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
         el = F.get(document.createElement('div'));
 
@@ -16435,13 +16438,13 @@ if(!Fancy.nojQuery && Fancy.$){
      * @param {Number} x
      * @param {Number} y
      */
-    show: function(x, y){
-      var me = this;
+    show(x, y){
+      const me = this;
 
       clearInterval(me.timeout);
       delete me.timeout;
 
-      if (me.css('display') === 'none'){
+      if (me.css('display') === 'none') {
         me.css({
           display: 'block'
         });
@@ -16455,13 +16458,13 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      * @param {Number} [delay]
      */
-    hide: function(delay){
-      var me = this;
+    hide(delay){
+      const me = this;
 
       clearInterval(me.timeout);
 
-      if (delay){
-        me.timeout = setTimeout(function(){
+      if (delay) {
+        me.timeout = setTimeout(() => {
           me.el.hide();
           delete me.timeout;
         }, delay);
@@ -16473,22 +16476,22 @@ if(!Fancy.nojQuery && Fancy.$){
     /*
      *
      */
-    destroy: function(){
+    destroy(){
       this.el.destroy();
     },
     /*
      * @param {String} html
      */
-    update: function(html){
-      this.el.select('.' + TOOLTIP_INNER_CLS).update(html);
+    update(html){
+      this.el.select(`.${TOOLTIP_INNER_CLS}`).update(html);
     },
-    ons: function(){
-      var me = this;
+    ons(){
+      const me = this;
 
       me.el.on('mouseenter', me.onMouseEnter, me);
     },
-    onMouseEnter: function(){
-      var me = this;
+    onMouseEnter(){
+      const me = this;
 
       //me.show(e.pageX + parseInt(me.el.css('width')), e.pageY - parseInt(me.el.css('height'))/2);
       me.hide(500);
@@ -16496,18 +16499,18 @@ if(!Fancy.nojQuery && Fancy.$){
   });
 
   F.tip = {
-    update: function(text){
+    update(text){
       F.tip = new F.ToolTip({
         text: text
       });
     },
-    show: function(x, y){
+    show(x, y){
       F.tip = new F.ToolTip({
         text: ' '
       });
       F.tip.show(x, y);
     },
-    hide: function(){
+    hide(){
       F.tip = new F.ToolTip({
         text: ' '
       });
@@ -16515,10 +16518,11 @@ if(!Fancy.nojQuery && Fancy.$){
   };
 
 })();
+
 /*
  *
  */
-Fancy.enableCompo = function(){
+Fancy.enableCompo = () => {
   var doc = document,
     componentsLength = 0,
     components = {},
@@ -16544,7 +16548,7 @@ Fancy.enableCompo = function(){
   function findComponent(){
     if (componentsLength === 0) return;
 
-    for (var p in components){
+    for (const p in components) {
       var comp = components[p],
         founded = doc.querySelectorAll(p),
         attrPreSelector = comp.appPreSelector ? comp.appPreSelector + '-' : 'data-',
@@ -16554,7 +16558,7 @@ Fancy.enableCompo = function(){
         j,
         jL;
 
-      if (founded.length === 0){
+      if (founded.length === 0) {
         return;
       }
 

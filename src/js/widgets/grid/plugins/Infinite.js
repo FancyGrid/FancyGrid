@@ -16,15 +16,15 @@ Fancy.define('Fancy.grid.plugin.Infinite', {
   /*
    *
    */
-  init: function(){
+  init(){
     this.Super('init', arguments);
     this.ons();
   },
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       w = me.widget;
 
     //w.on('render', me.onRenderGrid, me);

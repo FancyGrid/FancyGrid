@@ -3,20 +3,20 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
-  var PICKER_DATE_CLS = F.PICKER_DATE_CLS;
-  var PICKER_DATE_CELL_TODAY_CLS = F.PICKER_DATE_CELL_TODAY_CLS;
-  var PICKER_DATE_CELL_OUT_RANGE_CLS = F.PICKER_DATE_CELL_OUT_RANGE_CLS;
-  var PICKER_DATE_CELL_OUT_MIN_MAX_CLS = 'fancy-date-picker-cell-out-min-max';
-  var PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
-  var PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
-  var PICKER_BUTTON_DATE_CLS = F.PICKER_BUTTON_DATE_CLS;
-  var PICKER_BUTTON_DATE_WRAPPER_CLS = F.PICKER_BUTTON_DATE_WRAPPER_CLS;
-  var PICKER_BUTTON_TODAY_CLS = F.PICKER_BUTTON_TODAY_CLS;
-  var PICKER_BUTTON_TODAY_WRAPPER_CLS = F.PICKER_BUTTON_TODAY_WRAPPER_CLS;
+  const PICKER_DATE_CELL_ACTIVE_CLS = F.PICKER_DATE_CELL_ACTIVE_CLS;
+  const PICKER_DATE_CLS = F.PICKER_DATE_CLS;
+  const PICKER_DATE_CELL_TODAY_CLS = F.PICKER_DATE_CELL_TODAY_CLS;
+  const PICKER_DATE_CELL_OUT_RANGE_CLS = F.PICKER_DATE_CELL_OUT_RANGE_CLS;
+  const PICKER_DATE_CELL_OUT_MIN_MAX_CLS = 'fancy-date-picker-cell-out-min-max';
+  const PICKER_BUTTON_BACK_CLS = F.PICKER_BUTTON_BACK_CLS;
+  const PICKER_BUTTON_NEXT_CLS = F.PICKER_BUTTON_NEXT_CLS;
+  const PICKER_BUTTON_DATE_CLS = F.PICKER_BUTTON_DATE_CLS;
+  const PICKER_BUTTON_DATE_WRAPPER_CLS = F.PICKER_BUTTON_DATE_WRAPPER_CLS;
+  const PICKER_BUTTON_TODAY_CLS = F.PICKER_BUTTON_TODAY_CLS;
+  const PICKER_BUTTON_TODAY_WRAPPER_CLS = F.PICKER_BUTTON_TODAY_WRAPPER_CLS;
 
   F.define('Fancy.datepicker.Manager', {
     singleton: true,
@@ -24,18 +24,14 @@
     /*
      * @param {Object} picker
      */
-    add: function(picker){
+    add(picker){
       this.hide();
       this.opened.push(picker);
     },
-    hide: function(){
-      var opened = this.opened,
-        i = 0,
-        iL = opened.length;
-
-      for (; i < iL; i++){
-        opened[i].hide();
-      }
+    hide(){
+      this.opened.forEach(opened => {
+        opened.hide();
+      });
 
       this.opened = [];
     }
@@ -84,7 +80,7 @@
      * @param {Object} config
      */
     constructor: function(config){
-      var me = this;
+      const me = this;
 
       F.apply(me, config);
 
@@ -99,8 +95,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
 
@@ -119,21 +115,20 @@
     /*
      *
      */
-    initFormat: function(){
-      var me = this;
+    initFormat(){
+      const me = this;
 
-      if (me.format){}
-      else {
+      if (!me.format) {
         me.format = F.i18n[me.i18n].date;
       }
     },
     /*
      *
      */
-    initMonthPicker: function(){
-      var me = this;
+    initMonthPicker(){
+      const me = this;
 
-      if(me.monthPicker){
+      if (me.monthPicker) {
         me.monthPicker.setDate(me.date);
         return;
       }
@@ -142,14 +137,14 @@
         return;
       }
 
-      var config = {
+      const config = {
         theme: me.theme,
         date: me.date,
         renderTo: me.panel.el.dom,
         i18n: me.i18n,
         style: {
           position: 'absolute',
-          top: '-' + me.panel.el.height() + 'px',
+          top: `-${me.panel.el.height()}px`,
           left: '0px'
         },
         events: [{
@@ -161,9 +156,9 @@
         }]
       };
 
-      var themeConfig = F.themes[me.theme].config;
+      const themeConfig = F.themes[me.theme].config;
 
-      if(themeConfig.datePickerHeight){
+      if (themeConfig.datePickerHeight) {
         config.height = themeConfig.datePickerHeight;
       }
 
@@ -172,32 +167,32 @@
     /*
      *
      */
-    initData: function(){
+    initData(){
       this.data = this.generateData();
     },
     /*
      *
      */
-    initDate: function(){
-      var me = this;
+    initDate(){
+      const me = this;
 
-      if (me.date === undefined || me.date.toString() === 'Invalid Date'){
+      if (me.date === undefined || me.date.toString() === 'Invalid Date') {
         me.date = new Date();
       }
 
       me.showDate = me.date;
 
-      if(me.maxValue && me.showDate > me.maxValue){
+      if (me.maxValue && me.showDate > me.maxValue) {
         me.showDate = me.maxValue;
       }
-      else if(me.minValue && me.showDate < me.minValue){
+      else if(me.minValue && me.showDate < me.minValue) {
         me.showDate = me.minValue;
       }
     },
     /*
      *
      */
-    initColumns: function(){
+    initColumns(){
       var me = this,
         format = me.format,
         days = format.days,
@@ -208,103 +203,97 @@
         columns = [],
         today = new Date();
 
-      var render = function(o){
+      const render = function (o) {
         o.cls = '';
 
-        switch (o.rowIndex){
+        switch (o.rowIndex) {
           case 0:
-            if (Number(o.value) > 20){
+            if (Number(o.value) > 20) {
               o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
           case 4:
           case 5:
-            if (Number(o.value) < 15){
+            if (Number(o.value) < 15) {
               o.cls += ' ' + PICKER_DATE_CELL_OUT_RANGE_CLS;
             }
             break;
         }
 
-        var date = me.date,
+        const date = me.date,
           showDate = me.showDate;
 
-        if (today.getMonth() === showDate.getMonth() && today.getFullYear() === showDate.getFullYear()){
-          if (o.value === today.getDate()){
-            if (o.rowIndex === 0){
-              if (o.value < 20){
+        if (today.getMonth() === showDate.getMonth() && today.getFullYear() === showDate.getFullYear()) {
+          if (o.value === today.getDate()) {
+            if (o.rowIndex === 0) {
+              if (o.value < 20) {
                 o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
-            }
-            else if (o.rowIndex === 4 || o.rowIndex === 5){
-              if (o.value > 20){
+            } else if (o.rowIndex === 4 || o.rowIndex === 5) {
+              if (o.value > 20) {
                 o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
               }
-            }
-            else {
+            } else {
               o.cls += ' ' + PICKER_DATE_CELL_TODAY_CLS;
             }
           }
         }
 
-        if (date.getMonth() === showDate.getMonth() && date.getFullYear() === showDate.getFullYear()){
-          if (o.value === date.getDate()){
-            if (o.rowIndex === 0){
-              if (o.value < 20){
+        if (date.getMonth() === showDate.getMonth() && date.getFullYear() === showDate.getFullYear()) {
+          if (o.value === date.getDate()) {
+            if (o.rowIndex === 0) {
+              if (o.value < 20) {
                 o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
-            }
-            else if (o.rowIndex === 4 || o.rowIndex === 5){
-              if (o.value > 20){
+            } else if (o.rowIndex === 4 || o.rowIndex === 5) {
+              if (o.value > 20) {
                 o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
               }
-            }
-            else {
+            } else {
               o.cls += ' ' + PICKER_DATE_CELL_ACTIVE_CLS;
             }
           }
         }
 
-        var _value = o.value;
-        var _month = showDate.getMonth();
-        var _year = showDate.getFullYear();
+        const _value = o.value;
+        let _month = showDate.getMonth();
+        let _year = showDate.getFullYear();
 
-        if(Number(_value) > 20 && o.rowIndex < 2){
+        if (Number(_value) > 20 && o.rowIndex < 2) {
           _month--;
-          if(_month === 0){
+          if (_month === 0) {
             _year--;
             _month = 11;
           }
-        }
-        else if(Number(_value) < 10 && o.rowIndex > 3 ){
+        } else if (Number(_value) < 10 && o.rowIndex > 3) {
           _month++;
-          if(_month === 12){
+          if (_month === 12) {
             _year++;
             _month = 0;
           }
         }
 
-        var _day = new Date(_year, _month, _value),
+        let _day = new Date(_year, _month, _value),
           isOutMinMax = false;
 
-        if(me.maxValue && me.maxValue < _day){
+        if (me.maxValue && me.maxValue < _day) {
           isOutMinMax = true;
         }
 
-        if(me.minValue && me.minValue > _day){
+        if (me.minValue && me.minValue > _day) {
           isOutMinMax = true;
         }
 
-        if(isOutMinMax){
+        if (isOutMinMax) {
           o.cls += ' ' + PICKER_DATE_CELL_OUT_MIN_MAX_CLS;
-        }
-        else if(o.cell){
+        } else if (o.cell) {
           o.cell.removeCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS);
         }
 
         return o;
       };
 
-      var charIndex = 0;
+      let charIndex = 0;
 
       switch(me.i18n){
         case 'zh-CN':
@@ -337,7 +326,7 @@
     /*
      * @return {Array}
      */
-    getDataFields: function(){
+    getDataFields(){
       var me = this,
         fields = [],
         format = me.format,
@@ -363,7 +352,7 @@
     /*
      *
      */
-    generateData: function(){
+    generateData(){
       var me = this,
         format = me.format,
         startDay = format.startDay,
@@ -377,7 +366,7 @@
         keyPlus = 0;
 
       for (; i < iL; i++){
-        var key = i + firstDayOfMonth - startDay + keyPlus;
+        let key = i + firstDayOfMonth - startDay + keyPlus;
         if (key < 0){
           key = 7 - startDay;
           keyPlus = key + 1;
@@ -446,15 +435,15 @@
     /*
      *
      */
-    initBars: function(){
+    initBars(){
       this.initTBar();
       this.initBBar();
     },
     /*
      *
      */
-    initTBar: function(){
-      var me = this,
+    initTBar(){
+      const me = this,
         tbar = [];
 
       tbar.push({
@@ -488,8 +477,8 @@
     /*
      *
      */
-    initBBar: function(){
-      var me = this,
+    initBBar(){
+      const me = this,
         bbar = [];
 
       bbar.push({
@@ -508,7 +497,7 @@
     /*
      *
      */
-    onBackClick: function(){
+    onBackClick(){
       var me = this,
         date = me.showDate,
         month = date.getMonth(),
@@ -519,7 +508,7 @@
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 0){
+      if (month === 0) {
         month = 11;
         year--;
       }
@@ -529,14 +518,14 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
     /*
      *
      */
-    onNextClick: function(){
+    onNextClick(){
       var me = this,
         date = me.showDate,
         month = date.getMonth(),
@@ -547,7 +536,7 @@
         second = date.getSeconds(),
         millisecond = date.getMilliseconds();
 
-      if (month === 11){
+      if (month === 11) {
         month = 0;
         year++;
       }
@@ -557,21 +546,21 @@
 
       me.showDate = new Date(year, month, _date, hour, minute, second, millisecond);
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
     /*
      *
      */
-    onUpdate: function(){
+    onUpdate(){
       var me = this,
         value = F.Date.format(me.showDate, 'F Y', {
           date: me.format
         }),
         width = value.length * 9 + 35;
 
-      switch (me.i18n){
+      switch (me.i18n) {
         case 'zh-CN':
         case 'zh-TW':
         case 'ja':
@@ -585,14 +574,14 @@
     /*
      *
      */
-    onClickToday: function(){
-      var me = this,
+    onClickToday(){
+      const me = this,
         date = new Date();
 
       me.showDate = date;
       me.date = date;
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
     },
@@ -600,7 +589,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellClick: function(grid, o){
+    onCellClick(grid, o){
       var me = this,
         date = me.showDate,
         year = date.getFullYear(),
@@ -612,19 +601,19 @@
         day,
         cell = F.get(o.cell);
 
-      if(cell.hasCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS)){
+      if (cell.hasCls(PICKER_DATE_CELL_OUT_MIN_MAX_CLS)) {
         return;
       }
 
       me.date = new Date(year, month, Number(o.value), hour, minute, second, millisecond);
 
-      me.el.select('.' + PICKER_DATE_CELL_ACTIVE_CLS).removeCls(PICKER_DATE_CELL_ACTIVE_CLS);
+      me.el.select(`.${PICKER_DATE_CELL_ACTIVE_CLS}`).removeCls(PICKER_DATE_CELL_ACTIVE_CLS);
 
       cell.addCls(PICKER_DATE_CELL_ACTIVE_CLS);
 
       me.fire('changedate', me.date);
 
-      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)){
+      if (cell.hasCls(PICKER_DATE_CELL_OUT_RANGE_CLS)) {
         day = Number(o.value);
         if (o.rowIndex < 3){
           if (month === 0){
@@ -648,7 +637,7 @@
         me.date = new Date(year, month, day, hour, minute, second, millisecond);
         me.showDate = me.date;
 
-        var data = me.generateData();
+        const data = me.generateData();
 
         me.store.setData(data.items);
         me.update();
@@ -657,10 +646,10 @@
     /*
      * @param {Object} e
      */
-    onMouseWheel: function(e){
-      var delta = F.getWheelDelta(e.originalEvent || e);
+    onMouseWheel(e){
+      const delta = F.getWheelDelta(e.originalEvent || e);
 
-      if (delta < 0){
+      if (delta < 0) {
         this.onBackClick();
       }
       else {
@@ -670,13 +659,13 @@
     /*
      *
      */
-    onDateClick: function(){
-      var me = this;
+    onDateClick(){
+      const me = this;
 
       me.initMonthPicker();
 
       me.monthPicker.panel.css('display', 'block');
-      if (F.$.fn.animate){
+      if (F.$.fn.animate) {
         me.monthPicker.panel.el.animate({
           top: '0px'
         });
@@ -690,13 +679,13 @@
     /*
      *
      */
-    onMonthCancelClick: function(){
+    onMonthCancelClick(){
       this.hideMonthPicker();
     },
     /*
      *
      */
-    onMonthOkClick: function(){
+    onMonthOkClick(){
       var me = this,
         monthPickerDate = me.monthPicker.date,
         newMonth = monthPickerDate.getMonth(),
@@ -716,7 +705,7 @@
       me.date = new Date(newYear, newMonth, date, hour, minute, second, millisecond);
       me.showDate = me.date;
 
-      var data = me.generateData();
+      const data = me.generateData();
       me.store.setData(data.items);
       me.update();
 
@@ -725,14 +714,14 @@
     /*
      *
      */
-    hideMonthPicker: function(){
-      var el = this.monthPicker.panel.el;
+    hideMonthPicker(){
+      const el = this.monthPicker.panel.el;
 
-      if (F.$.fn.animate){
+      if (F.$.fn.animate) {
         el.animate({
           top: '-' + el.css('height')
         }, {
-          complete: function(){
+          complete: () => {
             el.css('display', 'none');
           }
         });
@@ -744,14 +733,14 @@
     /*
      * @param {Object} e
      */
-    onMouseDown: function(e){
+    onMouseDown(e){
       e.preventDefault();
     },
     /*
      * @param {Date} date
      */
-    setDate: function(date, firstShow){
-      var me = this;
+    setDate(date, firstShow){
+      const me = this;
 
       me.date = date;
       if(firstShow && me.showDate){}

@@ -19,8 +19,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'change', 'key');
 
@@ -51,8 +51,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   /*
    *
    */
-  render: function(){
-    var me = this,
+  render(){
+    const me = this,
       renderTo = me.renderTo || document.body,
       el = document.createElement('div');
 
@@ -76,8 +76,8 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
    * @param {*} value
    * @param {Boolean} onInput
    */
-  set: function(value, onInput){
-    var me = this;
+  set(value, onInput){
+    const me = this;
 
     me.el.firstChild().update(value);
     if(onInput !== false){
@@ -87,7 +87,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   /*
    * @return {String}
    */
-  get: function(){
+  get() {
     return this.el.firstChild().dom.innerHTML;
   }
 });

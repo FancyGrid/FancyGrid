@@ -4,7 +4,7 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define(['Fancy.form.field.DateRange', 'Fancy.DateRangeField'], {
     extend: F.Widget,
@@ -24,8 +24,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('changedatefrom', 'changedateto', 'change');
 
@@ -39,8 +39,8 @@
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         renderTo = me.renderTo || document.body,
         el = F.get(document.createElement('div'));
 
@@ -51,11 +51,11 @@
     /*
      *
      */
-    preRender: function(){},
+    preRender(){},
     /*
      *
      */
-    initDateFields: function(){
+    initDateFields(){
       var me = this,
         theme = me.theme,
         value1,
@@ -146,35 +146,35 @@
     /*
      *
      */
-    onFocus1: function(){
+    onFocus1(){
       this.dateField2.hidePicker();
     },
     /*
      *
      */
-    onFocus2: function(){
+    onFocus2(){
       this.dateField1.hidePicker();
     },
     /*
      *
      */
-    onShowPicker1: function(){
+    onShowPicker1(){
       this.dateField2.hidePicker();
     },
     /*
      *
      */
-    onShowPicker2: function(){
+    onShowPicker2(){
       this.dateField1.hidePicker();
     },
     /*
      * @param {Object} field
      * @param {Date} date
      */
-    onChangeDate1: function(field, date){
-      var me = this;
+    onChangeDate1(field, date){
+      const me = this;
 
-      if(date){
+      if (date) {
         date = F.Date.parse(date, field.format.edit, field.format.mode);
       }
 
@@ -185,8 +185,8 @@
      * @param {Object} field
      * @param {Date} date
      */
-    onChangeDate2: function(field, date){
-      if(date === undefined){
+    onChangeDate2(field, date){
+      if (date === undefined) {
         date = '';
       }
       else {
@@ -199,7 +199,7 @@
     /*
      *
      */
-    onEnter: function(){
+    onEnter(){
       this.dateField1.hidePicker();
       this.dateField2.hidePicker();
     }

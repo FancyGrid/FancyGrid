@@ -3,12 +3,12 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var GRID_HEADER_COLUMN_TRIGGERED_CLS = F.GRID_HEADER_COLUMN_TRIGGERED_CLS;
-  var GRID_HEADER_CELL_TRIGGER_UP_CLS = F.GRID_HEADER_CELL_TRIGGER_UP_CLS;
-  var GRID_HEADER_CELL_TRIGGER_DOWN_CLS = F.GRID_HEADER_CELL_TRIGGER_DOWN_CLS;
+  const GRID_HEADER_COLUMN_TRIGGERED_CLS = F.GRID_HEADER_COLUMN_TRIGGERED_CLS;
+  const GRID_HEADER_CELL_TRIGGER_UP_CLS = F.GRID_HEADER_CELL_TRIGGER_UP_CLS;
+  const GRID_HEADER_CELL_TRIGGER_DOWN_CLS = F.GRID_HEADER_CELL_TRIGGER_DOWN_CLS;
 
   F.Mixin('Fancy.grid.header.mixin.Menu', {
     triggeredColumnCls: GRID_HEADER_COLUMN_TRIGGERED_CLS,
@@ -20,13 +20,13 @@
      * @param {Object} column
      * @param {Array} columns
      */
-    showMenu: function(cell, index, column, columns){
-      var me = this,
+    showMenu(cell, index, column, columns){
+      const me = this,
         w = me.widget,
         offset = cell.offset();
 
-      if(column.menu && column.menu.rendered){
-        if(column.menu.el.css('display') === 'block'){
+      if (column.menu && column.menu.rendered) {
+        if (column.menu.el.css('display') === 'block') {
           me.hideMenu();
           return;
         }
@@ -62,16 +62,16 @@
     /*
      *
      */
-    hideMenu: function(){
-      var me = this,
+    hideMenu(){
+      const me = this,
         w = me.widget,
         header = w.header,
         rightHeader = w.rightHeader,
         leftHeader = w.leftHeader;
 
-      switch (me.side){
+      switch (me.side) {
         case 'left':
-          if (header.activeMenu){
+          if (header.activeMenu) {
             header.activeMenu.hide();
             header.activeCell.removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
             delete header.activeMenu;
@@ -129,7 +129,7 @@
      * @param {Object} column
      * @param {Array} columns
      */
-    generateMenu: function(column, columns){
+    generateMenu(column, columns){
       var me = this,
         w = me.widget,
         lang = w.lang,
@@ -145,7 +145,7 @@
           text: lang.sortAsc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_UP_CLS,
-          handler: function(){
+          handler(){
             w.sorter.sort('asc', column.index, me.side);
             column.menu.hide();
           }
@@ -154,7 +154,7 @@
           text: lang.sortDesc,
           cls: cls,
           imageCls: GRID_HEADER_CELL_TRIGGER_DOWN_CLS,
-          handler: function(){
+          handler(){
             w.sorter.sort('desc', column.index, me.side);
             column.menu.hide();
           }
@@ -167,7 +167,7 @@
         itemSizeColumn = {
           text: lang.autoSizeColumn,
           cls: cls,
-          handler: function(){
+          handler(){
             w.autoSizeColumn(column.index, me.side, column);
             column.menu.hide();
           }
@@ -175,13 +175,13 @@
         itemSizeColumns = {
           text: lang.autoSizeColumns,
           cls: cls,
-          handler: function(){
+          handler(){
             w.autoSizeColumns();
             column.menu.hide();
           }
         };
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         if (column.index === columns[i].index){
           indexOrder = i;
           break;
@@ -223,7 +223,7 @@
                 case 'right':
                   menu.push({
                     text: lang.unlock,
-                    handler: function(){
+                    handler(){
                       column.menu.hide();
                       w.unLockColumn(indexOrder, me.side);
                     }
@@ -232,7 +232,7 @@
                 case 'center':
                   menu.push({
                     text: lang.lock,
-                    handler: function(){
+                    handler(){
                       column.menu.hide();
                       w.lockColumn(indexOrder, me.side);
                     }
@@ -240,7 +240,7 @@
 
                   menu.push({
                     text: lang.rightLock,
-                    handler: function(){
+                    handler(){
                       column.menu.hide();
                       w.rightLockColumn(indexOrder, me.side);
                     }
@@ -274,7 +274,7 @@
 
               menu.push({
                 text: lang.unlock,
-                handler: function(){
+                handler(){
                   column.menu.hide();
                   w.unLockColumn(indexOrder, me.side);
                 }
@@ -287,7 +287,7 @@
 
               menu.push({
                 text: lang.lock,
-                handler: function(){
+                handler(){
                   column.menu.hide();
                   w.lockColumn(indexOrder, me.side);
                 }
@@ -295,7 +295,7 @@
 
               menu.push({
                 text: lang.rightLock,
-                handler: function(){
+                handler(){
                   column.menu.hide();
                   w.rightLockColumn(indexOrder, me.side);
                 }
@@ -310,35 +310,35 @@
     /*
      * @param {Array} columns
      */
-    prepareColumns: function(columns){
+    prepareColumns(columns){
       var me = this,
         w = me.widget,
         _columns = [],
         group = [],
         groupName;
 
-      F.each(columns, function(column){
-        var value = true;
+      F.each(columns, (column) => {
+        let value = true;
 
-        if(column.columnMenu === false){
+        if (column.columnMenu === false) {
           return;
         }
 
-        if (column.hidden){
+        if (column.hidden) {
           value = false;
         }
 
-        var columnConfig = {
+        const columnConfig = {
           text: column.title,
           checked: value,
           index: column.index,
           column: column,
-          handler: function(menu, item){
-            if (item.checked === true && !item.checkbox.get()){
+          handler(menu, item) {
+            if (item.checked === true && !item.checkbox.get()) {
               item.checkbox.set(true);
             }
 
-            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1){
+            if (item.checked && menu.el.select('.fancy-checkbox-on').length === 1) {
               item.checkbox.set(true);
               return;
             }
@@ -346,20 +346,19 @@
             item.checked = !item.checked;
             item.checkbox.set(item.checked);
 
-            if (item.checked){
+            if (item.checked) {
               w.showColumn(me.side, item.index, column);
-            }
-            else {
+            } else {
               w.hideColumn(me.side, item.index, column);
             }
 
-            if(w.responsive){
+            if (w.responsive) {
               w.onWindowResize();
             }
           }
         };
 
-        if (column.grouping){
+        if (column.grouping) {
           group = group || [];
           group.push(columnConfig);
           groupName = column.grouping;
@@ -389,15 +388,15 @@
     /*
      *
      */
-    onMenuHide: function(){
-      this.el.select('.' + GRID_HEADER_COLUMN_TRIGGERED_CLS).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
+    onMenuHide(){
+      this.el.select(`.${GRID_HEADER_COLUMN_TRIGGERED_CLS}`).removeCls(GRID_HEADER_COLUMN_TRIGGERED_CLS);
     },
     /*
      * @param {Object} column
      * @param {Array} columns
      * @param {Boolean} hard
      */
-    updateColumnsMenu: function(column, columns, hard){
+    updateColumnsMenu(column, columns, hard){
       var me = this,
         menu = column.menu,
         columnsMenu,
@@ -405,10 +404,10 @@
         iL = menu.items.length,
         item;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         item = menu.items[i];
 
-        if (item.index === 'columns'){
+        if (item.index === 'columns') {
           columnsMenu = item;
           break;
         }
@@ -421,13 +420,13 @@
 
       i = 0;
       iL = columnsMenu.items.length;
-      var rendered = false;
+      let rendered = false;
 
-      for (; i < iL; i++){
+      for (; i < iL; i++) {
         item = columnsMenu.items[i];
-        var _column = columns[i];
+        const _column = columns[i];
 
-        if (item.checkbox){
+        if (item.checkbox) {
           item.checkbox.set(!_column.hidden, false);
           rendered = true;
         }
@@ -440,7 +439,7 @@
     /*
      *
      */
-    destroyMenus: function(){
+    destroyMenus(){
       var me = this,
         w = me.widget,
         columns = w.getColumns(me.side),

@@ -4,22 +4,22 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var G = F.get;
+  const F = Fancy;
+  const G = F.get;
 
   //CONSTANTS
-  var FIELD_CLS = F.FIELD_CLS;
-  var GRID_RESIZER_LEFT_CLS = F.GRID_RESIZER_LEFT_CLS;
-  var GRID_RESIZER_RIGHT_CLS = F.GRID_RESIZER_RIGHT_CLS;
-  var GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
-  var GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
-  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
-  var GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
-  var GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
-  var GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
-  var GRID_STATE_RESIZE_COLUMN_CLS = F.GRID_STATE_RESIZE_COLUMN_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const GRID_RESIZER_LEFT_CLS = F.GRID_RESIZER_LEFT_CLS;
+  const GRID_RESIZER_RIGHT_CLS = F.GRID_RESIZER_RIGHT_CLS;
+  const GRID_HEADER_CELL_TRIGGER_CLS = F.GRID_HEADER_CELL_TRIGGER_CLS;
+  const GRID_HEADER_CELL_TRIGGER_IMAGE_CLS = F.GRID_HEADER_CELL_TRIGGER_IMAGE_CLS;
+  const GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  const GRID_COLUMN_RESIZER_CLS = F.GRID_COLUMN_RESIZER_CLS;
+  const GRID_COLUMN_CLS = F.GRID_COLUMN_CLS;
+  const GRID_HEADER_CELL_GROUP_LEVEL_2_CLS = F.GRID_HEADER_CELL_GROUP_LEVEL_2_CLS;
+  const GRID_STATE_RESIZE_COLUMN_CLS = F.GRID_STATE_RESIZE_COLUMN_CLS;
 
-  var ANIMATE_DURATION = F.ANIMATE_DURATION;
+  const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
   F.define('Fancy.grid.plugin.ColumnResizer', {
     extend: F.Plugin,
@@ -34,8 +34,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this,
+    init(){
+      const me = this,
         w = me.widget;
 
       me.Super('init', arguments);
@@ -52,8 +52,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       w.on('headercellmousemove', me.onCellMouseMove, me);
@@ -66,7 +66,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellMouseMove: function(grid, o){
+    onCellMouseMove(grid, o){
       var me = this,
         w = me.widget,
         e = o.e,
@@ -122,7 +122,7 @@
         }
       }
       else if (!isInTrigger && !isInTriggerImage && ( (_width - offsetX) < inOffsetX || offsetX < inOffsetX) && o.index !== 0){
-        var isLeft = offsetX < inOffsetX;
+        const isLeft = offsetX < inOffsetX;
 
         if (me.isColumnResizable(o, isLeft)){
           if (!hasFieldInSide){
@@ -150,8 +150,8 @@
     /*
      * @param {Fancy.Element} cell
      */
-    addCellResizeCls: function(cell){
-      var me = this,
+    addCellResizeCls(cell){
+      const me = this,
         w = me.widget,
         columndrag = w.columndrag;
 
@@ -165,7 +165,7 @@
     /*
      * @param {Fancy.Element} cell
      */
-    removeCellResizeCls: function(cell){
+    removeCellResizeCls(cell){
       G(cell).removeClass(GRID_COLUMN_RESIZER_CLS);
       G(cell).select('.' + GRID_HEADER_CELL_TRIGGER_CLS).item(0).removeClass(GRID_COLUMN_RESIZER_CLS);
     },
@@ -173,7 +173,7 @@
      * @param {Object} e
      * @param {Object} o
      */
-    onHeaderCellMouseDown: function(e, o){
+    onHeaderCellMouseDown(e, o){
       e = o.e;
 
       var me = this,
@@ -258,7 +258,7 @@
      * @param {Boolean} isLeft
      * @return {Boolean}
      */
-    isColumnResizable: function(o, isLeft){
+    isColumnResizable(o, isLeft){
       var me = this,
         w = me.widget,
         columns,
@@ -309,7 +309,7 @@
     /*
      * @return {Number}
      */
-    getMinColumnWidth: function(){
+    getMinColumnWidth(){
       var me = this,
         w = me.widget,
         minCellWidth = w.minCellWidth,
@@ -332,7 +332,7 @@
     /*
      * @return {Number|false}
      */
-    getMaxColumnWidth: function(){
+    getMaxColumnWidth(){
       var me = this,
         w = me.widget,
         columns,
@@ -354,14 +354,14 @@
     /*
      *
      */
-    onDocClick: function(){
+    onDocClick(){
       this.widget.startResizing = false;
     },
     /*
      * @param {Fancy.Grid} grid
      * @param {Object} e
      */
-    onDocMove: function(grid, e){
+    onDocMove(grid, e){
       if (this.widget.startResizing){
         this.moveResizeEls(e);
       }
@@ -369,7 +369,7 @@
     /*
      *
      */
-    render: function(){
+    render(){
       var me = this,
         w = me.widget,
         leftEl = G(document.createElement('div')),
@@ -384,7 +384,7 @@
     /*
      * @param {Object} e
      */
-    moveResizeEls: function(e){
+    moveResizeEls(e){
       var me = this,
         w = me.widget,
         cellEl = G(me.cell),
@@ -462,8 +462,8 @@
     /*
      *
      */
-    onDocMouseUp: function(){
-      var me = this,
+    onDocMouseUp(){
+      const me = this,
         w = me.widget;
 
       if (w.startResizing === false){
@@ -491,7 +491,7 @@
     /*
      *
      */
-    fixSidesWidth: function(){
+    fixSidesWidth(){
       var me = this,
         w = me.widget,
         cellWidth = me.cellWidth,
@@ -695,7 +695,7 @@
       w.fire('columnresize', {
         cell: cellEl.dom,
         width: cellWidth,
-        column: column,
+        column,
         side: me.activeSide
       });
 
@@ -725,7 +725,7 @@
      * @param {Object} o
      * @return {Fancy.Element}
      */
-    getPrevCell: function(o){
+    getPrevCell(o){
       var me = this,
         w = me.widget,
         header;
@@ -742,7 +742,7 @@
           break;
       }
 
-      var cell = header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index - 1).dom,
+      const cell = header.el.select(`.${GRID_HEADER_CELL_CLS}`).item(o.index - 1).dom,
         cellEl = F.get(cell);
 
       if(cellEl.css('display') === 'none' && o.index !== 0){
@@ -757,7 +757,7 @@
      * @param {Object} o
      * @return {HTMLElement}
      */
-    getCell: function(o){
+    getCell(o){
       var me = this,
         w = me.widget,
         header;
@@ -774,7 +774,7 @@
           break;
       }
 
-      return header.el.select('.' + GRID_HEADER_CELL_CLS).item(o.index).dom;
+      return header.el.select(`.${GRID_HEADER_CELL_CLS}`).item(o.index).dom;
     },
     /*
      * @param {String} [side]
@@ -807,7 +807,7 @@
         rightHeaderEl = w.rightHeader.el;
 
       for (; i < iL; i++){
-        var column = columns[i];
+        const column = columns[i];
 
         if (column.hidden){
           continue;
@@ -854,7 +854,7 @@
           break;
       }
     },
-    updateCenterSideWidth: function(){
+    updateCenterSideWidth(){
       var me = this,
         w = me.widget,
         centerEl = w.centerEl,
@@ -882,7 +882,7 @@
         leftFix = 0;
       }
 
-      F.each(leftColumns, function(column){
+      F.each(leftColumns, (column) => {
         if (column.hidden){
           return;
         }
@@ -890,7 +890,7 @@
         leftColumnsWidth += column.width;
       });
 
-      F.each(rightColumns, function(column){
+      F.each(rightColumns, (column) => {
         if (column.hidden){
           return;
         }
@@ -915,7 +915,7 @@
      * @param {Number} width
      * @param {String} side
      */
-    setColumnWidth: function(index, width, side){
+    setColumnWidth(index, width, side = 'center') {
       var me = this,
         w = me.widget,
         columns = w.getColumns(side),
@@ -942,12 +942,12 @@
 
       w.fire('columnresize', {
         cell: headerCellElDom,
-        width: width,
+        width,
         column: columns[index],
-        side: side
+        side
       });
     },
-    getNextVisibleIndex: function(index, side){
+    getNextVisibleIndex(index, side){
       var me = this,
         w = me.widget,
         columns = w.getColumns(side),
@@ -955,7 +955,7 @@
         iL = columns.length;
 
       for(;i<iL;i++){
-        var column = columns[i];
+        const column = columns[i];
 
         if(!column.hidden){
           return i;

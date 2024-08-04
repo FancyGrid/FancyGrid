@@ -12,17 +12,17 @@ Fancy.define('Fancy.spark.HBar', {
    * @param {Object} o
    */
   constructor: function(o){
-    var me = this;
+    const me = this;
 
     Fancy.apply(me, o);
-    
+
     me.init();
   },
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.initId();
     me.render();
@@ -34,8 +34,8 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  initId: function(){
-    var me = this,
+  initId(){
+    const me = this,
       prefix = me.prefix || Fancy.prefix;
 
     me.id = me.id || Fancy.id(null, prefix);
@@ -45,10 +45,10 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  ons: function(){
-    var me = this;
-    
-    if(me.tip !== false){
+  ons(){
+    const me = this;
+
+    if (me.tip !== false) {
       me.el.on('mouseenter', me.onMouseEnter, me, '.fancy-grid-column-h-bar-node');
       me.el.on('mouseleave', me.onMouseLeave, me, '.fancy-grid-column-h-bar-node');
       me.el.on('mousemove', me.onMouseMove, me, '.fancy-grid-column-h-bar-node');
@@ -57,7 +57,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseEnter: function(e){
+  onMouseEnter(e){
     var me = this,
       el = Fancy.get(e.target),
       key = el.attr('key'),
@@ -70,7 +70,7 @@ Fancy.define('Fancy.spark.HBar', {
     }
 
     if(me.tipFormat){
-      var config = {
+      const config = {
         value: value,
         percents: percents,
         key: key,
@@ -82,7 +82,7 @@ Fancy.define('Fancy.spark.HBar', {
       value = me.tipFormat(config);
     }
 
-    var tpl = new Fancy.Template(me.tipTpl),
+    const tpl = new Fancy.Template(me.tipTpl),
       text = tpl.getHTML({
         value: value
       });
@@ -92,8 +92,8 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseLeave: function(){
-    var me = this;
+  onMouseLeave(){
+    const me = this;
 
     if(!me.tip || !me.tipTpl){
       return;
@@ -104,8 +104,8 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Object} e
    */
-  onMouseMove:  function(e){
-    var me = this;
+  onMouseMove(e){
+    const me = this;
     if(!me.tip || !me.tipTpl){
       return;
     }
@@ -115,7 +115,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -133,8 +133,8 @@ Fancy.define('Fancy.spark.HBar', {
 
     if(column.fields){
       iL = column.fields.length;
-      Fancy.each(column.fields, function(field){
-        var key = column.index + '.' + field;
+      Fancy.each(column.fields, field => {
+        const key = column.index + '.' + field;
 
         if(disabled[key]){
           return;
@@ -144,7 +144,7 @@ Fancy.define('Fancy.spark.HBar', {
       });
     }
     else{
-      Fancy.each(fields, function(key){
+      Fancy.each(fields, key => {
         if(disabled[key]){
           return;
         }
@@ -165,7 +165,7 @@ Fancy.define('Fancy.spark.HBar', {
 
     i = 0;
 
-    var sparkCls = 'fancy-spark-hbar';
+    let sparkCls = 'fancy-spark-hbar';
 
     if(me.stacked){
       sparkCls += ' fancy-spark-stacked ';
@@ -235,7 +235,7 @@ Fancy.define('Fancy.spark.HBar', {
   /*
    * @param {Array} data
    */
-  update: function(data){
+  update(data){
     var me = this,
       column = me.column,
       width = column.width - 18,
@@ -256,7 +256,7 @@ Fancy.define('Fancy.spark.HBar', {
     if(column.fields){
       iL = column.fields.length;
 
-      Fancy.each(column.fields, function(key){
+      Fancy.each(column.fields, key => {
         if(disabled[column.index + '.' + key]){
           dLength++;
           return;
@@ -266,7 +266,7 @@ Fancy.define('Fancy.spark.HBar', {
       });
     }
     else{
-      Fancy.each(fields, function(key){
+      Fancy.each(fields, key => {
         if(disabled[key]){
           dLength++;
           return;

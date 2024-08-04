@@ -19,8 +19,8 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'enter', 'up', 'down', 'esc', 'change', 'key');
 
@@ -41,7 +41,7 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
       me.css(me.style);
     }
 
-    var s = document.createElement('script');
+    const s = document.createElement('script');
 
     s.type = 'text/javascript';
     s.src = 'https://www.google.com/recaptcha/api.js';
@@ -51,11 +51,11 @@ Fancy.define(['Fancy.form.field.ReCaptcha', 'Fancy.ReCaptcha'], {
   /*
    * @return {'wait'|*}
    */
-  get: function(){
-    var me = this,
+  get(){
+    const me = this,
       formReCaptchaEl = me.el.select('form');
 
-    if( me.value ){
+    if (me.value) {
       return me.value;
     }
 

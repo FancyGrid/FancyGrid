@@ -4,15 +4,15 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
   /*
    * CONSTANTS
    */
-  var CLEARFIX_CLS = F.CLEARFIX_CLS;
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
-  var FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
-  var FIELD_BUTTON_CLS= F.FIELD_BUTTON_CLS;
+  const CLEARFIX_CLS = F.CLEARFIX_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_LABEL_CLS = F.FIELD_LABEL_CLS;
+  const FIELD_TEXT_CLS = F.FIELD_TEXT_CLS;
+  const FIELD_BUTTON_CLS = F.FIELD_BUTTON_CLS;
 
   F.define(['Fancy.form.field.Button', 'Fancy.ButtonField'], {
     mixins: [
@@ -32,8 +32,8 @@
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.addEvents('click');
 
@@ -45,15 +45,15 @@
 
       me.ons();
 
-      if (me.hidden){
+      if (me.hidden) {
         me.css('display', 'none');
       }
 
-      if (me.style){
+      if (me.style) {
         me.css(me.style);
       }
     },
-    fieldCls: FIELD_CLS + ' ' + FIELD_BUTTON_CLS,
+    fieldCls: `${FIELD_CLS} ${FIELD_BUTTON_CLS}`,
     value: '',
     width: 100,
     emptyText: '',
@@ -68,18 +68,18 @@
     /*
      *
      */
-    renderButton: function(){
-      var me = this;
+    renderButton(){
+      const me = this;
 
       me.button = new F.Button({
-        renderTo: me.el.select('.' + FIELD_TEXT_CLS).item(0).dom,
+        renderTo: me.el.select(`.${FIELD_TEXT_CLS}`).item(0).dom,
         text: me.buttonText,
         disabled: me.disabled,
         pressed: me.pressed,
         enableToggle: me.enableToggle,
         imageCls: me.imageCls,
         handler: function(){
-          if(me.disabled){
+          if (me.disabled) {
             return;
           }
 
@@ -95,8 +95,8 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         el = me.el;
 
       me.button.on('pressedchange', function(button, value){
@@ -106,27 +106,27 @@
       el.on('mouseenter', me.onMouseOver, me);
       el.on('mouseleave', me.onMouseOut, me);
 
-      if (me.tip){
+      if (me.tip) {
         el.on('mousemove', me.onMouseMove, me);
       }
     },
     /*
      *
      */
-    onClick: function(){
-      var me = this;
+    onClick(){
+      const me = this;
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
       me.fire('click');
 
-      if (me.handler){
+      if (me.handler) {
         me.handler();
       }
     },
-    setPressed: function(value){
+    setPressed(value){
       this.button.setPressed(value);
     }
   });

@@ -7,8 +7,8 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
   /*
    *
    */
-  initWriter: function(){
-    var me = this,
+  initWriter(){
+    const me = this,
       proxy = me.proxy;
 
     if(proxy.writer){
@@ -18,10 +18,10 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
   /*
    * @param writer
    */
-  configWriter: function(writer){
-    var me = this;
+  configWriter(writer){
+    const me = this;
 
-    if(writer.allFields){
+    if (writer.allFields) {
       me.writeAllFields = writer.allFields;
       writer.writeAllFields = writer.allFields;
     }
@@ -35,7 +35,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
             me.writerType = writer;
             break;
           default:
-            Fancy.error('writer ' + writer.type + ' does not exist');
+            Fancy.error(`writer ${writer.type} does not exist`);
         }
 
         break;
@@ -50,10 +50,10 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
             me.writerType = writer.type;
             break;
           default:
-            Fancy.error('writer ' + writer.type + ' does not exist');
+            Fancy.error(`writer ${writer.type} does not exist`);
         }
 
-        if(writer.writeFields){
+        if (writer.writeFields) {
           me.writeFields = true;
         }
 
@@ -69,7 +69,7 @@ Fancy.Mixin('Fancy.store.mixin.Writer', {
    * @param {String} key
    * @param {*} value
    */
-  prepareWriterJSONParams: function(id, key, value){
+  prepareWriterJSONParams(id, key, value){
     var me = this,
       params = me.params || {},
       data = {};

@@ -13,7 +13,7 @@ Fancy.Date = {
    * @param {String} [mode]
    * @return {String}
    */
-  format: function(date, format, lang, mode){
+  format(date, format, lang, mode){
     var value = '',
       h,
       _i,
@@ -109,11 +109,11 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
-            throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+            throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
           }
           break;
         case 'a':
@@ -167,7 +167,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -190,7 +190,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -212,7 +212,7 @@ Fancy.Date = {
               i += 1;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -230,7 +230,7 @@ Fancy.Date = {
               i += 1;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -246,7 +246,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -297,7 +297,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -318,7 +318,7 @@ Fancy.Date = {
             value += ' ';
           }
           else{
-            throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+            throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
           }
           break;
         case 'g':
@@ -349,7 +349,7 @@ Fancy.Date = {
               i += 1;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -413,7 +413,7 @@ Fancy.Date = {
    * @param {String} [mode]
    * @return {Date}
    */
-  parse: function(value, format, mode){
+  parse(value, format, mode= ''){
     var date,
       now = new Date(),
       year = now.getFullYear(),
@@ -423,7 +423,6 @@ Fancy.Date = {
       minute = 0,
       second = 0,
       millisecond = 0;
-    mode = mode || '';
 
     mode = mode.toLocaleLowerCase();
 
@@ -480,7 +479,7 @@ Fancy.Date = {
               hour = Number(h);
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -523,7 +522,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else{
@@ -539,7 +538,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else{
@@ -582,7 +581,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -620,7 +619,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -654,7 +653,7 @@ Fancy.Date = {
               }
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else{
@@ -682,7 +681,7 @@ Fancy.Date = {
               }
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -711,7 +710,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else {
@@ -784,7 +783,7 @@ Fancy.Date = {
               i++;
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else{
@@ -804,7 +803,7 @@ Fancy.Date = {
             value = value.substr(1, value.length);
           }
           else{
-            throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+            throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
           }
           break;
         case 'G':
@@ -837,7 +836,7 @@ Fancy.Date = {
               hour = Number(h);
             }
             else{
-              throw new Error('[FancyGrid Error] - Invalid date format: ' + format);
+              throw new Error(`[FancyGrid Error] - Invalid date format: ${format}`);
             }
           }
           else{
@@ -858,8 +857,8 @@ Fancy.Date = {
    * @param {Date} date
    * @return {Number}
    */
-  getDaysInMonth: function(date){
-    var m = date.getMonth();
+  getDaysInMonth(date){
+    const m = date.getMonth();
 
     return m === 1 && Fancy.Date.isLeapYear(date) ? 29 : Fancy.Date.daysInMonth[m];
   },
@@ -867,8 +866,8 @@ Fancy.Date = {
    * @param {Date} date
    * @return {Number}
    */
-  getFirstDayOfMonth: function(date){
-    var day = (date.getDay() - (date.getDate() - 1)) % 7;
+  getFirstDayOfMonth(date){
+    const day = (date.getDay() - (date.getDate() - 1)) % 7;
 
     return (day < 0) ? (day + 7) : day;
   },
@@ -876,8 +875,8 @@ Fancy.Date = {
    * @param {Date} date
    * @return {Boolean}
    */
-  isLeapYear: function(date){
-    var year = date.getFullYear();
+  isLeapYear(date){
+    const year = date.getFullYear();
 
     return !!((year & 3) === 0 && (year % 100 || (year % 400 === 0 && year)));
   },
@@ -886,7 +885,7 @@ Fancy.Date = {
    * @param {String|Number} month
    * @return {Number}
    */
-  getMonthNumber: function(year, month){
+  getMonthNumber(year, month){
     return new Date(year, month + 1, 0).getDate();
   }
 };

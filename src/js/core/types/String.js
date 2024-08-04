@@ -7,7 +7,7 @@ Fancy.String = {
    * @param {String} tpl
    * @return {String}
    */
-  format: function(tpl){
+  format(tpl){
     var arr,
       i,
       iL;
@@ -33,14 +33,14 @@ Fancy.String = {
    * @param {String} str
    * @return {String}
    */
-  upFirstChar: function(str){
+  upFirstChar(str){
     return str[0].toLocaleUpperCase() + str.substr(1, str.length);
   },
   /**
    * @param {String} str
    * @return {String}
    */
-  trim: function(str){
+  trim(str){
     return str.replace(/\s/g, '');
   }
 };

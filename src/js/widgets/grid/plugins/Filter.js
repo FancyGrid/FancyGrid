@@ -5,20 +5,20 @@
 Fancy.modules['filter'] = true;
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   //CONSTANTS
-  var FIELD_CLS = F.FIELD_CLS;
-  var FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
-  var GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
-  var GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
-  var GRID_HEADER_CELL_FILTER_CLS = F.GRID_HEADER_CELL_FILTER_CLS;
-  var GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
-  var GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
-  var GRID_HEADER_CELL_FILTERED_CLS = F.GRID_HEADER_CELL_FILTERED_CLS;
-  var GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
-  var GRID_SUB_HEADER_FILTER_CLS = F.GRID_SUB_HEADER_FILTER_CLS;
-  var GRID_SUB_HEADER_FILTER_CONTAINER_CLS = F.GRID_SUB_HEADER_FILTER_CONTAINER_CLS;
+  const FIELD_CLS = F.FIELD_CLS;
+  const FIELD_CHECKBOX_CLS = F.FIELD_CHECKBOX_CLS;
+  const GRID_HEADER_CELL_DOUBLE_CLS = F.GRID_HEADER_CELL_DOUBLE_CLS;
+  const GRID_HEADER_CELL_TRIPLE_CLS = F.GRID_HEADER_CELL_TRIPLE_CLS;
+  const GRID_HEADER_CELL_FILTER_CLS = F.GRID_HEADER_CELL_FILTER_CLS;
+  const GRID_HEADER_CELL_FILTER_FULL_CLS = F.GRID_HEADER_CELL_FILTER_FULL_CLS;
+  const GRID_HEADER_CELL_FILTER_SMALL_CLS = F.GRID_HEADER_CELL_FILTER_SMALL_CLS;
+  const GRID_HEADER_CELL_FILTERED_CLS = F.GRID_HEADER_CELL_FILTERED_CLS;
+  const GRID_HEADER_CELL_CLS = F.GRID_HEADER_CELL_CLS;
+  const GRID_SUB_HEADER_FILTER_CLS = F.GRID_SUB_HEADER_FILTER_CLS;
+  const GRID_SUB_HEADER_FILTER_CONTAINER_CLS = F.GRID_SUB_HEADER_FILTER_CONTAINER_CLS;
 
   F.define('Fancy.grid.plugin.Filter', {
     extend: F.Plugin,
@@ -35,18 +35,18 @@ Fancy.modules['filter'] = true;
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.once('render', function(){
+      w.once('render', () => {
         me.render();
         if(me.waitForComboData){
           w.on('load', me.onLoadData, me);
@@ -69,8 +69,8 @@ Fancy.modules['filter'] = true;
     /*
      *
      */
-    render: function(){
-      var me = this,
+    render(){
+      const me = this,
         w = me.widget;
 
       if(w.header){
@@ -87,7 +87,7 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    _renderSubHeaderFieldsContainer: function(side){
+    _renderSubHeaderFieldsContainer(side){
       var me = this,
         w = me.widget,
         header = w.getHeader(side),
@@ -116,12 +116,12 @@ Fancy.modules['filter'] = true;
 
       me._renderSubHeaderFields(side);
     },
-    addSubHeaderFilterCellContainer: function(side){
-      var me = this,
+    addSubHeaderFilterCellContainer(side){
+      const me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
         sideEl = w.getSideEl(side),
-        container = sideEl.select('.' + GRID_SUB_HEADER_FILTER_CLS),
+        container = sideEl.select(`.${GRID_SUB_HEADER_FILTER_CLS}`),
         cell = document.createElement('div');
 
       cell.className = GRID_HEADER_CELL_CLS;
@@ -133,7 +133,7 @@ Fancy.modules['filter'] = true;
      * @param {String} side
      * @return {Fancy.Element}
      */
-    generateFilterRow: function(side){
+    generateFilterRow(side){
       var me = this,
         w = me.widget,
         cellHeight = w.cellHeight,
@@ -141,7 +141,7 @@ Fancy.modules['filter'] = true;
         el = F.get(document.createElement('div')),
         cells = '';
 
-      F.each(w.getColumns(side), function(column, i){
+      F.each(w.getColumns(side), (column, i) => {
         var hiddenStyle = '';
 
         if(column.hidden){
@@ -161,14 +161,14 @@ Fancy.modules['filter'] = true;
       ].join('');
 
       el.update(inner);
-      var innerEl = el.select('.' + GRID_SUB_HEADER_FILTER_CLS);
+      const innerEl = el.select(`.${GRID_SUB_HEADER_FILTER_CLS}`);
 
       innerEl.css('width', columnsWidth + 'px');
       el.addCls(GRID_SUB_HEADER_FILTER_CONTAINER_CLS);
 
       return el;
     },
-    _renderSideFields: function(header, columns){
+    _renderSideFields(header, columns){
       var me = this,
         i = 0,
         iL = columns.length,
@@ -202,12 +202,12 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    _renderSubHeaderFields: function(side){
+    _renderSubHeaderFields(side){
       var me = this,
         w = me.widget,
         columns = w.getColumns(side),
         el = me.getSubHeaderFilterEl(side),
-        cells = el.select('.' + GRID_HEADER_CELL_CLS),
+        cells = el.select(`.${GRID_HEADER_CELL_CLS}`),
         i = 0,
         iL = columns.length,
         cell,
@@ -222,8 +222,8 @@ Fancy.modules['filter'] = true;
         cell = cells.item(i);
 
         if (column.filter && column.filter.header){
-          cell.select('.' + FIELD_CLS).each(function(el){
-            var field = F.getWidget(el.id);
+          cell.select(`.${FIELD_CLS}`).each(el=> {
+            const field = F.getWidget(el.id);
             field.destroy();
           });
           cell.update('');
@@ -234,7 +234,7 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    _clearColumnsFields: function(columns, header, index, sign){
+    _clearColumnsFields(columns, header, index, sign){
       var me = this,
         w = me.widget,
         i = 0,
@@ -318,15 +318,15 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    clearColumnsFields: function(index, sign){
-      var me = this,
+    clearColumnsFields(index, sign){
+      const me = this,
         w = me.widget;
 
       me._clearColumnsFields(w.columns, w.header, index, sign);
       me._clearColumnsFields(w.leftColumns, w.leftHeader, index, sign);
       me._clearColumnsFields(w.rightColumns, w.rightHeader, index, sign);
     },
-    _addValuesInColumnFields: function(columns, header, index, value, sign){
+    _addValuesInColumnFields(columns, header, index, value, sign){
       var me = this,
         w = me.widget,
         i = 0,
@@ -335,7 +335,7 @@ Fancy.modules['filter'] = true;
         cells;
 
       if(w.subHeaderFilter){
-        var filterEl = me.getSubHeaderFilterEl(header.side);
+        const filterEl = me.getSubHeaderFilterEl(header.side);
         cells = filterEl.select('.' + GRID_HEADER_CELL_CLS);
       }
 
@@ -352,7 +352,7 @@ Fancy.modules['filter'] = true;
                 els = header.getCell(i).select('.' + FIELD_CLS);
               }
 
-              var fieldFrom = F.getWidget(els.item(0).attr('id')),
+              const fieldFrom = F.getWidget(els.item(0).attr('id')),
                 fieldTo = F.getWidget(els.item(1).attr('id'));
 
               switch(sign){
@@ -394,7 +394,7 @@ Fancy.modules['filter'] = true;
                 _value += p;
 
                 if(F.isArray(filterValue)){
-                  F.each(filterValue, function(v, i){
+                  F.each(filterValue, (v, i) => {
                     _value += v;
 
                     if(filterValue.length - 1 !== i){
@@ -430,8 +430,8 @@ Fancy.modules['filter'] = true;
         }
       }
     },
-    addValuesInColumnFields: function(index, value, sign){
-      var me = this,
+    addValuesInColumnFields(index, value, sign){
+      const me = this,
         w = me.widget;
 
       if(value === undefined || value === null || value.length === 0){
@@ -451,7 +451,7 @@ Fancy.modules['filter'] = true;
      * @param {Object} column
      * @param {Fancy.Element} dom
      */
-    renderFilter: function(type, column, dom){
+    renderFilter(type, column, dom){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -471,8 +471,8 @@ Fancy.modules['filter'] = true;
           value = [columnFilter['>='], columnFilter['<=']];
         }
         else{
-          for (var p in columnFilter){
-            var _value = columnFilter[p];
+          for (const p in columnFilter){
+            const _value = columnFilter[p];
             switch (p){
               case '':
                 value += _value;
@@ -481,7 +481,7 @@ Fancy.modules['filter'] = true;
                 if (column.type === 'combo'){
                   value = value || [];
                   if (Fancy.isObject( _value )){
-                    for (var q in _value){
+                    for (const q in _value){
                       value.push( q );
                     }
                   }
@@ -502,7 +502,7 @@ Fancy.modules['filter'] = true;
       }
 
       if(Fancy.isObject(filter.header)){
-        var fieldConfig = filter.header;
+        const fieldConfig = filter.header;
 
         F.apply(fieldConfig, {
           renderTo: dom.dom,
@@ -515,7 +515,7 @@ Fancy.modules['filter'] = true;
           padding: false
          });
 
-        var widgets = {
+        const widgets = {
           combo: 'Combo'
         };
 
@@ -530,7 +530,7 @@ Fancy.modules['filter'] = true;
           });
         }
 
-        var widgetName = widgets[fieldConfig.type];
+        const widgetName = widgets[fieldConfig.type];
 
         field = new F[widgetName](fieldConfig);
       }
@@ -661,7 +661,7 @@ Fancy.modules['filter'] = true;
                 change: me.onEnter,
                 scope: me
               }, {
-                empty: function(){
+                empty(){
                   this.set(-1);
                 }
               }],
@@ -788,8 +788,8 @@ Fancy.modules['filter'] = true;
      * @param {Object} field
      * @param {String|Number} value
      */
-    onEnter: function(field, value){
-      var me = this,
+    onEnter(field, value){
+      const me = this,
         w = me.widget;
 
       clearInterval(me.intervalAutoEnter);
@@ -797,18 +797,18 @@ Fancy.modules['filter'] = true;
 
       if(w.isRequiredChangeAllMemorySelection()){
         w.selection.memory.selectAllFiltered();
-        setTimeout(function() {
+        setTimeout(()=>  {
           w.selection.updateHeaderCheckBox();
         }, 1);
       }
 
-      if (value.length === 0){
+      if (value.length === 0) {
         w.clearFilter(field.filterIndex);
 
         return;
       }
 
-      var filters = me.processFilterValue(value, field.column.type);
+      const filters = me.processFilterValue(value, field.column.type);
 
       w.clearFilter(field.filterIndex, null, false);
 
@@ -816,7 +816,7 @@ Fancy.modules['filter'] = true;
         w.addFilter(field.filterIndex, filters[0].value, filters[0].operator, false);
       }
       else {
-        var severalValues = [];
+        const severalValues = [];
 
         F.each(filters, function(filter){
           switch(filter.operator){
@@ -841,8 +841,8 @@ Fancy.modules['filter'] = true;
      *
      * It should be removed when stability of filtering will be reached
      */
-    onEnterOld: function(field, value, options){
-      var me = this,
+    onEnterOld(field, value, options){
+      const me = this,
         w = me.widget,
         s = w.store,
         filterIndex = field.filterIndex;
@@ -871,7 +871,7 @@ Fancy.modules['filter'] = true;
       s.filters[filterIndex] = {};
 
       for (; i < iL; i++){
-        var filter = filters[i];
+        const filter = filters[i];
 
         if(filter.operator === ''){
           if(field.column.filter && field.column.filter.operator){
@@ -901,7 +901,7 @@ Fancy.modules['filter'] = true;
       }
 
       if (s.remoteFilter){
-        s.once('serversuccess', function(){
+        s.once('serversuccess', () => {
           w.fire('filter', s.filters);
         });
         s.serverFilter();
@@ -912,7 +912,7 @@ Fancy.modules['filter'] = true;
 
       if(w.grouping && w.grouping.by){
         if (s.remoteSort){
-          s.once('load', function(){
+          s.once('load', () => {
             w.grouping.reGroup();
             w.fire('filter', s.filters);
           });
@@ -929,20 +929,20 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {Object} options
      */
-    onEnterSelect: function(field, value){
-      var me = this,
+    onEnterSelect(field, value){
+      const me = this,
         w = me.widget,
         selected = w.getSelection(),
         ids = [];
 
       if(me.isRequiredChangeAllMemorySelection()){
         w.selection.memory.selectAllFiltered();
-        setTimeout(function() {
+        setTimeout(() => {
           w.selection.updateHeaderCheckBox();
         }, 1);
       }
 
-      Fancy.each(selected, function(item){
+      Fancy.each(selected, item => {
         ids.push(item.id);
       });
 
@@ -967,7 +967,7 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {String} type
      */
-    processFilterValue: function(value, type){
+    processFilterValue(value, type){
       var signs = {
           '<': true,
           '>': true,
@@ -987,7 +987,7 @@ Fancy.modules['filter'] = true;
       if (F.isArray(value)){
         _value = {};
 
-        F.Array.each(value, function(v){
+        F.Array.each(value, v => {
           _value[String(v).toLocaleLowerCase()] = true;
         });
 
@@ -1052,7 +1052,7 @@ Fancy.modules['filter'] = true;
     /*
      * @param [update] Boolean
      */
-    updateStoreFilters: function(update){
+    updateStoreFilters(update){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -1060,8 +1060,8 @@ Fancy.modules['filter'] = true;
 
       w.filtering = true;
 
-      for(var p in s.filters){
-        var filter = s.filters[p];
+      for(const p in s.filters){
+        const filter = s.filters[p];
 
         if(filter){
           containFilters = true;
@@ -1105,8 +1105,8 @@ Fancy.modules['filter'] = true;
 
       delete w.filtering;
     },
-    forceUpdateStoreFilters: function(){
-      var me = this,
+    forceUpdateStoreFilters(){
+      const me = this,
         w = me.widget,
         s = w.store;
 
@@ -1120,20 +1120,20 @@ Fancy.modules['filter'] = true;
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onColumnResize: function(grid, o){
+    onColumnResize(grid, o){
       var me = this,
         w = me.widget,
         cell = F.get(o.cell),
         width = o.width,
-        fieldEl = cell.select(':not(.' + FIELD_CHECKBOX_CLS + ').' + FIELD_CLS),
+        fieldEl = cell.select(`:not(.${FIELD_CHECKBOX_CLS}).${FIELD_CLS}`),
         field;
 
-      if(w.subHeaderFilter){
-        var index = cell.attr('index'),
+      if (w.subHeaderFilter) {
+        const index = cell.attr('index'),
           filterEl = me.getSubHeaderFilterEl(o.side);
 
-        cell = filterEl.select('.' + GRID_HEADER_CELL_CLS).item(index);
-        fieldEl = cell.select(':not(.' + FIELD_CHECKBOX_CLS + ').' + FIELD_CLS);
+        cell = filterEl.select(`.${GRID_HEADER_CELL_CLS}`).item(index);
+        fieldEl = cell.select(`:not(.${FIELD_CHECKBOX_CLS}).${FIELD_CLS}`);
       }
 
       if(fieldEl.length === 2){
@@ -1176,8 +1176,8 @@ Fancy.modules['filter'] = true;
     /*
      * @param {'left'|'center'|'right'|undefined} [side]
      */
-    updateSubHeaderFilterSizes: function(side){
-      var me = this,
+    updateSubHeaderFilterSizes(side){
+      const me = this,
         w = me.widget;
 
       if(!side){
@@ -1195,24 +1195,26 @@ Fancy.modules['filter'] = true;
       }
 
       var el = me.getSubHeaderFilterEl(side),
-        cells = el.select('.' + GRID_HEADER_CELL_CLS),
+        cells = el.select(`.${GRID_HEADER_CELL_CLS}`),
         totalWidth = 0,
         columns = w.getColumns(side),
         ANIMATE_DURATION = F.ANIMATE_DURATION;
 
-      F.each(columns, function(column, i){
+      F.each(columns, (column, i) => {
         totalWidth += column.width;
 
-        var cell = cells.item(i);
+        const cell = cells.item(i);
 
-        if(column.hidden){
+        if (column.hidden) {
           cell.css('display', 'none');
         }
         else{
           cell.css('display', '');
         }
 
-        cell.animate({width: column.width}, ANIMATE_DURATION);
+        cell.animate({
+          width: column.width
+        }, ANIMATE_DURATION);
       });
 
       el.firstChild().css({width: totalWidth});
@@ -1221,15 +1223,15 @@ Fancy.modules['filter'] = true;
      * @param {String} side
      * @param {Number} orderIndex
      */
-    removeSubHeaderCell: function(side, orderIndex){
-      var me = this,
+    removeSubHeaderCell(side, orderIndex){
+      const me = this,
         el = me.getSubHeaderFilterEl(side),
-        cells = el.select('.' + GRID_HEADER_CELL_CLS),
+        cells = el.select(`.${GRID_HEADER_CELL_CLS}`),
         cell = cells.item(orderIndex);
 
       cell.destroy();
     },
-    getSubHeaderFilterEl: function(side){
+    getSubHeaderFilterEl(side){
       switch(side){
         case 'left':
           return this.filterElLeft;
@@ -1244,24 +1246,24 @@ Fancy.modules['filter'] = true;
      * @param {String|Number} value
      * @param {Object} e
      */
-    onKey: function(field, value, e){
-      var me = this;
+    onKey(field, value, e){
+      const me = this;
 
-      if (e.keyCode === F.key.ENTER){
+      if (e.keyCode === F.key.ENTER) {
         return;
       }
 
       me.autoEnterTime = +new Date();
 
       if (!me.intervalAutoEnter){
-        me.intervalAutoEnter = setInterval(function(){
-          var now = new Date();
+        me.intervalAutoEnter = setInterval(() => {
+          const now = new Date();
 
-          if (!me.intervalAutoEnter){
+          if (!me.intervalAutoEnter) {
             return;
           }
 
-          if (now - me.autoEnterTime > me.autoEnterDelay){
+          if (now - me.autoEnterTime > me.autoEnterDelay) {
             clearInterval(me.intervalAutoEnter);
             delete me.intervalAutoEnter;
             value = field.getValue();
@@ -1275,7 +1277,7 @@ Fancy.modules['filter'] = true;
      * @param {Object} field
      * @param {*} date
      */
-    onDateChange: function(field){
+    onDateChange(field){
       var me = this,
         w = me.widget,
         format = field.format,
@@ -1289,7 +1291,7 @@ Fancy.modules['filter'] = true;
         value2,
         isRemote = s.remoteFilter;
 
-      if (isValid1){
+      if (isValid1) {
         dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate());
       }
 
@@ -1309,7 +1311,7 @@ Fancy.modules['filter'] = true;
 
         value = '>=' + value1 + ',<=' + value2;
       }
-      else if (isValid1){
+      else if (isValid1) {
         if (isRemote !== true){
           value = '>=' + Number(dateFrom);
         }
@@ -1345,13 +1347,13 @@ Fancy.modules['filter'] = true;
      * @param {String} operator
      * @param {Boolean} update
      */
-    clearFilter: function(index, operator, update){
-      var me = this,
+    clearFilter(index, operator, update){
+      const me = this,
         w = me.widget,
         s = w.store;
 
       s._clearedFilter = true;
-      setTimeout(function(){
+      setTimeout(() => {
         delete s._clearedFilter;
       }, 1);
 
@@ -1368,17 +1370,17 @@ Fancy.modules['filter'] = true;
         me.updateStoreFilters();
       }
     },
-    onFilter: function(grid, filter){
-      var me = this,
+    onFilter(grid, filter){
+      const me = this,
         w = me.widget;
 
       w.scroll(0);
 
-      if(w.header && filter){
-        w.el.select('.' + GRID_HEADER_CELL_FILTERED_CLS).removeCls(GRID_HEADER_CELL_FILTERED_CLS);
+      if (w.header && filter) {
+        w.el.select(`.${GRID_HEADER_CELL_FILTERED_CLS}`).removeCls(GRID_HEADER_CELL_FILTERED_CLS);
 
-        for(var p in filter){
-          var cell = w.getHeaderCell(p);
+        for(const p in filter) {
+          const cell = w.getHeaderCell(p);
 
           if(cell){
             cell.addCls( GRID_HEADER_CELL_FILTERED_CLS );
@@ -1390,13 +1392,13 @@ Fancy.modules['filter'] = true;
      * @param {Array} data
      * @return {Array}
      */
-    configComboData: function(data){
+    configComboData(data){
       var me = this,
         i = 0,
         iL = data.length,
         _data = [];
 
-      if (F.isObject(data)){
+      if (F.isObject(data)) {
         return data;
       }
 
@@ -1413,66 +1415,66 @@ Fancy.modules['filter'] = true;
 
       return _data;
     },
-    destroyFields: function(){
-      var me = this,
+    destroyFields(){
+      const me = this,
         w = me.widget;
 
-      F.each(w.columns, function(column){
+      F.each(w.columns, (column) => {
+        if (column.filterField) {
+          column.filterField.destroy();
+          delete column.filterField;
+        }
+      });
+
+      F.each(w.leftColumns, (column) => {
+        if (column.filterField) {
+          column.filterField.destroy();
+          delete column.filterField;
+        }
+      });
+
+      F.each(w.rightColumns, (column) => {
         if(column.filterField){
           column.filterField.destroy();
           delete column.filterField;
         }
       });
 
-      F.each(w.leftColumns, function(column){
-        if(column.filterField){
-          column.filterField.destroy();
-          delete column.filterField;
-        }
-      });
+      w.el.select(`.${GRID_HEADER_CELL_FILTER_CLS}`).removeCls(GRID_HEADER_CELL_FILTER_CLS);
+      w.el.select(`.${GRID_HEADER_CELL_FILTER_FULL_CLS}`).removeCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
+      w.el.select(`.${GRID_HEADER_CELL_FILTER_SMALL_CLS}`).removeCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
 
-      F.each(w.rightColumns, function(column){
-        if(column.filterField){
-          column.filterField.destroy();
-          delete column.filterField;
-        }
-      });
-
-      w.el.select('.' + GRID_HEADER_CELL_FILTER_CLS).removeCls(GRID_HEADER_CELL_FILTER_CLS);
-      w.el.select('.' + GRID_HEADER_CELL_FILTER_FULL_CLS).removeCls(GRID_HEADER_CELL_FILTER_FULL_CLS);
-      w.el.select('.' + GRID_HEADER_CELL_FILTER_SMALL_CLS).removeCls(GRID_HEADER_CELL_FILTER_SMALL_CLS);
-
-      w.el.select('.' + GRID_HEADER_CELL_DOUBLE_CLS).removeCls(GRID_HEADER_CELL_DOUBLE_CLS);
-      w.el.select('.' + GRID_HEADER_CELL_TRIPLE_CLS).removeCls(GRID_HEADER_CELL_TRIPLE_CLS);
+      w.el.select(`.${GRID_HEADER_CELL_DOUBLE_CLS}`).removeCls(GRID_HEADER_CELL_DOUBLE_CLS);
+      w.el.select(`.${GRID_HEADER_CELL_TRIPLE_CLS}`).removeCls(GRID_HEADER_CELL_TRIPLE_CLS);
     },
     /*
      *
      */
-    onLockColumn: function(){
+    onLockColumn(){
       //this.render();
     },
     /*
      *
      */
-    onUnLockColumn: function(){
+    onUnLockColumn(){
       //this.render();
     },
     /*
      *
      */
-    onRightLockColumn: function(){
+    onRightLockColumn(){
       //this.render();
     },
     /*
      *
      */
-    onColumnDrag: function(){
-      var me = this,
+    onColumnDrag(){
+      const me = this,
         w = me.widget;
 
       me.updateFields();
 
-      if(w.subHeaderFilter){
+      if (w.subHeaderFilter) {
         me.updateSubHeaderFilterSizes();
       }
     },
@@ -1480,8 +1482,8 @@ Fancy.modules['filter'] = true;
      *
      */
     // Requires to improve. Should avoid destroying fields.
-    updateFields: function(){
-      var me = this;
+    updateFields(){
+      const me = this;
 
       me.destroyFields();
       me.render();
@@ -1489,8 +1491,8 @@ Fancy.modules['filter'] = true;
     /*
      *
      */
-    reGroupAccordingToFilters: function(){
-      var me = this,
+    reGroupAccordingToFilters(){
+      const me = this,
         w = me.widget,
         grouping = w.grouping;
 
@@ -1506,37 +1508,37 @@ Fancy.modules['filter'] = true;
     /*
      * @param {Number} value
      */
-    scrollLeft: function(value){
+    scrollLeft(value){
       if(!this.filterElCenter){
         return;
       }
 
       this.filterElCenter.firstChild().css('left', value);
     },
-    onColumnHide: function(){
+    onColumnHide(){
       this.updateSubHeaderFilterSizes();
     },
-    onColumnShow: function(){
+    onColumnShow(){
       this.updateSubHeaderFilterSizes();
     },
     /*
      *
      */
-    onLoadData: function(){
+    onLoadData(){
       this.updateFilterComboData();
     },
     /*
      *
      */
-    updateFilterComboData: function(){
-      var me = this,
+    updateFilterComboData(){
+      const me = this,
         w = me.widget,
         s = w.store,
         columns = w.getColumns();
 
-      F.each(columns, function(column){
+      columns.forEach(column => {
         if(column.type === 'combo' && column.index && column.waitForComboData){
-          var data = s.getColumnUniqueData(column.index);
+          const data = s.getColumnUniqueData(column.index);
 
           w.setColumnComboData(column.index, data);
         }

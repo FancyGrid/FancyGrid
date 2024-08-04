@@ -4,11 +4,11 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
-  var HIDE_TIMEOUT = 500;
+  const F = Fancy;
+  const HIDE_TIMEOUT = 500;
 
-  var TOOLTIP_CLS = F.TOOLTIP_CLS;
-  var TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
+  const TOOLTIP_CLS = F.TOOLTIP_CLS;
+  const TOOLTIP_INNER_CLS = F.TOOLTIP_INNER_CLS;
 
   F.define('Fancy.grid.plugin.CellTip', {
     extend: F.Plugin,
@@ -25,15 +25,15 @@
     /*
      *
      */
-    init: function(){
+    init(){
       this.Super('init', arguments);
       this.ons();
     },
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget,
         docEl = F.get(document);
 
@@ -46,8 +46,8 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellEnter: function(grid, o){
-      var me = this,
+    onCellEnter(grid, o){
+      let me = this,
         column = o.column,
         cellTip = me.cellTip,
         e = o.e;
@@ -67,7 +67,7 @@
           }
         }
 
-        var tpl = new F.Template(cellTip),
+        const tpl = new F.Template(cellTip),
           data = {
             title: column.title,
             value: o.value,
@@ -86,7 +86,7 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onCellLeave: function(){
+    onCellLeave(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
@@ -94,19 +94,19 @@
      * @param {Fancy.Grid} grid
      * @param {Object} o
      */
-    onTouchEnd: function(){
+    onTouchEnd(){
       this.stopped = true;
       F.tip.hide(HIDE_TIMEOUT);
     },
     /*
      * @param {Object} e
      */
-    onDocMove: function(e){
+    onDocMove(e){
       if (this.stopped === true){
         return;
       }
 
-      var me = this,
+      const me = this,
         w = me.widget;
 
       if(w.el.css('display') === 'none' || (w.panel && w.panel.el && w.panel.el.css('display') === 'none')){
@@ -115,7 +115,7 @@
         return;
       }
 
-      var targetEl = F.get(e.target);
+      const targetEl = F.get(e.target);
 
       if(targetEl.prop('tagName').toLocaleLowerCase() === 'body'){
         me.stopped = true;

@@ -5,7 +5,7 @@
 Fancy.modules['state'] = true;
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   F.define('Fancy.grid.plugin.State', {
     extend: F.Plugin,
@@ -32,8 +32,8 @@ Fancy.modules['state'] = true;
     /*
      *
      */
-    init: function(){
-      var me = this;
+    init(){
+      const me = this;
 
       me.Super('init', arguments);
 
@@ -41,32 +41,37 @@ Fancy.modules['state'] = true;
 
       me.ons();
     },
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
       //w.on('init', me.onInit, me);
       w.on('beforeinit', me.onBeforeInit, me);
-      if(me.stateful){
-        if(me.log.sort){
+      if (me.stateful) {
+        if (me.log.sort) {
           w.on('sort', me.onSort, me);
         }
-        if(me.log.filter){
+
+        if (me.log.filter) {
           w.on('filter', me.onFilter, me);
         }
-        if(me.log.columnresize){
+
+        if (me.log.columnresize) {
           w.on('columnresize', me.onColumnResize, me);
         }
-        if(me.log.columndrag){
+
+        if (me.log.columndrag) {
           w.on('columndrag', me.onColumnDrag, me);
           w.on('lockcolumn', me.onColumnLock, me);
           w.on('rightlockcolumn', me.onColumnRightLock, me);
           w.on('unlockcolumn', me.onColumnUnLock, me);
         }
-        if(me.log.changepage){
+
+        if (me.log.changepage) {
           w.on('changepage', me.onChangePage, me);
         }
-        if(me.log.columnhide){
+
+        if (me.log.columnhide) {
           w.on('columnhide', me.onColumnHide, me);
           w.on('columnshow', me.onColumnShow, me);
         }
@@ -87,7 +92,7 @@ Fancy.modules['state'] = true;
         w.on('changeheight', me.onChangeHeight, me);
       }
     },
-    onSort: function(){
+    onSort(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -103,7 +108,7 @@ Fancy.modules['state'] = true;
 
       me.widget.fire('statechange', me.getState(), 'sorters', o.sorters);
     },
-    onFilter: function(){
+    onFilter(){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -119,61 +124,61 @@ Fancy.modules['state'] = true;
 
       me.widget.fire('statechange', me.getState(), 'filters', o.filters);
     },
-    onColumnResize: function(){
-      var me = this;
+    onColumnResize(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnDrag: function(){
-      var me = this;
+    onColumnDrag(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnLock: function(){
-      var me = this;
+    onColumnLock(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnRightLock: function(){
-      var me = this;
+    onColumnRightLock(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnUnLock: function(){
-      var me = this;
+    onColumnUnLock(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnHide: function(){
-      var me = this;
+    onColumnHide(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnShow: function(){
-      var me = this;
+    onColumnShow(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnRemove: function(){
-      var me = this;
+    onColumnRemove(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    onColumnAdd: function(){
-      var me = this;
+    onColumnAdd(){
+      const me = this;
 
       me.copyColumns();
       me.widget.fire('statechange', me.getState(), 'columns');
     },
-    copyColumns: function(){
+    copyColumns(){
       var me = this,
         w = me.widget,
         name = w.getStateName(),
@@ -181,15 +186,16 @@ Fancy.modules['state'] = true;
 
       o = JSON.parse(o);
 
-      var columns = w.getColumns(),
+      const columns = w.getColumns(),
         _columns = [];
 
       F.each(columns, function(column){
-        var _column = {};
+        const _column = {};
 
         F.each(column, function(v, p){
-          var valueType = F.typeOf(v);
-          switch (valueType){
+          const valueType = F.typeOf(v);
+
+          switch (valueType) {
             case 'string':
             case 'number':
             case 'boolean':
@@ -219,51 +225,50 @@ Fancy.modules['state'] = true;
 
       localStorage.setItem(name, JSON.stringify(o));
     },
-    onBeforeInit: function(){
-      var me = this,
+    onBeforeInit(){
+      const me = this,
         w = me.widget,
         name = w.getStateName(),
         state = localStorage.getItem(name) || '{}',
         startState = me.startState;
 
-      if(state === '{}' && w.autoColumnWidth){
+      if (state === '{}' && w.autoColumnWidth) {
         w.allowAutoWidthStateIsEmpty = true;
       }
 
-      var applyFilters = function(){
-        for (var p in startState.filters){
+      const applyFilters = function () {
+        for (var p in startState.filters) {
           var filter = startState.filters[p];
 
-          for (var q in filter){
-            if (q === '*' && w.searching){
+          for (var q in filter) {
+            if (q === '*' && w.searching) {
               w.addFilter(p, filter[q], q, false);
-            }
-            else {
+            } else {
               w.addFilter(p, filter[q], q);
             }
           }
         }
       };
 
-      var applySorters = function(){
-        F.each(startState.sorters, function(sorter){
+      const applySorters = function () {
+        F.each(startState.sorters, (sorter) => {
           w.sort(sorter.key, sorter.dir, false);
         });
       };
 
-      if(startState){
+      if (startState) {
         w.waitingForFilters = true;
         w.stateIsWaiting = true;
 
-        if(w.WAIT_FOR_STATE_TO_LOAD){
-          if (startState.filters){
+        if (w.WAIT_FOR_STATE_TO_LOAD) {
+          if (startState.filters) {
             applyFilters();
-            if(w.store.remoteFilter){
+            if (w.store.remoteFilter) {
               w.store.serverFilter(false);
             }
           }
 
-          if (startState.sorters){
+          if (startState.sorters) {
             applySorters();
           }
 
@@ -271,25 +276,25 @@ Fancy.modules['state'] = true;
           w.store.loadData();
         }
 
-        if (w.store.loading){
-          w.once('load', function(){
+        if (w.store.loading) {
+          w.once('load', () => {
             me.onBeforeInit();
           }, me);
           return;
         }
 
-        setTimeout(function(){
-          if(!w.SERVER_FILTER_SORT){
-            if (startState.filters){
+        setTimeout(() => {
+          if (!w.SERVER_FILTER_SORT) {
+            if (startState.filters) {
               applyFilters();
             }
 
-            if (startState.sorters){
+            if (startState.sorters) {
               applySorters();
             }
           }
 
-          if (startState.page !== undefined){
+          if (startState.page !== undefined) {
             w.setPage(Number(startState.page), false);
           }
 
@@ -301,29 +306,29 @@ Fancy.modules['state'] = true;
         }, 100);
       }
 
-      if(state.width){
+      if (state.width) {
         w.setWidth(state.width);
       }
 
-      if(state.height){
+      if (state.height) {
         w.setHeight(state.height);
       }
     },
-    onChangePage: function(grid, page){
+    onChangePage(grid, page){
       var me = this,
         w = me.widget,
         name = w.getStateName(),
         state = localStorage.getItem(name) || '{}';
 
-      if(page === undefined){
+      if (page === undefined) {
         return;
       }
 
-      if(!state){
+      if (!state) {
         return;
       }
 
-      if(!w.inited){
+      if (!w.inited) {
         return;
       }
 
@@ -334,7 +339,7 @@ Fancy.modules['state'] = true;
 
       me.widget.fire('statechange', me.getState(), 'page', state.page);
     },
-    onResize: function(panel, o){
+    onResize(panel, o){
       var me = this,
         w = me.widget,
         name = w.getStateName(),
@@ -357,7 +362,7 @@ Fancy.modules['state'] = true;
     /*
      *
      */
-    onChangeWidth: function(grid, value){
+    onChangeWidth(grid, value){
       var me = this,
         w = me.widget,
         name = w.getStateName(),
@@ -376,7 +381,7 @@ Fancy.modules['state'] = true;
     /*
      *
      */
-    onChangeHeight: function(grid, value){
+    onChangeHeight(grid, value){
       var me = this,
         w = me.widget,
         name = w.getStateName(),
@@ -395,25 +400,25 @@ Fancy.modules['state'] = true;
     /*
      *
      */
-    initLog: function(){
-      var me = this;
+    initLog(){
+      const me = this;
 
       F.applyIf(me.log, me.$log);
     },
     /*
      *
      */
-    getState: function(){
+    getState(){
       var me = this,
         w = me.widget,
         name = w.getStateName(),
         state = localStorage.getItem(name) || '{}';
 
-      if(state === '{}'){
+      if (state === '{}') {
         state = me.startState;
       }
 
-      if(F.isString(state)){
+      if (F.isString(state)) {
         return JSON.parse(state);
       }
 

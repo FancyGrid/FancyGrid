@@ -36,7 +36,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @constructor
    */
   constructor: function(){
-    var me = this;
+    const me = this;
 
     me.tags = me.tags || [];
     me.Super('const', arguments);
@@ -44,8 +44,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  init: function(){
-    var me = this;
+  init(){
+    const me = this;
 
     me.addEvents('focus', 'blur', 'input', 'up', 'down', 'change', 'key', 'enter', 'up', 'down', 'esc');
     me.Super('init', arguments);
@@ -63,8 +63,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  calcSize: function(){
-    var me = this;
+  calcSize(){
+    const me = this;
 
     me.inputHeight = me.height - 2 * 7;
 
@@ -79,8 +79,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  applySize: function(){
-    var me = this;
+  applySize(){
+    const me = this;
 
     me.css({
       width: me.width,
@@ -90,22 +90,22 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  applyStyle: function(){
-    var me = this;
+  applyStyle(){
+    const me = this;
 
-    if( me.hidden ){
+    if (me.hidden) {
       me.css('display', 'none');
     }
 
-    if( me.style ){
+    if (me.style) {
       me.css(me.style);
     }
   },
   /*
    *
    */
-  applyTheme: function(){
-    var me = this;
+  applyTheme(){
+    const me = this;
 
     if( me.theme && me.theme !== 'default' ){
       me.addCls(Fancy.getThemeCSSCls(me.theme));
@@ -116,8 +116,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  ons: function(){
-    var me = this,
+  ons(){
+    const me = this,
       drop = me.el.select('.fancy-tag-field-dropdown-button');
 
     me.input = me.el.getByTag('input');
@@ -141,11 +141,11 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onInputClick: function(){
-    var me = this,
+  onInputClick(){
+    const me = this,
       list = me.list;
 
-    if (list.css('display') === 'none'){
+    if (list.css('display') === 'none') {
       me.showList();
     }
     else {
@@ -155,11 +155,11 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onDropClick: function(){
-    var me = this,
+  onDropClick(){
+    const me = this,
       list = me.list;
 
-    if (list.css('display') === 'none'){
+    if (list.css('display') === 'none') {
       me.showList();
     }
     else {
@@ -169,8 +169,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  showList: function(){
-    var me = this,
+  showList(){
+    const me = this,
       list = me.list,
       el = me.input.parent().parent(),
       p = el.$dom.offset(),
@@ -193,23 +193,23 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onDocClick: function(e){
-    var me = this;
+  onDocClick(e){
+    const me = this;
 
-    if(me.input.parent().parent().within(e.target) === false){
+    if (me.input.parent().parent().within(e.target) === false) {
       me.hideList();
     }
   },
   /*
    *
    */
-  hideList: function(){
-    var me = this;
+  hideList(){
+    const me = this;
 
     me.list.css('display', 'none');
 
-    if(me.docSpy){
-      var docEl = Fancy.get(document);
+    if (me.docSpy) {
+      const docEl = Fancy.get(document);
       me.docSpy = false;
       docEl.un('click', me.onDocClick, me);
     }
@@ -217,7 +217,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onInputMouseDown: function(e){
+  onInputMouseDown(e){
     if(this.editable === false){
       e.preventDefault();
     }
@@ -225,14 +225,14 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onDropMouseDown: function(e){
+  onDropMouseDown(e){
     e.preventDefault();
   },
   /*
    *
    */
-  onsList: function(){
-    var me = this,
+  onsList(){
+    const me = this,
       list = me.list,
       liEls = list.select('li');
 
@@ -249,8 +249,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onListItemClick: function(e){
-    var me = this,
+  onListItemClick(e){
+    const me = this,
       li = Fancy.get(e.currentTarget),
       value = li.attr('value');
 
@@ -263,8 +263,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {*} value
    * @param {Boolean} onInput
    */
-  set: function(value, onInput){
-    var me = this,
+  set(value, onInput){
+    let me = this,
       i = 0,
       iL = me.data.length;
 
@@ -284,7 +284,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  initListItems: function(){
+  initListItems(){
     if(this.itemCheckBox){
       this.renderListCheckBoxes();
     }
@@ -292,20 +292,20 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  renderListCheckBoxes: function(){
-    var me = this,
+  renderListCheckBoxes(){
+    let me = this,
       list = me.list,
       liEls = list.select('li'),
       i = 0,
       iL = liEls.length;
 
     for(;i<iL;i++){
-      var renderTo = liEls.item(i);
+      const renderTo = liEls.item(i);
 
       renderTo.css('position', 'relative');
       renderTo.select('.fancy-tag-field-list-value').css('margin-left', '25px');
 
-      var checkBox = new Fancy.CheckBox({
+      const checkBox = new Fancy.CheckBox({
         renderTo: renderTo.dom,
         value: false,
         label: false,
@@ -322,7 +322,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       });
 
       checkBox.el.hover(function(){
-        var el = Fancy.get(this);
+        const el = Fancy.get(this);
         me.clearListActive();
 
         el.parent().addCls(me.activeListItemCls);
@@ -330,7 +330,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     }
 
     me.on('change', function(me){
-      var checkBox = Fancy.getWidget(me.list.select('li[value="' + me.value + '"] .fancy-field-checkbox').attr('id'));
+      const checkBox = Fancy.getWidget(me.list.select('li[value="' + me.value + '"] .fancy-field-checkbox').attr('id'));
 
       checkBox.toggle();
     });
@@ -339,8 +339,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} checkbox
    * @param {Boolean} value
    */
-  onChange: function(checkbox, value){
-    var me = this,
+  onChange(checkbox, value){
+    const me = this,
       tagValue = checkbox.tagValue;
 
     if(value === true){
@@ -352,7 +352,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  renderTags: function(){
+  renderTags(){
     var me = this,
       inputWidth = me.input.width(),
       item,
@@ -397,7 +397,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  render: function(){
+  render(){
     var me = this,
       renderTo = Fancy.get(me.renderTo || document.body).dom,
       el = Fancy.get(document.createElement('div')),
@@ -435,11 +435,11 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       labelWidth = 'width:' + me.labelWidth + 'px;';
     }
 
-    var listHtml = [
+    const listHtml = [
       '<ul style="position: relative;">'
     ];
 
-    Fancy.each(me.data, function(row, i){
+    Fancy.each(me.data, (row, i) => {
       var isActive = '',
         value = row[me.displayKey];
 
@@ -456,7 +456,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
 
     listHtml.push('</ul>');
 
-    var label = me.label;
+    let label = me.label;
 
     if (me.label === ''){
       label = '&nbsp;';
@@ -519,8 +519,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  hide: function(){
-    var me = this;
+  hide(){
+    const me = this;
 
     me.css('display', 'none');
     me.hideList();
@@ -529,23 +529,23 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  clear: function(){
+  clear(){
     this.set(-1, false);
   },
   /*
    *
    */
-  clearListActive: function(){
-    var me = this,
+  clearListActive(){
+    const me = this,
       activeListItemCls = me.activeListItemCls;
 
-    me.list.select('.' + activeListItemCls).removeCls(activeListItemCls);
+    me.list.select(`.${activeListItemCls}`).removeCls(activeListItemCls);
   },
   /*
    *
    */
-  onInput: function(){
-    var me = this,
+  onInput(){
+    const me = this,
       value = me.getValue();
 
     me.input.dom.value = value;
@@ -555,15 +555,15 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Array} data
    */
-  setData: function(data){
-    var me = this,
+  setData(data){
+    const me = this,
       listHtml = [],
       activeListItemCls = me.activeListItemCls;
 
     me.data = data;
 
-    Fancy.each(me.data, function(row, i){
-      var isActive = '',
+    Fancy.each(me.data, (row, i) => {
+      let isActive = '',
         value = row[me.displayKey];
 
       if (i === 0){
@@ -584,13 +584,13 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {*} value
    * @param {Boolean} onInput
    */
-  setValue: function(value, onInput){
+  setValue(value, onInput){
     this.set(value, onInput);
   },
   /*
    * @param {*} value
    */
-  getDisplayValue: function(value){
+  getDisplayValue(value){
     var me = this,
       i = 0,
       iL = me.data.length;
@@ -604,7 +604,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {*} value
    */
-  getValueKey: function(value){
+  getValueKey(value){
     var me = this,
       i = 0,
       iL = me.data.length;
@@ -618,14 +618,14 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @return {*}
    */
-  get: function(){
+  get(){
     return this.getValue();
   },
   /*
    * @return {*}
    */
-  getValue: function(){
-    var me = this;
+  getValue(){
+    const me = this;
 
     if(me.value === -1 || me.value === undefined){
       return '';
@@ -640,8 +640,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    * @param {Object} e
    */
-  onKeyDown: function(e){
-    var me = this,
+  onKeyDown(e){
+    const me = this,
       keyCode = e.keyCode,
       key = Fancy.key;
 
@@ -676,12 +676,12 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} field
    * @param {Object} e
    */
-  onEnter: function(field, e){
-    var me = this,
+  onEnter(field, e){
+    const me = this,
       list = me.getActiveList();
 
     if(list){
-      var displayValue = list.select('.' + me.selectedItemCls + ' .fancy-combo-list-value').dom.innerHTML;
+      const displayValue = list.select('.' + me.selectedItemCls + ' .fancy-combo-list-value').dom.innerHTML;
 
       me.set(displayValue);
     }
@@ -696,7 +696,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} field
    * @param {Object} e
    */
-  onEsc: function(field, e){
+  onEsc(field, e){
     this.hideList();
     this.hideAheadList();
   },
@@ -704,14 +704,14 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} field
    * @param {Object} e
    */
-  onUp: function(field, e){
-    var me = this,
+  onUp(field, e){
+    const me = this,
       list = me.getActiveList(),
       selectedItemCls = me.selectedItemCls;
 
-    if(list){
+    if (list) {
       e.preventDefault();
-      var activeLi = list.select('.' + selectedItemCls),
+      var activeLi = list.select(`.${selectedItemCls}`),
         index = activeLi.index(),
         lis = list.select('li'),
         height = parseInt(list.css('height'));
@@ -723,7 +723,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         index = lis.length - 1;
       }
 
-      var nextActiveLi = lis.item(index),
+      const nextActiveLi = lis.item(index),
         top = nextActiveLi.offset().top;
 
       if(index === lis.length - 1){
@@ -741,8 +741,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
    * @param {Object} field
    * @param {Object} e
    */
-  onDown: function(field, e){
-    var me = this,
+  onDown(field, e){
+    const me = this,
       list = me.getActiveList(),
       selectedItemCls = me.selectedItemCls;
 
@@ -761,7 +761,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         index = 0;
       }
 
-      var nextActiveLi = lis.item(index);
+      const nextActiveLi = lis.item(index);
 
       if(top - height > 0){
         list.dom.scrollTop = 0;
@@ -777,7 +777,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       me.showList();
     }
   },
-  generateAheadData: function(){
+  generateAheadData(){
     var me = this,
       inputValue = me.input.dom.value.toLocaleLowerCase(),
       data = me.data,
@@ -802,8 +802,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  hideAheadList: function(){
-    var me = this;
+  hideAheadList(){
+    const me = this;
 
     if(!me.aheadList){
       return;
@@ -812,7 +812,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
     me.aheadList.css('display', 'none');
 
     if(me.docSpy){
-      var docEl = Fancy.get(document);
+      const docEl = Fancy.get(document);
       me.docSpy = false;
       docEl.un('click', me.onDocClick, me);
     }
@@ -820,7 +820,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   /*
    *
    */
-  renderAheadList: function(){
+  renderAheadList(){
     var me = this,
       list,
       listHtml = [
@@ -837,7 +837,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       list = Fancy.get( document.createElement('div'));
     }
 
-    Fancy.each(me.aheadData, function(row, i){
+    Fancy.each(me.aheadData, (row, i) =>{
       var isActive = '',
         displayValue = row[me.displayKey],
         value = row[me.valueKey];
@@ -878,16 +878,16 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       me.onsAheadList();
     }
   },
-  onsAheadList: function(){
-    var me = this;
+  onsAheadList(){
+    const me = this;
 
     me.aheadList.on('click', me.onListItemClick, me, 'li');
   },
   /*
    *
    */
-  showAheadList: function(){
-    var me = this,
+  showAheadList(){
+    const me = this,
       list = me.aheadList,
       el = me.input.parent().parent(),
       p = el.$dom.offset(),
@@ -913,8 +913,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       docEl.on('click', me.onDocClick, me);
     }
   },
-  getActiveList: function(){
-    var me = this,
+  getActiveList(){
+    let me = this,
       list = false;
 
     if(me.list && me.list.css('display') !== 'none'){

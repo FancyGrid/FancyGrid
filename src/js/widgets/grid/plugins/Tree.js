@@ -4,41 +4,39 @@
  */
 (function(){
   //SHORTCUTS
-  var F = Fancy;
+  const F = Fancy;
 
   /*
    * CONSTANTS
    */
-  var GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
+  const GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
 
-  var getChildNumber = function(items, num){
-    num = num || 0;
-    var me = this,
+  const getChildNumber = function (items, num = 0) {
+    const me = this,
       w = me.widget;
 
-    Fancy.each(items, function(item){
+    Fancy.each(items, function (item) {
       num++;
-      var itemData = item.data?item.data:item;
+      let itemData = item.data ? item.data : item;
 
-      if(w.store.filteredData){
+      if (w.store.filteredData) {
         //Getting item data from grid
-        if(itemData.id){
-          if(w.store.map[itemData.id]){
+        if (itemData.id) {
+          if (w.store.map[itemData.id]) {
             itemData = w.store.map[itemData.id].data;
           }
         }
-      }
-      else{
+      } else {
         //Getting item data from grid
         itemData = w.getById(itemData.id).data;
       }
 
-      var child = itemData.child;
+      const child = itemData.child;
       //if(itemData.filteredChild){
-        //child = itemData.filteredChild;
+      //child = itemData.filteredChild;
       //}
 
-      if(child && itemData.expanded){
+      if (child && itemData.expanded) {
         num += getChildNumber.apply(me, [child]);
       }
     });
@@ -61,12 +59,12 @@
     /*
      *
      */
-    init: function(){
-      var me = this,
+    init(){
+      const me = this,
         w = me.widget;
 
       me.expandMap = {};
-      if(w._tempExpandMap){
+      if (w._tempExpandMap) {
         me.expandMap = w._tempExpandMap;
       }
 
@@ -76,61 +74,61 @@
     /*
      *
      */
-    ons: function(){
-      var me = this,
+    ons(){
+      const me = this,
         w = me.widget;
 
-      w.once('init', function(){
+      w.once('init', () => {
         w.on('rowdblclick', me.onRowDBLClick, me);
         w.on('cellclick', me.onTreeExpanderClick, me);
         w.on('beforesort', me.onBeforeSort, me);
       });
     },
-    onRowDBLClick: function(grid, o){
-      var me = this,
+    onRowDBLClick(grid, o){
+      const me = this,
         w = me.widget,
         item = o.item;
 
-      if (item.get('leaf')){
+      if (item.get('leaf')) {
         return;
       }
 
-      if(w.edit && w.edit.clicksToEdit === 2){
+      if (w.edit && w.edit.clicksToEdit === 2) {
         return;
       }
 
-      var expanded = item.get('expanded');
+      const expanded = item.get('expanded');
 
-      if (expanded){
+      if (expanded) {
         me.collapseRow(o.item);
       }
       else {
         me.expandRow(o.item);
       }
     },
-    onTreeExpanderClick: function(grid, o){
-      var me = this,
+    onTreeExpanderClick(grid, o){
+      const me = this,
         item = o.item,
         target = Fancy.get(o.e.target);
 
-      if(!target.hasClass(GRID_COLUMN_TREE_EXPANDER_CLS)){
+      if (!target.hasClass(GRID_COLUMN_TREE_EXPANDER_CLS)) {
         return;
       }
 
-      if (item.get('leaf')){
+      if (item.get('leaf')) {
         return;
       }
 
-      var expanded = item.get('expanded');
+      const expanded = item.get('expanded');
 
-      if (expanded){
+      if (expanded) {
         me.collapseRow(o.item);
       }
       else {
         me.expandRow(o.item);
       }
     },
-    collapseRow: function(item){
+    collapseRow(item){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -152,7 +150,7 @@
         i = 0,
         iL = getChildNumber.apply(this, [child]);
 
-      if(s.filteredData){
+      if (s.filteredData) {
         var itemId = item.get('id'),
           startIndex,
           _parentIds = {};
@@ -179,9 +177,9 @@
               startIndex = i;
             }
 
-            var removedItem = s.data.splice(startIndex, 1)[0];
+            const removedItem = s.data.splice(startIndex, 1)[0];
 
-            if(removedItem.data.child){
+            if (removedItem.data.child) {
               _parentIds[removedItem.data.id] = true;
             }
 
@@ -190,12 +188,12 @@
             iL--;
           }
 
-          if(item.data.child && deepStart){
+          if (item.data.child && deepStart) {
             _parentIds[item.data.id] = true;
           }
         }
 
-        if(s.order){
+        if (s.order) {
           delete s.order;
           delete s.filterOrder;
           s.reSort();
@@ -219,7 +217,7 @@
 
       w.fire('treecollapse');
     },
-    expandRow: function(item){
+    expandRow(item){
       var me = this,
         w = me.widget,
         s = w.store,
@@ -231,18 +229,19 @@
 
       w.$onChangeUpdate = false;
 
-      if(filteredChild){
+      if (filteredChild) {
         //child = filteredChild;
       }
 
-      if(me.singleExpand){
-        if(parentId){
-          var parent = w.getById(parentId);
+      if (me.singleExpand) {
+        if (parentId) {
+          const parent = w.getById(parentId);
+
           parentChild = parent.get('child');
 
           //Bad for performance
           Fancy.each(parentChild, function(item){
-            var expanded = item.get('expanded');
+            let expanded = item.get('expanded');
 
             if(me.expandMap[item.id] !== undefined){
               expanded = me.expandMap[item.id];
@@ -257,7 +256,7 @@
           parentChild = w.findItem('parentId', '');
 
           Fancy.each(parentChild, function(child){
-            var expanded = child.get('expanded');
+            let expanded = child.get('expanded');
 
             if(me.expandMap[child.id] !== undefined){
               expanded = me.expandMap[child.id];
@@ -278,9 +277,9 @@
         deep = item.get('$deep') + 1,
         childsModelsRequired = false;
 
-      if(s.filteredData){
+      if (s.filteredData) {
         //Bad about performance
-        var itemId = item.get('id');
+        const itemId = item.get('id');
         Fancy.each(s.data, function(item, i){
           if(item.id === itemId){
             rowIndex = i;
@@ -289,12 +288,12 @@
         });
       }
 
-      var expandChilds = function(child, rowIndex, deep, _id){
+      const expandChilds = function (child, rowIndex, deep, _id) {
         _id = _id || id;
 
-        Fancy.each(child, function(item){
+        Fancy.each(child, function (item) {
           var itemData = item.data;
-          if(!item.data){
+          if (!item.data) {
             childsModelsRequired = true;
             itemData = item;
           }
@@ -302,12 +301,11 @@
           itemData.$deep = deep;
           itemData.parentId = _id;
           var expanded = itemData.expanded;
-          if(me.expandMap[itemData.id] !== undefined){
+          if (me.expandMap[itemData.id] !== undefined) {
             expanded = me.expandMap[itemData.id];
             itemData.expanded = expanded;
-          }
-          else{
-            if(itemData.child !== undefined){
+          } else {
+            if (itemData.child !== undefined) {
               itemData.expanded = false;
             }
           }
@@ -315,9 +313,9 @@
           rowIndex++;
           w.insert(rowIndex, itemData);
 
-          if(expanded === true){
+          if (expanded === true) {
             var child = itemData.child;
-            if(itemData.filteredChild){
+            if (itemData.filteredChild) {
               //child = itemData.filteredChild;
             }
             rowIndex = expandChilds(child, rowIndex, deep + 1, itemData.id);
@@ -334,10 +332,10 @@
       if(childsModelsRequired){
 
         Fancy.each(item.data.child, function(_child, i){
-          var childItem = s.getById(_child.id);
+          const childItem = s.getById(_child.id);
 
           //This case could occur for filtered data
-          if(childItem === undefined){
+          if (childItem === undefined) {
             return;
           }
 
@@ -352,7 +350,7 @@
       //}
 
       //Sorted
-      if(s.sorters){
+      if (s.sorters) {
         //TODO: needed to do sub sorting of only expanded
         //If item contains sorted than needs to detirmine that it suits or not
         //Also it needs to think about multisorting
@@ -360,7 +358,7 @@
 
         //s.sort(sorter.dir.toLocaleLowerCase(), sorter._type, sorter.key, {});
 
-        if(s.order){
+        if (s.order) {
           delete s.order;
           delete s.filterOrder;
           s.reSort();
@@ -377,19 +375,15 @@
 
       w.fire('treeexpand');
     },
-    onBeforeSort: function(grid, options){
-      var me = this;
+    onBeforeSort(grid, options){
+      const me = this;
 
-      if(options.action === 'drop'){
+      if (options.action === 'drop') {
         me.onDropSort();
       }
     },
-    onDropSort: function(){
-      var me = this,
-        w = me.widget,
-        s = w.store;
-
-      s.treeReBuildData();
+    onDropSort(){
+      this.widget.store.treeReBuildData();
     }
   });
 
