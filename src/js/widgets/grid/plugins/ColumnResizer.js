@@ -21,6 +21,9 @@
 
   const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
+  //TEMPLATES
+  const T_GRID_HEADER_CELL = `.${GRID_HEADER_CELL_CLS}`;
+
   F.define('Fancy.grid.plugin.ColumnResizer', {
     extend: F.Plugin,
     ptype: 'grid.columnresizer',
@@ -370,10 +373,10 @@
      *
      */
     render(){
-      var me = this,
+      const me = this,
         w = me.widget,
-        leftEl = G(document.createElement('div')),
-        rightEl = G(document.createElement('div'));
+        leftEl = F.newEl('div'),
+        rightEl = F.newEl('div');
 
       leftEl.addCls(GRID_RESIZER_LEFT_CLS);
       rightEl.addCls(GRID_RESIZER_RIGHT_CLS);
@@ -533,7 +536,7 @@
 
           w.leftColumns[me.columnIndex].width = cellWidth;
           domColumns = w.leftBody.el.select('.' + GRID_COLUMN_CLS);
-          domHeaderCells = w.leftHeader.el.select('.' + GRID_HEADER_CELL_CLS);
+          domHeaderCells = w.leftHeader.el.select(T_GRID_HEADER_CELL );
           var columnEl = domColumns.item(index);
           columnEl.animate({width: cellWidth}, ANIMATE_DURATION);
           //Bug fix: jQuery add overflow. It causes bad side effect for column cells.
@@ -581,7 +584,7 @@
           column = w.columns[index];
           w.columns[me.columnIndex].width = cellWidth;
           domColumns = w.body.el.select('.' + GRID_COLUMN_CLS);
-          domHeaderCells = w.header.el.select('.' + GRID_HEADER_CELL_CLS);
+          domHeaderCells = w.header.el.select(T_GRID_HEADER_CELL);
           var columnEl = domColumns.item(index);
           columnEl.animate({width: cellWidth}, ANIMATE_DURATION);
           //Bug fix: jQuery add overflow. It causes bad side effect for column cells.
@@ -630,7 +633,7 @@
 
           w.rightColumns[me.columnIndex].width = cellWidth;
           domColumns = w.rightBody.el.select('.' + GRID_COLUMN_CLS);
-          domHeaderCells = w.rightHeader.el.select('.' + GRID_HEADER_CELL_CLS);
+          domHeaderCells = w.rightHeader.el.select(T_GRID_HEADER_CELL);
           var columnEl = domColumns.item(index);
           columnEl.animate({width: cellWidth + 'px'}, ANIMATE_DURATION);
           //Bug fix: jQuery add overflow. It causes bad side effect for column cells.
@@ -742,7 +745,7 @@
           break;
       }
 
-      const cell = header.el.select(`.${GRID_HEADER_CELL_CLS}`).item(o.index - 1).dom,
+      const cell = header.el.select(T_GRID_HEADER_CELL).item(o.index - 1).dom,
         cellEl = F.get(cell);
 
       if(cellEl.css('display') === 'none' && o.index !== 0){
@@ -774,7 +777,7 @@
           break;
       }
 
-      return header.el.select(`.${GRID_HEADER_CELL_CLS}`).item(o.index).dom;
+      return header.el.select(T_GRID_HEADER_CELL).item(o.index).dom;
     },
     /*
      * @param {String} [side]

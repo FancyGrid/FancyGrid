@@ -135,7 +135,7 @@
       let me = this,
         w = me.widget,
         renderTo,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       el.addCls(GRID_BODY_CLS);
       el.attr('role', 'presentation');
@@ -820,7 +820,7 @@
         _columns = me.getColumns(),
         columns = me.el.select('.' + GRID_COLUMN_CLS),
         width = column.width,
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         i = index,
         iL = columns.length,
         left = 0,

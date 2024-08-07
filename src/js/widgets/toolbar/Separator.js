@@ -22,7 +22,7 @@ Fancy.define('Fancy.Separator', {
    */
   render(){
     const me = this,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.newEl('div');
 
     el.addCls(me.cls);
     el.update('<div></div>');

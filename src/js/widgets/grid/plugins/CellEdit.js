@@ -876,10 +876,9 @@
      *
      */
     checkAutoInitEditors(){
-      const me = this,
-        w = me.widget;
+      const me = this;
 
-      F.each(w.columns, (column) => {
+      this.widget.columns.forEach(column => {
         if (column.editorAutoInit) {
           column.editor = me.generateEditor(column);
         }

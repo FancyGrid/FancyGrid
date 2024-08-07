@@ -5,7 +5,7 @@
  *  By Eli Grey, http://eligrey.com
  *  License: X11/MIT
  *    See LICENSE.md
- */ 
+ */
 
 /*global self */
 /*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
@@ -106,10 +106,10 @@
 								&& typeof window.FileReader !== "undefined"			// can convert to base64
 								&& blob.size <= 1024*1024*150										// file size max 150MB
 								){
-							var reader = new window.FileReader();
+							const reader = new window.FileReader();
 							reader.readAsDataURL(blob);
 							reader.onloadend = function(){
-								var frame = doc.createElement("iframe");
+								const frame = doc.createElement('iframe');
 								frame.src = reader.result;
 								frame.style.display = "none";
 								doc.body.appendChild(frame);

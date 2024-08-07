@@ -21,7 +21,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   renderResizeEls(){
     const me = this,
       el = me.el,
-      cornerEl = Fancy.get(document.createElement('div'));
+      cornerEl = Fancy.newEl('div');
 
     cornerEl.addCls(me.cornerResizeCls);
 
@@ -185,7 +185,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       el = me.el,
       maskWidth = 2;
 
-    let maskEl = Fancy.get(document.createElement('div')),
+    let maskEl = Fancy.newEl('div'),
       panelTop = parseInt(el.css('top')),
       panelLeft = parseInt(el.css('left')),
       panelWidth = parseInt(el.css('width')) - maskWidth * 2,

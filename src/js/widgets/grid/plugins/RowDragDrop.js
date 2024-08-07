@@ -358,7 +358,7 @@
               var rowsGoOneByOne = true,
                 prevRowIndex;
 
-              F.each(selected, (item) => {
+              F.each(selected, item => {
                 if(prevRowIndex === undefined){
                   prevRowIndex = w.getRowById(item.id);
                   return;
@@ -393,21 +393,21 @@
             var rowsGoOneByOne = true,
               prevRowIndex;
 
-            F.each(selected, function(item){
-              if(prevRowIndex === undefined){
+            F.each(selected, item => {
+              if (prevRowIndex === undefined) {
                 prevRowIndex = w.getRowById(item.id);
                 return;
               }
 
               const rowIndex = w.getRowById(item.id);
-              if(prevRowIndex !== rowIndex - 1){
+              if (prevRowIndex !== rowIndex - 1) {
                 rowsGoOneByOne = false;
                 return true;
               }
               prevRowIndex = rowIndex;
             });
 
-            if(rowsGoOneByOne && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)){
+            if (rowsGoOneByOne && w.body.getCell(o.rowIndex, 0).hasClass(GRID_CELL_SELECTED_CLS)) {
               me.dropOK = false;
 
               me.clearCellsMask();
@@ -560,7 +560,7 @@
         rowIndex = w.getRowById(me.insertItem.id) + 1;
         if(selection.length){
           var delta = 0;
-          F.each(selection, (item) => {
+          F.each(selection, item => {
             const itemRowIndex = w.getRowById(item.id);
 
             if(itemRowIndex < rowIndex){
@@ -576,7 +576,7 @@
       w.store.changeDataView();
       w.update();
       if(!w.selection.memory){
-        F.each(selection, (item) => {
+        F.each(selection, item => {
           const rowIndex = w.getRowById(item.id);
           w.flashRow(rowIndex);
         });

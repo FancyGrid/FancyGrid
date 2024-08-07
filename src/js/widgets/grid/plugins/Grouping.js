@@ -14,6 +14,9 @@ Fancy.modules['grouping'] = true;
   const GRID_ROW_GROUP_COLLAPSED_CLS = F.GRID_ROW_GROUP_COLLAPSED_CLS;
   const GRID_CELL_CLS = F.GRID_CELL_CLS;
 
+  //TEMPLATES
+  const T_CELL = `.${GRID_CELL_CLS}`
+
   F.define('Fancy.grid.plugin.Grouping', {
     extend: F.Plugin,
     ptype: 'grid.grouping',
@@ -426,7 +429,7 @@ Fancy.modules['grouping'] = true;
      *
      */
     removeCells(){
-      var me = this,
+      const me = this,
         w = me.widget,
         columns = w.columns,
         leftColumns = w.leftColumns,
@@ -435,16 +438,16 @@ Fancy.modules['grouping'] = true;
         leftBody = w.leftBody,
         rightBody = w.rightBody;
 
-      if (columns.length){
-        body.el.select('.' + GRID_CELL_CLS).remove();
+      if (columns.length) {
+        body.el.select(T_CELL).remove();
       }
 
-      if (leftColumns.length){
-        leftBody.el.select('.' + GRID_CELL_CLS).remove();
+      if (leftColumns.length) {
+        leftBody.el.select(T_CELL).remove();
       }
 
-      if (rightColumns.length){
-        rightBody.el.select('.' + GRID_CELL_CLS).remove();
+      if (rightColumns.length) {
+        rightBody.el.select(T_CELL).remove();
       }
     },
     /*
@@ -457,12 +460,12 @@ Fancy.modules['grouping'] = true;
       var me = this,
         w = me.widget,
         s = w.store,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       el.addCls(GRID_ROW_GROUP_CLS);
       el.attr('group', groupText);
-      if (addText){
-        if(groupText === ''){
+      if (addText) {
+        if (groupText === '') {
           groupText = '&nbsp;';
         }
 
@@ -708,16 +711,16 @@ Fancy.modules['grouping'] = true;
                 plusHeight = 0;
 
               for (var p in expandedGroups){
-                var _groupOrderIndex = me.getGroupOrderIndex(p);
+                const _groupOrderIndex = me.getGroupOrderIndex(p);
 
                 if (groupOrderIndex <= _groupOrderIndex){
                   continue;
                 }
 
-                var groupItems = expandedGroups[p];
+                const groupItems = expandedGroups[p];
 
                 for (var q in groupItems){
-                  var _item = groupItems[q];
+                  const _item = groupItems[q];
 
                   if (_item.el.css('display') !== 'none' && !rowExpanderGroupMargined[q]){
                     var prevRow = row - 1;
@@ -725,7 +728,7 @@ Fancy.modules['grouping'] = true;
                       row = 0;
                     }
                     prevRow = w.get(prevRow);
-                    var prevRowGroupName = prevRow.get(by);
+                    const prevRowGroupName = prevRow.get(by);
                     if (_itemGroupName !== prevRowGroupName){
                       if (prevRow.id === q){
                         rowExpanderGroupMargined[q] = true;

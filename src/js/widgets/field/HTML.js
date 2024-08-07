@@ -54,7 +54,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   render(){
     const me = this,
       renderTo = me.renderTo || document.body,
-      el = document.createElement('div');
+      el = F.newDomEl('div');
 
     me.fire('beforerender');
 

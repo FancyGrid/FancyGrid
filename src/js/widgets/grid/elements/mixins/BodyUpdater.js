@@ -31,6 +31,10 @@
   const GRID_COLUMN_ROW_DRAG_CLS = F.GRID_COLUMN_ROW_DRAG_CLS;
   const GRID_ROW_DRAG_EL_CLS = F.GRID_ROW_DRAG_EL_CLS;
 
+  //TEMPLATES
+  const T_CELL = `.${GRID_CELL_CLS}`;
+  const T_CELL_PLUS_INNER = `.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`;
+
   F.ns('Fancy.grid.body.mixin');
 
   /*
@@ -128,7 +132,7 @@
       for (; i < iL; i++){
         const column = columns[i],
           width = column.width,
-          el = F.get(document.createElement('div'));
+          el = F.newEl('div');
 
         if (column.hidden) {
           el.css('display', 'none');
@@ -251,13 +255,13 @@
         var columnDom = columsDom.item(j),
           delta = 0;
 
-        delta = dataLength - columnDom.select('.' + GRID_CELL_CLS).length;
+        delta = dataLength - columnDom.select(T_CELL).length;
         i = iL - delta;
 
         for (; i < iL; i++){
-          var cellHTML = cellTpl.getHTML({});
+          var cellHTML = cellTpl.getHTML({}),
+            el = F.newEl('div');
 
-          var el = F.get(document.createElement('div'));
           el.attr('role', 'gridcell');
           el.css({
             height: w.cellHeight + 'px'
@@ -283,7 +287,8 @@
             cellValue: '&nbsp;'
           });
 
-          var el = F.get(document.createElement('div'));
+          var el = F.newEl('div');
+
           el.attr('role', 'gridcell');
           el.css({
             height: w.cellHeight + 'px'
@@ -443,8 +448,8 @@
         key,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         currencySign = column.currency || lang.currencySign,
@@ -633,8 +638,8 @@
         column = columns[i],
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j = 0,
         jL = s.getLength(),
         plusValue = 0;
@@ -707,8 +712,8 @@
         column = columns[i],
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j = 0,
         jL = s.getLength();
 
@@ -766,7 +771,7 @@
         column = columns[i],
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         key = column.index;
@@ -872,7 +877,7 @@
         column = columns[i],
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL;
 
@@ -967,9 +972,7 @@
     clearCls(cell){
       const w = this.widget;
 
-      F.each(w.cellStylingCls, (cls) => {
-        cell.removeCls(cls);
-      });
+      F.each(w.cellStylingCls, cls => cell.removeCls(cls));
     },
     /*
      * @param {Number} i
@@ -984,7 +987,7 @@
         key = column.index,
         columsDom = me.el.select('.' + GRID_COLUMN_CLS),
         columnDom = columsDom.item(i),
-        cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+        cellsDom = columnDom.select(T_CELL),
         j,
         jL;
 
@@ -1049,8 +1052,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL;
 
@@ -1093,8 +1096,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(columnIndex),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         widgetName = 'CheckBox';
@@ -1236,7 +1239,7 @@
         column = columns[i],
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL;
 
@@ -1403,8 +1406,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL;
 
@@ -1469,8 +1472,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         _sparkConfig = column.sparkConfig || {};
@@ -1579,8 +1582,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL;
 
@@ -1663,8 +1666,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL;
 
@@ -1746,8 +1749,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         maxValue = 100;
@@ -1851,8 +1854,8 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDom = columnDom.select(`.${GRID_CELL_CLS}`),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDom = columnDom.select(T_CELL),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         sparkConfig = column.sparkConfig || {},
@@ -2025,7 +2028,7 @@
         key = column.index,
         columnsDom = me.el.select(`.${GRID_COLUMN_CLS}`),
         columnDom = columnsDom.item(i),
-        cellsDomInner = columnDom.select(`.${GRID_CELL_CLS} .${GRID_CELL_INNER_CLS}`),
+        cellsDomInner = columnDom.select(T_CELL_PLUS_INNER),
         j,
         jL,
         cellHeight = w.cellHeight - 4;
@@ -2154,7 +2157,7 @@
 
       for (; i < iL; i++){
         var columnDom = columnsDom.item(i),
-          cellsDom = columnDom.select('.' + GRID_CELL_CLS),
+          cellsDom = columnDom.select(T_CELL),
           j = store.getLength(),
           jL = cellsDom.length;
 
@@ -2333,7 +2336,7 @@
       }
 
       if (s.dataView.length === 0) {
-        const el = F.get(document.createElement('div'));
+        const el = F.newEl('div');
 
         el.addCls(GRID_EMPTY_CLS);
         el.update(w.emptyText);

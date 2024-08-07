@@ -60,7 +60,7 @@
         viewData = w.getDataView(),
         totalHeight = 0;
 
-      F.each(viewData, (item) => {
+      F.each(viewData, item => {
         const id = item.id,
           height = me.rows[id],
           rowIndex = w.getRowById(id),

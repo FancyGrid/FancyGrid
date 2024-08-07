@@ -324,8 +324,7 @@
         }
       }
 
-      cellToRemoveCls.removeCls(GRID_COLUMN_SORT_ASC);
-      cellToRemoveCls.removeCls(GRID_COLUMN_SORT_DESC);
+      cellToRemoveCls.removeCls(GRID_COLUMN_SORT_ASC, GRID_COLUMN_SORT_DESC);
     },
     /*
      *

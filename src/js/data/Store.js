@@ -25,7 +25,7 @@ Fancy.define('Fancy.Store', {
    * @constructor
    */
   constructor: function(){
-    var me = this;
+    const me = this;
 
     me.Super('const', arguments);
     me.init();

@@ -79,7 +79,7 @@ Fancy.modules['menu'] = true;
     theme: 'default',
     render(){
       const me = this,
-        el = Fancy.get(document.createElement('div'));
+        el = Fancy.newEl('div');
 
       let renderTo;
 
@@ -96,7 +96,7 @@ Fancy.modules['menu'] = true;
         me.extraCls
       );
 
-      if(me.width < me.minWidth){
+      if (me.width < me.minWidth) {
         me.width = me.minWidth;
       }
 
@@ -180,38 +180,36 @@ Fancy.modules['menu'] = true;
       for(; i < iL; i++){
         item = me.items[i];
 
-        if(item === '-'){
+        if (item === '-') {
           item = {
             type: 'sep'
           };
         }
 
-        const itemEl = Fancy.get(document.createElement('div'));
+        const itemEl = Fancy.newEl('div');
         itemEl.attr('index', i);
 
         itemEl.addCls(me.itemCls);
-        if(item.type === 'sep'){
+        if (item.type === 'sep') {
           itemEl.addCls(MENU_ITEM_SEP_CLS);
         }
-        else{
+        else {
           itemEl.css('height', me.itemHeight);
         }
         me.el.dom.appendChild(itemEl.dom);
         item.el = itemEl;
 
-        var imageCls = item.imageCls || '';
+        const imageCls = item.imageCls || '';
 
-        if(item.cls){
-          itemEl.addCls(item.cls);
-        }
+        item.cls && itemEl.addCls(item.cls);
 
-        if(item.type !== 'sep' && item.type !== '-'){
-          var text = [
+        if (item.type !== 'sep' && item.type !== '-') {
+          const text = [
             item.image === false ? '' : '<div class="' + MENU_ITEM_IMAGE_CLS + ' ' + imageCls + '"></div>',
             '<div class="' + MENU_ITEM_TEXT_CLS + '"></div>'
           ];
 
-          if(item.sideText){
+          if (item.sideText) {
             text.push('<div class="' + MENU_ITEM_SIDE_TEXT_CLS + '">' + item.sideText + '</div>');
           }
 
@@ -220,11 +218,11 @@ Fancy.modules['menu'] = true;
           itemEl.update(text.join(''));
         }
 
-        if (item.image === false){
+        if (item.image === false) {
           itemEl.addCls(MENU_ITEM_NO_IMAGE_CLS);
         }
 
-        if(item.disabled === true){
+        if (item.disabled === true) {
           itemEl.addCls(MENU_ITEM_DISABLED_CLS);
         }
 

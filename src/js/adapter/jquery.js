@@ -210,32 +210,31 @@ Fancy.Element.prototype = {
     return this.$dom.find(`.${cls}`)[0];
   },
   /*
-   * @param {String} cls
+   * @param {...String} args
    */
-  addClass(cls){
-    this.addCls.apply(this, arguments);
+  addClass(...args){
+    this.addCls.apply(this, args);
   },
   /*
    * @param {String} cls
    */
   addCls(cls, ...args){
     this.$dom.addClass(cls);
-
-    args.forEach(arg => {
-      this.$dom.addClass(arg);
-    });
+    args.forEach(arg => this.$dom.addClass(arg));
   },
   /*
    * @param {String} cls
    */
-  removeClass(cls){
+  removeClass(cls, ...args){
     this.$dom.removeClass(cls);
+    args.forEach(arg => this.$dom.removeClass(arg));
   },
   /*
    * @param {String} cls
    */
-  removeCls(cls){
+  removeCls(cls, ...args){
     this.$dom.removeClass(cls);
+    args.forEach(arg => this.$dom.removeClass(arg));
   },
   /*
    * @param {String} cls
@@ -850,10 +849,10 @@ Fancy.Elements.prototype = {
     return dom.attr(o1, o2);
   },
   /*
-   * @param {String} cls
+   * @param {...String} args
    */
-  addClass(cls){
-    this.addCls.apply(this, arguments);
+  addClass(...args){
+    this.addCls.apply(this, args);
   },
   /*
    *
@@ -868,7 +867,7 @@ Fancy.Elements.prototype = {
     }
   },
   /*
-   * @param {String} cls
+   * @param {...String} args
    */
   addCls(cls){
     var me = this,
@@ -933,8 +932,8 @@ Fancy.Elements.prototype = {
    * @return {String|Number}
    */
   css(o1, o2){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -945,8 +944,8 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   toggleClass(cls){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -957,8 +956,8 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   toggleCls(cls){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -969,8 +968,8 @@ Fancy.Elements.prototype = {
    *
    */
   destroy(){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){

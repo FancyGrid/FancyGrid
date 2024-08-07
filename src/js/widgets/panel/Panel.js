@@ -108,7 +108,7 @@
     render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body),
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         minusHeight = 0,
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;

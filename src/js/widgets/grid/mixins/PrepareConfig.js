@@ -1563,12 +1563,12 @@ Fancy.Mixin('Fancy.grid.mixin.PrepareConfig', {
       isGrouped = false,
       _columns = [];
 
-    Fancy.each(columns, (column) => {
-      if(column.columns){
+    columns.forEach(column => {
+      if (column.columns) {
         isGrouped = true;
         groups.push(column);
       }
-    });
+    })
 
     if(isGrouped){
       i = 0;

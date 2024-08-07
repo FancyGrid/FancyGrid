@@ -7,9 +7,7 @@ Fancy.modules['selection'] = true;
   //SHORTCUTS
   const F = Fancy;
 
-  /*
-   * CONSTANTS
-   */
+  //CONSTANTS
   const GRID_CELL_CLS = F.GRID_CELL_CLS;
   const GRID_CELL_OVER_CLS = F.GRID_CELL_OVER_CLS;
   const GRID_CELL_SELECTED_CLS = F.GRID_CELL_SELECTED_CLS;
@@ -19,7 +17,6 @@ Fancy.modules['selection'] = true;
   const GRID_COLUMN_SELECT_CLS = F.GRID_COLUMN_SELECT_CLS;
   const GRID_COLUMN_SELECTED_CLS = F.GRID_COLUMN_SELECTED_CLS;
   const GRID_ROW_OVER_CLS = F.GRID_ROW_OVER_CLS;
-  const GRID_HEADER_CLS = F.GRID_HEADER_CLS;
   const GRID_HEADER_CELL_SELECT_CLS = F.GRID_HEADER_CELL_SELECT_CLS;
   const GRID_HEADER_CELL_TEXT_CLS = F.GRID_HEADER_CELL_TEXT_CLS;
   const GRID_COLUMN_TREE_EXPANDER_CLS = F.GRID_COLUMN_TREE_EXPANDER_CLS;
@@ -29,6 +26,10 @@ Fancy.modules['selection'] = true;
   const FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
   const GRID_COPY_TEXTAREA = F.GRID_COPY_TEXTAREA;
   const FIELD_CHECKBOX_MIDDLE_CLS = F.FIELD_CHECKBOX_MIDDLE_CLS;
+
+  //TEMPLATES
+  const T_CELL_SELECTED = `.${GRID_CELL_SELECTED_CLS}`;
+  const T_CELL_ACTIVE = `.${GRID_CELL_ACTIVE_CLS}`;
 
   F.define('Fancy.grid.plugin.Selection', {
     extend: F.Plugin,
@@ -61,13 +62,13 @@ Fancy.modules['selection'] = true;
 
       me.Super('init', arguments);
 
-      if (me.memory){
+      if (me.memory) {
         me.initMemory();
       }
 
       me.ons();
 
-      if(me.activeCell){
+      if(me.activeCell) {
         w.once('init', () => w.el.addCls(GRID_ACTIVE_CELL_ENABLED));
       }
     },
@@ -194,11 +195,11 @@ Fancy.modules['selection'] = true;
             }
           }
 
-          if(child){
+          if (child) {
             var allSelectedChilds = 0;
 
-            F.each(child, function(_child){
-              var id = _child.id;
+            F.each(child, _child => {
+              const id = _child.id;
 
               if(!id){
                 return true;
@@ -267,17 +268,15 @@ Fancy.modules['selection'] = true;
         },
         clearChild(child){
           F.Array.each(child, (item) => {
-            var id = item.id;
+            const id = item.id;
 
             if(me.memory.tree.selectedLength[id]){
               me.memory.selected[id] = true;
               delete me.memory.tree.allSelected[id];
               delete me.memory.tree.selected[id];
               delete me.memory.tree.selectedLength[id];
-              var _child = item.get('child');
-              if(_child){
-                me.memory.clearChild(_child);
-              }
+              const _child = item.get('child');
+              _child && me.memory.clearChild(_child);
             }
           });
         },
@@ -324,27 +323,20 @@ Fancy.modules['selection'] = true;
           me.memory.clearAll();
 
           const filteredData = w.getDataFiltered();
-          F.each(filteredData, (item) => {
-            me.memory.add(item.id);
-          });
+          F.each(filteredData, item => me.memory.add(item.id));
         },
         add(id){
           const item = w.getById(id);
 
-          if(item){
-            item.set('$selected', true);
-          }
+          item && item.set('$selected', true);
+          me.row && me.memory.clearAll();
 
-          if(me.row){
-            me.memory.clearAll();
-          }
-
-          if(!me.memory.selected[id]){
+          if (!me.memory.selected[id]) {
             me.memory.selected[id] = item.data;
             me.memory.selectedLength++;
           }
 
-          if(me.memory.excepted[id] === true){
+          if (me.memory.excepted[id] === true) {
             delete me.memory.excepted[id];
             me.memory.exceptedLength--;
           }
@@ -352,12 +344,10 @@ Fancy.modules['selection'] = true;
         remove(id){
           const item = w.getById(id);
 
-          if (item){
-            item.set('$selected', false);
-          }
+          item && item.set('$selected', false);
 
           //if(me.memory.selected[id] === true){
-          if(me.memory.selected[id]){
+          if (me.memory.selected[id]) {
             delete me.memory.selected[id];
             me.memory.selectedLength--;
           }
@@ -371,7 +361,7 @@ Fancy.modules['selection'] = true;
 
           const total = w.getTotal();
 
-          if(me.memory.exceptedLength === total){
+          if (me.memory.exceptedLength === total) {
             me.memory.clearAll();
           }
         },
@@ -509,9 +499,7 @@ Fancy.modules['selection'] = true;
 
       const rowCells = w.getDomRow(params.rowIndex);
 
-      F.each(rowCells, (cell) =>{
-        F.get(cell).addCls(GRID_ROW_OVER_CLS);
-      });
+      F.each(rowCells, cell  => F.get(cell).addCls(GRID_ROW_OVER_CLS));
 
       w.fire('rowtrackenter', params);
     },
@@ -536,9 +524,7 @@ Fancy.modules['selection'] = true;
 
       const rowCells = w.getDomRow(params.rowIndex);
 
-      F.each(rowCells, (cell) => {
-        F.get(cell).removeCls(GRID_ROW_OVER_CLS);
-      });
+      F.each(rowCells, cell => F.get(cell).removeCls(GRID_ROW_OVER_CLS));
 
       w.fire('rowtrackleave', params);
     },
@@ -555,7 +541,7 @@ Fancy.modules['selection'] = true;
     onLoad(){
       const me = this;
 
-      if (me.memory){
+      if (me.memory) {
         return;
       }
 
@@ -608,49 +594,49 @@ Fancy.modules['selection'] = true;
         treeMemory = s.isTree && me.memory,
         docEl = F.get(document.body);
 
-      if(w._preventTouchDown){
+      if (w._preventTouchDown) {
         delete w._preventTouchDown;
         return;
       }
 
-      if(me.stopOneTick){
+      if (me.stopOneTick) {
         delete me.stopOneTick;
       }
 
-      if(me.checkOnly && !F.get(params.e.target).hasClass(FIELD_CHECKBOX_INPUT_CLS)){
-        if(me.activeCell){
+      if (me.checkOnly && !F.get(params.e.target).hasClass(FIELD_CHECKBOX_INPUT_CLS)) {
+        if (me.activeCell) {
           me.clearActiveCell();
           F.get(params.cell).addCls(GRID_CELL_ACTIVE_CLS);
         }
         return;
       }
 
-      if(me.disabled){
+      if (me.disabled) {
         return;
       }
 
-      if(me.selectLeafsOnly){
-        if(!params.data.leaf){
+      if (me.selectLeafsOnly) {
+        if (!params.data.leaf) {
           me.stopOneTick = true;
           return;
         }
       }
 
-      if (!me.rows || !me.enabled){
+      if (!me.rows || !me.enabled) {
         return;
       }
 
-      if (me.checkOnly && (params.column.index !== '$selected' && !params.column.select)){
+      if (me.checkOnly && (params.column.index !== '$selected' && !params.column.select)) {
         return;
       }
 
-      if(column.type === 'tree'){
+      if (column.type === 'tree') {
         if(targetEl.hasCls(GRID_COLUMN_TREE_EXPANDER_CLS)){
           return;
         }
       }
 
-      if(!me.selectLeafsOnly && !params.data.leaf && targetEl.hasClass(FIELD_CHECKBOX_INPUT_CLS)){
+      if (!me.selectLeafsOnly && !params.data.leaf && targetEl.hasClass(FIELD_CHECKBOX_INPUT_CLS)) {
         const checkBox = F.getWidget(targetEl.parent().parent().attr('id')),
           value = !checkBox.get();
 
@@ -668,13 +654,13 @@ Fancy.modules['selection'] = true;
       const rowIndex = params.rowIndex,
         rowCells = w.getDomRow(rowIndex);
 
-      if ((isCTRL || me.allowDeselect) && w.multiSelect){
-        if (F.get(rowCells[0]).hasCls(GRID_CELL_SELECTED_CLS)){
+      if ((isCTRL || me.allowDeselect) && w.multiSelect) {
+        if (F.get(rowCells[0]).hasCls(GRID_CELL_SELECTED_CLS)) {
           me.domDeSelectRow(rowIndex);
           if (me.checkboxRow) {
             me.deSelectCheckBox(rowIndex);
           }
-          if(treeMemory){
+          if (treeMemory) {
             me.memory.removeDirtyParent(params.id, params.data.parentId);
             docEl.once('mouseup', () => {
               setTimeout(() => me.updateSelectCheckBoxes(), 100);
@@ -683,17 +669,18 @@ Fancy.modules['selection'] = true;
         }
         else {
           me.domSelectRow(rowIndex);
-          if (me.checkboxRow){
+          if (me.checkboxRow) {
             me.selectCheckBox(rowIndex);
           }
-          if(treeMemory){
+
+          if (treeMemory) {
             me.memory.addDirtyParent(params.id, params.data.parentId);
           }
         }
       }
       else {
         if (params.column.index === '$selected' || params.column.select){
-          const checkbox = F.getWidget(F.get(params.cell).select('.' + FIELD_CHECKBOX_CLS).attr('id'));
+          const checkbox = F.getWidget(F.get(params.cell).select(`.${FIELD_CHECKBOX_CLS}`).attr('id'));
 
           if (checkbox.el.within(target)){
             if (checkbox.get() === true){
@@ -825,9 +812,9 @@ Fancy.modules['selection'] = true;
 
       rowCells = w.getDomRow(rowIndex);
 
-      F.each(rowCells, (cell) => {
+      F.each(rowCells, cell => {
         cell = F.get(cell);
-        if(cell.hasClass(GRID_CELL_SELECTED_CLS)){
+        if (cell.hasClass(GRID_CELL_SELECTED_CLS)) {
           selected = true;
         }
         else {
@@ -835,7 +822,7 @@ Fancy.modules['selection'] = true;
         }
       });
 
-      if(selected === false){
+      if (selected === false) {
         w.fire('selectrow', rowIndex, w.get(rowIndex));
       }
     },
@@ -854,7 +841,7 @@ Fancy.modules['selection'] = true;
         id = s.get(rowIndex, 'id'),
         selected = true;
 
-      if (me.memory){
+      if (me.memory) {
         if(!w.filtering && !me.deselectingAll && !w.draggingRows && !w.sorting){
           me.memory.remove(id);
         }
@@ -866,10 +853,10 @@ Fancy.modules['selection'] = true;
 
       rowCells = w.getDomRow(rowIndex);
 
-      F.each(rowCells, (cell) => {
+      F.each(rowCells, cell => {
         cell = F.get(cell);
 
-        if(cell.hasClass(GRID_CELL_SELECTED_CLS)){
+        if (cell.hasClass(GRID_CELL_SELECTED_CLS)) {
           cell.removeCls(GRID_CELL_SELECTED_CLS);
         }
         else {
@@ -877,7 +864,7 @@ Fancy.modules['selection'] = true;
         }
       });
 
-      if(selected){
+      if (selected) {
         w.fire('deselectrow', rowIndex, w.get(rowIndex));
       }
     },
@@ -889,7 +876,7 @@ Fancy.modules['selection'] = true;
       const me = this,
         w = me.widget;
 
-      if (!me.columns || me.isMouseDown !== true){
+      if (!me.columns || me.isMouseDown !== true) {
         return;
       }
 
@@ -1054,11 +1041,11 @@ Fancy.modules['selection'] = true;
           break;
       }
 
-      var columnEl = body.el.select('.' + GRID_COLUMN_CLS + '[index="' + columnIndex + '"][grid="' + w.id + '"]'),
-        selectedCells = columnEl.select('.' + GRID_CELL_SELECTED_CLS),
+      const columnEl = body.el.select(`.${GRID_COLUMN_CLS}[index="${columnIndex}"][grid="${w.id}"]`),
+        selectedCells = columnEl.select(T_CELL_SELECTED),
         selectedRows = {};
 
-      selectedCells.each((cell) => {
+      selectedCells.each(cell => {
         selectedRows[Number(cell.attr('index'))] = true;
       });
 
@@ -1070,7 +1057,7 @@ Fancy.modules['selection'] = true;
     getSelectedRow(){
       const w = this.widget,
         body = w.body,
-        selectedCells = body.el.select('.' + GRID_CELL_SELECTED_CLS);
+        selectedCells = body.el.select(T_CELL_SELECTED);
 
       if (selectedCells.length === 0){
         return -1;
@@ -1085,7 +1072,7 @@ Fancy.modules['selection'] = true;
       const w = this.widget,
         body = w.body,
         columnEl = body.el.select('.' + GRID_COLUMN_CLS + '[index="0"][grid="' + w.id + '"]'),
-        selectedCells = columnEl.select('.' + GRID_CELL_SELECTED_CLS),
+        selectedCells = columnEl.select(T_CELL_SELECTED),
         rows = [];
 
       selectedCells.each(function(cell){
@@ -1411,24 +1398,24 @@ Fancy.modules['selection'] = true;
       if (side){
         switch (side){
           case 'left':
-            w.leftBody.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+            w.leftBody.el.select(T_CELL_SELECTED).removeCls(GRID_CELL_SELECTED_CLS);
             w.leftBody.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
             w.leftBody.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
             break;
           case 'center':
-            w.body.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+            w.body.el.select(T_CELL_SELECTED).removeCls(GRID_CELL_SELECTED_CLS);
             w.body.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
             w.body.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
             break;
           case 'right':
-            w.rightBody.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+            w.rightBody.el.select(T_CELL_SELECTED).removeCls(GRID_CELL_SELECTED_CLS);
             w.rightBody.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
             w.rightBody.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
             break;
         }
       }
       else {
-        w.el.select('.' + GRID_CELL_SELECTED_CLS).removeCls(GRID_CELL_SELECTED_CLS);
+        w.el.select(T_CELL_SELECTED).removeCls(GRID_CELL_SELECTED_CLS);
         w.el.select('.' + GRID_COLUMN_SELECTED_CLS).removeCls(GRID_COLUMN_SELECTED_CLS);
         w.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
       }
@@ -1678,11 +1665,11 @@ Fancy.modules['selection'] = true;
         document.activeElement.blur();
       }
 
-      var cellEl = F.get(params.cell);
+      const cellEl = F.get(params.cell);
 
       me.clearSelection();
 
-      w.el.select('.' + GRID_CELL_ACTIVE_CLS).removeCls(GRID_CELL_ACTIVE_CLS);
+      w.el.select(T_CELL_ACTIVE).removeCls(GRID_CELL_ACTIVE_CLS);
       cellEl.addCls(GRID_CELL_SELECTED_CLS, GRID_CELL_ACTIVE_CLS);
       me.isMouseDown = true;
       me.startCellSelection = params.cell;
@@ -1813,11 +1800,11 @@ Fancy.modules['selection'] = true;
      * @param {String} side
      * @return {Array}
      */
-    getSelectedCells(side){
+    getSelectedCells(side = 'center'){
       var me = this,
         w = me.widget,
-        body = w.getBody(side || 'center'),
-        selectedCells = body.el.select('.' + GRID_CELL_SELECTED_CLS),
+        body = w.getBody(side),
+        selectedCells = body.el.select(T_CELL_SELECTED),
         selected = {},
         i = 0,
         iL = selectedCells.length;
@@ -1837,7 +1824,7 @@ Fancy.modules['selection'] = true;
      * @return {Array}
      */
     getNumberSelectedCells(){
-      return this.widget.el.select('.' + GRID_CELL_SELECTED_CLS).length;
+      return this.widget.el.select(T_CELL_SELECTED).length;
     },
     /*
      * @param {String} side
@@ -1995,7 +1982,7 @@ Fancy.modules['selection'] = true;
         case 'cells':
           model.items = me.getSelectedData();
           if(returnModel){
-            var cells = w.el.select('.' + GRID_CELL_SELECTED_CLS);
+            var cells = w.el.select(T_CELL_SELECTED);
             if (cells.length > 1){
               model.nodes = [];
               F.each(cells.dom, function(cellDom){
@@ -2013,7 +2000,7 @@ Fancy.modules['selection'] = true;
         case 'cell':
           model.items = me.getSelectedData();
           if(returnModel){
-            var cell = w.el.select('.' + GRID_CELL_SELECTED_CLS);
+            var cell = w.el.select(T_CELL_SELECTED);
             if (cell.length){
               model.nodes = [this.getNodeInfo(cell)];
             }
@@ -2237,8 +2224,7 @@ Fancy.modules['selection'] = true;
       const me = this,
         w = me.widget,
         total = w.getTotal(),
-        headerCheckBoxEls = w.el.select('.' + GRID_HEADER_CELL_SELECT_CLS + ' .' + FIELD_CHECKBOX_CLS);
-      //headerCheckBoxEls = w.el.select('.' + GRID_HEADER_CLS + ' .' + FIELD_CHECKBOX_CLS);
+        headerCheckBoxEls = w.el.select(`.${GRID_HEADER_CELL_SELECT_CLS} .${FIELD_CHECKBOX_CLS}`);
 
       headerCheckBoxEls.each((item) => {
         const checkBox = F.getWidget(item.attr('id'));
@@ -2592,12 +2578,12 @@ Fancy.modules['selection'] = true;
      *
      */
     getActiveCell(){
-      var me = this,
+      let me = this,
         w = me.widget,
-        cell = w.el.select('.' + GRID_CELL_ACTIVE_CLS);
+        cell = w.el.select(T_CELL_ACTIVE);
 
       if(!cell.dom){
-        cell = w.el.select('.' + GRID_CELL_SELECTED_CLS);
+        cell = w.el.select(T_CELL_SELECTED);
 
         if(!cell.dom){
           cell = w.body.getCell(0, 0);
@@ -2641,11 +2627,7 @@ Fancy.modules['selection'] = true;
      *
      */
     clearActiveCell(){
-      const me = this,
-        w = me.widget,
-        cell = w.el.select('.' + GRID_CELL_ACTIVE_CLS);
-
-      cell.removeCls(GRID_CELL_ACTIVE_CLS);
+      this.widget.el.select(T_CELL_ACTIVE).removeCls(GRID_CELL_ACTIVE_CLS);
     },
     /*
      *
@@ -2653,7 +2635,7 @@ Fancy.modules['selection'] = true;
     initCopyEl(){
       const me = this,
         w = me.widget,
-        el = F.get(document.createElement('textarea'));
+        el = F.newEl('textarea');
 
       el.addCls(GRID_COPY_TEXTAREA);
       el.attr('aria-hidden', 'true');
@@ -2675,7 +2657,7 @@ Fancy.modules['selection'] = true;
           var data = me.getSelectedData(copyHeader);
           var dataStr = '';
 
-          F.each(data, function(dataItem){
+          F.each(data, dataItem => {
             dataStr += dataItem.join('\t') + '\n';
           });
 
@@ -2688,9 +2670,9 @@ Fancy.modules['selection'] = true;
           var dataStr = '';
 
           if(copyHeader){
-            var itemData = [];
-            F.each(columns, (column) => {
-              switch(column.index){
+            const itemData = [];
+            F.each(columns, column => {
+              switch (column.index) {
                 case '$selected':
                 case '$rowdrag':
                   return;
@@ -2802,21 +2784,13 @@ Fancy.modules['selection'] = true;
             }
           };
 
-          if(w.leftColumns){
-            getSideData('left');
-          }
-
-          if(w.columns){
-            getSideData('center');
-          }
-
-          if(w.rightColumns){
-            getSideData('right');
-          }
+          w.leftColumns && getSideData('left');
+          w.columns && getSideData('center');
+          w.rightColumns && getSideData('right');
 
           var dataStr = '';
 
-          F.each(data, (dataItem) =>{
+          F.each(data, dataItem => {
             dataStr += dataItem.join('\t') + '\n';
           });
 
@@ -2913,7 +2887,7 @@ Fancy.modules['selection'] = true;
         info = me.getActiveCellInfo();
       }
       else{
-        const firstSelectedCell = w.el.select('.' + Fancy.GRID_CELL_SELECTED_CLS).item(0);
+        const firstSelectedCell = w.el.select(T_CELL_SELECTED).item(0);
         info = me.getActiveCellInfo(firstSelectedCell);
       }
 
@@ -2950,7 +2924,7 @@ Fancy.modules['selection'] = true;
         info = me.getActiveCellInfo();
       }
       else{
-        const firstSelectedCell = w.el.select('.' + Fancy.GRID_CELL_SELECTED_CLS).item(0);
+        const firstSelectedCell = w.el.select(T_CELL_SELECTED).item(0);
         info = me.getActiveCellInfo(firstSelectedCell);
       }
 
@@ -2988,17 +2962,15 @@ Fancy.modules['selection'] = true;
         rows.pop();
       }
 
-      F.each(rows, (row) =>{
+      F.each(rows, row  => {
         var dataRow = [],
           cells = row.split('\t');
 
-        if(cells.length === 1){
+        if (cells.length === 1) {
           cells = row.split('    ');
         }
 
-        F.each(cells, (cell) =>{
-          dataRow.push(cell);
-        });
+        F.each(cells, cell => dataRow.push(cell));
 
         data.push(dataRow);
       });
@@ -3009,7 +2981,7 @@ Fancy.modules['selection'] = true;
      *
      */
     onColumnDrag(){
-      var me = this;
+      const me = this;
 
       setTimeout(() => {
         me.renderHeaderCheckBox();
@@ -3115,7 +3087,7 @@ Fancy.modules['selection'] = true;
       const me = this,
         w = me.widget;
 
-      w.el.select('.' + GRID_CELL_OVER_CLS).removeCls(GRID_CELL_OVER_CLS);
+      w.el.select(`.${GRID_CELL_OVER_CLS}`).removeCls(GRID_CELL_OVER_CLS);
     },
     /*
      *
@@ -3131,7 +3103,7 @@ Fancy.modules['selection'] = true;
     onRemoveRows(){
       const me = this;
 
-      if(me.rows){
+      if (me.rows) {
         clearInterval(me._interval);
 
         me._interval = setTimeout(() => {
@@ -3147,7 +3119,7 @@ Fancy.modules['selection'] = true;
       const me = this,
         w = me.widget;
 
-      if(!me.memory){
+      if (!me.memory) {
         w.clearSelection();
       }
       else{
@@ -3162,7 +3134,7 @@ Fancy.modules['selection'] = true;
       const me = this,
         w = me.widget;
 
-      if(!me.memory){
+      if (!me.memory) {
         w.clearSelection();
       }
       else{
@@ -3179,15 +3151,15 @@ Fancy.modules['selection'] = true;
         s = w.store,
         body = w.body;
 
-      if(!me.memory){
-        if(w.infinite){
-          switch(me.selModel){
+      if (!me.memory) {
+        if (w.infinite) {
+          switch (me.selModel) {
             case 'row':
             case 'rows':
-              const selectedDomRows = body.el.select('.' + GRID_COLUMN_CLS + '[index="0"] .' + GRID_CELL_SELECTED_CLS);
+              const selectedDomRows = body.el.select(`.${GRID_COLUMN_CLS}[index="0"] .${GRID_CELL_SELECTED_CLS}`);
 
-              selectedDomRows.each((el) => {
-                var rowIndex = el.attr('index');
+              selectedDomRows.each(el => {
+                const rowIndex = el.attr('index');
 
                 me.domDeSelectRow(rowIndex);
               });
@@ -3267,9 +3239,9 @@ Fancy.modules['selection'] = true;
         const rowIndex = w.getRowById(id),
           checkboxEls = w.el.select('.' + GRID_COLUMN_SELECT_CLS + ' .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]' + ' .' + FIELD_CHECKBOX_CLS);
 
-        if(me.memory.tree.allSelected[id]){
-          checkboxEls.each((el) =>{
-            var _id = el.attr('id'),
+        if (me.memory.tree.allSelected[id]) {
+          checkboxEls.each(el => {
+            const _id = el.attr('id'),
               checkBox = F.getWidget(_id);
 
             setTimeout(() => {
@@ -3292,13 +3264,13 @@ Fancy.modules['selection'] = true;
 
       const middleCheckBoxes = w.el.select('.' + GRID_COLUMN_CLS + '.' + GRID_COLUMN_SELECT_CLS + ' .' + FIELD_CHECKBOX_MIDDLE_CLS);
 
-      middleCheckBoxes.each((el) => {
-        var cell = el.closest('.' + GRID_CELL_CLS),
+      middleCheckBoxes.each(el => {
+        const cell = el.closest(`.${GRID_CELL_CLS}`),
           rowIndex = cell.attr('index'),
           id = w.get(rowIndex, 'id'),
           checkBox = F.getWidget(el.attr('id'));
 
-        if(!me.memory.tree.selected[id]){
+        if (!me.memory.tree.selected[id]) {
           checkBox.setMiddle(false);
           if(!me.memory.tree.allSelected[id]){
             checkBox.set(false, false);
@@ -3308,7 +3280,7 @@ Fancy.modules['selection'] = true;
           }
         }
 
-        if(me.memory.tree.allSelected[id]){
+        if (me.memory.tree.allSelected[id]) {
           setTimeout(() => {
             checkBox.set(true, false);
             checkBox.setMiddle(false);
@@ -3320,7 +3292,7 @@ Fancy.modules['selection'] = true;
           //me.domDeSelectRow(rowIndex);
         }
 
-        if(checkBox.hasCls(FIELD_CHECKBOX_ON_CLS)){
+        if (checkBox.hasCls(FIELD_CHECKBOX_ON_CLS)) {
           checkBox.removeCls(FIELD_CHECKBOX_MIDDLE_CLS);
           me.domSelectRow(rowIndex);
           me.memory.add(id);

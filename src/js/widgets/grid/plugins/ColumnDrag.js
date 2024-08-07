@@ -21,6 +21,9 @@ Fancy.modules['column-drag'] = true;
   const FIELD_TEXT_INPUT_CLS = F.FIELD_TEXT_INPUT_CLS;
   const FIELD_CHECKBOX_INPUT_CLS = F.FIELD_CHECKBOX_INPUT_CLS;
 
+  //TEMPLATES
+  const T_DIV_GRID_HEADER_CELL = `div.${GRID_HEADER_CELL_CLS}`;
+
   F.define('Fancy.grid.plugin.ColumnDrag', {
     extend: F.Plugin,
     ptype: 'grid.columndrag',
@@ -61,7 +64,7 @@ Fancy.modules['column-drag'] = true;
       const me = this,
         w = me.widget;
 
-      w.el.on('mousedown', me.onMouseDownCell, me, `div.${GRID_HEADER_CELL_CLS}`);
+      w.el.on('mousedown', me.onMouseDownCell, me, T_DIV_GRID_HEADER_CELL);
     },
     onMouseDownCell(e){
       const me = this,
@@ -73,19 +76,19 @@ Fancy.modules['column-drag'] = true;
         column = columns[index],
         targetEl = F.get(e.target);
 
-      if(column && column.titleEditable){
+      if (column && column.titleEditable) {
         return;
       }
 
-      if(targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_CLS) || targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)){
+      if (targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_CLS) || targetEl.hasCls(GRID_HEADER_CELL_TRIGGER_IMAGE_CLS)) {
         return;
       }
 
-      if(targetEl.hasCls(FIELD_TEXT_INPUT_CLS) || targetEl.hasCls(FIELD_CHECKBOX_INPUT_CLS)){
+      if (targetEl.hasCls(FIELD_TEXT_INPUT_CLS) || targetEl.hasCls(FIELD_CHECKBOX_INPUT_CLS)) {
         return;
       }
 
-      if(cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)){
+      if (cell.hasCls(GRID_HEADER_CELL_GROUP_LEVEL_2_CLS)) {
         //TODO: write realization
         me.activeCellTopGroup = me.getGroupStartEnd(cell, side);
         me.activeCellTopGroup.cell = cell;
@@ -118,8 +121,8 @@ Fancy.modules['column-drag'] = true;
       DOC.on('mousemove', me.onMouseMove, me);
 
       w.el.on('mouseleave', me.onMouseLeave, me);
-      w.el.on('mouseenter', me.onMouseEnterCell, me, `div.${GRID_HEADER_CELL_CLS}`);
-      w.el.on('mousemove', me.onMouseMoveCell, me, `div.${GRID_HEADER_CELL_CLS}`);
+      w.el.on('mouseenter', me.onMouseEnterCell, me, T_DIV_GRID_HEADER_CELL);
+      w.el.on('mousemove', me.onMouseMoveCell, me, T_DIV_GRID_HEADER_CELL);
     },
     /*
      *
@@ -139,10 +142,10 @@ Fancy.modules['column-drag'] = true;
       DOC.un('mousemove', me.onMouseMove, me);
 
       w.el.un('mouseleave', me.onMouseLeave, me);
-      w.el.un('mouseenter', me.onMouseEnterCell, me, `div.${GRID_HEADER_CELL_CLS}`);
-      w.el.un('mousemove', me.onMouseMoveCell, me, `div.${GRID_HEADER_CELL_CLS}`);
+      w.el.un('mouseenter', me.onMouseEnterCell, me, T_DIV_GRID_HEADER_CELL);
+      w.el.un('mousemove', me.onMouseMoveCell, me, T_DIV_GRID_HEADER_CELL);
 
-      if(me.ok){
+      if (me.ok) {
         me.fire('beforecolumndrag');
 
         if(me.inSide === me.activeSide){
@@ -573,8 +576,8 @@ Fancy.modules['column-drag'] = true;
         w = me.widget,
         themeCls = Fancy.getThemeCSSCls(w.theme),
         renderTo = F.get(document.body).dom,
-        topEl = F.get(document.createElement('div')),
-        bottomEl = F.get(document.createElement('div'));
+        topEl = F.newEl('div'),
+        bottomEl = F.newEl('div');
 
       topEl.addCls('fancy-drag-hint-top', HIDDEN_CLS, themeCls);
       bottomEl.addCls('fancy-drag-hint-bottom', HIDDEN_CLS, themeCls);

@@ -25,12 +25,9 @@ Fancy.Array = {
     return newArray;
   },
   each(arr, fn){
-    let i = 0,
-      iL = arr.length;
-
-    for(;i<iL;i++){
-      fn(arr[i], i);
-    }
+    arr.forEach((el, i) => {
+      fn(el, i);
+    });
   },
   /*
    * @param {Array} values

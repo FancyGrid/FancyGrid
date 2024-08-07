@@ -105,7 +105,7 @@
         w = me.widget,
         columns = me.getColumns(),
         renderTo,
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         html = '',
         i = 0,
         iL = columns.length,
@@ -637,8 +637,7 @@
      * @param {Number} index
      * @return {Fancy.Element}
      */
-    getDomCell(index){
-      //return this.el.select('.' + GRID_HEADER_CELL_CLS).item(index);
+    getDomCell(index) {
       return this.getCells().item(index);
     },
     /*
@@ -1413,8 +1412,7 @@
           }
 
           const checkBox = F.getWidget(checkBoxEl.item(0).attr('id'));
-          cell.removeCls(GRID_HEADER_CELL_CHECKBOX_CLS);
-          cell.removeCls(GRID_HEADER_CELL_SELECT_CLS);
+          cell.removeCls(GRID_HEADER_CELL_CHECKBOX_CLS, GRID_HEADER_CELL_SELECT_CLS);
           switch(column.type){
             case 'select':
               cell.addCls(GRID_HEADER_CELL_SELECT_CLS);

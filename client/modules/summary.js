@@ -19,7 +19,11 @@ Fancy.modules['summary'] = true;
   const GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS = F.GRID_COLUMN_SPARK_PROGRESS_DONUT_CLS;
   const GRID_COLUMN_GROSSLOSS_CLS = F.GRID_COLUMN_GROSSLOSS_CLS;
 
-  const ANIMATE_DURATION = F.ANIMATE_DURATION;
+  //TEMPLATES
+  const T_CELL = `.${GRID_CELL_CLS}`;
+
+  //TEMPLATES
+  //T_GRID_HEADER_CELL
 
   F.define('Fancy.grid.plugin.Summary', {
     extend: F.Plugin,
@@ -165,10 +169,10 @@ Fancy.modules['summary'] = true;
         w = me.widget,
         cellHeight = w.cellHeight,
         columnsWidth = w.getColumnsWidth(side),
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         cells = '';
 
-      F.each(w.getColumns(side), function(column, i){
+      F.each(w.getColumns(side), (column, i) => {
         cells += [
           '<div index="' + i + '" style="width:' + column.width + 'px;height:' + cellHeight + 'px;'+(column.cellAlign? 'text-align:' + column.cellAlign + ';': '') +'" class="' + GRID_CELL_CLS + '">',
             '<div class="' + GRID_CELL_INNER_CLS + '"></div>',
@@ -184,11 +188,9 @@ Fancy.modules['summary'] = true;
 
       el.update(inner);
 
-      el.css('width', columnsWidth + 'px');
+      el.css('width', columnsWidth +'px');
       el.addCls(GRID_ROW_SUMMARY_CONTAINER_CLS);
-      if (me.position === 'bottom'){
-        el.addCls(GRID_ROW_SUMMARY_BOTTOM_CLS);
-      }
+      me.position === 'bottom' && el.addCls(GRID_ROW_SUMMARY_BOTTOM_CLS);
 
       return el;
     },
@@ -219,13 +221,8 @@ Fancy.modules['summary'] = true;
         w = me.widget;
 
       me.updateSide('center');
-      if (w.leftColumns.length) {
-        me.updateSide('left');
-      }
-
-      if (w.rightColumns.length) {
-        me.updateSide('right');
-      }
+      w.leftColumns.length && me.updateSide('left');
+      w.rightColumns.length && me.updateSide('right');
 
       if (me.striped && me.position === 'bottom') {
         const cells = w.el.select(`.${GRID_ROW_SUMMARY_BOTTOM_CLS} .${GRID_CELL_CLS}`);
@@ -264,15 +261,15 @@ Fancy.modules['summary'] = true;
         lang = w.lang,
         body = w.getBody(side),
         s = w.store,
-        cellInners = me.getEl(side).select('.' + GRID_CELL_INNER_CLS),
+        cellInners = me.getEl(side).select(`.${GRID_CELL_INNER_CLS}`),
         dataProperty = 'data';
 
       if (me.sumDisplayed) {
         dataProperty = 'dataView';
       }
 
-      F.each(w.getColumns(side), function(column, i){
-        if (!column.summary){
+      F.each(w.getColumns(side), (column, i) => {
+        if (!column.summary) {
           cellInners.item(i).update('');
           return;
         }
@@ -283,7 +280,9 @@ Fancy.modules['summary'] = true;
             dataProperty: dataProperty
           }),
           value = '',
-          cell = cellInners.item(i).parent();
+          cell = cellInners.item(i).parent(),
+          sparkConfig = {},
+          _sparkConfig = {};
 
         switch (F.typeOf(column.summary)) {
           case 'string':
@@ -357,8 +356,8 @@ Fancy.modules['summary'] = true;
                 break;
             }
 
-            const _sparkConfig = column.sparkConfig || {};
-            let sparkConfig = {
+            _sparkConfig = column.sparkConfig || {};
+            sparkConfig = {
               type: type,
               fillColor: 'transparent',
               height: sparkHeight
@@ -384,7 +383,7 @@ Fancy.modules['summary'] = true;
               value: value
             });
 
-            if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width){
+            if (!sparkConfig.size && !sparkConfig.height && !sparkConfig.width) {
               sparkConfig.size = w.cellHeaderHeight - 3 * 2;
             }
 
@@ -480,23 +479,24 @@ Fancy.modules['summary'] = true;
       var me = this,
         w = me.widget,
         el = me.getEl(side),
-        cells = el.select(`.${GRID_CELL_CLS}`),
+        cells = el.select(T_CELL),
         totalWidth = 0,
         columns = w.getColumns(side);
 
-      F.each(columns, function(column, i){
-        totalWidth += column.width;
-
+      columns.forEach((column, i) => {
         const cell = cells.item(i);
+        const {
+          hidden,
+          width
+        } = column;
 
-        if (column.hidden) {
-          cell.css('display', 'none');
-        }
-        else{
-          cell.css('display', '');
-        }
 
-        cell.animate({width: column.width}, ANIMATE_DURATION);
+        totalWidth += column.width;
+        cell.css('display', hidden? 'none': '');
+
+        cell.animate({
+          width
+        }, ANIMATE_DURATION);
       });
 
       el.firstChild().animate({width: totalWidth}, ANIMATE_DURATION);
@@ -581,7 +581,7 @@ Fancy.modules['summary'] = true;
      */
     removeColumn(index, side){
       const el = this.getEl(side),
-        cells = el.select('.' + GRID_CELL_CLS),
+        cells = el.select(T_CELL),
         cell = cells.item(index);
 
       cell.destroy();
@@ -604,11 +604,11 @@ Fancy.modules['summary'] = true;
       var columns = w.getColumns(side),
         column = columns[index],
         el = me.getEl(side),
-        cells = el.select('.' + GRID_CELL_CLS),
+        cells = el.select(T_CELL),
         cell,
-        newCell = F.get(document.createElement('div'));
+        newCell = F.newEl('div');
 
-      if(cells.length === 0 && index === 0){}
+      if (cells.length === 0 && index === 0) {}
       else if (index === 0){
         cell = cells.item(0);
       }
@@ -624,16 +624,15 @@ Fancy.modules['summary'] = true;
       newCell.addCls(GRID_CELL_CLS);
       newCell.update('<div class="' + GRID_CELL_INNER_CLS + '"></div>');
 
-      if(cells.length === 0 && index === 0){
+      if (cells.length === 0 && index === 0) {
         el.append(newCell.dom);
       }
-      else if (index === 0){
+      else if (index === 0) {
         cell.before(newCell.dom);
       }
       else {
         cell.after(newCell.dom);
       }
-
 
       me.updateSizes(side);
       me.updateSide(side);
@@ -657,13 +656,8 @@ Fancy.modules['summary'] = true;
 
       me.updateSizes('center');
 
-      if (w.leftColumns.length) {
-        me.updateSizes('left');
-      }
-
-      if (w.rightColumns.length) {
-        me.updateSizes('right');
-      }
+      w.leftColumns.length && me.updateSizes('left');
+      w.rightColumns.length && me.updateSizes('right');
     },
     /*
      *
@@ -676,7 +670,7 @@ Fancy.modules['summary'] = true;
       w.addCls('fancy-grid-summary-options');
       w.el.on('click', me.onOptionClick, me, `.${GRID_ROW_SUMMARY_CONTAINER_CLS} .${GRID_CELL_CLS}`);
 
-      docEl.on('click', function(e){
+      docEl.on('click', (e) => {
         const el = F.get(e.target);
 
         if (me.justShownSummaryMenu) {
@@ -730,7 +724,7 @@ Fancy.modules['summary'] = true;
 
       if (me.position === 'bottom') {
         //var menuHeight = menu.items.length * 30;
-        var menuHeight = parseInt(menu.el.css('height'));
+        const menuHeight = parseInt(menu.el.css('height'));
         top = top - menuHeight - parseInt(cellEl.css('height'));
         animationDistance *= -1;
         positionFix = 1;
@@ -774,11 +768,11 @@ Fancy.modules['summary'] = true;
         case 'number':
           switch(summaryVarType){
             case 'string':
-              F.each(numberSummaries, function(item, i){
+              F.each(numberSummaries, (item, i) => {
                 items.push({
                   text: item,
                   checked: item.toLocaleLowerCase() === column.summary,
-                  handler: function(){
+                  handler(){
                     column.summary = item.toLocaleLowerCase();
                     me.update();
                     me.activeSummaryMenu.setChecked(i, true);
@@ -790,12 +784,12 @@ Fancy.modules['summary'] = true;
               break;
             case 'function':
             case 'object':
-              F.each(numberSummaries, function(item, i){
+              F.each(numberSummaries, (item, i) => {
                 items.push({
                   text: item,
                   checked: false,
-                  handler: function(){
-                    switch(summaryVarType){
+                  handler(){
+                    switch (summaryVarType) {
                       case 'function':
                         column.summary = {
                           type: item.toLocaleLowerCase(),
@@ -818,7 +812,7 @@ Fancy.modules['summary'] = true;
                 items.push({
                   text: 'Custom',
                   checked: true,
-                  handler: function(){
+                  handler(){
                     column.summary = column._summary;
                     me.update();
                     me.activeSummaryMenu.hide();
@@ -837,7 +831,7 @@ Fancy.modules['summary'] = true;
                 items.push({
                   text: item,
                   checked: item.toLocaleLowerCase() === column.summary,
-                  handler: function(){
+                  handler(){
                     column.summary.type = item.toLocaleLowerCase();
                     me.update();
                     me.activeSummaryMenu.setChecked(i, true);
@@ -853,7 +847,7 @@ Fancy.modules['summary'] = true;
                 items.push({
                   text: item,
                   checked: false,
-                  handler: function(){
+                  handler(){
                     if(!column._summary){
                       column._summary = column.summary;
                     }
@@ -869,7 +863,7 @@ Fancy.modules['summary'] = true;
               items.push({
                 text: 'Custom',
                 checked: true,
-                handler: function(){
+                handler(){
                   column.summary = column._summary;
                   me.update();
                   me.activeSummaryMenu.setChecked(items.length - 1, true);

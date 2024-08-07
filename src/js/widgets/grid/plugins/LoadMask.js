@@ -51,7 +51,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       renderTo = wEl,
       width,
       height,
-      el = Fancy.get( document.createElement('div')),
+      el = Fancy.newEl('div'),
       lang = w.lang;
 
     if(w.panel){
@@ -63,7 +63,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
 
     el.addCls(me.cls);
 
-    if( w.theme !== 'default' ){
+    if (w.theme !== 'default') {
       el.addCls(Fancy.getThemeCSSCls(w.theme));
     }
 
@@ -73,7 +73,7 @@ Fancy.define('Fancy.grid.plugin.LoadMask', {
       opacity: 0
     });
 
-    if(me.loadText){
+    if (me.loadText) {
       el.update([
         '<div class="' + me.innerCls + '">' +
           '<div class="' + me.textCls + '">' + me.loadText + '</div>' +

@@ -17,6 +17,9 @@
 
   const ANIMATE_DURATION = F.ANIMATE_DURATION;
 
+  //TEMPLATES
+  const T_CELL_0 = `.${GRID_CELL_CLS}[index="0"]`
+
   F.define('Fancy.grid.plugin.RowEdit', {
     extend: F.Plugin,
     ptype: 'grid.rowedit',
@@ -169,10 +172,10 @@
      * @return {Fancy.Element}
      */
     renderTo(renderTo, columns, order, side, fromSide){
-      const fieldEls = renderTo.select('.' + FIELD_CLS);
+      const fieldEls = renderTo.select(`.${FIELD_CLS}`);
       var me = this,
         w = me.widget,
-        container = F.get(document.createElement('div')),
+        container = F.newEl('div'),
         el,
         i = 0,
         iL = columns.length,
@@ -186,7 +189,7 @@
         renderAfter,
         renderBefore;
 
-      if (!side){
+      if (!side) {
         container.addCls(GRID_ROW_EDIT_CLS);
         el = F.get(renderTo.dom.appendChild(container.dom));
       }
@@ -439,7 +442,7 @@
       var me = this,
         w = me.widget,
         lang = w.lang,
-        container = F.get(document.createElement('div')),
+        container = F.newEl('div'),
         el;
 
       container.addCls(GRID_ROW_EDIT_BUTTONS_CLS);
@@ -475,17 +478,9 @@
       const me = this,
         w = me.widget;
 
-      if (w.leftColumns){
-        me._setSizes(w.leftBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.leftColumns, 'left');
-      }
-
-      if (w.columns){
-        me._setSizes(w.body.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.columns);
-      }
-
-      if (w.rightColumns){
-        me._setSizes(w.rightBody.el.select('.' + GRID_CELL_CLS + '[index="0"]'), w.rightColumns, 'right');
-      }
+      w.leftColumns && me._setSizes(w.leftBody.el.select(T_CELL_0), w.leftColumns, 'left');
+      w.columns && me._setSizes(w.body.el.select(T_CELL_0), w.columns);
+      w.rightColumns && me._setSizes(w.rightBody.el.select(T_CELL_0), w.rightColumns, 'right');
 
       me.setElSize(o);
     },
@@ -499,23 +494,17 @@
         centerFullWidth = w.getCenterFullWidth(),
         rowHeight;
 
-      if (centerWidth < centerFullWidth){
+      if (centerWidth < centerFullWidth) {
         me.el.css('width', centerFullWidth + 2);
       }
 
-      if(o && o.cell){
-        //rowHeight = o.cell.clientHeight + 2;
+      if (o && o.cell) {
         rowHeight = o.cell.clientHeight + 3;
 
         me.el.css( 'height', rowHeight + 'px' );
 
-        if (w.leftColumns){
-          me.leftEl.css( 'height', rowHeight + 'px' );
-        }
-
-        if (w.rightColumns){
-          me.rightEl.css( 'height', rowHeight + 'px' );
-        }
+        w.leftColumns && me.leftEl.css( 'height', rowHeight + 'px' );
+        w.rightColumns && me.rightEl.css( 'height', rowHeight + 'px' );
       }
 
       //me.el.css('height', '');
@@ -1144,7 +1133,7 @@
         me.rendered = false;
 
         if (w.leftColumns){
-          F.each(w.leftColumns, (column) => {
+          F.each(w.leftColumns, column => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -1152,7 +1141,7 @@
         }
 
         if (w.columns){
-          F.each(w.columns, (column) => {
+          F.each(w.columns, column => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -1160,7 +1149,7 @@
         }
 
         if (w.rightColumns){
-          F.each(w.rightColumns, (column) => {
+          F.each(w.rightColumns, column => {
             column.rowEditor.destroy();
             delete column.rowEditor;
           });
@@ -1210,7 +1199,7 @@
         columns = w.getColumns(),
         values = {};
 
-      F.each(columns, (column) => {
+      F.each(columns, column => {
         if(column.type === 'combo' && column.editable && column.rowEditor){
           const editor = column.rowEditor,
             value = editor.get();

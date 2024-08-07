@@ -103,7 +103,7 @@
     render(){
       var me = this,
         renderTo,
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         width = 0,
         charWidth = 7;
 
@@ -122,9 +122,7 @@
 
       me.fire('beforerender');
 
-      if (me.wrapper) {
-        me.renderWrapper();
-      }
+      me.wrapper && me.renderWrapper();
 
       renderTo = F.get(me.renderTo || document.body).dom;
 
@@ -137,9 +135,7 @@
         }
       }
 
-      if (me.imageColor) {
-        me.imageCls = BUTTON_IMAGE_COLOR_CLS;
-      }
+      me.imageColor && (me.imageCls = BUTTON_IMAGE_COLOR_CLS);
 
       if (width < me.minWidth) {
         if (me.text && me.text.length > 0) {
@@ -154,9 +150,7 @@
         width += me.imageWidth;
       }
 
-      if (me.menu) {
-        width += me.rightImageWidth;
-      }
+      me.menu && (width += me.rightImageWidth);
 
       el.addCls(
         F.cls,
@@ -165,9 +159,7 @@
         me.extraCls
       );
 
-      if (me.disabled) {
-        el.addCls(BUTTON_DISABLED_CLS);
-      }
+      me.disabled && el.addCls(BUTTON_DISABLED_CLS);
 
       if (me.menu && me.menuIcon !== false) {
         el.addCls(BUTTON_MENU_CLS);
@@ -178,9 +170,7 @@
         height: me.height + 'px'
       });
 
-      if(me.hidden){
-        el.css('display', 'none');
-      }
+      me.hidden && el.css('display', 'none');
 
       el.css(me.style || {});
 
@@ -189,29 +179,21 @@
       }));
 
       if (me.imageCls) {
-        const imageEl = el.select('.' + BUTTON_IMAGE_CLS);
-        if (me.imageColor) {
-          imageEl.css('background-color', me.imageColor);
-        }
+        const imageEl = el.select(`.${BUTTON_IMAGE_CLS}`);
+        me.imageColor && imageEl.css('background-color', me.imageColor);
         imageEl.css('display', 'block');
         if (F.isString(me.imageCls)) {
           imageEl.addCls(me.imageCls);
         }
       }
 
-      if (me.id) {
-        el.attr('id', me.id);
-      }
+      me.id && el.attr('id', me.id);
 
       me.el = F.get(renderTo.appendChild(el.dom));
 
-      if (me.disabled) {
-        me.disable();
-      }
+      me.disabled && me.disable();
 
-      if (me.pressed) {
-        me.setPressed(me.pressed);
-      }
+      me.pressed && me.setPressed(me.pressed);
 
       me.initToggle();
 
@@ -227,7 +209,7 @@
       const me = this,
         wrapper = me.wrapper,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       el.css(wrapper.style || {});
       el.addCls(wrapper.cls || '');

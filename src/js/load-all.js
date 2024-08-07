@@ -183,9 +183,9 @@
 
     const dcUrl = '?_dc=' + dc;
 
-    files.forEach(file=>{
+    files.forEach(file => {
         file = file + dcUrl;
 
-        document.write('<script type="text/javascript" charset="UTF-8" src="' + file + '"></script>');
+        document.write(`<script type="text/javascript" charset="UTF-8" src="${file}"></script>`);
     });
 })();

@@ -30,7 +30,7 @@ Fancy.define('Fancy.bar.Text', {
    */
   render(){
     const me = this,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.newEl('div');
 
     el.addCls(me.widgetCls, me.cls);
     el.update(me.text);

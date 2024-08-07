@@ -174,11 +174,11 @@
         renderTo = me.renderTo || document.body,
         renderAfter = me.renderAfter,
         renderBefore = me.renderBefore,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
-      if (F.isString(renderTo)){
+      if (F.isString(renderTo)) {
         renderTo = document.getElementById(renderTo);
-        if (!renderTo){
+        if (!renderTo) {
           renderTo = F.select(renderTo).item(0);
         }
       }
@@ -196,31 +196,31 @@
       var labelWidth = '',
         itemsHTML = '';
 
-      if (me.itemsHTML){
+      if (me.itemsHTML) {
         itemsHTML = me.itemsHTML;
       }
 
-      if (me.labelAlign === 'top' && me.label){
+      if (me.labelAlign === 'top' && me.label) {
         //auto fixing of wrong labelWidth.
         //will not fix right if user change color of label font-size to bigger
-        if (me.labelWidth < me.label.length * 7){
+        if (me.labelWidth < me.label.length * 7) {
           me.labelWidth = (me.label.length + 2) * 7;
         }
       }
 
-      if (me.labelWidth){
+      if (me.labelWidth) {
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
       let label = me.label;
 
-      if (me.label === ''){
+      if (me.label === '') {
         label = '&nbsp;';
       }
-      else if (me.label === undefined){
+      else if (me.label === undefined) {
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right'){
+      else if (me.labelAlign !== 'right') {
         label += ':';
       }
 
@@ -228,18 +228,18 @@
         inputLabelDisplay = '',
         inputLabel = '';
 
-      if (me.label === false){
+      if (me.label === false) {
         labelDisplay = 'display:none;';
       }
 
-      if (!me.inputLabel){
+      if (!me.inputLabel) {
         inputLabelDisplay = 'display:none;';
       }
       else {
         inputLabel = me.inputLabel;
       }
 
-      if (me.type === 'recaptcha'){
+      if (me.type === 'recaptcha') {
         el.update(me.tpl.getHTML({
             key: me.key
           })

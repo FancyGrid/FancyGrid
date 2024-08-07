@@ -320,7 +320,7 @@
       const me = this;
 
       me.items.forEach(item => {
-        const el = F.get(document.createElement('div'));
+        const el = F.newEl('div');
 
         el.addCls(TAB_WRAPPER_CLS);
 

@@ -36,9 +36,9 @@ Fancy.define('Fancy.SegButton', {
    *
    */
   render(){
-    var me = this,
+    let me = this,
       renderTo,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.newEl('div');
 
     me.fire('beforerender');
 
@@ -51,13 +51,10 @@ Fancy.define('Fancy.SegButton', {
       me.extraCls
     );
 
-    if(me.hidden){
-      el.css('display', 'none');
-    }
-
+    me.hidden && el.css('display', 'none');
     me.el = Fancy.get(renderTo.appendChild(el.dom));
 
-    Fancy.each(me.style, function(value, p){
+    Fancy.each(me.style, (value, p) => {
       me.el.css(p, value);
     });
 

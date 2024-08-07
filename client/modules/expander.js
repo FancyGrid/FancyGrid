@@ -115,7 +115,7 @@ Fancy.modules['expander'] = true;
       me.reSetTop();
       me.reSetPlusScroll();
 
-      var checkBoxEls = w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .fancy-checkbox-expander'),
+      var checkBoxEls = w.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"] .${GRID_CELL_CLS}[index="${rowIndex}"] .fancy-checkbox-expander`),
         i = 0,
         iL = checkBoxEls.length;
 
@@ -160,7 +160,7 @@ Fancy.modules['expander'] = true;
         w = me.widget,
         item = me._expandedIds[id];
 
-      if(!me._expandedIds[id]){
+      if (!me._expandedIds[id]) {
         return false;
       }
 
@@ -195,7 +195,7 @@ Fancy.modules['expander'] = true;
         item.rightEl.hide();
       }
 
-      var checkBoxEls = w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"] .fancy-checkbox-expander'),
+      var checkBoxEls = w.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"] .${GRID_CELL_CLS}[index="${rowIndex}"] .fancy-checkbox-expander`),
         i = 0,
         iL = checkBoxEls.length;
 
@@ -234,7 +234,7 @@ Fancy.modules['expander'] = true;
      *
      */
     expandAll(){
-      var w = this.widget,
+      let w = this.widget,
         viewTotal = w.getViewTotal(),
         i = 0;
 
@@ -249,7 +249,7 @@ Fancy.modules['expander'] = true;
     expandRow(rowIndex, id){
       var me = this,
         w = me.widget,
-        el = G(document.createElement('div')),
+        el = F.newEl('div'),
         item = w.getById(id),
         data = me.prepareData(item),
         html,
@@ -271,11 +271,11 @@ Fancy.modules['expander'] = true;
 
       w.body.el.dom.appendChild(el.dom);
 
-      if (me.render){
+      if (me.render) {
         /*renderTo, data, width*/
         me.render(el.dom, data, w.getCenterFullWidth());
 
-        const checkHeight = function () {
+        const checkHeight = () => {
           const _height = parseInt(el.css('height'));
 
           if (height !== _height && me._expandedIds[id]) {
@@ -300,8 +300,8 @@ Fancy.modules['expander'] = true;
       me._expandedIds[id].height = height;
       me._expandedIds[id].width = width;
 
-      if (w.leftColumns){
-        var leftEl = G(document.createElement('div'));
+      if (w.leftColumns) {
+        var leftEl = F.newEl('div');
 
         leftEl.css('left', '0px');
         leftEl.css('height', height);
@@ -314,8 +314,8 @@ Fancy.modules['expander'] = true;
         me._expandedIds[id].leftEl = leftEl;
       }
 
-      if (w.rightColumns){
-        var rightEl = G(document.createElement('div'));
+      if (w.rightColumns) {
+        var rightEl = F.newEl('div');
 
         rightEl.css('left', '0px');
         rightEl.css('height', height);
@@ -340,7 +340,7 @@ Fancy.modules['expander'] = true;
       const me = this,
         w = me.widget,
         height = me._expandedIds[id].height,
-        items = w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]');
+        items = w.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"] .${GRID_CELL_CLS}[index="${rowIndex}"]`);
 
       items.css('margin-top', height);
     },
@@ -350,7 +350,7 @@ Fancy.modules['expander'] = true;
     clearMargin(rowIndex){
       const w = this.widget;
 
-      w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + rowIndex + '"]').css('margin-top', '0');
+      w.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"] .${GRID_CELL_CLS}[index="${rowIndex}"]`).css('margin-top', '0');
     },
     /*
      *
@@ -383,11 +383,11 @@ Fancy.modules['expander'] = true;
       const me = this,
         w = me.widget;
 
-      if(me.enabledCollapse === false){
+      if (me.enabledCollapse === false) {
         return;
       }
 
-      for (const p in me._expandedIds){
+      for (const p in me._expandedIds) {
         const item = me._expandedIds[p];
 
         item.el.destroy();
@@ -418,11 +418,11 @@ Fancy.modules['expander'] = true;
 
       item.el.show();
 
-      if (w.leftColumns){
+      if (w.leftColumns) {
         item.leftEl.show();
       }
 
-      if (w.rightColumns){
+      if (w.rightColumns) {
         item.rightEl.show();
       }
 
@@ -433,9 +433,9 @@ Fancy.modules['expander'] = true;
      * @return {Number}
      */
     getBeforeHeight(rowIndex){
-      var height = 0;
+      let height = 0;
 
-      for (const p in this._expandedIds){
+      for (const p in this._expandedIds) {
         const item = this._expandedIds[p];
 
         if (item.rowIndex < rowIndex && !item.hidden && item.el.css('display') !== 'none'){
@@ -455,19 +455,19 @@ Fancy.modules['expander'] = true;
         top = -w.scroller.scrollTop || 0,
         left = -w.scroller.scrollLeft || 0;
 
-      if(w.isGroupable()){
+      if (w.isGroupable()) {
         me.expandedGroups = {};
         const expanded = w.grouping.expanded;
 
-        for (var p in expanded){
+        for (var p in expanded) {
           me.expandedGroups[p] = me.expandedGroups[p] || {};
         }
       }
 
-      for (var p in me._expandedIds){
-        var item = me._expandedIds[p];
+      for (var p in me._expandedIds) {
+        const item = me._expandedIds[p];
 
-        if (item.el.css('display') === 'none'){
+        if (item.el.css('display') === 'none') {
           continue;
         }
 
@@ -477,12 +477,12 @@ Fancy.modules['expander'] = true;
           rowIndex = me.getDisplayedRowsBefore(item, p),
           _top = top + (rowIndex) * cellHeight + beforeHeight;
 
-        if(w.isGroupable()){
-          var id = p,
+        if (w.isGroupable()) {
+          const id = p,
             groupName = w.grouping.getGroupById(id),
             orderIndex = w.grouping.getGroupOrderIndex(groupName);
 
-          if (item.el.css('display') !== 'none'){
+          if (item.el.css('display') !== 'none') {
             me.expandedGroups[groupName] = me.expandedGroups[groupName] || {};
             me.expandedGroups[groupName][p] = item;
 
@@ -504,7 +504,7 @@ Fancy.modules['expander'] = true;
         }
       }
 
-      if (w.isGroupable() && grouping !== false){
+      if (w.isGroupable() && grouping !== false) {
         w.grouping.setPositions();
         w.grouping.setExpanderCellsPosition();
       }
@@ -517,8 +517,8 @@ Fancy.modules['expander'] = true;
     getDisplayedRowsBefore(item, id){
       const w = this.widget;
 
-      if(w.isGroupable()){
-        var rowIndex = 0;
+      if (w.isGroupable()) {
+        let rowIndex = 0;
 
         if (item.el.css('display') !== 'none'){
           rowIndex = w.store.getRow(id);
@@ -546,7 +546,7 @@ Fancy.modules['expander'] = true;
       w.scroller.setRightKnobSize();
 
       setTimeout(() => {
-        if (w.scroller.isRightScrollable() === false){
+        if (w.scroller.isRightScrollable() === false) {
           w.scroller.scroll(0);
         }
       }, 1);
@@ -555,7 +555,7 @@ Fancy.modules['expander'] = true;
      * @return {Number}
      */
     getPlusHeight(){
-      var me = this,
+      let me = this,
         plusHeight = 0;
 
       for (const p in me._expandedIds){
@@ -590,11 +590,11 @@ Fancy.modules['expander'] = true;
      * @return {Object}
      */
     prepareData(item){
-      var me = this,
+      let me = this,
         w = me.widget,
         data = item.data;
 
-      if (me.dataFn){
+      if (me.dataFn) {
         data = me.dataFn(w, data);
       }
 
@@ -649,13 +649,8 @@ Fancy.modules['expander'] = true;
       if (item) {
         item.el.addCls(GRID_ROW_EXPAND_OVER_CLS);
 
-        if (w.leftColumns){
-          item.leftEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
-        }
-
-        if (w.rightColumns){
-          item.rightEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
-        }
+        w.leftColumns && item.leftEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
+        w.rightColumns && item.rightEl.addCls(GRID_ROW_EXPAND_OVER_CLS);
       }
     },
     /*
@@ -670,13 +665,8 @@ Fancy.modules['expander'] = true;
       if (item) {
         item.el.removeCls(GRID_ROW_EXPAND_OVER_CLS);
 
-        if (w.leftColumns){
-          item.leftEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
-        }
-
-        if (w.rightColumns){
-          item.rightEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
-        }
+        w.leftColumns && item.leftEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
+        w.rightColumns && item.rightEl.removeCls(GRID_ROW_EXPAND_OVER_CLS);
       }
     },
     /*
@@ -689,11 +679,11 @@ Fancy.modules['expander'] = true;
         expandRowEl = G(e.currentTarget),
         index = expandRowEl.attr('index');
 
-      w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').addCls(GRID_ROW_EXPAND_OVER_CLS);
+      w.el.select(`.${GRID_ROW_EXPAND_CLS}[index="${index}"]`).addCls(GRID_ROW_EXPAND_OVER_CLS);
 
-      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown){}
+      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown) {}
       else {
-        w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').addCls(GRID_ROW_OVER_CLS);
+        w.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"] .${GRID_CELL_CLS}[index="${index}"]`).addCls(GRID_ROW_OVER_CLS);
       }
     },
     /*
@@ -702,15 +692,18 @@ Fancy.modules['expander'] = true;
     onExpandRowMouseLeave(e){
       const me = this,
         w = me.widget,
-        scroller = w.scroller,
+        {
+          bottomKnobDown,
+          rightKnobDown
+        } = w.scroller,
         expandRowEl = G(e.currentTarget),
         index = expandRowEl.attr('index');
 
       w.el.select(`.${GRID_ROW_EXPAND_CLS}[index="${index}"]`).removeCls(GRID_ROW_EXPAND_OVER_CLS);
 
-      if (!w.trackOver || scroller.bottomKnobDown || scroller.rightKnobDown){}
+      if (!w.trackOver || bottomKnobDown || rightKnobDown) {}
       else {
-        w.el.select('.' + GRID_COLUMN_CLS + '[grid="' + w.id + '"] .' + GRID_CELL_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_OVER_CLS);
+        w.el.select(`.${GRID_COLUMN_CLS}[grid="${w.id}"] .${GRID_CELL_CLS}[index="${index}"]`).removeCls(GRID_ROW_OVER_CLS);
       }
     },
     /*
@@ -721,7 +714,7 @@ Fancy.modules['expander'] = true;
         w = me.widget,
         selection = w.selection;
 
-      if (!selection || (!selection.row && !selection.rows)){
+      if (!selection || (!selection.row && !selection.rows)) {
         return;
       }
 
@@ -734,17 +727,17 @@ Fancy.modules['expander'] = true;
      *
      */
     onClearSelect(){
-      var me = this,
+      let me = this,
         w = me.widget,
         selection = w.selection;
 
-      if (!selection.row && !selection.rows){
+      if (!selection.row && !selection.rows) {
         return;
       }
 
       selection = w.getSelection(true);
 
-      var shouldBeSelected = {},
+      let shouldBeSelected = {},
         rows = selection.rows,
         i = 0,
         iL = rows.length;
@@ -753,17 +746,15 @@ Fancy.modules['expander'] = true;
         shouldBeSelected[rows[i]] = true;
       }
 
-      var selected = w.el.select(`.${GRID_ROW_EXPAND_SELECTED_CLS}`),
-        i = 0,
-        iL = selected.length;
+      const selected = w.el.select(`.${GRID_ROW_EXPAND_SELECTED_CLS}`);
 
-      for (; i < iL; i++){
-        const index = selected.item(i).attr('index');
+      selected.each(item => {
+        const index = item.attr('index');
 
-        if (!shouldBeSelected[index]){
-          w.el.select('.' + GRID_ROW_EXPAND_CLS + '[index="' + index + '"]').removeCls(GRID_ROW_EXPAND_SELECTED_CLS);
+        if (!shouldBeSelected[index]) {
+          w.el.select(`.${GRID_ROW_EXPAND_CLS}[index="${index}"]`).removeCls(GRID_ROW_EXPAND_SELECTED_CLS);
         }
-      }
+      });
     },
     /*
      * @param {Fancy.Grid} grid
@@ -771,28 +762,23 @@ Fancy.modules['expander'] = true;
      * @param {String} groupName
      */
     onGroupCollapse(grid, index, groupName){
-      var me = this,
+      const me = this,
         w = me.widget,
         expandedGroups = me.expandedGroups;
 
       if (expandedGroups[groupName]){
-        var items = expandedGroups[groupName];
+        const items = expandedGroups[groupName];
 
-        for (var q in items){
-          var item = items[q];
+        for (const q in items) {
+          const item = items[q];
 
-          if (me._expandedIds[q]){
+          if (me._expandedIds[q]) {
             delete me._expandedIds[q];
           }
 
           item.el.hide();
-          if (item.leftEl.dom){
-            item.leftEl.hide();
-          }
-
-          if (item.rightEl.dom){
-            item.rightEl.hide();
-          }
+          item.leftEl.dom && item.leftEl.hide();
+          item.rightEl.dom && item.rightEl.hide();
         }
       }
 

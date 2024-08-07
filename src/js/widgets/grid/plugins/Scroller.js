@@ -164,11 +164,11 @@
       const me = this,
         w = me.widget,
         body = w.body,
-        rightScrollEl = F.get(document.createElement('div')),
-        bottomScrollEl = F.get(document.createElement('div')),
-        topScrollEl = F.get(document.createElement('div'));
+        rightScrollEl = F.newEl('div'),
+        bottomScrollEl = F.newEl('div'),
+        topScrollEl = F.newEl('div');
 
-      if (w.nativeScroller){
+      if (w.nativeScroller) {
         w.el.addCls(NATIVE_SCROLLER_CLS);
       }
       else {
@@ -179,7 +179,7 @@
           '<div class="' + RIGHT_SCROLL_INNER_CLS + '"></div>'
         ].join(' '));
 
-        rightScrollEl.select('.' + RIGHT_SCROLL_INNER_CLS).css('margin-top', w.knobOffSet);
+        rightScrollEl.select(`.${RIGHT_SCROLL_INNER_CLS}`).css('margin-top', w.knobOffSet);
 
         bottomScrollEl.update([
           '<div class="' + BOTTOM_SCROLL_INNER_CLS + '"></div>'
@@ -265,32 +265,36 @@
      */
     onRender(){
       const me = this,
-        w = me.widget;
+        w = me.widget,
+        {
+          bottomKnobDown,
+          rightKnobDown
+        } = me;
 
-      if (w.nativeScroller !== true){
-        me.scrollRightEl.hover(function(){
-          if (me.bottomKnobDown !== true){
+      if (w.nativeScroller !== true) {
+        me.scrollRightEl.hover(() => {
+          if (bottomKnobDown !== true){
             me.scrollRightEl.addCls(RIGHT_SCROLL_HOVER_CLS);
           }
-        }, function(){
+        }, () => {
           me.scrollRightEl.removeCls(RIGHT_SCROLL_HOVER_CLS);
         });
 
-        me.scrollBottomEl.hover(function(){
-          if (me.rightKnobDown !== true){
+        me.scrollBottomEl.hover(() => {
+          if (rightKnobDown !== true){
             me.scrollBottomEl.addCls(BOTTOM_SCROLL_HOVER_CLS);
           }
-        }, function(){
+        }, () => {
           me.scrollBottomEl.removeCls(BOTTOM_SCROLL_HOVER_CLS);
         });
 
         if(w.doubleHorizontalScroll){
-          me.scrollTopEl.hover(function(){
-            if (me.bottomKnobDown !== true){
+          me.scrollTopEl.hover(() => {
+            if (bottomKnobDown !== true){
               me.scrollTopEl.addCls(TOP_SCROLL_HOVER_CLS);
             }
-          }, function(){
-            if (me.bottomKnobDown !== true){
+          }, () => {
+            if (bottomKnobDown !== true){
               me.scrollTopEl.removeCls(TOP_SCROLL_HOVER_CLS);
             }
           });
@@ -571,26 +575,21 @@
       me.mouseDownXY = {};
       delete me.mouseMoveInitXY;
 
-      if (me.rightKnobDown === false && me.bottomKnobDown === false){
-        if(w.nativeScroller && Fancy.nojQuery){
+      if (me.rightKnobDown === false && me.bottomKnobDown === false) {
+        if (w.nativeScroller && Fancy.nojQuery) {
           w.addCls(Fancy.GRID_ANIMATION_CLS);
         }
         return;
       }
 
-      if(Fancy.nojQuery){
-        w.addCls(Fancy.GRID_ANIMATION_CLS);
-      }
+      Fancy.nojQuery && w.addCls(Fancy.GRID_ANIMATION_CLS);
 
       me.scrollRightEl.removeCls(RIGHT_SCROLL_ACTIVE_CLS);
       me.scrollBottomEl.removeCls(BOTTOM_SCROLL_ACTIVE_CLS);
       me.rightKnobDown = false;
       me.bottomKnobDown = false;
 
-      if(w.doubleHorizontalScroll){
-        me.scrollTopEl.removeCls(TOP_SCROLL_ACTIVE_CLS);
-        me.scrollTopEl.removeCls(TOP_SCROLL_HOVER_CLS);
-      }
+      w.doubleHorizontalScroll && me.scrollTopEl.removeCls(TOP_SCROLL_ACTIVE_CLS, TOP_SCROLL_HOVER_CLS);
     },
     /*
      * @param {Object} e

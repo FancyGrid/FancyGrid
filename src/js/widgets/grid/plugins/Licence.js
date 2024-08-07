@@ -36,7 +36,7 @@ Fancy.define('Fancy.grid.plugin.Licence', {
     const me = this,
       w = me.widget,
       body = w.body,
-      licenceEl = Fancy.get(document.createElement('div'));
+      licenceEl = Fancy.newEl('div');
 
     if(/fancygrid/.test(location.host) && !w.watermark){
       return;

@@ -251,15 +251,15 @@
     render(){
       var me = this,
         renderTo = Fancy.get(me.renderTo || document.body),
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         panelBodyBorders = me.panelBodyBorders;
 
-      if (me.renderOuter){
+      if (me.renderOuter) {
         el = renderTo;
       }
 
-      if (!renderTo.dom){
-        F.error('Could not find renderTo element: ' + me.renderTo, 1);
+      if (!renderTo.dom) {
+        F.error(`Could not find renderTo element: ${me.renderTo}`, 1);
       }
 
       el.addCls(
@@ -268,11 +268,11 @@
         me.cls
       );
 
-      if (Fancy.loadingStyle){
-        if (me.panel){
+      if (Fancy.loadingStyle) {
+        if (me.panel) {
           me.panel.el.css('opacity', 0);
           me.intervalStyleLoad = setInterval(() => {
-            if (!Fancy.loadingStyle){
+            if (!Fancy.loadingStyle) {
               clearInterval(me.intervalStyleLoad);
               me.panel.el.animate({
                 'opacity': 1,
@@ -284,7 +284,7 @@
         else {
           el.css('opacity', 0);
           me.intervalStyleLoad = setInterval(() => {
-            if (!Fancy.loadingStyle){
+            if (!Fancy.loadingStyle) {
               clearInterval(me.intervalStyleLoad);
               me.el.animate({
                 'opacity': 1,
@@ -465,8 +465,8 @@
         body = me.getBody(side),
         columns = me.getColumns(side);
 
-      F.each(columns, (column, i) => {
-        switch(column.type){
+      columns.forEach((column, i) => {
+        switch (column.type) {
           case 'grossloss':
             body.renderGrossLoss(i);
             break;
@@ -548,21 +548,21 @@
         width: centerWidth + 'px'
       });
 
-      if (me.header){
-        me.el.select('.' + GRID_LEFT_CLS + ' .' + GRID_HEADER_CLS).css({
+      if (me.header) {
+        me.el.select(`.${GRID_LEFT_CLS} .${GRID_HEADER_CLS}`).css({
           width: leftWidth + 'px'
         });
 
-        me.el.select('.' + GRID_CENTER_CLS + ' .' + GRID_HEADER_CLS).css({
+        me.el.select(`.${GRID_CENTER_CLS} .${GRID_HEADER_CLS}`).css({
           width: centerWidth + 'px'
         });
       }
 
-      me.el.select('.' + GRID_CENTER_CLS + ' .' + GRID_BODY_CLS).css({
+      me.el.select(`.${GRID_CENTER_CLS} .${GRID_BODY_CLS}`).css({
         width: centerWidth + 'px'
       });
 
-      if (me.width > leftWidth + centerWidth + rightWidth){
+      if (me.width > leftWidth + centerWidth + rightWidth) {
         me.rightEl.css({
           right: '0px'
         });
@@ -578,7 +578,7 @@
         width: rightWidth
       });
 
-      if (me.header){
+      if (me.header) {
         me.el.select(`.${GRID_RIGHT_CLS} .${GRID_HEADER_CLS}`).css({
           width: rightWidth + 'px'
         });
@@ -609,11 +609,11 @@
         height = 1,
         cellHeaderHeight = me.cellHeaderHeight;
 
-      if (me.header !== false){
+      if (me.header !== false) {
         height += cellHeaderHeight;
-        if (me.filter && me.filter.header){
-          if (me.groupheader){
-            if (me.filter.groupHeader){
+        if (me.filter && me.filter.header) {
+          if (me.groupheader) {
+            if (me.filter.groupHeader) {
               height += cellHeaderHeight;
             }
           }
@@ -622,8 +622,8 @@
           }
         }
 
-        if (me.groupheader){
-          if (!(me.filter && me.filter.header)){
+        if (me.groupheader) {
+          if (!(me.filter && me.filter.header)) {
             height += cellHeaderHeight;
           }
           else {
@@ -632,26 +632,26 @@
         }
       }
 
-      if (me.isGroupable()){
+      if (me.isGroupable()) {
         height += me.grouping.groups.length * me.groupRowHeight;
       }
 
-      if (me.expander){
+      if (me.expander) {
         height += me.expander.plusHeight;
       }
 
-      if (me.summary){
+      if (me.summary) {
         height += me.summary.topOffSet;
         //height += me.summary.bottomOffSet;
       }
 
-      if (me.rowheight && me.rowheight.totalHeight){
+      if (me.rowheight && me.rowheight.totalHeight) {
         viewHeight = me.rowheight.totalHeight;
       }
 
       height += viewHeight || (s.getLength() * me.cellHeight - 1);
 
-      if (me.paging && me.summary && me.summary.position === 'bottom'){
+      if (me.paging && me.summary && me.summary.position === 'bottom') {
         height = me.height;
       }
 
@@ -1022,19 +1022,15 @@
         elWidth = me.centerEl.width();
 
       if (elWidth === 0){
-        var columnsWidth = 0,
-          columns = me.columns,
-          i = 0,
-          iL = columns.length;
+        let width = 0;
 
-        for (; i < iL; i++){
-          const column = columns[i];
-          if (!column.hidden){
-            columnsWidth += column.width;
+        me.columns.forEach(column => {
+          if (!column.hidden) {
+            width += column.width;
           }
-        }
+        })
 
-        return columnsWidth;
+        return width;
       }
 
       return elWidth;
@@ -1043,37 +1039,27 @@
      * @return {Number}
      */
     getCenterFullWidth(){
-      var me = this,
-        centerColumnsWidths = 0,
-        columns = me.columns,
-        i = 0,
-        iL = columns.length;
+      let width = 0;
 
-      for (; i < iL; i++){
-        const column = columns[i];
-        if (!column.hidden){
-          centerColumnsWidths += column.width;
+      this.columns.forEach(column => {
+        if (!column.hidden) {
+          width += column.width;
         }
-      }
+      })
 
-      return centerColumnsWidths;
+      return width;
     },
     /*
      * @return {Number}
      */
     getLeftFullWidth(){
-      var me = this,
-        width = 0,
-        columns = me.leftColumns,
-        i = 0,
-        iL = columns.length;
+      let width = 0;
 
-      for (; i < iL; i++){
-        const column = columns[i];
+      this.leftColumns.forEach(column => {
         if (!column.hidden){
           width += column.width;
         }
-      }
+      });
 
       return width;
     },
@@ -1081,18 +1067,13 @@
      * @return {Number}
      */
     getRightFullWidth(){
-      var me = this,
-        width = 0,
-        columns = me.rightColumns,
-        i = 0,
-        iL = columns.length;
+      let width = 0;
 
-      for (; i < iL; i++){
-        const column = columns[i];
-        if (!column.hidden){
+      this.rightColumns.forEach(column => {
+        if (!column.hidden) {
           width += column.width;
         }
-      }
+      });
 
       return width;
     },
@@ -1101,8 +1082,8 @@
      * @return {Array}
      */
     getColumns(side){
-      var me = this,
-        columns = [];
+      const me = this;
+      let columns = [];
 
       switch (side){
         case 'left':
@@ -1146,7 +1127,7 @@
      * @return {Fancy.grid.Body}
      */
     getBody(side){
-      var me = this,
+      let me = this,
         body;
 
       switch (side){
@@ -1168,7 +1149,7 @@
      * @return {Fancy.grid.Header}
      */
     getHeader(side){
-      var me = this,
+      let me = this,
         header;
 
       switch (side){
@@ -1191,7 +1172,7 @@
      * @return {Fancy.Element}
      */
     getHeaderCell(index, side){
-      var me = this,
+      let me = this,
         cell,
         header;
 
@@ -1220,32 +1201,23 @@
      * @return {Array}
      */
     getDomRow(rowIndex){
-      var me = this,
+      const me = this,
         leftBody = me.leftBody,
         body = me.body,
         rightBody = me.rightBody,
-        leftColumns = me.leftColumns,
-        columns = me.columns,
-        rightColumns = me.rightColumns,
-        i = 0,
-        iL = leftColumns.length,
         cells = [];
 
-      for (; i < iL; i++){
+      me.leftColumns.forEach((column, i) => {
         cells.push(leftBody.getDomCell(rowIndex, i));
-      }
+      });
 
-      i = 0;
-      iL = columns.length;
-      for (; i < iL; i++){
+      me.columns.forEach((column, i) => {
         cells.push(body.getDomCell(rowIndex, i));
-      }
+      });
 
-      i = 0;
-      iL = rightColumns.length;
-      for (; i < iL; i++){
+      me.rightColumns.forEach((column, i) => {
         cells.push(rightBody.getDomCell(rowIndex, i));
-      }
+      });
 
       return cells;
     },
@@ -1295,12 +1267,7 @@
 
       selection.selModel = type;
 
-      if (type === 'rows') {
-        me.multiSelect = true;
-      }
-      else {
-        me.multiSelect = false;
-      }
+      me.multiSelect = type === 'rows';
 
       selection.clearSelection();
     },
@@ -1370,7 +1337,7 @@
       //docEl.un('click', me.onDocClick, me);
       //docEl.un('mousemove', me.onDocMove, me);
 
-      if(me.el && me.el.dom){
+      if (me.el && me.el.dom) {
         me.body.destroy();
         me.leftBody.destroy();
         me.rightBody.destroy();
@@ -1381,22 +1348,14 @@
 
         me.scroller.destroy();
 
-        if(container === false){
-          if (me.panel){
-            Fancy.each(me.panel.el.child(), function(child){
-              child.destroy();
-            });
-          }
-          else{
-            Fancy.each(me.el.child(), function(child){
-              child.destroy();
-            });
-          }
+        if (container === false) {
+          const children = me.panel ? me.panel.el.child() : me.el.child();
+          Fancy.each(children, child => child.destroy());
         }
         else{
           me.el.destroy();
 
-          if (me.panel){
+          if (me.panel) {
             me.panel.el.destroy();
           }
         }
@@ -1404,7 +1363,7 @@
 
       s.destroy();
 
-      if(me.responsiveOverver && me.responsiveOverver.stop){
+      if (me.responsiveOverver && me.responsiveOverver.stop) {
         me.responsiveOverver.stop();
         delete me.responsiveOverver;
       }
@@ -1447,7 +1406,7 @@
     hide(){
       const me = this;
 
-      if (me.panel){
+      if (me.panel) {
         me.panel.hide.apply(me.panel, arguments);
       }
       else {
@@ -1469,12 +1428,7 @@
       const me = this;
 
       const prepareColumns = function (columns) {
-        var i = 0,
-          iL = columns.length;
-
-        for (; i < iL; i++) {
-          const column = columns[i];
-
+        columns.forEach(column => {
           if (column.type === 'date') {
             column.format = column.format || {};
 
@@ -1486,7 +1440,7 @@
 
             F.applyIf(column.format, format);
           }
-        }
+        });
 
         return columns;
       };
@@ -1523,7 +1477,7 @@
       const me = this,
         store = me.store;
 
-      if (key !== undefined){
+      if (key !== undefined) {
         return store.get(rowIndex, key);
       }
       else if (rowIndex === undefined){
@@ -1594,7 +1548,7 @@
      * @param {String} key
      */
     selectColumn(key){
-      var me = this,
+      let me = this,
         side,
         columnIndex,
         leftColumns = me.leftColumns || [],
@@ -1602,11 +1556,12 @@
         rightColumns = me.rightColumns || [];
 
       const isInSide = (columns) =>  {
-        var i = 0,
+        let i = 0,
           iL = columns.length;
 
         for (; i < iL; i++) {
           const column = columns[i];
+
           if (column.index === key) {
             columnIndex = i;
             return true;
@@ -1616,17 +1571,17 @@
         return false;
       };
 
-      if (isInSide(leftColumns)){
+      if (isInSide(leftColumns)) {
         side = 'left';
       }
-      else if (isInSide(columns)){
+      else if (isInSide(columns)) {
         side = 'center';
       }
-      else if (isInSide(rightColumns)){
+      else if (isInSide(rightColumns)) {
         side = 'right';
       }
 
-      if (side){
+      if (side) {
         me.selection.selectColumn(columnIndex, side);
       }
     },
@@ -1635,7 +1590,7 @@
      * @return {Object}
      */
     getColumnByIndex(key){
-      var me = this,
+      let me = this,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length;
@@ -1659,7 +1614,7 @@
      * @return {Object}
      */
     getColumnById(id){
-      var me = this,
+      let me = this,
         columns = me.getColumns(),
         i = 0,
         iL = columns.length;
@@ -1676,30 +1631,30 @@
      * @return {Object}
      */
     getColumnOrderByKey(key){
-      var me = this,
+      let me = this,
         leftColumns = me.leftColumns || [],
         columns = me.columns || [],
         rightColumns = me.rightColumns || [],
         side = '',
         order;
 
-      F.each(columns, (column, i) => {
+      columns.forEach((column, i) => {
         if (column.index === key) {
           side = 'center';
           order = i;
         }
       });
 
-      if (!side){
-        F.each(leftColumns, (column, i) => {
-          if (column.index === key){
+      if (!side) {
+        leftColumns.forEach((column, i) => {
+          if (column.index === key) {
             side = 'left';
             order = i;
           }
         });
 
-        if (!side){
-          F.each(rightColumns, (column, i) => {
+        if (!side) {
+          rightColumns.forEach((column, i)=>{
             if (column.index === key){
               side = 'right';
               order = i;
@@ -1811,7 +1766,7 @@
       }
 
       if (me.responsiveHeight) {
-        var height = parseInt(el.height());
+        let height = parseInt(el.height());
 
         if (height === 0){
           height = parseInt(el.parent().height());
@@ -1869,22 +1824,18 @@
       //me.scroller.scroll(0, 0);
 
       const calcColumnsWidth = (columns) =>  {
-        var i = 0,
-          iL = columns.length,
-          width = 0;
+        let width = 0;
 
-        for (; i < iL; i++) {
-          const column = columns[i];
-
+        columns.forEach(column => {
           if (!column.hidden) {
-            width += columns[i].width;
+            width += column.width;
           }
-        }
+        })
 
         return width;
       };
 
-      var leftColumnWidth = calcColumnsWidth(me.leftColumns),
+      let leftColumnWidth = calcColumnsWidth(me.leftColumns),
         rightColumnWidth = calcColumnsWidth(me.rightColumns),
         newCenterWidth = width - leftColumnWidth - rightColumnWidth - panelBodyBorders[1] - panelBodyBorders[3],
         gridWidth;
@@ -1938,7 +1889,7 @@
      * @return {Number}
      */
     getWidth(){
-      var me = this,
+      let me = this,
         value;
 
       if (me.panel) {
@@ -1954,7 +1905,7 @@
      * @return {Number}
      */
     getHeight(){
-      var me = this,
+      let me = this,
         value;
 
       if (me.panel) {
@@ -2008,7 +1959,7 @@
         value -= me.buttonsHeight || me.barHeight;
       }
 
-      var bodyHeight = value;
+      let bodyHeight = value;
 
       if (me.header) {
         bodyHeight -= me.cellHeaderHeight;
@@ -2127,13 +2078,13 @@
           return;
         }
 
-        if (parent.hasCls === undefined){
+        if (parent.hasCls === undefined) {
           me.fire('deactivate');
           return;
         }
 
         //if (parent.hasCls(me.widgetCls)){
-        if(parent.hasCls(GRID_BODY_CLS)){
+        if (parent.hasCls(GRID_BODY_CLS)) {
           return;
         }
 
@@ -2153,7 +2104,7 @@
     stopSelection(){
       const me = this;
 
-      if (me.selection){
+      if (me.selection) {
         me.selection.stopSelection();
       }
     },
@@ -3387,7 +3338,7 @@
       }
 
       if(rowIds){
-        F.each(rowIds, function(value){
+        F.each(rowIds, value => {
           allowedIdsMap[value] = true;
         });
       }
@@ -3885,7 +3836,7 @@
      *
      */
     expandAll(){
-      var me = this,
+      let me = this,
         items = me.findItem('expanded', false);
 
       F.each(items, (item) => {
@@ -3967,22 +3918,20 @@
       const me = this,
         cells = me.getDomRow(rowIndex);
 
-      F.each(cells, (cell) => {
+      cells.forEach(cell => {
         cell = F.get(cell);
-
         cell.addCls('fancy-grid-cell-flash');
       });
 
       setTimeout(() => {
-        F.each(cells, (cell) => {
+        cells.forEach(cell => {
           cell = F.get(cell);
-
           cell.addCls('fancy-grid-cell-animation');
         });
       }, 200);
 
       setTimeout(() => {
-        F.each(cells, (cell) => {
+        cells.forEach(cell => {
           cell = F.get(cell);
 
           cell.removeCls('fancy-grid-cell-flash');
@@ -4069,7 +4018,7 @@
 
       const sorted = JSON.parse(state.sorters);
 
-      F.each(sorted, (sorter) => {
+      F.each(sorted, sorter => {
         o[sorter.key] = sorter;
       });
 

@@ -50,7 +50,7 @@
     render(){
       const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = document.createElement('div');
+        el = F.newDomEl('div');
 
       me.fire('beforerender');
 

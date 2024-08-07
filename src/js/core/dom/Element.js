@@ -59,8 +59,8 @@ Fancy.proxy = function( fn, context ){
 };
 
 var El = function(selector){
-  var me = this,
-    els = [];
+  const me = this;
+  let els = [];
 
   switch(Fancy.typeOf(selector)){
     case 'string':
@@ -71,12 +71,9 @@ var El = function(selector){
       break;
   }
 
-  var i = 0,
-    iL = els.length;
-
-  for(;i<iL;i++){
-    me[i] = els[i];
-  }
+  els.forEach((el, i) => {
+    me[i] = el;
+  });
 
   me.length = els.length;
 };
@@ -89,15 +86,11 @@ hover???
 within in FancyGrid self
 */
 
-var each = function(fn){
-  var i = 0,
-    els = this.els,
-    iL = els.length;
-
-  for(;i<iL;i++){
-    fn(els[i]);
-  }
-};
+  const each = function (fn) {
+    this.els.forEach(el => {
+      fn(el);
+    });
+  };
 
   const remove = function () {
     const me = this,
@@ -158,7 +151,7 @@ var each = function(fn){
 
     dom.outerHTML = html;
 
-		if(nextSibling === null){
+		if (nextSibling === null) {
 			me[0].appendChild(dom);
 		}
 		else{

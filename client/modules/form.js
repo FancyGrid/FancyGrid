@@ -175,7 +175,7 @@ Fancy.modules['form'] = true;
       me.tbar = me.panel.tbar;
       me.buttons = me.panel.buttons;
 
-      if (me.extraCls && me.panel){
+      if (me.extraCls && me.panel) {
         me.panel.addCls(me.extraCls);
       }
 
@@ -219,7 +219,7 @@ Fancy.modules['form'] = true;
     render(){
       let me = this,
         renderTo = F.get(me.renderTo || document.body),
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       if (me.renderOuter && !me.panel) {
         el = renderTo;
@@ -526,7 +526,7 @@ Fancy.modules['form'] = true;
     ons(){
       const me = this;
 
-      F.each(me.items, (item) => {
+      F.each(me.items, item => {
         switch (item.type){
           case 'line':
           case 'row':
@@ -588,7 +588,7 @@ Fancy.modules['form'] = true;
 
       if (name) {
         let value;
-        F.each(me.items, (item) => {
+        F.each(me.items, item => {
           switch (item.type) {
             case 'html':
             case 'button':
@@ -609,7 +609,7 @@ Fancy.modules['form'] = true;
       else {
         const values = {};
 
-        F.each(me.items, (item) => {
+        F.each(me.items, item => {
           switch (item.type) {
             case 'html':
             case 'button':
@@ -641,7 +641,7 @@ Fancy.modules['form'] = true;
       }
 
       if (name){
-        F.each(me.items, (item) => {
+        F.each(me.items, item => {
           if (item.name !== name){
             return;
           }
@@ -657,7 +657,7 @@ Fancy.modules['form'] = true;
     clear(clear){
       const me = this;
 
-      F.each(me.items, (item) => {
+      F.each(me.items, item => {
         switch (item.type) {
           case 'html':
           case 'recaptcha':
@@ -671,11 +671,11 @@ Fancy.modules['form'] = true;
 
         delete item.acceptValue;
 
-        if (me.hasCls(FIELD_NOT_VALID_CLS)){
+        if (me.hasCls(FIELD_NOT_VALID_CLS)) {
           me.removeCls(FIELD_NOT_VALID_CLS);
           me.css('height', ( parseInt(me.css('height')) - 6) + 'px');
         }
-        if (me.hasCls(FIELD_BLANK_ERR_CLS)){
+        if (me.hasCls(FIELD_BLANK_ERR_CLS)) {
           me.removeCls(FIELD_BLANK_ERR_CLS);
           me.css('height', ( parseInt(me.css('height')) - 6) + 'px');
         }
@@ -752,7 +752,7 @@ Fancy.modules['form'] = true;
     valid(){
       let valid = true;
 
-      F.each(this.items, (item) => {
+      F.each(this.items, item => {
         switch(item.type){
           case 'field.string':
           case 'string':
@@ -906,7 +906,7 @@ Fancy.modules['form'] = true;
 
       const inLineFields = {};
 
-      F.each(me.items, (item) => {
+      F.each(me.items, item => {
         if (item.lineName) {
           inLineFields[item.lineName] = inLineFields[item.lineName] || [];
           inLineFields[item.lineName].push(item);
@@ -922,7 +922,7 @@ Fancy.modules['form'] = true;
             _value -= parseInt(item.css('margin-left'));
             _value -= parseInt(item.css('margin-right'));
 
-            F.each(item.items, (_item) => {
+            F.each(item.items, _item => {
               switch (_item.type) {
                 case 'button':
                   _value -= _item.css('width');
@@ -947,7 +947,7 @@ Fancy.modules['form'] = true;
         }
       });
 
-      F.each(inLineFields, (lineFields) => {
+      F.each(inLineFields, lineFields => {
         var widths = [],
           _value = value,
           totalWidth = 0;
@@ -977,8 +977,8 @@ Fancy.modules['form'] = true;
 
         var _lineFields = [];
 
-        F.each(lineFields, (item) => {
-          switch(item.type){
+        F.each(lineFields, item => {
+          switch (item.type) {
             case 'button':
               break;
             default:
@@ -1038,22 +1038,20 @@ Fancy.modules['form'] = true;
 
       defaults.width = width - me.panelBorderWidth * 2;
 
-      F.each(me.items, (item) => {
-        switch (item.type){
+      F.each(me.items, item => {
+        switch (item.type) {
           case 'set':
           case 'tab':
-            if (item.type === 'tab'){
+            if (item.type === 'tab') {
               me.tabbed = true;
             }
 
-            var minusWidth = item.type === 'set' ? 62 : 20;
+            const minusWidth = item.type === 'set' ? 62 : 20;
 
-            F.each(item.items, (_item) => {
-              if (_item.width === undefined){
-                _item.width = width - minusWidth;
-              }
+            F.each(item.items, _item => {
+              _item.width === undefined && (_item.width = width - minusWidth);
 
-              if (_item.label && _item.label.length > maxLabelNumber){
+              if (_item.label && _item.label.length > maxLabelNumber) {
                 maxLabelNumber = _item.label.length;
               }
             });
@@ -1068,7 +1066,7 @@ Fancy.modules['form'] = true;
               avaliableWidth = width,
               averageWidth;
 
-            F.each(item.items, (_item) => {
+            F.each(item.items, _item => {
               if(_item.label === undefined && _item.labelAlign !== 'top'){
                 _item.label = false;
               }
@@ -1081,8 +1079,8 @@ Fancy.modules['form'] = true;
 
             averageWidth = (avaliableWidth - 8 - 8 - 8) / numOfFields;
 
-            F.each(item.items, (_item) => {
-              if(!_item.width){
+            F.each(item.items, _item => {
+              if (!_item.width) {
                 _item.width = averageWidth;
               }
               else{
@@ -1095,8 +1093,8 @@ Fancy.modules['form'] = true;
             });
 
             if (isWidthInit === false){
-              F.each(item.items, (_item) => {
-                if (_item.labelAlign === 'top'){
+              F.each(item.items, _item => {
+                if (_item.labelAlign === 'top') {
                   _item.labelWidth = averageWidth;
                 }
                 else {
@@ -1156,7 +1154,7 @@ Fancy.modules['form'] = true;
         iL = items.length;
 
       if (scope) {
-        for (; i < iL; i++){
+        for (; i < iL; i++) {
           fn.apply(this, [items[i]]);
         }
       }
@@ -1388,7 +1386,7 @@ Fancy.modules['form'] = true;
         i = 0,
         tabIndex = 0;
 
-      F.each(me.items, (item) => {
+      F.each(me.items, item => {
         me.$tabs[tabIndex][i] = item;
         i++;
 
@@ -1428,11 +1426,11 @@ Fancy.modules['form'] = true;
         availableHeight = parseInt(bodyEl.css('height')),
         fieldsHeight = 0;
 
-      F.each(me.items, function(item){
+      F.each(me.items, item => {
         fieldsHeight += parseInt(item.css('height'));
       });
 
-      if(availableHeight < fieldsHeight){
+      if (availableHeight < fieldsHeight) {
         bodyEl.css({
           'overflow-y': 'scroll',
           'overflow-x': 'hidden'
@@ -1948,7 +1946,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   render(){
     const me = this,
       renderTo = me.renderTo || document.body,
-      el = document.createElement('div');
+      el = F.newDomEl('div');
 
     me.fire('beforerender');
 

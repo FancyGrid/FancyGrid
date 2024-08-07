@@ -400,11 +400,11 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
   render(){
     var me = this,
       renderTo = Fancy.get(me.renderTo || document.body).dom,
-      el = Fancy.get(document.createElement('div')),
-      list = Fancy.get( document.createElement('div') ),
+      el = Fancy.newEl('div'),
+      list = Fancy.newEl('div'),
       value = me.value;
 
-    if (value === undefined){
+    if (value === undefined) {
       value = '';
     }
     else {
@@ -412,8 +412,8 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
         iL = me.data.length,
         found = false;
 
-      for (; i < iL; i++){
-        if (me.data[i][me.valueKey] === value){
+      for (; i < iL; i++) {
+        if (me.data[i][me.valueKey] === value) {
           me.valueIndex = i;
           value = me.data[i][me.displayKey];
           found = true;
@@ -834,7 +834,7 @@ Fancy.define(['Fancy.form.field.Tag', 'Fancy.TagField'], {
       presented = true;
     }
     else{
-      list = Fancy.get( document.createElement('div'));
+      list = Fancy.newEl('div');
     }
 
     Fancy.each(me.aheadData, (row, i) =>{

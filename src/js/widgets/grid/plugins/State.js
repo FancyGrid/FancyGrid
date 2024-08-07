@@ -79,7 +79,7 @@ Fancy.modules['state'] = true;
         w.on('columnremove', me.onColumnRemove, me);
         w.on('columnadd', me.onColumnAdd, me);
 
-        w.on('init', function(){
+        w.on('init', () => {
           if(w.panel){
             if(me.log.resize){
               w.panel.on('resize', me.onResize, me);
@@ -189,10 +189,10 @@ Fancy.modules['state'] = true;
       const columns = w.getColumns(),
         _columns = [];
 
-      F.each(columns, function(column){
+      F.each(columns, column => {
         const _column = {};
 
-        F.each(column, function(v, p){
+        F.each(column, (v, p) => {
           const valueType = F.typeOf(v);
 
           switch (valueType) {

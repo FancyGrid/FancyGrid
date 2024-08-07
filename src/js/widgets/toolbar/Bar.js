@@ -82,7 +82,7 @@
       const me = this;
 
       if (!me.el) {
-        const el = F.get(document.createElement('div'));
+        const el = F.newEl('div');
 
         el.addCls(
           me.widgetCls,
@@ -93,16 +93,12 @@
 
         me.el = F.get(me.renderTo.appendChild(el.dom));
 
-        if (me.style){
-          me.el.css(me.style);
-        }
+        me.style && me.el.css(me.style);
       }
 
-      if (me.hidden) {
-        me.el.css('display', 'none');
-      }
+      me.hidden && me.el.css('display', 'none');
 
-      const containerEl = F.get(document.createElement('div'));
+      const containerEl = F.newEl('div');
       containerEl.addCls(me.containerCls);
 
       me.containerEl = F.get(me.el.dom.appendChild(containerEl.dom));

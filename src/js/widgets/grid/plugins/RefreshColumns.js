@@ -211,21 +211,19 @@
       }
 
       notCheckedColumns = [];
-      F.each(columns, (column) => {
-        if(!column.$checked){
+      F.each(columns, column => {
+        if (!column.$checked) {
           notCheckedColumns.push(column);
         }
       });
 
-      F.each(notCheckedColumns, (column) => {
-        w.removeColumn(column.id);
-      });
+      F.each(notCheckedColumns, column => w.removeColumn(column.id));
 
-      F.each(newColumns, (column) => {
+      F.each(newColumns, column => {
         delete column.$checked;
       });
 
-      F.each(columns, (column) => {
+      F.each(columns, column => {
         delete column.$checked;
       });
     },
@@ -238,11 +236,11 @@
         newRightColumns = [],
         newCenterColumns = [];
 
-      F.each(newColumns, (column) => {
-        if(column.locked){
+      F.each(newColumns, column => {
+        if (column.locked) {
           newLeftColumns.push(column);
         }
-        else if(column.rightLocked){
+        else if(column.rightLocked) {
           newRightColumns.push(column);
         }
         else{

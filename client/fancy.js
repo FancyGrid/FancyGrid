@@ -18,7 +18,7 @@ const Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.178',
+  version: '1.7.179',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -389,6 +389,22 @@ Fancy.styleToString = (o= {}) => {
   }
 
   return str;
+};
+
+/**
+ * @param {String} tag
+ * @return {Fancy.Element}
+ */
+Fancy.newEl = (tag) => {
+  return Fancy.get(document.createElement(tag));
+};
+
+/**
+ * @param {String} tag
+ * @return {HTMLElement}
+ */
+Fancy.newDomEl = (tag) => {
+  return document.createElement(tag);
 };
 
 Fancy.apply(Fancy, {
@@ -1299,12 +1315,9 @@ Fancy.Array = {
     return newArray;
   },
   each(arr, fn){
-    let i = 0,
-      iL = arr.length;
-
-    for(;i<iL;i++){
-      fn(arr[i], i);
-    }
+    arr.forEach((el, i) => {
+      fn(el, i);
+    });
   },
   /*
    * @param {Array} values
@@ -3288,7 +3301,7 @@ Fancy.define('Fancy.Store', {
    * @constructor
    */
   constructor: function(){
-    var me = this;
+    const me = this;
 
     me.Super('const', arguments);
     me.init();
@@ -4600,32 +4613,31 @@ Fancy.Element.prototype = {
     return this.$dom.find(`.${cls}`)[0];
   },
   /*
-   * @param {String} cls
+   * @param {...String} args
    */
-  addClass(cls){
-    this.addCls.apply(this, arguments);
+  addClass(...args){
+    this.addCls.apply(this, args);
   },
   /*
    * @param {String} cls
    */
   addCls(cls, ...args){
     this.$dom.addClass(cls);
-
-    args.forEach(arg => {
-      this.$dom.addClass(arg);
-    });
+    args.forEach(arg => this.$dom.addClass(arg));
   },
   /*
    * @param {String} cls
    */
-  removeClass(cls){
+  removeClass(cls, ...args){
     this.$dom.removeClass(cls);
+    args.forEach(arg => this.$dom.removeClass(arg));
   },
   /*
    * @param {String} cls
    */
-  removeCls(cls){
+  removeCls(cls, ...args){
     this.$dom.removeClass(cls);
+    args.forEach(arg => this.$dom.removeClass(arg));
   },
   /*
    * @param {String} cls
@@ -5240,10 +5252,10 @@ Fancy.Elements.prototype = {
     return dom.attr(o1, o2);
   },
   /*
-   * @param {String} cls
+   * @param {...String} args
    */
-  addClass(cls){
-    this.addCls.apply(this, arguments);
+  addClass(...args){
+    this.addCls.apply(this, args);
   },
   /*
    *
@@ -5258,7 +5270,7 @@ Fancy.Elements.prototype = {
     }
   },
   /*
-   * @param {String} cls
+   * @param {...String} args
    */
   addCls(cls){
     var me = this,
@@ -5323,8 +5335,8 @@ Fancy.Elements.prototype = {
    * @return {String|Number}
    */
   css(o1, o2){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -5335,8 +5347,8 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   toggleClass(cls){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -5347,8 +5359,8 @@ Fancy.Elements.prototype = {
    * @param {String} cls
    */
   toggleCls(cls){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -5359,8 +5371,8 @@ Fancy.Elements.prototype = {
    *
    */
   destroy(){
-    var me = this,
-      i = 0,
+    const me = this;
+    let i = 0,
       iL = me.length;
 
     for(;i<iL;i++){
@@ -6063,7 +6075,7 @@ Fancy.define('Fancy.Plugin', {
     render(){
       var me = this,
         renderTo,
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         width = 0,
         charWidth = 7;
 
@@ -6082,9 +6094,7 @@ Fancy.define('Fancy.Plugin', {
 
       me.fire('beforerender');
 
-      if (me.wrapper) {
-        me.renderWrapper();
-      }
+      me.wrapper && me.renderWrapper();
 
       renderTo = F.get(me.renderTo || document.body).dom;
 
@@ -6097,9 +6107,7 @@ Fancy.define('Fancy.Plugin', {
         }
       }
 
-      if (me.imageColor) {
-        me.imageCls = BUTTON_IMAGE_COLOR_CLS;
-      }
+      me.imageColor && (me.imageCls = BUTTON_IMAGE_COLOR_CLS);
 
       if (width < me.minWidth) {
         if (me.text && me.text.length > 0) {
@@ -6114,9 +6122,7 @@ Fancy.define('Fancy.Plugin', {
         width += me.imageWidth;
       }
 
-      if (me.menu) {
-        width += me.rightImageWidth;
-      }
+      me.menu && (width += me.rightImageWidth);
 
       el.addCls(
         F.cls,
@@ -6125,9 +6131,7 @@ Fancy.define('Fancy.Plugin', {
         me.extraCls
       );
 
-      if (me.disabled) {
-        el.addCls(BUTTON_DISABLED_CLS);
-      }
+      me.disabled && el.addCls(BUTTON_DISABLED_CLS);
 
       if (me.menu && me.menuIcon !== false) {
         el.addCls(BUTTON_MENU_CLS);
@@ -6138,9 +6142,7 @@ Fancy.define('Fancy.Plugin', {
         height: me.height + 'px'
       });
 
-      if(me.hidden){
-        el.css('display', 'none');
-      }
+      me.hidden && el.css('display', 'none');
 
       el.css(me.style || {});
 
@@ -6149,29 +6151,21 @@ Fancy.define('Fancy.Plugin', {
       }));
 
       if (me.imageCls) {
-        const imageEl = el.select('.' + BUTTON_IMAGE_CLS);
-        if (me.imageColor) {
-          imageEl.css('background-color', me.imageColor);
-        }
+        const imageEl = el.select(`.${BUTTON_IMAGE_CLS}`);
+        me.imageColor && imageEl.css('background-color', me.imageColor);
         imageEl.css('display', 'block');
         if (F.isString(me.imageCls)) {
           imageEl.addCls(me.imageCls);
         }
       }
 
-      if (me.id) {
-        el.attr('id', me.id);
-      }
+      me.id && el.attr('id', me.id);
 
       me.el = F.get(renderTo.appendChild(el.dom));
 
-      if (me.disabled) {
-        me.disable();
-      }
+      me.disabled && me.disable();
 
-      if (me.pressed) {
-        me.setPressed(me.pressed);
-      }
+      me.pressed && me.setPressed(me.pressed);
 
       me.initToggle();
 
@@ -6187,7 +6181,7 @@ Fancy.define('Fancy.Plugin', {
       const me = this,
         wrapper = me.wrapper,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       el.css(wrapper.style || {});
       el.addCls(wrapper.cls || '');
@@ -6525,9 +6519,9 @@ Fancy.define('Fancy.SegButton', {
    *
    */
   render(){
-    var me = this,
+    let me = this,
       renderTo,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.newEl('div');
 
     me.fire('beforerender');
 
@@ -6540,13 +6534,10 @@ Fancy.define('Fancy.SegButton', {
       me.extraCls
     );
 
-    if(me.hidden){
-      el.css('display', 'none');
-    }
-
+    me.hidden && el.css('display', 'none');
     me.el = Fancy.get(renderTo.appendChild(el.dom));
 
-    Fancy.each(me.style, function(value, p){
+    Fancy.each(me.style, (value, p) => {
       me.el.css(p, value);
     });
 
@@ -6969,7 +6960,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
   renderResizeEls(){
     const me = this,
       el = me.el,
-      cornerEl = Fancy.get(document.createElement('div'));
+      cornerEl = Fancy.newEl('div');
 
     cornerEl.addCls(me.cornerResizeCls);
 
@@ -7133,7 +7124,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       el = me.el,
       maskWidth = 2;
 
-    let maskEl = Fancy.get(document.createElement('div')),
+    let maskEl = Fancy.newEl('div'),
       panelTop = parseInt(el.css('top')),
       panelLeft = parseInt(el.css('left')),
       panelWidth = parseInt(el.css('width')) - maskWidth * 2,
@@ -7274,7 +7265,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body),
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         minusHeight = 0,
         titleHeight = me.titleHeight,
         subTitleHeight = me.subTitleHeight;
@@ -7776,7 +7767,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
     render(){
       const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = document.createElement('div');
+        el = F.newDomEl('div');
 
       me.fire('beforerender');
 
@@ -8135,7 +8126,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       const me = this;
 
       me.items.forEach(item => {
-        const el = F.get(document.createElement('div'));
+        const el = F.newEl('div');
 
         el.addCls(TAB_WRAPPER_CLS);
 
@@ -8338,7 +8329,7 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
       const me = this;
 
       if (!me.el) {
-        const el = F.get(document.createElement('div'));
+        const el = F.newEl('div');
 
         el.addCls(
           me.widgetCls,
@@ -8349,16 +8340,12 @@ Fancy.Mixin('Fancy.panel.mixin.Resize', {
 
         me.el = F.get(me.renderTo.appendChild(el.dom));
 
-        if (me.style){
-          me.el.css(me.style);
-        }
+        me.style && me.el.css(me.style);
       }
 
-      if (me.hidden) {
-        me.el.css('display', 'none');
-      }
+      me.hidden && me.el.css('display', 'none');
 
-      const containerEl = F.get(document.createElement('div'));
+      const containerEl = F.newEl('div');
       containerEl.addCls(me.containerCls);
 
       me.containerEl = F.get(me.el.dom.appendChild(containerEl.dom));
@@ -9268,7 +9255,7 @@ Fancy.define('Fancy.Separator', {
    */
   render(){
     const me = this,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.newEl('div');
 
     el.addCls(me.cls);
     el.update('<div></div>');
@@ -9313,7 +9300,7 @@ Fancy.define('Fancy.bar.Text', {
    */
   render(){
     const me = this,
-      el = Fancy.get(document.createElement('div'));
+      el = Fancy.newEl('div');
 
     el.addCls(me.widgetCls, me.cls);
     el.update(me.text);
@@ -9846,11 +9833,11 @@ if(!Fancy.nojQuery && Fancy.$){
         renderTo = me.renderTo || document.body,
         renderAfter = me.renderAfter,
         renderBefore = me.renderBefore,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
-      if (F.isString(renderTo)){
+      if (F.isString(renderTo)) {
         renderTo = document.getElementById(renderTo);
-        if (!renderTo){
+        if (!renderTo) {
           renderTo = F.select(renderTo).item(0);
         }
       }
@@ -9868,31 +9855,31 @@ if(!Fancy.nojQuery && Fancy.$){
       var labelWidth = '',
         itemsHTML = '';
 
-      if (me.itemsHTML){
+      if (me.itemsHTML) {
         itemsHTML = me.itemsHTML;
       }
 
-      if (me.labelAlign === 'top' && me.label){
+      if (me.labelAlign === 'top' && me.label) {
         //auto fixing of wrong labelWidth.
         //will not fix right if user change color of label font-size to bigger
-        if (me.labelWidth < me.label.length * 7){
+        if (me.labelWidth < me.label.length * 7) {
           me.labelWidth = (me.label.length + 2) * 7;
         }
       }
 
-      if (me.labelWidth){
+      if (me.labelWidth) {
         labelWidth = 'width:' + me.labelWidth + 'px;';
       }
 
       let label = me.label;
 
-      if (me.label === ''){
+      if (me.label === '') {
         label = '&nbsp;';
       }
-      else if (me.label === undefined){
+      else if (me.label === undefined) {
         label = '&nbsp;';
       }
-      else if (me.labelAlign !== 'right'){
+      else if (me.labelAlign !== 'right') {
         label += ':';
       }
 
@@ -9900,18 +9887,18 @@ if(!Fancy.nojQuery && Fancy.$){
         inputLabelDisplay = '',
         inputLabel = '';
 
-      if (me.label === false){
+      if (me.label === false) {
         labelDisplay = 'display:none;';
       }
 
-      if (!me.inputLabel){
+      if (!me.inputLabel) {
         inputLabelDisplay = 'display:none;';
       }
       else {
         inputLabel = me.inputLabel;
       }
 
-      if (me.type === 'recaptcha'){
+      if (me.type === 'recaptcha') {
         el.update(me.tpl.getHTML({
             key: me.key
           })
@@ -12782,7 +12769,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
     render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         value = me.value,
         index = -1;
 
@@ -12795,7 +12782,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         if(me.multiSelect && F.isArray(me.data) && me.data.length > 0){
           value = '';
 
-          me.valuesIndex.each(function(i, v){
+          me.valuesIndex.each((i, v) => {
             if(index === -1){
               index = i;
               me.valueIndex = i;
@@ -12929,7 +12916,7 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
      */
     renderList(){
       const me = this,
-        list = F.get(document.createElement('div')),
+        list = F.newEl('div'),
         listHtml = [];
 
       if(me.selectAllText){
@@ -13100,16 +13087,16 @@ Fancy.define(['Fancy.form.field.Switcher', 'Fancy.Switcher'], {
         presented = false,
         displayedValue = me.getDisplayValue();
 
-      if (me.aheadList){
+      if (me.aheadList) {
         me.aheadList.firstChild().destroy();
         list = me.aheadList;
         presented = true;
       }
       else {
-        list = F.get(document.createElement('div'));
+        list = F.newEl('div');
       }
 
-      F.each(me.aheadData, function(row, i){
+      F.each(me.aheadData, (row, i) => {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];
@@ -15949,7 +15936,7 @@ if (!Fancy.nojQuery && Fancy.$) {
         viewData = w.getDataView(),
         totalHeight = 0;
 
-      F.each(viewData, (item) => {
+      F.each(viewData, item => {
         const id = item.id,
           height = me.rows[id],
           rowIndex = w.getRowById(id),
@@ -16419,7 +16406,7 @@ if (!Fancy.nojQuery && Fancy.$) {
     render(){
       const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       el.addCls(
         F.cls,

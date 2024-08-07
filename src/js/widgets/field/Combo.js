@@ -943,7 +943,7 @@
     render(){
       var me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         value = me.value,
         index = -1;
 
@@ -956,7 +956,7 @@
         if(me.multiSelect && F.isArray(me.data) && me.data.length > 0){
           value = '';
 
-          me.valuesIndex.each(function(i, v){
+          me.valuesIndex.each((i, v) => {
             if(index === -1){
               index = i;
               me.valueIndex = i;
@@ -1090,7 +1090,7 @@
      */
     renderList(){
       const me = this,
-        list = F.get(document.createElement('div')),
+        list = F.newEl('div'),
         listHtml = [];
 
       if(me.selectAllText){
@@ -1261,16 +1261,16 @@
         presented = false,
         displayedValue = me.getDisplayValue();
 
-      if (me.aheadList){
+      if (me.aheadList) {
         me.aheadList.firstChild().destroy();
         list = me.aheadList;
         presented = true;
       }
       else {
-        list = F.get(document.createElement('div'));
+        list = F.newEl('div');
       }
 
-      F.each(me.aheadData, function(row, i){
+      F.each(me.aheadData, (row, i) => {
         var isActive = '',
           displayValue = row[me.displayKey],
           value = row[me.valueKey];

@@ -39,7 +39,7 @@
     render(){
       const me = this,
         renderTo = F.get(me.renderTo || document.body).dom,
-        el = F.get(document.createElement('div'));
+        el = F.newEl('div');
 
       el.addCls(
         F.cls,

@@ -20,6 +20,10 @@ Fancy.modules['filter'] = true;
   const GRID_SUB_HEADER_FILTER_CLS = F.GRID_SUB_HEADER_FILTER_CLS;
   const GRID_SUB_HEADER_FILTER_CONTAINER_CLS = F.GRID_SUB_HEADER_FILTER_CONTAINER_CLS;
 
+  //TEMPLATES
+  const T_GRID_HEADER_CELL = `.${GRID_HEADER_CELL_CLS}`;
+  const T_FIELD = `.${FIELD_CLS}`;
+
   F.define('Fancy.grid.plugin.Filter', {
     extend: F.Plugin,
     ptype: 'grid.filter',
@@ -122,7 +126,7 @@ Fancy.modules['filter'] = true;
         cellHeight = w.cellHeight,
         sideEl = w.getSideEl(side),
         container = sideEl.select(`.${GRID_SUB_HEADER_FILTER_CLS}`),
-        cell = document.createElement('div');
+        cell = F.newDomEl('div');
 
       cell.className = GRID_HEADER_CELL_CLS;
       cell.style.height = cellHeight + 'px';
@@ -138,7 +142,7 @@ Fancy.modules['filter'] = true;
         w = me.widget,
         cellHeight = w.cellHeight,
         columnsWidth = w.getColumnsWidth(side),
-        el = F.get(document.createElement('div')),
+        el = F.newEl('div'),
         cells = '';
 
       F.each(w.getColumns(side), (column, i) => {
@@ -169,102 +173,103 @@ Fancy.modules['filter'] = true;
       return el;
     },
     _renderSideFields(header, columns){
-      var me = this,
-        i = 0,
-        iL = columns.length,
-        cell,
-        column;
+      const me = this;
 
-      for (; i < iL; i++){
-        column = columns[i];
-        cell = header.getCell(i);
+      columns.forEach((column, i) => {
+        const cell = header.getCell(i);
+        const {
+          filter,
+          grouping,
+          type
+        } = column;
 
-        if (column.filter && column.filter.header){
-          me.renderFilter(column.type, column, cell);
-          if (me.groupHeader && !column.grouping){
+        if (filter && filter.header) {
+          me.renderFilter(type, column, cell);
+          if (me.groupHeader && !grouping) {
             cell.addCls(GRID_HEADER_CELL_TRIPLE_CLS);
           }
 
           cell.addCls(GRID_HEADER_CELL_FILTER_CLS);
         }
-        else if (me.header){
-          if (me.groupHeader && !column.grouping){
+        else if (me.header) {
+          if (me.groupHeader && !grouping) {
             cell.addCls(GRID_HEADER_CELL_TRIPLE_CLS);
           }
           else {
-            if (column.grouping && me.groupHeader){
+            if (grouping && me.groupHeader) {
               cell.addCls(GRID_HEADER_CELL_DOUBLE_CLS);
             }
-            else if (!column.grouping){
+            else if (!grouping) {
               cell.addCls(GRID_HEADER_CELL_DOUBLE_CLS);
             }
           }
         }
-      }
+      });
     },
     _renderSubHeaderFields(side){
-      var me = this,
+      const me = this,
         w = me.widget,
         columns = w.getColumns(side),
         el = me.getSubHeaderFilterEl(side),
-        cells = el.select(`.${GRID_HEADER_CELL_CLS}`),
-        i = 0,
-        iL = columns.length,
-        cell,
-        column;
+        cells = el.select(T_GRID_HEADER_CELL);
 
-      if(cells.length === 0){
+      if (cells.length === 0) {
         return;
       }
 
-      for (; i < iL; i++){
-        column = columns[i];
-        cell = cells.item(i);
+      columns.forEach((column, i) => {
+        const cell = cells.item(i);
+        const {
+          filter,
+          type
+        } = column;
 
-        if (column.filter && column.filter.header){
-          cell.select(`.${FIELD_CLS}`).each(el=> {
+        if (filter && filter.header) {
+          cell.select(T_FIELD).each(el=> {
             const field = F.getWidget(el.id);
             field.destroy();
           });
           cell.update('');
 
-          me.renderFilter(column.type, column, cell);
+          me.renderFilter(type, column, cell);
 
           cell.addCls(GRID_HEADER_CELL_FILTER_CLS);
         }
-      }
+      });
     },
     _clearColumnsFields(columns, header, index, sign){
-      var me = this,
-        w = me.widget,
-        i = 0,
-        iL = columns.length,
-        column,
-        cells;
+      const me = this,
+        w = me.widget;
 
-      if(w.subHeaderFilter){
-        var filterEl = me.getSubHeaderFilterEl(header.side);
-        cells = filterEl.select('.' + GRID_HEADER_CELL_CLS);
+      let cells;
+
+      if (w.subHeaderFilter) {
+        const filterEl = me.getSubHeaderFilterEl(header.side);
+        cells = filterEl.select(T_GRID_HEADER_CELL);
       }
 
-      for (; i < iL; i++){
-        column = columns[i];
-        if (column.filter && column.filter.header){
-          if (index && column.index !== index){
-            continue;
+      columns.forEach((column, i) => {
+        const {
+          filter,
+          type
+        } = column;
+
+        if (filter && filter.header){
+          if (index && column.index !== index) {
+            return;
           }
 
-          switch (column.type){
+          switch (type) {
             case 'date':
-              var els,
+              let els,
                 fieldFrom,
                 fieldTo;
 
-              if(w.subHeaderFilter){
-                els = cells.item(i).select('.' + FIELD_CLS);
+              if (w.subHeaderFilter) {
+                els = cells.item(i).select(T_FIELD);
               }
               else{
-                els = header.getCell(i).select('.' + FIELD_CLS);
+                els = header.getCell(i).select(T_FIELD);
               }
 
               fieldFrom = F.getWidget(els.item(0).attr('id'));
@@ -274,37 +279,33 @@ Fancy.modules['filter'] = true;
               fieldTo.clear();
               break;
             default:
-              var cell;
-              if(w.subHeaderFilter){
+              let cell;
+              if (w.subHeaderFilter) {
                 cell = cells.item(i);
               }
-              else{
+              else {
                 cell = header.getCell(i);
               }
 
-              var id = cell.select('.' + FIELD_CLS).attr('id'),
+              const id = cell.select(T_FIELD).attr('id'),
                 field = F.getWidget(id);
 
-              if(sign){
-                var splitted = field.get().split(',');
+              if (sign) {
+                const splitted = field.get().split(',');
 
                 if (splitted.length < 2 && !sign){
                   field.clear();
                 }
                 else {
-                  var j = 0,
-                    jL = splitted.length,
-                    value = '';
+                  let value = '';
 
-                  for (; j < jL; j++){
-                    var splitItem = splitted[j];
-
-                    if (!new RegExp(sign).test(splitItem)){
+                  splitted.forEach(splitItem => {
+                    if (!new RegExp(sign).test(splitItem)) {
                       value += splitItem + ',';
                     }
-                  }
+                  });
 
-                  if(value[value.length - 1] === ','){
+                  if (value[value.length - 1] === ',') {
                     value = value.substring(0, value.length - 1);
                   }
 
@@ -316,7 +317,7 @@ Fancy.modules['filter'] = true;
               }
           }
         }
-      }
+      });
     },
     clearColumnsFields(index, sign){
       const me = this,
@@ -336,7 +337,7 @@ Fancy.modules['filter'] = true;
 
       if(w.subHeaderFilter){
         const filterEl = me.getSubHeaderFilterEl(header.side);
-        cells = filterEl.select('.' + GRID_HEADER_CELL_CLS);
+        cells = filterEl.select(T_GRID_HEADER_CELL);
       }
 
       for (; i < iL; i++){
@@ -346,10 +347,10 @@ Fancy.modules['filter'] = true;
             case 'date':
               var els;
               if(w.subHeaderFilter){
-                els = cells.item(i).select('.' + FIELD_CLS);
+                els = cells.item(i).select(T_FIELD);
               }
               else{
-                els = header.getCell(i).select('.' + FIELD_CLS);
+                els = header.getCell(i).select(T_FIELD);
               }
 
               const fieldFrom = F.getWidget(els.item(0).attr('id')),
@@ -375,7 +376,7 @@ Fancy.modules['filter'] = true;
                 cell = header.getCell(i);
               }
 
-              var id = cell.select('.' + FIELD_CLS).attr('id'),
+              var id = cell.select(T_FIELD).attr('id'),
                 field = F.getWidget(id);
 
               if(F.isArray(value)){
@@ -422,7 +423,7 @@ Fancy.modules['filter'] = true;
                 cell = header.getCell(i);
               }
 
-              var id = cell.select('.' + FIELD_CLS).attr('id'),
+              var id = cell.select(T_FIELD).attr('id'),
                 field = F.getWidget(id);
 
               field.set(_value);
@@ -818,7 +819,7 @@ Fancy.modules['filter'] = true;
       else {
         const severalValues = [];
 
-        F.each(filters, function(filter){
+        F.each(filters, (filter) => {
           switch(filter.operator){
             case '':
             case '=':
@@ -1132,7 +1133,7 @@ Fancy.modules['filter'] = true;
         const index = cell.attr('index'),
           filterEl = me.getSubHeaderFilterEl(o.side);
 
-        cell = filterEl.select(`.${GRID_HEADER_CELL_CLS}`).item(index);
+        cell = filterEl.select(T_GRID_HEADER_CELL).item(index);
         fieldEl = cell.select(`:not(.${FIELD_CHECKBOX_CLS}).${FIELD_CLS}`);
       }
 
@@ -1195,7 +1196,7 @@ Fancy.modules['filter'] = true;
       }
 
       var el = me.getSubHeaderFilterEl(side),
-        cells = el.select(`.${GRID_HEADER_CELL_CLS}`),
+        cells = el.select(T_GRID_HEADER_CELL),
         totalWidth = 0,
         columns = w.getColumns(side),
         ANIMATE_DURATION = F.ANIMATE_DURATION;
@@ -1226,7 +1227,7 @@ Fancy.modules['filter'] = true;
     removeSubHeaderCell(side, orderIndex){
       const me = this,
         el = me.getSubHeaderFilterEl(side),
-        cells = el.select(`.${GRID_HEADER_CELL_CLS}`),
+        cells = el.select(T_GRID_HEADER_CELL),
         cell = cells.item(orderIndex);
 
       cell.destroy();
