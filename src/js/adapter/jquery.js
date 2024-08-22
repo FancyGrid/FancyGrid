@@ -636,33 +636,33 @@ Fancy.Element.prototype = {
       return;
     }
 
-    var wrappedFn = function(e, target){
+    const wrappedFn = function (e, target) {
       var tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr',
         e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      if(me.touchIn !== true){
+      if (me.touchIn !== true) {
         me.removeAttr(tempAttr);
         return;
       }
 
       var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
-        targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) );
+        targetEl = Fancy.get(document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop));
 
-      if(!delegate){
+      if (!delegate) {
         var isWithin = false,
           maxDepth = 10,
           parentEl = targetEl;
 
-        while(maxDepth > 0){
-          if( !parentEl.dom ){
+        while (maxDepth > 0) {
+          if (!parentEl.dom) {
             break;
           }
 
-          if( parentEl.attr(tempAttr) === tempId ){
+          if (parentEl.attr(tempAttr) === tempId) {
             isWithin = true;
             break;
           }
@@ -670,7 +670,7 @@ Fancy.Element.prototype = {
           maxDepth--;
         }
 
-        if(isWithin === false){
+        if (isWithin === false) {
           e.pageX = touchXY.pageX;
           e.pageY = touchXY.pageY;
 
@@ -681,20 +681,19 @@ Fancy.Element.prototype = {
         }
       }
 
-      if(arr.length > 30){
+      if (arr.length > 30) {
         arr = arr.slice(arr.length - 5, arr.length - 1);
       }
 
       arr.push(targetEl.dom);
 
-      if(delegate && me.touchInDelegate[delegate]){
+      if (delegate && me.touchInDelegate[delegate]) {
         var delegateTarget,
           delegateTempId = Fancy.id();
 
-        if(Fancy.isArray(me.touchInDelegate[delegate])){
+        if (Fancy.isArray(me.touchInDelegate[delegate])) {
           delegateTarget = Fancy.get(me.touchInDelegate[delegate][0]);
-        }
-        else{
+        } else {
           delegateTarget = Fancy.get(me.touchInDelegate[delegate]);
         }
 
@@ -704,12 +703,12 @@ Fancy.Element.prototype = {
         var found = false;
         parentEl = targetEl;
 
-        while(maxDepth > 0){
-          if( !parentEl.dom ){
+        while (maxDepth > 0) {
+          if (!parentEl.dom) {
             break;
           }
 
-          if( parentEl.attr(tempAttr) === delegateTempId ){
+          if (parentEl.attr(tempAttr) === delegateTempId) {
             found = true;
             break;
           }
@@ -720,7 +719,7 @@ Fancy.Element.prototype = {
 
         delegateTarget.removeAttr(tempAttr);
 
-        if(!found){
+        if (!found) {
           delete me.touchInDelegate[delegate];
           me.touchIn = false;
 
@@ -764,8 +763,8 @@ Fancy.Element.prototype = {
       return;
     }
 
-    var wrappedFn = function(e, target){
-      var tempId = Fancy.id(),
+    const wrappedFn = function (e, target) {
+      const tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr';
 
       e = e.originalEvent || e;
@@ -776,15 +775,15 @@ Fancy.Element.prototype = {
         xy = [touchXY.pageX, touchXY.pageY],
         isWithin = false,
         maxDepth = 10,
-        targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) ),
+        targetEl = Fancy.get(document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop)),
         parentEl = targetEl;
 
-      while(maxDepth > 0){
-        if( !parentEl.dom ){
+      while (maxDepth > 0) {
+        if (!parentEl.dom) {
           break;
         }
 
-        if( parentEl.attr(tempAttr) === tempId ){
+        if (parentEl.attr(tempAttr) === tempId) {
           isWithin = true;
           break;
         }
@@ -794,7 +793,7 @@ Fancy.Element.prototype = {
 
       me.removeAttr(tempAttr);
 
-      if(!isWithin){
+      if (!isWithin) {
         return;
       }
 

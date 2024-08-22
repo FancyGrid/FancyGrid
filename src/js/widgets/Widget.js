@@ -134,7 +134,7 @@ Fancy.define('Fancy.Widget', {
                 selectored = parentEl.select(selector);
 
               if(selectored.length === 1 && selectored.within(target)){
-                handler.apply(scope, arguments);
+                handler.apply(scope, [grid, o]);
               }
               else if(selectored.length > 1){
                 var j = 0,
@@ -142,7 +142,7 @@ Fancy.define('Fancy.Widget', {
 
                 for(;j<jL;j++){
                   if( selectored.item(j).within(target) ){
-                    handler.apply(scope, arguments);
+                    handler.apply(scope, [grid, o]);
                   }
                 }
               }

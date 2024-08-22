@@ -18,7 +18,7 @@ const Fancy = {
    * The version of the framework
    * @type String
    */
-  version: '1.7.179',
+  version: '1.7.180',
   site: 'fancygrid.com',
   COLORS: ['#9DB160', '#B26668', '#4091BA', '#8E658E', '#3B8D8B', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee']
 };
@@ -8818,33 +8818,33 @@ Fancy.Element.prototype = {
       return;
     }
 
-    var wrappedFn = function(e, target){
+    const wrappedFn = function (e, target) {
       var tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr',
         e = e.originalEvent || e;
 
       me.attr(tempAttr, tempId);
 
-      if(me.touchIn !== true){
+      if (me.touchIn !== true) {
         me.removeAttr(tempAttr);
         return;
       }
 
       var touchXY = e.targetTouches[0],
         xy = [touchXY.pageX, touchXY.pageY],
-        targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) );
+        targetEl = Fancy.get(document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop));
 
-      if(!delegate){
+      if (!delegate) {
         var isWithin = false,
           maxDepth = 10,
           parentEl = targetEl;
 
-        while(maxDepth > 0){
-          if( !parentEl.dom ){
+        while (maxDepth > 0) {
+          if (!parentEl.dom) {
             break;
           }
 
-          if( parentEl.attr(tempAttr) === tempId ){
+          if (parentEl.attr(tempAttr) === tempId) {
             isWithin = true;
             break;
           }
@@ -8852,7 +8852,7 @@ Fancy.Element.prototype = {
           maxDepth--;
         }
 
-        if(isWithin === false){
+        if (isWithin === false) {
           e.pageX = touchXY.pageX;
           e.pageY = touchXY.pageY;
 
@@ -8863,20 +8863,19 @@ Fancy.Element.prototype = {
         }
       }
 
-      if(arr.length > 30){
+      if (arr.length > 30) {
         arr = arr.slice(arr.length - 5, arr.length - 1);
       }
 
       arr.push(targetEl.dom);
 
-      if(delegate && me.touchInDelegate[delegate]){
+      if (delegate && me.touchInDelegate[delegate]) {
         var delegateTarget,
           delegateTempId = Fancy.id();
 
-        if(Fancy.isArray(me.touchInDelegate[delegate])){
+        if (Fancy.isArray(me.touchInDelegate[delegate])) {
           delegateTarget = Fancy.get(me.touchInDelegate[delegate][0]);
-        }
-        else{
+        } else {
           delegateTarget = Fancy.get(me.touchInDelegate[delegate]);
         }
 
@@ -8886,12 +8885,12 @@ Fancy.Element.prototype = {
         var found = false;
         parentEl = targetEl;
 
-        while(maxDepth > 0){
-          if( !parentEl.dom ){
+        while (maxDepth > 0) {
+          if (!parentEl.dom) {
             break;
           }
 
-          if( parentEl.attr(tempAttr) === delegateTempId ){
+          if (parentEl.attr(tempAttr) === delegateTempId) {
             found = true;
             break;
           }
@@ -8902,7 +8901,7 @@ Fancy.Element.prototype = {
 
         delegateTarget.removeAttr(tempAttr);
 
-        if(!found){
+        if (!found) {
           delete me.touchInDelegate[delegate];
           me.touchIn = false;
 
@@ -8946,8 +8945,8 @@ Fancy.Element.prototype = {
       return;
     }
 
-    var wrappedFn = function(e, target){
-      var tempId = Fancy.id(),
+    const wrappedFn = function (e, target) {
+      const tempId = Fancy.id(),
         tempAttr = 'fancy-tempt-attr';
 
       e = e.originalEvent || e;
@@ -8958,15 +8957,15 @@ Fancy.Element.prototype = {
         xy = [touchXY.pageX, touchXY.pageY],
         isWithin = false,
         maxDepth = 10,
-        targetEl = Fancy.get( document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop) ),
+        targetEl = Fancy.get(document.elementFromPoint(xy[0] - document.body.scrollLeft, xy[1] - document.body.scrollTop)),
         parentEl = targetEl;
 
-      while(maxDepth > 0){
-        if( !parentEl.dom ){
+      while (maxDepth > 0) {
+        if (!parentEl.dom) {
           break;
         }
 
-        if( parentEl.attr(tempAttr) === tempId ){
+        if (parentEl.attr(tempAttr) === tempId) {
           isWithin = true;
           break;
         }
@@ -8976,7 +8975,7 @@ Fancy.Element.prototype = {
 
       me.removeAttr(tempAttr);
 
-      if(!isWithin){
+      if (!isWithin) {
         return;
       }
 
@@ -11481,7 +11480,7 @@ Fancy.define('Fancy.Widget', {
                 selectored = parentEl.select(selector);
 
               if(selectored.length === 1 && selectored.within(target)){
-                handler.apply(scope, arguments);
+                handler.apply(scope, [grid, o]);
               }
               else if(selectored.length > 1){
                 var j = 0,
@@ -11489,7 +11488,7 @@ Fancy.define('Fancy.Widget', {
 
                 for(;j<jL;j++){
                   if( selectored.item(j).within(target) ){
-                    handler.apply(scope, arguments);
+                    handler.apply(scope, [grid, o]);
                   }
                 }
               }
@@ -23108,7 +23107,7 @@ Fancy.define(['Fancy.form.field.HTML', 'Fancy.HTMLField'], {
   render(){
     const me = this,
       renderTo = me.renderTo || document.body,
-      el = F.newDomEl('div');
+      el = Fancy.newDomEl('div');
 
     me.fire('beforerender');
 
@@ -52775,7 +52774,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       });
     }
 
-    licenceEl.update('<a href="http://www.fancygrid.com" title="JavaScript Grid - FancyGrid" style="background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAPklEQVR42mNgGLGAo+/4f1IwTN+i8y/+k4JHLR61eNTiUYuHgcUjD5AbZORG0ajFoxaPWjxq8RC2eBQMWwAAuxzh7E9tdUsAAAAASUVORK5CYII=);color: #60B3E2;font-size: 25px;line-height: 30px;text-decoration: none;background-repeat: no-repeat;">&nbsp;&nbsp;&nbsp;&nbsp;</a>');
+    licenceEl.update([
+      '<a href="http://www.fancygrid.com" title="JavaScript Grid - FancyGrid">',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
+         '<rect height="12" width="12" x="2" y="2" ry="2" stroke-width="0" fill="#088EC7"></rect>',
+         '<rect height="12" width="12" x="16" y="2" rx="2" stroke-width="0" fill="#A2CFE8"></rect>',
+         '<rect height="12" width="12" x="2" y="16" rx="2" stroke-width="0" fill="#A2CFE8"></rect>',
+         '<rect height="12" width="12" x="16" y="16" rx="2" stroke-width="0" fill="#088EC7"></rect>',
+        '</svg>',
+      '</a>'
+    ].join(''));
 
     Fancy.get(body.el.append(licenceEl.dom));
 

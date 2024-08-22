@@ -10747,7 +10747,16 @@ Fancy.define('Fancy.grid.plugin.Licence', {
       });
     }
 
-    licenceEl.update('<a href="http://www.fancygrid.com" title="JavaScript Grid - FancyGrid" style="background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAPklEQVR42mNgGLGAo+/4f1IwTN+i8y/+k4JHLR61eNTiUYuHgcUjD5AbZORG0ajFoxaPWjxq8RC2eBQMWwAAuxzh7E9tdUsAAAAASUVORK5CYII=);color: #60B3E2;font-size: 25px;line-height: 30px;text-decoration: none;background-repeat: no-repeat;">&nbsp;&nbsp;&nbsp;&nbsp;</a>');
+    licenceEl.update([
+      '<a href="http://www.fancygrid.com" title="JavaScript Grid - FancyGrid">',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
+         '<rect height="12" width="12" x="2" y="2" ry="2" stroke-width="0" fill="#088EC7"></rect>',
+         '<rect height="12" width="12" x="16" y="2" rx="2" stroke-width="0" fill="#A2CFE8"></rect>',
+         '<rect height="12" width="12" x="2" y="16" rx="2" stroke-width="0" fill="#A2CFE8"></rect>',
+         '<rect height="12" width="12" x="16" y="16" rx="2" stroke-width="0" fill="#088EC7"></rect>',
+        '</svg>',
+      '</a>'
+    ].join(''));
 
     Fancy.get(body.el.append(licenceEl.dom));
 
